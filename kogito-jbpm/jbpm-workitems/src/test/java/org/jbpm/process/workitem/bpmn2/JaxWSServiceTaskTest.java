@@ -11,8 +11,8 @@ import javax.xml.ws.Endpoint;
 
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
-import org.drools.impl.EnvironmentFactory;
-import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
+import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.impl.KnowledgeBaseFactoryServiceImpl;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
 import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;

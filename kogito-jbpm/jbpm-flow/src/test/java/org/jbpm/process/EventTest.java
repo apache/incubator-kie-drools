@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.common.AbstractRuleBase;
-import org.drools.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.Variable;

@@ -26,7 +26,7 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;

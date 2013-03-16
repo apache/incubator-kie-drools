@@ -10,7 +10,7 @@ import org.drools.SessionConfiguration;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.audit.*;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;

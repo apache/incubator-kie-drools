@@ -38,7 +38,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
 
 import org.drools.core.util.FileManager;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 
 
 import org.jbpm.shared.services.api.Domain;

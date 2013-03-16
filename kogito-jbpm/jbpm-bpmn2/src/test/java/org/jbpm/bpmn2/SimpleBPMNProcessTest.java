@@ -31,7 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
+import org.drools.core.impl.KnowledgeBaseFactoryServiceImpl;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.core.Association;

@@ -3,7 +3,7 @@ package org.jbpm.persistence.map.impl;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.drools.core.common.AbstractRuleBase;
-import org.drools.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.process.instance.WorkItemHandler;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItem;

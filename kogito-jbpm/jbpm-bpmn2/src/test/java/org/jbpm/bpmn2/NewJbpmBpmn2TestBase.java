@@ -9,7 +9,7 @@ import junit.framework.Assert;
 
 import org.drools.SessionConfiguration;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.bpmn2.xml.*;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.ProcessBaseFactoryService;

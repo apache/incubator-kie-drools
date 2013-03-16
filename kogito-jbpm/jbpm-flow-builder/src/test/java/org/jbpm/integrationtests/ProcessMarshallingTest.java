@@ -9,7 +9,7 @@ import junit.framework.TestCase;
 
 import org.drools.*;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Package;
 import org.jbpm.Person;

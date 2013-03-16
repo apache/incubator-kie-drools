@@ -18,8 +18,8 @@ package org.jbpm.process;
 
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
-import org.drools.impl.EnvironmentFactory;
-import org.drools.impl.InternalKnowledgeBase;
+import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.definition.KiePackage;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.process.Process;

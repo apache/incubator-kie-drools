@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactoryService;

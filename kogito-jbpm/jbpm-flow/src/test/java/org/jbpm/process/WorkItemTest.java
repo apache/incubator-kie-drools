@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.core.common.AbstractRuleBase;
-import org.drools.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;

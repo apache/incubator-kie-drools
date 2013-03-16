@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.drools.core.common.AbstractRuleBase;
-import org.drools.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
 import org.jbpm.process.instance.impl.Action;

@@ -1,7 +1,7 @@
 package org.jbpm.process.audit;
 
 import org.drools.WorkingMemory;
-import org.drools.impl.StatelessKnowledgeSessionImpl;
+import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.audit.event.DefaultAuditEventBuilderImpl;
 import org.kie.event.process.ProcessEventListener;

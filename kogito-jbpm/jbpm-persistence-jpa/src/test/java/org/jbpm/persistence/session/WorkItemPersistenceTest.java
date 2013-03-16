@@ -23,7 +23,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.core.common.AbstractRuleBase;
-import org.drools.impl.InternalKnowledgeBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;

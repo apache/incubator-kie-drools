@@ -36,7 +36,7 @@ import junit.framework.TestCase;
 import org.drools.SessionConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.ProcessMarshaller;

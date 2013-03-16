@@ -33,7 +33,7 @@ import org.kie.KnowledgeBase;
 import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.conf.EventProcessingOption;
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
