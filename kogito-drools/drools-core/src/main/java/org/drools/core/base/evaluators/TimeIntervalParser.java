@@ -17,7 +17,7 @@
 package org.drools.core.base.evaluators;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.time.TimeUtils;
+import org.drools.core.time.TimeUtils;
 
 /**
  * A parameters parser that uses JodaTime for time units parsing.

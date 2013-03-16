@@ -2,7 +2,7 @@ package org.drools.core.marshalling.impl;
 
 import java.io.IOException;
 
-import org.drools.time.JobContext;
+import org.drools.core.time.JobContext;
 
 public interface TimersOutputMarshaller {
 

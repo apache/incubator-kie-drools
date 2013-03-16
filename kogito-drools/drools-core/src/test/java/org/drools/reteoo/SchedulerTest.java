@@ -34,7 +34,7 @@ import org.drools.core.rule.Rule;
 import org.drools.WorkingMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
-import org.drools.time.impl.DurationTimer;
+import org.drools.core.time.impl.DurationTimer;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -44,7 +44,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.ObjectType;
-import org.drools.time.impl.PseudoClockScheduler;
+import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

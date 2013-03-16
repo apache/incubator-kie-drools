@@ -1,8 +1,8 @@
 package org.drools;
 
-import org.drools.time.impl.DefaultTimerJobFactoryManager;
-import org.drools.time.impl.TimerJobFactoryManager;
-import org.drools.time.impl.TrackableTimeJobFactoryManager;
+import org.drools.core.time.impl.DefaultTimerJobFactoryManager;
+import org.drools.core.time.impl.TimerJobFactoryManager;
+import org.drools.core.time.impl.TrackableTimeJobFactoryManager;
 
 public enum TimerJobFactoryType {
 

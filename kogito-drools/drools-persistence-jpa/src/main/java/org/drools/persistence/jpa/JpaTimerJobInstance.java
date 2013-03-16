@@ -1,13 +1,13 @@
 package org.drools.persistence.jpa;
 
 import org.drools.core.command.CommandService;
-import org.drools.time.AcceptsTimerJobFactoryManager;
-import org.drools.time.InternalSchedulerService;
-import org.drools.time.Job;
-import org.drools.time.JobContext;
-import org.drools.time.JobHandle;
-import org.drools.time.Trigger;
-import org.drools.time.impl.DefaultTimerJobInstance;
+import org.drools.core.time.AcceptsTimerJobFactoryManager;
+import org.drools.core.time.InternalSchedulerService;
+import org.drools.core.time.Job;
+import org.drools.core.time.JobContext;
+import org.drools.core.time.JobHandle;
+import org.drools.core.time.Trigger;
+import org.drools.core.time.impl.DefaultTimerJobInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

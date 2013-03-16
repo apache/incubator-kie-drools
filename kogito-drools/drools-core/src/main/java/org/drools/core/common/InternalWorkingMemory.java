@@ -34,7 +34,7 @@ import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
-import org.drools.time.TimerService;
+import org.drools.core.time.TimerService;
 import org.drools.core.type.DateFormats;
 import org.kie.runtime.Calendars;
 import org.kie.runtime.Channel;

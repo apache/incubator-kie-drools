@@ -33,10 +33,10 @@ import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.core.marshalling.impl.TimersInputMarshaller;
 import org.drools.core.marshalling.impl.TimersOutputMarshaller;
 import org.drools.reteoo.LeftTuple;
-import org.drools.time.Job;
-import org.drools.time.JobContext;
-import org.drools.time.JobHandle;
-import org.drools.time.Trigger;
+import org.drools.core.time.Job;
+import org.drools.core.time.JobContext;
+import org.drools.core.time.JobHandle;
+import org.drools.core.time.Trigger;
 
 /**
  * Scheduler for rules requiring truth duration.

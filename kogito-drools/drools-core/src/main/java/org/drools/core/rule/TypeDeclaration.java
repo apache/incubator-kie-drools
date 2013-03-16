@@ -27,8 +27,8 @@ import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.factmodel.ClassDefinition;
-import org.drools.facttemplates.FactTemplate;
-import org.drools.facttemplates.FactTemplateObjectType;
+import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;

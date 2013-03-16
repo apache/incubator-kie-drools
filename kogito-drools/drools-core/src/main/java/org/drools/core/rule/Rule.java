@@ -28,7 +28,7 @@ import org.drools.core.spi.Enabled;
 import org.drools.core.spi.Salience;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
-import org.drools.time.impl.Timer;
+import org.drools.core.time.impl.Timer;
 import org.kie.io.Resource;
 
 import java.io.Externalizable;

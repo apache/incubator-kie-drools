@@ -20,8 +20,8 @@ import org.drools.core.command.CommandService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.process.instance.WorkItemManagerFactory;
-import org.drools.time.TimerService;
-import org.drools.time.impl.TimerJobFactoryManager;
+import org.drools.core.time.TimerService;
+import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.kie.KnowledgeBase;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.internal.utils.ClassLoaderUtil;
@@ -432,7 +432,7 @@ public class SessionConfiguration
     public TimerService newTimerService() {
         String className = this.chainedProperties.getProperty(
                                                                "drools.timerService",
-                                                               "org.drools.time.impl.JDKTimerService" );
+                                                               "org.drools.core.time.impl.JDKTimerService" );
         if ( className == null ) {
             return null;
         }

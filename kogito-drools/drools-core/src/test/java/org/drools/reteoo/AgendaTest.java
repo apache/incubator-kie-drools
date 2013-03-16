@@ -56,7 +56,7 @@ import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
-import org.drools.time.impl.DurationTimer;
+import org.drools.core.time.impl.DurationTimer;
 
 import org.junit.Before;
 import org.junit.Test;
