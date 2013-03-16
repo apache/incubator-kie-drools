@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.event.knowledgeagent;
+package org.drools.core.event.knowledgeagent;
 
 import java.util.EventObject;
 import org.drools.core.builder.KnowledgeBuilder;

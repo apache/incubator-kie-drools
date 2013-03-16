@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.event;
+package org.drools.core.event;
 
-import org.drools.event.process.ProcessEventManager;
-import org.drools.event.rule.WorkingMemoryEventManager;
+import org.drools.core.event.process.ProcessEventManager;
+import org.drools.core.event.rule.WorkingMemoryEventManager;
 
 /**
  * A manager for runtime events.

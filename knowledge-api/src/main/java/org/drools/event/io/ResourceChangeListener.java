@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.event.io;
+package org.drools.core.event.io;
 
 import org.drools.ChangeSet;
 

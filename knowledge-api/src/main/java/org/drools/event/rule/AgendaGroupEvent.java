@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.event.rule;
+package org.drools.core.event.rule;
 
 
-import org.drools.event.KnowledgeRuntimeEvent;
+import org.drools.core.event.KnowledgeRuntimeEvent;
 import org.drools.runtime.rule.AgendaGroup;
 
 public interface AgendaGroupEvent

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.event.knowledgeagent;
+package org.drools.core.event.knowledgeagent;
 
 import java.util.EventObject;
 import org.drools.ChangeSet;

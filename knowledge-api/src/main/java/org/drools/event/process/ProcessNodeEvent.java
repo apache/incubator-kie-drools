@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.event.process;
+package org.drools.core.event.process;
 
 import org.drools.runtime.process.NodeInstance;
 

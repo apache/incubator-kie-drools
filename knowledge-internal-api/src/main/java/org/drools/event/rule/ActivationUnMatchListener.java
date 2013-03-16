@@ -1,4 +1,4 @@
-package org.drools.event.rule;
+package org.drools.core.event.rule;
 
 import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.WorkingMemory;

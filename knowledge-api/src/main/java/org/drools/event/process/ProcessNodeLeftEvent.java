@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.event.process;
+package org.drools.core.event.process;
 
 /**
  * An event when a node inside a process instance has been left. 

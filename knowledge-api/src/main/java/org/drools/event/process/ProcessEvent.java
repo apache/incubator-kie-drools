@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.event.process;
+package org.drools.core.event.process;
 
-import org.drools.event.KnowledgeRuntimeEvent;
+import org.drools.core.event.KnowledgeRuntimeEvent;
 import org.drools.runtime.process.ProcessInstance;
 
 /**

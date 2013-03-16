@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.event.process;
+package org.drools.core.event.process;
 
 /**
  * A runtime event that is generated when a ProcessInstance is completed.
