@@ -18,7 +18,7 @@ package org.drools.runtime;
 
 import org.drools.core.command.Command;
 import org.drools.core.command.CommandFactory;
-import org.drools.event.KnowledgeRuntimeEventManager;
+import org.drools.core.event.KnowledgeRuntimeEventManager;
 import org.drools.runtime.process.StatelessProcessSession;
 import org.drools.runtime.rule.StatelessRuleSession;
 

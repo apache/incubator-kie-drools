@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.event.rule;
+package org.drools.core.event.rule;
 
 public enum ActivationCancelledCause {
     FILTER, WME_MODIFY, CLEAR;

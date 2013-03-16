@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.drools.ChangeSet;
 import org.drools.SystemEventListener;
-import org.drools.event.io.ResourceChangeListener;
+import org.drools.core.event.io.ResourceChangeListener;
 
 /**
  * <p>

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.event.rule;
+package org.drools.core.event.rule;
 
-import org.drools.event.knowledgeagent.AfterChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.AfterChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.AfterResourceProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeResourceProcessedEvent;
-import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
-import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
+import org.drools.core.event.knowledgeagent.AfterChangeSetAppliedEvent;
+import org.drools.core.event.knowledgeagent.AfterChangeSetProcessedEvent;
+import org.drools.core.event.knowledgeagent.AfterResourceProcessedEvent;
+import org.drools.core.event.knowledgeagent.BeforeChangeSetAppliedEvent;
+import org.drools.core.event.knowledgeagent.BeforeChangeSetProcessedEvent;
+import org.drools.core.event.knowledgeagent.BeforeResourceProcessedEvent;
+import org.drools.core.event.knowledgeagent.KnowledgeAgentEventListener;
+import org.drools.core.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
+import org.drools.core.event.knowledgeagent.ResourceCompilationFailedEvent;
 
 public class DefaultKnowledgeAgentEventListener
     implements

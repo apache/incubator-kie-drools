@@ -24,7 +24,7 @@ import org.drools.definition.process.Process;
 import org.drools.definition.rule.Query;
 import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
-import org.drools.event.knowledgebase.KnowledgeBaseEventManager;
+import org.drools.core.event.knowledgebase.KnowledgeBaseEventManager;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;

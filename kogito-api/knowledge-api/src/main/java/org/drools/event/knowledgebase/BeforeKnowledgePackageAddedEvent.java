@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.event.knowledgebase;
+package org.drools.core.event.knowledgebase;
 
 import org.drools.definition.KnowledgePackage;
 

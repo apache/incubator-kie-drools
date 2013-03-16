@@ -16,7 +16,7 @@
 
 package org.drools.logger;
 
-import org.drools.event.KnowledgeRuntimeEventManager;
+import org.drools.core.event.KnowledgeRuntimeEventManager;
 
 /**
  * <p>

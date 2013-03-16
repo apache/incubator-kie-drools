@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.event.knowledgeagent;
+package org.drools.core.event.knowledgeagent;
 
 import org.drools.ChangeSet;
 import org.drools.agent.KnowledgeAgent.ResourceStatus;

@@ -19,7 +19,7 @@ package org.drools.runtime;
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
-import org.drools.event.KnowledgeRuntimeEventManager;
+import org.drools.core.event.KnowledgeRuntimeEventManager;
 import org.drools.runtime.process.ProcessRuntime;
 import org.drools.runtime.rule.WorkingMemory;
 import org.drools.time.SessionClock;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.event;
+package org.drools.core.event;
 
 import org.drools.runtime.KnowledgeRuntime;
 

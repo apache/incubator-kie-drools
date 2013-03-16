@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.event.rule;
+package org.drools.core.event.rule;
 
 
 import java.util.EventListener;

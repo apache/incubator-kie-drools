@@ -61,7 +61,7 @@
             </group>
             <group>
               <title>Event API</title>
-              <packages>org.drools.event*</packages>
+              <packages>org.drools.core.event*</packages>
             </group>
             <group>
               <title>Runtime API</title>
