@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;

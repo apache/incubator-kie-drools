@@ -20,7 +20,7 @@ import java.util.*;
 
 import junit.framework.Assert;
 
-import org.drools.SessionConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.bpmn2.handler.LoggingTaskHandlerWrapper.InputParameter;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;

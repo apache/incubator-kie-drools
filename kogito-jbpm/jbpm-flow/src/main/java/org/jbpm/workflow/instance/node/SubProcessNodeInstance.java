@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.instance.node;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.StartProcessHelper;

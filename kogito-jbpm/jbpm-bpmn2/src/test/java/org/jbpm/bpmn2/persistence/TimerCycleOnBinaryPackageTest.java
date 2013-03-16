@@ -15,7 +15,7 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.util.DroolsStreamUtils;

@@ -30,7 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 
 public class ProcessInstanceExecutorFrame extends JFrame {
 

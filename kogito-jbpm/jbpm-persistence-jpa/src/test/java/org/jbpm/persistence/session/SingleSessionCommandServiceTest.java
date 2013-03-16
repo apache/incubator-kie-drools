@@ -18,10 +18,10 @@ import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
 import org.apache.log4j.xml.DOMConfigurator;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.SessionConfiguration;
-import org.drools.TimerJobFactoryType;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.TimerJobFactoryType;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;

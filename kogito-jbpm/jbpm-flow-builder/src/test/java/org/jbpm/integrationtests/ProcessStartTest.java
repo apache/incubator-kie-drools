@@ -7,9 +7,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.StatefulSession;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.PackageBuilder;

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.WorkItemHandlerNotFoundException;
+import org.drools.core.WorkItemHandlerNotFoundException;
 import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.core.ParameterDefinition;

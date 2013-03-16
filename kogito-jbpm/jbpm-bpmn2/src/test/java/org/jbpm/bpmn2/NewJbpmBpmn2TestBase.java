@@ -7,7 +7,7 @@ import java.util.Properties;
 
 import junit.framework.Assert;
 
-import org.drools.SessionConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.bpmn2.xml.*;

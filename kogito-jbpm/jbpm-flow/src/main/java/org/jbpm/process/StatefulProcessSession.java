@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.SessionConfiguration;
+import org.drools.core.RuntimeDroolsException;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;

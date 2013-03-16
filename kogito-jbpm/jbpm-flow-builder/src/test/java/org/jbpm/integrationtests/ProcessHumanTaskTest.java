@@ -7,8 +7,10 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.drools.*;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.instance.ProcessInstance;

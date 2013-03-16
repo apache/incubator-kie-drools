@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import org.drools.WorkItemHandlerNotFoundException;
+import org.drools.core.WorkItemHandlerNotFoundException;
 import org.kie.definition.process.Node;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.DataType;

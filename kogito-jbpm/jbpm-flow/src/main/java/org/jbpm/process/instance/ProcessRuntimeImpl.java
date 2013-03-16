@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.RuleBase;
-import org.drools.SessionConfiguration;
+import org.drools.core.RuleBase;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalRuleBase;

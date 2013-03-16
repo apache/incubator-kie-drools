@@ -28,7 +28,7 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.kie.event.process.ProcessCompletedEvent;

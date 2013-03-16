@@ -7,8 +7,10 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.drools.*;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.StatefulSession;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.Package;

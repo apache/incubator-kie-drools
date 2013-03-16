@@ -25,7 +25,7 @@ import java.util.Map;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.*;

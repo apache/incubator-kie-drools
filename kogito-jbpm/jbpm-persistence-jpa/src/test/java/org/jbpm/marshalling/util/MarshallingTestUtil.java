@@ -33,7 +33,7 @@ import javax.transaction.TransactionManager;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.drools.SessionConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.impl.EnvironmentFactory;
