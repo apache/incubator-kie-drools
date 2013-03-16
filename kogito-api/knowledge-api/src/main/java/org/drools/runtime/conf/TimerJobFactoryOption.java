@@ -1,4 +1,4 @@
-package org.drools.runtime.conf;
+package org.drools.core.runtime.conf;
 
 /**
  * A class for the timer job factory manager configuration.

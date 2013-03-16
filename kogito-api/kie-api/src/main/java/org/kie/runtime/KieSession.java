@@ -69,7 +69,7 @@ import org.kie.runtime.rule.StatefulRuleSession;
  * for more details.
  * </p>
  *
- * @see org.drools.runtime.Globals
+ * @see org.drools.core.runtime.Globals
  */
 public interface KieSession
         extends

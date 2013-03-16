@@ -1,6 +1,6 @@
 package org.drools.core.command;
 
-import org.drools.runtime.ExecutionResults;
+import org.drools.core.runtime.ExecutionResults;
 
 
 

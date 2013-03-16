@@ -16,7 +16,7 @@
 
 package org.drools.core.builder.conf;
 
-import org.drools.runtime.rule.EvaluatorDefinition;
+import org.drools.core.runtime.rule.EvaluatorDefinition;
 
 /**
  * A class for the evaluators configuration. 

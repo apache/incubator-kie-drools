@@ -16,7 +16,7 @@
 
 package org.drools.core.event.process;
 
-import org.drools.runtime.process.NodeInstance;
+import org.drools.core.runtime.process.NodeInstance;
 
 /**
  * An event related to the execution of a node instance within a process instance.

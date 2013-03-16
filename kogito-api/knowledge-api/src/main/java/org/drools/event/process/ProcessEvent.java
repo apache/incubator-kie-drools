@@ -17,7 +17,7 @@
 package org.drools.core.event.process;
 
 import org.drools.core.event.KnowledgeRuntimeEvent;
-import org.drools.runtime.process.ProcessInstance;
+import org.drools.core.runtime.process.ProcessInstance;
 
 /**
  * A runtime event related to the execution of process instances.

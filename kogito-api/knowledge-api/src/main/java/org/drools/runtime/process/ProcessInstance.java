@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.process;
+package org.drools.core.runtime.process;
 
 import org.drools.definition.process.Process;
 
@@ -37,7 +37,7 @@ import org.drools.definition.process.Process;
  *  e.g. <code>WorkflowProcessInstance</code> when using a <code>WorkflowProcess</code>
  *  where the process logic is expressed as a flow chart.
  *  
- *  @see org.drools.runtime.process.WorkflowProcessInstance
+ *  @see org.drools.core.runtime.process.WorkflowProcessInstance
  */
 public interface ProcessInstance
     extends

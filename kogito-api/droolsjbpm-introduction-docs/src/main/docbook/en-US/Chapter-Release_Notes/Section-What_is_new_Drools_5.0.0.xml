@@ -36,11 +36,11 @@
         </listitem>
 
         <listitem>
-          <para>org.drools.runtime.StatefulKnowledgeSession</para>
+          <para>org.drools.core.runtime.StatefulKnowledgeSession</para>
         </listitem>
 
         <listitem>
-          <para>org.drools.runtime.StatelessKnowledgeSession</para>
+          <para>org.drools.core.runtime.StatelessKnowledgeSession</para>
         </listitem>
       </itemizedlist>
     <para>Factory classes, with static methods, provide instances

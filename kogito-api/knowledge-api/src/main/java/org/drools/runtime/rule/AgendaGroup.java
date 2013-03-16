@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.rule;
-
-import java.util.Collection;
+package org.drools.core.runtime.rule;
 
 public interface AgendaGroup {
     /**

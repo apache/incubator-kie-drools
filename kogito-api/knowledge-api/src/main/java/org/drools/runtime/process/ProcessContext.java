@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.process;
+package org.drools.core.runtime.process;
 
-import org.drools.runtime.KnowledgeContext;
+import org.drools.core.runtime.KnowledgeContext;
 
 /**
  * Represents the context when executing a process.

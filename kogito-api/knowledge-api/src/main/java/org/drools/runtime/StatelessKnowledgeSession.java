@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.runtime;
+package org.drools.core.runtime;
 
 import org.drools.core.command.Command;
 import org.drools.core.command.CommandFactory;
 import org.drools.core.event.KnowledgeRuntimeEventManager;
-import org.drools.runtime.process.StatelessProcessSession;
-import org.drools.runtime.rule.StatelessRuleSession;
+import org.drools.core.runtime.process.StatelessProcessSession;
+import org.drools.core.runtime.rule.StatelessRuleSession;
 
 /**
  * StatelessKnowledgeSession provides a convenience API, wrapping StatefulKnowledgeSession. It avoids the need to
@@ -110,13 +110,13 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * </pre>
  * 
  * 
- * @see org.drools.runtime.CommandExecutor
- * @see org.drools.runtime.command.CommandFactory
- * @see org.drools.runtime.command.BatchExecution
- * @see org.drools.runtime.ExecutionResults.BatchExecutionResults
- * @see org.drools.runtime.help.BatchExecutionHelp
- * @see org.drools.runtime.pipeline.PipelineFactory
- * @see org.drools.runtime.Globals
+ * @see org.drools.core.runtime.CommandExecutor
+ * @see org.drools.core.runtime.command.CommandFactory
+ * @see org.drools.core.runtime.command.BatchExecution
+ * @see org.drools.core.runtime.ExecutionResults.BatchExecutionResults
+ * @see org.drools.core.runtime.help.BatchExecutionHelp
+ * @see org.drools.core.runtime.pipeline.PipelineFactory
+ * @see org.drools.core.runtime.Globals
  */
 public interface StatelessKnowledgeSession
     extends

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.help;
+package org.drools.core.runtime.help;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -272,10 +272,10 @@ public class BatchExecutionHelper {
 
     private static void loadProvider() {
         try {
-            Class<BatchExecutionHelperProvider> cls = (Class<BatchExecutionHelperProvider>) Class.forName( "org.drools.runtime.help.impl.BatchExecutionHelperProviderImpl" );
+            Class<BatchExecutionHelperProvider> cls = (Class<BatchExecutionHelperProvider>) Class.forName( "org.drools.core.runtime.help.impl.BatchExecutionHelperProviderImpl" );
             setBatchExecutionHelperProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
-            throw new RuntimeException( "Provider org.drools.runtime.help.impl.BatchExecutionHelperProviderImpl could not be set.",
+            throw new RuntimeException( "Provider org.drools.core.runtime.help.impl.BatchExecutionHelperProviderImpl could not be set.",
                                                        e2 );
         }
     }

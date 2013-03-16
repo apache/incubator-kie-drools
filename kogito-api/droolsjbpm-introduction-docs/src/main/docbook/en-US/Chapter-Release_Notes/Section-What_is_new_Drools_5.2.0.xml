@@ -377,10 +377,10 @@ end
       stage you cannot mix expressions with variables.</para>
 
       <para>It is possible to call queries from java leaving arguments
-      unspecified using the static field org.drools.runtime.rule.Variable.v -
-      note you must use 'v' and not an alternative instanceof Variable. The
-      following example will return all objects contained in the
-      office.</para>
+        unspecified using the static field org.drools.core.runtime.rule.Variable.v -
+        note you must use 'v' and not an alternative instanceof Variable. The
+        following example will return all objects contained in the
+        office.</para>
 
       <programlisting>results = ksession.getQueryResults( "isContainedIn", new Object[] {  Variable.v, "office" } );
 l = new ArrayList&lt;List&lt;String&gt;&gt;();

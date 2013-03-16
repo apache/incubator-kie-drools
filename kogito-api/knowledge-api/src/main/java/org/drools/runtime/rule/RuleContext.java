@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.rule;
+package org.drools.core.runtime.rule;
 
 import org.drools.definition.rule.Rule;
-import org.drools.runtime.KnowledgeContext;
+import org.drools.core.runtime.KnowledgeContext;
 
 public interface RuleContext extends KnowledgeContext {
     

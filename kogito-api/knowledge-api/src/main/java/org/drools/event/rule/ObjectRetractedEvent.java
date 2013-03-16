@@ -17,7 +17,7 @@
 package org.drools.core.event.rule;
 
 
-import org.drools.runtime.rule.FactHandle;
+import org.drools.core.runtime.rule.FactHandle;
 
 public interface ObjectRetractedEvent
     extends

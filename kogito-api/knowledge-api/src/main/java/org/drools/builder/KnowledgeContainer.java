@@ -2,8 +2,8 @@ package org.drools.core.builder;
 
 import org.drools.KBaseUnit;
 import org.drools.KnowledgeBase;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.core.runtime.StatefulKnowledgeSession;
+import org.drools.core.runtime.StatelessKnowledgeSession;
 
 import java.io.File;
 import java.util.List;

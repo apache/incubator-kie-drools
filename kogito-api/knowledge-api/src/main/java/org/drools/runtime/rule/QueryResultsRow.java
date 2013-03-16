@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.rule;
+package org.drools.core.runtime.rule;
 
 /**
  * A row of data from the QueryResults container.

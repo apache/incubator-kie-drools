@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime;
+package org.drools.core.runtime;
 
 import org.drools.time.Calendar;
 

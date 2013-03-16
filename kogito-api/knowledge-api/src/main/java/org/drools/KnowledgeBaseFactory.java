@@ -18,9 +18,9 @@ package org.drools;
 
 import java.util.Properties;
 
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.core.runtime.Environment;
+import org.drools.core.runtime.KnowledgeSessionConfiguration;
+import org.drools.core.runtime.StatefulKnowledgeSession;
 import org.drools.util.ServiceRegistryImpl;
 
 /**

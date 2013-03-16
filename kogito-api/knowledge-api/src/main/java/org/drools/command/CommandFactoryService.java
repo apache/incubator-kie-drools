@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.core.runtime.ObjectFilter;
+import org.drools.core.runtime.process.WorkItemHandler;
+import org.drools.core.runtime.rule.FactHandle;
 
 public interface CommandFactoryService {
     Command newInsert(Object object);

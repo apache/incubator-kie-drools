@@ -2,8 +2,8 @@ package org.drools;
 
 import org.drools.KnowledgeBase;
 import org.drools.core.builder.KnowledgeBuilderErrors;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.core.runtime.StatefulKnowledgeSession;
+import org.drools.core.runtime.StatelessKnowledgeSession;
 
 /**
  * This class wraps the definition of a named KnowledgeBase defined in a KnowledgeJar

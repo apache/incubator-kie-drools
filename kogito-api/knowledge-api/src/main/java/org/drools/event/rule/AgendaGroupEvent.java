@@ -18,7 +18,7 @@ package org.drools.core.event.rule;
 
 
 import org.drools.core.event.KnowledgeRuntimeEvent;
-import org.drools.runtime.rule.AgendaGroup;
+import org.drools.core.runtime.rule.AgendaGroup;
 
 public interface AgendaGroupEvent
     extends

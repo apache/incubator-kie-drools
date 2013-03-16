@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.runtime;
+package org.drools.core.runtime;
 
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
 import org.drools.core.event.KnowledgeRuntimeEventManager;
-import org.drools.runtime.process.ProcessRuntime;
-import org.drools.runtime.rule.WorkingMemory;
+import org.drools.core.runtime.process.ProcessRuntime;
+import org.drools.core.runtime.rule.WorkingMemory;
 import org.drools.time.SessionClock;
 
 public interface KnowledgeRuntime

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.rule;
+package org.drools.core.runtime.rule;
 
 import java.util.Collection;
 
 import org.drools.KnowledgeBaseConfiguration;
-import org.drools.runtime.ObjectFilter;
+import org.drools.core.runtime.ObjectFilter;
 
 /**
  * <p>An entry-point is an abstract channel through where facts are inserted into the engine.</p>

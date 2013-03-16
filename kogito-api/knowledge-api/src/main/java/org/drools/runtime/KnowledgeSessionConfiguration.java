@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.runtime;
+package org.drools.core.runtime;
 
 import org.drools.PropertiesConfiguration;
-import org.drools.runtime.conf.KnowledgeSessionOptionsConfiguration;
+import org.drools.core.runtime.conf.KnowledgeSessionOptionsConfiguration;
 
 /**
  * A class for storing Session related configuration. It must be used at session instantiation time

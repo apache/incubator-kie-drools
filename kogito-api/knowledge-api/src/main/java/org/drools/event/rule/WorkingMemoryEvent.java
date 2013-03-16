@@ -17,7 +17,7 @@
 package org.drools.core.event.rule;
 
 import org.drools.core.event.KnowledgeRuntimeEvent;
-import org.drools.runtime.rule.PropagationContext;
+import org.drools.core.runtime.rule.PropagationContext;
 
 public interface WorkingMemoryEvent
     extends

@@ -16,7 +16,7 @@
 
 package org.drools.conf;
 
-import org.drools.runtime.rule.ConsequenceExceptionHandler;
+import org.drools.core.runtime.rule.ConsequenceExceptionHandler;
 
 /**
  * A class for the consequence exception handler configuration configuration.

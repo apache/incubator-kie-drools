@@ -17,9 +17,9 @@
 package org.drools.persistence.jpa;
 
 import org.drools.KnowledgeBase;
-import org.drools.runtime.Environment;
-import org.drools.runtime.KnowledgeSessionConfiguration;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.core.runtime.Environment;
+import org.drools.core.runtime.KnowledgeSessionConfiguration;
+import org.drools.core.runtime.StatefulKnowledgeSession;
 
 public interface KnowledgeStoreService {
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime;
+package org.drools.core.runtime;
 
 /**
  * Filters Objects by Class, only accepting Classes of the specified type

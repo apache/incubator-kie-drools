@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.runtime.rule;
+package org.drools.core.runtime.rule;
 
 /**
  * An interface for accumulate function implementations
