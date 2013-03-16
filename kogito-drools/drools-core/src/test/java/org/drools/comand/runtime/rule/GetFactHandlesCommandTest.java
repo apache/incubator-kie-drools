@@ -1,8 +1,9 @@
-package org.drools.core.command.runtime.rule;
+package org.drools.comand.runtime.rule;
 
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
+import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.core.common.InternalFactHandle;
 import org.junit.After;
 import org.junit.Before;
