@@ -42,7 +42,7 @@ import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.event.RuleBaseEventListener;
+import org.drools.core.event.RuleBaseEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;

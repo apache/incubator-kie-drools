@@ -21,13 +21,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.ObjectInsertedEvent;
-import org.drools.event.ObjectRetractedEvent;
-import org.drools.event.ObjectUpdatedEvent;
-import org.drools.event.WorkingMemoryEventListener;
+import org.drools.core.event.ActivationCancelledEvent;
+import org.drools.core.event.ActivationCreatedEvent;
+import org.drools.core.event.AfterActivationFiredEvent;
+import org.drools.core.event.ObjectInsertedEvent;
+import org.drools.core.event.ObjectRetractedEvent;
+import org.drools.core.event.ObjectUpdatedEvent;
+import org.drools.core.event.WorkingMemoryEventListener;
 
 public class TestWorkingMemoryEventListener
     implements

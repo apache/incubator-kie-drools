@@ -18,8 +18,8 @@ package org.drools.core.common;
 
 import java.util.List;
 
-import org.drools.event.AgendaEventSupport;
-import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.core.event.AgendaEventSupport;
+import org.drools.core.event.WorkingMemoryEventSupport;
 
 public interface EventSupport {
 

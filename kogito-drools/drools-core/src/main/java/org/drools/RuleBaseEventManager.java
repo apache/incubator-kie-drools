@@ -18,7 +18,7 @@ package org.drools;
 
 import java.util.List;
 
-import org.drools.event.RuleBaseEventListener;
+import org.drools.core.event.RuleBaseEventListener;
 
 /**
  * The RuleBaseEventManager class is implemented by classes wishing to add,remove and get the various RuleBase EventListeners.

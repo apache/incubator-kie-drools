@@ -18,8 +18,8 @@ package org.drools;
 
 import java.util.List;
 
-import org.drools.event.AgendaEventListener;
-import org.drools.event.WorkingMemoryEventListener;
+import org.drools.core.event.AgendaEventListener;
+import org.drools.core.event.WorkingMemoryEventListener;
 
 /**
  * The EventManager class is implemented by classes wishing to add,remove and get the various Drools EventListeners.
