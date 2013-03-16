@@ -64,9 +64,9 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.MapBackedClassLoader;
-import org.drools.rule.Package;
-import org.drools.rule.Rule;
+import org.drools.core.rule.MapBackedClassLoader;
+import org.drools.core.rule.Package;
+import org.drools.core.rule.Rule;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.GlobalResolver;
@@ -2649,7 +2649,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     public void testScheduledActivation() {
         KnowledgeBaseImpl knowledgeBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgePackageImp impl = new KnowledgePackageImp();
-        impl.pkg = new org.drools.rule.Package( "test" );
+        impl.pkg = new org.drools.core.rule.Package( "test" );
 
         BuildContext buildContext = new BuildContext( (InternalRuleBase) knowledgeBase.getRuleBase(), ((ReteooRuleBase) knowledgeBase.getRuleBase())
                 .getReteooBuilder().getIdGenerator() );

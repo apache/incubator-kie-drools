@@ -38,7 +38,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
-import org.drools.rule.SlidingTimeWindow.BehaviorExpireWMAction;
+import org.drools.core.rule.SlidingTimeWindow.BehaviorExpireWMAction;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategy.Context;
 

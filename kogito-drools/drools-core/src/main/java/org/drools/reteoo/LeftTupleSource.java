@@ -22,7 +22,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Pattern;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;

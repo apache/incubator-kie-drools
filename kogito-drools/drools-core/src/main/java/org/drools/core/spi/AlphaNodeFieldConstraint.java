@@ -18,7 +18,7 @@ package org.drools.core.spi;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.rule.ContextEntry;
+import org.drools.core.rule.ContextEntry;
 
 public interface AlphaNodeFieldConstraint
     extends

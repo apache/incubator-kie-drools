@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.rule.Namespaceable;
+import org.drools.core.rule.Namespaceable;
 import org.kie.definition.KnowledgeDescr;
 import org.kie.io.Resource;
 

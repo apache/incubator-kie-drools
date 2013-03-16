@@ -38,13 +38,13 @@ import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.rule.GroupElement;
-import org.drools.rule.Package;
-import org.drools.rule.Pattern;
-import org.drools.rule.Rule;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.Package;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.Rule;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleBuilder;
-import org.drools.rule.constraint.MvelConstraint;
+import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.time.TimeUtils;
 import org.drools.time.impl.IntervalTimer;
 import org.drools.core.type.DateFormatsImpl;
@@ -56,7 +56,7 @@ import antlr.collections.List;
 public class RuleBuilderTest {
 
     /**
-     * Test method for {@link org.drools.compiler.rule.builder.RuleBuilder#build(org.drools.rule.Package, org.drools.compiler.lang.descr.RuleDescr)}.
+     * Test method for {@link org.drools.compiler.rule.builder.RuleBuilder#build(org.drools.core.rule.Package, org.drools.compiler.lang.descr.RuleDescr)}.
      */
     @Test
     public void testBuild() throws Exception {

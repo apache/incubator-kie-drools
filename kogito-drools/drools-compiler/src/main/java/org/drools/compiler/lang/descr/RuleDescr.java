@@ -21,7 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.*;
 
-import org.drools.rule.Dialectable;
+import org.drools.core.rule.Dialectable;
 
 public class RuleDescr extends AnnotatedBaseDescr
     implements

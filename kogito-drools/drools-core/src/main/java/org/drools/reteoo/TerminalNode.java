@@ -17,9 +17,9 @@
 package org.drools.reteoo;
 
 import org.drools.core.common.NetworkNode;
-import org.drools.rule.Declaration;
-import org.drools.rule.GroupElement;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.Rule;
 
 /**
  * A markup interface for terminal nodes

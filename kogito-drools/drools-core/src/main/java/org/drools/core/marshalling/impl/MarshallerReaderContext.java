@@ -30,7 +30,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.PBActivationsFilter;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.PropagationContext;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;

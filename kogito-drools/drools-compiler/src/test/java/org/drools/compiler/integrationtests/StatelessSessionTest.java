@@ -20,7 +20,7 @@ import org.drools.core.base.ReferenceOriginalGlobalExporter;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.drools.core.spi.GlobalResolver;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

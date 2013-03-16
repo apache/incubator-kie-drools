@@ -34,8 +34,8 @@ import static org.junit.Assert.*;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.rule.JavaDialectRuntimeData;
-import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
+import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
 
 public class ClassBuilderTest {
 

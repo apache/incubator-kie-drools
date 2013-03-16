@@ -20,8 +20,8 @@ import java.util.List;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.reteoo.LeftTupleSource;
-import org.drools.rule.From;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.From;
+import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 

@@ -19,9 +19,9 @@ package org.drools.facttemplates;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.rule.Declaration;
-import org.drools.rule.Package;
-import org.drools.rule.Pattern;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Package;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
 
 public class FactTemplateFieldExtractorTest {

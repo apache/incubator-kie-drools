@@ -39,7 +39,7 @@ import org.drools.core.event.WorkingMemoryEventListener;
 import org.drools.core.event.WorkingMemoryEventSupport;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.GlobalExporter;
 import org.drools.core.spi.GlobalResolver;

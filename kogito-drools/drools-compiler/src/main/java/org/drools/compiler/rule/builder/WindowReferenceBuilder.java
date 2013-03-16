@@ -2,9 +2,9 @@ package org.drools.compiler.rule.builder;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
-import org.drools.rule.Pattern;
-import org.drools.rule.RuleConditionElement;
-import org.drools.rule.WindowReference;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.rule.WindowReference;
 
 /**
  * A class capable of building window source references

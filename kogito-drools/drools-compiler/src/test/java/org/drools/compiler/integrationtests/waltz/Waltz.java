@@ -31,8 +31,8 @@ import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.rule.InvalidPatternException;
-import org.drools.rule.Package;
+import org.drools.core.rule.InvalidPatternException;
+import org.drools.core.rule.Package;
 
 import org.junit.Test;
 import org.kie.KieBase;

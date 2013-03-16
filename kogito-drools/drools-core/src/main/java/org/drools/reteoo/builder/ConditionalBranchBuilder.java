@@ -5,8 +5,8 @@ import org.drools.reteoo.ConditionalBranchEvaluator;
 import org.drools.reteoo.ConditionalBranchNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.rule.ConditionalBranch;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.ConditionalBranch;
+import org.drools.core.rule.RuleConditionElement;
 
 import static org.drools.reteoo.builder.NamedConsequenceBuilder.buildTerminalNodeForNamedConsequence;
 

@@ -6,9 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.junit.Test;
 
 public class CompilerPerfProfileTest {

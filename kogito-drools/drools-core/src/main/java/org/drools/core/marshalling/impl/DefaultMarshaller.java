@@ -33,7 +33,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
+import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 import org.drools.core.spi.GlobalResolver;
 import org.kie.KieBase;
 import org.kie.KnowledgeBaseFactory;

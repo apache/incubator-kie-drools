@@ -33,8 +33,8 @@ import java.io.Serializable;
 import static org.junit.Assert.*;
 
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.rule.GroupElement;
-import org.drools.rule.Package;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.Package;
 import org.junit.Test;
 
 public class DroolsObjectIOTest {

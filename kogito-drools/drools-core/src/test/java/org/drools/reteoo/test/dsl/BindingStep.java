@@ -23,8 +23,8 @@ import java.util.Map;
 import org.drools.core.base.ArrayElements;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.rule.Declaration;
-import org.drools.rule.Pattern;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
 
 public class BindingStep

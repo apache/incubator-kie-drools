@@ -18,7 +18,7 @@ package org.drools.time;
 
 import java.util.List;
 
-import org.drools.rule.Pattern;
+import org.drools.core.rule.Pattern;
 
 /**
  * A class to abstract the management of temporal

@@ -23,10 +23,10 @@ import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.rule.Package;
-import org.drools.rule.Query;
-import org.drools.rule.Rule;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.Package;
+import org.drools.core.rule.Query;
+import org.drools.core.rule.Rule;
+import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.DeclarationScopeResolver;
 
 /**

@@ -17,7 +17,7 @@
 package org.drools.core.spi;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 
 /**
  * Indicates an error during a <code>Consequence</code> invocation.

@@ -2,7 +2,7 @@ package org.drools.compiler.kproject;
 
 import org.drools.compiler.cdi.CDITestRunner;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.rule.JavaDialectRuntimeData;
+import org.drools.core.rule.JavaDialectRuntimeData;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Test;

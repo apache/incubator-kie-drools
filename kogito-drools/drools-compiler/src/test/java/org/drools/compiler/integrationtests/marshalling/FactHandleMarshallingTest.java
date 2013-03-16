@@ -32,7 +32,7 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.KnowledgeBase;

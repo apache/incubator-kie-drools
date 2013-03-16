@@ -23,7 +23,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.rule.TypeDeclaration;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.kie.runtime.rule.SessionEntryPoint;
 

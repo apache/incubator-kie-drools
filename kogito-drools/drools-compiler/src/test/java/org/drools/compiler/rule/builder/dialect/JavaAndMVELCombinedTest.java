@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 public class JavaAndMVELCombinedTest {
 

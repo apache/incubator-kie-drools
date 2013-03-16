@@ -24,7 +24,7 @@ import java.io.ObjectStreamClass;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 public class DroolsObjectInputStream extends ObjectInputStream
     implements

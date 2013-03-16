@@ -40,8 +40,8 @@ import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.reteoo.ReteooWorkingMemory.EvaluateResultConstraints;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Accumulate;
-import org.drools.rule.ContextEntry;
+import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 

@@ -14,7 +14,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.junit.Test;
 
 public class UnlinkingTest {

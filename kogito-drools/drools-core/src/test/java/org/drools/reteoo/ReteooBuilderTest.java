@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.core.base.SalienceInteger;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 import org.drools.WorkingMemory;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;

@@ -55,7 +55,7 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.TerminalNode;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;

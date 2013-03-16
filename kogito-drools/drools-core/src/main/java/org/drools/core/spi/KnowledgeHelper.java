@@ -22,11 +22,10 @@ import java.util.Map;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitableBean;
-import org.drools.rule.Declaration;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Rule;
 import org.kie.runtime.Channel;
 import org.kie.runtime.rule.RuleContext;
 import org.kie.runtime.rule.SessionEntryPoint;

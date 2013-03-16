@@ -3,8 +3,8 @@ package org.drools.compiler.rule.builder.util;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
-import org.drools.rule.QueryElement;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.QueryElement;
+import org.drools.core.rule.RuleConditionElement;
 
 public class PackageBuilderUtil {
 

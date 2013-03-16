@@ -29,7 +29,7 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.ContextEntry;
+import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 
 public class NotNode extends BetaNode {

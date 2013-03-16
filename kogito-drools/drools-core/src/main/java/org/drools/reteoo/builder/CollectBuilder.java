@@ -26,10 +26,10 @@ import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.rule.Accumulate;
-import org.drools.rule.Collect;
-import org.drools.rule.Pattern;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.Collect;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 

@@ -16,8 +16,8 @@
 
 package org.drools.reteoo;
 
-import org.drools.rule.EntryPoint;
-import org.drools.rule.TypeDeclaration;
+import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.TypeDeclaration;
 
 public interface ObjectTypeConf {
     public ObjectTypeNode[] getObjectTypeNodes();

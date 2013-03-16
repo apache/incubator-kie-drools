@@ -13,7 +13,7 @@ import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.core.event.RuleBaseEventListener;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.kie.definition.type.FactType;
 import org.kie.marshalling.Marshaller;
 import org.kie.runtime.Environment;

@@ -18,11 +18,11 @@ package org.drools.reteoo.builder;
 
 import java.util.Iterator;
 
-import org.drools.rule.Forall;
-import org.drools.rule.GroupElement;
-import org.drools.rule.GroupElementFactory;
-import org.drools.rule.Pattern;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.Forall;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.GroupElementFactory;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
 
 /**
  * The Reteoo component builder for forall CE

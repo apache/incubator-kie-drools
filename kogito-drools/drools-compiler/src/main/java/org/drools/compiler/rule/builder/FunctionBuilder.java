@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.drools.core.base.TypeResolver;
 import org.drools.compiler.lang.descr.FunctionDescr;
-import org.drools.rule.LineMappings;
-import org.drools.rule.Package;
+import org.drools.core.rule.LineMappings;
+import org.drools.core.rule.Package;
 import org.kie.builder.KnowledgeBuilderResult;
 
 public interface FunctionBuilder extends EngineElementBuilder {

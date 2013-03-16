@@ -32,9 +32,9 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.QueryRiaFixerNode;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.rule.GroupElement;
-import org.drools.rule.GroupElement.Type;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.GroupElement.Type;
+import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 
 public class GroupElementBuilder

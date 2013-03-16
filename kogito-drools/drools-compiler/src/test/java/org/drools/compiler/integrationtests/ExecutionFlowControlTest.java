@@ -33,7 +33,7 @@ import org.drools.core.event.ActivationCancelledEvent;
 import org.drools.core.event.ActivationCreatedEvent;
 import org.drools.core.event.AgendaEventListener;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ActivationGroup;
 import org.drools.core.spi.AgendaGroup;

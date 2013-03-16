@@ -11,8 +11,8 @@ import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.SegmentMemory;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.Rule;
+import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.Rule;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -212,7 +212,7 @@ public class SegmentPropagationTest {
                                                       rbase.getReteooBuilder().getIdGenerator() );
     
         Rule rule = new Rule( "rule1", "org.pkg1", null );
-        org.drools.rule.Package pkg = new org.drools.rule.Package( "org.pkg1" );
+        org.drools.core.rule.Package pkg = new org.drools.core.rule.Package( "org.pkg1" );
         pkg.getDialectRuntimeRegistry().setDialectData( "mvel", new MVELDialectRuntimeData() );
         pkg.addRule( rule );
         buildContext.setRule( rule );

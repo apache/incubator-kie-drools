@@ -20,7 +20,7 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;

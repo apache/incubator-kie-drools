@@ -21,7 +21,7 @@ import java.io.Serializable;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.rule.VariableRestriction.VariableContextEntry;
+import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.time.Interval;
 import org.kie.runtime.rule.Operator;
 

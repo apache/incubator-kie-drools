@@ -9,7 +9,7 @@ import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.io.impl.BaseResource;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.CompositeKnowledgeBuilder;

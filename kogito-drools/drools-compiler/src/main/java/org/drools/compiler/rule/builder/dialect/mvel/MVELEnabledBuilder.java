@@ -11,8 +11,8 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
-import org.drools.rule.Declaration;
-import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.compiler.rule.builder.EnabledBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.spi.KnowledgeHelper;
@@ -31,7 +31,7 @@ public class MVELEnabledBuilder
 
             Map<String, Class< ? >> otherVars = new HashMap<String, Class< ? >>();
             otherVars.put( "rule",
-                           org.drools.rule.Rule.class );
+                           org.drools.core.rule.Rule.class );
 
             Map<String, Declaration> declrs = context.getDeclarationResolver().getDeclarations( context.getRule() );
 

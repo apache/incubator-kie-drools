@@ -61,7 +61,7 @@ import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.command.runtime.rule.UpdateCommand;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.kie.KnowledgeBase;
 import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;

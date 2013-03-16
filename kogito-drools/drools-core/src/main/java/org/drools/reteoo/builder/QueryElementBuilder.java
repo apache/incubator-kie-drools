@@ -17,9 +17,8 @@
 package org.drools.reteoo.builder;
 
 import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.ReteooComponentFactory;
-import org.drools.rule.QueryElement;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.QueryElement;
+import org.drools.core.rule.RuleConditionElement;
 
 
 public class QueryElementBuilder

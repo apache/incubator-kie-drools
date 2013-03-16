@@ -19,7 +19,7 @@ package org.drools.core.spi;
 import java.io.Serializable;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 
 /**
  * Partial matches are propagated through the Rete network as <code>Tuple</code>s. Each <code>Tuple</code>

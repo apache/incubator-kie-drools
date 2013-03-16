@@ -34,8 +34,8 @@ import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.jsr94.rules.Constants;
 import org.drools.jsr94.rules.Jsr94FactHandleFactory;
-import org.drools.rule.Package;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Package;
+import org.drools.core.rule.Rule;
 
 /**
  * The Drools implementation of the <code>RuleExecutionSet</code> interface

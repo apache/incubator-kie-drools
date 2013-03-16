@@ -29,9 +29,9 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.FieldFactory;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.MvelConstraintTestUtil;
-import org.drools.rule.Query;
-import org.drools.rule.constraint.MvelConstraint;
+import org.drools.core.rule.MvelConstraintTestUtil;
+import org.drools.core.rule.Query;
+import org.drools.core.rule.constraint.MvelConstraint;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -134,7 +134,7 @@ public class QueryTerminalNodeTest {
 
         queryNode.attach(buildContext);
 
-        final org.drools.rule.Package pkg = new org.drools.rule.Package( "com.drools.test" );
+        final org.drools.core.rule.Package pkg = new org.drools.core.rule.Package( "com.drools.test" );
         pkg.addRule( query );
 
         try {

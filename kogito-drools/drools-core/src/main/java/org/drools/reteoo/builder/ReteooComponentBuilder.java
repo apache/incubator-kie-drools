@@ -16,7 +16,7 @@
 
 package org.drools.reteoo.builder;
 
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.RuleConditionElement;
 
 /**
  * An interface for Reteoo Component builders

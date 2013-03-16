@@ -19,7 +19,7 @@ import org.drools.core.event.AgendaGroupPushedEvent;
 import org.drools.core.event.BeforeActivationFiredEvent;
 import org.drools.core.event.RuleFlowGroupActivatedEvent;
 import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.Consequence;

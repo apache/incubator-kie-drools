@@ -16,11 +16,8 @@ import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.compiler.rule.builder.dialect.java.JavaAccumulateBuilder;
-import org.drools.compiler.rule.builder.dialect.java.JavaAnalysisResult;
-import org.drools.compiler.rule.builder.dialect.java.JavaExprAnalyzer;
-import org.drools.rule.Accumulate;
-import org.drools.rule.Package;
+import org.drools.core.rule.Accumulate;
+import org.drools.core.rule.Package;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +45,7 @@ public class JavaAccumulateBuilderTest {
         accumDescr.setActionCode( "x += $price;" );
         accumDescr.setResultCode( "new Integer( x )" );
         
-        //org.drools.rule.Package pkg = new org.kie.rule.Package( "org.kie" );
+        //org.drools.core.rule.Package pkg = new org.kie.rule.Package( "org.kie" );
         final PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackage( new PackageDescr( "org.drools" ) );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();

@@ -10,7 +10,7 @@ import org.drools.core.base.mvel.MVELConsequence;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.mvel2.compiler.CompiledExpression;
 
 public class MVELDebugTest {

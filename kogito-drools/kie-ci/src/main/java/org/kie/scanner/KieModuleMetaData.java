@@ -1,6 +1,6 @@
 package org.kie.scanner;
 
-import org.drools.rule.TypeMetaInfo;
+import org.drools.core.rule.TypeMetaInfo;
 import org.kie.builder.KieModule;
 import org.kie.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;

@@ -13,7 +13,7 @@ import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
-import org.drools.rule.constraint.QueryNameConstraint;
+import org.drools.core.rule.constraint.QueryNameConstraint;
 
 public class SegmentUtilities {
 

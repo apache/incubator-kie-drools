@@ -16,7 +16,7 @@
 
 package org.drools;
 
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 /**
  * Indicates an error integrating a <code>Package</code> into a

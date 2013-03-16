@@ -25,10 +25,10 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.ExistsDescr;
 import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.OrDescr;
-import org.drools.rule.GroupElement;
-import org.drools.rule.GroupElementFactory;
-import org.drools.rule.Pattern;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.GroupElementFactory;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
 
 public class GroupElementBuilder
     implements

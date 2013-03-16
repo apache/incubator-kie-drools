@@ -2,8 +2,8 @@ package org.drools.compiler.rule.builder;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
-import org.drools.rule.NamedConsequence;
-import org.drools.rule.Pattern;
+import org.drools.core.rule.NamedConsequence;
+import org.drools.core.rule.Pattern;
 
 public class NamedConsequenceBuilder implements RuleConditionBuilder {
 

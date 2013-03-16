@@ -1,9 +1,7 @@
 package org.drools.compiler.rule.builder.dialect.asm;
 
-import org.drools.compiler.rule.builder.dialect.asm.InvokerContext;
-import org.drools.compiler.rule.builder.dialect.asm.InvokerGenerator;
-import org.drools.rule.builder.dialect.asm.ClassGenerator;
-import org.drools.rule.builder.dialect.asm.InvokerStub;
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
+import org.drools.core.rule.builder.dialect.asm.InvokerStub;
 import org.junit.*;
 
 import java.util.*;

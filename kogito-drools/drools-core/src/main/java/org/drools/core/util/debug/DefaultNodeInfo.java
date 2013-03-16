@@ -31,7 +31,7 @@ import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSink;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.Rete;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 
 public class DefaultNodeInfo
     implements

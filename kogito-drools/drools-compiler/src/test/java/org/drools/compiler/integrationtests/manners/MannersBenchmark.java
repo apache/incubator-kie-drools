@@ -5,7 +5,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 import java.io.*;
 import java.util.*;

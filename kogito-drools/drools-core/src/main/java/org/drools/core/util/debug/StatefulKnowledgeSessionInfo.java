@@ -27,8 +27,8 @@ import java.util.TreeMap;
 import org.drools.core.common.NetworkNode;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.rule.Package;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Package;
+import org.drools.core.rule.Rule;
 
 public class StatefulKnowledgeSessionInfo {
     private ReteooWorkingMemoryInterface      session;

@@ -5,10 +5,10 @@ import org.drools.core.base.TypeResolver;
 import org.drools.core.util.ClassUtils;
 import org.drools.factmodel.traits.TraitRegistry;
 import org.drools.compiler.lang.descr.ImportDescr;
-import org.drools.rule.DialectRuntimeRegistry;
-import org.drools.rule.ImportDeclaration;
-import org.drools.rule.Package;
-import org.drools.rule.Rule;
+import org.drools.core.rule.DialectRuntimeRegistry;
+import org.drools.core.rule.ImportDeclaration;
+import org.drools.core.rule.Package;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.Consequence;
 import org.kie.io.Resource;
 

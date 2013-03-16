@@ -30,11 +30,11 @@ import org.drools.compiler.lang.descr.MVELExprDescr;
 import org.drools.compiler.rule.builder.FromBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
-import org.drools.rule.Declaration;
-import org.drools.rule.From;
-import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.Pattern;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.From;
+import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.spi.KnowledgeHelper;
 

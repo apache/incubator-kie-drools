@@ -20,8 +20,8 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.reteoo.EntryPointNode;
-import org.drools.rule.EntryPoint;
-import org.drools.rule.Rule;
+import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.Rule;
 
 
 import org.drools.core.spi.Activation;

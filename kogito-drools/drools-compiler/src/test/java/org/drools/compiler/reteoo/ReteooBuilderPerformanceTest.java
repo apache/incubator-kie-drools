@@ -13,8 +13,8 @@ import static org.junit.Assert.*;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.compiler.integrationtests.LargeRuleBase;
-import org.drools.rule.Package;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Package;
+import org.drools.core.rule.Rule;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 20, 2008 Time: 2:36:47 PM To change this template use File |

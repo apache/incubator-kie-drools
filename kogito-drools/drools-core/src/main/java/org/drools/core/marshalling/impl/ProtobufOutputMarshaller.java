@@ -64,7 +64,7 @@ import org.drools.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.reteoo.RightTuple;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.time.JobContext;

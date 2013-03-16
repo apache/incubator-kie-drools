@@ -32,7 +32,7 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.factmodel.ClassBuilderFactory;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.xml.ChangeSetSemanticModule;
 import org.drools.xml.DefaultSemanticModule;

@@ -1,6 +1,6 @@
 package org.drools.compiler.lang.descr;
 
-import org.drools.rule.Dialectable;
+import org.drools.core.rule.Dialectable;
 import org.kie.io.Resource;
 
 public class ProcessDescr extends BaseDescr

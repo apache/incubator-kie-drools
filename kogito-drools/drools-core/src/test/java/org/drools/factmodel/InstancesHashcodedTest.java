@@ -21,8 +21,8 @@ import java.util.Date;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.rule.JavaDialectRuntimeData;
-import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
+import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
 
 import org.junit.Test;
 import org.kie.internal.utils.ClassLoaderUtil;

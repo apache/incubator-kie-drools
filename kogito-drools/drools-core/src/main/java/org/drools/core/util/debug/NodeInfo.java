@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 
 public interface NodeInfo {
 

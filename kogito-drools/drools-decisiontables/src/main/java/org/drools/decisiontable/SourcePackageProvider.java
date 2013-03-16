@@ -8,7 +8,7 @@ import java.io.StringReader;
 import org.drools.RuntimeDroolsException;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 /**
  * This is used by the agent when a source file is encountered.

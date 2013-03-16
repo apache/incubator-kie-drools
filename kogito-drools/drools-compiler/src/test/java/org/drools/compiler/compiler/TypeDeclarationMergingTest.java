@@ -5,9 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.rule.TypeDeclaration;
-import org.drools.rule.TypeDeclaration.Format;
-import org.drools.rule.TypeDeclaration.Role;
+import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.rule.TypeDeclaration.Format;
+import org.drools.core.rule.TypeDeclaration.Role;
 import org.junit.Test;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;

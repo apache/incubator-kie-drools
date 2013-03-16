@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.drools.core.base.EvaluatorWrapper;
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 
 public class BoundIdentifiers {
     private Map<String, Declaration>      declarations;

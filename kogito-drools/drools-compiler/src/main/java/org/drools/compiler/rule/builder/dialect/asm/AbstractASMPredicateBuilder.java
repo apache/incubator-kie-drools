@@ -5,8 +5,8 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.compiler.rule.builder.PredicateBuilder;
 import org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper;
-import org.drools.rule.Declaration;
-import org.drools.rule.PredicateConstraint;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.PredicateConstraint;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 
 import java.util.Map;

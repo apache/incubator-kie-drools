@@ -17,8 +17,8 @@
 package org.drools.compiler.rule.builder;
 
 import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.rule.Pattern;
-import org.drools.rule.RuleConditionElement;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
 
 /**
  * An interface to define classes capable of building

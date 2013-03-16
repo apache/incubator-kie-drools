@@ -1,6 +1,6 @@
 package org.drools.compiler.rule.builder.dialect.asm;
 
-import org.drools.rule.builder.dialect.asm.InvokerDataProvider;
+import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
 
 import java.util.Map;
 

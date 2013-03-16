@@ -21,7 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 public class FactTemplateImpl
     implements

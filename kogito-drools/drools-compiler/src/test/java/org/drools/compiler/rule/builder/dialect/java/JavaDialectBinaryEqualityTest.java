@@ -12,10 +12,10 @@ import java.util.List;
 
 import org.drools.compiler.Person;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
-import org.drools.rule.EvalCondition;
-import org.drools.rule.Pattern;
-import org.drools.rule.PredicateConstraint;
-import org.drools.rule.Rule;
+import org.drools.core.rule.EvalCondition;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.PredicateConstraint;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.PredicateExpression;

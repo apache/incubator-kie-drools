@@ -6,7 +6,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.TypeDeclaration;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 
 import java.util.List;

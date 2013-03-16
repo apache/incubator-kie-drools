@@ -20,7 +20,7 @@ import java.util.Stack;
 
 import org.drools.core.common.NetworkNode;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 
 public class RuleTerminalNodeVisitor extends AbstractNetworkNodeVisitor {
     

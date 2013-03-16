@@ -91,7 +91,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.reteoo.LeftTuple;
-import org.drools.rule.MapBackedClassLoader;
+import org.drools.core.rule.MapBackedClassLoader;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.runtime.rule.impl.AgendaImpl;
@@ -8011,7 +8011,7 @@ public class MiscTest extends CommonTestMethodBase {
         int[] magicFoos = new int[]{3, 3, 1, 1, 0, 0, 2, 2, 1, 1, 0, 0, 3, 3, 2, 2, 3, 1, 1};
         int[] magicBars = new int[]{1, 2, 0, 1, 1, 0, 1, 2, 2, 1, 2, 0, 0, 2, 0, 2, 0, 0, 1};
 
-        //upon final rule firing an NPE will be thrown in org.drools.rule.Accumulate
+        //upon final rule firing an NPE will be thrown in org.drools.core.rule.Accumulate
         for ( int i = 0; i < magicFoos.length; i++ ) {
             Foo tehFoo = fooList[magicFoos[i]];
             org.kie.runtime.rule.FactHandle fooFactHandle = ksession.getFactHandle( tehFoo );

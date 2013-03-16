@@ -17,7 +17,7 @@ import org.drools.core.phreak.RuleNetworkEvaluator.PhreakNotNode;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 import org.kie.KieBaseConfiguration;

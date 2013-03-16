@@ -38,7 +38,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListe
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.kie.agent.KnowledgeAgent;

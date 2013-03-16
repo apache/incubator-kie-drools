@@ -28,7 +28,7 @@ import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.slf4j.Logger;

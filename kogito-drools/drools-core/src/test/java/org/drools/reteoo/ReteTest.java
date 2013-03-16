@@ -36,7 +36,7 @@ import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.EntryPoint;
+import org.drools.core.rule.EntryPoint;
 import org.drools.FactHandle;
 import org.drools.core.spi.PropagationContext;
 

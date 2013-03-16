@@ -25,8 +25,8 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.WindowTupleList;
-import org.drools.rule.EntryPoint;
-import org.drools.rule.Rule;
+import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.Rule;
 
 public interface PropagationContext
     extends

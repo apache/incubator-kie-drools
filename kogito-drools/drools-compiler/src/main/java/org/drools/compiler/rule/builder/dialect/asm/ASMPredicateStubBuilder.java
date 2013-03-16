@@ -1,12 +1,12 @@
 package org.drools.compiler.rule.builder.dialect.asm;
 
 import org.drools.WorkingMemory;
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.rule.builder.dialect.asm.ClassGenerator;
-import org.drools.rule.builder.dialect.asm.InvokerDataProvider;
-import org.drools.rule.builder.dialect.asm.PredicateGenerator;
-import org.drools.rule.builder.dialect.asm.PredicateStub;
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
+import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
+import org.drools.core.rule.builder.dialect.asm.PredicateGenerator;
+import org.drools.core.rule.builder.dialect.asm.PredicateStub;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.PredicateExpression;
 import org.drools.core.spi.Tuple;

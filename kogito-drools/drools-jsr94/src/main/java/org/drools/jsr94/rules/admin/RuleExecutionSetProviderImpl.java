@@ -36,7 +36,7 @@ import javax.xml.transform.sax.SAXResult;
 
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 import org.drools.xml.SemanticModules;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.w3c.dom.Element;

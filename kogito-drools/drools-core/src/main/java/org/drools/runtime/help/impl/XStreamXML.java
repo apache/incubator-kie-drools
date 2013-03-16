@@ -42,7 +42,7 @@ import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.rule.Declaration;
+import org.drools.core.rule.Declaration;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.runtime.rule.impl.NativeQueryResults;

@@ -34,7 +34,7 @@ import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.jsr94.rules.Constants;
-import org.drools.rule.Package;
+import org.drools.core.rule.Package;
 
 /**
  * The Drools implementation of the <code>LocalRuleExecutionSetProvider</code>

@@ -24,7 +24,7 @@ import org.drools.core.common.Memory;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.ContextEntry;
+import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 
 public class JoinNode extends BetaNode {

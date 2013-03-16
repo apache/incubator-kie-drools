@@ -1,7 +1,7 @@
 package org.drools.compiler.compiler;
 
 import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 
 public class RuleBuildError extends DescrBuildError {
     private final Rule rule;

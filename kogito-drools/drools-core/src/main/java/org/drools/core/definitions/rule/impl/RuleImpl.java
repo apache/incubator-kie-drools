@@ -16,7 +16,7 @@
 
 package org.drools.core.definitions.rule.impl;
 
-import org.drools.rule.Rule;
+import org.drools.core.rule.Rule;
 import org.kie.definition.rule.Query;
 
 import java.util.Collection;
