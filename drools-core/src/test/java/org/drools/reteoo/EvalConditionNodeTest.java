@@ -16,8 +16,8 @@
 
 package org.drools.reteoo;
 
-import org.drools.FactException;
-import org.drools.RuleBaseFactory;
+import org.drools.core.FactException;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.test.model.DroolsTestCase;

@@ -16,7 +16,7 @@
 
 package org.drools.core.base.mvel;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;

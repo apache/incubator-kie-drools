@@ -16,7 +16,7 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.common.AgendaItem;

@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.management.ObjectName;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.event.ActivationCancelledEvent;

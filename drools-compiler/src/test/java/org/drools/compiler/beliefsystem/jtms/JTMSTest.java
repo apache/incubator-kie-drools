@@ -8,9 +8,9 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.BeliefSystemType;
+import org.drools.core.BeliefSystemType;
 import org.drools.compiler.Person;
-import org.drools.SessionConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSet;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.common.EqualityKey;

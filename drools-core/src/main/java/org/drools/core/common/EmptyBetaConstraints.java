@@ -21,7 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.BetaMemory;
@@ -101,7 +101,7 @@ public class EmptyBetaConstraints
         return true;
     }
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration config, 
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
                                        final short nodeType) {
         final BetaMemory memory = new BetaMemory( config.isSequential() ? null : new LeftTupleList(),
                                                   new RightTupleList(),

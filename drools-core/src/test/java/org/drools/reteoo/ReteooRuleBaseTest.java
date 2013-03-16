@@ -16,12 +16,12 @@
 
 package org.drools.reteoo;
 
-import org.drools.RuleBaseFactory;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.StatefulSession;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.test.model.DroolsTestCase;
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
     ReteooRuleBase ruleBase;
 
     StatefulSession  wm1;
-    StatefulSession  wm2;
+    StatefulSession wm2;
     StatefulSession  wm3;
     StatefulSession  wm4;
 

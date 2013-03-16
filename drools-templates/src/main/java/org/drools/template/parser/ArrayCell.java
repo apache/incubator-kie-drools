@@ -20,7 +20,7 @@
  */
 package org.drools.template.parser;
 
-import org.drools.StatefulSession;
+import org.drools.core.StatefulSession;
 import org.drools.core.util.StringUtils;
 
 import java.util.Map;

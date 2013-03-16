@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.drools.core.QueryResult;
 import org.drools.core.rule.Declaration;
 import org.drools.core.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
@@ -71,7 +72,7 @@ public class FlatQueryResults
         this.factHandles = factHandles;
     }
     
-    public FlatQueryResults(org.drools.QueryResults results) {        
+    public FlatQueryResults(org.drools.core.QueryResults results) {
         Declaration[] parameters = results.getParameters();
         
         Set<String> set  = new HashSet<String>();
@@ -111,7 +112,7 @@ public class FlatQueryResults
         }
         
         
-        for ( org.drools.QueryResult result : results ) {
+        for ( QueryResult result : results ) {
             ArrayList<Object> row = new ArrayList<Object>();
             ArrayList<FactHandle> rowHandle = new ArrayList<FactHandle>();
 

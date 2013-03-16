@@ -6,7 +6,7 @@ import static org.drools.reteoo.test.ReteDslTestEngine.WORKING_MEMORY;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.builder.BuildContext;

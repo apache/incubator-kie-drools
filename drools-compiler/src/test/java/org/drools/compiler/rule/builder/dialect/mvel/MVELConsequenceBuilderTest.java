@@ -1,9 +1,9 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
 import org.drools.compiler.Cheese;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.base.mvel.MVELConsequence;

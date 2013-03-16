@@ -24,8 +24,8 @@ import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.StatefulSession;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;

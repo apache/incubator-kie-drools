@@ -14,8 +14,8 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
+import org.drools.core.RuleBase;
+import org.drools.core.StatefulSession;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.junit.Before;

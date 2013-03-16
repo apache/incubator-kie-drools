@@ -16,7 +16,7 @@
 
 package org.drools.core.command;
 
-import org.drools.WorkingMemoryEntryPoint;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.runtime.impl.ExecutionResultImpl;

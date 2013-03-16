@@ -25,7 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.Map.Entry;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.RuleFlowGroupImpl.DeactivateCallback;

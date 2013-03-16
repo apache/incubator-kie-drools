@@ -27,6 +27,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
@@ -95,7 +96,7 @@ public class AgendaEventSupportTest {
 
         rule.setConsequence( new Consequence() {
             public void evaluate(final KnowledgeHelper knowledgeHelper,
-                                 final org.drools.WorkingMemory workingMemory) throws Exception {
+                                 final WorkingMemory workingMemory) throws Exception {
             }
 
             public void readExternal(ObjectInput in) throws IOException,

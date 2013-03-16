@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateObjectType;

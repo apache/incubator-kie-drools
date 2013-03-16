@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.ConsequenceExceptionHandler;

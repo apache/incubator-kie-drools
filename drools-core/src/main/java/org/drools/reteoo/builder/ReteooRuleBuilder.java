@@ -16,8 +16,7 @@
 
 package org.drools.reteoo.builder;
 
-import org.drools.ActivationListenerFactory;
-import org.drools.RuleIntegrationException;
+import org.drools.core.ActivationListenerFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.BaseNode;
@@ -94,7 +93,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
      *            
      * @return a List<BaseNode> of terminal nodes for the rule             
      * 
-     * @throws RuleIntegrationException
+     * @throws org.drools.core.RuleIntegrationException
      *             if an error prevents complete construction of the network for
      *             the <code>Rule</code>.
      * @throws InvalidPatternException

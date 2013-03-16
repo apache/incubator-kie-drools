@@ -3,9 +3,9 @@ package org.drools.compiler.compiler;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.drools.CheckedDroolsException;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
+import org.drools.core.CheckedDroolsException;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.rule.Package;
 
 /**

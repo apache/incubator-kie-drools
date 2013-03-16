@@ -19,10 +19,10 @@ package org.drools.core.common;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
-import org.drools.FactException;
-import org.drools.FactHandle;
-import org.drools.SessionConfiguration;
-import org.drools.WorkingMemory;
+import org.drools.core.FactException;
+import org.drools.core.FactHandle;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.WorkingMemory;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.EntryPointNode;
@@ -42,7 +42,7 @@ import org.kie.runtime.rule.SessionEntryPoint;
 
 public interface InternalWorkingMemory
     extends
-    WorkingMemory {
+        WorkingMemory {
     public int getId();
     
     public void setId(int id);

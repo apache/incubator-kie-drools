@@ -16,7 +16,7 @@
 
 package org.drools.core.event.rule.impl;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.kie.event.rule.ObjectDeletedEvent;
 

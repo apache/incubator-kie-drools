@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.AccessorKey.AccessorType;
 import org.drools.core.base.extractors.MVELDateClassFieldReader;
 import org.drools.core.base.extractors.MVELNumberClassFieldReader;

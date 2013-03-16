@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.util.asm.BeanInherit;
 import org.drools.core.util.asm.InterfaceChild;
 import org.drools.core.util.asm.TestAbstract;

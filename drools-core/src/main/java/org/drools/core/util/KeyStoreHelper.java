@@ -14,8 +14,8 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.util.Properties;
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuntimeDroolsException;
 
 /**
  * A helper class to deal with the key store and signing process during 

@@ -18,7 +18,7 @@ package org.drools.core.event;
 
 import java.util.EventObject;
 
-import org.drools.RuleBase;
+import org.drools.core.RuleBase;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
 

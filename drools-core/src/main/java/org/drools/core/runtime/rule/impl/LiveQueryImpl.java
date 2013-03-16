@@ -16,7 +16,7 @@
 
 package org.drools.core.runtime.rule.impl;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.kie.runtime.rule.LiveQuery;

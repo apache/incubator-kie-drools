@@ -33,7 +33,7 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.Rule;
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 

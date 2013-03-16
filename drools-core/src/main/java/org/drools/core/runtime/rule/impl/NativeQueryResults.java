@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.QueryResult;
 import org.drools.core.rule.Declaration;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.QueryResultsRow;
@@ -31,18 +32,18 @@ public class NativeQueryResults
     implements
     QueryResults {
     
-    private org.drools.QueryResults results;
+    private org.drools.core.QueryResults results;
     
     private String[] identifiers;
     
     public NativeQueryResults() {
     }
 
-    public NativeQueryResults(org.drools.QueryResults results) {
+    public NativeQueryResults(org.drools.core.QueryResults results) {
         this.results = results;
     }
 
-    public org.drools.QueryResults getResults() {
+    public org.drools.core.QueryResults getResults() {
         return results;
     }
 
@@ -95,9 +96,9 @@ public class NativeQueryResults
     private class QueryResultsIterator
         implements
         Iterator<QueryResultsRow> {
-        private Iterator<org.drools.QueryResult> iterator;
+        private Iterator<QueryResult> iterator;
 
-        public QueryResultsIterator(final Iterator<org.drools.QueryResult> iterator) {
+        public QueryResultsIterator(final Iterator<QueryResult> iterator) {
             this.iterator = iterator;
         }
 

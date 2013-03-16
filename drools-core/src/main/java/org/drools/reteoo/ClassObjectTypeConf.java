@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.drools.FactException;
+import org.drools.core.FactException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.ShadowProxy;

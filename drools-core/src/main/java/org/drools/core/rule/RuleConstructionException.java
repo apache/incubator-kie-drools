@@ -16,7 +16,7 @@
 
 package org.drools.core.rule;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 
 /**
  * Base exception for errors during <code>Rule</code> construction.

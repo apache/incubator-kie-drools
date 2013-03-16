@@ -1,6 +1,6 @@
 package org.drools.compiler.rule.builder.dialect.java;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.TypeResolver;
 import org.drools.compiler.compiler.FunctionError;
 import org.drools.compiler.rule.builder.FunctionBuilder;

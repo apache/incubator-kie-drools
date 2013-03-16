@@ -16,7 +16,7 @@
 
 package org.drools.core.base.evaluators;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.EventFactHandle;

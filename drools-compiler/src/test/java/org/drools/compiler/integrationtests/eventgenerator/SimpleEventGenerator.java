@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
+import org.drools.core.FactHandle;
+import org.drools.core.WorkingMemory;
 
 
 

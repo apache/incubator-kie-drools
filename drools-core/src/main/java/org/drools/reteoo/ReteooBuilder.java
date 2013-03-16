@@ -16,7 +16,6 @@
 
 package org.drools.reteoo;
 
-import org.drools.RuleIntegrationException;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DroolsObjectInputStream;
@@ -103,7 +102,7 @@ public class ReteooBuilder
      * @param rule
      *            The rule to add.
      *
-     * @throws RuleIntegrationException
+     * @throws org.drools.core.RuleIntegrationException
      *             if an error prevents complete construction of the network for
      *             the <code>Rule</code>.
      * @throws InvalidPatternException

@@ -18,7 +18,7 @@ package org.drools.core.spi;
 
 import java.io.Externalizable;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 
 /**
  * Used to provide a strategy for the StatelessSession global exportation, so that StatelessSessionResult can have accesso to

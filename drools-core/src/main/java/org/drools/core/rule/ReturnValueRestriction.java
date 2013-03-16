@@ -24,8 +24,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.WorkingMemory;
+import org.drools.core.RuntimeDroolsException;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;

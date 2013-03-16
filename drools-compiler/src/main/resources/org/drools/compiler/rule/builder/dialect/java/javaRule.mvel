@@ -42,7 +42,7 @@ public static class @{className} implements java.io.Serializable {
         @{initCode}
     }
     
-    public void accumulate(org.drools.WorkingMemory workingMemory,
+    public void accumulate(org.drools.core.WorkingMemory workingMemory,
                            org.drools.common.InternalFactHandle handle,
                            org.drools.core.rule.Declaration[] innerDeclarations,
                            Object object @if{declarations != empty}, @end{}
@@ -60,7 +60,7 @@ public static class @{className} implements java.io.Serializable {
         @{actionCode}
     }
     
-    public void reverse(org.drools.WorkingMemory workingMemory,
+    public void reverse(org.drools.core.WorkingMemory workingMemory,
                            org.drools.common.InternalFactHandle handle,
                            Object object@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
@@ -100,7 +100,7 @@ public static class @{className} implements java.io.Serializable {
 @end{}
 
 @declare{"consequenceMethod"}
-public static void @{methodName}(KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.drools.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws Exception { org.kie.runtime.rule.RuleContext kcontext = drools;
+public static void @{methodName}(KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.drools.core.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws Exception { org.kie.runtime.rule.RuleContext kcontext = drools;
     @{text}
 }
 @end{}

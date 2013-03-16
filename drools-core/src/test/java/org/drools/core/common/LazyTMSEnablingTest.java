@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBaseFactory;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.EntryPoint;

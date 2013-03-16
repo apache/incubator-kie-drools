@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.InitialFact;
+import org.drools.core.InitialFact;
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;

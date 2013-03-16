@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.SessionConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;

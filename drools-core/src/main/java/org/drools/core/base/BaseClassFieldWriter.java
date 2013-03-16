@@ -22,7 +22,7 @@ import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.core.spi.WriteAccessor;
 

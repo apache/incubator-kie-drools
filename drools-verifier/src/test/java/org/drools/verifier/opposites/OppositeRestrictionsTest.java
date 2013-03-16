@@ -16,8 +16,8 @@
 
 package org.drools.verifier.opposites;
 
-import org.drools.StatelessSession;
-import org.drools.StatelessSessionResult;
+import org.drools.core.StatelessSession;
+import org.drools.core.StatelessSessionResult;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.core.base.evaluators.Operator;
 import org.drools.verifier.TestBaseOld;

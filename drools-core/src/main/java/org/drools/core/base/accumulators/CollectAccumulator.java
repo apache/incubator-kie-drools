@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;

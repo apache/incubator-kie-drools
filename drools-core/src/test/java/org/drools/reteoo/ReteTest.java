@@ -23,9 +23,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-import org.drools.FactException;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
+import org.drools.core.FactException;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ShadowProxy;
 import org.drools.core.common.DefaultFactHandle;
@@ -37,7 +37,7 @@ import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPoint;
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.spi.PropagationContext;
 
 import org.junit.Before;
@@ -96,7 +96,7 @@ public class ReteTest extends DroolsTestCase {
     /**
      * Tests that interfaces and parent classes for an asserted  class are  cached, for  quick future iterations
      * 
-     * @throws FactException
+     * @throws org.drools.core.FactException
      */
     @Test
     public void testCache() throws FactException {

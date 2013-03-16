@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
-import org.drools.RuleBase;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
+import org.drools.core.RuleBase;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.StatefulSession;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.drools.reteoo.ReteooStatefulSession;

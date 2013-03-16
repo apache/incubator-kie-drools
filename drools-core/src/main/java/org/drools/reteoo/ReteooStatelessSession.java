@@ -24,9 +24,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.SessionConfiguration;
-import org.drools.StatelessSession;
-import org.drools.StatelessSessionResult;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.StatelessSession;
+import org.drools.core.StatelessSessionResult;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
@@ -46,7 +46,7 @@ import org.drools.core.spi.GlobalResolver;
 
 public class ReteooStatelessSession
     implements
-    StatelessSession,
+        StatelessSession,
     InternalStatelessSession,
     Externalizable {
     //private WorkingMemory workingMemory;

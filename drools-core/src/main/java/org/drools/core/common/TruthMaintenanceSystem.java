@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.FactException;
+import org.drools.core.FactException;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.util.ObjectHashMap;
@@ -96,7 +96,7 @@ public class TruthMaintenanceSystem {
      * @param context
      * @param rule
      * @param typeConf 
-     * @throws FactException
+     * @throws org.drools.core.FactException
      */
     public void readLogicalDependency(final InternalFactHandle handle,
                                       final Object object,

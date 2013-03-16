@@ -16,7 +16,7 @@
 
 package org.drools.core.base;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.evaluators.AfterEvaluatorDefinition;
 import org.drools.core.base.evaluators.BeforeEvaluatorDefinition;
 import org.drools.core.base.evaluators.CoincidesEvaluatorDefinition;

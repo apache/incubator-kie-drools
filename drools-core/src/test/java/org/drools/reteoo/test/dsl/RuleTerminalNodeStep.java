@@ -19,7 +19,7 @@ package org.drools.reteoo.test.dsl;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.MockTupleSource;
 import org.drools.reteoo.RuleTerminalNode;

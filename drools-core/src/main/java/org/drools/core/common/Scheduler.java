@@ -18,7 +18,7 @@ package org.drools.core.common;
 
 import java.io.IOException;
 
-import org.drools.Agenda;
+import org.drools.core.Agenda;
 import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;

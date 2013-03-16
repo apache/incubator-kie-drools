@@ -1,6 +1,6 @@
 package org.drools.core.rule.builder.dialect.asm;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.common.AbstractRuleBase;

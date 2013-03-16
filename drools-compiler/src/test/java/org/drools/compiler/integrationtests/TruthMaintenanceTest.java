@@ -16,14 +16,14 @@ import java.util.Map;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CheeseEqual;
-import org.drools.ClassObjectFilter;
+import org.drools.core.ClassObjectFilter;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Father;
 import org.drools.compiler.Person;
-import org.drools.RuleBase;
+import org.drools.core.RuleBase;
 import org.drools.compiler.Sensor;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
+import org.drools.core.StatefulSession;
+import org.drools.core.WorkingMemory;
 import org.drools.compiler.YoungestFather;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.common.InternalFactHandle;
@@ -987,7 +987,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                       temperatureList.size() );
 
         sensor1.setTemperature( 150 );
-        sensor1Handle =  getFactHandle( (org.drools.FactHandle) sensor1Handle, session );
+        sensor1Handle =  getFactHandle( (org.drools.core.FactHandle) sensor1Handle, session );
         session.update( sensor1Handle, sensor1 );
 
         session = getSerialisedStatefulKnowledgeSession( session,

@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.Person;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
@@ -28,7 +28,7 @@ public class UnlinkingTest {
 
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setUnlinkingEnabled( true );
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
 
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );

@@ -16,9 +16,9 @@
 
 package org.drools.core.impl;
 
-import org.drools.RuleBase;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
+import org.drools.core.RuleBase;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.StatefulSession;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.definitions.rule.impl.RuleImpl;

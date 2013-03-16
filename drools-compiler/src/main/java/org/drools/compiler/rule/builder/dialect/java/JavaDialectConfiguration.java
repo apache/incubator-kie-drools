@@ -2,7 +2,7 @@ package org.drools.compiler.rule.builder.dialect.java;
 
 import java.util.Arrays;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectConfiguration;
 import org.drools.compiler.compiler.PackageBuilder;

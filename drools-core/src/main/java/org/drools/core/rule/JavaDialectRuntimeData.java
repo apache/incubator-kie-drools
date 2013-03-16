@@ -16,7 +16,7 @@
 
 package org.drools.core.rule;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.core.spi.Constraint;

@@ -25,7 +25,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.audit.event.LogEvent;
 import org.kie.event.KnowledgeRuntimeEventManager;
 

@@ -23,7 +23,7 @@ import java.security.ProtectionDomain;
 import java.util.Date;
 import java.util.Map;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassFieldAccessorCache.ByteArrayClassLoader;
 import org.drools.core.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.core.base.extractors.BaseBooleanClassFieldReader;

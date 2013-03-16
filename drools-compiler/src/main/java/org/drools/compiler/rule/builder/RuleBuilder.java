@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.base.mvel.MVELObjectExpression;

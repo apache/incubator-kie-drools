@@ -16,8 +16,8 @@
 
 package org.drools.core.common;
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.WorkingMemory;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.util.ClassUtils;

@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.WorkingMemory;
+import org.drools.core.RuntimeDroolsException;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.core.spi.Accumulator;

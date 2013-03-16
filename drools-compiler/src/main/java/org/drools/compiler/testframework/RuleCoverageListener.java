@@ -3,7 +3,7 @@ package org.drools.compiler.testframework;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.event.ActivationCancelledEvent;
 import org.drools.core.event.ActivationCreatedEvent;
 import org.drools.core.event.AfterActivationFiredEvent;

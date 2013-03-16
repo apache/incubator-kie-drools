@@ -16,7 +16,7 @@
 
 package org.drools.verifier.redundancy;
 
-import org.drools.StatelessSession;
+import org.drools.core.StatelessSession;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;

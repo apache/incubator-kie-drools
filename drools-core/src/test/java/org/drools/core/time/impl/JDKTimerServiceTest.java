@@ -24,11 +24,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
+import org.drools.core.ClockType;
+import org.drools.core.SessionConfiguration;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.ClockType;
-import org.drools.SessionConfiguration;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;

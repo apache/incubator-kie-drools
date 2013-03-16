@@ -23,9 +23,9 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.PackageIntegrationException;
-import org.drools.RuleBase;
-import org.drools.RuleIntegrationException;
+import org.drools.core.PackageIntegrationException;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleIntegrationException;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsParserException;
@@ -99,7 +99,7 @@ public abstract class Waltz {
      */
     private RuleBase readRule() throws Exception,
                                DroolsParserException,
-                               RuleIntegrationException,
+            RuleIntegrationException,
                                PackageIntegrationException,
                                InvalidPatternException {
         //read in the source

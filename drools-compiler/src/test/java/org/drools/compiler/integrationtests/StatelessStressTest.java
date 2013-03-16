@@ -9,9 +9,9 @@ import java.util.List;
 
 import org.drools.compiler.Address;
 import org.drools.compiler.Person;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatelessSession;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.StatelessSession;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.junit.Ignore;

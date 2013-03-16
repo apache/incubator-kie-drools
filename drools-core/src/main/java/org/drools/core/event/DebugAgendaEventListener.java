@@ -16,7 +16,7 @@
 
 package org.drools.core.event;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

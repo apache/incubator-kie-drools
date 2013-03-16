@@ -16,9 +16,9 @@
 
 package org.drools.core.event;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
@@ -44,7 +44,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RuleBaseEventSupportTest {
 
-    private RuleBase             ruleBase;
+    private RuleBase ruleBase;
     private TestRuleBaseListener listener1;
     private TestRuleBaseListener listener2;
     private Package              pkg;

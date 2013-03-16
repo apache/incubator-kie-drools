@@ -16,7 +16,7 @@
 
 package org.drools.template.parser;
 
-import org.drools.StatefulSession;
+import org.drools.core.StatefulSession;
 
 import java.util.Map;
 

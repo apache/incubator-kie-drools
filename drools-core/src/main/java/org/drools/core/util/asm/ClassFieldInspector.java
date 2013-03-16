@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.Attribute;
 import org.mvel2.asm.ClassReader;

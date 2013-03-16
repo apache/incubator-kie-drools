@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.reteoo.EvalConditionNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSource;

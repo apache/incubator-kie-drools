@@ -72,7 +72,7 @@ import javax.rules.admin.LocalRuleExecutionSetProvider;
 import javax.rules.admin.RuleAdministrator;
 import javax.rules.admin.RuleExecutionSet;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.jsr94.rules.decisiontables.SpreadsheetIntegrationExampleTest;
 
 import org.junit.Before;

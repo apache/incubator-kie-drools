@@ -25,9 +25,9 @@ import static org.mockito.Mockito.when;
 
 import java.beans.IntrospectionException;
 
-import org.drools.FactException;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
+import org.drools.core.FactException;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.core.common.DefaultFactHandle;

@@ -173,7 +173,7 @@ public class JavaConsequenceBuilderTest {
                     " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 12L ); }\r\n" +
             		"  throw new java.lang.RuntimeException(\"xxx\");\r\n" + 
             		"  Cheese c1 = $cheese;\r\n" + 
-            		" { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
+            		" { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
             		" \r\n" + 
             		"";
 
@@ -280,23 +280,23 @@ public class JavaConsequenceBuilderTest {
                 " System.out.println(\"this is a test\");\r\n" + 
                 "  Cheese c1 = $cheese;\r\n" + 
                 " try { \r\n" + 
-                "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
+                "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
                 "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "      Cheese c4 = $cheese;\r\n" + 
                 "     try { \r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "      } catch (java.lang.Exception e) {\r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "      } finally {\r\n" + 
                 "          Cheese c3 = $cheese;\r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c3 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c3 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "     }\r\n" + 
                 " } catch (java.lang.Exception e) {\r\n" + 
                 "     Cheese c2 = $cheese;\r\n" + 
-                "     { org.drools.compiler.Cheese __obj__ = ( c2 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
+                "     { org.drools.compiler.Cheese __obj__ = ( c2 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "  } finally {\r\n" + 
                 "      Cheese c3 = $cheese;\r\n" + 
-                "     { org.drools.compiler.Cheese __obj__ = ( c3 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
+                "     { org.drools.compiler.Cheese __obj__ = ( c3 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 " }\r\n" + 
                 " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 12L ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 
@@ -369,20 +369,20 @@ public class JavaConsequenceBuilderTest {
                 "  System.out.println(\"this is a test\");\r\n" + 
                 "  Cheese c1 = $cheese;\r\n" + 
                 " if( c1 == $cheese )     { \r\n" + 
-                "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
+                "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
                 "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "      Cheese c4 = $cheese;\r\n" + 
                 "     if ( true )     { \r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "      } else if (1==2) {\r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "      } else {\r\n" + 
                 "          Cheese c3 = $cheese;\r\n" + 
                 "         { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L ); }\r\n" +
                 "     }\r\n" + 
                 " } else {\r\n" + 
                 "      Cheese c3 = $cheese;\r\n" + 
-                "     { org.drools.compiler.Cheese __obj__ = ( c3 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
+                "     { org.drools.compiler.Cheese __obj__ = ( c3 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "      if ( c4 ==  $cheese ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L ); }\r\n" +
                 "      else { $cheese.setPrice( 12 ); drools.update( $cheese__Handle__, 9223372036854775807L ); }\r\n" +
                 " }\r\n" + 
@@ -452,11 +452,11 @@ public class JavaConsequenceBuilderTest {
                 " System.out.println(\"this is a test\");\r\n" + 
                 "  Cheese c1 = $cheese;\r\n" + 
                 " while ( c1 == $cheese )     { \r\n" + 
-                "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
+                "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
                 "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "      Cheese c4 = $cheese;\r\n" + 
                 "     while ( true )     { \r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "      } } \r\n" + 
                 "  Cheese c3 = $cheese;\r\n" + 
                 " while ( c4 ==  $cheese ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L ); }\r\n" +
@@ -521,13 +521,13 @@ public class JavaConsequenceBuilderTest {
                 " System.out.println(\"this is a test\");\r\n" + 
                 " int i = 0;\r\n" + 
                 " for ( Cheese c1 = $cheese; i < 10;i++ )     { \r\n" + 
-                "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
+                "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
                 "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "      Cheese c4 = $cheese;\r\n" + 
                 "     for ( Cheese item : new ArrayList<Cheese>() ) {         { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L ); }\r\n" +
                 "       }\r\n" + 
                 " } \r\n" + 
-                "  for ( ; ; ) { org.drools.compiler.Cheese __obj__ = ( (Cheese) $cheese ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
+                "  for ( ; ; ) { org.drools.compiler.Cheese __obj__ = ( (Cheese) $cheese ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 "  for ( Cheese item : new ArrayList<Cheese>() ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L ); }\r\n" +
                 "  { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 9223372036854775807L ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 

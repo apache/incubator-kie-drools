@@ -19,7 +19,7 @@ package org.drools.reteoo.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.reteoo.test.dsl.NodeTestDef;
 import org.drools.reteoo.test.dsl.NodeTestCase;
 import org.junit.runner.Description;

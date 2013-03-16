@@ -1,6 +1,6 @@
 package org.drools.reteoo;
 
-import org.drools.RuleBase;
+import org.drools.core.RuleBase;
 import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;

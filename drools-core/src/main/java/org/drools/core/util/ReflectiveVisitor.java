@@ -20,8 +20,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.Visitor;
+import org.drools.core.RuntimeDroolsException;
+import org.drools.core.Visitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class ReflectiveVisitor
     implements
-    Visitor {
+        Visitor {
 
     protected static transient Logger logger = LoggerFactory.getLogger(ReflectiveVisitor.class);
 

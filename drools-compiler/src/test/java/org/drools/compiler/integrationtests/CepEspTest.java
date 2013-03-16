@@ -1,9 +1,9 @@
 package org.drools.compiler.integrationtests;
 
-import org.drools.ClockType;
+import org.drools.core.ClockType;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.OrderEvent;
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.compiler.Sensor;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;

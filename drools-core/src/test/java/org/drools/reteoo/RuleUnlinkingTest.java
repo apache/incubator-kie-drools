@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
@@ -92,7 +92,7 @@ public class RuleUnlinkingTest {
     public void setUp(int type) {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( LRUnlinkingOption.ENABLED );        
-        ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf);
+        ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration) kconf);
         buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
 
         context = new PropagationContextImpl( 0, PropagationContext.INSERTION, null, null, null );

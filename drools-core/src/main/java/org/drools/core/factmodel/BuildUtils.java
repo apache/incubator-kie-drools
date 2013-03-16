@@ -16,7 +16,7 @@
 
 package org.drools.core.factmodel;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 

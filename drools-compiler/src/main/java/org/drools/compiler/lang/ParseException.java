@@ -16,7 +16,7 @@
 
 package org.drools.compiler.lang;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 
 public class ParseException extends RuntimeDroolsException {
 

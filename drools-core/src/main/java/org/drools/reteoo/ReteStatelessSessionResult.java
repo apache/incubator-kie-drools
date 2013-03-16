@@ -22,8 +22,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Iterator;
 
-import org.drools.QueryResults;
-import org.drools.StatelessSessionResult;
+import org.drools.core.QueryResults;
+import org.drools.core.StatelessSessionResult;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.spi.GlobalResolver;

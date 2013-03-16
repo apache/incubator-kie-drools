@@ -39,7 +39,7 @@ package org.drools.core.rule;
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.AcceptsReadAccessor;

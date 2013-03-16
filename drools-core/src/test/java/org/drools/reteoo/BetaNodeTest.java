@@ -19,7 +19,7 @@ package org.drools.reteoo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.reteoo.builder.BuildContext;
 import org.junit.Test;

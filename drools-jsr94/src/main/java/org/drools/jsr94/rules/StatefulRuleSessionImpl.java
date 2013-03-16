@@ -30,9 +30,9 @@ import javax.rules.RuleRuntime;
 import javax.rules.RuleSessionCreateException;
 import javax.rules.StatefulRuleSession;
 
-import org.drools.FactHandle;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
+import org.drools.core.FactHandle;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.StatefulSession;
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
 import org.drools.jsr94.rules.repository.RuleExecutionSetRepository;
 import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;

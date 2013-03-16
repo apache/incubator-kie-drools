@@ -16,8 +16,8 @@
 
 package org.drools.core.rule;
 
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;

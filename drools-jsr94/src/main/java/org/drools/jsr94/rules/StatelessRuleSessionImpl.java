@@ -27,8 +27,8 @@ import javax.rules.RuleRuntime;
 import javax.rules.RuleSessionCreateException;
 import javax.rules.StatelessRuleSession;
 
-import org.drools.StatelessSession;
-import org.drools.StatelessSessionResult;
+import org.drools.core.StatelessSession;
+import org.drools.core.StatelessSessionResult;
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
 import org.drools.jsr94.rules.repository.RuleExecutionSetRepository;
 import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;

@@ -16,7 +16,7 @@
 
 package org.drools.core.spi;
 
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;

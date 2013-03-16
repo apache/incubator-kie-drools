@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.TimeUnit;
 
-import org.drools.ClockType;
-import org.drools.SessionConfiguration;
+import org.drools.core.ClockType;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJobContext;

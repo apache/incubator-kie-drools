@@ -16,9 +16,9 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.PackageIntegrationException;
-import org.drools.RuleBase;
-import org.drools.RuntimeDroolsException;
+import org.drools.core.PackageIntegrationException;
+import org.drools.core.RuleBase;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;

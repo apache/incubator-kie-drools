@@ -1,6 +1,6 @@
 package org.drools.reteoo;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;

@@ -19,9 +19,9 @@ package org.drools.core.util;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.RuntimeDroolsException;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.RuntimeDroolsException;
 import org.drools.core.rule.Package;
 
 /**

@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.SessionConfiguration;
+import org.drools.core.RuntimeDroolsException;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.AgendaItem;

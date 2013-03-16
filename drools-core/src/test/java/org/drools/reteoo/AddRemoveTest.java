@@ -16,7 +16,7 @@
 
 package org.drools.reteoo;
 
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.reteoo.builder.BuildContext;

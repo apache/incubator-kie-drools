@@ -28,13 +28,13 @@ import org.drools.compiler.CheeseEqual;
 import org.drools.compiler.Cheesery;
 import org.drools.compiler.Cheesery.Maturity;
 import org.drools.compiler.Child;
-import org.drools.ClassObjectFilter;
+import org.drools.core.ClassObjectFilter;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.DomainObjectHolder;
 import org.drools.compiler.FactA;
 import org.drools.compiler.FactB;
 import org.drools.compiler.FactC;
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.compiler.FirstClass;
 import org.drools.compiler.FromTestClass;
 import org.drools.compiler.Guess;
@@ -56,14 +56,14 @@ import org.drools.compiler.Pet;
 import org.drools.compiler.PolymorphicFact;
 import org.drools.compiler.Primitives;
 import org.drools.compiler.RandomNumber;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
 import org.drools.compiler.SecondClass;
 import org.drools.compiler.Sensor;
 import org.drools.compiler.SpecialString;
 import org.drools.compiler.State;
-import org.drools.StatefulSession;
+import org.drools.core.StatefulSession;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.TestParam;
 import org.drools.compiler.Triangle;
@@ -2244,7 +2244,7 @@ public class MiscTest extends CommonTestMethodBase {
         person.setStatus( "start" );
         ksession.insert( person );
 
-        // TODO ConsequenceException: org.drools.FactException: Update error: handle not found for object:
+        // TODO ConsequenceException: org.drools.core.FactException: Update error: handle not found for object:
         //        ksession    = SerializationHelper.serializeObject(ksession);
         ksession.fireAllRules();
 
@@ -5636,7 +5636,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testGetFactHandleIdentityBehavior() throws Exception {
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.IDENTITY );
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
 
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final StatefulSession session = ruleBase.newStatefulSession();

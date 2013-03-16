@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.Trigger;

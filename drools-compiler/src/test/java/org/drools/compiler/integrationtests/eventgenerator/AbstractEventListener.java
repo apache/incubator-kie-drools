@@ -1,6 +1,6 @@
 package org.drools.compiler.integrationtests.eventgenerator;
 
-import org.drools.WorkingMemory;
+import org.drools.core.WorkingMemory;
 
 
 public abstract class AbstractEventListener {

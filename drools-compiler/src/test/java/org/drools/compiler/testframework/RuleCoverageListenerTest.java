@@ -7,7 +7,7 @@ import org.drools.core.spi.Consequence;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalFactHandle;

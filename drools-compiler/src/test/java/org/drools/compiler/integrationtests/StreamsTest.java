@@ -31,9 +31,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.ClockType;
+import org.drools.core.ClockType;
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.SessionConfiguration;
+import org.drools.core.SessionConfiguration;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
 import org.drools.core.base.ClassObjectType;

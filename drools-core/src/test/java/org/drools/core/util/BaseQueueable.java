@@ -18,7 +18,7 @@ package org.drools.core.util;
 
 import java.util.List;
 
-import org.drools.FactHandle;
+import org.drools.core.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalFactHandle;

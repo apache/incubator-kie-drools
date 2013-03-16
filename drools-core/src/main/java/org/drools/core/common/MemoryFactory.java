@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import org.drools.RuleBaseConfiguration;
+import org.drools.core.RuleBaseConfiguration;
 
 public interface MemoryFactory {
     public int getId();

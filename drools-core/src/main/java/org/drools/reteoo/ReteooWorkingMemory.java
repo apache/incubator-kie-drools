@@ -25,9 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.FactHandle;
-import org.drools.QueryResults;
-import org.drools.SessionConfiguration;
+import org.drools.core.FactHandle;
+import org.drools.core.QueryResults;
+import org.drools.core.SessionConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.base.NonCloningQueryViewListener;

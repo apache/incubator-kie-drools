@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Map;
 
-import org.drools.InitialFact;
+import org.drools.core.InitialFact;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;

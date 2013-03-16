@@ -1,6 +1,12 @@
 package org.drools.template.parser;
 
-import org.drools.*;
+import org.drools.core.Agenda;
+import org.drools.core.FactException;
+import org.drools.core.FactHandle;
+import org.drools.core.QueryResults;
+import org.drools.core.RuleBase;
+import org.drools.core.StatefulSession;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.event.AgendaEventListener;
 import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.event.WorkingMemoryEventListener;
