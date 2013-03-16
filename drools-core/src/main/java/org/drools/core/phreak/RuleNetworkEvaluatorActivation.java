@@ -1,4 +1,4 @@
-package org.drools.phreak;
+package org.drools.core.phreak;
 
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;

@@ -21,7 +21,7 @@ import org.drools.WorkingMemory;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.util.ClassUtils;
-import org.drools.phreak.RuleNetworkEvaluatorActivation;
+import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PathMemory;

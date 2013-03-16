@@ -37,7 +37,7 @@ import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.IndexUtil;
-import org.drools.phreak.SegmentUtilities;
+import org.drools.core.phreak.SegmentUtilities;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.IndexableConstraint;
