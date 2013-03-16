@@ -33,7 +33,7 @@ import org.drools.core.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.reteoo.ReteooComponentFactory;
-import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
+import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.kie.KieBaseConfiguration;
 import org.kie.builder.conf.ClassLoaderCacheOption;
@@ -458,7 +458,7 @@ public class RuleBaseConfiguration
                                                                 "org.drools.core.concurrent.DefaultExecutorService" ) );
 
         setConsequenceExceptionHandler( this.chainedProperties.getProperty( ConsequenceExceptionHandlerOption.PROPERTY_NAME,
-                                                                            "org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
+                                                                            "org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
 
         setRuleBaseUpdateHandler( this.chainedProperties.getProperty( "drools.ruleBaseUpdateHandler",
                                                                       "" ) );

@@ -22,7 +22,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.runtime.impl.ExecutionResultImpl;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.command.Command;
 import org.kie.command.Context;
 import org.kie.runtime.ExecutionResults;

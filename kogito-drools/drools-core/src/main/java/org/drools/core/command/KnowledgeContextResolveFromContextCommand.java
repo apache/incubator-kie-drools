@@ -19,7 +19,7 @@ package org.drools.core.command;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
-import org.drools.runtime.impl.ExecutionResultImpl;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.command.Command;

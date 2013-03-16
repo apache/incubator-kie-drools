@@ -67,7 +67,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.core.rule.MapBackedClassLoader;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
-import org.drools.runtime.rule.impl.AgendaImpl;
+import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.KnowledgeHelper;

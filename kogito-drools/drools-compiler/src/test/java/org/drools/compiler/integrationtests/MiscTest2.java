@@ -24,7 +24,7 @@ import org.drools.core.util.FileManager;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.runtime.rule.impl.AgendaImpl;
+import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KieBaseConfiguration;

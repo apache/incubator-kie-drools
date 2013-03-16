@@ -24,8 +24,8 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.drools.runtime.rule.impl.FlatQueryResults;
-import org.drools.runtime.rule.impl.NativeQueryResults;
+import org.drools.core.runtime.rule.impl.FlatQueryResults;
+import org.drools.core.runtime.rule.impl.NativeQueryResults;
 
 
 public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<String,Object>> {

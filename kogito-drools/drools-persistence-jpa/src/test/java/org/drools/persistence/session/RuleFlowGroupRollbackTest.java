@@ -29,7 +29,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.rule.impl.InternalAgenda;
+import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

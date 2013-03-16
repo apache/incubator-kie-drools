@@ -26,8 +26,8 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.drools.FactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.runtime.rule.impl.FlatQueryResults;
-import org.drools.runtime.rule.impl.NativeQueryResults;
+import org.drools.core.runtime.rule.impl.FlatQueryResults;
+import org.drools.core.runtime.rule.impl.NativeQueryResults;
 
 public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
 
