@@ -20,7 +20,7 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
-import org.drools.reteoo.ReteooStatefulSession;
+import org.drools.core.reteoo.ReteooStatefulSession;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;

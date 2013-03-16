@@ -12,7 +12,7 @@ import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.Package;
 import org.jbpm.Person;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
