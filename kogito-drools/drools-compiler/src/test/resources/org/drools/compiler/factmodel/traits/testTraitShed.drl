@@ -5,9 +5,6 @@ import org.drools.core.factmodel.traits.Thing;
 
 global java.util.List list;
 
- 
-
-
 declare trait Student
     school  : String
 end
