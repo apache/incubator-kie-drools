@@ -157,10 +157,10 @@ public class TraitTest extends CommonTestMethodBase {
         TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
-            FactType impClass = kb.getFactType( "org.drools.compiler.test",
+            FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                 "Imp" );
             TraitableBean imp = (TraitableBean) impClass.newInstance();
-            Class trait = kb.getFactType( "org.drools.compiler.test",
+            Class trait = kb.getFactType( "org.drools.compiler.trait.test",
                                           "Student" ).getFactClass();
 
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
@@ -422,16 +422,16 @@ public class TraitTest extends CommonTestMethodBase {
         TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
-            FactType impClass = kb.getFactType( "org.drools.compiler.test",
+            FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                 "Imp" );
             TraitableBean imp = (TraitableBean) impClass.newInstance();
             impClass.set( imp,
                           "name",
                           "aaa" );
 
-            Class trait = kb.getFactType( "org.drools.compiler.test",
+            Class trait = kb.getFactType( "org.drools.compiler.trait.test",
                                           "Student" ).getFactClass();
-            Class trait2 = kb.getFactType( "org.drools.compiler.test",
+            Class trait2 = kb.getFactType( "org.drools.compiler.trait.test",
                                            "Role" ).getFactClass();
 
             assertNotNull( trait );
@@ -519,10 +519,10 @@ public class TraitTest extends CommonTestMethodBase {
 
 
         try {
-            FactType impClass = kb.getFactType( "org.drools.compiler.test",
+            FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                 "Imp" );
             TraitableBean imp = (TraitableBean) impClass.newInstance();
-            FactType traitClass = kb.getFactType( "org.drools.compiler.test",
+            FactType traitClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
@@ -593,7 +593,7 @@ public class TraitTest extends CommonTestMethodBase {
             assertEquals( 4,
                           virtualFields2.size() );
 
-            FactType traitClass2 = kb.getFactType( "org.drools.compiler.test",
+            FactType traitClass2 = kb.getFactType( "org.drools.compiler.trait.test",
                                                    "Role" );
             Class trait2 = traitClass2.getFactClass();
             //            TraitableBean ind2 = (TraitableBean) indClass.newInstance();
@@ -660,11 +660,11 @@ public class TraitTest extends CommonTestMethodBase {
         TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
-            FactType impClass = kb.getFactType( "org.drools.compiler.test",
+            FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                 "Imp" );
             TraitableBean imp = (TraitableBean) impClass.newInstance();
 
-            FactType studentClass = kb.getFactType( "org.drools.compiler.test",
+            FactType studentClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                     "Student" );
             Class trait = studentClass.getFactClass();
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
@@ -696,7 +696,7 @@ public class TraitTest extends CommonTestMethodBase {
             //            FactType indClass = kb.getFactType("org.drools.compiler.test","Entity");
             TraitableBean ind = new Entity();
 
-            FactType RoleClass = kb.getFactType( "org.drools.compiler.test",
+            FactType RoleClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                  "Role" );
             Class trait2 = RoleClass.getFactClass();
             TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( ind,
@@ -757,14 +757,14 @@ public class TraitTest extends CommonTestMethodBase {
         TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
-            FactType impClass = kb.getFactType( "org.drools.compiler.test",
+            FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                 "Imp" );
             TraitableBean imp = (TraitableBean) impClass.newInstance();
             impClass.set( imp,
                           "name",
                           "john" );
 
-            FactType traitClass = kb.getFactType( "org.drools.compiler.test",
+            FactType traitClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
@@ -806,7 +806,7 @@ public class TraitTest extends CommonTestMethodBase {
                                     "xxx" );
             assertTrue( wrapper2.containsKey( "surname" ) );
 
-            FactType traitClass2 = kb.getFactType( "org.drools.compiler.test",
+            FactType traitClass2 = kb.getFactType( "org.drools.compiler.trait.test",
                                                    "Role" );
             Class trait2 = traitClass2.getFactClass();
             TraitableBean ind2 = new Entity();
@@ -894,10 +894,10 @@ public class TraitTest extends CommonTestMethodBase {
         TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
-            FactType impClass = kb.getFactType( "org.drools.compiler.test",
+            FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                 "Imp" );
             TraitableBean imp = (TraitableBean) impClass.newInstance();
-            FactType traitClass = kb.getFactType( "org.drools.compiler.test",
+            FactType traitClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
@@ -1004,13 +1004,13 @@ public class TraitTest extends CommonTestMethodBase {
         TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
-            FactType impClass = kb.getFactType( "org.drools.compiler.test",
+            FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                 "Imp" );
             TraitableBean imp = (TraitableBean) impClass.newInstance();
             impClass.set( imp,
                           "name",
                           "john" );
-            FactType traitClass = kb.getFactType( "org.drools.compiler.test",
+            FactType traitClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                   "Student" );
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
@@ -2092,10 +2092,10 @@ public class TraitTest extends CommonTestMethodBase {
 
 
           try {
-              FactType impClass = kb.getFactType( "org.drools.compiler.test",
+              FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                   "Imp" );
               TraitableBean imp = (TraitableBean) impClass.newInstance();
-              FactType traitClass = kb.getFactType( "org.drools.compiler.test",
+              FactType traitClass = kb.getFactType( "org.drools.compiler.trait.test",
                                                     "Student" );
               Class trait = traitClass.getFactClass();
               TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
@@ -2145,10 +2145,10 @@ public class TraitTest extends CommonTestMethodBase {
 
 
         try {
-            FactType impClass = kb.getFactType( "org.drools.compiler.test",
+            FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
                     "Imp" );
             TraitableBean imp = (TraitableBean) impClass.newInstance();
-            FactType traitClass = kb.getFactType( "org.drools.compiler.test",
+            FactType traitClass = kb.getFactType( "org.drools.compiler.trait.test",
                     "Student" );
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
@@ -2163,7 +2163,7 @@ public class TraitTest extends CommonTestMethodBase {
             assertNotNull( coreTraits );
             assertNotNull( coreProperties );
 
-            assertEquals(proxyFields.getClass().getName(), "org.drools.compiler.test.StudentorgtestImpProxyWrapper");
+            assertEquals("org.drools.compiler.trait.test.StudentorgdroolscompilertraittestImpProxyWrapper", proxyFields.getClass().getName());
 
             assertTrue(proxyFields instanceof TripleBasedStruct);
             assertTrue( coreTraits instanceof VetoableTypedMap );
