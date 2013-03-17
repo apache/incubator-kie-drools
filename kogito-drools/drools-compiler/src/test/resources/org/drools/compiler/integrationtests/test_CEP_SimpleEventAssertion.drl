@@ -1,6 +1,6 @@
 package org.drools.test;
 
-import org.drools.StockTick;
+import org.drools.compiler.StockTick;
 
 declare StockTick 
     @role( event )

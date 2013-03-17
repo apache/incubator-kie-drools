@@ -1,6 +1,6 @@
 package org.drools.compiler
 
-import event org.drools.StockTick;
+import org.drools.compiler.StockTick;
 
 rule "Check event"
 when

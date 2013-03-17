@@ -1297,7 +1297,7 @@ public class CepEspTest extends CommonTestMethodBase {
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
 
-        final Rule rule = (Rule) kbase.getRule( "org.drools", "Delaying Not" );
+        final Rule rule = (Rule) kbase.getRule( "org.drools.compiler", "Delaying Not" );
         assertEquals( 10000,
                       ((DurationTimer) rule.getTimer()).getDuration() );
 
@@ -1356,7 +1356,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testDelayingNot2() throws Exception {
-        String str = "package org.drools\n" +
+        String str = "package org.drools.compiler\n" +
                 "declare A @role(event) symbol : String end\n" +
                 "declare B @role(event) symbol : String end\n" +
                 "rule Setup when\n" +
@@ -1382,7 +1382,7 @@ public class CepEspTest extends CommonTestMethodBase {
     
     @Test
     public void testDelayingNotWithPreEpochClock() throws Exception {
-        String str = "package org.drools\n" +
+        String str = "package org.drools.compiler\n" +
                 "declare A @role(event) symbol : String end\n" +
                 "declare B @role(event) symbol : String end\n" +
                 "rule Setup when\n" +
@@ -1757,7 +1757,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testPseudoSchedulerRemoveJobTest() {
-        String str = "import CepEspTest.A\n";
+        String str = "import " + CepEspTest.class.getName() + ".A\n";
         str += "declare A\n";
         str += "    @role( event )\n";
         str += "end\n";
@@ -2310,7 +2310,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSalienceWithEventsPseudoClock() throws IOException,
                                                    ClassNotFoundException {
-        String str = "package org.drools\n" +
+        String str = "package org.drools.compiler\n" +
+                     "import " + StockTick.class.getName() + "\n" +
                      "declare StockTick\n" +
                      "        @role ( event )\n" +
                      "end\n" +
@@ -2393,7 +2394,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testSalienceWithEventsRealtimeClock() throws IOException,
                                                      ClassNotFoundException, InterruptedException {
-        String str = "package org.drools\n" +
+        String str = "package org.drools.compiler\n" +
+                     "import " + StockTick.class.getName() + "\n" +
                      "declare StockTick\n" +
                      "        @role ( event )\n" +
                      "end\n" +
