@@ -342,8 +342,8 @@ public class MVELConsequenceBuilderTest {
     private void setupTest(String consequence, Map<String, Object> namedConsequences) {
         builder = new MVELConsequenceBuilder();
 
-        Package pkg = new Package( "org.drools" );
-        pkg.addImport( new ImportDeclaration( "org.drools.compiler.Cheese" ) );
+        Package pkg = new Package( "org.drools.compiler.test" );
+        pkg.addImport( new ImportDeclaration( Cheese.class.getCanonicalName() ) );
 
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         PackageBuilder pkgBuilder = new PackageBuilder( pkg,
@@ -384,6 +384,9 @@ public class MVELConsequenceBuilderTest {
         pkgRegistry.getPackage().addRule( context.getRule() );
         pkgBuilder.compileAll();
         pkgBuilder.reloadAll();
+        if ( pkgBuilder.hasErrors() ) {
+            fail(pkgBuilder.getErrors().toString());
+        }
     }
     
 

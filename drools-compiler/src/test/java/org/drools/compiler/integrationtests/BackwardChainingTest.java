@@ -2428,7 +2428,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testInsertionOrder() throws Exception {
         String str = "" +
-                     "package org.drools.compiler.test  \n" +
+                     "package org.drools.compiler.integrationtests  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
