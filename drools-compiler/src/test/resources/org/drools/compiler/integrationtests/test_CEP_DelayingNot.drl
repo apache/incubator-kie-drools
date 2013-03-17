@@ -1,6 +1,10 @@
 package org.drools.compiler
 
+import org.drools.compiler.StockTick
+
 global java.util.List results;
+
+
 
 declare StockTick
     @role( event )

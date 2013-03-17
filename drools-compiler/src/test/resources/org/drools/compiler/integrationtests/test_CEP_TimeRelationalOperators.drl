@@ -1,6 +1,6 @@
 package org.drools.compiler
 
-import org.drools.StockTick;
+import org.drools.compiler.StockTick;
 
 global java.util.List results_coincides;
 global java.util.List results_after;
