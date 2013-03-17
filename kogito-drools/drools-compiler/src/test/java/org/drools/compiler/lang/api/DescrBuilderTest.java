@@ -120,7 +120,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
     @Test
     public void testGlobals() {
         PackageDescr pkg = DescrFactory.newPackage()
-                .name( "org.drools" )
+                .name( "org.drools.compiler" )
                 .newGlobal().type( "java.util.List" ).identifier( "list" ).end()
                 .newGlobal().type( "Person" ).identifier( "bob" ).end()
                 .getDescr();
@@ -137,7 +137,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                       pkg.getGlobals().get( 1 ).getIdentifier() );
 
         KnowledgePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools",
+        assertEquals( "org.drools.compiler",
                       kpkg.getName() );
     }
 
@@ -184,7 +184,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
     @Test
     public void testNamedConsequence() {
         PackageDescr pkg = DescrFactory.newPackage()
-                .name( "org.drools" )
+                .name( "org.drools.compiler" )
                 .newRule().name( "test" )
                     .lhs()
                         .pattern("Cheese").constraint( "type == \"stilton\"" ).end()
@@ -200,7 +200,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                       pkg.getRules().size() );
 
         KnowledgePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools",
+        assertEquals( "org.drools.compiler",
                 kpkg.getName() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -223,7 +223,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
     @Test
     public void testConditionalBranch() {
         PackageDescr pkg = DescrFactory.newPackage()
-                .name( "org.drools" )
+                .name( "org.drools.compiler" )
                 .newRule().name( "test" )
                     .lhs()
                         .pattern("Cheese").constraint( "type == \"stilton\"" ).end()
@@ -242,7 +242,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                       pkg.getRules().size() );
 
         KnowledgePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools",
+        assertEquals( "org.drools.compiler",
                 kpkg.getName() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -350,7 +350,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
     public void testRuleRHSOptional() throws InstantiationException,
                                        IllegalAccessException {
         PackageDescr pkg = DescrFactory.newPackage()
-                .name( "org.drools" )
+                .name( "org.drools.compiler" )
                 .newRule().name( "r1" )
                     .lhs()
                         .pattern("StockTick").constraint( "company == \"RHT\"" ).end()
@@ -359,7 +359,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                 .getDescr();
 
         KnowledgePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools",
+        assertEquals( "org.drools.compiler",
                       kpkg.getName() );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -375,7 +375,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
     public void testRuleRHSComment() throws InstantiationException,
                                        IllegalAccessException {
         PackageDescr pkg = DescrFactory.newPackage()
-                .name( "org.drools" )
+                .name( "org.drools.compiler" )
                 .newRule().name( "r1" )
                     .lhs()
                         .pattern("StockTick").constraint( "company == \"RHT\"" ).end()
@@ -385,7 +385,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                 .getDescr();
 
         KnowledgePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools",
+        assertEquals( "org.drools.compiler",
                       kpkg.getName() );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -401,7 +401,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
     public void testTopLevelAccumulate() throws InstantiationException,
                                        IllegalAccessException {
         PackageDescr pkg = DescrFactory.newPackage()
-                .name( "org.drools" )
+                .name( "org.drools.compiler" )
                 .newRule().name( "r1" )
                     .lhs()
                         .accumulate()
@@ -417,7 +417,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                 .getDescr();
 
         KnowledgePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools",
+        assertEquals( "org.drools.compiler",
                       kpkg.getName() );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -443,7 +443,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
     public void testRule() throws InstantiationException,
                                        IllegalAccessException {
         PackageDescr pkg = DescrFactory.newPackage()
-                .name( "org.drools" )
+                .name( "org.drools.compiler" )
                 .newRule().name( "r1" )
                     .lhs()
                         .and()
@@ -459,7 +459,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                 .getDescr();
 
         KnowledgePackage kpkg = compilePkgDescr( pkg );
-        assertEquals( "org.drools",
+        assertEquals( "org.drools.compiler",
                       kpkg.getName() );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
