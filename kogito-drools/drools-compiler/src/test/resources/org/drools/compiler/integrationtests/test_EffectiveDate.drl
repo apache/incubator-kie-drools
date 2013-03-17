@@ -9,7 +9,7 @@ rule "Hello World"
     date-effective "9-Jul-1974"
     date-expires "10-Jul-1974"
     when
-        $m : org.drools.Message()
+        $m : org.drools.compiler.Message()
     then
         $m.setFired(true);
 end

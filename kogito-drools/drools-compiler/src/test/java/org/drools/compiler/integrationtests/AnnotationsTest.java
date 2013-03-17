@@ -30,6 +30,7 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Assert;
 import org.junit.Test;
@@ -91,7 +92,8 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         String drl = "package org.drools.test;\n " +
                      "" +
                      "import org.kie.definition.type.Position; \n " +
-                     "import AnnotationsTest.Annot; \n" +
+                     "import " + AnnotationsTest.class.getCanonicalName() + "; \n" +
+                     "import " + AnnotationsTest.Annot.class.getCanonicalName() + "; \n" +
                      "" +
                      "declare AnnotatedBean \n" +
                      " @Deprecated \n" +
@@ -218,7 +220,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
 
         String drl2 = "package org.drools.test;\n " +
                       "" +
-                      "import AnnotationsTest.Annot; \n" +
+                      "import " + AnnotationsTest.Annot.class.getCanonicalName() + "; \n" +
                       "" +
                       "" +
                       "declare MissingAnnotationBean \n" +
@@ -237,7 +239,8 @@ public class AnnotationsTest  extends CommonTestMethodBase {
 
     @Test
     public void testRuleAnnotation() {
-        String drl = "package org.drools\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "import " + Person.class.getCanonicalName() + "; \n" +
                      "rule X\n" +
                      "    @author(\"John Doe\")\n" +
                      "    @output(Hello World!)\n" + // backward compatibility
@@ -256,7 +259,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
                                                  drl,
                                                  conf );
 
-        Rule rule = kbase.getRule( "org.drools",
+        Rule rule = kbase.getRule( "org.drools.compiler.integrationtests",
                                    "X" );
 
         Assert.assertEquals( "John Doe",
@@ -272,7 +275,8 @@ public class AnnotationsTest  extends CommonTestMethodBase {
 
     @Test
     public void testRuleAnnotation2() {
-        String drl = "package org.drools\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "import " + Person.class.getCanonicalName() + "; \n" +
                      "rule X\n" +
                      "    @alt(\" \\\"<- these are supposed to be the only quotes ->\\\" \")\n" +
                      "when\n"+
@@ -287,7 +291,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
                                                  drl,
                                                  conf );
 
-        Rule rule = kbase.getRule( "org.drools",
+        Rule rule = kbase.getRule( "org.drools.compiler.integrationtests",
                                    "X" );
 
         Assert.assertEquals( " \"<- these are supposed to be the only quotes ->\" ",
