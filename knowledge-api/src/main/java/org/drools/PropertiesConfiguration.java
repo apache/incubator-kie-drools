@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools;
+package org.drools.compiler;
 
 /**
  * Base class for other Configuration classes.
