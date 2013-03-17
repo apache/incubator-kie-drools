@@ -1,4 +1,4 @@
-package org.drools.compiler.test;
+package org.drools.compiler.trait.test;
 
 import org.drools.core.factmodel.traits.Entity;
 

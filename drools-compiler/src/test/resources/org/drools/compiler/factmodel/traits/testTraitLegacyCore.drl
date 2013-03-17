@@ -1,4 +1,4 @@
-package org.drools.compiler.test;
+package org.drools.compiler.trait.test;
 
 
 // Individual is an empty traitable, based solely on a property map.
