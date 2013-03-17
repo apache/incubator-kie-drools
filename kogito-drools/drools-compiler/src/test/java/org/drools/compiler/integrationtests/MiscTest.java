@@ -3961,7 +3961,7 @@ public class MiscTest extends CommonTestMethodBase {
     // Drools does not support variables inside bindings yet... but we should...
     @Test
     public void testMapAccessWithVariable2() {
-        String str = "package org.drools;\n" +
+        String str = "package org.drools.compiler;\n" +
                      "import java.util.Map;\n" +
                      "rule \"map access with variable\"\n" +
                      "    when\n" +
@@ -6378,7 +6378,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testMemberOfNotWorkingWithOr() throws Exception {
 
         String rule = "";
-        rule += "package org.drools;\n";
+        rule += "package org.drools.compiler;\n";
         rule += "import java.util.ArrayList;\n";
         rule += "import org.drools.compiler.Person;\n";
         rule += "rule \"Test Rule\"\n";
@@ -6415,7 +6415,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testUnNamed() throws Exception {
 
         String rule = "";
-        rule += "package org.drools;\n";
+        rule += "package org.drools.compiler;\n";
         rule += "import java.util.ArrayList;\n";
         rule += "import org.drools.compiler.Person;\n";
         rule += "rule \"Test Rule\"\n";
@@ -6456,7 +6456,7 @@ public class MiscTest extends CommonTestMethodBase {
         // Exception in ClassFieldAccessorStore line: 116
 
         String rule = "";
-        rule += "package org.drools;\n";
+        rule += "package org.drools.compiler;\n";
         rule += "import org.drools.compiler.Person;\n";
         rule += "import org.drools.compiler.Pet;\n";
         rule += "import org.drools.compiler.Cat;\n";
@@ -6486,7 +6486,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testGenericsInRHS() throws Exception {
 
         String rule = "";
-        rule += "package org.drools;\n";
+        rule += "package org.drools.compiler;\n";
         rule += "import java.util.Map;\n";
         rule += "import java.util.HashMap;\n";
         rule += "rule \"Test Rule\"\n";
@@ -6504,7 +6504,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testAccessingMapValues() throws Exception {
 
         String rule = "";
-        rule += "package org.drools;\n";
+        rule += "package org.drools.compiler;\n";
         rule += "import org.drools.compiler.Pet;\n";
         rule += "rule \"Test Rule\"\n";
         rule += "  when\n";
@@ -8918,7 +8918,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testModifySimple() {
-        String str = "package org.drools;\n" +
+        String str = "package org.drools.compiler;\n" +
                      "\n" +
                      "rule \"test modify block\"\n" +
                      "when\n" +
@@ -10015,7 +10015,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void noDormantCheckOnModifies() throws Exception {
         // Test case for BZ 862325
-        String str = "package org.drools;\n"
+        String str = "package org.drools.compiler;\n"
                      + " rule R1\n"
                      + "    salience 10\n"
                      + "    when\n"

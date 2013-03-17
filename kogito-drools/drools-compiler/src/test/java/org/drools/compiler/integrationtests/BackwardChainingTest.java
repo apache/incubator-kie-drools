@@ -740,9 +740,9 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "dialect \"mvel\"\n" +
                      "\n" +
 
-                     "import BackwardChainingTest.Q\n" +
-                     "import BackwardChainingTest.R\n" +
-                     "import BackwardChainingTest.S\n" +
+                     "import " + BackwardChainingTest.class.getName() + ".Q\n" +
+                     "import " + BackwardChainingTest.class.getName() + ".R\n" +
+                     "import " + BackwardChainingTest.class.getName() + ".S\n" +
 
                      "\n" +
                      "query q(int x)\n" +
@@ -875,15 +875,15 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "dialect \"mvel\"\n" +
 
                      "query man( String name ) \n" +
-                     "   BackwardChainingTest.Man( name := name ) \n" +
+                     "   " + BackwardChainingTest.class.getName() + ".Man( name := name ) \n" +
                      "end\n" +
 
                      "query woman( String name ) \n" +
-                     "   BackwardChainingTest.Woman( name := name ) \n" +
+                     "   " + BackwardChainingTest.class.getName() + ".Woman( name := name ) \n" +
                      "end\n" +
 
                      "query parent( String parent, String child ) \n" +
-                     "   BackwardChainingTest.Parent( parent := parent, child := child ) \n" +
+                     "   " + BackwardChainingTest.class.getName() + ".Parent( parent := parent, child := child ) \n" +
                      "end\n" +
 
                      "query father( String father, String child ) \n" +
@@ -2636,9 +2636,9 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "dialect \"mvel\"\n" +
                      "\n" +
 
-                     "import BackwardChainingTest.Q\n" +
-                     "import BackwardChainingTest.R\n" +
-                     "import BackwardChainingTest.S\n" +
+                     "import " + BackwardChainingTest.class.getName() + ".Q\n" +
+                     "import " + BackwardChainingTest.class.getName() + ".R\n" +
+                     "import " + BackwardChainingTest.class.getName() + ".S\n" +
 
                      "query object(Object o)\n" +
                      "    o := Object() \n" +

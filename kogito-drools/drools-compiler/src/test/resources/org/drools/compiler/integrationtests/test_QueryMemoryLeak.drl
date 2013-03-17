@@ -1,5 +1,5 @@
 //created on: May 11, 2009
-package org.drools
+package org.drools.compiler
 
 query getWorker(String _id)
     queryResult : Worker(id == _id)

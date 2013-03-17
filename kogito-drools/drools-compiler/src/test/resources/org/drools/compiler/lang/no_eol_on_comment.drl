@@ -1,6 +1,6 @@
 #### a comment
 // another comment
-package org.drools
+package org.drools.compiler
 
 // another comment
 # ### one more

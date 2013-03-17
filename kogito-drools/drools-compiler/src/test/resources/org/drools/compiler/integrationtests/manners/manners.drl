@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.integrationtests.manners
+package org.drools.compiler.integrationtests.manners
 import org.drools.compiler.integrationtests.manners.Chosen
 import org.drools.compiler.integrationtests.manners.Path
 import org.drools.compiler.integrationtests.manners.Seating

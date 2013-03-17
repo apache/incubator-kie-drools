@@ -31,7 +31,7 @@ public class DateComparisonTest extends CommonTestMethodBase {
         List<String> results = new ArrayList<String>();
         // load up the knowledge base
         String str = "";
-        str += "package org.drools;\n";
+        str += "package org.drools.compiler;\n";
         str += "dialect \"mvel\"\n";
         str += "global java.util.List results;\n";
         str += "rule \"test date greater than\"\n";

@@ -27,8 +27,8 @@ public interface TypeResolver {
 
     /**
      * This will return the fully qualified type name (including the namespace).
-     * Eg, if it was a pojo org.drools.Cheese, then if you passed in "Cheese" you should get back
-     * "org.drools.Cheese"
+     * Eg, if it was a pojo org.drools.core.test.model.Cheese, then if you passed in "Cheese" you should get back
+     * "org.drools.core.test.model.Cheese"
      */
     public String getFullTypeName(String shortName) throws ClassNotFoundException;
 

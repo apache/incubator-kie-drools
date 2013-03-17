@@ -7,7 +7,7 @@ options {
 }
   
 @header {
-    package org.drools.lang;
+    package org.drools.compiler.lang;
 
     import java.util.LinkedList;
     import org.drools.compiler.DroolsParserException;
