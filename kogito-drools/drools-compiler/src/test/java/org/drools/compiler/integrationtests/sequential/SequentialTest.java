@@ -120,7 +120,7 @@ public class SequentialTest extends CommonTestMethodBase {
     @Test
     public void testKnowledgeRuntimeAccess() throws Exception {
         String str = "";
-        str += "package org.test\n";
+        str += "package org.drools.compiler.test\n";
         str +="import org.drools.compiler.Message\n";
         str +="rule \"Hello World\"\n";
         str +="when\n";
@@ -151,7 +151,7 @@ public class SequentialTest extends CommonTestMethodBase {
     @Test
     public void testEvents() throws Exception {
         String str = "";
-        str += "package org.test\n";
+        str += "package org.drools.compiler.test\n";
         str +="import org.drools.compiler.Message\n";
         str +="rule \"Hello World\"\n";
         str +="when\n";

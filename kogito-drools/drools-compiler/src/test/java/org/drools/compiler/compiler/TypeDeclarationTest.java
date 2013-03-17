@@ -105,14 +105,14 @@ public class TypeDeclarationTest {
 
     public void testNoAnnotationUpdateIfError(){
         String str1 = "";
-        str1 += "package org.drools \n" +
+        str1 += "package org.drools.compiler \n" +
         		"declare org.drools.EventA \n" +
         		"    name : String \n" +
         		"    duration : Long \n" +
         		"end \n";
 
         String str2 = "";
-        str2 += "package org.drools \n" +
+        str2 += "package org.drools.compiler \n" +
         		"declare org.drools.ClassA \n" +
         		"    @Role (event) \n" +
         		"    @duration (duration) \n" +
@@ -166,7 +166,7 @@ public class TypeDeclarationTest {
     public void testDuplicatedTypeDeclarationWith2FieldsInSameResource() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.drools \n" +
+        str1 += "package org.drools.compiler \n" +
         		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    lastName : String \n" +
@@ -195,7 +195,7 @@ public class TypeDeclarationTest {
     public void testDuplicatedTypeDeclarationInDifferentResources() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.drools \n" +
+        str1 += "package org.drools.compiler \n" +
         		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"end \n";
@@ -225,14 +225,14 @@ public class TypeDeclarationTest {
     public void testClashingTypeDeclarationInDifferentResources() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.drools \n" +
+        str1 += "package org.drools.compiler \n" +
         		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    age : Integer \n" +
         		"end \n";
 
         String str2 = "";
-        str2 += "package org.drools \n" +
+        str2 += "package org.drools.compiler \n" +
         		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    age : String \n" +
@@ -265,14 +265,14 @@ public class TypeDeclarationTest {
     public void testNotSoHarmlessTypeReDeclaration() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.drools \n" +
+        str1 += "package org.drools.compiler \n" +
         		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    age : Integer \n" +
         		"end \n";
 
         String str2 = "";
-        str2 += "package org.drools \n" +
+        str2 += "package org.drools.compiler \n" +
         		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"end \n";
@@ -321,14 +321,14 @@ public class TypeDeclarationTest {
     public void testTypeReDeclarationWithExtraField() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.drools \n" +
+        str1 += "package org.drools.compiler \n" +
         		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    age : Integer \n" +
         		"end \n";
 
         String str2 = "";
-        str2 += "package org.drools \n" +
+        str2 += "package org.drools.compiler \n" +
         		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    lastName : String \n" +
@@ -360,14 +360,14 @@ public class TypeDeclarationTest {
     public void testTypeReDeclarationWithExtraField2() {
         //same package, different resources
         String str1 = "";
-        str1 += "package org.drools \n" +
+        str1 += "package org.drools.compiler \n" +
         		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    age : Integer \n" +
         		"end \n";
 
         String str2 = "";
-        str2 += "package org.drools \n" +
+        str2 += "package org.drools.compiler \n" +
         		"declare org.drools.ClassA \n" +
         		"    name : String \n" +
         		"    lastName : String \n" +
@@ -392,7 +392,7 @@ public class TypeDeclarationTest {
     @Test
     public void testDuplicateDeclaration() {
         String str = "";
-        str += "package org.drools \n" +
+        str += "package org.drools.compiler \n" +
                 "declare Bean \n" +
                 "    name : String \n" +
                 "end \n" +
@@ -427,7 +427,7 @@ public class TypeDeclarationTest {
     @Test
     public void testTypeDeclarationMetadata() {
         String str = "";
-        str += "package org.drools.test; \n" +
+        str += "package org.drools.compiler.test; \n" +
                 "import org.drools.compiler.compiler.TypeDeclarationTest.KlassAnnotation; \n" +
                 "import org.drools.compiler.compiler.TypeDeclarationTest.FieldAnnotation; \n" +
                 "import org.drools.compiler.Person\n" +
@@ -451,11 +451,11 @@ public class TypeDeclarationTest {
         KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        FactType bean = kBase.getFactType( "org.drools.test", "Bean" );
+        FactType bean = kBase.getFactType( "org.drools.compiler.test", "Bean" );
         FactType pers = kBase.getFactType( "org.drools", "Person" );
-        assertEquals( "org.drools.test.Bean", bean.getName() );
+        assertEquals( "org.drools.compiler.test.Bean", bean.getName() );
         assertEquals( "Bean", bean.getSimpleName() );
-        assertEquals( "org.drools.test", bean.getPackageName() );
+        assertEquals( "org.drools.compiler.test", bean.getPackageName() );
 
         assertEquals( 1, bean.getClassAnnotations().size() );
         Annotation ann = bean.getClassAnnotations().get( 0 );

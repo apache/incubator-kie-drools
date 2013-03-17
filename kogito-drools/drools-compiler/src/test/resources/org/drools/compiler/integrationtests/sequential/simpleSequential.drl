@@ -1,5 +1,5 @@
 //created on: 27-Jun-2007
-package org.drools.test
+package org.drools.compiler.test
 
 //list any import classes here.
 import org.drools.compiler.Cheese;

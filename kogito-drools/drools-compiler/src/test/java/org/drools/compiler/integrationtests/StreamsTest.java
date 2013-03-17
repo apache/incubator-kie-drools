@@ -757,7 +757,7 @@ public class StreamsTest extends CommonTestMethodBase {
     @Test
     public void testAtomicActivationFiring() throws Exception {
         // JBRULES-3383
-        String str = "package org.drools.test\n" +
+        String str = "package org.drools.compiler.test\n" +
                 "declare Event\n" +
                 "   @role(event)\n" +
                 "   name : String\n" +
@@ -799,7 +799,7 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kBaseConfig, str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType eventType = kbase.getFactType("org.drools.test", "Event");
+        FactType eventType = kbase.getFactType("org.drools.compiler.test", "Event");
 
         Object event = eventType.newInstance();
         eventType.set(event, "name", "myName");

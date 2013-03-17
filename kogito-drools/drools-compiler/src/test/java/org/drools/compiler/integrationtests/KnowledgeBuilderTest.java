@@ -53,19 +53,19 @@ public class KnowledgeBuilderTest {
 
     @Test
     public void testCompositeKnowledgeBuilder() throws Exception {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.drools.compiler.test\n" +
                       "rule R1 when\n" +
                       "   $fieldA : FactA( $fieldB : fieldB )\n" +
                       "   FactB( this == $fieldB, fieldA == $fieldA )\n" +
                       "then\n" +
                       "end";
 
-        String declarationA = "package org.drools.test\n" +
+        String declarationA = "package org.drools.compiler.test\n" +
                               "declare FactA\n" +
                               "    fieldB: FactB\n" +
                               "end\n";
 
-        String declarationB = "package org.drools.test\n" +
+        String declarationB = "package org.drools.compiler.test\n" +
                               "declare FactB\n" +
                               "    fieldA: FactA\n" +
                               "end\n";
@@ -97,9 +97,9 @@ public class KnowledgeBuilderTest {
         kbase.addKnowledgePackages( kbuilder2.getKnowledgePackages() );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType aType = kbase.getFactType( "org.drools.test", "FactA" );
+        FactType aType = kbase.getFactType( "org.drools.compiler.test", "FactA" );
         Object a = aType.newInstance();
-        FactType bType = kbase.getFactType( "org.drools.test", "FactB" );
+        FactType bType = kbase.getFactType( "org.drools.compiler.test", "FactB" );
         Object b = bType.newInstance();
         aType.set( a, "fieldB", b );
         bType.set( b, "fieldA", a );
@@ -118,9 +118,9 @@ public class KnowledgeBuilderTest {
     @Test
     @Ignore("problem during phreak work")
     public void testDifferentPackages() throws Exception {
-        String rule = "package org.drools.test.rule\n" +
-                      "import org.drools.testA.FactA\n" +
-                      "import org.drools.testB.FactB\n" +
+        String rule = "package org.drools.compiler.test.rule\n" +
+                      "import org.drools.compiler.testA.FactA\n" +
+                      "import org.drools.compiler.testB.FactB\n" +
                       "rule R1 when\n" +
                       "   $fieldA : FactA( $fieldB : fieldB, bigint == 1 )\n" +
                       "   FactB( this == $fieldB, fieldA == $fieldA )\n" +
@@ -128,16 +128,16 @@ public class KnowledgeBuilderTest {
                       "   list.add(\"OK\");" +
                       "end";
 
-        String declarationA = "package org.drools.testA\n" +
-                              "import org.drools.testB.FactB\n" +
+        String declarationA = "package org.drools.compiler.testA\n" +
+                              "import org.drools.compiler.testB.FactB\n" +
                               "import java.math.BigInteger\n" +
                               "declare FactA\n" +
                               "    fieldB: FactB\n" +
                               "    bigint: BigInteger\n" +
                               "end\n";
 
-        String declarationB = "package org.drools.testB\n" +
-                              "import org.drools.testA.FactA\n" +
+        String declarationB = "package org.drools.compiler.testB\n" +
+                              "import org.drools.compiler.testA.FactA\n" +
                               "global java.util.List list\n" +
                               "declare FactB\n" +
                               "    fieldA: FactA\n" +
@@ -155,7 +155,7 @@ public class KnowledgeBuilderTest {
             fail( kbuilder.getErrors().toString() );
         }
 
-        String declarationC = "package org.drools.testA\n" +
+        String declarationC = "package org.drools.compiler.testA\n" +
                               "declare FactC\n" +
                               "    field : UnknownClass\n" +
                               "end\n";
@@ -173,9 +173,9 @@ public class KnowledgeBuilderTest {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        FactType aType = kbase.getFactType( "org.drools.testA", "FactA" );
+        FactType aType = kbase.getFactType( "org.drools.compiler.testA", "FactA" );
         Object a = aType.newInstance();
-        FactType bType = kbase.getFactType( "org.drools.testB", "FactB" );
+        FactType bType = kbase.getFactType( "org.drools.compiler.testB", "FactB" );
         Object b = bType.newInstance();
         aType.set( a, "fieldB", b );
         aType.set( a, "bigint", new BigInteger( "1" ) );
@@ -190,9 +190,9 @@ public class KnowledgeBuilderTest {
 
     @Test
     public void testUndoTypeDeclaration() throws Exception {
-        String rule = "package org.drools.test\n" +
-                      "import org.drools.test.FactA\n" +
-                      "import org.drools.test.FactB\n" +
+        String rule = "package org.drools.compiler.test\n" +
+                      "import org.drools.compiler.test.FactA\n" +
+                      "import org.drools.compiler.test.FactB\n" +
                       "rule R1 when\n" +
                       "   FactA( i == 1 )\n" +
                       "   FactB( i == 1 )\n" +
@@ -200,13 +200,13 @@ public class KnowledgeBuilderTest {
                       "   list.add(\"OK\");" +
                       "end\n";
 
-        String declarationA = "package org.drools.test\n" +
+        String declarationA = "package org.drools.compiler.test\n" +
                               "global java.util.List list\n" +
                               "declare FactA\n" +
                               "    j : int\n" +
                               "end\n";
 
-        String declarationB = "package org.drools.test\n" +
+        String declarationB = "package org.drools.compiler.test\n" +
                               "declare FactB\n" +
                               "    i : int\n" +
                               "end\n";
@@ -225,7 +225,7 @@ public class KnowledgeBuilderTest {
         kbuilder.undo();
         assertFalse( kbuilder.hasErrors() );
 
-        declarationA = "package org.drools.test\n" +
+        declarationA = "package org.drools.compiler.test\n" +
                        "global java.util.List list\n" +
                        "declare FactA\n" +
                        "    i : int\n" +
@@ -246,11 +246,11 @@ public class KnowledgeBuilderTest {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        FactType aType = kbase.getFactType( "org.drools.test", "FactA" );
+        FactType aType = kbase.getFactType( "org.drools.compiler.test", "FactA" );
         Object a = aType.newInstance();
         aType.set( a, "i", 1 );
 
-        FactType bType = kbase.getFactType( "org.drools.test", "FactB" );
+        FactType bType = kbase.getFactType( "org.drools.compiler.test", "FactB" );
         Object b = bType.newInstance();
         bType.set( b, "i", 1 );
 
@@ -264,10 +264,10 @@ public class KnowledgeBuilderTest {
 
     @Test
     public void testUndoRule() throws Exception {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.drools.compiler.test\n" +
                       "global java.util.List list\n" +
-                      "import org.drools.test.FactA\n" +
-                      "import org.drools.test.FactB\n" +
+                      "import org.drools.compiler.test.FactA\n" +
+                      "import org.drools.compiler.test.FactB\n" +
                       "rule R1 when\n" +
                       "   FactA( j == 1 )\n" +
                       "   FactB( i == 1 )\n" +
@@ -275,12 +275,12 @@ public class KnowledgeBuilderTest {
                       "   list.add(\"OK\");" +
                       "end\n";
 
-        String declarationA = "package org.drools.test\n" +
+        String declarationA = "package org.drools.compiler.test\n" +
                               "declare FactA\n" +
                               "    i : int\n" +
                               "end\n";
 
-        String declarationB = "package org.drools.test\n" +
+        String declarationB = "package org.drools.compiler.test\n" +
                               "declare FactB\n" +
                               "    i : int\n" +
                               "end\n";
@@ -299,10 +299,10 @@ public class KnowledgeBuilderTest {
         kbuilder.undo();
         assertFalse( kbuilder.hasErrors() );
 
-        rule = "package org.drools.test\n" +
+        rule = "package org.drools.compiler.test\n" +
                "global java.util.List list\n" +
-               "import org.drools.test.FactA\n" +
-               "import org.drools.test.FactB\n" +
+               "import org.drools.compiler.test.FactA\n" +
+               "import org.drools.compiler.test.FactB\n" +
                "rule R1 when\n" +
                "   FactA( i == 1 )\n" +
                "   FactB( i == 1 )\n" +
@@ -325,11 +325,11 @@ public class KnowledgeBuilderTest {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        FactType aType = kbase.getFactType( "org.drools.test", "FactA" );
+        FactType aType = kbase.getFactType( "org.drools.compiler.test", "FactA" );
         Object a = aType.newInstance();
         aType.set( a, "i", 1 );
 
-        FactType bType = kbase.getFactType( "org.drools.test", "FactB" );
+        FactType bType = kbase.getFactType( "org.drools.compiler.test", "FactB" );
         Object b = bType.newInstance();
         bType.set( b, "i", 1 );
 
@@ -343,7 +343,7 @@ public class KnowledgeBuilderTest {
 
     @Test
     public void testAddKPackageSingle() throws Exception {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.drools.compiler.test\n" +
                       "import org.drools.compiler.StockTick\n" +
                       "rule R1 when\n" +
                       "   StockTick()\n" +
@@ -373,7 +373,7 @@ public class KnowledgeBuilderTest {
 
     @Test
     public void testAddKPackageCollection() throws Exception {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.drools.compiler.test\n" +
                       "import org.drools.compiler.StockTick\n" +
                       "declare StockTick @role(event) end\n" +
                       "rule R1 when\n" +
@@ -400,7 +400,7 @@ public class KnowledgeBuilderTest {
 
     @Test
     public void testAddPackageSingle() throws Exception {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.drools.compiler.test\n" +
                       "import org.drools.compiler.StockTick\n" +
                       "rule R1 when\n" +
                       "   StockTick()\n" +
@@ -427,7 +427,7 @@ public class KnowledgeBuilderTest {
 
     @Test
     public void testAddPackageArray() throws Exception {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.drools.compiler.test\n" +
                       "import org.drools.compiler.StockTick\n" +
                       "declare StockTick @role(event) end\n" +
                       "rule R1 when\n" +
@@ -454,7 +454,7 @@ public class KnowledgeBuilderTest {
 
     @Test
     public void testResourceMapping() throws Exception {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.drools.compiler.test\n" +
                 "rule R1 when\n" +
                 " \n" +
                 "then\n" +

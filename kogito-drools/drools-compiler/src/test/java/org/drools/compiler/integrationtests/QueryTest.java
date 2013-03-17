@@ -75,15 +75,15 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                       results.size() );
 
-        Rule rule = kbase.getKnowledgePackage( "org.drools.test" ).getRules().iterator().next();
+        Rule rule = kbase.getKnowledgePackage( "org.drools.compiler.test" ).getRules().iterator().next();
         
         assertEquals( "simple query",
                       rule.getName());
 
-        kbase.removeQuery( "org.drools.test",
+        kbase.removeQuery( "org.drools.compiler.test",
                            "simple query" );
 
-        assertTrue( kbase.getKnowledgePackage( "org.drools.test" ).getRules().isEmpty() );
+        assertTrue( kbase.getKnowledgePackage( "org.drools.compiler.test" ).getRules().isEmpty() );
 
         try {
             results = session.getQueryResults( "simple query" );
@@ -142,7 +142,7 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testQueryWithMultipleResultsOnKnowledgeApi() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
+        str += "package org.drools.compiler.test  \n";
         str += "import org.drools.compiler.Cheese \n";
         str += "query cheeses \n";
         str += "    stilton : Cheese(type == 'stilton') \n";
@@ -404,7 +404,7 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testQueriesWithVariableUnification() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
+        str += "package org.drools.compiler.test  \n";
         str += "import org.drools.compiler.Person \n";
         str += "query peeps( String $name, String $likes, int $age ) \n";
         str += "    $p : Person( $name := name, $likes := likes, $age := age ) \n";
@@ -501,7 +501,7 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testQueriesWithVariableUnificationOnPatterns() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
+        str += "package org.drools.compiler.test  \n";
         str += "import org.drools.compiler.Person \n";
         str += "query peeps( Person $p, String $name, String $likes, int $age ) \n";
         str += "    $p := Person( $name := name, $likes := likes, $age := age ) \n";
@@ -559,7 +559,7 @@ public class QueryTest extends CommonTestMethodBase {
     @Test
     public void testQueriesWithVariableUnificationOnNestedFields() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
+        str += "package org.drools.compiler.test  \n";
         str += "import org.drools.compiler.Person \n";
         str += "query peeps( String $name, String $likes, String $street) \n";
         str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
@@ -607,7 +607,7 @@ public class QueryTest extends CommonTestMethodBase {
     @Ignore("Ingored for Phreak, as test is order sensitive")
     public void testOpenQuery() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
+        str += "package org.drools.compiler.test  \n";
         str += "import org.drools.compiler.Cheese \n";
         str += "query cheeses(String $type1, String $type2) \n";
         str += "    stilton : Cheese(type == $type1, $sprice : price) \n";
@@ -815,7 +815,8 @@ public class QueryTest extends CommonTestMethodBase {
 
     public void runQueryListenerTest( QueryListenerOption option ) throws IOException, ClassNotFoundException {
         String str = "";
-        str += "package org.drools\n";
+        str += "package org.drools.compiler.integrationtests\n";
+        str += "import " + Cheese.class.getCanonicalName() + " \n";
         str += "query cheeses(String $type) \n";
         str += "    $cheese : Cheese(type == $type) \n";
         str += "end\n";
@@ -847,7 +848,8 @@ public class QueryTest extends CommonTestMethodBase {
     public void testQueryWithEval() throws IOException, ClassNotFoundException {
         // [Regression in 5.2.0.M2]: NPE during rule evaluation on MVELPredicateExpression.evaluate(MVELPredicateExpression.java:82)
 
-        String str = "package org.drools\n" +
+        String str = "package org.drools.compiler.integrationtests\n" +
+                     "import " + DomainObject.class.getCanonicalName() + " \n" +
                      "query queryWithEval \n" +
                      "    $do: DomainObject()\n" +
                      "    not DomainObject( id == $do.id, eval(interval.isAfter($do.getInterval())))\n" +

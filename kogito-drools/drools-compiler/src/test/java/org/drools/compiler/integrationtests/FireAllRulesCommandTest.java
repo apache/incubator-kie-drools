@@ -24,7 +24,8 @@ public class FireAllRulesCommandTest {
     @Test
     public void oneRuleFiredTest() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.drools.compiler.integrationtests \n";
+        str += "import " + Cheese.class.getCanonicalName() + " \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -47,7 +48,8 @@ public class FireAllRulesCommandTest {
     @Test
     public void fiveRulesFiredTest() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.drools.compiler.integrationtests \n";
+        str += "import " + Cheese.class.getCanonicalName() + " \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -74,7 +76,8 @@ public class FireAllRulesCommandTest {
     @Test
     public void zeroRulesFiredTest() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.drools.compiler.integrationtests \n";
+        str += "import " + Cheese.class.getCanonicalName() + " \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -97,7 +100,8 @@ public class FireAllRulesCommandTest {
     @Test
     public void oneRuleFiredWithDefinedMaxTest() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.drools.compiler.integrationtests \n";
+        str += "import " + Cheese.class.getCanonicalName() + " \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";
@@ -122,7 +126,8 @@ public class FireAllRulesCommandTest {
     @Test
     public void infiniteLoopTerminatesAtMaxTest() {
         String str = "";
-        str += "package org.drools \n";
+        str += "package org.drools.compiler.integrationtests \n";
+        str += "import " + Cheese.class.getCanonicalName() + " \n";
         str += "rule StringRule \n";
         str += " when \n";
         str += " $c : Cheese() \n";

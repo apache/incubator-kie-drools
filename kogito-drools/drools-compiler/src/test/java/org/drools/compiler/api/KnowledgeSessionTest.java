@@ -16,7 +16,7 @@ public class KnowledgeSessionTest {
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         String str = "";
-        str += "package org.test1\n";
+        str += "package org.drools.compiler.test1\n";
         str += "rule rule1\n";
         str += "when\n";
         str += "then\n";
@@ -27,7 +27,7 @@ public class KnowledgeSessionTest {
         str += "end\n";
         builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 
-        str = "package org.test2\n";
+        str = "package org.drools.compiler.test2\n";
         str += "rule rule3\n";
         str += "when\n";
         str += "then\n";

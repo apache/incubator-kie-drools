@@ -965,7 +965,7 @@ public class PackageBuilderTest extends DroolsTestCase {
     public void testCompilerConfiguration() throws Exception {
         // test default is eclipse jdt core
         PackageBuilder builder = new PackageBuilder();
-        PackageDescr pkgDescr = new PackageDescr( "org.test" );
+        PackageDescr pkgDescr = new PackageDescr( "org.drools.compiler.test" );
         builder.addPackage( pkgDescr );
         DialectCompiletimeRegistry reg = builder.getPackageRegistry( pkgDescr.getName() ).getDialectCompiletimeRegistry();
 
@@ -1041,7 +1041,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     @Test
     public void testTypeDeclarationNewBean() throws Exception {
-        PackageDescr pkgDescr = new PackageDescr( "org.test" );
+        PackageDescr pkgDescr = new PackageDescr( "org.drools.compiler.test" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "NewBean" );
 
         TypeFieldDescr f1 = new TypeFieldDescr( "name",
@@ -1066,7 +1066,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       type.getTypeName() );
         assertEquals( TypeDeclaration.Role.FACT,
                       type.getRole() );
-        assertEquals( "org.test.NewBean",
+        assertEquals( "org.drools.compiler.test.NewBean",
                       type.getTypeClass().getName() );
         assertFalse( builder.hasErrors() );
 
@@ -1078,7 +1078,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         dialectData.onAdd( bp.getDialectRuntimeRegistry(),
                            rootClassloader );
 
-        Class newBean = rootClassloader.loadClass( "org.test.NewBean" );
+        Class newBean = rootClassloader.loadClass( "org.drools.compiler.test.NewBean" );
         assertNotNull( newBean );
     }
 

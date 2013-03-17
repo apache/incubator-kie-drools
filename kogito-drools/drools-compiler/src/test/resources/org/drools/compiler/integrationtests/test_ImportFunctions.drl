@@ -1,4 +1,4 @@
-package org.drools.test;
+package org.drools.compiler.test;
 
 import function org.drools.compiler.StaticMethods.*;
 import function org.drools.compiler.StaticMethods2.getString3;

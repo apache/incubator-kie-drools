@@ -62,7 +62,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testQueryPositional() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
                      "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, int $age ) \n" +
@@ -196,7 +196,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test(timeout = 10000)
     public void testQueryNamed() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
                      "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, int $age ) \n" +
@@ -317,7 +317,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test(timeout = 10000)
     public void testQueryMixed() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
                      "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, int $age ) \n" +
@@ -438,7 +438,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test(timeout = 10000)
     public void testQueryPatternBindingAsResult() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
                      "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
@@ -511,7 +511,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test(timeout = 10000)
     public void testQueriesWithNestedAcecssorsAllOutputs() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
                      "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, String $street ) \n" +
@@ -560,7 +560,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test(timeout = 10000)
     public void testQueriesWithNestedAcecssorsMixedArgs() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
                      "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( String $name, String $likes, String $street ) \n" +
@@ -617,7 +617,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test(timeout = 10000)
     public void testQueryWithDynamicData() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
                      "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
@@ -676,7 +676,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test(timeout = 10000)
     public void testQueryWithDyanmicInsert() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
                      "import org.drools.compiler.Person \n" +
                      "global java.util.List list\n" +
                      "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
@@ -730,7 +730,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testQueryWithOr() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
@@ -870,7 +870,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         // from http://kti.mff.cuni.cz/~bartak/prolog/genealogy.html
 
         String str = "" +
-                     "package org.drools.test2  \n" +
+                     "package org.drools.compiler.test2  \n" +
                      "global java.util.List list\n" +
                      "dialect \"mvel\"\n" +
 
@@ -1202,7 +1202,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         // http://www.amzi.com/AdventureInProlog/advtop.php
 
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
@@ -1492,7 +1492,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Ignore("Ingored for Phreak, as test is order sensitive")
     public void testSubNetworksAndQueries() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
@@ -1722,7 +1722,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     public void testDynamicRulesWithSharing() throws IOException,
                                              ClassNotFoundException {
         String str = "" +
-                     "package org.drools.test1  \n" +
+                     "package org.drools.compiler.test1  \n" +
                      "\n" +
                      "declare Location\n" +
                      "    thing : String \n" +
@@ -1759,9 +1759,9 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }           
 
         str = "" +
-                "package org.drools.test2  \n" +
+                "package org.drools.compiler.test2  \n" +
                 
-                "import org.drools.test1.*\n" +
+                "import org.drools.compiler.test1.*\n" +
                 "import java.util.List\n" +
                 "import java.util.ArrayList\n" +
 
@@ -1784,9 +1784,9 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }        
         
         str = "" +
-                "package org.drools.test3  \n" +
+                "package org.drools.compiler.test3  \n" +
 
-                "import org.drools.test1.*\n" +
+                "import org.drools.compiler.test1.*\n" +
                 "import java.util.List\n" +
                 "import java.util.ArrayList\n" +
 
@@ -1810,9 +1810,9 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }
         
         str = "" +
-                "package org.drools.test4  \n" +
+                "package org.drools.compiler.test4  \n" +
 
-                "import org.drools.test1.*\n" +
+                "import org.drools.compiler.test1.*\n" +
                 "import java.util.List\n" +
                 "import java.util.ArrayList\n" +
 
@@ -1841,7 +1841,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.test1" ), pkgs.get( "org.drools.test2" ) } ) );
+        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.compiler.test1" ), pkgs.get( "org.drools.compiler.test2" ) } ) );
 
         kbase = SerializationHelper.serializeObject( kbase );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -1858,7 +1858,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         list ); 
         
         list.clear();
-        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.test3" ) } ) );
+        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.compiler.test3" ) } ) );
         
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
@@ -1866,7 +1866,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         list );
 
         list.clear();
-        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.test4" ) } ) );
+        kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.compiler.test4" ) } ) );
         
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
@@ -1879,7 +1879,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         // http://www.amzi.com/AdventureInProlog/advtop.php
 
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
@@ -2128,7 +2128,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testInsertionOrderTwo() throws Exception {
         String str = "" +
-                "package org.test \n" +
+                "package org.drools.compiler.test \n" +
                 "import java.util.List \n" +
                 "global List list \n" +
                 "declare Thing \n" +
@@ -2428,7 +2428,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testInsertionOrder() throws Exception {
         String str = "" +
-                     "package org.test  \n" +
+                     "package org.drools.compiler.test  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +
@@ -2570,7 +2570,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                                      Object[] objects) throws Exception,
                                                       Exception {
         String str = "" +
-                     "package org.test \n" +
+                     "package org.drools.compiler.test \n" +
                      "global java.util.List queryList \n" +
                      "global java.util.List ruleList \n" +
                      "query object( Object o ) \n" +
@@ -2626,7 +2626,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testQueryWithObject() throws Exception {
         String str = "" +
-                     "package org.drools.test  \n" +
+                     "package org.drools.compiler.test  \n" +
 
                      "import java.util.List\n" +
                      "import java.util.ArrayList\n" +

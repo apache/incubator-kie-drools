@@ -43,7 +43,7 @@ public class MBeansMonitoringTest {
                                  MBeanException,
                                  ReflectionException,
                                  NullPointerException {
-        String drl = "package org.drools.test\n" +
+        String drl = "package org.drools.compiler.test\n" +
         		     "import org.drools.compiler.StockTick\n" +
                      "declare StockTick\n" +
                      "    @role(event)\n" +

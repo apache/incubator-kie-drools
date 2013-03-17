@@ -1,4 +1,4 @@
-package org.test;
+package org.drools.compiler.test;
 
 import org.drools.compiler.Person
 

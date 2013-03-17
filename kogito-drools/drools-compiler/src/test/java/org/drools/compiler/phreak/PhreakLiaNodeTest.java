@@ -16,7 +16,7 @@ public class PhreakLiaNodeTest {
 
     @Test
     public void test() {
-        String str = "package org.drools.test\n" +
+        String str = "package org.drools.compiler.test\n" +
                 "\n" +
                 "import " + A.class.getCanonicalName() + "\n" +
                 "import " + B.class.getCanonicalName() + "\n" +
@@ -101,7 +101,7 @@ public class PhreakLiaNodeTest {
     
     @Test
     public void test2() {
-        String str = "package org.drools.test\n" +
+        String str = "package org.drools.compiler.test\n" +
                 "\n" +
                 "import " + A.class.getCanonicalName() + "\n" +
                 "import " + B.class.getCanonicalName() + "\n" +

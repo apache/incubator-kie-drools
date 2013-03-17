@@ -48,7 +48,8 @@ import org.kie.time.SessionClock;
 public class PseudoClockEventsTest extends CommonTestMethodBase {
 
 	int evalFirePseudoClockStockCount = 15;
-	private static final String evalFirePseudoClockDeclaration = "package org.drools\n" +
+	private static final String evalFirePseudoClockDeclaration = "package org.drools.compiler.integrationtests\n" +
+            "import " + StockTick.class.getCanonicalName() + "\n" +
 			"\n" +
 			"declare StockTick\n" +
 			"    @role( event )\n" +

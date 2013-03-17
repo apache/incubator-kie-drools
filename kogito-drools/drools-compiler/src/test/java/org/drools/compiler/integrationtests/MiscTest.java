@@ -570,7 +570,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testKnowledgeRuntimeAccess() throws Exception {
         String str = "";
-        str += "package org.test\n";
+        str += "package org.drools.compiler.test\n";
         str += "import " + Message.class.getName() + "\n";
         str += "rule \"Hello World\"\n";
         str += "when\n";
@@ -1013,7 +1013,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testUppercaseField() throws Exception {
-        String rule = "package org.drools.test;\n";
+        String rule = "package org.drools.compiler.test;\n";
         rule += "global java.util.List list\n";
         rule += "declare Address\n";
         rule += "    Street: String\n";
@@ -1031,7 +1031,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.setGlobal( "list",
                             new ArrayList<String>() );
 
-        FactType addressType = kbase.getFactType( "org.drools.test",
+        FactType addressType = kbase.getFactType( "org.drools.compiler.test",
                                                   "Address" );
         Object address = addressType.newInstance();
         addressType.set( address,
@@ -1625,7 +1625,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testBigDecimalWithFromAndEval() throws Exception {
-        String rule = "package org.test;\n";
+        String rule = "package org.drools.compiler.test;\n";
         rule += "rule \"Test Rule\"\n";
         rule += "when\n";
         rule += "    $dec : java.math.BigDecimal() from java.math.BigDecimal.TEN;\n";
@@ -1661,7 +1661,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testMVELConsequenceWithMapsAndArrays() throws Exception {
-        String rule = "package org.test;\n";
+        String rule = "package org.drools.compiler.test;\n";
         rule += "import java.util.ArrayList\n";
         rule += "import java.util.HashMap\n";
         rule += "global java.util.List list\n";
@@ -2122,7 +2122,7 @@ public class MiscTest extends CommonTestMethodBase {
      */
     @Test
     public void testFromDeclarationWithWorkingMemoryLogger() throws Exception {
-        String rule = "package org.test;\n";
+        String rule = "package org.drools.compiler.test;\n";
         rule += "import org.drools.compiler.Cheesery\n";
         rule += "import org.drools.compiler.Cheese\n";
         rule += "global java.util.List list\n";
@@ -3143,7 +3143,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testMVELImplicitWithFrom() throws IOException,
                                           ClassNotFoundException {
         String str = "" +
-                     "package org.test \n" +
+                     "package org.drools.compiler.test \n" +
                      "import java.util.List \n" +
                      "global java.util.List list \n" +
                      "global java.util.List list2 \n" +
@@ -3173,7 +3173,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testJavaImplicitWithFrom() throws IOException,
                                           ClassNotFoundException {
         String str = "" +
-                     "package org.test \n" +
+                     "package org.drools.compiler.test \n" +
                      "import java.util.List \n" +
                      "global java.util.List list \n" +
                      "global java.util.List list2 \n" +
@@ -3857,7 +3857,7 @@ public class MiscTest extends CommonTestMethodBase {
                                      true );
 
         // different namespace with import
-        str = "package org.drools.test\n" +
+        str = "package org.drools.compiler.test\n" +
               "import org.drools.compiler.Person\n" +
               "global java.util.List list\n" +
               "declare Person\n" +
@@ -3872,7 +3872,7 @@ public class MiscTest extends CommonTestMethodBase {
                                      true );
 
         // different namespace without import using qualified name
-        str = "package org.drools.test\n" +
+        str = "package org.drools.compiler.test\n" +
               "global java.util.List list\n" +
               "declare org.drools.compiler.Person\n" +
               "    @typesafe(false)\n" +
@@ -3886,7 +3886,7 @@ public class MiscTest extends CommonTestMethodBase {
                                      true );
 
         // this should fail as it's not declared non typesafe
-        str = "package org.drools.test\n" +
+        str = "package org.drools.compiler.test\n" +
               "global java.util.List list\n" +
               "declare org.drools.compiler.Person\n" +
               "    @typesafe(true)\n" +
@@ -4158,7 +4158,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testSelfJoinWithIndex() throws IOException,
                                        ClassNotFoundException {
         String drl = "";
-        drl += "package org.test\n";
+        drl += "package org.drools.compiler.test\n";
         drl += "import org.drools.compiler.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
@@ -4218,7 +4218,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testSelfJoinAndNotWithIndex() throws IOException,
                                              ClassNotFoundException {
         String drl = "";
-        drl += "package org.test\n";
+        drl += "package org.drools.compiler.test\n";
         drl += "import org.drools.compiler.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
@@ -4768,7 +4768,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testDynamicallyAddInitialFactRule() throws Exception {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.drools.compiler.test\n" +
                       "global java.util.List list\n" +
                       "rule xxx when\n" +
                       "   i:Integer()\n" +
@@ -4788,7 +4788,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
 
-        rule = "package org.drools.test\n" +
+        rule = "package org.drools.compiler.test\n" +
                "global java.util.List list\n" +
                "rule xxx when\n" +
                "then\n" +
@@ -7546,7 +7546,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testEventsInDifferentPackages() {
-        String str = "package org.drools.test\n" +
+        String str = "package org.drools.compiler.test\n" +
                      "import org.drools.compiler.*\n" +
                      "declare StockTick\n" +
                      "    @role( event )\n" +
@@ -7674,7 +7674,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testJBRULES2872() {
-        String str = "package org.drools.test\n" +
+        String str = "package org.drools.compiler.test\n" +
                      "import org.drools.compiler.FactA\n" +
                      "rule X\n" +
                      "when\n" +
@@ -8456,7 +8456,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testCircularDeclaration() throws Exception {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.drools.compiler.test\n" +
                       "declare FactA\n" +
                       "    fieldB: FactB\n" +
                       "end\n" +
@@ -8472,9 +8472,9 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType aType = kbase.getFactType( "org.drools.test", "FactA" );
+        FactType aType = kbase.getFactType( "org.drools.compiler.test", "FactA" );
         Object a = aType.newInstance();
-        FactType bType = kbase.getFactType( "org.drools.test", "FactB" );
+        FactType bType = kbase.getFactType( "org.drools.compiler.test", "FactB" );
         Object b = bType.newInstance();
         aType.set( a, "fieldB", b );
         bType.set( b, "fieldA", a );
@@ -8631,7 +8631,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testMVELTypeCoercion() {
-        String str = "package org.drools.test; \n" +
+        String str = "package org.drools.compiler.test; \n" +
                      "\n" +
                      "global java.util.List list;" +
                      "\n" +
@@ -8707,7 +8707,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testPatternOffset() throws Exception {
         // JBRULES-3427
-        String str = "package org.drools.test; \n" +
+        String str = "package org.drools.compiler.test; \n" +
                      "declare A\n" +
                      "end\n" +
                      "declare B\n" +
@@ -8729,9 +8729,9 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType typeA = kbase.getFactType( "org.drools.test", "A" );
-        FactType typeB = kbase.getFactType( "org.drools.test", "B" );
-        FactType typeC = kbase.getFactType( "org.drools.test", "C" );
+        FactType typeA = kbase.getFactType( "org.drools.compiler.test", "A" );
+        FactType typeB = kbase.getFactType( "org.drools.compiler.test", "B" );
+        FactType typeC = kbase.getFactType( "org.drools.compiler.test", "C" );
 
         Object a = typeA.newInstance();
         ksession.insert( a );
@@ -8874,7 +8874,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testVariableBindingWithOR() throws Exception {
         // JBRULES-3390
-        String str1 = "package org.drools.test; \n" +
+        String str1 = "package org.drools.compiler.test; \n" +
                       "declare A\n" +
                       "end\n" +
                       "declare B\n" +
@@ -8895,7 +8895,7 @@ public class MiscTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ), ResourceType.DRL );
         assertTrue( kbuilder.hasErrors() );
 
-        String str2 = "package org.drools.test; \n" +
+        String str2 = "package org.drools.compiler.test; \n" +
                       "declare A\n" +
                       "end\n" +
                       "declare B\n" +
@@ -9134,7 +9134,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testBindingToNullFieldWithEquality() {
         // JBRULES-3396
-        String str = "package org.drools.test; \n" +
+        String str = "package org.drools.compiler.test; \n" +
                      "\n" +
                      "global java.util.List list;" +
                      "\n" +
@@ -9176,7 +9176,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testCoercionOfStringValueWithoutQuotes() throws Exception {
         // JBRULES-3080
-        String str = "package org.drools.test; \n" +
+        String str = "package org.drools.compiler.test; \n" +
                      "declare A\n" +
                      "   field : String\n" +
                      "end\n" +
@@ -9188,7 +9188,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType typeA = kbase.getFactType( "org.drools.test", "A" );
+        FactType typeA = kbase.getFactType( "org.drools.compiler.test", "A" );
         Object a = typeA.newInstance();
         typeA.set( a, "field", "12" );
         ksession.insert( a );
@@ -9199,7 +9199,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testVarargConstraint() throws Exception {
         // JBRULES-3268
-        String str = "package org.drools.test;\n" +
+        String str = "package org.drools.compiler.test;\n" +
                      "import " + MiscTest.class.getName() + ".VarargBean;\n" +
                      " global java.util.List list;\n" +
                      "\n" +
@@ -9235,7 +9235,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testPackageImportWithMvelDialect() throws Exception {
         // JBRULES-2244
-        String str = "package org.drools.test;\n" +
+        String str = "package org.drools.compiler.test;\n" +
                      "import org.drools.compiler.*\n" +
                      "dialect \"mvel\"\n" +
                      "rule R1 no-loop when\n" +
@@ -9277,7 +9277,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testMissingClosingBraceOnModify() throws Exception {
         // JBRULES-3436
-        String str = "package org.drools.test;\n" +
+        String str = "package org.drools.compiler.test;\n" +
                      "import org.drools.compiler.*\n" +
                      "rule R1 when\n" +
                      "   $p : Person( )" +
@@ -9294,7 +9294,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testPrimitiveToBoxedCoercionInMethodArgument() throws Exception {
-        String str = "package org.drools.test;\n" +
+        String str = "package org.drools.compiler.test;\n" +
                      "import " + MiscTest.class.getName() + "\n" +
                      "import org.drools.compiler.*\n" +
                      "rule R1 when\n" +
@@ -9634,7 +9634,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testEntryPointWithVarIN() {
-        String str = "package org.drools.test;\n" +
+        String str = "package org.drools.compiler.test;\n" +
                      "\n" +
                      "global java.util.List list;\n" +
                      "\n" +
@@ -10181,7 +10181,7 @@ public class MiscTest extends CommonTestMethodBase {
     public void testRemoveBigRule() throws Exception {
         // JBRULES-3496
         String str =
-                "package org.test\n" +
+                "package org.drools.compiler.test\n" +
                         "\n" +
                         "declare SimpleFact\n" +
                         "   patientSpaceId : String\n" +

@@ -205,12 +205,12 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         verify( ael, times( 15 ) ).matchCreated(any(MatchCreatedEvent.class));
         verify( ael, never() ).matchCancelled(any(MatchCancelledEvent.class));
 
-        kbase.removeRule( "org.drools.test",
+        kbase.removeRule( "org.drools.compiler.test",
                           "Who likes Stilton" );
 
         verify( ael, times( 3 ) ).matchCancelled(any(MatchCancelledEvent.class));
 
-        kbase.removeRule( "org.drools.test",
+        kbase.removeRule( "org.drools.compiler.test",
                           "like cheese" );
 
         verify( ael, times( 7 ) ).matchCancelled(any(MatchCancelledEvent.class));
@@ -221,7 +221,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         verify( ael, times( 16 ) ).matchCreated(any(MatchCreatedEvent.class));
 
-        kbase.removeKnowledgePackage( "org.drools.test" );
+        kbase.removeKnowledgePackage( "org.drools.compiler.test" );
         verify( ael, times( 16 ) ).matchCancelled(any(MatchCancelledEvent.class));
 
         kbase = SerializationHelper.serializeObject( kbase );
@@ -242,17 +242,17 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 5,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeRule( "org.drools.test",
+        kbase.removeRule( "org.drools.compiler.test",
                           "Who likes Stilton" );
         assertEquals( 4,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeRule( "org.drools.test",
+        kbase.removeRule( "org.drools.compiler.test",
                           "like cheese" );
         assertEquals( 3,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
-        kbase.removeKnowledgePackage( "org.drools.test" );
+        kbase.removeKnowledgePackage( "org.drools.compiler.test" );
         assertEquals( 0,
                       kbase.getKnowledgePackages().size() );
     }
@@ -283,7 +283,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         // Check a function can be removed from a package.
         // Once removed any efforts to use it should throw an Exception
-        kbase.removeFunction( "org.drools.test",
+        kbase.removeFunction( "org.drools.compiler.test",
                               "addFive" );
 
         final Cheese cheddar = new Cheese( "cheddar",
@@ -947,6 +947,9 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder( conf );
             builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_EnumSerialization.drl" ) ),
                          ResourceType.DRL );
+            if ( builder.hasErrors() ) {
+                fail( builder.getErrors().toString() );
+            }
             Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
             KnowledgePackage pkg = pkgs.iterator().next();
 

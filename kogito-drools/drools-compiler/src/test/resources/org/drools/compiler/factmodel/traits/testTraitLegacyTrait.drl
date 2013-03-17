@@ -1,4 +1,4 @@
-package org.test;
+package org.drools.compiler.test;
 
 
 // Entity is an empty traitable, based solely on a property map.

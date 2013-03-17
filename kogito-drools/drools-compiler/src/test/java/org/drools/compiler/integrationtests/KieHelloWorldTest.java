@@ -1,4 +1,4 @@
-package org.drools.compiler.integrationtests;
+package org.drools.compiler.integrationtests.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
@@ -25,7 +25,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
     @Test
     public void testHelloWorld() throws Exception {
-        String drl = "package org.drools\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
@@ -46,7 +47,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
     @Test
     public void testHelloWorldWithEmptyFile() throws Exception {
-        String drl = "package org.drools\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
@@ -69,7 +71,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
     @Test
     public void testFailingHelloWorld() throws Exception {
-        String drl = "package org.drools\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
                 "   $m : Message( mesage == \"Hello World\" )\n" +
                 "then\n" +
@@ -86,13 +89,15 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
     @Test
     public void testHelloWorldWithPackages() throws Exception {
-        String drl1 = "package org.drools\n" +
+        String drl1 = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
-        String drl2 = "package org.drools\n" +
+        String drl2 = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R2 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
@@ -119,13 +124,15 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
     @Test
     public void testHelloWorldWithWildcardPackages() throws Exception {
-        String drl1 = "package org.drools\n" +
+        String drl1 = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
-        String drl2 = "package org.drools\n" +
+        String drl2 = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R2 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
@@ -205,7 +212,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     }
 
     private void buildVersion(KieServices ks, String message, String version) {
-        String drl = "package org.drools\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
                 "   $m : Message( message == \"" + message+ "\" )\n" +
                 "then\n" +
@@ -222,7 +230,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
     @Test
     public void testHelloWorldWithPackagesAnd2KieBases() throws Exception {
-        String drl1 = "package org.drools\n" +
+        String drl1 = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R11 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
@@ -232,7 +241,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        String drl2 = "package org.drools\n" +
+        String drl2 = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R21 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +

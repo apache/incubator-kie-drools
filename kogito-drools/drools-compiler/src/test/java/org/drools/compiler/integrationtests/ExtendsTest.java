@@ -172,7 +172,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     public void testExtendsLegacy() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtLegacy.drl",0);
 
-        FactType leg = ksession.getKieBase().getFactType("org.drools","BetterLegacy");
+        FactType leg = ksession.getKieBase().getFactType("org.drools.compiler","BetterLegacy");
         assertNotNull(leg);
 
         Object b = leg.newInstance();
@@ -415,7 +415,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     @Test
     public void testExtendFromOtherPackage() throws Exception {
 
-        String s1 = "package org.drools.test.pack1;\n" +
+        String s1 = "package org.drools.compiler.test.pack1;\n" +
                 "\n" +
                 "declare Base\n" +
                 "  id    : int\n" +
@@ -425,10 +425,10 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "  field : int\n" +
                 "end\n";
 
-        String s2 = "package org.drools.test.pack2;\n" +
+        String s2 = "package org.drools.compiler.test.pack2;\n" +
                 "\n" +
-                "import org.drools.test.pack1.Base;\n" +
-                "import org.drools.test.pack1.Sub;\n" +
+                "import org.drools.compiler.test.pack1.Base;\n" +
+                "import org.drools.compiler.test.pack1.Sub;\n" +
                 "\n" +
                 "declare Sub end\n" +
                 "\n" +
@@ -488,7 +488,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     @Test
     public void testInheritAnnotationsInOtherPackage() throws Exception {
 
-        String s1 = "package org.drools.test.pack1;\n" +
+        String s1 = "package org.drools.compiler.test.pack1;\n" +
                 "global java.util.List list;" +
                 "\n" +
                 "declare Event\n" +
@@ -505,9 +505,9 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "end";
 
 
-        String s2 = "package org.drools.test.pack2;\n" +
+        String s2 = "package org.drools.compiler.test.pack2;\n" +
                 "\n" +
-                "import org.drools.test.pack1.Event;\n" +
+                "import org.drools.compiler.test.pack1.Event;\n" +
                 "global java.util.List list;" +
                 "\n" +
                 "declare Event end\n" +

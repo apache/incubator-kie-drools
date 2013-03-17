@@ -841,7 +841,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         // JBRULES-3482
         // once this compils, update it to actually assert on correct outputs.
         
-        String rule = "package org.drools.test;\n" +
+        String rule = "package org.drools.compiler.test;\n" +
                       "import org.drools.compiler.Cheese;\n" +
                       "import org.drools.compiler.Person;\n" +
                         
@@ -865,7 +865,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     @Test (timeout = 10000)
     public void testAccumulateWithSameSubnetwork() throws Exception {
-        String rule = "package org.drools.test;\n" +
+        String rule = "package org.drools.compiler.test;\n" +
                 "import org.drools.compiler.Cheese;\n" +
                 "import org.drools.compiler.Person;\n" +
                 "global java.util.List list; \n" +
@@ -1778,7 +1778,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     @Test (timeout = 10000)
     public void testAccumulateMinMax() throws Exception {
-        String drl = "package org.drools.test \n" +
+        String drl = "package org.drools.compiler.test \n" +
                      "import org.drools.compiler.Cheese \n" +
                      "global java.util.List results \n " +
                      "rule minMax \n" +
@@ -2012,7 +2012,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test(timeout = 5000)
     public void testInfiniteLoopAddingPkgAfterSession() throws Exception {
         // JBRULES-3488
-        String rule = "package org.drools.test;\n" +
+        String rule = "package org.drools.compiler.test;\n" +
         "import " + AccumulateTest.Triple.class.getCanonicalName() + ";\n" +
         "rule \"accumulate 2 times\"\n" +
         "when\n" +

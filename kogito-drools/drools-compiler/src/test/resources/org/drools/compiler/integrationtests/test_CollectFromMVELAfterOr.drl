@@ -1,6 +1,6 @@
-package org.drools.test;
+package org.drools.compiler.test;
 
-import org.drools.Address;
+import org.drools.compiler.Address;
 import org.drools.compiler.Person;
 import java.util.ArrayList;
 

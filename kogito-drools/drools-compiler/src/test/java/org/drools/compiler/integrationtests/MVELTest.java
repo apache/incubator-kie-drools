@@ -246,8 +246,8 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testArrays() throws Exception {
         String text = "package test_mvel;\n";
-        text += "import TestObject;\n";
-        text += "import function TestObject.array;\n";;
+        text += "import " + TestObject.class.getCanonicalName() + ";\n";
+        text += "import function " + TestObject.class.getCanonicalName() + ".array;\n";
         text += "no-loop true\n";
         text += "dialect \"mvel\"\n";
         text += "rule \"1\"\n";
@@ -318,7 +318,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testSizeCheckInObject() {
         String str = ""+
-        "package org.test \n" +
+        "package org.drools.compiler.test \n" +
         "import " + Triangle.class.getCanonicalName() + "\n" +
         //"import " + Address.class.getCanonicalName() + "\n" +
         "global java.util.List list \n" +
@@ -374,7 +374,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testNestedEnum() {
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "import " + Triangle.class.getCanonicalName() + "\n" +
            "global java.util.List list \n" +
            "rule \"show\" \n" + 
@@ -407,7 +407,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testNestedEnumWithMap() {
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "import " + DMap.class.getCanonicalName() + " \n" +
            "import " + Triangle.class.getCanonicalName() + "\n" +
            "global java.util.List list \n" +
@@ -444,7 +444,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testNewConstructor() {
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
            "import " + Address.class.getCanonicalName() + "\n" +
            "global java.util.List list \n" +
@@ -500,7 +500,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testArrayAccessorWithGenerics() {
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
            "import " + Address.class.getCanonicalName() + "\n" +
            "global java.util.List list \n" +
@@ -563,7 +563,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testArrayAccessorWithStaticFieldAccess() {
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
            "import " + Address.class.getCanonicalName() + "\n" +
            "import " + Triangle.class.getCanonicalName() + "\n" +
@@ -626,7 +626,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testMapAccessorWithStaticFieldAccess() {
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
            "import " + Address.class.getCanonicalName() + "\n" +
            "import " + TestEnum.class.getCanonicalName() + "\n" +
@@ -690,7 +690,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testArrayAccessorWithoutGenerics() {
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "import " + Person.class.getCanonicalName() + "\n" +
            "import " + Address.class.getCanonicalName() + "\n" +
            "global java.util.List list \n" +
@@ -716,7 +716,7 @@ public class MVELTest extends CommonTestMethodBase {
     @Ignore("Added 30-APR-2011 -Rikkola-")
     public void testNestedEnumFromJar() {
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "import org.kie.examples.eventing.EventRequest \n" +
            "global java.util.List list \n" +
            "rule 'zaa'\n  " +
