@@ -1,7 +1,7 @@
 package org.test;
 
 import java.util.List;
-import org.drools.factmodel.traits.Traitable;
+import org.drools.core.factmodel.traits.Traitable;
 
 global List trueTraits;
 global List untrueTraits;

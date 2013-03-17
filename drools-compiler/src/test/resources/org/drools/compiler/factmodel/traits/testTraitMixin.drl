@@ -1,8 +1,8 @@
 package org.test;
 
-import org.drools.factmodel.traits.Entity;
+import org.drools.core.factmodel.traits.Entity;
 
-import org.drools.factmodel.traits.ISomethingWithBehaviour
+import org.drools.core.factmodel.traits.ISomethingWithBehaviour
 import org.drools.compiler.factmodel.traits.ISomethingWithBehaviour;
 
 

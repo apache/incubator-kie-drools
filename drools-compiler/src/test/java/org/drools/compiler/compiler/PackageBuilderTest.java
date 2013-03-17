@@ -1013,7 +1013,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     @Test
     public void testTypeDeclaration() throws Exception {
-        PackageDescr pkgDescr = new PackageDescr( "org.drools" );
+        PackageDescr pkgDescr = new PackageDescr( "org.drools.compiler" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
         typeDescr.addAnnotation( TypeDeclaration.Role.ID,
                                     "event" );

@@ -1,8 +1,8 @@
 package org.test;
  
  
-import org.drools.factmodel.traits.Thing;
-import org.drools.factmodel.traits.Entity;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Entity;
 import java.util.*;
 
 

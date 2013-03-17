@@ -92,7 +92,8 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     String readMethod = declarations[i].getNativeReadMethodName();
                     boolean isObject = readMethod.equals("getValue");
                     String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarations[i].getTypeName());
-                    mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/core/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
+                    mv.visitMethodInsn(INVOKEVIRTUAL, Declaration.class.getName().replace('.', '/'), readMethod,
+                                       "(L" + InternalWorkingMemory.class.getName().replace('.', '/')+";Ljava/lang/Object;)" + returnedType);
                     if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarations[i].getTypeName()));
                     offset += store(objPos, declarations[i].getTypeName()); // obj[i]
 
@@ -107,12 +108,12 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 }
 
                 // @{ruleClassName}.@{methodName}(KnowledgeHelper, @foreach{declr : declarations} Object, FactHandle @end)
-                StringBuilder consequenceMethodDescr = new StringBuilder("(Lorg/drools/core/spi/KnowledgeHelper;");
+                StringBuilder consequenceMethodDescr = new StringBuilder("(L" + KnowledgeHelper.class.getName().replace('.', '/')+ ";");
                 mv.visitVarInsn(ALOAD, 1); // KnowledgeHelper
                 for (int i = 0; i < declarations.length; i++) {
                     load(paramsPos[i] + 1); // obj[i]
                     mv.visitVarInsn(ALOAD, paramsPos[i]); // fact[i]
-                    consequenceMethodDescr.append(typeDescr(declarations[i].getTypeName())).append("Lorg/drools/FactHandle;");
+                    consequenceMethodDescr.append(typeDescr(declarations[i].getTypeName())).append("L" + FactHandle.class.getName().replace('.', '/') + ";" );
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
