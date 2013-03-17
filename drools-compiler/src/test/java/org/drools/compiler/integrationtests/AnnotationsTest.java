@@ -89,7 +89,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
     @Test
     public void annotationTest() {
 
-        String drl = "package org.drools.test;\n " +
+        String drl = "package org.drools.compiler.test;\n " +
                      "" +
                      "import org.kie.definition.type.Position; \n " +
                      "import " + AnnotationsTest.class.getCanonicalName() + "; \n" +
@@ -124,7 +124,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
 
-        Class clazz = kbase.getFactType( "org.drools.test",
+        Class clazz = kbase.getFactType( "org.drools.compiler.test",
                                          "AnnotatedBean" ).getFactClass();
         assertNotNull( clazz );
         try {
@@ -166,7 +166,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         assertArrayEquals( new AnnPropEnum[]{AnnPropEnum.ONE, AnnPropEnum.THREE},
                            ann.enumArrProp() );
 
-        Class clazz2 = kbase.getFactType( "org.drools.test",
+        Class clazz2 = kbase.getFactType( "org.drools.compiler.test",
                                           "SecondBean" ).getFactClass();
         assertNotNull( clazz2 );
         Annotation[] anns2 = clazz2.getAnnotations();
@@ -204,7 +204,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
     @Test
     public void annotationErrorTest() {
 
-        String drl = "package org.drools.test;\n " +
+        String drl = "package org.drools.compiler.test;\n " +
                      "" +
                      "declare MissingAnnotationBean \n" +
                      " @IgnoreMissingAnnotation1 \n" +
@@ -218,7 +218,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         assertEquals( 0,
                       kbuilder.getErrors().size() );
 
-        String drl2 = "package org.drools.test;\n " +
+        String drl2 = "package org.drools.compiler.test;\n " +
                       "" +
                       "import " + AnnotationsTest.Annot.class.getCanonicalName() + "; \n" +
                       "" +

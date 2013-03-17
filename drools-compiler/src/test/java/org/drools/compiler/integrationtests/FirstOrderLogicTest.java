@@ -1482,7 +1482,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     public void testLotsOfOrs() throws Exception {
         // Decomposed this test down to just two rules, while still exhibiting the problem
         // Uncomment rest of rule as those are fixed, to complicate it again.
-        String str = "package org.drools.test\n" +
+        String str = "package org.drools.compiler.test\n" +
                 "\n" + 
                 "import " + FirstOrderLogicTest.class.getCanonicalName() + ".Field;\n" + 
                 " \n" + 
@@ -1548,7 +1548,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test 
     public void testOrs() throws Exception {
-        String str = "package org.drools\n" +
+        String str = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getName() + "\n" +
                 "rule X\n" + 
                 "    when\n" +
                 "        Message( message == 'test' )\n" +

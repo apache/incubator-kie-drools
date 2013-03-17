@@ -1,4 +1,4 @@
-package org.test;
+package org.drools.compiler.test;
 
 
 global java.util.List list;

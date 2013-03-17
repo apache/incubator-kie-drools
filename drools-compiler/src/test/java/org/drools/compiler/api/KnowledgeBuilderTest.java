@@ -28,7 +28,7 @@ public class KnowledgeBuilderTest {
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         String str = "";
-        str += "package org.test1\n";
+        str += "package org.drools.compiler.test1\n";
         str += "rule rule1\n";
         str += "when\n";
         str += "then\n";
@@ -39,7 +39,7 @@ public class KnowledgeBuilderTest {
         str += "end\n";
         builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 
-        str = "package org.test2\n";
+        str = "package org.drools.compiler.test2\n";
         str += "rule rule3\n";
         str += "when\n";
         str += "then\n";
@@ -54,7 +54,7 @@ public class KnowledgeBuilderTest {
         assertNotNull( pkgs );
         assertEquals( 2, pkgs.size() );
 
-        KnowledgePackage test1 = getKnowledgePackage(pkgs, "org.test1" );
+        KnowledgePackage test1 = getKnowledgePackage(pkgs, "org.drools.compiler.test1" );
         Collection<Rule> rules = test1.getRules();
         assertEquals( 2, rules.size() );
         Rule rule = getRule( rules, "rule1" );
@@ -62,7 +62,7 @@ public class KnowledgeBuilderTest {
         rule = getRule( rules, "rule2" );
         assertEquals( "rule2", rule.getName() );
 
-        KnowledgePackage test2 = getKnowledgePackage(pkgs, "org.test2" );
+        KnowledgePackage test2 = getKnowledgePackage(pkgs, "org.drools.compiler.test2" );
         rules = test2.getRules();
         assertEquals( 2, rules.size() );
         rule = getRule( rules, "rule3" );

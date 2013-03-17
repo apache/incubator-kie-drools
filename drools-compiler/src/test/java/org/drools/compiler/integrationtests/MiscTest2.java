@@ -589,7 +589,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testPropertyReactiveAccumulateModification() {
         // DROOLS-16
         String str =
-                "package org.drools.test;\n" +
+                "package org.drools.compiler.test;\n" +
                 "\n" +
                 "declare Neuron\n" +
                 "@propertyReactive\n" +
@@ -656,7 +656,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     @Test
     public void testMvelAssignmentToPublicField() {
         String str =
-                "import MiscTest2.Foo\n" +
+                "import " + MiscTest2.Foo.class.getCanonicalName() + "\n" +
                 "rule R\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
@@ -729,7 +729,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testDynamicAddRule() {
         // DROOLS-17
         String str =
-                "import MiscTest2.A\n" +
+                "import " + MiscTest2.A.class.getCanonicalName() + "\n" +
                 "rule r1 when\n" +
                 "    $a : A( f1 == 1 )\n" +
                 "then\n" +
@@ -746,7 +746,7 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "end";
 
         String str2 =
-                "import MiscTest2.A\n" +
+                "import " + MiscTest2.A.class.getCanonicalName() + "\n" +
                 "rule r4 when\n" +
                 "    $a : A( f2 == 1, f4 == 1 )" +
                 "then\n" +
@@ -852,8 +852,9 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "\n" +
                 "import java.util.Map;\n" +
                 "import java.util.EnumMap;\n" +
-                "import MiscTest2.Parameter\n" +
-                "import MiscTest2.DataSample\n" +
+                "import " + MiscTest2.Parameter.class.getCanonicalName() + "\n" +
+                "import " + MiscTest2.DataSample.class.getCanonicalName() + "\n" +
+                "import " + DataSample.class.getCanonicalName() + "\n" +
                 "\n" +
                 "declare TestObject\n" +
                 "    data    :   java.util.Map\n" +
@@ -893,8 +894,8 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "\n" +
                 "import java.util.Map;\n" +
                 "import java.util.EnumMap;\n" +
-                "import MiscTest2.Parameter\n" +
-                "import MiscTest2.DataSample\n" +
+                "import " + MiscTest2.Parameter.class.getCanonicalName() + "\n" +
+                "import " + MiscTest2.DataSample.class.getCanonicalName() + "\n" +
                 "\n" +
                 "declare Recommendation\n" +
                 "    parameter : Parameter\n" +
@@ -961,8 +962,8 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testMvelResolvingGenericVariableDeclaredInParentClass() {
         // JBRULES-3684
         String str =
-                "import MiscTest2.AbstractBase\n" +
-                "import MiscTest2.StringConcrete\n" +
+                "import " + MiscTest2.AbstractBase.class.getCanonicalName() + "\n" +
+                "import " + MiscTest2.StringConcrete.class.getCanonicalName() + "\n" +
                 "rule \"test\"\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
@@ -1023,7 +1024,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testDeclaredTypeExtendingInnerClass() {
         // DROOLS-27
         String str =
-                "import MiscTest2.StaticPerson\n" +
+                "import " + MiscTest2.StaticPerson.class.getCanonicalName() + "\n" +
                 "declare StaticPerson end\n"+
                 "declare Student extends StaticPerson end\n"+
                 "rule Init when\n" +
@@ -1088,7 +1089,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testJitConstraintWithOperationOnBigDecimal() {
         // DROOLS-32
         String str =
-                "import MiscTest2.Model;\n" +
+                "import " + MiscTest2.Model.class.getCanonicalName() + "\n" +
                 "import java.math.BigDecimal;\n" +
                 "\n" +
                 "rule \"minCost\" dialect \"mvel\" \n" +
@@ -1134,7 +1135,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testJitComparable() {
         // DROOLS-37
         String str =
-                "import MiscTest2.IntegerWrapperImpl;\n" +
+                "import " + MiscTest2.IntegerWrapperImpl.class.getCanonicalName() + "\n" +
                 "\n" +
                 "rule \"minCost\"\n" +
                 "when\n" +

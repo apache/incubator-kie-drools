@@ -75,12 +75,12 @@ public class TripleBasedTraitsTest {
         TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES, kb );
 
         try {
-        FactType impClass = kb.getFactType("org.test","Imp");
+        FactType impClass = kb.getFactType("org.drools.compiler.test","Imp");
         TraitableBean imp = (TraitableBean) impClass.newInstance();
                 impClass.set(imp, "name", "aaabcd");
 
-            Class trait = kb.getFactType("org.test","Student").getFactClass();
-            Class trait2 = kb.getFactType("org.test","Role").getFactClass();
+            Class trait = kb.getFactType("org.drools.compiler.test","Student").getFactClass();
+            Class trait2 = kb.getFactType("org.drools.compiler.test","Role").getFactClass();
 
             assertNotNull( trait);
 

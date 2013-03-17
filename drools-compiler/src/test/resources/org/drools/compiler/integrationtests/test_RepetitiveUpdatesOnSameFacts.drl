@@ -1,11 +1,11 @@
-package org.drools.integrationtests
+package org.drools.compiler.integrationtests
 dialect "java" 
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import org.drools.integrationtests.TruthMaintenanceTest.ShiftAssignment;
-import org.drools.integrationtests.TruthMaintenanceTest.IntervalRequirement;
+import org.drools.compiler.integrationtests.TruthMaintenanceTest.ShiftAssignment;
+import org.drools.compiler.integrationtests.TruthMaintenanceTest.IntervalRequirement;
 
 global java.util.List totallyCovered
 global java.util.List notCovered

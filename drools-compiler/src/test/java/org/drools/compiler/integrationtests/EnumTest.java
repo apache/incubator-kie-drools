@@ -115,7 +115,7 @@ public class EnumTest extends CommonTestMethodBase {
                 "  System.out.println( $bx );\n" +
                 "end";
 
-        String str2 = "package org.test2; \n" +
+        String str2 = "package org.drools.compiler.test2; \n" +
                         "" +
                         "declare Naeb \n" +
                         "   fld : String \n" +

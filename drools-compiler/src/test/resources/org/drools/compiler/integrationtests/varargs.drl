@@ -1,4 +1,4 @@
-package org.drools.test
+package org.drools.compiler.test
 
 import org.drools.integrationtests.VarargsTest.B;
 import org.drools.integrationtests.VarargsTest.Invoker;

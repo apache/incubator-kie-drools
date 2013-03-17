@@ -1,6 +1,6 @@
 package org.drools.integrationtests;
 
-import org.drools.InsertedObject;
+import org.drools.compiler.InsertedObject;
 
 rule rule1
   when

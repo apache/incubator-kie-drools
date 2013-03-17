@@ -38,7 +38,7 @@ public class JavaDialectTest {
     public void testEvalDetectionInAlphaNode() {
         // Tests evals are generated and executed with Java dialect
         String drl = "";
-        drl += "package org.test\n";
+        drl += "package org.drools.compiler.test\n";
         drl += "import org.drools.compiler.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
@@ -89,7 +89,7 @@ public class JavaDialectTest {
         // Tests evals are generated and executed with Java dialect
         
         String drl = "";
-        drl += "package org.test\n";
+        drl += "package org.drools.compiler.test\n";
         drl += "import org.drools.compiler.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";

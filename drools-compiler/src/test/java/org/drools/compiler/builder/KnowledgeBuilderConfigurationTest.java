@@ -291,16 +291,16 @@ public class KnowledgeBuilderConfigurationTest {
     @Test
     public void testDefaultPackageNameConfiguration() {
         // setting the default dialect using the type safe method
-        config.setOption( DefaultPackageNameOption.get( "org.test" ) );
+        config.setOption( DefaultPackageNameOption.get( "org.drools.compiler.test" ) );
 
         // checking the type safe getOption() method
-        assertEquals( DefaultPackageNameOption.get( "org.test" ),
+        assertEquals( DefaultPackageNameOption.get( "org.drools.compiler.test" ),
                       config.getOption( DefaultPackageNameOption.class ) );
         // checking string conversion
-        assertEquals( "org.test",
+        assertEquals( "org.drools.compiler.test",
                       config.getOption( DefaultPackageNameOption.class ).getPackageName() );
         // checking the string based getProperty() method
-        assertEquals( "org.test",
+        assertEquals( "org.drools.compiler.test",
                       config.getProperty( DefaultPackageNameOption.PROPERTY_NAME ) );
 
         // setting the default dialect using the string based setProperty() method

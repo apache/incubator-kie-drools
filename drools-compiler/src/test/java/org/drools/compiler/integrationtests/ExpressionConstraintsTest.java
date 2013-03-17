@@ -16,8 +16,9 @@ public class ExpressionConstraintsTest extends CommonTestMethodBase {
     
     @Test
     public void testExpressionConstraints1() {
-        String drl = "package org.drools\n" +
-        		     "import org.drools.compiler.Mailbox.FolderType;\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" +
+        		     "import " + Mailbox.FolderType.class.getCanonicalName() + ";\n" +
+                     "import " + Mailbox.class.getCanonicalName() + ";\n" +
         		     "rule R1\n" + 
         		     "        dialect \"mvel\"\n" + 
         		     "    when\n" + 
@@ -51,8 +52,9 @@ public class ExpressionConstraintsTest extends CommonTestMethodBase {
 
     @Test
     public void testExpressionConstraints2() {
-        String drl = "package org.drools\n" +
-                     "import org.drools.compiler.Mailbox.FolderType;\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "import " + Mailbox.FolderType.class.getCanonicalName() + ";\n" +
+                     "import " + Mailbox.class.getCanonicalName() + ";\n" +
                      "rule R1\n" + 
                      "    dialect \"mvel\"\n" + 
                      "    when\n" + 
@@ -91,8 +93,9 @@ public class ExpressionConstraintsTest extends CommonTestMethodBase {
 
     @Test
     public void testExpressionConstraints3() {
-        String drl = "package org.drools\n" +
-                     "import org.drools.compiler.Mailbox.FolderType\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "import " + Mailbox.FolderType.class.getCanonicalName() + ";\n" +
+                     "import " + Mailbox.class.getCanonicalName() + ";\n" +
                      "rule R1\n" + 
                      "    dialect \"mvel\"\n" + 
                      "    when\n" + 
@@ -140,7 +143,9 @@ public class ExpressionConstraintsTest extends CommonTestMethodBase {
 
     @Test
     public void testExpressionConstraints4() {
-        String drl = "package org.drools\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "import " + Mailbox.FolderType.class.getCanonicalName() + ";\n" +
+                     "import " + Mailbox.class.getCanonicalName() + ";\n" +
                      "rule R1\n" + 
                      "        dialect \"mvel\"\n" + 
                      "    when\n" + 

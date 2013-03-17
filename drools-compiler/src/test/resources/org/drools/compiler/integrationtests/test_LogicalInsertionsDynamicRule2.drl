@@ -1,4 +1,4 @@
-package org.drools.test2;
+package org.drools.compiler.test2;
 
 import org.drools.compiler.Person;
 import org.drools.compiler.Cheese;

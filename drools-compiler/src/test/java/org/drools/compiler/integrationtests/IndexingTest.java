@@ -43,7 +43,7 @@ public class IndexingTest extends CommonTestMethodBase {
     @Test
     public void testBuildsIndexedAlphaNodes() {
         String drl = "";
-        drl += "package org.test\n";
+        drl += "package org.drools.compiler.test\n";
         drl += "import org.drools.compiler.Person\n";
         drl += "rule test1\n";
         drl += "when\n";
@@ -84,7 +84,7 @@ public class IndexingTest extends CommonTestMethodBase {
     public void testBuildsIndexedMemory() {
         // tests indexes are correctly built        
         String drl = "";
-        drl += "package org.test\n";
+        drl += "package org.drools.compiler.test\n";
         drl += "import org.drools.compiler.Person\n";
         drl += "global java.util.List list\n";
         drl += "rule test1\n";
@@ -205,7 +205,7 @@ public class IndexingTest extends CommonTestMethodBase {
     @Test
     public void testIndexingOnQueryUnification() throws Exception {
         String str = "";
-        str += "package org.drools.test  \n";
+        str += "package org.drools.compiler.test  \n";
         str += "import org.drools.compiler.Person \n";
         str += "query peeps( String $name, String $likes, String $street) \n";
         str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
@@ -378,7 +378,7 @@ public class IndexingTest extends CommonTestMethodBase {
 
     @Test
     public void testRange2() throws Exception {
-        String rule = "package org.drools.test\n" +
+        String rule = "package org.drools.compiler.test\n" +
                 "declare A\n" +
                 "    a: int\n" +
                 "end\n" +
@@ -399,9 +399,9 @@ public class IndexingTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType aType = kbase.getFactType( "org.drools.test", "A" );
-        FactType bType = kbase.getFactType( "org.drools.test", "B" );
-        FactType cType = kbase.getFactType( "org.drools.test", "C" );
+        FactType aType = kbase.getFactType( "org.drools.compiler.test", "A" );
+        FactType bType = kbase.getFactType( "org.drools.compiler.test", "B" );
+        FactType cType = kbase.getFactType( "org.drools.compiler.test", "C" );
 
         Object a1 = aType.newInstance();
         aType.set( a1, "a", 5 );

@@ -1,8 +1,8 @@
-package org.drools.test;
+package org.drools.compiler.test;
 
-import org.drools.Alarm;
-import org.drools.EmergencyTeam;
-import org.drools.Sensor;
+import org.drools.compiler.Alarm;
+import org.drools.compiler.EmergencyTeam;
+import org.drools.compiler.Sensor;
 
 global java.util.List events;
 

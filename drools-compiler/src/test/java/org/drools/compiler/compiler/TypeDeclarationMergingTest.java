@@ -49,7 +49,7 @@ public class TypeDeclarationMergingTest {
     public void testOverrideFromParentClass() {
         // inherits role, but not typesafe
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "global java.util.List list \n" +
            "declare " + CImpl.class.getCanonicalName() + "\n" +
            "    @typesafe(true)\n" +
@@ -68,7 +68,7 @@ public class TypeDeclarationMergingTest {
     public void testInheritNoneExitenceFromParentClass() {
         // inherits role and typesafe
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "global java.util.List list \n" +
            "declare " + CImpl.class.getCanonicalName() + "\n" +
            "    @typesafe(true)\n" +
@@ -85,7 +85,7 @@ public class TypeDeclarationMergingTest {
     public void testInheritExitenceFromParentClass() {
         // inherits role and typesafe
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "global java.util.List list \n" +
            "declare " + CImpl.class.getCanonicalName() + "\n" +
            "    @typesafe(true)\n" +
@@ -104,7 +104,7 @@ public class TypeDeclarationMergingTest {
     public void testOverrideFromParentInterface() {
         // inherits role but not typesafe
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "global java.util.List list \n" +
            "declare " + IB.class.getCanonicalName() + "\n" +
            "    @typesafe(true)\n" +
@@ -123,7 +123,7 @@ public class TypeDeclarationMergingTest {
     public void testOverrideFromDeeperParentInterface() {
         // inherits role but not typesafe        
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "global java.util.List list \n" +
            "declare " + IA.class.getCanonicalName() + "\n" +
            "    @typesafe(true)\n" +
@@ -142,7 +142,7 @@ public class TypeDeclarationMergingTest {
     public void testOverrideFromDeeperHierarchyParentInterface() {
         // inherits role from and typesafe from the other      
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "global java.util.List list \n" +
            "declare " + IA.class.getCanonicalName() + "\n" +
            "    @typesafe(true)\n" +
@@ -163,7 +163,7 @@ public class TypeDeclarationMergingTest {
     public void testInheritNoneExitenceFromParentInterface() {
         // inherits role and typesafe  
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "global java.util.List list \n" +
            "declare " + IB.class.getCanonicalName() + "\n" +
            "    @typesafe(true)\n" +
@@ -180,7 +180,7 @@ public class TypeDeclarationMergingTest {
     public void testInheritExitenceFromParentInterface() {
         // inherits role and typesafe  
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "global java.util.List list \n" +
            "declare " + IB.class.getCanonicalName() + "\n" +
            "    @typesafe(true)\n" +
@@ -199,7 +199,7 @@ public class TypeDeclarationMergingTest {
     public void testOverrideFromMixedHierarchyParentInterface() {
         // inherits role from and typesafe from the other      
         String str = ""+
-           "package org.test \n" +
+           "package org.drools.compiler.test \n" +
            "global java.util.List list \n" +
            "declare " + IA.class.getCanonicalName() + "\n" +
            "    @typesafe(true)\n" +
@@ -232,7 +232,7 @@ public class TypeDeclarationMergingTest {
         final String eventClassName = PositionAnnotatedEvent.class.getCanonicalName();
         // should add metadata to metadata already defined in POJO
         String str =
-                "package org.test \n" +
+                "package org.drools.compiler.test \n" +
                 "declare " + eventClassName + "\n" +
                 " @role(event)\n" +
                 "end \n" +
