@@ -1,4 +1,4 @@
-package org.drools;
+package org.drools.compiler;
 
 import org.drools.KnowledgeBase;
 import org.drools.core.builder.KnowledgeBuilderErrors;
