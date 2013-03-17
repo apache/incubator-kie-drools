@@ -1,4 +1,4 @@
-package org.drools.integrationtests;
+package org.drools.compiler.integrationtests;
 
 //list any import classes here.
 import org.drools.compiler.FirstClass;

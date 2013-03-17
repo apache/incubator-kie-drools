@@ -27,14 +27,14 @@ tokens {
 }
 
 @lexer::header {
-    package org.drools.lang.dsl;
+    package org.drools.compiler.lang.dsl;
     import java.util.List;
     import java.util.ArrayList;
     import org.drools.compiler.compiler.ParserError;
 }
 
 @parser::header {
-    package org.drools.lang.dsl;
+    package org.drools.compiler.lang.dsl;
     import java.util.List;
     import java.util.ArrayList;
     import java.util.regex.Pattern;

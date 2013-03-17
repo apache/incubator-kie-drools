@@ -593,7 +593,7 @@ public class ExtendsTest extends CommonTestMethodBase {
         // car is a java class with attributes
         // brand (default ferrari)
         // expensive (default true)
-        String s1 = "package org.drools;\n" +
+        String s1 = "package org.drools.compiler;\n" +
                 "global java.util.List list;\n" +
                 "declare Car end\n" +
                 "\n" +

@@ -2469,7 +2469,7 @@ public class CepEspTest extends CommonTestMethodBase {
     public void testExpireEventOnEndTimestamp() throws Exception {
         // DROOLS-40
         String str =
-                "package org.drools;\n" +
+                "package org.drools.compiler;\n" +
                 "\n" +
                 "import org.drools.compiler.StockTick;\n" +
                 "\n" +

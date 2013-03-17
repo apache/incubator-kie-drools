@@ -1,6 +1,6 @@
-package org.drools.integrationtests;
+package org.drools.compiler.integrationtests;
 
-import org.drools.InsertedObject;
+import org.drools.compiler.InsertedObject;
 import java.util.ArrayList;
 
 rule rule1

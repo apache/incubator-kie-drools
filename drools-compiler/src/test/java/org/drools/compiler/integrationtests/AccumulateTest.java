@@ -1874,7 +1874,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test  (timeout = 10000)
     public void testAccumulateAndRetract() {
 
-        String drl = "package org.drools;\n" +
+        String drl = "package org.drools.compiler;\n" +
                 "\n" +
                 "import java.util.ArrayList;\n" +
                 "\n" +
@@ -1976,7 +1976,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     @Test (timeout = 10000)
     public void testAccumulateWithBoundExpression() {
-        String drl = "package org.drools;\n" +
+        String drl = "package org.drools.compiler;\n" +
                 "import AccumulateTest.MyObj;\n" +
                 "global java.util.List results\n" +
                 "rule init\n" +

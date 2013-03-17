@@ -10,7 +10,7 @@ tokens {
 }
 
 @header {
-    package org.drools.lang;
+    package org.drools.compiler.lang;
 
     import org.kie.builder.conf.LanguageLevelOption;
     import org.drools.compiler.compiler.DroolsParserException;
