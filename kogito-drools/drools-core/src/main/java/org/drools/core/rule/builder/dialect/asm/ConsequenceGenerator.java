@@ -122,12 +122,12 @@ public class ConsequenceGenerator {
                 }
 
                 // @{ruleClassName}.@{methodName}(KnowledgeHelper, @foreach{declr : declarations} Object, FactHandle @end)
-                StringBuilder consequenceMethodDescr = new StringBuilder("(Lorg/drools/core/spi/KnowledgeHelper;");
+                StringBuilder consequenceMethodDescr = new StringBuilder("(L" + KnowledgeHelper.class.getName().replace('.', '/') +";");
                 mv.visitVarInsn(ALOAD, 1); // KnowledgeHelper
                 for (int i = 0; i < declarations.length; i++) {
                     load(paramsPos[i] + 1); // obj[i]
                     mv.visitVarInsn(ALOAD, paramsPos[i]); // handle[i]
-                    consequenceMethodDescr.append(typeDescr(declarations[i].getTypeName())).append("Lorg/drools/FactHandle;");
+                    consequenceMethodDescr.append(typeDescr(declarations[i].getTypeName())).append("L" + FactHandle.class.getName().replace('.', '/') + ";");
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );

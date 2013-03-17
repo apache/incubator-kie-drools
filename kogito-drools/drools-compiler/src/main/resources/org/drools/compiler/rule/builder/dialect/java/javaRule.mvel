@@ -1,8 +1,8 @@
 @declare{"returnValueMethod"}
-public static FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
+public static org.drools.core.spi.FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
                                                       @foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
                                                       @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws Exception {
-    return org.drools.base.FieldFactory.getInstance().getFieldValue( @{text} );
+    return org.drools.core.base.FieldFactory.getInstance().getFieldValue( @{text} );
 }
 @end{}
 
@@ -43,7 +43,7 @@ public static class @{className} implements java.io.Serializable {
     }
     
     public void accumulate(org.drools.core.WorkingMemory workingMemory,
-                           org.drools.common.InternalFactHandle handle,
+                           org.drools.core.common.InternalFactHandle handle,
                            org.drools.core.rule.Declaration[] innerDeclarations,
                            Object object @if{declarations != empty}, @end{}
                            @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty},@end{}
@@ -61,7 +61,7 @@ public static class @{className} implements java.io.Serializable {
     }
     
     public void reverse(org.drools.core.WorkingMemory workingMemory,
-                           org.drools.common.InternalFactHandle handle,
+                           org.drools.core.common.InternalFactHandle handle,
                            Object object@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
                            ) throws Exception {

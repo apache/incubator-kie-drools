@@ -81,6 +81,10 @@ public final class ClassUtils {
      * Please do not use - internal
      * org.my.Class -> org/my/Class.class
      */
+    public static String convertClassToResourcePath(final Class cls) {
+        return convertClassToResourcePath(cls.getName());
+    }
+
     public static String convertClassToResourcePath(final String pName) {
         return pName.replace( '.',
                               '/' ) + ".class";
