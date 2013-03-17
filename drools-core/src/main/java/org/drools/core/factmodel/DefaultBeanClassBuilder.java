@@ -294,7 +294,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 //        FieldVisitor fv = cw.visitField( ACC_PRIVATE,
 //                                         TraitableBean.TRAITSET_FIELD_NAME,
 //                                         "Ljava/util/Map;",
-//                                         "Ljava/util/Map<Ljava/lang/String;+Lorg/drools/factmodel/traits/Thing;>;",
+//                                         "Ljava/util/Map<Ljava/lang/String;+Lorg/drools/core/sfactmodel/traits/Thing;>;",
 //                                         null);
 //        fv.visitEnd();
 //
@@ -302,7 +302,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 //        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC,
 //                "getTraits",
 //                "()Ljava/util/Map;",
-//                "()Ljava/util/Map<Ljava/lang/String;+Lorg/drools/factmodel/traits/Thing;>;",
+//                "()Ljava/util/Map<Ljava/lang/String;+Lorg/drools/core/factmodel/traits/Thing;>;",
 //                null);
 //
 //        mv.visitCode();
@@ -316,13 +316,13 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         FieldVisitor fv = cw.visitField( ACC_PRIVATE,
                 TraitableBean.TRAITSET_FIELD_NAME,
                 "Ljava/util/Map;",
-                "Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;",
+                "Ljava/util/Map<Ljava/lang/String;Lorg/drools/core/factmodel/traits/Thing;>;",
                 null );
         fv.visitEnd();
 
         MethodVisitor mv;
 
-        mv = cw.visitMethod(ACC_PUBLIC, "getTraitMap", "()Ljava/util/Map;", "()Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;", null);
+        mv = cw.visitMethod(ACC_PUBLIC, "getTraitMap", "()Ljava/util/Map;", "()Ljava/util/Map<Ljava/lang/String;Lorg/drools/core/factmodel/traits/Thing;>;", null);
         mv.visitCode();
 //        mv.visitVarInsn(ALOAD, 0);
 //        mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
@@ -351,7 +351,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         mv.visitEnd();
 
 
-        mv = cw.visitMethod(ACC_PUBLIC, "addTrait", "(Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;)V", "(Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;)V", null);
+        mv = cw.visitMethod(ACC_PUBLIC, "addTrait", "(Ljava/lang/String;Lorg/drools/core/factmodel/traits/Thing;)V", "(Ljava/lang/String;Lorg/drools/core/factmodel/traits/Thing;)V", null);
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getName() ), "getTraitMap", "()Ljava/util/Map;");
@@ -364,13 +364,13 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         mv.visitEnd();
 
 
-        mv = cw.visitMethod(ACC_PUBLIC, "getTrait", "(Ljava/lang/String;)Lorg/drools/factmodel/traits/Thing;", "(Ljava/lang/String;)Lorg/drools/factmodel/traits/Thing;", null);
+        mv = cw.visitMethod(ACC_PUBLIC, "getTrait", "(Ljava/lang/String;)Lorg/drools/core/factmodel/traits/Thing;", "(Ljava/lang/String;)Lorg/drools/core/factmodel/traits/Thing;", null);
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getName() ), "getTraitMap", "()Ljava/util/Map;");
         mv.visitVarInsn(ALOAD, 1);
         mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
-        mv.visitTypeInsn(CHECKCAST, "org/drools/factmodel/traits/Thing");
+        mv.visitTypeInsn(CHECKCAST, "org/drools/core/factmodel/traits/Thing");
         mv.visitInsn(ARETURN);
         mv.visitMaxs(2, 2);
         mv.visitEnd();
@@ -394,13 +394,13 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         mv.visitEnd();
 
 
-        mv = cw.visitMethod(ACC_PUBLIC, "removeTrait", "(Ljava/lang/String;)Lorg/drools/factmodel/traits/Thing;", "(Ljava/lang/String;)Lorg/drools/factmodel/traits/Thing;", null);
+        mv = cw.visitMethod(ACC_PUBLIC, "removeTrait", "(Ljava/lang/String;)Lorg/drools/core/factmodel/traits/Thing;", "(Ljava/lang/String;)Lorg/drools/core/factmodel/traits/Thing;", null);
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getName() ), "getTraitMap", "()Ljava/util/Map;");
         mv.visitVarInsn(ALOAD, 1);
         mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "remove", "(Ljava/lang/Object;)Ljava/lang/Object;");
-        mv.visitTypeInsn(CHECKCAST, "org/drools/factmodel/traits/Thing");
+        mv.visitTypeInsn(CHECKCAST, "org/drools/core/factmodel/traits/Thing");
         mv.visitInsn(ARETURN);
         mv.visitMaxs(2, 2);
         mv.visitEnd();

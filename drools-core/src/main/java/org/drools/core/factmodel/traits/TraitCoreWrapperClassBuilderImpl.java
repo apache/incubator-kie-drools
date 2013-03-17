@@ -74,7 +74,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             fv.visitEnd();
         }
         {
-            fv = cw.visitField( ACC_PRIVATE, TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ), "Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;", null );
+            fv = cw.visitField( ACC_PRIVATE, TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ), "Ljava/util/Map<Ljava/lang/String;Lorg/drools/core/factmodel/traits/Thing;>;", null );
             fv.visitEnd();
         }
 
@@ -154,7 +154,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
         if ( coreKlazz == null || needsMethod( coreKlazz, "getTraitMap" ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "getTraitMap", "()" + Type.getDescriptor( Map.class ),
-                        "()Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;", null );
+                        "()Ljava/util/Map<Ljava/lang/String;Lorg/drools/core/factmodel/traits/Thing;>;", null );
                 mv.visitCode();
                 mv.visitVarInsn( ALOAD, 0 );
                 mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );

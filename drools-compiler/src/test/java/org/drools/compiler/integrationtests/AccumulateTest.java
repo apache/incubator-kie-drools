@@ -1825,7 +1825,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     
     @Test  (timeout = 10000)
     public void testAccumulateCE() throws Exception {
-        String drl = "package org.drools\n" +
+        String drl = "package org.drools.compiler\n" +
         		     "global java.util.List results\n" +
         		     "rule \"ocount\"\n" + 
         		     "when\n" + 
@@ -1977,7 +1977,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test (timeout = 10000)
     public void testAccumulateWithBoundExpression() {
         String drl = "package org.drools.compiler;\n" +
-                "import AccumulateTest.MyObj;\n" +
+                "import " + AccumulateTest.MyObj.class.getCanonicalName() + ";\n" +
                 "global java.util.List results\n" +
                 "rule init\n" +
                 "   when\n" +
@@ -2013,7 +2013,7 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testInfiniteLoopAddingPkgAfterSession() throws Exception {
         // JBRULES-3488
         String rule = "package org.drools.test;\n" +
-        "import AccumulateTest.Triple;\n" +
+        "import " + AccumulateTest.Triple.class.getCanonicalName() + ";\n" +
         "rule \"accumulate 2 times\"\n" +
         "when\n" +
         "  $LIST : java.util.List( )" +

@@ -312,7 +312,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testModifyOnEntryPointFacts() throws Exception {
-        String str = "package org.drools\n" +
+        String str = "package org.drools.compiler\n" +
                      "declare StockTick\n" +
                      "        @role ( event )\n" +
                      "end\n" +
@@ -380,7 +380,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testEntryPointWithAccumulateAndMVEL() throws Exception {
-        String str = "package org.drools\n" +
+        String str = "package org.drools.compiler\n" +
                 "rule R1 dialect 'mvel'\n" +
                 "    when\n" +
                 "        $n : Number() from accumulate( \n" +
@@ -602,7 +602,7 @@ public class StreamsTest extends CommonTestMethodBase {
     }
 
     public void testWindowDeclaration() throws Exception {
-        String drl = "package org.drools\n" +
+        String drl = "package org.drools.compiler\n" +
                      "declare StockTick\n" +
                      "    @role(event)\n" +
                      "end\n" +
@@ -653,7 +653,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     @Test
     public void testWindowDeclaration2() throws Exception {
-        String drl = "package org.drools\n" +
+        String drl = "package org.drools.compiler\n" +
                      "declare Double\n" + 
                      "    @role(event)\n" + 
                      "end\n" + 
@@ -696,7 +696,7 @@ public class StreamsTest extends CommonTestMethodBase {
     
     @Test
     public void testMultipleWindows() throws Exception {
-        String drl = "package org.drools\n" +
+        String drl = "package org.drools.compiler\n" +
                      "declare StockTick\n" + 
                      "    @role(event)\n" + 
                      "end\n" + 

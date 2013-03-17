@@ -207,17 +207,6 @@ public class TraitTest extends CommonTestMethodBase {
         traitWrapGetAndSet( TraitFactory.VirtualPropertyMode.MAP );
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public void traitShed( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/compiler/factmodel/traits/testTraitShed.drl";
 
@@ -266,14 +255,6 @@ public class TraitTest extends CommonTestMethodBase {
     public void testTraitShedMap() {
         traitShed( TraitFactory.VirtualPropertyMode.MAP );
     }
-
-
-
-
-
-
-
-
 
     public void traitDon( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
@@ -1205,14 +1186,6 @@ public class TraitTest extends CommonTestMethodBase {
         overrideType( TraitFactory.VirtualPropertyMode.MAP );
     }
 
-
-
-
-
-
-
-
-
     public void traitLegacy( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/compiler/factmodel/traits/testTraitLegacyTrait.drl";
 
@@ -1253,13 +1226,6 @@ public class TraitTest extends CommonTestMethodBase {
     public void testLegacyMap() {
         traitLegacy( TraitFactory.VirtualPropertyMode.MAP );
     }
-
-
-
-
-
-
-
 
     public void traitCollections( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/compiler/factmodel/traits/testTraitCollections.drl";
@@ -1343,12 +1309,6 @@ public class TraitTest extends CommonTestMethodBase {
         traitCore( TraitFactory.VirtualPropertyMode.MAP );
     }
 
-
-
-
-
-
-
     public void traitWithEquality( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/compiler/factmodel/traits/testTraitWithEquality.drl";
 
@@ -1413,12 +1373,6 @@ public class TraitTest extends CommonTestMethodBase {
     public void testDeclaredMap() {
         traitDeclared( TraitFactory.VirtualPropertyMode.MAP );
     }
-
-
-
-
-
-
 
     public void traitPojo( TraitFactory.VirtualPropertyMode mode ) {
 
@@ -2396,7 +2350,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     public void traitRedundancy( TraitFactory.VirtualPropertyMode mode ) {
-        String str = "package org.drools.core.factmodel.traits; \n" +
+        String str = "package org.drools.compiler.factmodel.traits; \n" +
                 "global java.util.List list; \n" +
                 "" +
                 "declare trait IStudent end \n" +

@@ -16,19 +16,19 @@ public class IncrementalCompilationTest {
 
     @Test
     public void testIncrementalCompilation() throws Exception {
-        String drl1 = "package org.drools\n" +
+        String drl1 = "package org.drools.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
                 "then\n" +
                 "end\n";
 
-        String drl2_1 = "package org.drools\n" +
+        String drl2_1 = "package org.drools.compiler\n" +
                 "rule R2_1 when\n" +
                 "   $m : Message( message == \"Hi Universe\" )\n" +
                 "then\n" +
                 "end\n";
 
-        String drl2_2 = "package org.drools\n" +
+        String drl2_2 = "package org.drools.compiler\n" +
                 "rule R2_2 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
@@ -58,13 +58,13 @@ public class IncrementalCompilationTest {
 
     @Test
     public void testDeletedFile() throws Exception {
-        String drl1 = "package org.drools\n" +
+        String drl1 = "package org.drools.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
                 "then\n" +
                 "end\n";
 
-        String drl2 = "package org.drools\n" +
+        String drl2 = "package org.drools.compiler\n" +
                 "rule R2_2 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
@@ -94,19 +94,19 @@ public class IncrementalCompilationTest {
 
     @Test
     public void testIncrementalCompilationWithAddedError() throws Exception {
-        String drl1 = "package org.drools\n" +
+        String drl1 = "package org.drools.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
                 "then\n" +
                 "end\n";
 
-        String drl2_1 = "package org.drools\n" +
+        String drl2_1 = "package org.drools.compiler\n" +
                 "rule R2_1 when\n" +
                 "   $m : Message( message == \"Hi Universe\" )\n" +
                 "then\n" +
                 "end\n";
 
-        String drl2_2 = "package org.drools\n" +
+        String drl2_2 = "package org.drools.compiler\n" +
                 "rule R2_2 when\n" +
                 "   $m : Message( mesage == \"Hello World\" )\n" +
                 "then\n" +
@@ -139,19 +139,19 @@ public class IncrementalCompilationTest {
 
     @Test
     public void testIncrementalCompilationWithRemovedError() throws Exception {
-        String drl1 = "package org.drools\n" +
+        String drl1 = "package org.drools.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
                 "then\n" +
                 "end\n";
 
-        String drl2_1 = "package org.drools\n" +
+        String drl2_1 = "package org.drools.compiler\n" +
                 "rule R2_1 when\n" +
                 "   $m : Message( mesage == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
-        String drl2_2 = "package org.drools\n" +
+        String drl2_2 = "package org.drools.compiler\n" +
                 "rule R2_2 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
@@ -181,21 +181,21 @@ public class IncrementalCompilationTest {
     @Test
     public void testIncrementalCompilationAddErrorThenRemoveError() throws Exception {
         //Valid
-        String drl1 = "package org.drools\n" +
+        String drl1 = "package org.drools.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
                 "then\n" +
                 "end\n";
 
         //Field is unknown ("mesage" not "message")
-        String drl2_1 = "package org.drools\n" +
+        String drl2_1 = "package org.drools.compiler\n" +
                 "rule R2_1 when\n" +
                 "   $m : Message( mesage == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
         //Valid
-        String drl2_2 = "package org.drools\n" +
+        String drl2_2 = "package org.drools.compiler\n" +
                 "rule R2_2 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
@@ -227,21 +227,21 @@ public class IncrementalCompilationTest {
     @Test
     public void testIncrementalCompilationAddTwoErrorsThenRemove1Error() throws Exception {
         //Fact Type is unknown ("Mesage" not "Message")
-        String drl1 = "package org.drools\n" +
+        String drl1 = "package org.drools.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Mesage()\n" +
                 "then\n" +
                 "end\n";
 
         //Field is unknown ("mesage" not "message")
-        String drl2_1 = "package org.drools\n" +
+        String drl2_1 = "package org.drools.compiler\n" +
                 "rule R2_1 when\n" +
                 "   $m : Message( mesage == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
         //Valid
-        String drl2_2 = "package org.drools\n" +
+        String drl2_2 = "package org.drools.compiler\n" +
                 "rule R2_2 when\n" +
                 "   $m : Message( message == \"Hello World\" )\n" +
                 "then\n" +
@@ -274,14 +274,14 @@ public class IncrementalCompilationTest {
     @Test
     public void testIncrementalCompilationAddErrorBuildAllMessages() throws Exception {
         //Valid
-        String drl1 = "package org.drools\n" +
+        String drl1 = "package org.drools.compiler\n" +
                 "rule R1 when\n" +
                 "   $m : Message()\n" +
                 "then\n" +
                 "end\n";
 
         //Field is unknown ("mesage" not "message")
-        String drl2_1 = "package org.drools\n" +
+        String drl2_1 = "package org.drools.compiler\n" +
                 "rule R2_1 when\n" +
                 "   $m : Message( mesage == \"Hello World\" )\n" +
                 "then\n" +

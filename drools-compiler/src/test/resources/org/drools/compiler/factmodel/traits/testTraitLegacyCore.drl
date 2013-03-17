@@ -5,9 +5,9 @@ package org.test;
 import org.drools.core.factmodel.traits.Entity;
 import org.drools.core.factmodel.traits.Traitable;
 
-import org.drools.core.factmodel.traits.Imp;
+import org.drools.compiler.factmodel.traits.Imp;
 
-import org.drools.core.factmodel.traits.IRole
+import org.drools.compiler.factmodel.traits.IRole
 import org.drools.compiler.factmodel.traits.Imp
 import org.drools.compiler.factmodel.traits.IRole;
 

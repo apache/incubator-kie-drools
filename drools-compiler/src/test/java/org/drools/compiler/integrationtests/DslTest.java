@@ -193,7 +193,9 @@ public class DslTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newClassPathResource( "test_dslWithIndividualConstraints.dslr", getClass() ) ,
                               ResourceType.DSLR );
 
-        assertFalse( kbuilder.hasErrors() );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
 
         // Check errors
         final String err = kbuilder.getErrors().toString();
