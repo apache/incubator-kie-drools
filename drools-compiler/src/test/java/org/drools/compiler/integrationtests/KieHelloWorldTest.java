@@ -1,4 +1,4 @@
-package org.drools.compiler.integrationtests.compiler.integrationtests;
+package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
