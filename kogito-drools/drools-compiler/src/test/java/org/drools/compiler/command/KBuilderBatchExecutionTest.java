@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.integrationtests.DroolsTest;
 import org.drools.core.command.builder.KnowledgeBuilderAddCommand;
 import org.drools.core.command.builder.KnowledgeBuilderGetErrorsCommand;
 import org.drools.core.command.builder.KnowledgeBuilderGetKnowledgePackagesCommand;
@@ -119,10 +120,10 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         int NUM_FACTS = 5;
         
         String ruleString 
-        = "package org.drools.integrationtests;\n"
+        = "package org.drools.compiler.integrationtests;\n"
         + "import " + KBuilderBatchExecutionTest.class.getCanonicalName() + ";\n"
-        + "import DroolsTest.Foo;\n"
-        + "import DroolsTest.Bar;\n"
+        + "import " + DroolsTest.class.getName() + ".Foo;\n"
+        + "import " + DroolsTest.class.getName() + ".Bar;\n"
         + "rule test\n"
         + "when\n"
         + "      Foo($p : id, id < " + Integer.toString( NUM_FACTS ) + ")\n"
