@@ -162,6 +162,7 @@ public class DynamicRulesChangesTest {
     public static void addRule(String ruleName) throws Exception {
         String rule = rules.get(ruleName);
         PackageBuilder builder = new PackageBuilder();
+        System.out.println( rule );
         builder.addPackageFromDrl(new StringReader(rule));
         ruleBase.addPackage(builder.getPackage());
     }
@@ -170,6 +171,7 @@ public class DynamicRulesChangesTest {
 
     private static Map<String, String> rules = new HashMap<String, String>() {{
         put("raiseAlarm",
+                "import " +  DynamicRulesChangesTest.class.getCanonicalName() + "\n " +
                 "global java.util.List events\n" +
                 "rule \"Raise the alarm when we have one or more fires\" lock-on-active\n" +
                 "when\n" +
@@ -181,6 +183,7 @@ public class DynamicRulesChangesTest {
                 "end");
 
        put("onFire",
+               "import " +  DynamicRulesChangesTest.class.getCanonicalName() + "\n " +
                "global java.util.List events\n" +
                "rule \"When there is a fire turn on the sprinkler\" lock-on-active\n" +
                "when\n" +
@@ -193,6 +196,7 @@ public class DynamicRulesChangesTest {
                "end");
 
         put("fireGone",
+                "import " +  DynamicRulesChangesTest.class.getCanonicalName() + "\n " +
                 "global java.util.List events\n" +
                 "rule \"When the fire is gone turn off the sprinkler\" lock-on-active\n" +
                 "when\n" +
@@ -206,6 +210,7 @@ public class DynamicRulesChangesTest {
                 "end");
 
         put("cancelAlarm",
+                "import " +  DynamicRulesChangesTest.class.getCanonicalName() + "\n " +
                 "global java.util.List events\n" +
                 "rule \"Cancel the alarm when all the fires have gone\"\n" +
                 "when\n" +
@@ -218,6 +223,7 @@ public class DynamicRulesChangesTest {
                 "end");
 
         put("status",
+                "import " +  DynamicRulesChangesTest.class.getCanonicalName() + "\n " +
                 "global java.util.List events\n" +
                 "rule \"Status output when things are ok\"\n" +
                 "when\n" +

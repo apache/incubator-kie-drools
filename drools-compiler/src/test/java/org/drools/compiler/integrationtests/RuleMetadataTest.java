@@ -52,7 +52,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
 
         ConsequenceMetaData.Statement statment2 = consequenceMetaData.getStatements().get(1);
         assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment2.getType());
-        assertEquals("RuleMetadataTest$B", statment2.getFactClassName());
+        assertEquals( RuleMetadataTest.B.class.getName(), statment2.getFactClassName());
         assertEquals(1, statment2.getFields().size());
         ConsequenceMetaData.Field field2 = statment2.getFields().get(0);
         assertEquals("c", field2.getName());
@@ -71,7 +71,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
 
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
         assertEquals(ConsequenceMetaData.Statement.Type.RETRACT, statment.getType());
-        assertEquals("RuleMetadataTest$B", statment.getFactClassName());
+        assertEquals(RuleMetadataTest.B.class.getName(), statment.getFactClassName());
     }
 
     @Test
@@ -131,7 +131,7 @@ public class RuleMetadataTest extends CommonTestMethodBase {
 
         ConsequenceMetaData.Statement statment2 = consequenceMetaData.getStatements().get(1);
         assertEquals(ConsequenceMetaData.Statement.Type.MODIFY, statment2.getType());
-        assertEquals("RuleMetadataTest$B", statment2.getFactClassName());
+        assertEquals(RuleMetadataTest.B.class.getName(), statment2.getFactClassName());
         assertEquals(1, statment2.getFields().size());
         ConsequenceMetaData.Field field2 = statment2.getFields().get(0);
         assertEquals("c", field2.getName());
@@ -176,12 +176,12 @@ public class RuleMetadataTest extends CommonTestMethodBase {
         assertEquals(1, consequenceMetaData.getStatements().size());
         ConsequenceMetaData.Statement statment = consequenceMetaData.getStatements().get(0);
         assertEquals(ConsequenceMetaData.Statement.Type.INSERT, statment.getType());
-        assertEquals("RuleMetadataTest$B", statment.getFactClassName());
+        assertEquals(RuleMetadataTest.B.class.getName(), statment.getFactClassName());
     }
 
     private KnowledgeBase getKnowledgeBase(String... consequences) {
         String rule = "package org.drools\n" +
-                "import RuleMetadataTest.B\n" +
+                "import " + RuleMetadataTest.B.class.getCanonicalName() + "\n" +
                 "global java.util.List list;\n" +
                 "function A getA(A a) {\n" +
                 "    return a;\n" +
