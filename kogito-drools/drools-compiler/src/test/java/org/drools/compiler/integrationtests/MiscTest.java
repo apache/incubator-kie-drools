@@ -8950,10 +8950,10 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testDeclaresWithArrayFields() throws Exception {
         String rule = "package org.drools.compiler.test; \n" +
-                      "import " + Person.class.getName() + ";\n" +
-                      "import " + Man.class.getName() + ";\n" +
+                      "import " + org.drools.compiler.test.Person.class.getName() + ";\n" +
+                      "import " + org.drools.compiler.test.Man.class.getName() + ";\n" +
                       "\n" +
-                      " global java.util.List list;" +
+                      "global java.util.List list;" +
                       "\n" +
                       "declare Cheese\n" +
                       "   name : String = \"ched\" \n" +
@@ -8962,36 +8962,36 @@ public class MiscTest extends CommonTestMethodBase {
                       "declare X\n" +
                       "    fld \t: String   = \"xx\"                                      @key \n" +
                       "    achz\t: Cheese[] \n" +
-                      "    astr\t: String[] \n" + "\t= new String[] {\"x\", \"y11\" } \n" +
+                      "    astr\t: String[] " + " = new String[] {\"x\", \"y11\" } \n" +
                       "    aint\t: int[] \n" +
                       "    sint\t: short[] \n" +
                       "    bint\t: byte[] \n" +
                       "    lint\t: long[] \n" +
                       "    dint\t: double[] \n" +
                       "    fint\t: float[] \n" +
-                      "    zint\t: Integer[] \n" + "\t= new Integer[] {2,3}                   @key \n" +
+                      "    zint\t: Integer[] " + " = new Integer[] {2,3}                   @key \n" +
                       "    aaaa\t: String[][] \n" +
                       "    bbbb\t: int[][] \n" +
-                      "    aprs\t: Person[] \n" + "\t= new Person[] { new Man() }" +
+                      "    aprs\t: Person[] " + " = new org.drools.compiler.test.Person[] { new org.drools.compiler.test.Man() } \n" +
                       "end\n" +
                       "\n" +
                       "rule \"Init\"\n" +
                       "when\n" +
                       "\n" +
                       "then\n" +
-                      "    X x = new X( \"xx\", " +
-                      "                 new Cheese[0], " +
-                      "                 new String[] { \"x\", \"y22\" }, " +
-                      "                 new int[] { 7, 9 }, " +
-                      "                 new short[] { 3, 4 }, " +
-                      "                 new byte[] { 1, 2 }, " +
-                      "                 new long[] { 100L, 200L }, " +
-                      "                 new double[] { 3.2, 4.4 }, " +
-                      "                 new float[] { 3.2f, 4.4f }, " +
-                      "                 new Integer[] { 2, 3 }," +
-                      "                 new String[2][3]," +
-                      "                 new int[5][3]," +
-                      "                 null " +
+                      "    X x = new X( \"xx\", \n" +
+                      "                 new Cheese[0], \n" +
+                      "                 new String[] { \"x\", \"y22\" }, \n" +
+                      "                 new int[] { 7, 9 }, \n" +
+                      "                 new short[] { 3, 4 }, \n" +
+                      "                 new byte[] { 1, 2 }, \n" +
+                      "                 new long[] { 100L, 200L }, \n" +
+                      "                 new double[] { 3.2, 4.4 }, \n" +
+                      "                 new float[] { 3.2f, 4.4f }, \n" +
+                      "                 new Integer[] { 2, 3 }, \n" +
+                      "                 new String[2][3], \n" +
+                      "                 new int[5][3], \n" +
+                      "                 null \n" +
                       "    ); \n" +
                       "   insert( x );\n" +
                       "   " +
@@ -9017,6 +9017,8 @@ public class MiscTest extends CommonTestMethodBase {
                       "    list.add( $x );\n" +
                       "end \n" +
                       "";
+
+        System.out.println( rule );
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
