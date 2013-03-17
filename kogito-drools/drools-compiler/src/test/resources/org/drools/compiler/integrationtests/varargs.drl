@@ -1,7 +1,7 @@
 package org.drools.compiler.test
 
-import org.drools.integrationtests.VarargsTest.B;
-import org.drools.integrationtests.VarargsTest.Invoker;
+import org.drools.compiler.integrationtests.VarargsTest.B;
+import org.drools.compiler.integrationtests.VarargsTest.Invoker;
 
 global Invoker invoker;
 

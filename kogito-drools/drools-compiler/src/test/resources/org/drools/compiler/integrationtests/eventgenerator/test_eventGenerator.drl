@@ -1,6 +1,6 @@
 package test;
 
-import org.drools.integrationtests.eventgenerator.*;
+import org.drools.compiler.integrationtests.eventgenerator.*;
 
 query "all inserted events"
     Event()

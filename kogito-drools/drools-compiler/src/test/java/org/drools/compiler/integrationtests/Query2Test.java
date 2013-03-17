@@ -27,9 +27,9 @@ public class Query2Test {
     public void setUp() throws Exception {
         String text = "";
         text += "package org.drools.integrationtests\n";
-        text += "import Query2Test.Bar\n";
-        text += "import Query2Test.Foo\n";
-        text += "import Query2Test.Foo2\n";
+        text += "import " + Query2Test.Bar.class.getCanonicalName() + "\n";
+        text += "import " + Query2Test.Foo.class.getCanonicalName() + "\n";
+        text += "import " + Query2Test.Foo2.class.getCanonicalName() + "\n";
         text += "query \"testDifferent\"\n";
         text += "    foo : Foo();\n";
         text += "    bar : Bar(id == foo.id)\n";
