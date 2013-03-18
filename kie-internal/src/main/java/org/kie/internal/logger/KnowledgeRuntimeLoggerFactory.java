@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.logger;
+package org.kie.internal.logger;
 
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
+import org.kie.logger.KieLoggers;
 
 /**
  * <p>
