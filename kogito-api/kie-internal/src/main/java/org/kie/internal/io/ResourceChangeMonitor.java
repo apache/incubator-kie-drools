@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.io;
+package org.kie.internal.io;
 
 import org.kie.internal.SystemEventListener;
+import org.kie.io.Resource;
 
 /**
  * <p>

@@ -181,7 +181,7 @@ public class ServiceRegistryImpl
         addDefault( "org.kie.internal.KnowledgeBaseFactoryService",
                     "org.drools.core.impl.KnowledgeBaseFactoryServiceImpl" );
 
-        addDefault( "org.kie.io.ResourceFactoryService",
+        addDefault( "org.kie.internal.io.ResourceFactoryService",
                     "org.drools.core.io.impl.ResourceFactoryServiceImpl" );
         
         addDefault(  "org.kie.internal.SystemEventListenerService",
