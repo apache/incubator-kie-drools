@@ -81,7 +81,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.Tuple;
 import org.kie.definition.process.Node;
 import org.kie.definition.process.NodeContainer;
-import org.kie.event.KnowledgeRuntimeEventManager;
+import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.process.ProcessNodeLeftEvent;
