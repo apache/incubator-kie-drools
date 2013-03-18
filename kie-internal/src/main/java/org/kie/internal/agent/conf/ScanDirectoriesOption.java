@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.agent.conf;
+package org.kie.internal.agent.conf;
 
-public enum NewInstanceOption {
+public enum ScanDirectoriesOption {
 
     YES(true),
     NO(false);
 
     /**
-     * The property name for the newinstance option
+     * The property name for monitoring directories
      */
-    public static final String PROPERTY_NAME = "drools.agent.newInstance";
+    public static final String PROPERTY_NAME = "drools.agent.scanDirectories";
 
     private boolean value;
 
-    NewInstanceOption( final boolean value ) {
+    ScanDirectoriesOption(final boolean value) {
         this.value = value;
     }
 
@@ -39,7 +39,7 @@ public enum NewInstanceOption {
         return PROPERTY_NAME;
     }
 
-    public boolean isNewInstance() {
+    public boolean isScanDirectories() {
         return this.value;
     }
 

@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.agent.conf;
+package org.kie.internal.agent.conf;
 
-public enum UseKnowledgeBaseClassloaderOption {
+public enum NewInstanceOption {
 
     YES(true),
     NO(false);
 
     /**
-     * The property name for using the Knowledgebase Classloader
+     * The property name for the newinstance option
      */
-    public static final String PROPERTY_NAME = "drools.agent.useKBaseClassLoaderForCompiling";
+    public static final String PROPERTY_NAME = "drools.agent.newInstance";
 
     private boolean value;
 
-    UseKnowledgeBaseClassloaderOption(final boolean value) {
+    NewInstanceOption( final boolean value ) {
         this.value = value;
     }
 
@@ -39,7 +39,7 @@ public enum UseKnowledgeBaseClassloaderOption {
         return PROPERTY_NAME;
     }
 
-    public boolean isUseKnowledgeBaseClassloader() {
+    public boolean isNewInstance() {
         return this.value;
     }
 

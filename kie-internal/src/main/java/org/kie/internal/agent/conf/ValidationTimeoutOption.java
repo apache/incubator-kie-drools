@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.agent.conf;
+package org.kie.internal.agent.conf;
 
 public class ValidationTimeoutOption {
 

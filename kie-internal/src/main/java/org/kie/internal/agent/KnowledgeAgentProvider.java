@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.agent;
+package org.kie.internal.agent;
 
 import java.util.Properties;
 

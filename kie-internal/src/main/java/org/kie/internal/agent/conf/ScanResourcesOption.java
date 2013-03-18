@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.agent.conf;
+package org.kie.internal.agent.conf;
 
-public enum ScanDirectoriesOption {
+public enum ScanResourcesOption {
 
     YES(true),
     NO(false);
 
     /**
-     * The property name for monitoring directories
+     * The property name for the scan resource option
      */
-    public static final String PROPERTY_NAME = "drools.agent.scanDirectories";
+    public static final String PROPERTY_NAME = "drools.agent.scanResources";
 
     private boolean value;
 
-    ScanDirectoriesOption(final boolean value) {
+    ScanResourcesOption(final boolean value) {
         this.value = value;
     }
 
@@ -39,7 +39,7 @@ public enum ScanDirectoriesOption {
         return PROPERTY_NAME;
     }
 
-    public boolean isScanDirectories() {
+    public boolean isScanResources() {
         return this.value;
     }
 

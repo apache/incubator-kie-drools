@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.agent.conf;
+package org.kie.internal.agent.conf;
 
-public enum ScanResourcesOption {
+public enum UseKnowledgeBaseClassloaderOption {
 
     YES(true),
     NO(false);
 
     /**
-     * The property name for the scan resource option
+     * The property name for using the Knowledgebase Classloader
      */
-    public static final String PROPERTY_NAME = "drools.agent.scanResources";
+    public static final String PROPERTY_NAME = "drools.agent.useKBaseClassLoaderForCompiling";
 
     private boolean value;
 
-    ScanResourcesOption(final boolean value) {
+    UseKnowledgeBaseClassloaderOption(final boolean value) {
         this.value = value;
     }
 
@@ -39,7 +39,7 @@ public enum ScanResourcesOption {
         return PROPERTY_NAME;
     }
 
-    public boolean isScanResources() {
+    public boolean isUseKnowledgeBaseClassloader() {
         return this.value;
     }
 
