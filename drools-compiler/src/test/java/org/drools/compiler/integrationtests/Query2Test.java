@@ -10,7 +10,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
@@ -44,7 +44,7 @@ public class Query2Test {
         text += "end\n";
 
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( text.getBytes() ),
+        knowledgeBuilder.add( ResourceFactory.newByteArrayResource(text.getBytes()),
                               ResourceType.DRL );
         assertFalse( knowledgeBuilder.hasErrors() );
         knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();

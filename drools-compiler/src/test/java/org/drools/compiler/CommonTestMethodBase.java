@@ -25,7 +25,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
@@ -156,7 +156,7 @@ public class CommonTestMethodBase extends Assert {
                                                         String... drlContentStrings) {
         KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder( config );
         for ( String drlContentString : drlContentStrings ) {
-            kbuilder.add( ResourceFactory.newByteArrayResource( drlContentString.getBytes() ),
+            kbuilder.add( ResourceFactory.newByteArrayResource(drlContentString.getBytes()),
                           ResourceType.DRL );
         }
 

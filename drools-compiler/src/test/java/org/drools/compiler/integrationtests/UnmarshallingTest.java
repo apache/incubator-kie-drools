@@ -16,7 +16,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.conf.EventProcessingOption;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.marshalling.MarshallerFactory;
 import org.kie.runtime.KieSession;
@@ -76,7 +76,7 @@ public class UnmarshallingTest {
     private KnowledgeBase initializeKnowledgeBase( String rule ) {
         // Setup knowledge base
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
+        kbuilder.add( ResourceFactory.newReaderResource(new StringReader(rule)),
                       ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
             throw new RuntimeException( kbuilder.getErrors().toString() );

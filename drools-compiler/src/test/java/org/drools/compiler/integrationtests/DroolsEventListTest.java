@@ -9,7 +9,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.LiveQuery;
@@ -30,7 +30,7 @@ public class DroolsEventListTest extends CommonTestMethodBase {
         str += "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {

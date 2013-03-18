@@ -37,7 +37,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
@@ -108,8 +108,8 @@ public class OutOfMemoryTest extends CommonTestMethodBase {
     @Ignore
     public void testMemoryLeak() {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_MemoryLeak.drl",
-                                                            OutOfMemoryTest.class ),
+        kbuilder.add( ResourceFactory.newClassPathResource("test_MemoryLeak.drl",
+                OutOfMemoryTest.class),
                       ResourceType.DRL );
         assertFalse( kbuilder.getErrors().toString(),
                      kbuilder.hasErrors() );

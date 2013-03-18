@@ -30,8 +30,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.Resource;
-import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.StatelessKnowledgeSession;
@@ -172,7 +172,7 @@ public class StatelessSessionTest extends CommonTestMethodBase {
         str += "end\n";
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
 
         if  ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );

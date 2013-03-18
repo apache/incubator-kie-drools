@@ -18,7 +18,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
 public class DrlParserTest {
@@ -150,7 +150,7 @@ public class DrlParserTest {
                      + "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+        kbuilder.add( ResourceFactory.newReaderResource(new StringReader(drl)),
                       ResourceType.DRL );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         assertEquals( 0,

@@ -34,7 +34,7 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
@@ -1562,8 +1562,8 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulateNonExistingFunction() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_NonExistingAccumulateFunction.drl",
-                                                            getClass() ),
+        kbuilder.add( ResourceFactory.newClassPathResource("test_NonExistingAccumulateFunction.drl",
+                getClass()),
                       ResourceType.DRL );
 
         // should report a proper error, not raise an exception

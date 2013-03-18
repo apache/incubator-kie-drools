@@ -32,8 +32,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.Resource;
-import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
@@ -86,7 +86,7 @@ public class KnowledgeBuilderTest {
         kbuilder2.batch()
                 .add( ResourceFactory.newByteArrayResource( rule.getBytes() ), ResourceType.DRL )
                 .add( ResourceFactory.newByteArrayResource( declarationA.getBytes() ), ResourceType.DRL )
-                .add( ResourceFactory.newByteArrayResource( declarationB.getBytes() ), ResourceType.DRL )
+                .add( ResourceFactory.newByteArrayResource(declarationB.getBytes()), ResourceType.DRL )
                 .build();
 
         if ( kbuilder2.hasErrors() ) {

@@ -31,7 +31,7 @@ import org.kie.event.rule.ObjectUpdatedEvent;
 import org.kie.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.event.rule.WorkingMemoryEventListener;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatelessKnowledgeSession;
 
@@ -48,7 +48,7 @@ public class SequentialTest extends CommonTestMethodBase {
     @Test
     public void testBasicOperation() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "simpleSequential.drl", getClass() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource("simpleSequential.drl", getClass()), ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );

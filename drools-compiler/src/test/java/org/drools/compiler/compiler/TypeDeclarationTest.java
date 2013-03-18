@@ -13,8 +13,8 @@ import org.kie.internal.builder.ResultSeverity;
 import org.kie.definition.type.Annotation;
 import org.kie.definition.type.FactField;
 import org.kie.definition.type.FactType;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.Resource;
-import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
 import static junit.framework.Assert.assertFalse;
@@ -121,7 +121,7 @@ public class TypeDeclarationTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
+        kbuilder.add( ResourceFactory.newByteArrayResource(str1.getBytes()),
                       ResourceType.DRL );
 
         kbuilder.add( ResourceFactory.newByteArrayResource( str2.getBytes() ),

@@ -28,7 +28,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
@@ -128,7 +128,7 @@ public class I18nTest extends CommonTestMethodBase {
                 "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( dsl.getBytes() ), ResourceType.DSL );
+        kbuilder.add( ResourceFactory.newByteArrayResource(dsl.getBytes()), ResourceType.DSL );
         kbuilder.add( ResourceFactory.newByteArrayResource( dslr.getBytes() ), ResourceType.DSLR );
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );

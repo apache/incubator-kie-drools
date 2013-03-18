@@ -28,7 +28,7 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.*;
 import org.junit.Test;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
 import java.util.ArrayList;
@@ -297,7 +297,7 @@ public class AlwaysFalseTest extends TestBaseOld {
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("AlwaysFalseTest.drl",
-                                                                           getClass()),
+                getClass()),
                                       ResourceType.DRL);
 
         assertFalse(verifier.hasErrors());

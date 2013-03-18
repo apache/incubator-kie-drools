@@ -20,7 +20,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
@@ -33,8 +33,8 @@ public class TroubleTicketExample {
     public static void main(final String[] args) {
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "TroubleTicket.drl",
-                                                                    TroubleTicketExample.class ),
+        kbuilder.add( ResourceFactory.newClassPathResource("TroubleTicket.drl",
+                TroubleTicketExample.class),
                               ResourceType.DRL );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

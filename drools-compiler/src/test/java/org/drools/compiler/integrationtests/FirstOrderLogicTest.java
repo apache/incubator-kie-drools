@@ -51,7 +51,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -66,8 +66,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     
     private KnowledgeBase loadKnowledgeBase( String fileName ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( fileName,
-                                                            getClass() ),
+        kbuilder.add( ResourceFactory.newClassPathResource(fileName,
+                getClass()),
                       ResourceType.DRL );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {

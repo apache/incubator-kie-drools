@@ -26,7 +26,7 @@ import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Subsumption;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ClassObjectFilter;
 
@@ -170,7 +170,7 @@ public class SubsumptantSubPatternsTest {
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantSubPatterns4.drl",
-                                                                           getClass()),
+                getClass()),
                                       ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {

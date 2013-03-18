@@ -12,8 +12,8 @@ import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.Resource;
-import org.kie.io.ResourceFactory;
 import org.kie.logger.KieRuntimeLogger;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatelessKieSession;
@@ -80,7 +80,7 @@ public class KieLoggersTest {
                 "    then\n" + 
                 "end";
         // get the resource
-        Resource dt = ResourceFactory.newByteArrayResource( drl.getBytes() ).setTargetPath( "org/drools/integrationtests/hello.drl" );
+        Resource dt = ResourceFactory.newByteArrayResource(drl.getBytes()).setTargetPath( "org/drools/integrationtests/hello.drl" );
         
         // create the builder
         KieSession ksession = getKieSession( dt );

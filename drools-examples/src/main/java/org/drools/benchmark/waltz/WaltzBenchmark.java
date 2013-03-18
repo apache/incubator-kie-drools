@@ -21,7 +21,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.Session;
@@ -40,8 +40,8 @@ public abstract class WaltzBenchmark {
 
     public static void main(final String[] args) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "waltz.drl",
-                                                                    WaltzBenchmark.class ),
+        kbuilder.add( ResourceFactory.newClassPathResource("waltz.drl",
+                WaltzBenchmark.class),
                               ResourceType.DRL );
         Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
         //add the package to a kbase

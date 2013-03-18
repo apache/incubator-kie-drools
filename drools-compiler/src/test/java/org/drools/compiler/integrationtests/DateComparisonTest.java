@@ -15,7 +15,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.logger.KnowledgeRuntimeLogger;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
@@ -51,7 +51,7 @@ public class DateComparisonTest extends CommonTestMethodBase {
         str += "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
                       ResourceType.DRL );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( kbuilder.hasErrors() ) {

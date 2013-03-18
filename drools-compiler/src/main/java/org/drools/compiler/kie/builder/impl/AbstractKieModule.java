@@ -12,11 +12,11 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.Results;
 import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.io.ResourceConfiguration;
-import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
-import org.kie.io.ResourceTypeImpl;
+import org.kie.internal.io.ResourceTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,7 +168,7 @@ public abstract class AbstractKieModule
                     ckbuilder.add( ResourceFactory.newByteArrayResource( bytes ).setSourcePath( fileName ),
                                    ResourceType.determineResourceType( fileName ) );
                 } else {
-                    ckbuilder.add( ResourceFactory.newByteArrayResource( bytes ).setSourcePath(fileName),
+                    ckbuilder.add( ResourceFactory.newByteArrayResource(bytes).setSourcePath(fileName),
                                    ResourceType.determineResourceType( fileName ),
                                    conf );
                 }

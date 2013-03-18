@@ -17,10 +17,10 @@
 package org.drools.core.io.impl;
 
 import org.kie.definition.KieDescr;
+import org.kie.internal.io.ResourceChangeNotifier;
+import org.kie.internal.io.ResourceFactoryService;
 import org.kie.io.Resource;
-import org.kie.io.ResourceChangeNotifier;
-import org.kie.io.ResourceChangeScanner;
-import org.kie.io.ResourceFactoryService;
+import org.kie.internal.io.ResourceChangeScanner;
 
 import java.io.File;
 import java.io.InputStream;
@@ -29,7 +29,7 @@ import java.net.URL;
 
 public class ResourceFactoryServiceImpl
     implements
-    ResourceFactoryService {
+        ResourceFactoryService {
 
     private ResourceChangeNotifier notifier;
     private ResourceChangeScanner  scanner;

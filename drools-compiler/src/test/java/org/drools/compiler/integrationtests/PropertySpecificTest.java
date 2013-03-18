@@ -34,7 +34,7 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.definition.type.FactType;
 import org.kie.definition.type.Modifies;
 import org.kie.definition.type.PropertyReactive;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 

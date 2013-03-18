@@ -12,7 +12,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
@@ -125,7 +125,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
 
     private KnowledgeBase readKnowledgeBase() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "strevaluator_test.drl" ) ),
+        kbuilder.add( ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("strevaluator_test.drl")),
                 ResourceType.DRL );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() > 0) {
