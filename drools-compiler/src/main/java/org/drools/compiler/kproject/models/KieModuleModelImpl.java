@@ -213,7 +213,7 @@ public class KieModuleModelImpl implements KieModuleModel {
         private static Schema loadSchema() {
             SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
             try {
-                URL url = KieModuleModel.class.getClassLoader().getResource("../../../kie-api/src/main/resources/org/kie/api/kmodule.xsd");
+                URL url = KieModuleModel.class.getClassLoader().getResource("org/kie/api/kmodule.xsd");
                 return factory.newSchema(url);
             } catch (SAXException ex ) {
                 throw new RuntimeException( "Unable to load XSD", ex );
