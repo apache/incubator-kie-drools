@@ -22,7 +22,7 @@ import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.instance.node.SplitInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class MVELReturnValueConstraintEvaluatorBuilderTest extends TestCase {

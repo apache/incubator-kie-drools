@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.event.process.DefaultProcessEventListener;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.io.ResourceFactory;

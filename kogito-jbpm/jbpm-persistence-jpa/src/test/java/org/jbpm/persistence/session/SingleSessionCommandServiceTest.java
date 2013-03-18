@@ -54,7 +54,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.runtime.Environment;
 import org.kie.runtime.conf.TimerJobFactoryOption;
 import org.kie.runtime.process.NodeInstance;

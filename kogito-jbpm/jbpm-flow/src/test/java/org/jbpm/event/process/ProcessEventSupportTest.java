@@ -39,7 +39,7 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEvent;
 import org.kie.event.process.ProcessEventListener;
