@@ -31,12 +31,12 @@ import org.kie.conf.EventProcessingOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.definition.type.FactType;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.time.SessionClock;
 

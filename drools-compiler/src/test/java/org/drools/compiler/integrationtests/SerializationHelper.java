@@ -13,9 +13,9 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.drools.core.reteoo.ReteooStatefulSession;
 import org.kie.internal.marshalling.MarshallerFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.time.SessionClock;
 
 /**

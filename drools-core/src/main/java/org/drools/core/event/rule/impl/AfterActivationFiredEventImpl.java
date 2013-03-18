@@ -17,7 +17,7 @@
 package org.drools.core.event.rule.impl;
 
 import org.kie.event.rule.AfterMatchFiredEvent;
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.runtime.rule.Match;
 
 public class AfterActivationFiredEventImpl  extends ActivationEventImpl implements AfterMatchFiredEvent {

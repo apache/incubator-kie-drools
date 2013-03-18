@@ -5,7 +5,7 @@ import org.drools.games.wumpus.WumpusWorldMain;
 import org.kie.internal.KnowledgeBase;
 import org.kie.definition.type.PropertyReactive;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 @PropertyReactive
 public class GameView {

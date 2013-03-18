@@ -6,7 +6,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.runtime.Channel;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import static org.kie.internal.io.ResourceFactory.newClassPathResource;
 import static org.kie.io.ResourceType.DRL;

@@ -31,10 +31,10 @@ import org.kie.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.StatelessKnowledgeSession;
 
 public class StatelessSessionTest extends CommonTestMethodBase {
     final List list = new ArrayList();

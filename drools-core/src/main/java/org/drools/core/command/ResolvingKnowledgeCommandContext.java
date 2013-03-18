@@ -5,8 +5,8 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.World;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.rule.SessionEntryPoint;
 
@@ -32,7 +32,7 @@ public class ResolvingKnowledgeCommandContext implements KnowledgeCommandContext
     }
 
     public StatefulKnowledgeSession getKieSession() {
-        return ( StatefulKnowledgeSession ) context.get( StatefulKnowledgeSession.class.getName() );
+        return (StatefulKnowledgeSession) context.get( StatefulKnowledgeSession.class.getName() );
     }
 
     public WorkItemManager getWorkItemManager() {

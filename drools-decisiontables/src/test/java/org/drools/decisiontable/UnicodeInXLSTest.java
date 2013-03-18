@@ -19,8 +19,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class UnicodeInXLSTest {
 

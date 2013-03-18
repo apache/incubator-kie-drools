@@ -37,8 +37,8 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.time.SessionClock;
 

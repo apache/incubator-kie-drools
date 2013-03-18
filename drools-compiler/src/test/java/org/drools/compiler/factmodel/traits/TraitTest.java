@@ -65,12 +65,12 @@ import org.kie.internal.command.CommandFactory;
 import org.kie.definition.type.FactType;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.io.Resource;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ClassObjectFilter;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 

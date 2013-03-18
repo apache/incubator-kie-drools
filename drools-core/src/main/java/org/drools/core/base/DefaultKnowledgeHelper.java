@@ -59,7 +59,7 @@ import org.drools.core.spi.Tuple;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.Channel;
 import org.kie.runtime.KieRuntime;
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.NodeInstanceContainer;
 import org.kie.runtime.process.ProcessContext;
