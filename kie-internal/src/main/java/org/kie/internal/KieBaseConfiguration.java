@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie;
+package org.kie.internal;
 
+import org.kie.PropertiesConfiguration;
 import org.kie.conf.KnowledgeBaseOptionsConfiguration;
 
 /**
@@ -73,7 +74,7 @@ import org.kie.conf.KnowledgeBaseOptionsConfiguration;
  */
 public interface KieBaseConfiguration
     extends
-    PropertiesConfiguration,
+        PropertiesConfiguration,
     KnowledgeBaseOptionsConfiguration {
 
 }

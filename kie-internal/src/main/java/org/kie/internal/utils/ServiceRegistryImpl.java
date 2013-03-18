@@ -178,13 +178,13 @@ public class ServiceRegistryImpl
         addDefault( "org.kie.builder.KnowledgeContainerFactoryService",
                     "org.drools.core.builder.impl.KnowledgeContainerFactoryServiceImpl" );
 
-        addDefault( "org.kie.KnowledgeBaseFactoryService",
+        addDefault( "org.kie.internal.KnowledgeBaseFactoryService",
                     "org.drools.core.impl.KnowledgeBaseFactoryServiceImpl" );
 
         addDefault( "org.kie.io.ResourceFactoryService",
                     "org.drools.core.io.impl.ResourceFactoryServiceImpl" );
         
-        addDefault(  "org.kie.SystemEventListenerService",
+        addDefault(  "org.kie.internal.SystemEventListenerService",
                      "org.drools.core.impl.SystemEventListenerServiceImpl" );
         addDefault(  KieMarshallers.class,
                      "org.drools.core.marshalling.impl.MarshallerProviderImpl");

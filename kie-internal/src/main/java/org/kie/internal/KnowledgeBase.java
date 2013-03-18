@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie;
+package org.kie.internal;
 
 import java.util.Collection;
 import java.util.Set;
 
+import org.kie.KieBase;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
@@ -39,7 +40,7 @@ import org.kie.runtime.StatelessKnowledgeSession;
 @Deprecated
 public interface KnowledgeBase
     extends
-    KieBase {
+        KieBase {
 
     /**
      * Add the collection of KnowledgePackages to the KnowledgeBase. It is recommended that you

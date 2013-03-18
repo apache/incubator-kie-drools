@@ -23,13 +23,10 @@ import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.io.Resource;
-import org.kie.io.ResourceFactory;
 
-import com.sun.tools.xjc.Language;
 import com.sun.tools.xjc.Options;
 
 /**

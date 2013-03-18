@@ -18,7 +18,7 @@ package org.kie.agent;
 
 import java.util.Properties;
 
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 
 /**

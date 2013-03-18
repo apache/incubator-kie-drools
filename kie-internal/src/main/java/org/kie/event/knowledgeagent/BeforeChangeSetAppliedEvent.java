@@ -16,7 +16,7 @@
 
 package org.kie.event.knowledgeagent;
 
-import org.kie.ChangeSet;
+import org.kie.internal.ChangeSet;
 
 public class BeforeChangeSetAppliedEvent extends ChangeSetProcessingEvent{
 

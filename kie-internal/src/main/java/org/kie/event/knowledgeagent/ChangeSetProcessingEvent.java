@@ -17,7 +17,7 @@ package org.kie.event.knowledgeagent;
 
 import java.util.EventObject;
 
-import org.kie.ChangeSet;
+import org.kie.internal.ChangeSet;
 
 public class ChangeSetProcessingEvent
         extends EventObject {
