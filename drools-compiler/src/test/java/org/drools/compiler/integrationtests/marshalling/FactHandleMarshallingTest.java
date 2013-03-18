@@ -40,7 +40,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.rule.SessionEntryPoint;

@@ -39,8 +39,8 @@ import org.drools.core.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.core.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorExpireWMAction;
-import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.marshalling.ObjectMarshallingStrategy.Context;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategy.Context;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ByteString.Output;

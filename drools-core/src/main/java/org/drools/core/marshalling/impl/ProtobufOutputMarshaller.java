@@ -75,8 +75,8 @@ import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.time.impl.TimerJobInstance;
-import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.runtime.rule.SessionEntryPoint;
 
 import com.google.protobuf.ByteString;

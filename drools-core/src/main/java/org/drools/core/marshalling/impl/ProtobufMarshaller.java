@@ -37,9 +37,9 @@ import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarsha
 import org.drools.core.spi.GlobalResolver;
 import org.kie.api.KieBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.marshalling.Marshaller;
-import org.kie.marshalling.MarshallingConfiguration;
-import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.api.marshalling.Marshaller;
+import org.kie.api.marshalling.MarshallingConfiguration;
+import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KieSessionConfiguration;
@@ -85,7 +85,7 @@ public class ProtobufMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.kie.marshalling.Marshaller#read(java.io.InputStream, org.kie.common.InternalRuleBase, int, org.kie.api.concurrent.ExecutorService)
+     * @see org.kie.api.marshalling.Marshaller#read(java.io.InputStream, org.kie.common.InternalRuleBase, int, org.kie.api.concurrent.ExecutorService)
      */
     public StatefulKnowledgeSession unmarshall(final InputStream stream,
                                                KieSessionConfiguration config,
@@ -147,7 +147,7 @@ public class ProtobufMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.kie.marshalling.Marshaller#write(java.io.OutputStream, org.kie.common.InternalRuleBase, org.kie.StatefulSession)
+     * @see org.kie.api.marshalling.Marshaller#write(java.io.OutputStream, org.kie.common.InternalRuleBase, org.kie.StatefulSession)
      */
     public void marshall(final OutputStream stream,
                          final KieSession ksession,

@@ -12,8 +12,8 @@
   <logger name="org.kie" level="info"/>
 
   <!--  marshalling utils -->
-  <logger name="org.kie.marshalling.util" level="debug"/>
-  <logger name="org.kie.marshalling.util.CompareViaReflectionUtil" level="info"/>
+  <logger name="org.kie.api.marshalling.util" level="debug"/>
+  <logger name="org.kie.api.marshalling.util.CompareViaReflectionUtil" level="info"/>
 
   <!-- bitronix -->
   <logger name="bitronix.tm.twopc.Preparer" level="error"/>

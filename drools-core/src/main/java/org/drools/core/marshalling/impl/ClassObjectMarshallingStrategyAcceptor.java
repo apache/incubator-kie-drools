@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.util.ClassUtils;
-import org.kie.marshalling.ObjectMarshallingStrategyAcceptor;
+import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 
 public class ClassObjectMarshallingStrategyAcceptor implements ObjectMarshallingStrategyAcceptor {
     public static final ClassObjectMarshallingStrategyAcceptor DEFAULT = new ClassObjectMarshallingStrategyAcceptor(new String[] { "*.*" } );
