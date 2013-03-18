@@ -1,6 +1,6 @@
 package org.kie.api.builder;
 
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  * KieRepository is a singleton acting as a repository for all the available KieModules

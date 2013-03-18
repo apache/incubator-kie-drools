@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.io;
+package org.kie.api.io;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ResourceType
         implements

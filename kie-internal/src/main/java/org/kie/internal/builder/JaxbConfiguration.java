@@ -18,7 +18,7 @@ package org.kie.internal.builder;
 
 import java.util.List;
 
-import org.kie.io.ResourceConfiguration;
+import org.kie.api.io.ResourceConfiguration;
 
 import com.sun.tools.xjc.Options;
 

@@ -1,6 +1,6 @@
 package org.kie.api.builder;
 
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  * KieFileSystem is an in memory file system used to programmatically define
