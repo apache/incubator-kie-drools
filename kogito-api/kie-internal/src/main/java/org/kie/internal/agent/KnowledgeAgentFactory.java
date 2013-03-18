@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 /**
  * <p>

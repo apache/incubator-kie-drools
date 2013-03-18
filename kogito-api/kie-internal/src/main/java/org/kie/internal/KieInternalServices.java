@@ -14,7 +14,7 @@ public interface KieInternalServices {
 
         static {
             try {                
-                INSTANCE = ( KieInternalServices ) Class.forName( "org.kie.builder.impl.KieInternalServicesImpl" ).newInstance();
+                INSTANCE = ( KieInternalServices ) Class.forName( "org.kie.internal.builder.impl.KieInternalServicesImpl" ).newInstance();
             } catch (Exception e) {
                 throw new RuntimeException("Unable to instance KieServices", e);
             }

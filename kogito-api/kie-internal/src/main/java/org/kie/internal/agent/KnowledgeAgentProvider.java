@@ -19,7 +19,7 @@ package org.kie.internal.agent;
 import java.util.Properties;
 
 import org.kie.internal.KnowledgeBase;
-import org.kie.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 
 /**
  * KnowledgeAgentProvider is used by the KnowledgeAgentFactory to "provide" it's concrete implementation.

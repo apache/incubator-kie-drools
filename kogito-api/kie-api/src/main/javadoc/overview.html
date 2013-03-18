@@ -7,7 +7,7 @@ Drools & jBPM provide an knowledge-centric API, where rules and processes are fi
 <p>
 The most common interfaces you will use are:
 <ul>
-<li><tt>org.kie.builder.KnowledgeBuilder</tt></li>
+<li><tt>org.kie.internal.builder.KnowledgeBuilder</tt></li>
 <li><tt>org.kie.internal.KnowledgeBase</tt></li>
 <li><tt>org.kie.internal.agent.KnowledgeAgent</tt></li>
 <li><tt>org.kie.runtime.StatefulKnowledgeSession</tt></li>
@@ -19,7 +19,7 @@ The most common interfaces you will use are:
 Factory classes, with static methods, provide instances of the above interfaces. A pluggable provider approach is used to allow provider implementations to
 be wired up to the factories at runtime. The Factories you will most commonly used are:
 <ul>
-<li><tt>org.kie.builder.KnowledgeBuilderFactory</tt></li>
+<li><tt>org.kie.internal.builder.KnowledgeBuilderFactory</tt></li>
 <li><tt>org.kie.io.ResourceFactory</tt></li>
 <li><tt>org.kie.internal.KnowledgeBaseFactory</tt></li>
 <li><tt>org.kie.internal.agent.KnowledgeAgentFactory</tt></li>
