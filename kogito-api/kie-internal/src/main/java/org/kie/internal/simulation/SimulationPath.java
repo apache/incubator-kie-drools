@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.simulation;
+package org.kie.internal.simulation;
 
-import java.util.Map;
+import java.util.List;
 
-public interface Simulation {
+public interface SimulationPath {
 
-    Map<String, SimulationPath> getPaths();
+    String getName();
+    
+    List<SimulationStep> getSteps();
 
 }
