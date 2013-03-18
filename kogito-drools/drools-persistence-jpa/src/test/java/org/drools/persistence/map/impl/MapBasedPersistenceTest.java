@@ -26,7 +26,7 @@ import org.drools.persistence.map.KnowledgeSessionStorageEnvironmentBuilder;
 import org.junit.Before;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;

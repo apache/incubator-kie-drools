@@ -33,7 +33,7 @@ import org.kie.definition.type.FactType;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
-import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
