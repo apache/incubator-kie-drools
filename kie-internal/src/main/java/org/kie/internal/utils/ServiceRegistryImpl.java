@@ -34,7 +34,7 @@ import org.kie.api.KieServices;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.concurrent.KieExecutors;
-import org.kie.marshalling.KieMarshallers;
+import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.slf4j.Logger;

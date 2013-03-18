@@ -21,7 +21,7 @@ import java.util.Hashtable;
 import java.util.concurrent.Callable;
 
 import org.kie.api.Service;
-import org.kie.marshalling.KieMarshallers;
+import org.kie.api.marshalling.KieMarshallers;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
