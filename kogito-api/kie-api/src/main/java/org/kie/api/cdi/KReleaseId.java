@@ -1,7 +1,6 @@
-package org.kie.cdi;
+package org.kie.api.cdi;
 
 import java.lang.String;import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
@@ -16,7 +15,8 @@ import javax.inject.Qualifier;
 @Qualifier
 @Target({TYPE, METHOD, PARAMETER, FIELD})
 @Retention(RUNTIME)
-public @interface KSession {
-    String value();
-    String name() default "";    
+public @interface KReleaseId {
+    String groupId();
+    String artifactId();
+    String version() default "";
 }
