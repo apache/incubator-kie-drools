@@ -58,7 +58,7 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
 import org.kie.conf.EventProcessingOption;
 import org.kie.marshalling.Marshaller;
-import org.kie.marshalling.MarshallerFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;

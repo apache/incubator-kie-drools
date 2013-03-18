@@ -87,7 +87,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.marshalling.Marshaller;
-import org.kie.marshalling.MarshallerFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.kie.runtime.Environment;

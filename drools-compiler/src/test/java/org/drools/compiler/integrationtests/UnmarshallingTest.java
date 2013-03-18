@@ -18,7 +18,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
-import org.kie.marshalling.MarshallerFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.runtime.KieSession;
 
 public class UnmarshallingTest {
