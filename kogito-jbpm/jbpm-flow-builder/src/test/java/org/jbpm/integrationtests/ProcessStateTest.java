@@ -13,7 +13,7 @@ import org.jbpm.workflow.instance.node.StateNodeInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.NodeInstance;
@@ -449,7 +449,7 @@ public class ProcessStateTest extends TestCase {
             "  </connections>\n" +
             "\n" +
             "</process>");
-        kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
+        kbuilder.add( ResourceFactory.newReaderResource(source), ResourceType.DRF );
         KnowledgeBase kbase = kbuilder.newKnowledgeBase();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();

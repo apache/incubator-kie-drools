@@ -12,7 +12,7 @@ import org.kie.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.definition.type.FactType;
 import org.kie.event.rule.DebugAgendaEventListener;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.AgendaFilter;

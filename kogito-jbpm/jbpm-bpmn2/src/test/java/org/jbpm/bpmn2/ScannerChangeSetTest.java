@@ -18,8 +18,8 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.agent.KnowledgeAgent;
 import org.kie.internal.agent.KnowledgeAgentFactory;
-import org.kie.io.ResourceChangeScannerConfiguration;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceChangeScannerConfiguration;
+import org.kie.internal.io.ResourceFactory;
 
 public class ScannerChangeSetTest {
 
