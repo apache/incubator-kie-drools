@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.api.logger;
+package org.kie.api.event.rule;
 
-import org.kie.api.event.KieRuntimeEventManager;
+import org.kie.api.event.KieRuntimeEvent;
+import org.kie.runtime.rule.PropagationContext;
 
-/**
- * KieLoggers is a factory for KieRuntimeLogger
- */
-public interface KieLoggers {
-
-    KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
-                                         String fileName);
-
-    KieRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
-                                                 String fileName,
-                                                 int interval);
-
-    KieRuntimeLogger newConsoleLogger(KieRuntimeEventManager session);
-
+public interface WorkingMemoryEvent
+    extends
+    KieRuntimeEvent {
+    public PropagationContext getPropagationContext();
 }

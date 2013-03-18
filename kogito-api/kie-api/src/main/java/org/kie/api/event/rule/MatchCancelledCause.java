@@ -14,22 +14,8 @@
  * limitations under the License.
  */
 
-package org.kie.api.logger;
+package org.kie.api.event.rule;
 
-import org.kie.api.event.KieRuntimeEventManager;
-
-/**
- * KieLoggers is a factory for KieRuntimeLogger
- */
-public interface KieLoggers {
-
-    KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
-                                         String fileName);
-
-    KieRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
-                                                 String fileName,
-                                                 int interval);
-
-    KieRuntimeLogger newConsoleLogger(KieRuntimeEventManager session);
-
+public enum MatchCancelledCause {
+    FILTER, WME_MODIFY, CLEAR;
 }
