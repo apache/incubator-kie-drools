@@ -34,7 +34,7 @@ import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContext;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContextTimerOutputMarshaller;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerOutputMarshaller;
-import org.kie.marshalling.MarshallerFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.runtime.Environment;

@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.kie.KieBase;
 import org.kie.marshalling.Marshaller;
-import org.kie.marshalling.MarshallerFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;

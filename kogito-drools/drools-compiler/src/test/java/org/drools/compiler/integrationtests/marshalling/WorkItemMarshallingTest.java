@@ -19,7 +19,7 @@ import org.drools.core.marshalling.impl.OutputMarshaller;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.junit.Test;
-import org.kie.marshalling.MarshallerFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 
 public class WorkItemMarshallingTest {

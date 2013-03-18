@@ -34,7 +34,7 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.RuleBaseUpdateListener;
 import org.drools.core.spi.RuleBaseUpdateListenerFactory;
 import org.kie.marshalling.Marshaller;
-import org.kie.marshalling.MarshallerFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.StatefulKnowledgeSession;
