@@ -26,13 +26,13 @@ public class SessionInspectorTest extends CommonTestMethodBase {
     @Test
     public void testGetSessionInfo() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_SubNetworks.drl" ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_SubNetworks.drl" ),
                       ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_AccumulateWithFromChaining.drl" ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_AccumulateWithFromChaining.drl" ),
                       ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_CollectResultsBetaConstraint.drl" ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_CollectResultsBetaConstraint.drl" ),
                       ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_QueryMemoryLeak.drl" ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_QueryMemoryLeak.drl" ),
                       ResourceType.DRL );
 
         assertFalse( kbuilder.getErrors().toString(),
