@@ -21,8 +21,8 @@ package org.drools.verifier.optimisation.drl
 import java.util.Collection;
 import java.util.ArrayList;
 
-import org.drools.base.evaluators.Operator;
-import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.base.evaluators.MatchesEvaluatorsDefinition;
 
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.Restriction;

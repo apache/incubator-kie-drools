@@ -110,8 +110,8 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
     }
 
     private void checkDroolsCoreDep(KieModuleMetaData kieModuleMetaData) {
-        assertEquals(17, kieModuleMetaData.getClasses("org.drools.core.runtime").size());
-        Class<?> statefulKnowledgeSessionClass = kieModuleMetaData.getClass("org.drools.core.runtime", "StatefulKnowledgeSession");
+        assertEquals(17, kieModuleMetaData.getClasses("org.drools.runtime").size());
+        Class<?> statefulKnowledgeSessionClass = kieModuleMetaData.getClass("org.drools.runtime", "StatefulKnowledgeSession");
         assertTrue(statefulKnowledgeSessionClass.isInterface());
         assertEquals(2, statefulKnowledgeSessionClass.getDeclaredMethods().length);
     }
