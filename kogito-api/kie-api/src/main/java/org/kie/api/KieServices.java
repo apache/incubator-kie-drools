@@ -10,7 +10,7 @@ import org.kie.api.command.KieCommands;
 import org.kie.io.KieResources;
 import org.kie.api.logger.KieLoggers;
 import org.kie.marshalling.KieMarshallers;
-import org.kie.persistence.jpa.KieStoreServices;
+import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.runtime.KieContainer;
 
 import java.io.File;

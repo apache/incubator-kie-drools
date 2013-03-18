@@ -21,10 +21,10 @@ public class EnvironmentName {
     public static final String TRANSACTION_SYNCHRONIZATION_REGISTRY = "org.kie.transaction.TransactionSynchronizationRegistry";
     public static final String TRANSACTION                          = "org.kie.transaction.Transaction";
 
-    public static final String ENTITY_MANAGER_FACTORY               = "org.kie.persistence.jpa.EntityManagerFactory";
-    public static final String CMD_SCOPED_ENTITY_MANAGER            = "org.kie.persistence.jpa.CmdScopedEntityManager";
-    public static final String APP_SCOPED_ENTITY_MANAGER            = "org.kie.persistence.jpa.AppScopedEntityManager";
-    public static final String PERSISTENCE_CONTEXT_MANAGER          = "org.kie.persistence.PersistenceContextManager";
+    public static final String ENTITY_MANAGER_FACTORY               = "org.kie.api.persistence.jpa.EntityManagerFactory";
+    public static final String CMD_SCOPED_ENTITY_MANAGER            = "org.kie.api.persistence.jpa.CmdScopedEntityManager";
+    public static final String APP_SCOPED_ENTITY_MANAGER            = "org.kie.api.persistence.jpa.AppScopedEntityManager";
+    public static final String PERSISTENCE_CONTEXT_MANAGER          = "org.kie.api.persistence.PersistenceContextManager";
 
     public static final String OBJECT_MARSHALLING_STRATEGIES        = "org.kie.marshalling.ObjectMarshallingStrategies";
     public static final String GLOBALS                              = "org.kie.Globals";

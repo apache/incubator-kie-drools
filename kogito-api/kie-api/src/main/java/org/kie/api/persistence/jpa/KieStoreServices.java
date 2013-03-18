@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.persistence.jpa;
+package org.kie.api.persistence.jpa;
 
 import org.kie.api.KieBase;
 import org.kie.runtime.Environment;
