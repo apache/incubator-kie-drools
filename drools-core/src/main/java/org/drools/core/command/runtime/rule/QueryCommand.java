@@ -29,7 +29,7 @@ import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.QueryResults;
 import org.kie.runtime.rule.Variable;

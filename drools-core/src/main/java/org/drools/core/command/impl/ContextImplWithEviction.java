@@ -22,8 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.kie.command.Context;
-import org.kie.command.World;
+import org.kie.internal.command.Context;
+import org.kie.internal.command.World;
 
 public class ContextImplWithEviction extends ContextImpl{
 

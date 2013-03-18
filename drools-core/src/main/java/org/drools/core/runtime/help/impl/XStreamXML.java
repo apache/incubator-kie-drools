@@ -48,7 +48,7 @@ import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.runtime.rule.impl.NativeQueryResults;
 import org.drools.core.spi.ObjectType;
 import org.kie.command.Command;
-import org.kie.command.CommandFactory;
+import org.kie.internal.command.CommandFactory;
 import org.kie.command.Setter;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.rule.FactHandle;

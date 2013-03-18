@@ -24,7 +24,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 
 public class NewKnowledgeBuilderCommand
     implements

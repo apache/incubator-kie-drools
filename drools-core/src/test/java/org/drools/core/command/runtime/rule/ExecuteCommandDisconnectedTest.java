@@ -21,6 +21,7 @@ import org.junit.*;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.command.*;
+import org.kie.internal.command.CommandFactory;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.drools.core.command.ExecuteCommand;

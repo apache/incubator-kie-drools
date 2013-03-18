@@ -32,7 +32,7 @@ import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.DefaultTimerJobInstance;
 import org.drools.core.time.impl.JDKTimerService;
 import org.drools.core.time.impl.TimerJobInstance;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

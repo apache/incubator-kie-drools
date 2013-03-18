@@ -49,7 +49,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.kie.command.Command;
-import org.kie.command.CommandFactory;
+import org.kie.internal.command.CommandFactory;
 import org.kie.command.Setter;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.rule.FactHandle;

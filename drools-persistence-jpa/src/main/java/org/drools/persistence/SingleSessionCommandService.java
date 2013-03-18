@@ -43,7 +43,7 @@ import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.kie.KieBase;
 import org.kie.command.BatchExecutionCommand;
 import org.kie.command.Command;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.KieSession;

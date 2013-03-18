@@ -17,7 +17,7 @@
 package org.drools.core.fluent.impl;
 
 import org.drools.core.command.impl.GenericCommand;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 import org.kie.internal.fluent.test.ReflectiveMatcherAssert;
 
 public class ReflectiveMatcherAssertCommand  implements GenericCommand<Void>  {

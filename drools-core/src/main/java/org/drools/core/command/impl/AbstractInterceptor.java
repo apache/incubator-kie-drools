@@ -19,7 +19,7 @@ package org.drools.core.command.impl;
 import org.drools.core.command.CommandService;
 import org.drools.core.command.Interceptor;
 import org.kie.command.Command;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 
 public abstract class AbstractInterceptor implements Interceptor {
 

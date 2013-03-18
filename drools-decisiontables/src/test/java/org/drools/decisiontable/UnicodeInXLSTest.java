@@ -17,7 +17,7 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.command.Command;
-import org.kie.command.CommandFactory;
+import org.kie.internal.command.CommandFactory;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;

@@ -22,7 +22,7 @@ import java.util.Map;
 import org.drools.core.FactHandle;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.common.InternalFactHandle;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 
 public class SetVariableCommandFromLastReturn
     implements

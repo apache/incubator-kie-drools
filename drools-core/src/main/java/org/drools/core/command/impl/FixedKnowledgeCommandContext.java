@@ -18,8 +18,8 @@ package org.drools.core.command.impl;
 
 import org.kie.KieBase;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.command.Context;
-import org.kie.command.World;
+import org.kie.internal.command.Context;
+import org.kie.internal.command.World;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.process.WorkItemManager;
