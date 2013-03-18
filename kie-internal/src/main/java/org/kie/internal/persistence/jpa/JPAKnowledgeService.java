@@ -17,7 +17,7 @@
 package org.kie.internal.persistence.jpa;
 
 import org.kie.api.KieBase;
-import org.kie.persistence.jpa.KieStoreServices;
+import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -76,8 +76,8 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
  *    &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
  *    &lt;jta-data-source&gt;jdbc/BitronixJTADataSource&lt;/jta-data-source&gt;
  *    &lt;class&gt;org.jbpm.persistence.processinstance.ProcessInstanceInfo&lt;/class&gt;
- *    &lt;class&gt;org.kie.persistence.info.ProcessInstanceInfo&lt;/class&gt;
- *    &lt;class&gt;org.kie.persistence.info.WorkItemInfo&lt;/class&gt;
+ *    &lt;class&gt;org.kie.api.persistence.info.ProcessInstanceInfo&lt;/class&gt;
+ *    &lt;class&gt;org.kie.api.persistence.info.WorkItemInfo&lt;/class&gt;
  *    &lt;properties&gt;
  *          &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;
  *          &lt;property name="hibernate.max_fetch_depth" value="3"/&gt;
