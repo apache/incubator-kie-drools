@@ -27,7 +27,7 @@ import org.jbpm.marshalling.util.UserTransactionProxy;
 import org.junit.Assert;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;

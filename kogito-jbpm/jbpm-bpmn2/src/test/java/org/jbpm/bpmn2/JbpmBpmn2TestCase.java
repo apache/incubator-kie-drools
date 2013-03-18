@@ -24,7 +24,7 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
-import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.*;
 import org.kie.runtime.process.*;
 import org.slf4j.Logger;

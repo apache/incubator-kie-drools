@@ -23,7 +23,7 @@ import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
-import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.StatefulKnowledgeSession;
 

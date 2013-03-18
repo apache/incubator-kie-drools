@@ -11,7 +11,7 @@ import org.drools.core.impl.EnvironmentFactory;
 import org.h2.tools.Server;
 
 import org.kie.internal.KnowledgeBase;
-import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.StatefulKnowledgeSession;
