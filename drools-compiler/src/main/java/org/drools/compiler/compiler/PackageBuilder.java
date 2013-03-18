@@ -596,41 +596,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         return hasErrors ? null : pkg;
     }
 
-    public void addPackageFromBrl( final Resource resource ) throws DroolsParserException {
-        this.resource = resource;
-        try {
-            addPackage( brlToPackageDescr(resource) );
-        } catch (Exception e) {
-            throw new DroolsParserException( e );
-        } finally {
-            this.resource = null;
-        }
-    }
-
-    PackageDescr brlToPackageDescr(Resource resource) throws Exception {
-        BusinessRuleProvider provider = BusinessRuleProviderFactory.getInstance().getProvider();
-        Reader knowledge = provider.getKnowledgeReader( resource );
-
-        DrlParser parser = new DrlParser(configuration.getLanguageLevel());
-
-        if (provider.hasDSLSentences()) {
-            DefaultExpander expander = getDslExpander();
-
-            if (null != expander) {
-                knowledge = new StringReader( expander.expand( knowledge ) );
-                if (expander.hasErrors())
-                    this.results.addAll( expander.getErrors() );
-            }
-        }
-
-        PackageDescr pkg = parser.parse( knowledge );
-        if (parser.hasErrors()) {
-            this.results.addAll( parser.getErrors() );
-            return null;
-        }
-        return pkg;
-    }
-
     public void addDsl( Resource resource ) throws IOException {
         this.resource = resource;
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
@@ -703,8 +668,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 addDsl( resource );
             } else if (ResourceType.XDRL.equals( type )) {
                 addPackageFromXml( resource );
-            } else if (ResourceType.BRL.equals( type )) {
-                addPackageFromBrl( resource );
             } else if (ResourceType.DRF.equals( type )) {
                 addProcessFromXml( resource );
             } else if (ResourceType.BPMN2.equals( type )) {

@@ -343,23 +343,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             }
         }
 
-        resourcesByType = this.resourcesByType.remove(ResourceType.BRL);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.brlToPackageDescr(resourceDescr.resource));
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-
         resourcesByType = this.resourcesByType.remove(ResourceType.DTABLE);
         if (resourcesByType != null) {
             for (ResourceDescr resourceDescr : resourcesByType) {
