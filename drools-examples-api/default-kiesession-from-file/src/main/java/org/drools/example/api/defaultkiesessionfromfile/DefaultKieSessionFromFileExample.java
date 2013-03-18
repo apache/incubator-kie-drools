@@ -1,6 +1,6 @@
 package org.drools.example.api.defaultkiesessionfromfile;
 
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
 import org.kie.runtime.KieContainer;

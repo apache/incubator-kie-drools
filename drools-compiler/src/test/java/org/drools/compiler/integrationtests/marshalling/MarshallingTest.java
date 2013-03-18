@@ -76,7 +76,7 @@ import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;

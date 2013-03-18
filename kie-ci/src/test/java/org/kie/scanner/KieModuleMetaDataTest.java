@@ -3,7 +3,7 @@ package org.kie.scanner;
 import org.drools.core.rule.TypeMetaInfo;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 

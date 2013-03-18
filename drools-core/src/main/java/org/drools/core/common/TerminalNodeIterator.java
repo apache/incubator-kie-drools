@@ -5,7 +5,7 @@ import java.util.Map;
 import org.drools.core.util.Iterator;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 
 public class TerminalNodeIterator
     implements

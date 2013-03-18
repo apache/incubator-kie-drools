@@ -6,7 +6,7 @@ import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.cdi.KBase;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;

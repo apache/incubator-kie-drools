@@ -18,7 +18,7 @@ package org.drools.verifier;
 
 import java.util.Map;
 
-import org.kie.PropertiesConfiguration;
+import org.kie.api.PropertiesConfiguration;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
 

@@ -40,7 +40,7 @@ import junit.framework.Assert;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 
 @Entity
 @SequenceGenerator(name="marshalledDataIdSeq", sequenceName="MARSHALLEDDATA_ID_SEQ")

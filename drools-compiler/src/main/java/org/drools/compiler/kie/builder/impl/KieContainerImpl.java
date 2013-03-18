@@ -3,7 +3,7 @@ package org.drools.compiler.kie.builder.impl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.builder.KieModule;

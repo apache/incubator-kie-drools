@@ -21,7 +21,7 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.core.process.instance.WorkItemManagerFactory;
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.runtime.CommandExecutor;
 import org.kie.runtime.Environment;

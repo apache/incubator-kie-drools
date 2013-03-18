@@ -35,7 +35,7 @@ import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.Package;
 
 import org.junit.Test;
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;

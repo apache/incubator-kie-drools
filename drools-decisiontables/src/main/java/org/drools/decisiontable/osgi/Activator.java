@@ -20,7 +20,7 @@ import java.util.Hashtable;
 
 import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.decisiontable.DecisionTableProviderImpl;
-import org.kie.Service;
+import org.kie.api.Service;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

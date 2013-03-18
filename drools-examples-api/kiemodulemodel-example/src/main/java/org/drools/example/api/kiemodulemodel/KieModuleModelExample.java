@@ -1,6 +1,6 @@
 package org.drools.example.api.kiemodulemodel;
 
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.Message.Level;

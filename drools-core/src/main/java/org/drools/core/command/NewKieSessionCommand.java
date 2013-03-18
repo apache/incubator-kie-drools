@@ -17,7 +17,7 @@
 package org.drools.core.command;
 
 import org.drools.core.command.impl.GenericCommand;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.builder.ReleaseId;
 import org.kie.internal.command.Context;
 import org.kie.runtime.KieContainer;

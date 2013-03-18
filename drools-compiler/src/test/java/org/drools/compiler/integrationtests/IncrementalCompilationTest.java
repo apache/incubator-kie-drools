@@ -2,7 +2,7 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.Message;
 import org.junit.Test;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.builder.KieBuilder;

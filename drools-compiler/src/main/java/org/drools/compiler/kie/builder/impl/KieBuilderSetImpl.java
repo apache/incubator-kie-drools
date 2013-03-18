@@ -3,7 +3,7 @@ package org.drools.compiler.kie.builder.impl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.io.impl.BaseResource;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.builder.model.KieBaseModel;
