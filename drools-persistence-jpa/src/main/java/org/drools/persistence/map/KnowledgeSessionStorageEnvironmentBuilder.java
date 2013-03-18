@@ -14,14 +14,14 @@ public class KnowledgeSessionStorageEnvironmentBuilder implements EnvironmentBui
     }
     
     /* (non-Javadoc)
-     * @see org.kie.persistence.map.EnvironmentBuilder#getPersistenceContextManager()
+     * @see org.kie.api.persistence.map.EnvironmentBuilder#getPersistenceContextManager()
      */
     public PersistenceContextManager getPersistenceContextManager(){
         return new MapPersistenceContextManager( persistenceContext );
     }
     
     /* (non-Javadoc)
-     * @see org.kie.persistence.map.EnvironmentBuilder#getTransactionManager()
+     * @see org.kie.api.persistence.map.EnvironmentBuilder#getTransactionManager()
      */
     public TransactionManager getTransactionManager(){
         return new ManualTransactionManager( persistenceContext, storage );

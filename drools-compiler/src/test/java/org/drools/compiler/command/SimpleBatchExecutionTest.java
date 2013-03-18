@@ -40,7 +40,7 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
 
     private StatefulKnowledgeSession ksession;
     protected final static String ruleString = ""
-        + "package org.kie.persistence \n"
+        + "package org.kie.api.persistence \n"
         + "global String globalCheeseCountry\n"
         + "\n"
         + "rule 'EmptyRule' \n" 
