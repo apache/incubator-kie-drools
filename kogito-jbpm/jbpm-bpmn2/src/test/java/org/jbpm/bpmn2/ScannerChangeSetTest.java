@@ -16,8 +16,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
-import org.kie.agent.KnowledgeAgent;
-import org.kie.agent.KnowledgeAgentFactory;
+import org.kie.internal.agent.KnowledgeAgent;
+import org.kie.internal.agent.KnowledgeAgentFactory;
 import org.kie.io.ResourceChangeScannerConfiguration;
 import org.kie.io.ResourceFactory;
 
