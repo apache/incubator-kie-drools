@@ -75,7 +75,7 @@ public class DefaultMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.kie.marshalling.Marshaller#read(java.io.InputStream, org.kie.common.InternalRuleBase, int, org.kie.concurrent.ExecutorService)
+     * @see org.kie.marshalling.Marshaller#read(java.io.InputStream, org.kie.common.InternalRuleBase, int, org.kie.api.concurrent.ExecutorService)
      */
     public StatefulKnowledgeSession unmarshall(final InputStream stream,
                                                KieSessionConfiguration config,

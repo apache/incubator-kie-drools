@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
-import org.kie.concurrent.KieExecutors;
+import org.kie.api.concurrent.KieExecutors;
 
 public class ExecutorProviderImpl implements KieExecutors {
 
