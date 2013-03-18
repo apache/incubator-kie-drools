@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.simulation;
+package org.kie.internal.simulation;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 
-import org.kie.command.Command;
+public interface Simulation {
 
-public interface SimulationStep {
-
-    long getDistanceMillis();
-
-    List<Command> getCommands();
+    Map<String, SimulationPath> getPaths();
 
 }
