@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.kie.time.Calendar;
+import org.kie.api.time.Calendar;
 
 public class QuartzHelper {
 

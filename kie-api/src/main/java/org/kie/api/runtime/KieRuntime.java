@@ -20,7 +20,7 @@ import org.kie.api.KieBase;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.rule.Session;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 
 import java.util.Map;
 

@@ -16,7 +16,7 @@
 
 package org.kie.api.runtime;
 
-import org.kie.time.Calendar;
+import org.kie.api.time.Calendar;
 
 public interface Calendars {
     Calendar get(String identifier);
