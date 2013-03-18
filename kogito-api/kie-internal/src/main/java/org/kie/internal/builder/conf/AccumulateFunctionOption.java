@@ -16,7 +16,7 @@
 
 package org.kie.internal.builder.conf;
 
-import org.kie.runtime.rule.AccumulateFunction;
+import org.kie.api.runtime.rule.AccumulateFunction;
 
 /**
  * A class for the accumulate function configuration.

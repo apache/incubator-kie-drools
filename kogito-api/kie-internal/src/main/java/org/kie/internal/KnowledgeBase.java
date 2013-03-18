@@ -27,8 +27,8 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSessionConfiguration;
 
 
 /**

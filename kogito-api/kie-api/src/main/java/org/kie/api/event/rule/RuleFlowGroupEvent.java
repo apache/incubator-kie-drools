@@ -17,7 +17,7 @@
 package org.kie.api.event.rule;
 
 import org.kie.api.event.KieRuntimeEvent;
-import org.kie.runtime.rule.RuleFlowGroup;
+import org.kie.api.runtime.rule.RuleFlowGroup;
 
 public interface RuleFlowGroupEvent extends KieRuntimeEvent {
 

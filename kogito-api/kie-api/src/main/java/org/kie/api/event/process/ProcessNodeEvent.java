@@ -16,7 +16,7 @@
 
 package org.kie.api.event.process;
 
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstance;
 
 /**
  * An event related to the execution of a node instance within a process instance.

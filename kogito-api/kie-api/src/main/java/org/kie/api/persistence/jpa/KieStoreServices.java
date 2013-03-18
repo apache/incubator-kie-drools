@@ -17,9 +17,9 @@
 package org.kie.api.persistence.jpa;
 
 import org.kie.api.KieBase;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 
 public interface KieStoreServices {
 

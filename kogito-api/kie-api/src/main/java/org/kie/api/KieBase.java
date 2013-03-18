@@ -6,10 +6,10 @@ import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.kiebase.KieBaseEventManager;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatelessKieSession;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.StatelessKieSession;
 
 import java.util.Collection;
 import java.util.Set;

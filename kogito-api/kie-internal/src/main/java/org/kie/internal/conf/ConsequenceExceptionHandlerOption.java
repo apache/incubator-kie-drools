@@ -17,7 +17,7 @@
 package org.kie.internal.conf;
 
 import org.kie.api.conf.SingleValueKieBaseOption;
-import org.kie.runtime.rule.ConsequenceExceptionHandler;
+import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 
 /**
  * A class for the consequence exception handler configuration configuration.

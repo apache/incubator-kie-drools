@@ -11,7 +11,7 @@ import org.kie.api.io.KieResources;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.persistence.jpa.KieStoreServices;
-import org.kie.runtime.KieContainer;
+import org.kie.api.runtime.KieContainer;
 
 import java.io.File;
 

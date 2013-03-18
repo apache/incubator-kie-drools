@@ -1,6 +1,6 @@
 package org.kie.api.command;
 
-import org.kie.runtime.ExecutionResults;
+import org.kie.api.runtime.ExecutionResults;
 
 
 

@@ -18,7 +18,7 @@ package org.kie.internal.runtime;
 
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 
 /**
@@ -96,7 +96,7 @@ import org.kie.runtime.KieSession;
  * for more details.
  * </p>
  * 
- * @see org.kie.runtime.Globals
+ * @see org.kie.api.runtime.Globals
  */
 public interface StatefulKnowledgeSession
     extends

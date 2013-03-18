@@ -17,7 +17,7 @@
 package org.kie.api.event.process;
 
 import org.kie.api.event.KieRuntimeEvent;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 /**
  * A runtime event related to the execution of process instances.

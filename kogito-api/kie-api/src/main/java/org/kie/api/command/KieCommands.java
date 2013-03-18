@@ -16,9 +16,9 @@
 
 package org.kie.api.command;
 
-import org.kie.runtime.ObjectFilter;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.Collection;
 import java.util.List;

@@ -22,7 +22,7 @@ import org.kie.internal.SystemEventListener;
 import org.kie.internal.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.api.io.Resource;
-import org.kie.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.KieSessionConfiguration;
 
 /**
  * The KnowledgeAgentFactory provides detailed information on how to create and use the KnowledgeAgent.
