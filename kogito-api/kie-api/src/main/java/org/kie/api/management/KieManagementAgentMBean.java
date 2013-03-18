@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.management;
+package org.kie.api.management;
 
 /**
  * A tree root level class for all the drools management 
