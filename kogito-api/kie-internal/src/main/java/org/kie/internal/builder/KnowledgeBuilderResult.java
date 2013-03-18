@@ -15,7 +15,7 @@
 */
 package org.kie.internal.builder;
 
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  * A super interface for Knowledge Building result messages.

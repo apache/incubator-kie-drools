@@ -16,7 +16,7 @@
 
 package org.kie.internal.builder;
 
-import org.kie.io.ResourceConfiguration;
+import org.kie.api.io.ResourceConfiguration;
 
 /**
  * ResourceConfiguration for decision tables. It allows for the type of the decision, XLS or CSV, to be specified

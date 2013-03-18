@@ -25,7 +25,7 @@ import javax.xml.bind.JAXBException;
 
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 import com.sun.tools.xjc.Options;
 

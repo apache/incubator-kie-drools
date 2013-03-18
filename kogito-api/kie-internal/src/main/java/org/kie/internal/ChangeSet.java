@@ -17,9 +17,8 @@
 package org.kie.internal;
 
 import java.util.Collection;
-import java.util.Map;
 
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  * <p>

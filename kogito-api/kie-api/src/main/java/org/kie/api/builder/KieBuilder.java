@@ -1,6 +1,6 @@
 package org.kie.api.builder;
 
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  * KieBuilder is a builder for the resources contained in a KieModule

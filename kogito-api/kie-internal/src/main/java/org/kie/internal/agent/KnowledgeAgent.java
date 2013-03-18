@@ -21,7 +21,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.SystemEventListener;
 import org.kie.internal.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 import org.kie.runtime.KieSessionConfiguration;
 
 /**
