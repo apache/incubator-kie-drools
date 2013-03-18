@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.task.service;
+package org.kie.internal.runtime;
 
-public interface ResponseHandler {
+import java.util.Collection;
 
-    public void setError(RuntimeException error);
+public interface StatelessKnowledgeSessionResults {
+    Collection<String> getIdentifiers();
 
+    Object getValue(String identifier);
 }

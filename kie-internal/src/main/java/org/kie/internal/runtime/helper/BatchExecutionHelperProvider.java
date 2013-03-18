@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.runtime;
+package org.kie.internal.runtime.helper;
 
-import java.util.Collection;
+import com.thoughtworks.xstream.XStream;
 
-public interface StatelessKnowledgeSessionResults {
-    Collection<String> getIdentifiers();
 
-    Object getValue(String identifier);
+/**
+ * 
+ * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
+ */
+public interface BatchExecutionHelperProvider {
+    XStream newXStreamMarshaller();
+    XStream newJSonMarshaller();
 }

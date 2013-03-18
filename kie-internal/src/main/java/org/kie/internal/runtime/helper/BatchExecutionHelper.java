@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.runtime.helper;
+package org.kie.internal.runtime.helper;
 
 import com.thoughtworks.xstream.XStream;
 
