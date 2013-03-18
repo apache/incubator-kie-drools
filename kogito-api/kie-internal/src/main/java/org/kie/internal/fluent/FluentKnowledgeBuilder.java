@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.fluent;
+package org.kie.internal.fluent;
 
-import org.kie.command.Command;
-import org.kie.simulation.Simulation;
+import org.kie.io.Resource;
+import org.kie.io.ResourceConfiguration;
+import org.kie.io.ResourceType;
 
-public interface InternalSimulation extends Simulation, CommandScript {
+public interface FluentKnowledgeBuilder<T> {
+    
+    T add(Resource resource,
+          ResourceType type);
 
-    void addCommand(Command cmd);
-
-    void newInternalStep(long distance);
+    T add(Resource resource,
+          ResourceType type,
+          ResourceConfiguration configuration);
 
 }
