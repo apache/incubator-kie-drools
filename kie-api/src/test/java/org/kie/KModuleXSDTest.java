@@ -23,7 +23,7 @@ public class KModuleXSDTest {
         SchemaFactory factory = 
                 SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
        
-        URL url = getClass().getClassLoader().getResource( "org/kie/kmodule.xsd" );
+        URL url = getClass().getClassLoader().getResource("org/kie/api/kmodule.xsd");
         assertNotNull( url );
         Schema schema = null;
         try {
