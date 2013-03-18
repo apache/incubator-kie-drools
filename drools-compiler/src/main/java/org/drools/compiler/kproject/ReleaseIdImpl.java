@@ -5,7 +5,7 @@ import java.io.StringReader;
 import java.util.Properties;
 
 import org.drools.core.util.StringUtils;
-import org.kie.builder.ReleaseId;
+import org.kie.api.builder.ReleaseId;
 
 public class ReleaseIdImpl implements ReleaseId {
     private final String groupId;

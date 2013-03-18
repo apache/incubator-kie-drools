@@ -1,6 +1,6 @@
 package org.drools.compiler.kproject.xml;
 
-import org.kie.builder.ReleaseId;
+import org.kie.api.builder.ReleaseId;
 
 import java.util.ArrayList;
 import java.util.List;

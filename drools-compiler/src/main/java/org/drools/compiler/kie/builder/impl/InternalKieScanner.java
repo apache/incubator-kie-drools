@@ -2,9 +2,9 @@ package org.drools.compiler.kie.builder.impl;
 
 import java.io.InputStream;
 
-import org.kie.builder.ReleaseId;
-import org.kie.builder.KieModule;
-import org.kie.builder.KieScanner;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.KieScanner;
 import org.kie.runtime.KieContainer;
 
 public interface InternalKieScanner extends KieScanner {

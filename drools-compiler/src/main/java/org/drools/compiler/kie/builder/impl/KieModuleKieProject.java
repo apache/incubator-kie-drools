@@ -1,8 +1,8 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.core.util.ClassUtils;
-import org.kie.builder.ReleaseId;
-import org.kie.builder.KieRepository;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.KieRepository;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.slf4j.Logger;

@@ -1,8 +1,8 @@
 package org.drools.example.api.kiemodulefrommultiplefiles;
 
 import org.kie.api.KieServices;
-import org.kie.builder.KieModule;
-import org.kie.builder.KieRepository;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.KieRepository;
 import org.kie.io.Resource;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;

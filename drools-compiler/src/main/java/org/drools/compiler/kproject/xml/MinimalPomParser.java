@@ -1,7 +1,7 @@
 package org.drools.compiler.kproject.xml;
 
 import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.kie.builder.ReleaseId;
+import org.kie.api.builder.ReleaseId;
 import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

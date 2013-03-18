@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.builder.KieFileSystem;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.KieServices;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;

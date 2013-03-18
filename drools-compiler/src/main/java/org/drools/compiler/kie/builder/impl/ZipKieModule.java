@@ -1,8 +1,8 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.core.util.IoUtils;
-import org.kie.builder.ReleaseId;
-import org.kie.builder.model.KieModuleModel;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
 
 import java.io.File;
 import java.io.IOException;

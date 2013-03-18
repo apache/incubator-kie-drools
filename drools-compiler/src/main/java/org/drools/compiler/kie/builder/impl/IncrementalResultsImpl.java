@@ -2,7 +2,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.builder.Message;
+import org.kie.api.builder.Message;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,8 +7,8 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.builder.model.KieBaseModel;
-import org.kie.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
 import org.xml.sax.SAXException;
 
 import javax.xml.transform.Source;

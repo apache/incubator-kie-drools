@@ -3,8 +3,8 @@ package org.drools.compiler.kie.builder.impl;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.kie.builder.ReleaseId;
-import org.kie.builder.model.KieModuleModel;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
 
 import java.io.File;
 import java.util.Collection;

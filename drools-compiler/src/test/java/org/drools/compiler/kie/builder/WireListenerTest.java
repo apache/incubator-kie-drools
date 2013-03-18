@@ -2,12 +2,12 @@ package org.drools.compiler.kie.builder;
 
 import org.junit.Test;
 import org.kie.api.KieServices;
-import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFileSystem;
-import org.kie.builder.ReleaseId;
-import org.kie.builder.model.KieModuleModel;
-import org.kie.builder.model.KieSessionModel;
-import org.kie.builder.model.ListenerModel;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.builder.model.ListenerModel;
 import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;

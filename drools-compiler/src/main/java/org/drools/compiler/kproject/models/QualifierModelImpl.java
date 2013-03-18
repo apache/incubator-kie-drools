@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.util.AbstractXStreamConverter;
-import org.kie.builder.model.QualifierModel;
+import org.kie.api.builder.model.QualifierModel;
 
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
