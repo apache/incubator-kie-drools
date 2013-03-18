@@ -6,7 +6,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ActivationIterator

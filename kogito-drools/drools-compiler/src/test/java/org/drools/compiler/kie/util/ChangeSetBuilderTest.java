@@ -2,7 +2,7 @@ package org.drools.compiler.kie.util;
 
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.junit.Test;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.model.KieModuleModel;

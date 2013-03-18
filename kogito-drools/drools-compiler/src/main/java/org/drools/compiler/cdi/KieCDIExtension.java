@@ -26,8 +26,8 @@ import javax.inject.Named;
 
 import org.drools.core.util.StringUtils;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
-import org.kie.KieBase;
-import org.kie.KieServices;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.model.KieSessionModel;
 import org.kie.builder.model.KieSessionModel.KieSessionType;

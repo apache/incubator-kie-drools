@@ -28,7 +28,7 @@ import org.jboss.weld.environment.se.discovery.ImmutableBeanDeploymentArchive;
 import org.jboss.weld.resources.spi.ResourceLoader;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;

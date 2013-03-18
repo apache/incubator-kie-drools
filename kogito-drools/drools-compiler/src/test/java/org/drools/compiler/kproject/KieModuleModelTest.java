@@ -3,7 +3,7 @@ package org.drools.compiler.kproject;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.junit.Test;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.model.KieSessionModel;

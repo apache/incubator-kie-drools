@@ -5,7 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieScanner;

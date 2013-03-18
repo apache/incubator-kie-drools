@@ -16,7 +16,7 @@
 
 package org.drools.core.marshalling.impl;
 
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.ObjectMarshallingStrategy;

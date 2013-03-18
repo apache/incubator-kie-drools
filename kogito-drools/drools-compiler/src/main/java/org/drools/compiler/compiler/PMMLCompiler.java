@@ -19,7 +19,7 @@ package org.drools.compiler.compiler;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.kie.Service;
+import org.kie.api.Service;
 
 public interface PMMLCompiler extends Service {
 

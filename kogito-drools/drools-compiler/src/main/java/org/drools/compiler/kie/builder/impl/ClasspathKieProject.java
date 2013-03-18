@@ -5,7 +5,7 @@ import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.KieRepository;

@@ -18,7 +18,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.cdi.KReleaseId;
 import org.kie.command.KieCommands;
 import org.kie.runtime.StatelessKieSession;

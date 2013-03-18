@@ -44,7 +44,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ReteooComponentFactory;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.Package;
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 

@@ -6,7 +6,7 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.Test;
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 
 import javax.enterprise.inject.spi.Bean;
