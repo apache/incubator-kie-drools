@@ -21,7 +21,7 @@ package org.drools.core;
  * An interface for instances that allow handling of entry-point-scoped
  * facts
  */
-public interface WorkingMemoryEntryPoint extends org.kie.runtime.rule.SessionEntryPoint {
+public interface WorkingMemoryEntryPoint extends org.kie.api.runtime.rule.SessionEntryPoint {
     /**
      * Assert a fact.
      * 
@@ -63,7 +63,7 @@ public interface WorkingMemoryEntryPoint extends org.kie.runtime.rule.SessionEnt
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
-    void retract(org.kie.runtime.rule.FactHandle handle) throws FactException;
+    void retract(org.kie.api.runtime.rule.FactHandle handle) throws FactException;
 
     /**
      * Inform the WorkingMemory that a Fact has been modified and that it
@@ -77,7 +77,7 @@ public interface WorkingMemoryEntryPoint extends org.kie.runtime.rule.SessionEnt
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
-    void update(org.kie.runtime.rule.FactHandle handle,
+    void update(org.kie.api.runtime.rule.FactHandle handle,
                 Object object) throws FactException;
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);

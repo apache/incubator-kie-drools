@@ -18,7 +18,7 @@ package org.drools.core.common;
 
 import java.util.Iterator;
 
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 
 public interface ObjectStore {
 
@@ -52,7 +52,7 @@ public interface ObjectStore {
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
      */
-    public abstract Iterator iterateObjects(org.kie.runtime.ObjectFilter filter);
+    public abstract Iterator iterateObjects(org.kie.api.runtime.ObjectFilter filter);
 
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
@@ -62,6 +62,6 @@ public interface ObjectStore {
     /**
      * This class is not thread safe, changes to the working memory during iteration may give unexpected results
      */
-    public abstract Iterator iterateFactHandles(org.kie.runtime.ObjectFilter filter);
+    public abstract Iterator iterateFactHandles(org.kie.api.runtime.ObjectFilter filter);
 
 }

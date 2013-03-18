@@ -9,7 +9,7 @@ import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.KieScanner;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.api.io.Resource;
-import org.kie.runtime.KieContainer;
+import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

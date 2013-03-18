@@ -57,16 +57,16 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
-import org.kie.runtime.Channel;
-import org.kie.runtime.KieRuntime;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.runtime.process.NodeInstance;
-import org.kie.runtime.process.NodeInstanceContainer;
-import org.kie.runtime.process.ProcessContext;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkflowProcessInstance;
-import org.kie.runtime.rule.Match;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstanceContainer;
+import org.kie.api.runtime.process.ProcessContext;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.api.runtime.rule.Match;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 public class DefaultKnowledgeHelper
     implements
@@ -552,7 +552,7 @@ public class DefaultKnowledgeHelper
             this.fh = fh;
         }
 
-        public void unMatch(org.kie.runtime.rule.Session wm,
+        public void unMatch(org.kie.api.runtime.rule.Session wm,
                             Match activation) {
             wm.retract( fh );
             if ( next != null ) {

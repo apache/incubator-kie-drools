@@ -42,7 +42,7 @@ import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.internal.command.Context;
-import org.kie.runtime.ExecutionResults;
+import org.kie.api.runtime.ExecutionResults;
 
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 

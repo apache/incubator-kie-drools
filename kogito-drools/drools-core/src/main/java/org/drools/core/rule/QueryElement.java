@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.runtime.rule.Variable;
+import org.kie.api.runtime.rule.Variable;
 
 public class QueryElement extends ConditionalElement
     implements

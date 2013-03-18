@@ -3,8 +3,8 @@ package org.drools.compiler.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.runtime.rule.Row;
-import org.kie.runtime.rule.ViewChangedEventListener;
+import org.kie.api.runtime.rule.Row;
+import org.kie.api.runtime.rule.ViewChangedEventListener;
 
 import ca.odell.glazedlists.AbstractEventList;
 

@@ -48,7 +48,7 @@ import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.KnowledgeHelper;
-import org.kie.runtime.rule.AccumulateFunction;
+import org.kie.api.runtime.rule.AccumulateFunction;
 
 /**
  * A builder for the java dialect accumulate version

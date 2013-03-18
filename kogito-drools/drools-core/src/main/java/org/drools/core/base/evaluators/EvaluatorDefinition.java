@@ -28,7 +28,7 @@ import org.drools.core.spi.Evaluator;
  * This interface is the register entry point for all available
  * evaluators and describes all evaluator capabilities
  */
-public interface EvaluatorDefinition extends Externalizable, org.kie.runtime.rule.EvaluatorDefinition {
+public interface EvaluatorDefinition extends Externalizable, org.kie.api.runtime.rule.EvaluatorDefinition {
 
     /**
      * Returns the list of identifies this

@@ -18,8 +18,8 @@ package org.drools.compiler.conf;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 import static org.junit.Assert.*;
 

@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.core.spi.GlobalResolver;
-import org.kie.runtime.Globals;
+import org.kie.api.runtime.Globals;
 
 public class MapGlobalResolver
     implements

@@ -17,8 +17,8 @@
 package org.drools.core.runtime.rule.impl;
 
 import org.drools.core.QueryResult;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.QueryResultsRow;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResultsRow;
 
 public class NativeQueryResultRow
     implements

@@ -28,7 +28,7 @@ import org.drools.core.util.JavaIteratorAdapter;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.AbstractHashTable.HashTableIterator;
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     /** Object-to-handle mapping. */
@@ -189,7 +189,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     /* (non-Javadoc)
      * @see org.kie.common.ObjectStore#iterateObjects(org.kie.ObjectFilter)
      */
-    public Iterator iterateObjects(org.kie.runtime.ObjectFilter filter) {
+    public Iterator iterateObjects(org.kie.api.runtime.ObjectFilter filter) {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
         iterator.reset();
         return new JavaIteratorAdapter( iterator,
@@ -210,7 +210,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
     /* (non-Javadoc)
      * @see org.kie.common.ObjectStore#iterateFactHandles(org.kie.ObjectFilter)
      */
-    public Iterator iterateFactHandles(org.kie.runtime.ObjectFilter filter) {
+    public Iterator iterateFactHandles(org.kie.api.runtime.ObjectFilter filter) {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
         iterator.reset();
         return new JavaIteratorAdapter( iterator,

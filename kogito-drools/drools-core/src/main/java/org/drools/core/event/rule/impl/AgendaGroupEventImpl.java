@@ -18,7 +18,7 @@ package org.drools.core.event.rule.impl;
 
 import org.kie.api.event.rule.AgendaGroupEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.runtime.rule.AgendaGroup;
+import org.kie.api.runtime.rule.AgendaGroup;
 
 import java.io.Externalizable;
 import java.io.IOException;

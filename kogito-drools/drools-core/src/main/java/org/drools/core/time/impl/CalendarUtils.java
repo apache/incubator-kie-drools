@@ -19,7 +19,7 @@ package org.drools.core.time.impl;
 import java.util.Date;
 
 import org.drools.core.time.Trigger;
-import org.kie.runtime.Calendars;
+import org.kie.api.runtime.Calendars;
 
 public class CalendarUtils {
     public static Date updateToNextIncludeDate(String[] calendarNames,

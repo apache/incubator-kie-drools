@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.kie.runtime.rule.AgendaFilter;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.Match;
 
 public class ScopesAgendaFilter
     implements

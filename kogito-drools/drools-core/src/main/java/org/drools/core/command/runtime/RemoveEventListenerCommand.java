@@ -22,7 +22,7 @@ import org.kie.internal.command.Context;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public class RemoveEventListenerCommand
     implements

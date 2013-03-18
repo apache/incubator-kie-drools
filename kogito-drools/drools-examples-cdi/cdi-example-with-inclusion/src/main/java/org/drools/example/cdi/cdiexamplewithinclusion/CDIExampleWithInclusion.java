@@ -4,7 +4,7 @@ import org.drools.example.cdi.cdiexample.Message;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.kie.api.cdi.KSession;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 import javax.inject.Inject;
 import java.io.PrintStream;

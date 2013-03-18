@@ -23,14 +23,14 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.time.Interval;
-import org.kie.runtime.rule.Operator;
+import org.kie.api.runtime.rule.Operator;
 
 /**
  * A public interface to be implemented by all evaluators
  */
 public interface Evaluator
     extends
-    Serializable, org.kie.runtime.rule.Evaluator {
+    Serializable, org.kie.api.runtime.rule.Evaluator {
 
     /**
      * Returns the type of the values this evaluator operates upon.

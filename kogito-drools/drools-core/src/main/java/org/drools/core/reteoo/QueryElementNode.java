@@ -47,7 +47,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
-import org.kie.runtime.rule.Variable;
+import org.kie.api.runtime.rule.Variable;
 
 import java.io.IOException;
 import java.io.ObjectInput;

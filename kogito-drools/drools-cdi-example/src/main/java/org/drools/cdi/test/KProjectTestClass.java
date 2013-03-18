@@ -1,8 +1,8 @@
 package org.drools.compiler.cdi.test;
 
 import org.kie.KnowledgeBase;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.api.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.StatelessKnowledgeSession;
 
 public interface KProjectTestClass {
     public KnowledgeBase getKBase1();

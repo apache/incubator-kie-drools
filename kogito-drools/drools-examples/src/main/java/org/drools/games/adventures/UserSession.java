@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.kie.runtime.Channel;
+import org.kie.api.runtime.Channel;
 
 public class UserSession {
     private int id;

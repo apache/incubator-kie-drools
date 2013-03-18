@@ -26,7 +26,7 @@ import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.rule.Query;
-import org.kie.runtime.rule.Variable;
+import org.kie.api.runtime.rule.Variable;
 
 public final class DroolsQuery extends ArrayElements {
     private final String                           name;

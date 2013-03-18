@@ -1,6 +1,6 @@
 package org.drools.core.runtime.rule.impl;
 
-import org.kie.runtime.rule.Agenda;
+import org.kie.api.runtime.rule.Agenda;
 
 public interface InternalAgenda extends Agenda {
 

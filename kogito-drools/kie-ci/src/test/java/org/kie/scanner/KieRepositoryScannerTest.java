@@ -11,8 +11,8 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.kie.runtime.KieContainer;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 import java.io.File;
 import java.io.IOException;

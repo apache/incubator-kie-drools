@@ -25,7 +25,7 @@ import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
-import org.kie.runtime.ObjectFilter;
+import org.kie.api.runtime.ObjectFilter;
 
 import java.io.IOException;
 import java.io.ObjectInput;

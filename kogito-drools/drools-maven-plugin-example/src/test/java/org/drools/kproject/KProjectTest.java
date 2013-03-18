@@ -3,8 +3,8 @@ package org.drools.kproject;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KieServices;
-import org.kie.runtime.KieContainer;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 public class KProjectTest {
 

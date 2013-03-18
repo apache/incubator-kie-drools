@@ -20,8 +20,8 @@ import org.drools.core.command.impl.GenericCommand;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.command.Context;
-import org.kie.runtime.KieContainer;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 public class NewKieSessionCommand
     implements

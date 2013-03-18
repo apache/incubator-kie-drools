@@ -17,9 +17,9 @@ import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.GlobalResolver;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.runtime.Environment;
-import org.kie.runtime.ObjectFilter;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.time.SessionClock;
 
 import java.util.*;
@@ -188,7 +188,7 @@ public class ExternalSheetListenerTest {
                     return null;
                 }
 
-                public void update(org.kie.runtime.rule.FactHandle arg0, Object arg1)
+                public void update(org.kie.api.runtime.rule.FactHandle arg0, Object arg1)
                         throws FactException {
 
                 }
@@ -201,11 +201,11 @@ public class ExternalSheetListenerTest {
 
                 }
 
-                public void retract(org.kie.runtime.rule.FactHandle arg0) throws FactException {
+                public void retract(org.kie.api.runtime.rule.FactHandle arg0) throws FactException {
 
                 }
 
-                public void delete(org.kie.runtime.rule.FactHandle arg0) throws FactException {
+                public void delete(org.kie.api.runtime.rule.FactHandle arg0) throws FactException {
 
                 }
 
@@ -380,7 +380,7 @@ public class ExternalSheetListenerTest {
 
                 }
 
-                public Object getObject(org.kie.runtime.rule.FactHandle handle) {
+                public Object getObject(org.kie.api.runtime.rule.FactHandle handle) {
                     // TODO Auto-generated method stub
                     return null;
                 }
@@ -390,12 +390,12 @@ public class ExternalSheetListenerTest {
                     return null;
                 }
 
-                public Collection<? extends org.kie.runtime.rule.FactHandle> getFactHandles() {
+                public Collection<? extends org.kie.api.runtime.rule.FactHandle> getFactHandles() {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public Collection<? extends org.kie.runtime.rule.FactHandle> getFactHandles(ObjectFilter filter) {
+                public Collection<? extends org.kie.api.runtime.rule.FactHandle> getFactHandles(ObjectFilter filter) {
                     // TODO Auto-generated method stub
                     return null;
                 }

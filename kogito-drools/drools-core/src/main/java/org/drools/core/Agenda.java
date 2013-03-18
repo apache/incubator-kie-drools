@@ -24,7 +24,7 @@ import org.drools.core.spi.RuleFlowGroup;
 /**
  * Agenda interface for the WorkingMemory
  */
-public interface Agenda extends org.kie.runtime.rule.Agenda {
+public interface Agenda extends org.kie.api.runtime.rule.Agenda {
 
     /**
      * Returns the WorkignMemory for this Agenda

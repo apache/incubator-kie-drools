@@ -36,8 +36,8 @@ import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 
 public class MarshallerReaderContext extends ObjectInputStream {
     public final MarshallerReaderContext                                           stream;

@@ -19,8 +19,8 @@ package org.drools.core.command.runtime;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.command.Context;
-import org.kie.runtime.Calendars;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.KieSession;
 
 public class GetCalendarsCommand
     implements

@@ -116,7 +116,7 @@ import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.Match;
 import org.xml.sax.SAXException;
 
 import java.beans.IntrospectionException;

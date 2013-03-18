@@ -9,7 +9,7 @@ import java.net.URLClassLoader;
 import org.junit.Test;
 import org.drools.compiler.kie.builder.impl.ClasspathKieProject;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
-import org.kie.runtime.KieContainer;
+import org.kie.api.runtime.KieContainer;
 
 public class KieProjectDefaultClasspathTest extends AbstractKnowledgeTest {
 

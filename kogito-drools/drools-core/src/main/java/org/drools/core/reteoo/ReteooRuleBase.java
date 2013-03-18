@@ -60,8 +60,8 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
 
 /**
  * Implementation of <code>RuleBase</code>.

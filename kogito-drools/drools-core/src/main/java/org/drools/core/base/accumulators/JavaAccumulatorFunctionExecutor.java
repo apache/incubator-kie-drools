@@ -45,13 +45,13 @@ public class JavaAccumulatorFunctionExecutor
     private static final long     serialVersionUID = 510l;
 
     private ReturnValueExpression expression;
-    private org.kie.runtime.rule.AccumulateFunction    function;
+    private org.kie.api.runtime.rule.AccumulateFunction    function;
 
     public JavaAccumulatorFunctionExecutor() {
 
     }
 
-    public JavaAccumulatorFunctionExecutor(final org.kie.runtime.rule.AccumulateFunction function) {
+    public JavaAccumulatorFunctionExecutor(final org.kie.api.runtime.rule.AccumulateFunction function) {
         super();
         this.function = function;
     }
@@ -59,7 +59,7 @@ public class JavaAccumulatorFunctionExecutor
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         expression = (ReturnValueExpression) in.readObject();
-        function = (org.kie.runtime.rule.AccumulateFunction) in.readObject();
+        function = (org.kie.api.runtime.rule.AccumulateFunction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

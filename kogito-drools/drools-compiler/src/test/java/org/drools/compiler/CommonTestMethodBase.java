@@ -29,9 +29,9 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.conf.KieSessionOption;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.KieSessionOption;
 
 /**
  * This contains methods common to many of the tests in drools-compiler. 

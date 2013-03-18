@@ -12,7 +12,7 @@ import org.junit.After;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class MoreBatchExecutionPersistenceTest extends MoreBatchExecutionTest {

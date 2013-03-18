@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.drools.core.rule.Package;
 import org.kie.api.definition.type.FactType;
-import org.kie.runtime.Environment;
+import org.kie.api.runtime.Environment;
 
 /**
  * Active collection of <code>Rule</code>s.

@@ -9,7 +9,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.ListenerModel;
 import org.kie.api.builder.model.WorkItemHandlerModel;
-import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +91,7 @@ public class KieSessionModelImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieSessionModel#setClockType(org.kie.runtime.conf.ClockTypeOption)
+     * @see org.kie.kproject.KieSessionModel#setClockType(org.kie.api.runtime.conf.ClockTypeOption)
      */
     public KieSessionModel setClockType(ClockTypeOption clockType) {
         this.clockType = clockType;

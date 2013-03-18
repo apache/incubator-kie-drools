@@ -34,7 +34,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.ExecutionResults;
+import org.kie.api.runtime.ExecutionResults;
 
 public class StatelessSessionTest extends CommonTestMethodBase {
     final List list = new ArrayList();
@@ -219,11 +219,11 @@ public class StatelessSessionTest extends CommonTestMethodBase {
         
         ExecutionResults batchResult = (ExecutionResults) ksession.execute( CommandFactory.newBatchExecution( cmds ) );
         
-        org.kie.runtime.rule.QueryResults results = ( org.kie.runtime.rule.QueryResults) batchResult.getValue( "cheeses" );
+        org.kie.api.runtime.rule.QueryResults results = ( org.kie.api.runtime.rule.QueryResults) batchResult.getValue( "cheeses" );
         assertEquals( 3, results.size() );
         assertEquals( 2, results.getIdentifiers().length );
         Set newSet = new HashSet();
-        for ( org.kie.runtime.rule.QueryResultsRow result : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow result : results ) {
             list = new ArrayList();
             list.add( result.get( "stilton" ) );
             list.add( result.get( "cheddar" ));

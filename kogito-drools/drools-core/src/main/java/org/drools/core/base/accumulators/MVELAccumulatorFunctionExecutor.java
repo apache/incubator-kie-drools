@@ -49,7 +49,7 @@ public class MVELAccumulatorFunctionExecutor
     private static final long                          serialVersionUID = 510l;
 
     private MVELCompilationUnit                        unit;
-    private org.kie.runtime.rule.AccumulateFunction function;
+    private org.kie.api.runtime.rule.AccumulateFunction function;
 
     private Serializable                               expression;
 
@@ -58,7 +58,7 @@ public class MVELAccumulatorFunctionExecutor
     }
 
     public MVELAccumulatorFunctionExecutor(MVELCompilationUnit unit,
-                                           final org.kie.runtime.rule.AccumulateFunction function) {
+                                           final org.kie.api.runtime.rule.AccumulateFunction function) {
         super();
         this.unit = unit;
         this.function = function;
@@ -67,7 +67,7 @@ public class MVELAccumulatorFunctionExecutor
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         unit = (MVELCompilationUnit) in.readObject();
-        function = (org.kie.runtime.rule.AccumulateFunction) in.readObject();
+        function = (org.kie.api.runtime.rule.AccumulateFunction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.common.InternalAgenda;
-import org.kie.runtime.rule.RuleFlowGroup;
+import org.kie.api.runtime.rule.RuleFlowGroup;
 
 public class RuleFlowGroupImpl implements RuleFlowGroup, Externalizable {
     

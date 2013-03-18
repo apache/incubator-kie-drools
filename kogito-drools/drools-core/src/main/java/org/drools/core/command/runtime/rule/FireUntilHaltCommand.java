@@ -21,8 +21,8 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.kie.internal.command.Context;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.AgendaFilter;
 
 public class FireUntilHaltCommand
     implements

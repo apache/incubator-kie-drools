@@ -26,7 +26,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.Resource;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.List;

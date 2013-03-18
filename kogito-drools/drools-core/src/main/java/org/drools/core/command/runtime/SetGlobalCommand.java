@@ -28,7 +28,7 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.internal.command.Context;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class SetGlobalCommand

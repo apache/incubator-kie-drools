@@ -26,8 +26,8 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.internal.command.Context;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class SignalEventCommand implements GenericCommand<Object> {

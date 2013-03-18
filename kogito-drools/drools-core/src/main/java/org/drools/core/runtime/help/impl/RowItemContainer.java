@@ -16,7 +16,7 @@
 
 package org.drools.core.runtime.help.impl;
 
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 
 
 public class RowItemContainer {

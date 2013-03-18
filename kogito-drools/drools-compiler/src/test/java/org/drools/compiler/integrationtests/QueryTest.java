@@ -37,12 +37,12 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.definition.rule.Rule;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.conf.QueryListenerOption;
-import org.kie.runtime.rule.LiveQuery;
-import org.kie.runtime.rule.QueryResultsRow;
-import org.kie.runtime.rule.Row;
-import org.kie.runtime.rule.Variable;
-import org.kie.runtime.rule.ViewChangedEventListener;
+import org.kie.api.runtime.conf.QueryListenerOption;
+import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.QueryResultsRow;
+import org.kie.api.runtime.rule.Row;
+import org.kie.api.runtime.rule.Variable;
+import org.kie.api.runtime.rule.ViewChangedEventListener;
 
 public class QueryTest extends CommonTestMethodBase {
 
@@ -56,7 +56,7 @@ public class QueryTest extends CommonTestMethodBase {
         session.insert( stilton );
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
         
-        org.kie.runtime.rule.QueryResults results = session.getQueryResults( "simple query" );
+        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "simple query" );
         assertEquals( 1,
                       results.size() );
 
@@ -71,7 +71,7 @@ public class QueryTest extends CommonTestMethodBase {
                                            5 );
         session.insert( stilton );
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
-        org.kie.runtime.rule.QueryResults results = session.getQueryResults( "simple query" );
+        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "simple query" );
         assertEquals( 1,
                       results.size() );
 
@@ -99,7 +99,7 @@ public class QueryTest extends CommonTestMethodBase {
         
         session.fireAllRules();
 
-        org.kie.runtime.rule.QueryResults results = session.getQueryResults( "assertedobjquery" );
+        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "assertedobjquery" );
         assertEquals( 1,
                       results.size() );
         assertEquals( new InsertedObject( "value1" ),
@@ -113,7 +113,7 @@ public class QueryTest extends CommonTestMethodBase {
         
         session.fireAllRules();
 
-        org.kie.runtime.rule.QueryResults results = session.getQueryResults( "assertedobjquery", new String[]{"value1"}  );
+        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "assertedobjquery", new String[]{"value1"}  );
         
         assertEquals( 1,
                       results.size() );
@@ -183,12 +183,12 @@ public class QueryTest extends CommonTestMethodBase {
         session.insert( cheddar2 );
         session.insert( cheddar3 );
 
-        org.kie.runtime.rule.QueryResults results = session.getQueryResults( "cheeses" );
+        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "cheeses" );
         assertEquals( 3, results.size() );
         assertEquals( 2, results.getIdentifiers().length );
         
         Set newSet = new HashSet();
-        for ( org.kie.runtime.rule.QueryResultsRow result : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow result : results ) {
             list = new ArrayList();
             list.add( result.get( "stilton" ) );
             list.add( result.get( "cheddar" ) );
@@ -203,7 +203,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 2,
                       flatResults.getIdentifiers().length );
         newSet = new HashSet();
-        for ( org.kie.runtime.rule.QueryResultsRow result : flatResults ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow result : flatResults ) {
             list = new ArrayList();
             list.add( result.get( "stilton" ) );
             list.add( result.get( "cheddar" ) );
@@ -233,7 +233,7 @@ public class QueryTest extends CommonTestMethodBase {
         session.insert( per1 );
         session.insert( per2 );
         
-        org.kie.runtime.rule.QueryResults results = session.getQueryResults( "find stinky cheeses" );
+        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "find stinky cheeses" );
         assertEquals( 1,
                       results.size() );
 
@@ -251,20 +251,20 @@ public class QueryTest extends CommonTestMethodBase {
                                       "stilton",
                                       20 );
         p1.setStatus( "europe" );
-        final org.kie.runtime.rule.FactHandle c1FactHandle = session.insert( p1 );
+        final org.kie.api.runtime.rule.FactHandle c1FactHandle = session.insert( p1 );
         final Person p2 = new Person( "p2",
                                       "stilton",
                                       30 );
         p2.setStatus( "europe" );
-        final org.kie.runtime.rule.FactHandle c2FactHandle = session.insert( p2 );
+        final org.kie.api.runtime.rule.FactHandle c2FactHandle = session.insert( p2 );
         final Person p3 = new Person( "p3",
                                       "stilton",
                                       40 );
         p3.setStatus( "europe" );
-        final org.kie.runtime.rule.FactHandle c3FactHandle = session.insert( p3 );
+        final org.kie.api.runtime.rule.FactHandle c3FactHandle = session.insert( p3 );
         session.fireAllRules();
 
-        org.kie.runtime.rule.QueryResults results = session.getQueryResults( "2 persons with the same status" );
+        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "2 persons with the same status" );
         assertEquals( 2,
                       results.size() );
 
@@ -329,7 +329,7 @@ public class QueryTest extends CommonTestMethodBase {
         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
         session.fireAllRules();
 
-        org.kie.runtime.rule.QueryResults results = session.getQueryResults( "collect objects" );
+        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "collect objects" );
         assertEquals( 1,
                       results.size() );
 
@@ -351,7 +351,7 @@ public class QueryTest extends CommonTestMethodBase {
         Worker worker = new Worker();
         worker.setId( workerId );
 
-        org.kie.runtime.rule.FactHandle handle = ksession.insert( worker );
+        org.kie.api.runtime.rule.FactHandle handle = ksession.insert( worker );
         ksession.fireAllRules();
 
         assertNotNull( handle );
@@ -431,12 +431,12 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.insert( p3 );
         ksession.insert( p4 );
 
-        org.kie.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
+        org.kie.api.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
                                                                                  new Object[]{Variable.v, Variable.v, Variable.v} );
         assertEquals( 4,
                           results.size() );
         List names = new ArrayList();
-        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 4,
@@ -451,7 +451,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 3,
                           results.size() );
         names = new ArrayList();
-        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 3,
@@ -465,7 +465,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                           results.size() );
         names = new ArrayList();
-        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 1,
@@ -477,7 +477,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 2,
                           results.size() );
         names = new ArrayList();
-        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 2,
@@ -490,7 +490,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                           results.size() );
         names = new ArrayList();
-        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 1,
@@ -528,12 +528,12 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.insert( p3 );
         ksession.insert( p4 );
 
-        org.kie.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
+        org.kie.api.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
                                                                                  new Object[]{Variable.v, Variable.v, Variable.v, Variable.v} );
         assertEquals( 4,
                           results.size() );
         List names = new ArrayList();
-        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 4,
@@ -548,7 +548,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                           results.size() );
         names = new ArrayList();
-        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertEquals( 1,
@@ -581,12 +581,12 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.insert( p1 );
         ksession.insert( p2 );
 
-        org.kie.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
+        org.kie.api.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
                                                                                  new Object[]{Variable.v, Variable.v, Variable.v} );
         assertEquals( 2,
                           results.size() );
         List names = new ArrayList();
-        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertTrue( names.contains( "yoda" ) );
@@ -597,7 +597,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                       results.size() );
         names = new ArrayList();
-        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertTrue( names.contains( "darth" ) );
@@ -630,12 +630,12 @@ public class QueryTest extends CommonTestMethodBase {
         Cheese cheddar3 = new Cheese( "cheddar",
                                       3 );
 
-        org.kie.runtime.rule.FactHandle s1Fh = ksession.insert( stilton1 );
+        org.kie.api.runtime.rule.FactHandle s1Fh = ksession.insert( stilton1 );
         ksession.insert( stilton2 );
         ksession.insert( stilton3 );
         ksession.insert( cheddar1 );
         ksession.insert( cheddar2 );
-        org.kie.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
+        org.kie.api.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
 
         final List<Object[]> updated = new ArrayList<Object[]>();
         final List<Object[]> removed = new ArrayList<Object[]>();
@@ -832,7 +832,7 @@ public class QueryTest extends CommonTestMethodBase {
         // query the session
         List<Cheese> cheeses;
         for ( int i = 0; i < 100; i++ ) {
-            org.kie.runtime.rule.QueryResults queryResults = ksession.getQueryResults( "cheeses",
+            org.kie.api.runtime.rule.QueryResults queryResults = ksession.getQueryResults( "cheeses",
                                                                                           new Object[]{"stilton"} );
             cheeses = new ArrayList<Cheese>();
             for ( QueryResultsRow row : queryResults ) {
@@ -869,7 +869,7 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.insert( do1 );
         ksession.insert( do2 );
 
-        org.kie.runtime.rule.QueryResults results = ksession.getQueryResults( "queryWithEval" );
+        org.kie.api.runtime.rule.QueryResults results = ksession.getQueryResults( "queryWithEval" );
         assertEquals( 1,
                       results.size() );
         assertEquals( do2,

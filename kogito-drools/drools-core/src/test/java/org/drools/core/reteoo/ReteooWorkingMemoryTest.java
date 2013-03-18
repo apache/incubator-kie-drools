@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 import static org.junit.Assert.*;
 
@@ -187,7 +187,7 @@ public class ReteooWorkingMemoryTest {
         
         rbase.getRete().addObjectSink( epn );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        org.kie.runtime.rule.FactHandle f1 = ksession.insert( "f1" );
+        org.kie.api.runtime.rule.FactHandle f1 = ksession.insert( "f1" );
         
         SessionEntryPoint ep = ksession.getEntryPoint( "xxx" );
         try {

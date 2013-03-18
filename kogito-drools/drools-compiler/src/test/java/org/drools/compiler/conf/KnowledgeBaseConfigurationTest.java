@@ -39,7 +39,7 @@ import org.kie.internal.conf.SequentialAgendaOption;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
-import org.kie.runtime.rule.ConsequenceExceptionHandler;
+import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 
 public class KnowledgeBaseConfigurationTest {
 

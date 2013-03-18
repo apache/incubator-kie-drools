@@ -2,8 +2,8 @@ package org.drools.example.api.kiebaseinclusion;
 
 import org.drools.example.api.namedkiesession.Message;
 import org.kie.api.KieServices;
-import org.kie.runtime.KieContainer;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 import java.io.PrintStream;
 

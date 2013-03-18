@@ -19,8 +19,8 @@ package org.drools.core.command.runtime.process;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.command.Context;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public class GetProcessInstanceCommand implements GenericCommand<ProcessInstance> {
 

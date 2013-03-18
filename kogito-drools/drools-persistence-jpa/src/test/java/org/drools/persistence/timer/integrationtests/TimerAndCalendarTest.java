@@ -35,9 +35,9 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.time.SessionClock;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;

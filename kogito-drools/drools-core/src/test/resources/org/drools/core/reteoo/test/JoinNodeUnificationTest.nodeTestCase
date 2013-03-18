@@ -21,7 +21,7 @@ Setup
         join2, join1, otnRight2;
         age, !=, p1;        
     Facts:
-        new org.drools.core.base.DroolsQuery( "x", [org.kie.runtime.rule.Variable.v], null, true),
+        new org.drools.core.base.DroolsQuery( "x", [org.kie.api.runtime.rule.Variable.v], null, true),
         new Person('bobba', 36);
 
 Test "Assert right then left"

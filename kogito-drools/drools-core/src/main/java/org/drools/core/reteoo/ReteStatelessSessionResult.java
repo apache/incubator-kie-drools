@@ -74,7 +74,7 @@ public class ReteStatelessSessionResult
         return this.objectStore.iterateObjects();
     }
 
-    public Iterator iterateObjects(org.kie.runtime.ObjectFilter filter) {
+    public Iterator iterateObjects(org.kie.api.runtime.ObjectFilter filter) {
         return this.objectStore.iterateObjects( filter );
     }
 

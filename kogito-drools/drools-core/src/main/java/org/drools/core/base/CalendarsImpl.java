@@ -23,7 +23,7 @@ import java.io.ObjectOutput;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kie.runtime.Calendars;
+import org.kie.api.runtime.Calendars;
 import org.kie.time.Calendar;
 
 public class CalendarsImpl

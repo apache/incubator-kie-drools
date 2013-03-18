@@ -20,10 +20,10 @@ import org.kie.api.KieBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.World;
-import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.process.WorkItemManager;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 public class FixedKnowledgeCommandContext
         implements

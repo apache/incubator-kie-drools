@@ -70,8 +70,8 @@ import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.api.io.Resource;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.ClassObjectFilter;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
 public class TraitTest extends CommonTestMethodBase {

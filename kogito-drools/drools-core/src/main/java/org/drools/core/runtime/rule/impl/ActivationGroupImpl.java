@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.common.InternalAgenda;
-import org.kie.runtime.rule.ActivationGroup;
+import org.kie.api.runtime.rule.ActivationGroup;
 
 public class ActivationGroupImpl implements ActivationGroup, Externalizable {
     

@@ -13,7 +13,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.Match;
 
 public class ActivationIteratorTest extends CommonTestMethodBase {
 

@@ -19,8 +19,8 @@ package org.drools.core.runtime.rule.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.QueryResultsRow;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResultsRow;
 
 public class FlatQueryResultRow
     implements

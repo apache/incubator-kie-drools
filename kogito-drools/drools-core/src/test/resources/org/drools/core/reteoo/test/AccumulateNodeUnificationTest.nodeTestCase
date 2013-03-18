@@ -26,7 +26,7 @@ Setup
     LeftTupleSink:
         sink, acc;
     Facts:
-        new org.drools.core.base.DroolsQuery( "x", [org.kie.runtime.rule.Variable.v, 40], null, true),
+        new org.drools.core.base.DroolsQuery( "x", [org.kie.api.runtime.rule.Variable.v, 40], null, true),
         new Person('darth', 35, "brie"),     // h1
         new Person('bobba', 36, 'stilton'),  // h2
         new Cheese('brie', 10),              // h3

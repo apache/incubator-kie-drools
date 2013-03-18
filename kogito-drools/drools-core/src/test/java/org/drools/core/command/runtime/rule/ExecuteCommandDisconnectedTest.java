@@ -23,7 +23,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.command.*;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.ExecutionResults;
+import org.kie.api.runtime.ExecutionResults;
 import org.drools.core.command.ExecuteCommand;
 import org.drools.core.command.GetVariableCommand;
 import org.drools.core.command.KnowledgeContextResolveFromContextCommand;

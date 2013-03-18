@@ -107,7 +107,7 @@ public class EvaluatorWrapper
      * @return
      * @see org.kie.spi.Evaluator#getOperator()
      */
-    public org.kie.runtime.rule.Operator getOperator() {
+    public org.kie.api.runtime.rule.Operator getOperator() {
         return evaluator.getOperator();
     }
 

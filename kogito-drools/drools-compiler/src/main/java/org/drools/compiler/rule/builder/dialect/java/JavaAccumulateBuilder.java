@@ -52,7 +52,7 @@ import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclaration
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.InternalReadAccessor;
-import org.kie.runtime.rule.AccumulateFunction;
+import org.kie.api.runtime.rule.AccumulateFunction;
 
 /**
  * A builder for the java dialect accumulate version

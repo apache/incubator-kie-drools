@@ -23,7 +23,7 @@ import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
-import org.kie.runtime.rule.Variable;
+import org.kie.api.runtime.rule.Variable;
 import org.mvel2.MVEL;
 
 public class QueryElementBuilder

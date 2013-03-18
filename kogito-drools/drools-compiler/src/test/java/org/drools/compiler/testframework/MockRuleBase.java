@@ -16,7 +16,7 @@ import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.rule.Package;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.marshalling.Marshaller;
-import org.kie.runtime.Environment;
+import org.kie.api.runtime.Environment;
 
 public class MockRuleBase implements RuleBase {
 

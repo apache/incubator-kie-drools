@@ -50,10 +50,10 @@ import org.drools.core.spi.ObjectType;
 import org.kie.api.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.api.command.Setter;
-import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.QueryResults;
-import org.kie.runtime.rule.QueryResultsRow;
+import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
@@ -813,7 +813,7 @@ public class XStreamXML {
                 writer.addAttribute( "identifier",
                                      identifier );
                 Object value = result.getValue( identifier );
-                if ( value instanceof org.kie.runtime.rule.QueryResults ) {
+                if ( value instanceof org.kie.api.runtime.rule.QueryResults ) {
                     String name = mapper().serializedClass( FlatQueryResults.class );
                     ExtendedHierarchicalStreamWriterHelper.startNode( writer,
                                                                       name,

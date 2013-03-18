@@ -3,7 +3,7 @@ package org.drools.core.runtime.process;
 import org.drools.core.event.ProcessEventSupport;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
-import org.kie.runtime.process.ProcessRuntime;
+import org.kie.api.runtime.process.ProcessRuntime;
 
 public interface InternalProcessRuntime extends ProcessRuntime, ProcessEventManager, CorrelationAwareProcessRuntime {
 

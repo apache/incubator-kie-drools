@@ -16,6 +16,6 @@
 
 package org.drools.core.process.instance;
 
-public interface WorkItemHandler extends org.kie.runtime.process.WorkItemHandler {
+public interface WorkItemHandler extends org.kie.api.runtime.process.WorkItemHandler {
     
 }

@@ -34,10 +34,10 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.runtime.Channel;
-import org.kie.runtime.KieRuntime;
-import org.kie.runtime.rule.Match;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.rule.Match;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 public class SequentialKnowledgeHelper
     implements

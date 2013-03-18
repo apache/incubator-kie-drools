@@ -37,8 +37,8 @@ import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerOutputMarsh
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 
 public class MarshallerWriteContext extends ObjectOutputStream {
     public final MarshallerWriteContext                                            stream;

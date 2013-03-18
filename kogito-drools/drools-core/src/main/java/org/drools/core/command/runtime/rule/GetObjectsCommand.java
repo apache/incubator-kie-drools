@@ -31,8 +31,8 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.kie.internal.command.Context;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.ObjectFilter;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.ObjectFilter;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectsCommand
@@ -91,7 +91,7 @@ public class GetObjectsCommand
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public Collection< ? extends Object > getObjects(ReteooWorkingMemory session, org.kie.runtime.ObjectFilter filter) {
+    public Collection< ? extends Object > getObjects(ReteooWorkingMemory session, org.kie.api.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.OBJECT );

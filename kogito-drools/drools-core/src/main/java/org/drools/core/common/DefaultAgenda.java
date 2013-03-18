@@ -41,8 +41,8 @@ import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.drools.core.time.impl.Timer;
 import org.kie.api.event.rule.MatchCancelledCause;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,7 +109,7 @@ public class DefaultAgenda
 
     private ConsequenceExceptionHandler                         legacyConsequenceExceptionHandler;
 
-    private org.kie.runtime.rule.ConsequenceExceptionHandler consequenceExceptionHandler;
+    private org.kie.api.runtime.rule.ConsequenceExceptionHandler consequenceExceptionHandler;
 
     protected volatile AtomicBoolean                            halt             = new AtomicBoolean( false );
 
@@ -178,7 +178,7 @@ public class DefaultAgenda
         if ( object instanceof ConsequenceExceptionHandler ) {
             this.legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) object;
         } else {
-            this.consequenceExceptionHandler = (org.kie.runtime.rule.ConsequenceExceptionHandler) object;
+            this.consequenceExceptionHandler = (org.kie.api.runtime.rule.ConsequenceExceptionHandler) object;
         }
         
         this.declarativeAgenda =  rb.getConfiguration().isDeclarativeAgenda();

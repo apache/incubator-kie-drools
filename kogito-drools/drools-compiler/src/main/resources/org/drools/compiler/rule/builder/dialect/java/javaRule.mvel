@@ -100,21 +100,21 @@ public static class @{className} implements java.io.Serializable {
 @end{}
 
 @declare{"consequenceMethod"}
-public static void @{methodName}(KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.drools.core.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws Exception { org.kie.runtime.rule.RuleContext kcontext = drools;
+public static void @{methodName}(KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.drools.core.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws Exception { org.kie.api.runtime.rule.RuleContext kcontext = drools;
     @{text}
 }
 @end{}
 
 @declare{"actionMethod"}
 public static void @{methodName}(KnowledgeHelper drools@if{globals != empty},@end{} @foreach{type :globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","}, ProcessContext context ) throws Exception {
-    org.kie.runtime.process.ProcessContext kcontext = context;
+    org.kie.api.runtime.process.ProcessContext kcontext = context;
     @{text}
 }
 @end{}
 
 @declare{"returnValueEvaluatorMethod"}
 public static Object @{methodName}(ProcessContext context@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","} ) throws Exception {
-    org.kie.runtime.process.ProcessContext kcontext = context;
+    org.kie.api.runtime.process.ProcessContext kcontext = context;
     @{text}
 }
 @end{}

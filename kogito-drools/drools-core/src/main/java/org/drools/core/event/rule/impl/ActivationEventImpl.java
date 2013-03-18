@@ -18,7 +18,7 @@ package org.drools.core.event.rule.impl;
 
 import org.kie.api.event.rule.MatchEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.Match;
 
 import java.io.Externalizable;
 import java.io.IOException;

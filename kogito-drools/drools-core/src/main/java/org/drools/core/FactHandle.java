@@ -18,6 +18,6 @@ package org.drools.core;
 
 public interface FactHandle
     extends
-    org.kie.runtime.rule.FactHandle {
+    org.kie.api.runtime.rule.FactHandle {
 
 }
