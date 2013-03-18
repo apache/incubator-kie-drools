@@ -1,4 +1,4 @@
-package org.kie.command;
+package org.kie.api.command;
 
 import org.kie.runtime.ExecutionResults;
 

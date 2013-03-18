@@ -19,5 +19,5 @@ package org.kie.runtime;
 import java.util.List;
 
 public interface BatchRequestMessage {
-    List<org.kie.command.Command> getCommands();
+    List<org.kie.api.command.Command> getCommands();
 }
