@@ -2,7 +2,7 @@ package org.drools.compiler.compiler;
 
 import java.io.InputStream;
 
-import org.kie.builder.DecisionTableConfiguration;
+import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.utils.ServiceRegistryImpl;
 
 public class DecisionTableFactory {

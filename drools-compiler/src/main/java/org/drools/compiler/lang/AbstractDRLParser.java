@@ -7,7 +7,7 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.io.Resource;
 
 import java.util.LinkedList;

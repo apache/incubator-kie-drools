@@ -14,10 +14,10 @@ import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
 import org.junit.Test;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderErrors;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderErrors;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 

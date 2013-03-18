@@ -14,7 +14,7 @@ import org.drools.core.rule.Package;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 18, 2008 Time: 1:22:50 PM To change this template use File |

@@ -25,7 +25,7 @@ import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.ConnectiveType;
 import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
 import org.drools.compiler.lang.descr.RelationalExprDescr;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
  * DRLExprTreeTest

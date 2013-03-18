@@ -20,7 +20,7 @@ import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.PhreakOption;
 
 public class RuleUnlinkingWithSegmentMemoryTest {
     ReteooRuleBase     ruleBase;

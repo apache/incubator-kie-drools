@@ -1,6 +1,6 @@
 package org.drools.compiler.compiler;
 
-import org.kie.builder.ResultSeverity;
+import org.kie.internal.builder.ResultSeverity;
 import org.kie.io.Resource;
 
 public abstract class DroolsWarning extends BaseKnowledgeBuilderResultImpl {

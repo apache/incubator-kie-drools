@@ -8,11 +8,11 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.kie.internal.KnowledgeBase;
-import org.kie.builder.DecisionTableConfiguration;
-import org.kie.builder.JaxbConfiguration;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderFactoryService;
+import org.kie.internal.builder.DecisionTableConfiguration;
+import org.kie.internal.builder.JaxbConfiguration;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderFactoryService;
 
 import com.sun.tools.xjc.Options;
 

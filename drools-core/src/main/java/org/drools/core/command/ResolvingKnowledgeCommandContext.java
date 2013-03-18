@@ -2,7 +2,7 @@ package org.drools.core.command;
 
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.KnowledgeBase;
-import org.kie.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.command.Context;
 import org.kie.command.World;
 import org.kie.runtime.ExecutionResults;

@@ -21,8 +21,8 @@ import static org.junit.Assert.fail;
 import java.io.StringReader;
 
 import org.junit.Test;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 

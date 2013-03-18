@@ -15,7 +15,7 @@
 */
 package org.drools.compiler.compiler;
 
-import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 
 /**

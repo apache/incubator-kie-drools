@@ -15,8 +15,8 @@
  */
 package org.drools.compiler.compiler;
 
-import org.kie.builder.KnowledgeBuilderResult;
-import org.kie.builder.ResultSeverity;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.ResultSeverity;
 import org.kie.io.Resource;
 
 import java.util.Arrays;

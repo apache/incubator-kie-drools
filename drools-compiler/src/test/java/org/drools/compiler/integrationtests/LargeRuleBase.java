@@ -18,7 +18,7 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.rule.Package;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
  * This generates a large number of rules (complex ones) and then times

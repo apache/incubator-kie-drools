@@ -21,7 +21,7 @@ import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.internal.KnowledgeBase;
-import org.kie.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.command.Command;
 import org.kie.command.Context;
 import org.kie.runtime.StatefulKnowledgeSession;

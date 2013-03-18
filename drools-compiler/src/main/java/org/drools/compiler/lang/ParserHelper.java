@@ -51,7 +51,7 @@ import org.drools.compiler.lang.api.QueryDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.api.TypeDeclarationDescrBuilder;
 import org.drools.compiler.lang.api.WindowDeclarationDescrBuilder;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

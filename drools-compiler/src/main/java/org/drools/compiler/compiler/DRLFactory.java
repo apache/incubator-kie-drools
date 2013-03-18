@@ -20,7 +20,7 @@ import org.drools.compiler.lang.DRLExpressions;
 import org.drools.compiler.lang.DRLLexer;
 import org.drools.compiler.lang.DRLParser;
 import org.drools.compiler.lang.ParserHelper;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 public class DRLFactory {
 

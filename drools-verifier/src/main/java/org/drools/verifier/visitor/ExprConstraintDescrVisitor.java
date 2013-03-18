@@ -20,7 +20,7 @@ import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.solver.Solvers;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 public class ExprConstraintDescrVisitor {
 

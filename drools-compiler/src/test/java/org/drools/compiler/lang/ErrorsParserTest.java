@@ -17,11 +17,9 @@
 package org.drools.compiler.lang;
 
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.lang.DRLParser;
-import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.junit.Test;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

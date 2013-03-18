@@ -3,8 +3,8 @@ package org.drools.compiler.api;
 import java.util.Collection;
 
 import org.junit.Test;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;

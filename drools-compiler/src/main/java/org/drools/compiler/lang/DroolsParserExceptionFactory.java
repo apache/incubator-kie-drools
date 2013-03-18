@@ -36,7 +36,7 @@ import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.Token;
 import org.drools.compiler.compiler.DRLFactory;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
  * Helper class that generates DroolsParserException with user friendly error

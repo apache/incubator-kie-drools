@@ -18,8 +18,8 @@ package org.drools.core.builder.conf.impl;
 
 import java.util.Properties;
 
-import org.kie.builder.DecisionTableConfiguration;
-import org.kie.builder.DecisionTableInputType;
+import org.kie.internal.builder.DecisionTableConfiguration;
+import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.io.ResourceConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
