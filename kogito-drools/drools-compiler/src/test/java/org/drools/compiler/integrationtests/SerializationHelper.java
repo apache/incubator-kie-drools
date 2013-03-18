@@ -16,7 +16,7 @@ import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 
 /**
  * Marshalling helper class to perform serialize/de-serialize a given object

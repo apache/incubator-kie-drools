@@ -31,7 +31,7 @@ import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.Trigger;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 
 /**
  * A default Scheduler implementation that uses the

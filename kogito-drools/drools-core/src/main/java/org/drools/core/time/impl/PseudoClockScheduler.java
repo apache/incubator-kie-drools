@@ -110,7 +110,7 @@ public class PseudoClockScheduler
     /**
      * @inheritDoc
      *
-     * @see org.kie.time.TimerService#scheduleJob(org.kie.time.Job, org.kie.time.JobContext, org.kie.time.Trigger)
+     * @see org.kie.api.time.TimerService#scheduleJob(org.kie.api.time.Job, org.kie.api.time.JobContext, org.kie.api.time.Trigger)
      */
     public JobHandle scheduleJob(Job job,
                                  JobContext ctx,
@@ -144,7 +144,7 @@ public class PseudoClockScheduler
     /**
      * @inheritDoc
      *
-     * @see org.kie.time.TimerService#removeJob(org.kie.time.JobHandle)
+     * @see org.kie.api.time.TimerService#removeJob(org.kie.api.time.JobHandle)
      */
     public boolean removeJob(JobHandle jobHandle) {
         jobHandle.setCancel( true );

@@ -40,8 +40,8 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.time.Calendar;
-import org.kie.time.SessionClock;
+import org.kie.api.time.Calendar;
+import org.kie.api.time.SessionClock;
 
 public class TimerAndCalendarTest extends CommonTestMethodBase {
     

@@ -20,7 +20,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 
 public class GetSessionClockCommand
     implements

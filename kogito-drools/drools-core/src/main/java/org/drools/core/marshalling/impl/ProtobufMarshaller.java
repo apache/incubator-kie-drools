@@ -44,7 +44,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 
 /**
  * A Marshaller implementation that uses ProtoBuf as the marshalling

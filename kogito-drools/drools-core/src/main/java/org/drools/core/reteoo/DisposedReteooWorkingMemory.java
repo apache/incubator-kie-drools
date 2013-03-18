@@ -67,7 +67,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.runtime.rule.SessionEntryPoint;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 
 @SuppressWarnings( "deprecation" )
 public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface {
