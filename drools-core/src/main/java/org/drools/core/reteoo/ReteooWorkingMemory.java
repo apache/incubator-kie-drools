@@ -178,8 +178,6 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                                                                       null,
                                                                                       null,
                                                                                       handle,
-                                                                                      agenda.getActiveActivations(),
-                                                                                      agenda.getDormantActivations(),
                                                                                       getEntryPoint() );
 
 
@@ -247,8 +245,6 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                                                                       null,
                                                                                       null,
                                                                                       handle,
-                                                                                      agenda.getActiveActivations(),
-                                                                                      agenda.getDormantActivations(),
                                                                                       getEntryPoint() );
 
             BaseNode[] tnodes = evalQuery(queryObject.getName(), queryObject, handle, pCtx);
@@ -314,8 +310,6 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                                                                       null,
                                                                                       null,
                                                                                       factHandle,
-                                                                                      agenda.getActiveActivations(),
-                                                                                      agenda.getDormantActivations(),
                                                                                       getEntryPoint() );
 
             if ( this.ruleBase.getConfiguration().isUnlinkingEnabled() ) {

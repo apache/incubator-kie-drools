@@ -180,8 +180,6 @@ public class NamedEntryPoint
                                                                                       rule,
                                                                                       (activation == null) ? null : activation.getTuple(),
                                                                                       handle,
-                                                                                      this.wm.agenda.getActiveActivations(),
-                                                                                      this.wm.agenda.getDormantActivations(),
                                                                                       entryPoint );
             
             
@@ -344,8 +342,6 @@ public class NamedEntryPoint
                                                                                   rule,
                                                                                   (activation == null) ? null : activation.getTuple(),
                                                                                   handle,
-                                                                                  this.wm.agenda.getActiveActivations(),
-                                                                                  this.wm.agenda.getDormantActivations(),
                                                                                   entryPoint );
 
         this.entryPointNode.assertObject( handle,
@@ -449,10 +445,9 @@ public class NamedEntryPoint
                                                                                       rule,
                                                                                       (activation == null) ? null : activation.getTuple(),
                                                                                       handle,
-                                                                                      this.wm.agenda.getActiveActivations(),
-                                                                                      this.wm.agenda.getDormantActivations(),
                                                                                       entryPoint,
-                                                                                      mask );
+                                                                                      mask,
+                                                                                      null );
             
             if ( typeConf.isTMSEnabled() ) {
                 EqualityKey newKey = tms.get( object );
@@ -577,8 +572,6 @@ public class NamedEntryPoint
                                                                                       rule,
                                                                                       (activation == null) ? null : activation.getTuple(),
                                                                                       handle,
-                                                                                      this.wm.agenda.getActiveActivations(),
-                                                                                      this.wm.agenda.getDormantActivations(),
                                                                                       this.entryPoint );
 
             this.entryPointNode.retractObject( handle,

@@ -58,10 +58,6 @@ public interface PropagationContext
      */
     void setOriginOffset( int offset );
 
-    int getActiveActivations();
-
-    int getDormantActivations();
-
     void releaseResources();
 
     EntryPoint getEntryPoint();

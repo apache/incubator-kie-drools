@@ -180,9 +180,6 @@ public class OutputMarshaller {
     public static void writeAgenda(MarshallerWriteContext context) throws IOException {
         InternalWorkingMemory wm = context.wm;
         DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
-        
-        context.writeInt( agenda.getDormantActivations() );
-        context.writeInt( agenda.getActiveActivations() );
 
         Map<String, ActivationGroup> activationGroups = agenda.getActivationGroupsMap();
 
@@ -1043,9 +1040,6 @@ public class OutputMarshaller {
         } else {
             stream.writeInt( -1 );
         }
-
-        stream.writeInt( pc.getActiveActivations() );
-        stream.writeInt( pc.getDormantActivations() );
 
         stream.writeUTF( pc.getEntryPoint().getEntryPointId() );
     }
