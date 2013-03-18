@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.runtime.helper;
+package org.kie.internal.task.service;
 
-import com.thoughtworks.xstream.XStream;
+public interface ResponseHandler {
 
+    public void setError(RuntimeException error);
 
-/**
- * 
- * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
- */
-public interface BatchExecutionHelperProvider {
-    XStream newXStreamMarshaller();
-    XStream newJSonMarshaller();
 }

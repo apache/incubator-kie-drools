@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.runtime;
+package org.kie.internal.runtime;
 
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
+import org.kie.runtime.KieSession;
 
 
 /**
@@ -99,7 +100,7 @@ import org.kie.internal.event.KnowledgeRuntimeEventManager;
  */
 public interface StatefulKnowledgeSession
     extends
-    KieSession, KnowledgeRuntime, KnowledgeRuntimeEventManager {
+        KieSession, KnowledgeRuntime, KnowledgeRuntimeEventManager {
 	
 	KnowledgeBase getKieBase();
 
