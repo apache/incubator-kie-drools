@@ -1,4 +1,4 @@
-package org.kie.builder;
+package org.kie.api.builder;
 
 import org.kie.io.Resource;
 

@@ -1,4 +1,4 @@
-package org.kie.builder;
+package org.kie.api.builder;
 
 /**
  * ReleaseId is a full identifier far a given version of an artifact.

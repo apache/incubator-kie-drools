@@ -1,11 +1,11 @@
 package org.kie.api;
 
-import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFileSystem;
-import org.kie.builder.model.KieModuleModel;
-import org.kie.builder.KieRepository;
-import org.kie.builder.KieScanner;
-import org.kie.builder.ReleaseId;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.KieScanner;
+import org.kie.api.builder.ReleaseId;
 import org.kie.command.KieCommands;
 import org.kie.io.KieResources;
 import org.kie.logger.KieLoggers;

@@ -53,7 +53,7 @@
             </group>
             <group>
               <title>Builder API</title>
-              <packages>org.kie.builder</packages>
+              <packages>org.kie.api.builder</packages>
             </group>
             <group>
               <title>Definition API</title>
