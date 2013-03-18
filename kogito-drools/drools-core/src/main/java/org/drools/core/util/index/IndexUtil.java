@@ -11,7 +11,7 @@ import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
-import org.kie.conf.IndexPrecedenceOption;
+import org.kie.internal.conf.IndexPrecedenceOption;
 
 import java.util.ArrayList;
 import java.util.List;
