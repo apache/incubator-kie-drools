@@ -36,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.event.kiebase.AfterFunctionRemovedEvent;
 import org.kie.event.kiebase.AfterKieBaseLockedEvent;
 import org.kie.event.kiebase.AfterKieBaseUnlockedEvent;

@@ -115,7 +115,7 @@ import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.RemoveIdentitiesOption;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
 import org.kie.event.rule.ObjectDeletedEvent;

@@ -33,7 +33,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PhreakOption;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.definition.type.Modifies;
 import org.kie.definition.type.PropertyReactive;
 import org.kie.event.kiebase.DefaultKieBaseEventListener;

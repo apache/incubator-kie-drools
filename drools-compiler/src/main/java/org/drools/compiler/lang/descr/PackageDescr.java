@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.core.rule.Namespaceable;
-import org.kie.definition.KnowledgeDescr;
+import org.kie.internal.definition.KnowledgeDescr;
 import org.kie.io.Resource;
 
 public class PackageDescr extends BaseDescr
