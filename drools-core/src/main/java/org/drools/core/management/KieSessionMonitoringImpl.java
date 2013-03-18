@@ -45,7 +45,7 @@ import org.kie.event.process.ProcessNodeLeftEvent;
 import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.event.process.ProcessVariableChangedEvent;
-import org.kie.management.KieSessionMonitoringMBean;
+import org.kie.api.management.KieSessionMonitoringMBean;
 
 /**
  * An MBean to monitor a given knowledge session
