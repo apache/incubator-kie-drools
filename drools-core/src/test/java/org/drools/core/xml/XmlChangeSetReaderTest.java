@@ -37,7 +37,7 @@ public class XmlChangeSetReaderTest {
         changeSetReader.setClassLoader(XmlChangeSetReaderTest.class.getClassLoader(),
                                    null );
         
-        ChangeSet changeSet = changeSetReader.read(XmlChangeSetReaderTest.class.getClassLoader().getResourceAsStream("org/drools/xml/test-change-set.xml"));
+        ChangeSet changeSet = changeSetReader.read(XmlChangeSetReaderTest.class.getClassLoader().getResourceAsStream("org/drools/core/xml/test-change-set.xml"));
         
         Assert.assertNotNull(changeSet);
         

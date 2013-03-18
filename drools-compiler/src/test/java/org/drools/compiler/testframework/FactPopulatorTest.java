@@ -12,7 +12,7 @@ public class FactPopulatorTest {
 
     @Test
     public void testMVELPopulate() throws Exception {
-        Object q = MVEL.eval("new DumbFact()");
+        Object q = MVEL.eval("new " + DumbFact.class.getName() + "()");
 
         Map m = new HashMap();
         m.put("obj", q);
