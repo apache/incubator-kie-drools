@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.logger;
+package org.kie.api.logger;
+
+import org.kie.event.KieRuntimeEventManager;
 
 /**
- * A logger for audit events.
+ * KieLoggers is a factory for KieRuntimeLogger
  */
-public interface KieRuntimeLogger {
+public interface KieLoggers {
 
-    /**
-     * Release any resources allocated within the logger such as file
-     * handles, network connections, etc.
-     * It is a programming error to append to a closed appender.
-     */
-    public void close();
+    KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
+                                         String fileName);
+
+    KieRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
+                                                 String fileName,
+                                                 int interval);
+
+    KieRuntimeLogger newConsoleLogger(KieRuntimeEventManager session);
 
 }
