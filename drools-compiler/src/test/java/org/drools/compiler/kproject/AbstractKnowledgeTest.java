@@ -220,8 +220,8 @@ public class AbstractKnowledgeTest {
                 "import " + KieBase.class.getName() + ";\n" +
                 "import " + KieSession.class.getName() + ";\n" +
                 "import " + StatelessKieSession.class.getName() + ";\n" +
-                "import " + org.kie.cdi.KBase.class.getName() + ";\n" +
-                "import " + org.kie.cdi.KSession.class.getName() + ";\n" +
+                "import " + org.kie.api.cdi.KBase.class.getName() + ";\n" +
+                "import " + org.kie.api.cdi.KSession.class.getName() + ";\n" +
                 "import " + KPTest.class.getName() + ";\n" +
                 "import " + KProjectTestClass.class.getName() + ";\n" +
 

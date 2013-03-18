@@ -18,7 +18,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.cdi.KReleaseId;
+import org.kie.api.cdi.KReleaseId;
 import org.kie.runtime.KieSession;
 
 @RunWith(CDITestRunner.class)
