@@ -72,7 +72,7 @@ public class JTMSTest {
     public void testPosNegNonConflictingInsertions() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
         		"\n" + 
-        		"import org.kie.event.rule.ActivationUnMatchListener;\n" +
+        		"import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
         		"import java.util.List \n" +
         		"import org.drools.core.common.AgendaItem;" +
         		"global java.util.List list;\n" + 
@@ -162,7 +162,7 @@ public class JTMSTest {
     public void testChangeInPositivePrime() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
-                "import org.kie.event.rule.ActivationUnMatchListener;\n" +
+                "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
                 "import org.drools.core.common.AgendaItem;" +
                 "import org.drools.compiler.Person;" +
@@ -254,7 +254,7 @@ public class JTMSTest {
     public void testChangeInNegativePrime() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
-                "import org.kie.event.rule.ActivationUnMatchListener;\n" +
+                "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
                 "import org.drools.core.common.AgendaItem;" +
                 "import org.drools.compiler.Person;" +
@@ -356,7 +356,7 @@ public class JTMSTest {
     public void testRetractHandleWhenOnlyNeg() {
         String s = "package org.drools.core.beliefsystem.jtms;\n" +
                 "\n" + 
-                "import org.kie.event.rule.ActivationUnMatchListener;\n" +
+                "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
                 "import java.util.List \n" +
                 "import org.drools.core.common.AgendaItem;" +
                 "global java.util.List list;\n" + 

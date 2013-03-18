@@ -30,7 +30,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
-import org.kie.event.rule.ActivationUnMatchListener;
+import org.kie.internal.event.rule.ActivationUnMatchListener;
 
 import java.io.Externalizable;
 import java.io.IOException;

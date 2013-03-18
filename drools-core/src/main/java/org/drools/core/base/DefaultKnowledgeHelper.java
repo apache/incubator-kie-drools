@@ -56,7 +56,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-import org.kie.event.rule.ActivationUnMatchListener;
+import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.Channel;
 import org.kie.runtime.KieRuntime;
 import org.kie.runtime.KnowledgeRuntime;
