@@ -40,7 +40,7 @@ import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.SessionEntryPoint;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 
 public class StatefulProcessSession implements StatefulKnowledgeSession, InternalKnowledgeRuntime, CorrelationAwareProcessRuntime {
 

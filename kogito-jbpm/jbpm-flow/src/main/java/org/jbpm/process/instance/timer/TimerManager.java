@@ -38,7 +38,7 @@ import org.drools.core.marshalling.impl.TimersOutputMarshaller;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.IntervalTrigger;
