@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kie.internal.ChangeSet;
-import org.kie.definition.KnowledgeDefinition;
+import org.kie.internal.definition.KnowledgeDefinition;
 import org.kie.io.Resource;
 
 public class AfterChangeSetProcessedEvent extends ChangeSetProcessingEvent {

@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.kie.KieBase;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;

@@ -19,7 +19,7 @@ package org.kie.internal.builder;
 import java.util.Collection;
 
 import org.kie.internal.KnowledgeBase;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceType;
