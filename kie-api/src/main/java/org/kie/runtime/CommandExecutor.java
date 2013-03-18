@@ -16,7 +16,7 @@
 
 package org.kie.runtime;
 
-import org.kie.command.Command;
+import org.kie.api.command.Command;
 
 /**
  * <p>

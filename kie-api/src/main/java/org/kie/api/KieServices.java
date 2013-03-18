@@ -6,7 +6,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
-import org.kie.command.KieCommands;
+import org.kie.api.command.KieCommands;
 import org.kie.io.KieResources;
 import org.kie.logger.KieLoggers;
 import org.kie.marshalling.KieMarshallers;

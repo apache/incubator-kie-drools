@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.command;
+package org.kie.api.command;
 
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.WorkItemHandler;

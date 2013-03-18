@@ -16,10 +16,10 @@
 
 package org.kie.internal.command;
 
-import org.kie.command.BatchExecutionCommand;
-import org.kie.command.Command;
-import org.kie.command.KieCommands;
-import org.kie.command.Setter;
+import org.kie.api.command.BatchExecutionCommand;
+import org.kie.api.command.Command;
+import org.kie.api.command.KieCommands;
+import org.kie.api.command.Setter;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.WorkItemHandler;
 import org.kie.runtime.rule.FactHandle;

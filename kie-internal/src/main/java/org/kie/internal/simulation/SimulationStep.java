@@ -18,7 +18,7 @@ package org.kie.internal.simulation;
 
 import java.util.List;
 
-import org.kie.command.Command;
+import org.kie.api.command.Command;
 
 public interface SimulationStep {
 
