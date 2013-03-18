@@ -1,12 +1,12 @@
 package org.droolsjbpm.services.test.ci;
 
 import org.kie.api.KieServices;
-import org.kie.builder.model.KieBaseModel;
-import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFileSystem;
-import org.kie.builder.model.KieModuleModel;
-import org.kie.builder.model.KieSessionModel;
-import org.kie.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.EventProcessingOption;
