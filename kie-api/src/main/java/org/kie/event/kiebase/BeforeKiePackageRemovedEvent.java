@@ -16,7 +16,7 @@
 
 package org.kie.event.kiebase;
 
-import org.kie.definition.KiePackage;
+import org.kie.api.definition.KiePackage;
 
 
 public interface BeforeKiePackageRemovedEvent

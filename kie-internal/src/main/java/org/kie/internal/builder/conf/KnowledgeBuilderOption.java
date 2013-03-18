@@ -16,7 +16,7 @@
 
 package org.kie.internal.builder.conf;
 
-import org.kie.conf.Option;
+import org.kie.api.conf.Option;
 
 /**
  * A markup interface for KnowledgeBuilderConfiguration options

@@ -16,7 +16,7 @@
 
 package org.kie.internal.builder.conf;
 
-import org.kie.conf.SingleValueKieBaseOption;
+import org.kie.api.conf.SingleValueKieBaseOption;
 
 
 /**

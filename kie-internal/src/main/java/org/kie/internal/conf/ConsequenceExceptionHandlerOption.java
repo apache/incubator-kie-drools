@@ -16,7 +16,7 @@
 
 package org.kie.internal.conf;
 
-import org.kie.conf.SingleValueKieBaseOption;
+import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.runtime.rule.ConsequenceExceptionHandler;
 
 /**

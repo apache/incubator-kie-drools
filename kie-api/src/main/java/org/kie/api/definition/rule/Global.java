@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.api.definition.rule;
 
-import org.kie.conf.Option;
 
-/**
- * A markup interface for KnowledgeBaseConfiguration options
- */
-public interface KieBaseOption
-    extends
-    Option {
-
+public interface Global {
+    
+    String getName();
+    
+    String getType();
 }

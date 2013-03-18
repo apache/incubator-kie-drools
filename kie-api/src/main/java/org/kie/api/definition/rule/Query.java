@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package org.kie.definition.rule;
+package org.kie.api.definition.rule;
 
 import java.util.Map;
 
-import org.kie.definition.KieDefinition;
+import org.kie.api.definition.KieDefinition;
 
 /**
- * Public Rule interface for runtime rule inspection.
+ * Public Query interface for runtime query inspection.
  */
-public interface Rule
+public interface Query
     extends
     KieDefinition {
 
     /**
-     * Returns the package name (namespace) this rule is tied to.
+     * Returns the package name (namespace) this query is tied to.
      *  
      * @return the package name.
      */
     String getPackageName();
     
     /**
-     * Returns this rule's name.
+     * Returns this query's name.
      * 
-     * @return the rule name
+     * @return the query name
      */
     String getName();
 
     /**
      * Returns an immutable Map<String key, Object value> of all meta data attributes associated with 
-     * this rule object.
+     * this query object.
      * 
      * @return an immutable Map<String key, Object value> of meta data attributes.
      */

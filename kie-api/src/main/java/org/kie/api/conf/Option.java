@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.definition.rule;
+package org.kie.api.conf;
 
+import java.io.Serializable;
 
-public interface Global {
+/**
+ * A base interface for type safe options in configuration objects
+ */
+public interface Option extends Serializable {
     
-    String getName();
-    
-    String getType();
+    /**
+     * Returns the property name for this option
+     * 
+     * @return
+     */
+    public String getPropertyName();
+
 }

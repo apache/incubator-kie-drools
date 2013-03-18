@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.definition;
+package org.kie.api.definition;
 
-import org.kie.definition.process.Process;
-import org.kie.definition.rule.Global;
-import org.kie.definition.rule.Query;
-import org.kie.definition.rule.Rule;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.rule.Global;
+import org.kie.api.definition.rule.Query;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.FactType;
 
 import java.util.Collection;
 

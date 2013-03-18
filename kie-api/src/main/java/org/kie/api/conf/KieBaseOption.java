@@ -14,31 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
-
+package org.kie.api.conf;
 
 /**
- * An Enum for EqualityBehavior option.
- * 
- * drools.equalityBehavior = &lt;identity|equality&gt;
- * 
- * DEFAULT = identity
+ * A markup interface for KnowledgeBaseConfiguration options
  */
-public enum EqualityBehaviorOption implements SingleValueKieBaseOption {
-    
-    IDENTITY,
-    EQUALITY;
+public interface KieBaseOption
+    extends
+    Option {
 
-    /**
-     * The property name for the sequential mode option
-     */
-    public static final String PROPERTY_NAME = "drools.equalityBehavior";
-    
-    /**
-     * {@inheritDoc}
-     */
-    public String getPropertyName() {
-        return PROPERTY_NAME;
-    }
-    
 }

@@ -1,6 +1,6 @@
 package org.kie.internal.definition;
 
-import org.kie.definition.KiePackage;
+import org.kie.api.definition.KiePackage;
 
 public interface KnowledgePackage extends KiePackage {
 }

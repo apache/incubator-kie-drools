@@ -16,7 +16,7 @@
 
 package org.kie.runtime.process;
 
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 
 /**
  * A node instance represents the execution of one specific node

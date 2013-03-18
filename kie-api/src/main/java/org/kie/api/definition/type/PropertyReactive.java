@@ -1,4 +1,4 @@
-package org.kie.definition.type;
+package org.kie.api.definition.type;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,10 +7,10 @@ import java.lang.annotation.Target;
 
 /**
  *
- * Annotation used to declare that a given class is not property specific
+ * Annotation used to declare that a given class is property specific
  *
  */
 @Retention(value = RetentionPolicy.RUNTIME)
 @Target(value = ElementType.TYPE)
-public @interface ClassReactive {
+public @interface PropertyReactive {
 }

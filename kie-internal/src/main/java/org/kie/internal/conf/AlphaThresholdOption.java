@@ -17,7 +17,7 @@
 package org.kie.internal.conf;
 
 
-import org.kie.conf.SingleValueKieBaseOption;
+import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
  * A class for the alpha node hashing threshold configuration.

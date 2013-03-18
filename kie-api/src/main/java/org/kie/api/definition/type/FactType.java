@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.definition.type;
+package org.kie.api.definition.type;
 
 import java.util.List;
 import java.util.Map;

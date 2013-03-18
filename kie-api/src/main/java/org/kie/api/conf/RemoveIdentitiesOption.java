@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-package org.kie.internal.conf;
+package org.kie.api.conf;
 
-
-import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
- * An Enum for indexLeftBetaMemory option.
+ * An Enum for Remove Identities option.
  * 
- * drools.indexLeftBetaMemory = &lt;true|false&gt;
+ * drools.removeIdentities = &lt;true|false&gt;
  * 
- * DEFAULT = true
+ * DEFAULT = false
  */
-public enum IndexLeftBetaMemoryOption implements SingleValueKieBaseOption {
+public enum RemoveIdentitiesOption implements SingleValueKieBaseOption {
     
     YES(true),
     NO(false);
 
     /**
-     * The property name for the share beta nodes option
+     * The property name for the remove identities option
      */
-    public static final String PROPERTY_NAME = "drools.indexLeftBetaMemory";
+    public static final String PROPERTY_NAME = "drools.removeIdentities";
     
     private boolean value;
     
-    IndexLeftBetaMemoryOption( final boolean value ) {
+    RemoveIdentitiesOption( final boolean value ) {
         this.value = value;
     }
     
@@ -49,7 +47,7 @@ public enum IndexLeftBetaMemoryOption implements SingleValueKieBaseOption {
         return PROPERTY_NAME;
     }
     
-    public boolean isIndexLeftBetaMemory() {
+    public boolean isRemoveIdentities() {
         return this.value;
     }
 

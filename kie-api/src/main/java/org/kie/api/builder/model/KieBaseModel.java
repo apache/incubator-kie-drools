@@ -1,7 +1,7 @@
 package org.kie.api.builder.model;
 
-import org.kie.conf.EqualityBehaviorOption;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
 
 import java.util.List;
 import java.util.Map;

@@ -16,7 +16,7 @@
 
 package org.kie.runtime.rule;
 
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 public interface PropagationContext {
     public static final int INSERTION     = 0;

@@ -1,6 +1,6 @@
 package org.kie.runtime.rule;
 
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 import java.util.List;
 

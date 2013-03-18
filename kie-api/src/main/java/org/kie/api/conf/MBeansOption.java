@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.api.conf;
 
 /**
  * An Enum for MBeans Enabled option.
