@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.event.rule;
+package org.kie.internal.event.rule;
 
 import org.kie.internal.event.knowledgeagent.AfterChangeSetAppliedEvent;
 import org.kie.internal.event.knowledgeagent.AfterChangeSetProcessedEvent;
