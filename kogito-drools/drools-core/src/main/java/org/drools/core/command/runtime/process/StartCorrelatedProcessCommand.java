@@ -33,8 +33,8 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.command.Context;
-import org.kie.process.CorrelationAwareProcessRuntime;
-import org.kie.process.CorrelationKey;
+import org.kie.internal.process.CorrelationAwareProcessRuntime;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.process.ProcessInstance;
 
