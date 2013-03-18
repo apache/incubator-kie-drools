@@ -60,10 +60,10 @@ import org.jbpm.workflow.instance.node.ForEachNodeInstance.ForEachJoinNodeInstan
 import org.joda.time.DateTime;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.definition.process.Process;
 import org.kie.event.process.DefaultProcessEventListener;
 import org.kie.event.process.ProcessEventListener;
