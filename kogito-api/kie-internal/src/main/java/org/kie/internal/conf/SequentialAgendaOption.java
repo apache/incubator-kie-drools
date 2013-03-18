@@ -14,14 +14,33 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.internal.conf;
 
+
+import org.kie.conf.SingleValueKieBaseOption;
 
 /**
- * A markup interface for MultiValueKnowledgeBaseConfiguration options
+ * An Enum for SequentialAgenda option.
+ * 
+ * drools.sequential.agenda = &lt;sequential|dynamic&gt;
+ * 
+ * DEFAULT = sequential
  */
-public interface MultiValueKnowledgeBaseOption
-    extends
-    KieBaseOption {
+public enum SequentialAgendaOption implements SingleValueKieBaseOption {
+    
+    SEQUENTIAL,
+    DYNAMIC;
 
+    /**
+     * The property name for the sequential mode option
+     */
+    public static final String PROPERTY_NAME = "drools.sequential.agenda";
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String getPropertyName() {
+        return PROPERTY_NAME;
+    }
+    
 }

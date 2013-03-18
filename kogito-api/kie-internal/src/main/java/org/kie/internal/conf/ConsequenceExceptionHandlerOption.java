@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.internal.conf;
 
+import org.kie.conf.SingleValueKieBaseOption;
 import org.kie.runtime.rule.ConsequenceExceptionHandler;
 
 /**

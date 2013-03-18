@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.internal.conf;
+
+import org.kie.conf.KieBaseOption;
+import org.kie.conf.SingleValueKieBaseOption;
 
 /**
  * A base interface for type safe configurations

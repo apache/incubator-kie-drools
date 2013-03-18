@@ -15,8 +15,8 @@
  */
 package org.kie.internal.builder.conf;
 
-import org.kie.conf.MultithreadEvaluationOption;
-import org.kie.conf.SequentialOption;
+import org.kie.internal.conf.MultithreadEvaluationOption;
+import org.kie.internal.conf.SequentialOption;
 import org.kie.conf.SingleValueKieBaseOption;
 
 /**

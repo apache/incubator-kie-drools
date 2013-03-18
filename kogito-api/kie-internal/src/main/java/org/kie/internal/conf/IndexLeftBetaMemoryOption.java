@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.internal.conf;
 
+
+import org.kie.conf.SingleValueKieBaseOption;
 
 /**
- * An Enum for Sequential option.
+ * An Enum for indexLeftBetaMemory option.
  * 
- * drools.sequential = &lt;true|false&gt;
+ * drools.indexLeftBetaMemory = &lt;true|false&gt;
  * 
- * DEFAULT = false
+ * DEFAULT = true
  */
-public enum SequentialOption implements SingleValueKieBaseOption {
+public enum IndexLeftBetaMemoryOption implements SingleValueKieBaseOption {
     
     YES(true),
     NO(false);
 
     /**
-     * The property name for the sequential mode option
+     * The property name for the share beta nodes option
      */
-    public static final String PROPERTY_NAME = "drools.sequential";
+    public static final String PROPERTY_NAME = "drools.indexLeftBetaMemory";
     
     private boolean value;
     
-    SequentialOption( final boolean value ) {
+    IndexLeftBetaMemoryOption( final boolean value ) {
         this.value = value;
     }
     
@@ -47,7 +49,7 @@ public enum SequentialOption implements SingleValueKieBaseOption {
         return PROPERTY_NAME;
     }
     
-    public boolean isSequential() {
+    public boolean isIndexLeftBetaMemory() {
         return this.value;
     }
 

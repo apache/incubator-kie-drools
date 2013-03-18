@@ -14,33 +14,31 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.internal.conf;
 
+
+import org.kie.conf.SingleValueKieBaseOption;
 
 /**
- * An Enum for multithread evaluation option.
+ * An Enum for Sequential option.
  * 
- * IMPORTANT: this option is currently not supported. It might be enabled again in the future.
- * 
- * drools.multithreadEvaluation = &lt;true|false&gt;
+ * drools.sequential = &lt;true|false&gt;
  * 
  * DEFAULT = false
- * 
- * @deprecated
  */
-public enum MultithreadEvaluationOption implements SingleValueKieBaseOption {
+public enum SequentialOption implements SingleValueKieBaseOption {
     
     YES(true),
     NO(false);
 
     /**
-     * The property name for the multithread evaluation option
+     * The property name for the sequential mode option
      */
-    public static final String PROPERTY_NAME = "drools.multithreadEvaluation";
+    public static final String PROPERTY_NAME = "drools.sequential";
     
     private boolean value;
     
-    MultithreadEvaluationOption( final boolean value ) {
+    SequentialOption( final boolean value ) {
         this.value = value;
     }
     
@@ -51,7 +49,7 @@ public enum MultithreadEvaluationOption implements SingleValueKieBaseOption {
         return PROPERTY_NAME;
     }
     
-    public boolean isMultithreadEvaluation() {
+    public boolean isSequential() {
         return this.value;
     }
 
