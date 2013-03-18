@@ -4,18 +4,18 @@ import org.drools.compiler.I18nPerson
 
 global java.util.List list
 
-rule "Use garï¿½on property"
+rule "Use garçon property"
     salience 10
     when
-        p : I18nPerson( garï¿½on != null )
+        p : I18nPerson( garçon != null )
     then
-        list.add( "garï¿½on" );
+        list.add( "garçon" );
 end
 
-// rule "Use ï¿½lï¿½ve property"
+// rule "Use élève property"
 //     salience 10
 //     when
-//         p : I18nPerson( ï¿½lï¿½ve != null )
+//         p : I18nPerson( élève != null )
 //     then
-//         list.add( "ï¿½lï¿½ve" );
+//         list.add( "élève" );
 // end
