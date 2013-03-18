@@ -4,7 +4,7 @@ import org.drools.games.wumpus.Cell;
 import org.drools.games.wumpus.WumpusWorldMain;
 import org.kie.internal.KnowledgeBase;
 import org.kie.definition.type.PropertyReactive;
-import org.kie.logger.KnowledgeRuntimeLogger;
+import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 @PropertyReactive
