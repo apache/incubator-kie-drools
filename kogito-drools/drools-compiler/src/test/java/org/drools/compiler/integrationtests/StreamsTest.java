@@ -54,10 +54,10 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
-import org.kie.event.rule.MatchCreatedEvent;
-import org.kie.event.rule.AfterMatchFiredEvent;
-import org.kie.event.rule.AgendaEventListener;
-import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
@@ -342,7 +342,7 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        org.kie.event.rule.AgendaEventListener ael = mock(org.kie.event.rule.AgendaEventListener.class);
+        org.kie.api.event.rule.AgendaEventListener ael = mock(org.kie.api.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);
 
         SessionEntryPoint ep1 = ksession.getEntryPoint("ep1");
@@ -365,10 +365,10 @@ public class StreamsTest extends CommonTestMethodBase {
         assertEquals(3,
                      rulesFired);
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
                times(3)).afterMatchFired(captor.capture());
-        List<org.kie.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
+        List<org.kie.api.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
         Assert.assertThat(aafe.get(0).getMatch().getRule().getName(),
                           is("R1"));
@@ -393,7 +393,7 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( (KieBaseConfiguration)null, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        org.kie.event.rule.AgendaEventListener ael = mock(org.kie.event.rule.AgendaEventListener.class);
+        org.kie.api.event.rule.AgendaEventListener ael = mock(org.kie.api.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);
 
         SessionEntryPoint ep1 = ksession.getEntryPoint("ep1");
@@ -406,10 +406,10 @@ public class StreamsTest extends CommonTestMethodBase {
         assertEquals(1,
                 rulesFired);
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
                 times(1)).afterMatchFired(captor.capture());
-        List<org.kie.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
+        List<org.kie.api.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
         Assert.assertThat(aafe.get(0).getMatch().getRule().getName(),
                 is("R1"));
@@ -465,7 +465,7 @@ public class StreamsTest extends CommonTestMethodBase {
         ksession.insert(st2);
 
         verify(wml,
-               times(2)).objectInserted(any(org.kie.event.rule.ObjectInsertedEvent.class));
+               times(2)).objectInserted(any(org.kie.api.event.rule.ObjectInsertedEvent.class));
         assertThat(ksession.getObjects().size(),
                    equalTo(2));
         assertThat(ksession.getObjects(),
@@ -514,7 +514,7 @@ public class StreamsTest extends CommonTestMethodBase {
         ksession.insert(st2);
 
         verify(wml,
-               times(2)).objectInserted(any(org.kie.event.rule.ObjectInsertedEvent.class));
+               times(2)).objectInserted(any(org.kie.api.event.rule.ObjectInsertedEvent.class));
         verify(ael,
                times(2)).matchCreated(any(MatchCreatedEvent.class));
         assertThat(ksession.getObjects().size(),
@@ -639,7 +639,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
                times(1)).afterMatchFired(captor.capture());
 
@@ -685,7 +685,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
                times(1)).afterMatchFired(captor.capture());
 
@@ -722,7 +722,7 @@ public class StreamsTest extends CommonTestMethodBase {
         
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.event.rule.AfterMatchFiredEvent.class);
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass(org.kie.api.event.rule.AfterMatchFiredEvent.class);
         verify(ael,
                times(1)).afterMatchFired(captor.capture());
 

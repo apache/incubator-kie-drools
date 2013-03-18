@@ -1,7 +1,7 @@
 package org.drools.core.runtime.process;
 
 import org.drools.core.event.ProcessEventSupport;
-import org.kie.event.process.ProcessEventManager;
+import org.kie.api.event.process.ProcessEventManager;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.runtime.process.ProcessRuntime;
 

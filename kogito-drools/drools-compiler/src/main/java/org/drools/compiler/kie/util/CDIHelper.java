@@ -12,9 +12,9 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.ListenerModel;
 import org.kie.api.builder.model.QualifierModel;
 import org.kie.api.builder.model.WorkItemHandlerModel;
-import org.kie.event.process.ProcessEventListener;
-import org.kie.event.rule.AgendaEventListener;
-import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.process.WorkItemHandler;
 

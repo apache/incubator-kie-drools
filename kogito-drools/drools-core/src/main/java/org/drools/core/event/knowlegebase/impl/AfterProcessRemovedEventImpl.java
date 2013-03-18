@@ -18,7 +18,7 @@ package org.drools.core.event.knowlegebase.impl;
 
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.definition.process.Process;
-import org.kie.event.kiebase.AfterProcessRemovedEvent;
+import org.kie.api.event.kiebase.AfterProcessRemovedEvent;
 
 public class AfterProcessRemovedEventImpl extends KnowledgeBaseEventImpl implements AfterProcessRemovedEvent {
     private Process process;

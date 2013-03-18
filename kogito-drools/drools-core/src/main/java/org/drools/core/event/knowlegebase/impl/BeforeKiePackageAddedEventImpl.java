@@ -18,7 +18,7 @@ package org.drools.core.event.knowlegebase.impl;
 
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.event.kiebase.BeforeKiePackageAddedEvent;
+import org.kie.api.event.kiebase.BeforeKiePackageAddedEvent;
 
 public class BeforeKiePackageAddedEventImpl extends KnowledgeBaseEventImpl implements BeforeKiePackageAddedEvent {
     private KnowledgePackage knowledgePackage;

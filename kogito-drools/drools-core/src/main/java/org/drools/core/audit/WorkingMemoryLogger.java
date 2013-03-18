@@ -82,12 +82,12 @@ import org.drools.core.spi.Tuple;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
-import org.kie.event.process.ProcessCompletedEvent;
-import org.kie.event.process.ProcessEventListener;
-import org.kie.event.process.ProcessNodeLeftEvent;
-import org.kie.event.process.ProcessNodeTriggeredEvent;
-import org.kie.event.process.ProcessStartedEvent;
-import org.kie.event.process.ProcessVariableChangedEvent;
+import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.NodeInstanceContainer;
 
@@ -229,7 +229,7 @@ public abstract class WorkingMemoryLogger
     }
 
     /**
-     * @see org.kie.event.WorkingMemoryEventListener
+     * @see org.kie.api.event.WorkingMemoryEventListener
      */
     public void objectInserted(final ObjectInsertedEvent event) {
         filterLogEvent( new ObjectLogEvent( LogEvent.INSERTED,
@@ -238,7 +238,7 @@ public abstract class WorkingMemoryLogger
     }
 
     /**
-     * @see org.kie.event.WorkingMemoryEventListener
+     * @see org.kie.api.event.WorkingMemoryEventListener
      */
     public void objectUpdated(final ObjectUpdatedEvent event) {
         filterLogEvent( new ObjectLogEvent( LogEvent.UPDATED,
@@ -247,7 +247,7 @@ public abstract class WorkingMemoryLogger
     }
 
     /**
-     * @see org.kie.event.WorkingMemoryEventListener
+     * @see org.kie.api.event.WorkingMemoryEventListener
      */
     public void objectRetracted(final ObjectRetractedEvent event) {
         filterLogEvent( new ObjectLogEvent( LogEvent.RETRACTED,
@@ -256,7 +256,7 @@ public abstract class WorkingMemoryLogger
     }
 
     /**
-     * @see org.kie.event.AgendaEventListener
+     * @see org.kie.api.event.AgendaEventListener
      */
     public void activationCreated(final ActivationCreatedEvent event,
                                   final WorkingMemory workingMemory) {
@@ -268,7 +268,7 @@ public abstract class WorkingMemoryLogger
     }
 
     /**
-     * @see org.kie.event.AgendaEventListener
+     * @see org.kie.api.event.AgendaEventListener
      */
     public void activationCancelled(final ActivationCancelledEvent event,
                                     final WorkingMemory workingMemory) {
@@ -280,7 +280,7 @@ public abstract class WorkingMemoryLogger
     }
 
     /**
-     * @see org.kie.event.AgendaEventListener
+     * @see org.kie.api.event.AgendaEventListener
      */
     public void beforeActivationFired(final BeforeActivationFiredEvent event,
                                       final WorkingMemory workingMemory) {
@@ -292,7 +292,7 @@ public abstract class WorkingMemoryLogger
     }
 
     /**
-     * @see org.kie.event.AgendaEventListener
+     * @see org.kie.api.event.AgendaEventListener
      */
     public void afterActivationFired(final AfterActivationFiredEvent event,
                                      final WorkingMemory workingMemory) {

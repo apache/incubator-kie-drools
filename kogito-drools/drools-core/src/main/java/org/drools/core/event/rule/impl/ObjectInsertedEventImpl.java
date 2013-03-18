@@ -22,7 +22,7 @@ import java.io.ObjectOutput;
 
 import org.drools.core.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.kie.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
 
 public class ObjectInsertedEventImpl extends WorkingMemoryEventImpl
     implements

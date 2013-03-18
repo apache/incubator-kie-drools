@@ -19,9 +19,9 @@ package org.drools.core.command.runtime;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.command.Context;
-import org.kie.event.process.ProcessEventListener;
-import org.kie.event.rule.AgendaEventListener;
-import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.KieSession;
 
 public class RemoveEventListenerCommand
