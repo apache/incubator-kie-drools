@@ -19,7 +19,7 @@ package org.optaplanner.core.score.holder;
 import java.io.Serializable;
 
 import org.drools.core.common.AgendaItem;
-import org.kie.event.rule.ActivationUnMatchListener;
+import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.rule.RuleContext;
 import org.kie.runtime.rule.Session;
 

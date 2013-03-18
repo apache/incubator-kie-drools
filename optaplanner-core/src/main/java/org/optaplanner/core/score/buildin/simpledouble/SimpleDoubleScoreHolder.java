@@ -18,7 +18,7 @@ package org.optaplanner.core.score.buildin.simpledouble;
 
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.holder.AbstractScoreHolder;
-import org.kie.event.rule.ActivationUnMatchListener;
+import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.RuleContext;
 import org.kie.runtime.rule.Session;
