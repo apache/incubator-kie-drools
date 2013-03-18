@@ -18,10 +18,10 @@ package org.kie.internal.marshalling;
 
 import org.kie.api.KieBase;
 import org.kie.internal.utils.ServiceRegistryImpl;
-import org.kie.marshalling.KieMarshallers;
-import org.kie.marshalling.Marshaller;
-import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.marshalling.ObjectMarshallingStrategyAcceptor;
+import org.kie.api.marshalling.KieMarshallers;
+import org.kie.api.marshalling.Marshaller;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 
 
 /**

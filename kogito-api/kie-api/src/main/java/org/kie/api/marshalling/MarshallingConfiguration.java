@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.marshalling;
+package org.kie.api.marshalling;
 
-public interface ObjectMarshallingStrategyAcceptor {
-    public boolean accept(Object object);
+
+public interface MarshallingConfiguration {
+    ObjectMarshallingStrategyStore getObjectMarshallingStrategyStore();
+
+    boolean isMarshallProcessInstances();
+
+    boolean isMarshallWorkItems();
 }

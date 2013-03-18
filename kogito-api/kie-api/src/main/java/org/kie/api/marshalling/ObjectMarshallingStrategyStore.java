@@ -1,4 +1,4 @@
-package org.kie.marshalling;
+package org.kie.api.marshalling;
 
 
 public interface ObjectMarshallingStrategyStore {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.marshalling;
+package org.kie.api.marshalling;
 
 import org.kie.api.KieBase;
 import org.kie.api.Service;

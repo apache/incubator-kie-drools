@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.marshalling;
+package org.kie.api.marshalling;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
