@@ -1,4 +1,4 @@
-package org.kie;
+package org.kie.api;
 
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;

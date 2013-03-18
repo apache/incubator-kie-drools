@@ -16,7 +16,7 @@
 
 package org.kie.internal;
 
-import org.kie.PropertiesConfiguration;
+import org.kie.api.PropertiesConfiguration;
 import org.kie.internal.conf.KnowledgeBaseOptionsConfiguration;
 
 /**

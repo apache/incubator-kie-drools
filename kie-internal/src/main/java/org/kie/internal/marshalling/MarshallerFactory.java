@@ -16,7 +16,7 @@
 
 package org.kie.internal.marshalling;
 
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.marshalling.Marshaller;

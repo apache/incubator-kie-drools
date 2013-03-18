@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * KieBaseModel is a model allowing to programmatically define a KieBase
- * @see org.kie.KieBase
+ * @see org.kie.api.KieBase
  */
 public interface KieBaseModel {
 

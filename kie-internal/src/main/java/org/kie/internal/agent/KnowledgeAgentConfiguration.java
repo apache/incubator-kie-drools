@@ -16,7 +16,7 @@
 
 package org.kie.internal.agent;
 
-import org.kie.PropertiesConfiguration;
+import org.kie.api.PropertiesConfiguration;
 
 /**
  * <p> This class configures and allows inspection of the current configuration of a {@link org.kie.internal.agent.KnowledgeAgent KnowledgeAgent}</p>

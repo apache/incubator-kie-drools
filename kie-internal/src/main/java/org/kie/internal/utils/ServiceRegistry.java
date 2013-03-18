@@ -18,7 +18,7 @@ package org.kie.internal.utils;
 
 import java.util.concurrent.Callable;
 
-import org.kie.Service;
+import org.kie.api.Service;
 
 /**
  * Internal Interface

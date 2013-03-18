@@ -16,8 +16,8 @@
 
 package org.kie.marshalling;
 
-import org.kie.KieBase;
-import org.kie.Service;
+import org.kie.api.KieBase;
+import org.kie.api.Service;
 
 /**
  * 
