@@ -227,7 +227,7 @@ public class IntervalTrigger
             boolean included = true;
             for ( String calName : this.calendarNames ) {
                 // all calendars must not block, as soon as one blocks break
-                org.kie.time.Calendar cal = this.calendars.get( calName );
+                org.kie.api.time.Calendar cal = this.calendars.get( calName );
                 if ( cal != null && !cal.isTimeIncluded( this.nextFireTime.getTime() ) ) {
                     included = false;
                     break;

@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 
 import java.util.*;
 

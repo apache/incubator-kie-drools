@@ -48,7 +48,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.SessionEntryPoint;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 import org.mockito.ArgumentCaptor;
 
 import java.io.File;

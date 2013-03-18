@@ -88,7 +88,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.RuleFlowGroup;
 import org.kie.api.runtime.rule.SessionEntryPoint;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 
 public class CommandBasedStatefulKnowledgeSession
     implements

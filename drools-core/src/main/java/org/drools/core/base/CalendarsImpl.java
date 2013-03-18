@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.api.runtime.Calendars;
-import org.kie.time.Calendar;
+import org.kie.api.time.Calendar;
 
 public class CalendarsImpl
     implements

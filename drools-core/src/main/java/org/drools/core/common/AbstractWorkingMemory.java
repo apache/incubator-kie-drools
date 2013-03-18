@@ -89,7 +89,7 @@ import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 
 /**
  * Implementation of <code>WorkingMemory</code>.

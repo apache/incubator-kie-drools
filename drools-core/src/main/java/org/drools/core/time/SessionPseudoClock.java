@@ -18,7 +18,7 @@ package org.drools.core.time;
 
 import java.util.concurrent.TimeUnit;
 
-import org.kie.time.SessionClock;
+import org.kie.api.time.SessionClock;
 
 
 /**

@@ -40,7 +40,7 @@ public class PointInTimeTrigger
         if ( calendars != null && calendarNames != null && calendarNames.length > 0 ) {
             for ( String calName : calendarNames ) {
                 // all calendars must not block, as soon as one blocks break
-                org.kie.time.Calendar cal = calendars.get( calName );
+                org.kie.api.time.Calendar cal = calendars.get( calName );
                 if ( cal != null && !cal.isTimeIncluded( timestamp ) ) {
                     included = false;
                     break;
