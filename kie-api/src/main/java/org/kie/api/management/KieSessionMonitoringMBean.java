@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.management;
+package org.kie.api.management;
 
 import java.util.Date;
 import java.util.Map;
