@@ -53,8 +53,8 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.kie.management.KieBaseConfigurationMonitorMBean;
-import org.kie.management.ObjectTypeNodeMonitorMBean;
+import org.kie.api.management.KieBaseConfigurationMonitorMBean;
+import org.kie.api.management.ObjectTypeNodeMonitorMBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
