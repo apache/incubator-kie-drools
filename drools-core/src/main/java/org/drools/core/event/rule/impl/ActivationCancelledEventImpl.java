@@ -16,8 +16,8 @@
 
 package org.drools.core.event.rule.impl;
 
-import org.kie.event.rule.MatchCancelledCause;
-import org.kie.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCancelledCause;
+import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.runtime.rule.Match;
 

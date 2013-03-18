@@ -36,9 +36,9 @@ import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
-import org.kie.event.kiebase.DefaultKieBaseEventListener;
-import org.kie.event.kiebase.KieBaseEventListener;
-import org.kie.event.rule.AgendaEventListener;
+import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
+import org.kie.api.event.kiebase.KieBaseEventListener;
+import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
@@ -289,35 +289,35 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.setGlobal( "results", res );
 
         AgendaEventListener agendaEventListener = new AgendaEventListener() {
-            public void matchCreated(org.kie.event.rule.MatchCreatedEvent event) {
+            public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
             }
 
-            public void matchCancelled(org.kie.event.rule.MatchCancelledEvent event) {
+            public void matchCancelled(org.kie.api.event.rule.MatchCancelledEvent event) {
             }
 
-            public void beforeMatchFired(org.kie.event.rule.BeforeMatchFiredEvent event) {
+            public void beforeMatchFired(org.kie.api.event.rule.BeforeMatchFiredEvent event) {
             }
 
-            public void afterMatchFired(org.kie.event.rule.AfterMatchFiredEvent event) {
+            public void afterMatchFired(org.kie.api.event.rule.AfterMatchFiredEvent event) {
             }
 
-            public void agendaGroupPopped(org.kie.event.rule.AgendaGroupPoppedEvent event) {
+            public void agendaGroupPopped(org.kie.api.event.rule.AgendaGroupPoppedEvent event) {
             }
 
-            public void agendaGroupPushed(org.kie.event.rule.AgendaGroupPushedEvent event) {
+            public void agendaGroupPushed(org.kie.api.event.rule.AgendaGroupPushedEvent event) {
             }
 
-            public void beforeRuleFlowGroupActivated(org.kie.event.rule.RuleFlowGroupActivatedEvent event) {
+            public void beforeRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) {
             }
 
-            public void afterRuleFlowGroupActivated(org.kie.event.rule.RuleFlowGroupActivatedEvent event) {
+            public void afterRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) {
                 ksession.fireAllRules();
             }
 
-            public void beforeRuleFlowGroupDeactivated(org.kie.event.rule.RuleFlowGroupDeactivatedEvent event) {
+            public void beforeRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) {
             }
 
-            public void afterRuleFlowGroupDeactivated(org.kie.event.rule.RuleFlowGroupDeactivatedEvent event) {
+            public void afterRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) {
             }
         };
 

@@ -18,7 +18,7 @@ package org.drools.core.event.knowlegebase.impl;
 
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.definition.rule.Rule;
-import org.kie.event.kiebase.AfterRuleRemovedEvent;
+import org.kie.api.event.kiebase.AfterRuleRemovedEvent;
 
 public class AfterRuleRemovedEventImpl extends KnowledgeBaseEventImpl implements AfterRuleRemovedEvent {
     private Rule rule;

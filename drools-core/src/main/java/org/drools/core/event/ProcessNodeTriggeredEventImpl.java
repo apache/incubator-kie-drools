@@ -16,7 +16,7 @@
 
 package org.drools.core.event;
 
-import org.kie.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.runtime.process.NodeInstance;
 

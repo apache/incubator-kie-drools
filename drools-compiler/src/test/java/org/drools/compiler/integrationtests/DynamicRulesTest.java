@@ -67,10 +67,10 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.event.rule.AfterMatchFiredEvent;
-import org.kie.event.rule.AgendaEventListener;
-import org.kie.event.rule.MatchCancelledEvent;
-import org.kie.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
@@ -1059,17 +1059,17 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         // pattern does not match, so do not activate
         ksession.insert( new Person( "toni" ) );
         verify( alistener,
-                never() ).matchCreated(any(org.kie.event.rule.MatchCreatedEvent.class));
+                never() ).matchCreated(any(org.kie.api.event.rule.MatchCreatedEvent.class));
 
         // pattern matches, so create activation
         ksession.insert( new Person( "bob" ) );
         verify( alistener,
-                times( 1 ) ).matchCreated(any(org.kie.event.rule.MatchCreatedEvent.class));
+                times( 1 ) ).matchCreated(any(org.kie.api.event.rule.MatchCreatedEvent.class));
 
         // already active, so no new activation should be created
         ksession.insert( new Person( "mark" ) );
         verify( alistener,
-                times( 1 ) ).matchCreated(any(org.kie.event.rule.MatchCreatedEvent.class));
+                times( 1 ) ).matchCreated(any(org.kie.api.event.rule.MatchCreatedEvent.class));
 
         kbase.removeKnowledgePackage( "org.drools.compiler" );
 
@@ -1086,7 +1086,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         // rule should be reactivated, since data is still in the session
         verify( alistener,
-                times( 2 ) ).matchCreated(any(org.kie.event.rule.MatchCreatedEvent.class));
+                times( 2 ) ).matchCreated(any(org.kie.api.event.rule.MatchCreatedEvent.class));
 
     }
 

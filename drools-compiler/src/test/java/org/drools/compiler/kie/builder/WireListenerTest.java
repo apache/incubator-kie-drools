@@ -8,10 +8,10 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.ListenerModel;
-import org.kie.event.rule.ObjectDeletedEvent;
-import org.kie.event.rule.ObjectInsertedEvent;
-import org.kie.event.rule.ObjectUpdatedEvent;
-import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
 

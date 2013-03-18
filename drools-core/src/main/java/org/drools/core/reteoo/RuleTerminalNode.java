@@ -36,7 +36,7 @@ import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
-import org.kie.event.rule.MatchCancelledCause;
+import org.kie.api.event.rule.MatchCancelledCause;
 
 import java.io.IOException;
 import java.io.ObjectInput;

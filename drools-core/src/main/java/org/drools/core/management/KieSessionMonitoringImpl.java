@@ -40,11 +40,11 @@ import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.core.management.KieSessionMonitoringImpl.AgendaStats.AgendaStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessInstanceStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessStatsData;
-import org.kie.event.process.ProcessCompletedEvent;
-import org.kie.event.process.ProcessNodeLeftEvent;
-import org.kie.event.process.ProcessNodeTriggeredEvent;
-import org.kie.event.process.ProcessStartedEvent;
-import org.kie.event.process.ProcessVariableChangedEvent;
+import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.management.KieSessionMonitoringMBean;
 
 /**
@@ -357,7 +357,7 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
         return result;
     }
     
-    public static class ProcessStats implements org.kie.event.process.ProcessEventListener {
+    public static class ProcessStats implements org.kie.api.event.process.ProcessEventListener {
         
         private GlobalProcessStatsData consolidated = new GlobalProcessStatsData();
         private ConcurrentHashMap<String, ProcessStatsData> processStats = new ConcurrentHashMap<String, ProcessStatsData>();

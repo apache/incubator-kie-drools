@@ -16,7 +16,7 @@
 
 package org.drools.core.event.rule.impl;
 
-import org.kie.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.runtime.rule.Match;
 

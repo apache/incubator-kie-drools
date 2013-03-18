@@ -40,7 +40,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.drools.core.time.impl.Timer;
-import org.kie.event.rule.MatchCancelledCause;
+import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.rule.Match;
 import org.slf4j.Logger;

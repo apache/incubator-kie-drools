@@ -17,7 +17,7 @@
 package org.drools.core.event.knowlegebase.impl;
 
 import org.kie.internal.KnowledgeBase;
-import org.kie.event.kiebase.KieBaseEvent;
+import org.kie.api.event.kiebase.KieBaseEvent;
 
 public class KnowledgeBaseEventImpl implements KieBaseEvent {
     private KnowledgeBase knowledgeBase;

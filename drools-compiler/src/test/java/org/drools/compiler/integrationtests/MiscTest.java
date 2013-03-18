@@ -118,7 +118,7 @@ import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
-import org.kie.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
@@ -1485,7 +1485,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_FactBindings.drl" ) );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
-        org.kie.event.rule.WorkingMemoryEventListener wmel = mock( org.kie.event.rule.WorkingMemoryEventListener.class );
+        org.kie.api.event.rule.WorkingMemoryEventListener wmel = mock( org.kie.api.event.rule.WorkingMemoryEventListener.class );
         ksession.addEventListener( wmel );
 
         final Person bigCheese = new Person( "big cheese" );
@@ -1497,10 +1497,10 @@ public class MiscTest extends CommonTestMethodBase {
         final org.kie.runtime.rule.FactHandle cheddarHandle = ksession.insert( cheddar );
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.ObjectUpdatedEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.ObjectUpdatedEvent.class );
+        ArgumentCaptor<org.kie.api.event.rule.ObjectUpdatedEvent> arg = ArgumentCaptor.forClass( org.kie.api.event.rule.ObjectUpdatedEvent.class );
         verify( wmel, times( 2 ) ).objectUpdated( arg.capture() );
 
-        org.kie.event.rule.ObjectUpdatedEvent event = arg.getAllValues().get( 0 );
+        org.kie.api.event.rule.ObjectUpdatedEvent event = arg.getAllValues().get( 0 );
         assertSame( cheddarHandle,
                     event.getFactHandle() );
         assertSame( cheddar,
@@ -3090,7 +3090,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_EventModel.drl" ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
 
-        org.kie.event.rule.WorkingMemoryEventListener wmel = mock( org.kie.event.rule.WorkingMemoryEventListener.class );
+        org.kie.api.event.rule.WorkingMemoryEventListener wmel = mock( org.kie.api.event.rule.WorkingMemoryEventListener.class );
         wm.addEventListener( wmel );
 
         final Cheese stilton = new Cheese( "stilton",
@@ -3098,14 +3098,14 @@ public class MiscTest extends CommonTestMethodBase {
 
         final org.kie.runtime.rule.FactHandle stiltonHandle = wm.insert( stilton );
 
-        ArgumentCaptor<org.kie.event.rule.ObjectInsertedEvent> oic = ArgumentCaptor.forClass( org.kie.event.rule.ObjectInsertedEvent.class );
+        ArgumentCaptor<org.kie.api.event.rule.ObjectInsertedEvent> oic = ArgumentCaptor.forClass( org.kie.api.event.rule.ObjectInsertedEvent.class );
         verify( wmel ).objectInserted( oic.capture() );
         assertSame( stiltonHandle,
                     oic.getValue().getFactHandle() );
 
         wm.update( stiltonHandle,
                    stilton );
-        ArgumentCaptor<org.kie.event.rule.ObjectUpdatedEvent> ouc = ArgumentCaptor.forClass( org.kie.event.rule.ObjectUpdatedEvent.class );
+        ArgumentCaptor<org.kie.api.event.rule.ObjectUpdatedEvent> ouc = ArgumentCaptor.forClass( org.kie.api.event.rule.ObjectUpdatedEvent.class );
         verify( wmel ).objectUpdated( ouc.capture() );
         assertSame( stiltonHandle,
                     ouc.getValue().getFactHandle() );
@@ -3807,7 +3807,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBase( "test_mapNullConstraints.drl" );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
-        org.kie.event.rule.AgendaEventListener ael = mock( org.kie.event.rule.AgendaEventListener.class );
+        org.kie.api.event.rule.AgendaEventListener ael = mock( org.kie.api.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
         new WorkingMemoryConsoleLogger( ksession );
 
@@ -3820,10 +3820,10 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( bob );
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.api.event.rule.AfterMatchFiredEvent.class );
         verify( ael,
                 times( 4 ) ).afterMatchFired(arg.capture());
-        org.kie.event.rule.AfterMatchFiredEvent aaf = arg.getAllValues().get( 0 );
+        org.kie.api.event.rule.AfterMatchFiredEvent aaf = arg.getAllValues().get( 0 );
         assertThat( aaf.getMatch().getRule().getName(),
                     is( "1. home != null" ) );
         aaf = arg.getAllValues().get( 1 );
@@ -6319,7 +6319,7 @@ public class MiscTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         // creating listener as a jmock proxy
-        final org.kie.event.rule.WorkingMemoryEventListener wmeListener = mock( org.kie.event.rule.WorkingMemoryEventListener.class );
+        final org.kie.api.event.rule.WorkingMemoryEventListener wmeListener = mock( org.kie.api.event.rule.WorkingMemoryEventListener.class );
 
         ksession.addEventListener( wmeListener );
 
@@ -6335,7 +6335,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( new Cheese( "brie" ) );
 
         verify( wmeListener,
-                times( 2 ) ).objectInserted( any( org.kie.event.rule.ObjectInsertedEvent.class ) );
+                times( 2 ) ).objectInserted( any( org.kie.api.event.rule.ObjectInsertedEvent.class ) );
     }
 
     @Test
@@ -6581,7 +6581,7 @@ public class MiscTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         // create working memory mock listener
-        org.kie.event.rule.WorkingMemoryEventListener wml = Mockito.mock( org.kie.event.rule.WorkingMemoryEventListener.class );
+        org.kie.api.event.rule.WorkingMemoryEventListener wml = Mockito.mock( org.kie.api.event.rule.WorkingMemoryEventListener.class );
 
         ksession.addEventListener( wml );
 
@@ -6687,8 +6687,8 @@ public class MiscTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         // create working memory mock listener
-        org.kie.event.rule.WorkingMemoryEventListener wml = Mockito.mock( org.kie.event.rule.WorkingMemoryEventListener.class );
-        org.kie.event.rule.AgendaEventListener ael = Mockito.mock( org.kie.event.rule.AgendaEventListener.class );
+        org.kie.api.event.rule.WorkingMemoryEventListener wml = Mockito.mock( org.kie.api.event.rule.WorkingMemoryEventListener.class );
+        org.kie.api.event.rule.AgendaEventListener ael = Mockito.mock( org.kie.api.event.rule.AgendaEventListener.class );
 
         ksession.addEventListener( wml );
         ksession.addEventListener( ael );
@@ -6698,10 +6698,10 @@ public class MiscTest extends CommonTestMethodBase {
                       fired );
 
         // capture the arguments and check that the rules fired in the proper sequence
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> actvs = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> actvs = ArgumentCaptor.forClass( org.kie.api.event.rule.AfterMatchFiredEvent.class );
         verify( ael,
                 times( 3 ) ).afterMatchFired(actvs.capture());
-        List<org.kie.event.rule.AfterMatchFiredEvent> values = actvs.getAllValues();
+        List<org.kie.api.event.rule.AfterMatchFiredEvent> values = actvs.getAllValues();
         assertThat( values.get( 0 ).getMatch().getRule().getName(),
                     is( "init" ) );
         assertThat( values.get( 1 ).getMatch().getRule().getName(),
@@ -6710,9 +6710,9 @@ public class MiscTest extends CommonTestMethodBase {
                     is( "r2" ) );
 
         verify( ael,
-                never() ).matchCancelled(any(org.kie.event.rule.MatchCancelledEvent.class));
+                never() ).matchCancelled(any(org.kie.api.event.rule.MatchCancelledEvent.class));
         verify( wml,
-                times( 2 ) ).objectInserted( any( org.kie.event.rule.ObjectInsertedEvent.class ) );
+                times( 2 ) ).objectInserted( any( org.kie.api.event.rule.ObjectInsertedEvent.class ) );
         verify( wml,
                 never() ).objectDeleted(any(ObjectDeletedEvent.class));
     }
@@ -7325,7 +7325,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
-        org.kie.event.rule.AgendaEventListener ael = mock( org.kie.event.rule.AgendaEventListener.class );
+        org.kie.api.event.rule.AgendaEventListener ael = mock( org.kie.api.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
 
         RuleNameStartsWithAgendaFilter af = new RuleNameStartsWithAgendaFilter( "B" );
@@ -7334,7 +7334,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.api.event.rule.AfterMatchFiredEvent.class );
         verify( ael ).afterMatchFired(arg.capture());
         assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Bbb" ) );
@@ -7349,7 +7349,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
-        org.kie.event.rule.AgendaEventListener ael = mock( org.kie.event.rule.AgendaEventListener.class );
+        org.kie.api.event.rule.AgendaEventListener ael = mock( org.kie.api.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
 
         RuleNameEndsWithAgendaFilter af = new RuleNameEndsWithAgendaFilter( "a" );
@@ -7358,7 +7358,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.api.event.rule.AfterMatchFiredEvent.class );
         verify( ael ).afterMatchFired(arg.capture());
         assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Aaa" ) );
@@ -7373,7 +7373,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
-        org.kie.event.rule.AgendaEventListener ael = mock( org.kie.event.rule.AgendaEventListener.class );
+        org.kie.api.event.rule.AgendaEventListener ael = mock( org.kie.api.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
 
         RuleNameMatchesAgendaFilter af = new RuleNameMatchesAgendaFilter( ".*b." );
@@ -7382,7 +7382,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.api.event.rule.AfterMatchFiredEvent.class );
         verify( ael ).afterMatchFired(arg.capture());
         assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Bbb" ) );
@@ -7397,7 +7397,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
-        org.kie.event.rule.AgendaEventListener ael = mock( org.kie.event.rule.AgendaEventListener.class );
+        org.kie.api.event.rule.AgendaEventListener ael = mock( org.kie.api.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
 
         RuleNameEqualsAgendaFilter af = new RuleNameEqualsAgendaFilter( "Aaa" );
@@ -7406,7 +7406,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 1,
                       rules );
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> arg = ArgumentCaptor.forClass( org.kie.api.event.rule.AfterMatchFiredEvent.class );
         verify( ael ).afterMatchFired(arg.capture());
         assertThat( arg.getValue().getMatch().getRule().getName(),
                     is( "Aaa" ) );
@@ -7747,17 +7747,17 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
-        org.kie.event.rule.AgendaEventListener ael = mock( org.kie.event.rule.AgendaEventListener.class );
+        org.kie.api.event.rule.AgendaEventListener ael = mock( org.kie.api.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
 
         int rulesFired = ksession.fireAllRules();
         assertEquals( 2,
                       rulesFired );
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( org.kie.api.event.rule.AfterMatchFiredEvent.class );
         verify( ael,
                 times( 2 ) ).afterMatchFired(captor.capture());
-        List<org.kie.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
+        List<org.kie.api.event.rule.AfterMatchFiredEvent> aafe = captor.getAllValues();
 
         Assert.assertThat( aafe.get( 0 ).getMatch().getRule().getName(),
                            is( "kickOff" ) );
@@ -8109,7 +8109,7 @@ public class MiscTest extends CommonTestMethodBase {
         //building stuff
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        org.kie.event.rule.AgendaEventListener ael = mock( org.kie.event.rule.AgendaEventListener.class );
+        org.kie.api.event.rule.AgendaEventListener ael = mock( org.kie.api.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
 
         Cheesery c1 = new Cheesery();
@@ -8124,10 +8124,10 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( c3 );
         ksession.fireAllRules();
 
-        ArgumentCaptor<org.kie.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( org.kie.event.rule.AfterMatchFiredEvent.class );
+        ArgumentCaptor<org.kie.api.event.rule.AfterMatchFiredEvent> captor = ArgumentCaptor.forClass( org.kie.api.event.rule.AfterMatchFiredEvent.class );
         verify( ael, times( 2 ) ).afterMatchFired(captor.capture());
 
-        List<org.kie.event.rule.AfterMatchFiredEvent> values = captor.getAllValues();
+        List<org.kie.api.event.rule.AfterMatchFiredEvent> values = captor.getAllValues();
         assertThat( (Cheesery) values.get( 0 ).getMatch().getObjects().get( 0 ), is( c1 ) );
         assertThat( (Cheesery) values.get( 1 ).getMatch().getObjects().get( 0 ), is( c2 ) );
 
@@ -10038,7 +10038,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        org.kie.event.rule.AgendaEventListener ael = mock( org.kie.event.rule.AgendaEventListener.class );
+        org.kie.api.event.rule.AgendaEventListener ael = mock( org.kie.api.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
 
         ksession.insert( new Person( "Bob", 19 ) );
@@ -10046,9 +10046,9 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         // both rules should fire exactly once
-        verify( ael, times( 2 ) ).afterMatchFired(any(org.kie.event.rule.AfterMatchFiredEvent.class));
+        verify( ael, times( 2 ) ).afterMatchFired(any(org.kie.api.event.rule.AfterMatchFiredEvent.class));
         // no cancellations should have happened 
-        verify( ael, never() ).matchCancelled(any(org.kie.event.rule.MatchCancelledEvent.class));
+        verify( ael, never() ).matchCancelled(any(org.kie.api.event.rule.MatchCancelledEvent.class));
     }
 
     @Test

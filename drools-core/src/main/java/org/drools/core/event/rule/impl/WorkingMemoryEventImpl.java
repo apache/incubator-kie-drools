@@ -16,7 +16,7 @@
 
 package org.drools.core.event.rule.impl;
 
-import org.kie.event.rule.WorkingMemoryEvent;
+import org.kie.api.event.rule.WorkingMemoryEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.runtime.rule.PropagationContext;
 

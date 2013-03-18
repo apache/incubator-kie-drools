@@ -9,7 +9,7 @@ import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.spi.AgendaFilter;
-import org.kie.event.process.ProcessEventManager;
+import org.kie.api.event.process.ProcessEventManager;
 import org.kie.runtime.Channel;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.rule.LiveQuery;

@@ -23,7 +23,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.RuleFlowGroup;
-import org.kie.event.rule.MatchCancelledCause;
+import org.kie.api.event.rule.MatchCancelledCause;
 
 public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener> {
 

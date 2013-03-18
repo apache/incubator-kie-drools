@@ -23,10 +23,10 @@ import org.drools.examples.sudoku.swing.AbstractSudokuGridModel;
 import org.drools.examples.sudoku.swing.SudokuGridEvent;
 import org.drools.examples.sudoku.swing.SudokuGridModel;
 import org.kie.internal.KnowledgeBase;
-import org.kie.event.rule.ObjectDeletedEvent;
-import org.kie.event.rule.ObjectInsertedEvent;
-import org.kie.event.rule.ObjectUpdatedEvent;
-import org.kie.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 
