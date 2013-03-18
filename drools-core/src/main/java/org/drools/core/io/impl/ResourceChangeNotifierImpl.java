@@ -34,7 +34,7 @@ import org.kie.internal.SystemEventListenerFactory;
 import org.kie.internal.event.io.ResourceChangeListener;
 import org.kie.internal.io.ResourceChangeMonitor;
 import org.kie.internal.io.ResourceChangeNotifier;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 public class ResourceChangeNotifierImpl
     implements

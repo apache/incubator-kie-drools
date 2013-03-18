@@ -25,7 +25,7 @@ import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

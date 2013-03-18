@@ -41,7 +41,7 @@ import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 import org.kie.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

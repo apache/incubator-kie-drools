@@ -1,6 +1,6 @@
 package org.drools.compiler.lang.descr;
 
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 import java.util.List;
 import java.util.Set;

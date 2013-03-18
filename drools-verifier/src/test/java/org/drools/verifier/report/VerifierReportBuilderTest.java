@@ -29,7 +29,7 @@ import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.junit.Test;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 
 public class VerifierReportBuilderTest {
 

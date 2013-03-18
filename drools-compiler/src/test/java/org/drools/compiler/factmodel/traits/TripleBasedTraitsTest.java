@@ -38,8 +38,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.definition.type.FactType;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.io.Resource;
-import org.kie.io.ResourceType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 
 public class TripleBasedTraitsTest {
 

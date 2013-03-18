@@ -21,9 +21,9 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
-import org.kie.io.Resource;
-import org.kie.io.ResourceConfiguration;
-import org.kie.io.ResourceType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
 
 public interface InternalResource extends Resource {
     InternalResource setResourceType(ResourceType resourceType);

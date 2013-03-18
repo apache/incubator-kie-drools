@@ -113,9 +113,9 @@ import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.internal.utils.CompositeClassLoader;
-import org.kie.io.Resource;
-import org.kie.io.ResourceConfiguration;
-import org.kie.io.ResourceType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
 import org.kie.runtime.rule.Match;
 import org.xml.sax.SAXException;
 

@@ -18,8 +18,8 @@ package org.drools.core.io.impl;
 
 import org.drools.core.io.internal.InternalResource;
 import org.kie.api.definition.KieDescr;
-import org.kie.io.Resource;
-import org.kie.io.ResourceType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 
 import java.io.Externalizable;
 import java.io.FileNotFoundException;

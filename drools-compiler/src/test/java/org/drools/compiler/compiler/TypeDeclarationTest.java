@@ -14,8 +14,8 @@ import org.kie.api.definition.type.Annotation;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.io.Resource;
-import org.kie.io.ResourceType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;

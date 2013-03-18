@@ -10,7 +10,7 @@ import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Consequence;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 import java.util.HashSet;
 import java.util.Map;

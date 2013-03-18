@@ -32,7 +32,7 @@ import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 
 import java.io.StringReader;
 import java.util.Collection;

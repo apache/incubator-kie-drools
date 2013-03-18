@@ -12,7 +12,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 
 
 public class KnowledgeBuilderTest {

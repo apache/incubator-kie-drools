@@ -18,7 +18,7 @@ import org.kie.api.command.KieCommands;
 import org.kie.api.concurrent.KieExecutors;
 import org.kie.internal.io.ResourceFactoryService;
 import org.kie.internal.utils.ServiceRegistryImpl;
-import org.kie.io.KieResources;
+import org.kie.api.io.KieResources;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.persistence.jpa.KieStoreServices;

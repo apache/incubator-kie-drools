@@ -11,7 +11,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 
 import java.util.ArrayList;
 import java.util.Collections;

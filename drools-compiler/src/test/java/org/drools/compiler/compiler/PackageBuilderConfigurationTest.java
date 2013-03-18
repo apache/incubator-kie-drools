@@ -50,7 +50,7 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
 import org.kie.internal.utils.ChainedProperties;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 public class PackageBuilderConfigurationTest {
 

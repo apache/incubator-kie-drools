@@ -17,7 +17,7 @@ import org.kie.api.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 import org.kie.runtime.ExecutionResults;
 
 public class FireAllRulesCommandTest {

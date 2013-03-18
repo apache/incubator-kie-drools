@@ -20,7 +20,7 @@ import org.drools.core.io.internal.InternalResource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.internal.ChangeSet;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  *

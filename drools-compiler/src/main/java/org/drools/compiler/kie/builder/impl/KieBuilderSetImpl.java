@@ -10,9 +10,9 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.io.Resource;
-import org.kie.io.ResourceConfiguration;
-import org.kie.io.ResourceType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
 
 import java.io.IOException;
 import java.io.InputStream;

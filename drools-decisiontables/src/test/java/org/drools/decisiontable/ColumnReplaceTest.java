@@ -18,7 +18,7 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 
 public class ColumnReplaceTest {
 

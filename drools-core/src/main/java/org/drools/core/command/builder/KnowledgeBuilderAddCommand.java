@@ -20,9 +20,9 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.command.Context;
-import org.kie.io.Resource;
-import org.kie.io.ResourceConfiguration;
-import org.kie.io.ResourceType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
 
 public class KnowledgeBuilderAddCommand
     implements

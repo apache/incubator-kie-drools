@@ -19,7 +19,7 @@ package org.drools.core.io.impl;
 import org.kie.api.definition.KieDescr;
 import org.kie.internal.io.ResourceChangeNotifier;
 import org.kie.internal.io.ResourceFactoryService;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 import org.kie.internal.io.ResourceChangeScanner;
 
 import java.io.File;

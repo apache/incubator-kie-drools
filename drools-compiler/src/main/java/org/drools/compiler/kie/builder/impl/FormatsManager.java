@@ -1,6 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 
 import java.util.HashMap;
 import java.util.Map;

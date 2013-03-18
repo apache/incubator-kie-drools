@@ -32,8 +32,8 @@ import java.util.List;
 
 import org.drools.core.util.StringUtils;
 import org.drools.core.io.internal.InternalResource;
-import org.kie.io.Resource;
-import org.kie.io.ResourceType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 
 /**
  * Borrowed gratuitously from Spring under ASL2.0.

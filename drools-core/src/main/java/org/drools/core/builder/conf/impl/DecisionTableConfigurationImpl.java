@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
-import org.kie.io.ResourceConfiguration;
+import org.kie.api.io.ResourceConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

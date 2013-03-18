@@ -28,7 +28,7 @@ import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
