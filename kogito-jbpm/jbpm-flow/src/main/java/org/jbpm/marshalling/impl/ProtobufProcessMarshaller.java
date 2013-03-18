@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProcessMarshaller;

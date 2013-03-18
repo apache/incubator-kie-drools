@@ -34,7 +34,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
 import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.process.ProcessInstance;
 
 public class ProcessInstanceResolverStrategyTest {
@@ -79,7 +79,7 @@ public class ProcessInstanceResolverStrategyTest {
 
         
         // Test strategy.write
-        org.kie.marshalling.MarshallingConfiguration marshallingConfig = new MarshallingConfigurationImpl(strategies, true, true);
+        org.kie.api.marshalling.MarshallingConfiguration marshallingConfig = new MarshallingConfigurationImpl(strategies, true, true);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         MarshallerWriteContext writerContext = new MarshallerWriteContext(baos,
                                                                     (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase(),
