@@ -7,8 +7,8 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
-import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFileSystem;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
 
 import static junit.framework.Assert.*;
 
@@ -70,7 +70,7 @@ public class IncrementalCompilationTest {
 
             //Expect no errors
             KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-            assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.builder.Message.Level.ERROR ).size() );
+            assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
 
             //Add the same XLS decision table again as a different resource
             in2 = this.getClass().getResourceAsStream( "incrementalBuild.dtable.xls" );

@@ -2,7 +2,7 @@ package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
 import org.kie.scanner.embedder.EmbeddedPomParser;
-import org.kie.builder.ReleaseId;
+import org.kie.api.builder.ReleaseId;
 import org.sonatype.aether.artifact.Artifact;
 
 import java.io.File;

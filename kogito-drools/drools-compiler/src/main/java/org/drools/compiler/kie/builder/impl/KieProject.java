@@ -1,8 +1,8 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.kie.builder.ReleaseId;
-import org.kie.builder.model.KieBaseModel;
-import org.kie.builder.model.KieSessionModel;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.internal.utils.CompositeClassLoader;
 
 public interface KieProject {

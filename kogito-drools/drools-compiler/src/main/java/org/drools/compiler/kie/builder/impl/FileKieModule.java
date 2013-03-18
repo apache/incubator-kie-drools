@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.drools.core.util.IoUtils;
-import org.kie.builder.ReleaseId;
-import org.kie.builder.model.KieModuleModel;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
 
 public class FileKieModule extends AbstractKieModule implements InternalKieModule {
     private final File             file;   

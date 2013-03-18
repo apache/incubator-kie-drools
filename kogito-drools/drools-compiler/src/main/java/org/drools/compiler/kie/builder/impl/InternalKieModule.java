@@ -1,10 +1,10 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.builder.ReleaseId;
-import org.kie.builder.KieModule;
-import org.kie.builder.model.KieModuleModel;
-import org.kie.builder.Results;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.Results;
 import org.kie.internal.definition.KnowledgePackage;
 
 import java.io.File;

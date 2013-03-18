@@ -1,7 +1,7 @@
 package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
-import org.kie.builder.ReleaseId;
+import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;

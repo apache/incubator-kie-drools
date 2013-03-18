@@ -4,7 +4,7 @@ import org.drools.core.util.ClassUtils;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.rule.TypeMetaInfo;
-import org.kie.builder.ReleaseId;
+import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.sonatype.aether.artifact.Artifact;

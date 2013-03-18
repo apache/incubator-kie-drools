@@ -1,10 +1,10 @@
 package org.drools.example.api.kiefilesystem;
 
 import org.kie.api.KieServices;
-import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFileSystem;
-import org.kie.builder.KieRepository;
-import org.kie.builder.Message.Level;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.Message.Level;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
 

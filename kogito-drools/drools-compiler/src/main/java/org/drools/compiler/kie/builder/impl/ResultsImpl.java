@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.builder.Message;
-import org.kie.builder.Message.Level;
-import org.kie.builder.Results;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Message.Level;
+import org.kie.api.builder.Results;
 
 public class ResultsImpl
     implements

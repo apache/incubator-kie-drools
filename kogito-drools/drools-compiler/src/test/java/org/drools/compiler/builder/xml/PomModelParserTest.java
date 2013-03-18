@@ -3,7 +3,7 @@ package org.drools.compiler.builder.xml;
 import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.junit.Test;
-import org.kie.builder.ReleaseId;
+import org.kie.api.builder.ReleaseId;
 
 import java.io.InputStream;
 

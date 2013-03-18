@@ -2,10 +2,10 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
-import org.kie.builder.ReleaseId;
-import org.kie.builder.model.KieBaseModel;
-import org.kie.builder.model.KieModuleModel;
-import org.kie.builder.model.KieSessionModel;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

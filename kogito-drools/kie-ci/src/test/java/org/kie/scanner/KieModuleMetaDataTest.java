@@ -4,7 +4,7 @@ import org.drools.core.rule.TypeMetaInfo;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
-import org.kie.builder.ReleaseId;
+import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 
 import java.io.File;

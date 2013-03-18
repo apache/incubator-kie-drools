@@ -1,11 +1,11 @@
 package org.drools.example.api.kiemodulemodel;
 
 import org.kie.api.KieServices;
-import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFileSystem;
-import org.kie.builder.Message.Level;
-import org.kie.builder.ReleaseId;
-import org.kie.builder.model.KieModuleModel;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message.Level;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.io.Resource;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;

@@ -7,7 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
-import org.kie.builder.KieRepository;
+import org.kie.api.builder.KieRepository;
 import org.kie.command.KieCommands;
 import org.kie.io.KieResources;
 

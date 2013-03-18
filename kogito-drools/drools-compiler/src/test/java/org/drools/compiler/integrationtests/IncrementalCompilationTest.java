@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
-import org.kie.builder.KieBuilder;
-import org.kie.builder.KieFileSystem;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
 
@@ -164,7 +164,7 @@ public class IncrementalCompilationTest {
                 .write("src/main/resources/r2.drl", drl2_1);
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 1, kieBuilder.getResults().getMessages(org.kie.builder.Message.Level.ERROR).size() );
+        assertEquals( 1, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size() );
 
         kfs.write("src/main/resources/r2.drl", drl2_2);
         IncrementalResults results = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/r2.drl").build();
@@ -207,7 +207,7 @@ public class IncrementalCompilationTest {
                 .write( "src/main/resources/r1.drl", drl1 );
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.builder.Message.Level.ERROR ).size() );
+        assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
 
         //Add file with error - expect 1 "added" error message
         kfs.write( "src/main/resources/r2.drl", drl2_1 );
@@ -254,7 +254,7 @@ public class IncrementalCompilationTest {
 
         //Initial file contains errors
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 1, kieBuilder.getResults().getMessages( org.kie.builder.Message.Level.ERROR ).size() );
+        assertEquals( 1, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
 
         //Add file with error - expect 1 "added" error message
         kfs.write( "src/main/resources/r2.drl", drl2_1  );
@@ -293,7 +293,7 @@ public class IncrementalCompilationTest {
                 .write( "src/main/resources/r1.drl", drl1 );
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.builder.Message.Level.ERROR ).size() );
+        assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
 
         //Add file with error - expect 1 "added" error message
         kfs.write( "src/main/resources/r2.drl", drl2_1 );

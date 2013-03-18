@@ -1,16 +1,16 @@
 package org.kie.scanner;
 
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.kie.builder.ReleaseId;
-import org.kie.builder.KieModule;
-import org.kie.builder.KieScanner;
-import org.kie.builder.Message;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.KieScanner;
+import org.kie.api.builder.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
-import org.kie.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
