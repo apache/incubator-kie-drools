@@ -1,4 +1,4 @@
-package org.kie.concurrent;
+package org.kie.api.concurrent;
 
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
