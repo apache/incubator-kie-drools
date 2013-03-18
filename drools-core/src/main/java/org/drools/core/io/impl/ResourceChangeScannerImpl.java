@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
 import org.drools.core.io.internal.InternalResource;
 import org.kie.internal.ChangeSet;
 import org.kie.internal.SystemEventListener;
-import org.kie.concurrent.ExecutorProviderFactory;
+import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.kie.io.Resource;
 import org.kie.io.ResourceChangeNotifier;
 import org.kie.io.ResourceChangeScanner;
