@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.*;
+import org.kie.api.runtime.process.*;
 
 public abstract class AbstractWorkItemHandler implements WorkItemHandler {
 	

@@ -35,7 +35,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessInstanceResolverStrategyTest {
 

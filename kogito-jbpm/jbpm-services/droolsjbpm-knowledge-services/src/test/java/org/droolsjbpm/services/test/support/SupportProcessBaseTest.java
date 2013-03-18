@@ -34,7 +34,7 @@ import org.jbpm.shared.services.api.FileService;
 import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;
 import org.junit.Test;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public abstract class SupportProcessBaseTest {
 

@@ -33,9 +33,9 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.internal.command.Context;
 import org.kie.api.definition.process.Process;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.KieRuntime;
-import org.kie.runtime.process.NodeInstance;
-import org.kie.runtime.process.WorkItem;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.WorkItem;
 
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public class DynamicUtils {
 	}
 	
 	public static void addDynamicWorkItem(
-			final org.kie.runtime.process.ProcessInstance dynamicProcessInstance, KieRuntime ksession,
+			final org.kie.api.runtime.process.ProcessInstance dynamicProcessInstance, KieRuntime ksession,
 			String workItemName, Map<String, Object> parameters) {
 		internalAddDynamicWorkItem((WorkflowProcessInstance) dynamicProcessInstance, null, ksession, workItemName, parameters);
 	}
@@ -118,7 +118,7 @@ public class DynamicUtils {
 	}
 	
 	public static void addDynamicSubProcess(
-			final org.kie.runtime.process.ProcessInstance processInstance, KieRuntime ksession,
+			final org.kie.api.runtime.process.ProcessInstance processInstance, KieRuntime ksession,
 			final String processId, final Map<String, Object> parameters) {
 		internalAddDynamicSubProcess((WorkflowProcessInstance) processInstance, null, ksession, processId, parameters);
 	}

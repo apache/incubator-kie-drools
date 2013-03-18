@@ -28,7 +28,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.runtime.process.*;
+import org.kie.api.runtime.process.*;
 
 public class ProcessMarshallingTest extends TestCase {
 

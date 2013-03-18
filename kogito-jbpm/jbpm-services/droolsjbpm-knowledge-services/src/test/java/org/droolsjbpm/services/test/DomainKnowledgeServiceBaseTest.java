@@ -53,11 +53,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.api.definition.process.Process;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 
 public abstract class DomainKnowledgeServiceBaseTest {
 

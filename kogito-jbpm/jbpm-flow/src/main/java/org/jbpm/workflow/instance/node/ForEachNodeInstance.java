@@ -110,7 +110,7 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             return (ForEachSplitNode) getNode();
         }
 
-        public void internalTrigger(org.kie.runtime.process.NodeInstance fromm, String type) {
+        public void internalTrigger(org.kie.api.runtime.process.NodeInstance fromm, String type) {
             String collectionExpression = getForEachNode().getCollectionExpression();
             Collection<?> collection = evaluateCollectionExpression(collectionExpression);
             ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
@@ -147,7 +147,7 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             return (ForEachJoinNode) getNode();
         }
 
-        public void internalTrigger(org.kie.runtime.process.NodeInstance from, String type) {
+        public void internalTrigger(org.kie.api.runtime.process.NodeInstance from, String type) {
             
             if (getForEachNode().getOutputVariableName() != null) {
                 Collection outputCollection = evaluateCollectionExpression(getForEachNode().getOutputCollectionExpression());

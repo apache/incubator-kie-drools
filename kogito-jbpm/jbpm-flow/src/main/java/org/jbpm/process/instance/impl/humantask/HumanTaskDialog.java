@@ -42,7 +42,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.kie.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItem;
 
 /**
  * 

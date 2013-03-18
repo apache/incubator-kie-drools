@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 import org.drools.core.process.instance.impl.DefaultWorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkItemManager;
 
 // @Author: salaboy@gmail.com
 public class JabberWorkItemHandlerTest extends TestCase {

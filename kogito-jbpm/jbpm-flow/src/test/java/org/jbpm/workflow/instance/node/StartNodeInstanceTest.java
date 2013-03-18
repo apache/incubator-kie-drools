@@ -25,7 +25,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstance;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;

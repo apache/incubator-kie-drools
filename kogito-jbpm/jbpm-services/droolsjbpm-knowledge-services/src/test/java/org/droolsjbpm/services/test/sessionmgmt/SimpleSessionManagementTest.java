@@ -44,7 +44,7 @@ import org.jbpm.task.query.TaskSummary;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 
 /**
  *

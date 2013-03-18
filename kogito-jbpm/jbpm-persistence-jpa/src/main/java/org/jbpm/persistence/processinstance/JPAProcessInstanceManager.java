@@ -11,9 +11,9 @@ import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.kie.api.definition.process.Process;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -151,7 +151,7 @@ public class JPAProcessInstanceManager
             WorkflowProcessInstance pi = ((WorkflowProcessInstance) processInstance);
 
             
-            for (org.kie.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {
+            for (org.kie.api.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {
                 if (nodeInstance instanceof StateBasedNodeInstance) {
                     List<Long> timerIds = ((StateBasedNodeInstance) nodeInstance).getTimerInstances();
                     if (timerIds != null) {

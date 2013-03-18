@@ -24,8 +24,8 @@ import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 
 public class ProcessDynamicNodeTest extends TestCase {
     

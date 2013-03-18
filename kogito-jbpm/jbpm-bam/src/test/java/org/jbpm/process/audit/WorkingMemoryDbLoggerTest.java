@@ -41,8 +41,8 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 
 import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.TransactionManagerServices;

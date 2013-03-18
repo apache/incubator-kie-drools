@@ -24,7 +24,7 @@ import org.jbpm.test.JbpmJUnitTestCase;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 /**
  *

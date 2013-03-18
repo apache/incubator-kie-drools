@@ -18,7 +18,7 @@ package org.jbpm.integration.console.session;
 import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.junit.Test;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.StatefulKnowledgeSession;
 
 public class MVELSessionManagerTest extends JbpmGwtCoreTestCase {
 

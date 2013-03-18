@@ -3,7 +3,7 @@ package org.jbpm.persistence.processinstance;
 import java.util.List;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.kie.runtime.EnvironmentName;
+import org.kie.api.runtime.EnvironmentName;
 import org.jbpm.persistence.ProcessPersistenceContext;
 import org.jbpm.persistence.ProcessPersistenceContextManager;
 import org.jbpm.process.instance.event.DefaultSignalManager;

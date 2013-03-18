@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.runtime.process.*;
+import org.kie.api.runtime.process.*;
 
 public class ServiceTaskHandler implements WorkItemHandler {
 

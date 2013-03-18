@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.kie.internal.process.CorrelationKey;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.jbpm.process.instance.ProcessInstanceManager;
 
 public class DefaultProcessInstanceManager implements ProcessInstanceManager {

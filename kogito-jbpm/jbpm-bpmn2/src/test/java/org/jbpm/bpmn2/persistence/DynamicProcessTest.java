@@ -31,7 +31,7 @@ import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.Environment;
+import org.kie.api.runtime.Environment;
 
 /**
  * This is a sample file to launch a process.

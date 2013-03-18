@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import org.jbpm.shared.services.api.FileService;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 
 /**
  *

@@ -371,9 +371,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             
                             
                             action = new DroolsConsequenceAction("java", 
-                                    (cancelActivity ? "org.kie.runtime.process.WorkflowProcessInstance pi = (org.kie.runtime.process.WorkflowProcessInstance) kcontext.getProcessInstance();"+
+                                    (cancelActivity ? "org.kie.api.runtime.process.WorkflowProcessInstance pi = (org.kie.api.runtime.process.WorkflowProcessInstance) kcontext.getProcessInstance();"+
                                     "long nodeInstanceId = -1;"+
-                                    "for (org.kie.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {"+
+                                    "for (org.kie.api.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {"+
                                      "   if (" +attachedToNodeId +" == nodeInstance.getNodeId()) {"+
                                      "       nodeInstanceId = nodeInstance.getId();"+
                                      "       break;"+
@@ -411,9 +411,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             
                             
                             action = new DroolsConsequenceAction("java", 
-                                    "org.kie.runtime.process.WorkflowProcessInstance pi = (org.kie.runtime.process.WorkflowProcessInstance) kcontext.getProcessInstance();"+
+                                    "org.kie.api.runtime.process.WorkflowProcessInstance pi = (org.kie.api.runtime.process.WorkflowProcessInstance) kcontext.getProcessInstance();"+
                                     "long nodeInstanceId = -1;"+
-                                    "for (org.kie.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {"+
+                                    "for (org.kie.api.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {"+
                                     
                                      "   if (" +attachedToNodeId +" == nodeInstance.getNodeId()) {"+
                                      "       nodeInstanceId = nodeInstance.getId();"+

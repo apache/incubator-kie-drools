@@ -32,13 +32,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
-import javax.transaction.UserTransaction;
+
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.cdi.Startup;
@@ -55,7 +51,7 @@ import org.jbpm.task.api.TaskDeadlinesService;
 import org.jbpm.task.events.NotificationEvent;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.runtime.Environment;
+import org.kie.api.runtime.Environment;
 
 /**
  *

@@ -22,7 +22,7 @@
   </interface>
 
   <error id="_exception" errorCode="code" structureRef="_exceptionItem" />
-  <itemDefinition id="_exceptionItem" structureRef="org.kie.runtime.process.WorkItem"/>
+  <itemDefinition id="_exceptionItem" structureRef="org.kie.api.runtime.process.WorkItem"/>
   <message id="_exceptionMessage" itemRef="_exceptionItem" />
   
   <interface id="_handlingServiceInterface" name="org.jbpm.bpmn2.objects.ExceptionService">

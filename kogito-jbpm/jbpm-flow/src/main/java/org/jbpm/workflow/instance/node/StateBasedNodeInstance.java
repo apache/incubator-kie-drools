@@ -40,8 +40,8 @@ import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.runtime.process.EventListener;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.EventListener;
+import org.kie.api.runtime.process.NodeInstance;
 import org.mvel2.MVEL;
 
 import java.util.ArrayList;
@@ -321,7 +321,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
         for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
             Declaration declaration = (Declaration) it.next();
             if ("processInstance".equals(declaration.getIdentifier())
-            		|| "org.kie.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
+            		|| "org.kie.api.runtime.process.WorkflowProcessInstance".equals(declaration.getTypeName())) {
                 Object value = declaration.getValue(
                     ((StatefulKnowledgeSessionImpl) getProcessInstance().getKnowledgeRuntime()).session,
                     ((InternalFactHandle) activation.getTuple().get(declaration)).getObject());

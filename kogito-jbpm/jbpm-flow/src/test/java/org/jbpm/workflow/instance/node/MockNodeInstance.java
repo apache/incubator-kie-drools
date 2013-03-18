@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.api.definition.process.Node;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 
 public class MockNodeInstance extends NodeInstanceImpl {

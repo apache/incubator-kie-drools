@@ -39,8 +39,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.*;
-import org.kie.runtime.process.*;
+import org.kie.api.runtime.*;
+import org.kie.api.runtime.process.*;
 
 public class SimplePersistenceBPMNProcessTest extends JbpmBpmn2TestCase {
 

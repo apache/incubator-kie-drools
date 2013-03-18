@@ -31,7 +31,7 @@ import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.kie.api.definition.process.Process;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

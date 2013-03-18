@@ -17,7 +17,7 @@ package org.droolsjbpm.services.api;
 
 import java.util.Collection;
 import java.util.Map;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 /**
  *

@@ -8,7 +8,7 @@ import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstance;
 
 public class TransformTest extends JbpmGwtCoreTestCase {
 

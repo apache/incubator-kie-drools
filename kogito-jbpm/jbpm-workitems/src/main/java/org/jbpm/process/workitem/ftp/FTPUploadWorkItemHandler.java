@@ -28,8 +28,8 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.drools.core.process.instance.WorkItemHandler;
 import org.jbpm.process.workitem.email.Connection;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemManager;
 
 
 

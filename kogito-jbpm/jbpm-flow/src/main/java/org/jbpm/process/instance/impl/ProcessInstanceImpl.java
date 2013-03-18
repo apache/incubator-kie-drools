@@ -31,7 +31,7 @@ import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.kie.api.definition.process.Process;
-import org.kie.runtime.rule.Agenda;
+import org.kie.api.runtime.rule.Agenda;
 
 /**
  * Default implementation of a process instance.

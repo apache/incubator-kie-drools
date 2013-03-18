@@ -33,8 +33,8 @@ import org.jbpm.task.event.entity.TaskCompletedEvent;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 
 public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 

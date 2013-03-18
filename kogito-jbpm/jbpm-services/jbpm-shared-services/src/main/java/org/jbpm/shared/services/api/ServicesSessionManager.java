@@ -18,8 +18,8 @@ package org.jbpm.shared.services.api;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.WorkItemHandler;
 
 /**
  * Extension of the main <code>SessionManager</code> that provides services specific

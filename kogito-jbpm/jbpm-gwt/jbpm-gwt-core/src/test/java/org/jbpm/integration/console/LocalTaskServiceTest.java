@@ -15,8 +15,8 @@ import org.jbpm.process.audit.ProcessInstanceLog;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.process.NodeInstance;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 

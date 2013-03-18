@@ -23,8 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -33,7 +31,6 @@ import org.jbpm.shared.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.jbpm.shared.services.api.ServicesSessionManager;
-import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
 import org.jbpm.shared.services.api.FileException;
@@ -44,7 +41,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 
 public abstract class DomainKnowledgeServiceWorkItemsTest {
 

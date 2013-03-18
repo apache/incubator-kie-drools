@@ -17,11 +17,10 @@
 package org.jbpm.workflow.instance.node;
 
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstance;
 
 /**
  * Runtime counterpart of a start node.

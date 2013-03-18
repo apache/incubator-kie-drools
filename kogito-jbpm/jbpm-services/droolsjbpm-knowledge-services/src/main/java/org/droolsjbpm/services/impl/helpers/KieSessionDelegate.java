@@ -20,29 +20,29 @@ import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
-import org.kie.runtime.Calendars;
-import org.kie.runtime.Channel;
-import org.kie.runtime.Environment;
-import org.kie.runtime.Globals;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.ObjectFilter;
+import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.ObjectFilter;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItemManager;
-import org.kie.runtime.rule.Agenda;
-import org.kie.runtime.rule.AgendaFilter;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.LiveQuery;
-import org.kie.runtime.rule.QueryResults;
-import org.kie.runtime.rule.ViewChangedEventListener;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.rule.Agenda;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.ViewChangedEventListener;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 import org.kie.time.SessionClock;
 
 import java.util.Collection;
 import java.util.Map;
 
 import org.kie.api.KieBase;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 /**
  *

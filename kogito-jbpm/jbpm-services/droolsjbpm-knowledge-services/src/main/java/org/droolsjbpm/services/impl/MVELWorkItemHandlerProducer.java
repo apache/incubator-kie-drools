@@ -10,7 +10,7 @@ import org.droolsjbpm.services.api.WorkItemHandlerProducer;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemHandler;
 import org.mvel2.MVEL;
 
 public class MVELWorkItemHandlerProducer implements WorkItemHandlerProducer {

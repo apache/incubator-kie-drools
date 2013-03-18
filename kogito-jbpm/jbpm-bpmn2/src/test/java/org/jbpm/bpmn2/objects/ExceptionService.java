@@ -16,7 +16,7 @@
 
 package org.jbpm.bpmn2.objects;
 
-import org.kie.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItem;
 
 public class ExceptionService {
     

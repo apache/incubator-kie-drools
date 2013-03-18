@@ -18,7 +18,7 @@ package org.jbpm.process.instance;
 import org.kie.api.KieBase;
 import org.kie.api.definition.process.Process;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 import java.lang.reflect.Constructor;
 import java.util.Collection;

@@ -29,8 +29,8 @@ import org.jbpm.workflow.instance.impl.VariableScopeResolverFactory;
 import org.kie.api.KieBase;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
-import org.kie.runtime.process.EventListener;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.EventListener;
+import org.kie.api.runtime.process.NodeInstance;
 import org.mvel2.MVEL;
 
 import java.util.HashMap;

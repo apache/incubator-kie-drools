@@ -24,8 +24,8 @@ import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.utils.IOUtils;
 import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemManager;
 
 public class ArchiveWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 

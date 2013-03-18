@@ -30,9 +30,9 @@ import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.exception.PermissionDeniedException;
 import org.jbpm.task.impl.factories.TaskFactory;
 import org.jbpm.task.utils.OnErrorAction;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

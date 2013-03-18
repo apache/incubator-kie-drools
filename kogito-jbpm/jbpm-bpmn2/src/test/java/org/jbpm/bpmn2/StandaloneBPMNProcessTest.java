@@ -39,8 +39,8 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.process.*;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.*;
 import org.w3c.dom.Document;
 
 public class StandaloneBPMNProcessTest extends NewJbpmBpmn2TestBase {

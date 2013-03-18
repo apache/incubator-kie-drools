@@ -37,9 +37,9 @@ import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.runtime.process.EventListener;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.EventListener;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItemManager;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	

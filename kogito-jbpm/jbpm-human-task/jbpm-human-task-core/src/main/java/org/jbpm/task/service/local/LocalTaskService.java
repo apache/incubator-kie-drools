@@ -35,7 +35,7 @@ import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.Operation;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.runtime.Environment;
+import org.kie.api.runtime.Environment;
 
 /**
  *

@@ -27,9 +27,9 @@ import org.jbpm.process.instance.ContextInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface NodeInstance extends org.kie.runtime.process.NodeInstance {
+public interface NodeInstance extends org.kie.api.runtime.process.NodeInstance {
 
-    void trigger(org.kie.runtime.process.NodeInstance from, String type);
+    void trigger(org.kie.api.runtime.process.NodeInstance from, String type);
 
     void cancel();
     

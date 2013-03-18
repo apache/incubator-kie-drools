@@ -38,7 +38,7 @@ import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**

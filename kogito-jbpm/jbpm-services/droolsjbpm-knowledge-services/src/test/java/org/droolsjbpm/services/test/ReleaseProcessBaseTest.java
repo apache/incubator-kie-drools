@@ -46,7 +46,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public abstract class ReleaseProcessBaseTest {
 

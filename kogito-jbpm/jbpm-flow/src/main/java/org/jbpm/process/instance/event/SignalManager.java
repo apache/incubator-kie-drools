@@ -16,7 +16,7 @@
 
 package org.jbpm.process.instance.event;
 
-import org.kie.runtime.process.EventListener;
+import org.kie.api.runtime.process.EventListener;
 
 
 public interface SignalManager {

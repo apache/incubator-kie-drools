@@ -33,7 +33,7 @@ import javax.xml.xpath.XPathFunctionException;
 import javax.xml.xpath.XPathFunctionResolver;
 import javax.xml.xpath.XPathVariableResolver;
 
-import org.kie.runtime.process.ProcessContext;
+import org.kie.api.runtime.process.ProcessContext;
 
 public class XPATHReturnValueEvaluator
     implements

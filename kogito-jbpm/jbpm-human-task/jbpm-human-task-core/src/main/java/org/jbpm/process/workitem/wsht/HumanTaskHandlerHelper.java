@@ -20,8 +20,8 @@ import org.jbpm.task.Notification;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Reassignment;
 import org.jbpm.task.User;
-import org.kie.runtime.Environment;
-import org.kie.runtime.process.WorkItem;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.process.WorkItem;
 
 public class HumanTaskHandlerHelper {
 	

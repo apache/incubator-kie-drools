@@ -22,8 +22,8 @@ import org.jbpm.bpmn2.NewJbpmBpmn2TestBase;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public class StructureRefTest extends NewJbpmBpmn2TestBase {
 

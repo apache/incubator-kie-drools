@@ -3,7 +3,7 @@ package org.jbpm.bpmn2.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.runtime.process.*;
+import org.kie.api.runtime.process.*;
 
 public class TestWorkItemHandler implements WorkItemHandler {
 

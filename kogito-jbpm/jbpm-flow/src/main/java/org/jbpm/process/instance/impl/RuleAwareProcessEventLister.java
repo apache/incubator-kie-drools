@@ -6,10 +6,10 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
-import org.kie.runtime.KieRuntime;
-import org.kie.runtime.ObjectFilter;
-import org.kie.runtime.process.WorkflowProcessInstance;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;

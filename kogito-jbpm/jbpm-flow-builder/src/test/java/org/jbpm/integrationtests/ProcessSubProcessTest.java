@@ -15,7 +15,7 @@ import org.drools.core.rule.Package;
 import org.jbpm.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessSubProcessTest extends TestCase {
 

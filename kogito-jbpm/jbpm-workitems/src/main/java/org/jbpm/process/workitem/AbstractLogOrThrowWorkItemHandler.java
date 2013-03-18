@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
-import org.kie.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemHandler;
 
 
 

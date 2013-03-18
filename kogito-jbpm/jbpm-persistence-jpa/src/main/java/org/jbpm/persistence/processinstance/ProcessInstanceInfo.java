@@ -40,8 +40,8 @@ import org.jbpm.marshalling.impl.ProtobufRuleFlowProcessInstanceMarshaller;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.runtime.Environment;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.process.ProcessInstance;
 
 @Entity
 @SequenceGenerator(name="processInstanceInfoIdSeq", sequenceName="PROCESS_INSTANCE_INFO_ID_SEQ")

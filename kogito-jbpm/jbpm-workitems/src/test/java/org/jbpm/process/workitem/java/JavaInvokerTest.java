@@ -23,7 +23,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class JavaInvokerTest extends TestCase {

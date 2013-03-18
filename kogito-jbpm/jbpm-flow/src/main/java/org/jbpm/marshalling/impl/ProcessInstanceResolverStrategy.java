@@ -26,7 +26,7 @@ import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.kie.api.definition.process.Process;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

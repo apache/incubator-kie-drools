@@ -15,7 +15,7 @@
  */
 package org.jbpm.integration.console.session;
 
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.StatefulKnowledgeSession;
 
 /**
  * Manager interface for maintaining <code>StatefulKnowledgeSession</code> that includes:

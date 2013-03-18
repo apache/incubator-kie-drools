@@ -8,7 +8,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstance;
 
 /**
  * This exception provides the context information of the error in execution of the flow. <br/>

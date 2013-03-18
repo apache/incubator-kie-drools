@@ -37,7 +37,7 @@ import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
-import org.kie.runtime.process.EventListener;
+import org.kie.api.runtime.process.EventListener;
 
 /**
  * Runtime counterpart of a composite node.
@@ -76,7 +76,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return getCompositeNode();
     }
     
-    public void internalTrigger(final org.kie.runtime.process.NodeInstance from, String type) {
+    public void internalTrigger(final org.kie.api.runtime.process.NodeInstance from, String type) {
     	super.internalTrigger(from, type);
         CompositeNode.NodeAndType nodeAndType = getCompositeNode().internalGetLinkedIncomingNode(type);
         if (nodeAndType != null) {
@@ -115,7 +115,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         }
     }
     
-    protected void internalTriggerOnlyParent(final org.kie.runtime.process.NodeInstance from, String type) {
+    protected void internalTriggerOnlyParent(final org.kie.api.runtime.process.NodeInstance from, String type) {
         super.internalTrigger(from, type);
     }
     
@@ -151,8 +151,8 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         this.nodeInstances.remove(nodeInstance);
     }
 
-    public Collection<org.kie.runtime.process.NodeInstance> getNodeInstances() {
-        return new ArrayList<org.kie.runtime.process.NodeInstance>(getNodeInstances(false));
+    public Collection<org.kie.api.runtime.process.NodeInstance> getNodeInstances() {
+        return new ArrayList<org.kie.api.runtime.process.NodeInstance>(getNodeInstances(false));
     }
     
     public Collection<NodeInstance> getNodeInstances(boolean recursive) {
@@ -258,7 +258,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             return (CompositeNode.CompositeNodeStart) getNode();
         }
         
-        public void internalTrigger(org.kie.runtime.process.NodeInstance from, String type) {
+        public void internalTrigger(org.kie.api.runtime.process.NodeInstance from, String type) {
             triggerCompleted();
         }
         
@@ -276,7 +276,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             return (CompositeNode.CompositeNodeEnd) getNode();
         }
         
-        public void internalTrigger(org.kie.runtime.process.NodeInstance from, String type) {
+        public void internalTrigger(org.kie.api.runtime.process.NodeInstance from, String type) {
             triggerCompleted();
         }
         

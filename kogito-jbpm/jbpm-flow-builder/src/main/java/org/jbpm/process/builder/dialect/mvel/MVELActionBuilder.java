@@ -83,7 +83,7 @@ public class MVELActionBuilder
                                                                                        boundIdentifiers,
                                                                                        null,
                                                                                        "context",
-                                                                                       org.kie.runtime.process.ProcessContext.class );
+                                                                                       org.kie.api.runtime.process.ProcessContext.class );
             context.setTypesafe( typeSafe );
             
             Set<String> variableNames = analysis.getNotBoundedIdentifiers();
@@ -114,7 +114,7 @@ public class MVELActionBuilder
                                                                        variables,
                                                                        context,
                                                                        "context",
-                                                                       org.kie.runtime.process.ProcessContext.class);
+                                                                       org.kie.api.runtime.process.ProcessContext.class);
             MVELAction expr = new MVELAction( unit, context.getDialect().getId() );
             
             

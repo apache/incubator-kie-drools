@@ -5,7 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jbpm.shared.services.api.SessionManager;
 import org.jbpm.task.test.TestStatefulKnowledgeSession;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 @ApplicationScoped
 public class TestSessionManager implements SessionManager {

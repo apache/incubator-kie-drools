@@ -1,6 +1,6 @@
 package org.jbpm.bpmn2.handler;
 
-import org.kie.runtime.process.*;
+import org.kie.api.runtime.process.*;
 
 public abstract class AbstractExceptionHandlingTaskHandler implements WorkItemHandler {
 

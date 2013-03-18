@@ -42,7 +42,7 @@ import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 

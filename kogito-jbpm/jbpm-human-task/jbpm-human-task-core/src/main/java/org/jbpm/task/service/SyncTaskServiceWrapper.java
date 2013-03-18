@@ -41,7 +41,7 @@ import org.jbpm.task.service.responsehandlers.BlockingSetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.runtime.Environment;
+import org.kie.api.runtime.Environment;
 
 public class SyncTaskServiceWrapper implements TaskService {
 

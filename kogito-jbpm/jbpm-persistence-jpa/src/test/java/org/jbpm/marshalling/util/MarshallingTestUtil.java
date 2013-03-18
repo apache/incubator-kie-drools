@@ -15,7 +15,7 @@
  */
 package org.jbpm.marshalling.util;
 
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.jbpm.marshalling.util.MarshallingDBUtil.*;
 import static org.jbpm.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
@@ -50,8 +50,8 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.Environment;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.drools.core.time.impl.DefaultTimerJobInstance;
 import org.jbpm.marshalling.impl.ProcessMarshallerImpl;
 import org.junit.Test;

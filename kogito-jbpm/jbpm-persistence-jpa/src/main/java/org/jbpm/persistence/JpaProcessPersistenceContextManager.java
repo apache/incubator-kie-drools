@@ -1,7 +1,7 @@
 package org.jbpm.persistence;
 
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
-import org.kie.runtime.Environment;
+import org.kie.api.runtime.Environment;
 
 public class JpaProcessPersistenceContextManager extends JpaPersistenceContextManager
     implements

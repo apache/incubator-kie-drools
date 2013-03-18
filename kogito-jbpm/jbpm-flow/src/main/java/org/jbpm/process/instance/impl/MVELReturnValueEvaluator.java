@@ -27,7 +27,7 @@ import org.drools.core.spi.GlobalResolver;
 import org.kie.api.definition.KiePackage;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.runtime.process.ProcessContext;
+import org.kie.api.runtime.process.ProcessContext;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 

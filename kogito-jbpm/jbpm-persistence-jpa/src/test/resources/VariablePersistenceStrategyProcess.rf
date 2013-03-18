@@ -9,7 +9,7 @@
       <import name="org.jbpm.persistence.session.objects.MyEntity" />
       <import name="org.jbpm.persistence.session.objects.MyVariableSerializable" />
       <import name="javax.persistence.EntityManager" />
-      <import name="org.kie.runtime.EnvironmentName" />
+      <import name="org.kie.api.runtime.EnvironmentName" />
     </imports>
     <variables>
       <variable name="x" >

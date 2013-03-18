@@ -10,7 +10,7 @@ import org.drools.core.event.AgendaGroupPushedEvent;
 import org.drools.core.event.BeforeActivationFiredEvent;
 import org.drools.core.event.RuleFlowGroupActivatedEvent;
 import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.StatefulKnowledgeSession;
 
 public class TriggerRulesEventListener implements AgendaEventListener {
     

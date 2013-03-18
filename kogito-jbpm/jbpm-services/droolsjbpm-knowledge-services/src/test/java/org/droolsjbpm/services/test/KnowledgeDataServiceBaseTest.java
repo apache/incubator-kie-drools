@@ -25,8 +25,8 @@ import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public abstract class KnowledgeDataServiceBaseTest {
 

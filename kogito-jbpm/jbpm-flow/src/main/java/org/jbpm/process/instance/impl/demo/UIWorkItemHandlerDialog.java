@@ -34,7 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import org.kie.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItem;
 
 /**
  * 

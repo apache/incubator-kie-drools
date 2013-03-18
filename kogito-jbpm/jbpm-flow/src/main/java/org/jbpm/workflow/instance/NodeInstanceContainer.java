@@ -25,7 +25,7 @@ import org.kie.api.definition.process.NodeContainer;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface NodeInstanceContainer extends org.kie.runtime.process.NodeInstanceContainer {
+public interface NodeInstanceContainer extends org.kie.api.runtime.process.NodeInstanceContainer {
 
     Collection<NodeInstance> getNodeInstances(boolean recursive);
 

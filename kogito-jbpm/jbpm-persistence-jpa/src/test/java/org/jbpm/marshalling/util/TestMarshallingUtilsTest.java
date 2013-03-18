@@ -15,7 +15,7 @@
  */
 package org.jbpm.marshalling.util;
 
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.jbpm.marshalling.util.CompareViaReflectionUtil.compareInstances;
 import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
 import static org.jbpm.marshalling.util.MarshallingTestUtil.*;
@@ -35,11 +35,11 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.conf.EventProcessingOption;
 import org.drools.core.impl.EnvironmentFactory;
 
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.conf.ClockTypeOption;
-import org.kie.runtime.conf.TimerJobFactoryOption;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

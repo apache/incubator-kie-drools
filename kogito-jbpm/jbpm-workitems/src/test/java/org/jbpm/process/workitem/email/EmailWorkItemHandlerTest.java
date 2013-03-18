@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.internal.utils.ClassLoaderUtil;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 

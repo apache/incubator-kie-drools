@@ -8,7 +8,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 
 public class SignalEventsTest extends JbpmBpmn2TestCase {

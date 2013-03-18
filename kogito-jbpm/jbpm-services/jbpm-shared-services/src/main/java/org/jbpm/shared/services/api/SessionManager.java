@@ -1,6 +1,6 @@
 package org.jbpm.shared.services.api;
 
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public interface SessionManager {
 

@@ -8,7 +8,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.jbpm.process.audit.jms.AsyncAuditLogProducer;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 /**
  * Factory for producing support audit loggers. Currently two types are available:

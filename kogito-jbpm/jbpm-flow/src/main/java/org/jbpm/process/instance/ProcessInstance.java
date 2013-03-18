@@ -26,7 +26,7 @@ import org.kie.api.definition.process.Process;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface ProcessInstance extends org.kie.runtime.process.ProcessInstance, ContextInstanceContainer, ContextableInstance {
+public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInstance, ContextInstanceContainer, ContextableInstance {
 
     void setId(long id);
 

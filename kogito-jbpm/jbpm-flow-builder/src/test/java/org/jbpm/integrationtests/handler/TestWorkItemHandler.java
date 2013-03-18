@@ -1,6 +1,6 @@
 package org.jbpm.integrationtests.handler;
 
-import org.kie.runtime.process.*;
+import org.kie.api.runtime.process.*;
 
 public class TestWorkItemHandler implements WorkItemHandler {
     private WorkItem workItem;

@@ -14,7 +14,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.instance.ProcessInstance;
-import org.kie.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItem;
 
 public class ProcessHumanTaskTest extends TestCase {
     

@@ -16,8 +16,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.process.NodeInstance;
 
 public class ProcessManagementTest extends JbpmGwtCoreTestCase {
 

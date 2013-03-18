@@ -24,7 +24,7 @@ import org.jbpm.Message;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
-import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 public class ProcessTimerTest extends TestCase {
 

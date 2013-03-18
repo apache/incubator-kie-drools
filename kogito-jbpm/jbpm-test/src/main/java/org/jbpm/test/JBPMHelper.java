@@ -12,8 +12,8 @@ import org.h2.tools.Server;
 
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import bitronix.tm.TransactionManagerServices;

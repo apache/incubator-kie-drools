@@ -29,9 +29,9 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 
 import java.util.ArrayList;
 import java.util.Collection;

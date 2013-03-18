@@ -48,8 +48,8 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessContext;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessContext;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessEventSupportTest {
 

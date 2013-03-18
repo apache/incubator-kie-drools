@@ -27,7 +27,7 @@ import org.jboss.bpm.console.client.model.ProcessInstanceRef.RESULT;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.STATE;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.kie.api.definition.process.Process;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstance;
 
 public class ProcessManagement  extends SessionInitializer implements org.jboss.bpm.console.server.integration.ProcessManagement {
 

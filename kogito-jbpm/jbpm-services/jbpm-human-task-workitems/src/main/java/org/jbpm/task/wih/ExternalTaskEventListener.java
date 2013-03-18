@@ -32,7 +32,7 @@ import org.jbpm.task.events.AfterTaskFailedEvent;
 import org.jbpm.task.events.AfterTaskSkippedEvent;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 /**
  *

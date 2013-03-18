@@ -21,7 +21,7 @@ import org.kie.api.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KnowledgeRuntimeLogger;
 import org.kie.api.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.StatefulKnowledgeSession;
 
 /**
  * This is a sample file to launch a process.

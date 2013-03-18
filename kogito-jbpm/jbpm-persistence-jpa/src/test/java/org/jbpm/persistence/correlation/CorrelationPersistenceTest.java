@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.runtime.EnvironmentName;
+import org.kie.api.runtime.EnvironmentName;
 
 public class CorrelationPersistenceTest {
     

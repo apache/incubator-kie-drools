@@ -55,11 +55,11 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.runtime.Environment;
-import org.kie.runtime.conf.TimerJobFactoryOption;
-import org.kie.runtime.process.NodeInstance;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItem;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.conf.TimerJobFactoryOption;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
 
 public class SingleSessionCommandServiceTest {
 

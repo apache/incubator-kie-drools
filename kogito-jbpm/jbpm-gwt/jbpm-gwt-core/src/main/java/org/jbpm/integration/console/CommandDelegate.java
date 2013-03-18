@@ -31,9 +31,9 @@ import org.kie.KnowledgeBase;
 import org.kie.api.command.Context;
 import org.kie.api.definition.KnowledgePackage;
 import org.kie.api.definition.process.Process;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.NodeInstance;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 import java.util.ArrayList;
 import java.util.Collection;

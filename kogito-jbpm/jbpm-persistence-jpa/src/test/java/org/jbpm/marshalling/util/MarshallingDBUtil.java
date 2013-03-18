@@ -16,7 +16,7 @@ package org.jbpm.marshalling.util;
  * limitations under the License.
  */
 import static org.jbpm.persistence.util.PersistenceUtil.*;
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.junit.Assert.*;
 
 import java.io.File;

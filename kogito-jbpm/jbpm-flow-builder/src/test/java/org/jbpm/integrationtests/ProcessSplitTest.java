@@ -28,7 +28,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessSplitTest extends TestCase {
     
@@ -128,7 +128,7 @@ public class ProcessSplitTest extends TestCase {
             "  <header>" +
             "    <imports>" +
             "      <import name=\"org.jbpm.Person\" />" +
-            "      <import name=\"org.kie.runtime.process.WorkflowProcessInstance\" />" +
+            "      <import name=\"org.kie.api.runtime.process.WorkflowProcessInstance\" />" +
             "    </imports>" +
             "    <globals>" +
             "      <global identifier=\"list\" type=\"java.util.List\" />" +

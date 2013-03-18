@@ -16,8 +16,8 @@ import org.drools.core.marshalling.impl.ProcessMarshaller;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItem;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder;
 import org.jbpm.marshalling.impl.JBPMMessages.Variable;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -36,16 +36,16 @@ public class ProtobufProcessMarshaller
     public void writeProcessInstances(MarshallerWriteContext context) throws IOException {
         ProtobufMessages.ProcessData.Builder _pdata = (ProtobufMessages.ProcessData.Builder) context.parameterObject;
                                                   
-        List<org.kie.runtime.process.ProcessInstance> processInstances = new ArrayList<org.kie.runtime.process.ProcessInstance>( context.wm.getProcessInstances() );
+        List<org.kie.api.runtime.process.ProcessInstance> processInstances = new ArrayList<org.kie.api.runtime.process.ProcessInstance>( context.wm.getProcessInstances() );
         Collections.sort( processInstances,
-                          new Comparator<org.kie.runtime.process.ProcessInstance>() {
-                              public int compare(org.kie.runtime.process.ProcessInstance o1,
-                                                 org.kie.runtime.process.ProcessInstance o2) {
+                          new Comparator<org.kie.api.runtime.process.ProcessInstance>() {
+                              public int compare(org.kie.api.runtime.process.ProcessInstance o1,
+                                                 org.kie.api.runtime.process.ProcessInstance o2) {
                                   return (int) (o1.getId() - o2.getId());
                               }
                           } );
 
-        for ( org.kie.runtime.process.ProcessInstance processInstance : processInstances ) {
+        for ( org.kie.api.runtime.process.ProcessInstance processInstance : processInstances ) {
             String processType = processInstance.getProcess().getType();
             JBPMMessages.ProcessInstance _instance = (JBPMMessages.ProcessInstance) ProcessMarshallerRegistry.INSTANCE.getMarshaller( processType )
                     .writeProcessInstance( context, 

@@ -17,7 +17,7 @@ package org.jbpm.task.wih;
 
 import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 /**
  *

@@ -3,7 +3,7 @@ package org.jbpm.persistence.timer;
 import static org.jbpm.test.JBPMHelper.loadStatefulKnowledgeSession;
 import static org.jbpm.test.JBPMHelper.newStatefulKnowledgeSession;
 import static org.jbpm.test.JBPMHelper.processStateName;
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,9 +18,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
-import org.kie.runtime.EnvironmentName;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -264,16 +264,16 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
 
     private static class HumanTaskMockHandler implements WorkItemHandler {
 
-        private org.kie.runtime.process.WorkItemManager workItemManager;
-        private org.kie.runtime.process.WorkItem workItem;
+        private org.kie.api.runtime.process.WorkItemManager workItemManager;
+        private org.kie.api.runtime.process.WorkItem workItem;
 
-        public void executeWorkItem(org.kie.runtime.process.WorkItem workItem, org.kie.runtime.process.WorkItemManager manager) {
+        public void executeWorkItem(org.kie.api.runtime.process.WorkItem workItem, org.kie.api.runtime.process.WorkItemManager manager) {
             this.workItem = workItem;
             this.workItemManager = manager;
             System.out.println("Work completed!");
         }
 
-        public void abortWorkItem(org.kie.runtime.process.WorkItem workItem, org.kie.runtime.process.WorkItemManager manager) {
+        public void abortWorkItem(org.kie.api.runtime.process.WorkItem workItem, org.kie.api.runtime.process.WorkItemManager manager) {
             this.workItemManager.abortWorkItem(workItem.getId());
             System.out.println("Work aborted.");
         }

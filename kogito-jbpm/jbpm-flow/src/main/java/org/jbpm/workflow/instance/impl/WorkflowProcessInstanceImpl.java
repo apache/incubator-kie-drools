@@ -50,8 +50,8 @@ import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.runtime.process.EventListener;
-import org.kie.runtime.process.NodeInstanceContainer;
+import org.kie.api.runtime.process.EventListener;
+import org.kie.api.runtime.process.NodeInstanceContainer;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -86,8 +86,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		this.nodeInstances.remove(nodeInstance);
 	}
 
-	public Collection<org.kie.runtime.process.NodeInstance> getNodeInstances() {
-		return new ArrayList<org.kie.runtime.process.NodeInstance>(getNodeInstances(false));
+	public Collection<org.kie.api.runtime.process.NodeInstance> getNodeInstances() {
+		return new ArrayList<org.kie.api.runtime.process.NodeInstance>(getNodeInstances(false));
 	}
 
 	public Collection<NodeInstance> getNodeInstances(boolean recursive) {
@@ -123,7 +123,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 	
 	private void addActiveNodeIds(NodeInstanceContainer container, List<String> result) {
-		for (org.kie.runtime.process.NodeInstance nodeInstance: container.getNodeInstances()) {
+		for (org.kie.api.runtime.process.NodeInstance nodeInstance: container.getNodeInstances()) {
 			result.add(((NodeImpl) ((NodeInstanceImpl) nodeInstance).getNode()).getUniqueId());
 			if (nodeInstance instanceof NodeInstanceContainer) {
 				addActiveNodeIds((NodeInstanceContainer) nodeInstance, result);

@@ -24,7 +24,7 @@ import org.jbpm.task.PeopleAssignments;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
-import org.kie.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItem;
 
 /**
  * A class responsible for assigning the various ownerships (actors, groups, business 

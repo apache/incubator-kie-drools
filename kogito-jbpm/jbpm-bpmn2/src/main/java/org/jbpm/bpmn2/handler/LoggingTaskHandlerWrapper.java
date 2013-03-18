@@ -3,7 +3,7 @@ package org.jbpm.bpmn2.handler;
 import java.text.MessageFormat;
 import java.util.*;
 
-import org.kie.runtime.process.*;
+import org.kie.api.runtime.process.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

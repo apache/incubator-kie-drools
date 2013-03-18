@@ -29,8 +29,8 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ import java.util.Properties;
 import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeTestDb;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.kie.runtime.EnvironmentName.*;
+import static org.kie.api.runtime.EnvironmentName.*;
 
 public class PersistenceUtil {
 

@@ -45,7 +45,7 @@ public class ProcessRuleFlowGroupTest extends TestCase {
             "package org.jbpm;\n" +
             "\n" +
             "import org.jbpm.Person;\n" +
-            "import org.kie.runtime.process.ProcessContext;\n" +
+            "import org.kie.api.runtime.process.ProcessContext;\n" +
             "\n" +
             "rule MyRule ruleflow-group \"MyGroup\" dialect \"mvel\" \n" +
             "  when\n" +

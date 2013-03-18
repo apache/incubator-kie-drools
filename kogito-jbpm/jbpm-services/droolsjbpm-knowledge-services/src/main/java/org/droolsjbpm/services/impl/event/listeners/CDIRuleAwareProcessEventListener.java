@@ -9,17 +9,17 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
-import org.kie.runtime.ObjectFilter;
-import org.kie.runtime.process.WorkflowProcessInstance;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.api.runtime.rule.FactHandle;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;
 import org.droolsjbpm.services.impl.event.ProcessInstanceCompletedEvent;
 import org.droolsjbpm.services.impl.event.ProcessInstanceStartedEvent;
 
-import org.kie.runtime.KieRuntime;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.KieSession;
 
 @ApplicationScoped // This should be something like DomainScoped
 @Transactional

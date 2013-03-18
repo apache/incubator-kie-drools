@@ -18,8 +18,8 @@ import org.drools.core.marshalling.impl.PersisterEnums;
 import org.drools.core.marshalling.impl.ProcessMarshaller;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItem;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
@@ -29,16 +29,16 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
 
     public void writeProcessInstances(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
-        List<org.kie.runtime.process.ProcessInstance> processInstances = new ArrayList<org.kie.runtime.process.ProcessInstance>( context.wm.getProcessInstances() );
+        List<org.kie.api.runtime.process.ProcessInstance> processInstances = new ArrayList<org.kie.api.runtime.process.ProcessInstance>( context.wm.getProcessInstances() );
         Collections.sort( processInstances,
-                          new Comparator<org.kie.runtime.process.ProcessInstance>() {
-                              public int compare(org.kie.runtime.process.ProcessInstance o1,
-                            		  org.kie.runtime.process.ProcessInstance o2) {
+                          new Comparator<org.kie.api.runtime.process.ProcessInstance>() {
+                              public int compare(org.kie.api.runtime.process.ProcessInstance o1,
+                            		  org.kie.api.runtime.process.ProcessInstance o2) {
                                   return (int) (o1.getId() - o2.getId());
                               }
                           } );
 
-        for ( org.kie.runtime.process.ProcessInstance processInstance : processInstances ) {
+        for ( org.kie.api.runtime.process.ProcessInstance processInstance : processInstances ) {
             stream.writeShort(PersisterEnums.PROCESS_INSTANCE);
             String processType = processInstance.getProcess().getType();
             stream.writeUTF(processType);

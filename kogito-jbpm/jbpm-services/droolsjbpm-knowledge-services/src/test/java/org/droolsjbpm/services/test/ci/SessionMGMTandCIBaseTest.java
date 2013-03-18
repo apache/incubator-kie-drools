@@ -29,7 +29,7 @@ import org.jbpm.task.query.TaskSummary;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 /**
  *

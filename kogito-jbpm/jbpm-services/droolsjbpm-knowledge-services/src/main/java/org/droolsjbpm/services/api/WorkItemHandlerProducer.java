@@ -2,7 +2,7 @@ package org.droolsjbpm.services.api;
 
 import java.util.Map;
 
-import org.kie.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemHandler;
 
 public interface WorkItemHandlerProducer {
 

@@ -48,7 +48,7 @@ import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingSetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 

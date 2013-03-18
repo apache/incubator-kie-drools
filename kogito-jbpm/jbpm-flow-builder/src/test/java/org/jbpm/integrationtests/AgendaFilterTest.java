@@ -15,8 +15,8 @@ import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.rule.AgendaFilter;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.Match;
 
 import java.util.ArrayList;
 import java.util.List;

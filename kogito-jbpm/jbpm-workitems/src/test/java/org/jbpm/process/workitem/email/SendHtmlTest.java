@@ -21,7 +21,7 @@ import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.subethamail.smtp.AuthenticationHandler;

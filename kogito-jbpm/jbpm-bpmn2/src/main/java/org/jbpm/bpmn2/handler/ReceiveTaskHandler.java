@@ -19,8 +19,8 @@ package org.jbpm.bpmn2.handler;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.runtime.KieSession;
-import org.kie.runtime.process.*;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.*;
 
 public class ReceiveTaskHandler implements WorkItemHandler {
     

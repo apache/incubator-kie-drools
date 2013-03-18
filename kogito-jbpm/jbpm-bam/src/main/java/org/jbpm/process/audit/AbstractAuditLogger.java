@@ -6,8 +6,8 @@ import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.audit.event.DefaultAuditEventBuilderImpl;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
 
 public abstract class AbstractAuditLogger implements ProcessEventListener {
     

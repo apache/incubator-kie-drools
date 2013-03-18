@@ -17,9 +17,9 @@ package org.jbpm.process.instance.impl;
 
 import java.io.Serializable;
 
-import org.kie.runtime.process.NodeInstance;
-import org.kie.runtime.process.ProcessContext;
-import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.ProcessContext;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 
 public class CancelNodeInstanceAction implements Action, Serializable {
 	

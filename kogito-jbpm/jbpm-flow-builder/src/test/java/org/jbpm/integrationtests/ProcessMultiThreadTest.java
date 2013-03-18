@@ -11,7 +11,7 @@ import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessMultiThreadTest extends TestCase {
 
