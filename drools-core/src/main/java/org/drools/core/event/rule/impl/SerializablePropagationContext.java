@@ -23,8 +23,8 @@ import java.io.ObjectOutput;
 
 import org.drools.core.impl.SerializedRule;
 import org.kie.api.definition.rule.Rule;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.PropagationContext;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.PropagationContext;
 
 public class SerializablePropagationContext
     implements

@@ -27,7 +27,7 @@ import org.drools.core.factmodel.traits.TripleBasedTypes;
 import org.drools.core.factmodel.traits.VetoableTypedMap;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
-import org.kie.runtime.rule.Variable;
+import org.kie.api.runtime.rule.Variable;
 
 import java.util.Map;
 

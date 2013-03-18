@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
 import org.kie.api.cdi.KReleaseId;
 import org.kie.api.command.KieCommands;
-import org.kie.runtime.StatelessKieSession;
+import org.kie.api.runtime.StatelessKieSession;
 
 @RunWith(CDITestRunner.class)
 public class StatelessKieSessionDefaultInjectionTest {

@@ -90,7 +90,7 @@ public class SessionInspectorTest extends CommonTestMethodBase {
         ksession.insert( new Integer( 16 ) );
         ksession.insert( new Integer( 17 ) );
         ksession.insert( new Integer( 18 ) );
-        org.kie.runtime.rule.FactHandle handle = ksession.insert( new Worker( ) );
+        org.kie.api.runtime.rule.FactHandle handle = ksession.insert( new Worker( ) );
         
         ksession.retract( handle );
         
@@ -171,7 +171,7 @@ public class SessionInspectorTest extends CommonTestMethodBase {
         ksession.insert( new Integer( 16 ) );
         ksession.insert( new Integer( 17 ) );
         ksession.insert( new Integer( 18 ) );
-        org.kie.runtime.rule.FactHandle handle = ksession.insert( new Worker( ) );
+        org.kie.api.runtime.rule.FactHandle handle = ksession.insert( new Worker( ) );
         
         ksession.retract( handle );
         

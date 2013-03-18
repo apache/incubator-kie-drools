@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.cdi.KReleaseId;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 @RunWith(CDITestRunner.class)
 public class KieSessionDefaultInjectionTest {

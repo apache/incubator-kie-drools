@@ -38,7 +38,7 @@ import org.drools.core.rule.EvalCondition;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
-import org.kie.runtime.rule.Variable;
+import org.kie.api.runtime.rule.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

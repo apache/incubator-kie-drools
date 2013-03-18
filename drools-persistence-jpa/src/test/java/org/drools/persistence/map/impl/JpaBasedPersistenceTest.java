@@ -18,7 +18,7 @@ package org.drools.persistence.map.impl;
 import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
 import static org.drools.persistence.util.PersistenceUtil.useTransactions;
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.util.HashMap;
 
@@ -32,8 +32,8 @@ import org.junit.Before;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

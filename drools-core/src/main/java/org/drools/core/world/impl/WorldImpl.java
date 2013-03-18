@@ -22,7 +22,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.World;
-import org.kie.runtime.CommandExecutor;
+import org.kie.api.runtime.CommandExecutor;
 
 import java.util.HashMap;
 import java.util.Map;

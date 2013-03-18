@@ -24,7 +24,7 @@ Setup
         join2, exists1, otnRight2;
         type, :=, v;
     Facts:
-        new org.drools.core.base.DroolsQuery( "x", [org.kie.runtime.rule.Variable.v, 35], null, true),
+        new org.drools.core.base.DroolsQuery( "x", [org.kie.api.runtime.rule.Variable.v, 35], null, true),
         new Person('bobba', 36),
         new Person('yoda', 35);
 

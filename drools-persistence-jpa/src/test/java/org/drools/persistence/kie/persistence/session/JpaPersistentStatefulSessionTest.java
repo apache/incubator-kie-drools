@@ -31,10 +31,10 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.KieServices;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

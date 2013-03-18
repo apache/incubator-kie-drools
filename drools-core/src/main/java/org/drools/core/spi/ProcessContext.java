@@ -16,12 +16,12 @@
 
 package org.drools.core.spi;
 
-import org.kie.runtime.KieRuntime;
-import org.kie.runtime.process.NodeInstance;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkflowProcessInstance;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 
-public class ProcessContext implements org.kie.runtime.process.ProcessContext {
+public class ProcessContext implements org.kie.api.runtime.process.ProcessContext {
     
     private KieRuntime kruntime;
     private ProcessInstance processInstance;

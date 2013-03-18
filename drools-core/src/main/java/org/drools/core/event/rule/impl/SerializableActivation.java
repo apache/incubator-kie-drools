@@ -28,9 +28,9 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
 import org.kie.api.definition.rule.Rule;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.Match;
-import org.kie.runtime.rule.PropagationContext;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
+import org.kie.api.runtime.rule.PropagationContext;
 
 public class SerializableActivation
     implements

@@ -27,7 +27,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.ExecutionResults;
+import org.kie.api.runtime.ExecutionResults;
 
 public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
 

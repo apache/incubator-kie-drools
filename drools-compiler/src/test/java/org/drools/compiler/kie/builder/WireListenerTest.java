@@ -12,8 +12,8 @@ import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
-import org.kie.runtime.KieContainer;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 import java.io.IOException;
 import java.util.ArrayList;

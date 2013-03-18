@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.kie.runtime.rule.RuleFlowGroup;
+import org.kie.api.runtime.rule.RuleFlowGroup;
 
 public class SerializableRuleFlowGroup implements RuleFlowGroup, Externalizable {
     

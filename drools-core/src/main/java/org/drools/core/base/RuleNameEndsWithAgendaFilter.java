@@ -18,14 +18,14 @@ package org.drools.core.base;
 
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaFilter;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.Match;
 
 /**
  * Filters activations based on a specified rule name suffix.
  */
 public class RuleNameEndsWithAgendaFilter
     implements
-    AgendaFilter, org.kie.runtime.rule.AgendaFilter {
+    AgendaFilter, org.kie.api.runtime.rule.AgendaFilter {
     private final String  suffix;
 
     private final boolean accept;

@@ -18,7 +18,7 @@ package org.drools.core.common;
 
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

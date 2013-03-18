@@ -54,7 +54,7 @@ import javax.swing.table.DefaultTableModel;
 import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.swing.MigLayout;
 
-import org.kie.runtime.Channel;
+import org.kie.api.runtime.Channel;
 
 public class AdventureFrame extends JFrame {
     private final ToolTipListener    toolTipListener    = new ToolTipListener();

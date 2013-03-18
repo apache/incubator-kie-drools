@@ -50,11 +50,11 @@ import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.type.DateFormats;
-import org.kie.runtime.Calendars;
-import org.kie.runtime.Channel;
-import org.kie.runtime.Environment;
-import org.kie.runtime.ObjectFilter;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.time.SessionClock;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
@@ -272,7 +272,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public Object getObject(org.kie.runtime.rule.FactHandle handle) {
+    public Object getObject(org.kie.api.runtime.rule.FactHandle handle) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -333,12 +333,12 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public Iterator< ? > iterateFactHandles(org.kie.runtime.ObjectFilter filter) {
+    public Iterator< ? > iterateFactHandles(org.kie.api.runtime.ObjectFilter filter) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public Iterator< ? > iterateObjects(org.kie.runtime.ObjectFilter filter) {
+    public Iterator< ? > iterateObjects(org.kie.api.runtime.ObjectFilter filter) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -441,16 +441,16 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public void retract(org.kie.runtime.rule.FactHandle handle) throws FactException {
+    public void retract(org.kie.api.runtime.rule.FactHandle handle) throws FactException {
         // TODO Auto-generated method stub
         
     }
 
-    public void delete(org.kie.runtime.rule.FactHandle handle) throws FactException {
+    public void delete(org.kie.api.runtime.rule.FactHandle handle) throws FactException {
         // TODO Auto-generated method stub
     }
 
-    public void update(org.kie.runtime.rule.FactHandle handle,
+    public void update(org.kie.api.runtime.rule.FactHandle handle,
                        Object object) throws FactException {
         // TODO Auto-generated method stub
         
@@ -561,12 +561,12 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
+    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -62,7 +62,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.Match;
 
 import static org.junit.Assert.*;
 
@@ -230,7 +230,7 @@ public class AgendaTest extends DroolsTestCase {
 
                 item.setActivationUnMatchListener( new ActivationUnMatchListener() {
 
-                    public void unMatch(org.kie.runtime.rule.Session wm,
+                    public void unMatch(org.kie.api.runtime.rule.Session wm,
                                         Match activation) {
                         cheese.setPrice( oldPrice );
                     }

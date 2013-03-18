@@ -21,9 +21,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.kie.runtime.rule.ConsequenceExceptionHandler;
-import org.kie.runtime.rule.Match;
-import org.kie.runtime.rule.Session;
+import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
+import org.kie.api.runtime.rule.Match;
+import org.kie.api.runtime.rule.Session;
 
 public class DefaultConsequenceExceptionHandler implements ConsequenceExceptionHandler, Externalizable {
 
@@ -36,7 +36,7 @@ public class DefaultConsequenceExceptionHandler implements ConsequenceExceptionH
     public void handleException(Match activation,
                                 Session workingMemory,
                                 Exception exception) {
-        throw new org.kie.runtime.rule.ConsequenceException(exception, workingMemory, activation );
+        throw new org.kie.api.runtime.rule.ConsequenceException(exception, workingMemory, activation );
     }
 
 }

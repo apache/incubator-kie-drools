@@ -26,9 +26,9 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Rule;
-import org.kie.runtime.Channel;
-import org.kie.runtime.rule.RuleContext;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.rule.RuleContext;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses

@@ -31,8 +31,8 @@ import javax.persistence.Id;
 
 import org.drools.core.common.DroolsObjectInputStream;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

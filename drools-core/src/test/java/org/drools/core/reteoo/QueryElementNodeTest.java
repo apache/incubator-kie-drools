@@ -33,7 +33,7 @@ import org.drools.core.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.runtime.rule.Variable;
+import org.kie.api.runtime.rule.Variable;
 
 import static org.junit.Assert.*;
 

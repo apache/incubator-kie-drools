@@ -18,7 +18,7 @@ package org.drools.core.event;
 
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstance;
 
 public class ProcessNodeLeftEventImpl extends ProcessEvent implements ProcessNodeLeftEvent {
 

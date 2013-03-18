@@ -16,7 +16,7 @@
 
 package org.drools.core.base;
 
-import org.kie.runtime.rule.AttachedViewChangedEventListener;
+import org.kie.api.runtime.rule.AttachedViewChangedEventListener;
 
 public class AttachedViewChangedEventListenerImpl
     implements

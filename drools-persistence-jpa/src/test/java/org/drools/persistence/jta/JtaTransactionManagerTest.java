@@ -21,7 +21,7 @@ import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
 import static org.drools.persistence.util.PersistenceUtil.getValueOfField;
 import static org.drools.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 import static org.junit.Assert.fail;
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.util.HashMap;
 
@@ -48,8 +48,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

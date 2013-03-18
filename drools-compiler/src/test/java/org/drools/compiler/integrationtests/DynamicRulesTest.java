@@ -75,9 +75,9 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 import org.mockito.ArgumentCaptor;
 
 public class DynamicRulesTest extends CommonTestMethodBase {

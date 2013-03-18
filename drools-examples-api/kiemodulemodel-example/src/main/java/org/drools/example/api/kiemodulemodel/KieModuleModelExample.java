@@ -7,8 +7,8 @@ import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
-import org.kie.runtime.KieContainer;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 import java.io.File;
 import java.io.PrintStream;

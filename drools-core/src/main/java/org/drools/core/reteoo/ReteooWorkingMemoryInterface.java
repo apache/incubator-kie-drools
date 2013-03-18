@@ -10,11 +10,11 @@ import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.spi.AgendaFilter;
 import org.kie.api.event.process.ProcessEventManager;
-import org.kie.runtime.Channel;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.rule.LiveQuery;
-import org.kie.runtime.rule.ViewChangedEventListener;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.ViewChangedEventListener;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 /**
  * This is an interface for ReteooWorkingMemory implementations

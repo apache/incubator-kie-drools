@@ -35,8 +35,8 @@ import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class CreateCorrelatedProcessInstanceCommand implements GenericCommand<ProcessInstance>, IdentifiableResult {

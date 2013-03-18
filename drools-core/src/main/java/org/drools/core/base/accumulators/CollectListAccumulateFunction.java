@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.kie.runtime.rule.AccumulateFunction;
+import org.kie.api.runtime.rule.AccumulateFunction;
 
 /**
  * <p>An implementation of an accumulator capable of collecting lists of values.

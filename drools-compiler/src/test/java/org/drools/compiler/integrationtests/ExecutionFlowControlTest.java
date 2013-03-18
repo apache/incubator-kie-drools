@@ -744,7 +744,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                 "    final int finalWf = $wf;\n" +
                 "     org.kie.common.AgendaItem agendaItem = (org.kie.common.AgendaItem) kcontext.getActivation();" +
                 "     agendaItem.setActivationUnMatchListener(new org.kie.internal.event.rule.ActivationUnMatchListener() {" +
-                "            public void unMatch(org.kie.runtime.rule.WorkingMemory workingMemory, org.kie.runtime.rule.Activation activation) {" +
+                "            public void unMatch(org.kie.api.runtime.rule.WorkingMemory workingMemory, org.kie.api.runtime.rule.Activation activation) {" +
                 "                finalTotalHolder.subtract(finalWf);" +
                 "                System.out.println(\"unmatch \" + finalTotalHolder.getTotal());\n" +
                 "            }" +
@@ -764,8 +764,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         Father homer = new Father("homer", null, 20);
         Father bart = new Father("bart", null, 3);
 
-        org.kie.runtime.rule.FactHandle abrahamHandle = kSession.insert(abraham);
-        org.kie.runtime.rule.FactHandle bartHandle = kSession.insert(bart);
+        org.kie.api.runtime.rule.FactHandle abrahamHandle = kSession.insert(abraham);
+        org.kie.api.runtime.rule.FactHandle bartHandle = kSession.insert(bart);
         kSession.fireAllRules();
         assertEquals(0, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
 
@@ -784,7 +784,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         kSession.fireAllRules();
         assertEquals(100, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
 
-        org.kie.runtime.rule.FactHandle homerHandle = kSession.insert(homer);
+        org.kie.api.runtime.rule.FactHandle homerHandle = kSession.insert(homer);
         homer.setFather(abraham);
         kSession.update(homerHandle, homer);
         bart.setFather(homer);

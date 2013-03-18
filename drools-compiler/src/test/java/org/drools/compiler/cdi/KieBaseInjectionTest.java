@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 import org.kie.api.KieBase;
 import org.kie.api.cdi.KBase;
 import org.kie.api.cdi.KReleaseId;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 @RunWith(CDITestRunner.class)
 public class KieBaseInjectionTest {

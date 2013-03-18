@@ -25,9 +25,9 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
-import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class ExecuteCommand
     implements

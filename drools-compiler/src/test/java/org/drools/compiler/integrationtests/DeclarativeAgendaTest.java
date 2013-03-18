@@ -19,8 +19,8 @@ import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
 
 public class DeclarativeAgendaTest extends CommonTestMethodBase {
     

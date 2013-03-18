@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.runtime.rule.Variable;
+import org.kie.api.runtime.rule.Variable;
 
 public class TripleStoreTest {
 

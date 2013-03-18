@@ -123,10 +123,10 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mvel2.MVEL;
@@ -291,8 +291,8 @@ public class MiscTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession_1 = createKnowledgeSession( kbase );
         String expected_1 = "expected_1";
         String expected_2 = "expected_2";
-        org.kie.runtime.rule.FactHandle handle_1 = ksession_1.insert( expected_1 );
-        org.kie.runtime.rule.FactHandle handle_2 = ksession_1.insert( expected_2 );
+        org.kie.api.runtime.rule.FactHandle handle_1 = ksession_1.insert( expected_1 );
+        org.kie.api.runtime.rule.FactHandle handle_2 = ksession_1.insert( expected_2 );
         ksession_1.fireAllRules();
         Collection<StatefulKnowledgeSession> coll_1 = kbase.getStatefulKnowledgeSessions();
         assertTrue( coll_1.size() == 1 );
@@ -323,7 +323,7 @@ public class MiscTest extends CommonTestMethodBase {
         for ( int i = 0; i < 20; i++ ) {
             Object object = new Object();
             ksession.insert( object );
-            org.kie.runtime.rule.FactHandle factHandle = ksession.getFactHandle( object );
+            org.kie.api.runtime.rule.FactHandle factHandle = ksession.getFactHandle( object );
             assertNotNull( factHandle );
             assertEquals( object,
                           ksession.getObject( factHandle ) );
@@ -1249,7 +1249,7 @@ public class MiscTest extends CommonTestMethodBase {
                            list );
         final Cheese mycheese = new Cheese( "cheddar",
                                             4 );
-        org.kie.runtime.rule.FactHandle handle = session.insert( mycheese );
+        org.kie.api.runtime.rule.FactHandle handle = session.insert( mycheese );
         session.fireAllRules();
 
         assertEquals( 2,
@@ -1266,7 +1266,7 @@ public class MiscTest extends CommonTestMethodBase {
         session.retract( handle );
         final Cheese mycheese2 = new Cheese( "notcheddar",
                                              4 );
-        org.kie.runtime.rule.FactHandle handle2 = session.insert( mycheese2 );
+        org.kie.api.runtime.rule.FactHandle handle2 = session.insert( mycheese2 );
         session.fireAllRules();
 
         assertEquals( "rule 4",
@@ -1281,7 +1281,7 @@ public class MiscTest extends CommonTestMethodBase {
         session.retract( handle2 );
         final Cheese mycheese3 = new Cheese( "stilton",
                                              6 );
-        org.kie.runtime.rule.FactHandle handle3 = session.insert( mycheese3 );
+        org.kie.api.runtime.rule.FactHandle handle3 = session.insert( mycheese3 );
         session.fireAllRules();
         //System.out.println(list.toString());
         assertEquals( "rule 3",
@@ -1296,7 +1296,7 @@ public class MiscTest extends CommonTestMethodBase {
         session.retract( handle3 );
         final Cheese mycheese4 = new Cheese( "notstilton",
                                              6 );
-        org.kie.runtime.rule.FactHandle handle4 = session.insert( mycheese4 );
+        org.kie.api.runtime.rule.FactHandle handle4 = session.insert( mycheese4 );
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal( "list" )).toString());
         assertTrue( ((List) session.getGlobal( "list" )).size() == 0 );
@@ -1308,7 +1308,7 @@ public class MiscTest extends CommonTestMethodBase {
         session.retract( handle4 );
         final Cheese mycheese5 = new Cheese( "stilton",
                                              7 );
-        org.kie.runtime.rule.FactHandle handle5 = session.insert( mycheese5 );
+        org.kie.api.runtime.rule.FactHandle handle5 = session.insert( mycheese5 );
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal( "list" )).toString());
         assertEquals( 0,
@@ -1388,7 +1388,7 @@ public class MiscTest extends CommonTestMethodBase {
 
             final Cheese mycheese = new Cheese( "cheddar",
                                                 4 );
-            org.kie.runtime.rule.FactHandle handle = ksession.insert( mycheese );
+            org.kie.api.runtime.rule.FactHandle handle = ksession.insert( mycheese );
             ksession.fireAllRules();
 
             assertEquals( 1,
@@ -1493,8 +1493,8 @@ public class MiscTest extends CommonTestMethodBase {
                                            15 );
         bigCheese.setCheese( cheddar );
 
-        final org.kie.runtime.rule.FactHandle bigCheeseHandle = ksession.insert( bigCheese );
-        final org.kie.runtime.rule.FactHandle cheddarHandle = ksession.insert( cheddar );
+        final org.kie.api.runtime.rule.FactHandle bigCheeseHandle = ksession.insert( bigCheese );
+        final org.kie.api.runtime.rule.FactHandle cheddarHandle = ksession.insert( cheddar );
         ksession.fireAllRules();
 
         ArgumentCaptor<org.kie.api.event.rule.ObjectUpdatedEvent> arg = ArgumentCaptor.forClass( org.kie.api.event.rule.ObjectUpdatedEvent.class );
@@ -1557,7 +1557,7 @@ public class MiscTest extends CommonTestMethodBase {
         DefaultFactHandle helloHandle = (DefaultFactHandle) ksession.insert( "hello" );
         DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert( "goodbye" );
 
-        org.kie.runtime.rule.FactHandle key = new DefaultFactHandle( helloHandle.toExternalForm() );
+        org.kie.api.runtime.rule.FactHandle key = new DefaultFactHandle( helloHandle.toExternalForm() );
         assertEquals( "hello",
                       ksession.getObject( key ) );
 
@@ -1706,7 +1706,7 @@ public class MiscTest extends CommonTestMethodBase {
         final Cell cell = new Cell( 0 );
 
         session.insert( cell1 );
-        org.kie.runtime.rule.FactHandle cellHandle = session.insert( cell );
+        org.kie.api.runtime.rule.FactHandle cellHandle = session.insert( cell );
 
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session,
                                                                              true );
@@ -1772,7 +1772,7 @@ public class MiscTest extends CommonTestMethodBase {
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
-        final org.kie.runtime.rule.FactHandle h = session.insert( cheddar );
+        final org.kie.api.runtime.rule.FactHandle h = session.insert( cheddar );
 
         session.fireAllRules();
 
@@ -2296,7 +2296,7 @@ public class MiscTest extends CommonTestMethodBase {
         try {
             ksession.fireAllRules();
             fail( "Should throw an Exception from the Consequence" );
-        } catch ( final org.kie.runtime.rule.ConsequenceException e ) {
+        } catch ( final org.kie.api.runtime.rule.ConsequenceException e ) {
             assertEquals( "Throw Consequence Exception",
                           e.getMatch().getRule().getName() );
             assertEquals( "this should throw an exception",
@@ -3049,7 +3049,7 @@ public class MiscTest extends CommonTestMethodBase {
         final Guess guess = new Guess();
         guess.setValue( new Integer( 5 ) );
 
-        final org.kie.runtime.rule.FactHandle handle = ksession.insert( guess );
+        final org.kie.api.runtime.rule.FactHandle handle = ksession.insert( guess );
 
         ksession.fireAllRules();
 
@@ -3096,7 +3096,7 @@ public class MiscTest extends CommonTestMethodBase {
         final Cheese stilton = new Cheese( "stilton",
                                            15 );
 
-        final org.kie.runtime.rule.FactHandle stiltonHandle = wm.insert( stilton );
+        final org.kie.api.runtime.rule.FactHandle stiltonHandle = wm.insert( stilton );
 
         ArgumentCaptor<org.kie.api.event.rule.ObjectInsertedEvent> oic = ArgumentCaptor.forClass( org.kie.api.event.rule.ObjectInsertedEvent.class );
         verify( wmel ).objectInserted( oic.capture() );
@@ -3325,8 +3325,8 @@ public class MiscTest extends CommonTestMethodBase {
         final Cheese muzzarella = new Cheese( "muzzarella",
                                               9 );
         final int sum = stilton.getPrice() + muzzarella.getPrice();
-        final org.kie.runtime.rule.FactHandle stiltonHandle = ksession.insert( stilton );
-        final org.kie.runtime.rule.FactHandle muzzarellaHandle = ksession.insert( muzzarella );
+        final org.kie.api.runtime.rule.FactHandle stiltonHandle = ksession.insert( stilton );
+        final org.kie.api.runtime.rule.FactHandle muzzarellaHandle = ksession.insert( muzzarella );
 
         ksession.fireAllRules();
 
@@ -4177,11 +4177,11 @@ public class MiscTest extends CommonTestMethodBase {
 
         Person p1 = new Person( "darth",
                                 30 );
-        org.kie.runtime.rule.FactHandle fh1 = ksession.insert( p1 );
+        org.kie.api.runtime.rule.FactHandle fh1 = ksession.insert( p1 );
 
         Person p2 = new Person( "darth",
                                 25 );
-        org.kie.runtime.rule.FactHandle fh2 = ksession.insert( p2 ); // creates activation.
+        org.kie.api.runtime.rule.FactHandle fh2 = ksession.insert( p2 ); // creates activation.
 
         p1.setName( "yoda" );
         ksession.update( fh1,
@@ -4245,19 +4245,19 @@ public class MiscTest extends CommonTestMethodBase {
 
         Person p0 = new Person( "yoda", 0 );
         p0.setLikes( "cheddar" );
-        org.kie.runtime.rule.FactHandle fh0 = ksession.insert( p0 );
+        org.kie.api.runtime.rule.FactHandle fh0 = ksession.insert( p0 );
 
         Person p1 = new Person( "darth", 15 );
         p1.setLikes( "cheddar" );
-        org.kie.runtime.rule.FactHandle fh1 = ksession.insert( p1 );
+        org.kie.api.runtime.rule.FactHandle fh1 = ksession.insert( p1 );
 
         Person p2 = new Person( "darth", 25 );
         p2.setLikes( "cheddar" );
-        org.kie.runtime.rule.FactHandle fh2 = ksession.insert( p2 ); // creates activation.        
+        org.kie.api.runtime.rule.FactHandle fh2 = ksession.insert( p2 ); // creates activation.
         
         Person p3 = new Person( "darth", 30 );
         p3.setLikes( "brie" );
-        org.kie.runtime.rule.FactHandle fh3 = ksession.insert( p3 );
+        org.kie.api.runtime.rule.FactHandle fh3 = ksession.insert( p3 );
 
         ksession.fireAllRules();
         // selects p1 and p3
@@ -4434,8 +4434,8 @@ public class MiscTest extends CommonTestMethodBase {
                             list );
 
         Person p = new Person( "ackbar" );
-        org.kie.runtime.rule.FactHandle ph = ksession.insert( p );
-        org.kie.runtime.rule.FactHandle sh = ksession.insert( "ackbar" );
+        org.kie.api.runtime.rule.FactHandle ph = ksession.insert( p );
+        org.kie.api.runtime.rule.FactHandle sh = ksession.insert( "ackbar" );
         ksession.fireAllRules();
         ksession.dispose();
 
@@ -4570,7 +4570,7 @@ public class MiscTest extends CommonTestMethodBase {
                                                  "3",
                                                  "4",
                                                  "5" );
-        final org.kie.runtime.rule.FactHandle handle = ksession.insert( first );
+        final org.kie.api.runtime.rule.FactHandle handle = ksession.insert( first );
         ksession.fireAllRules();
         assertEquals( 1,
                       results.size() );
@@ -5194,7 +5194,7 @@ public class MiscTest extends CommonTestMethodBase {
                             list );
 
         final PolymorphicFact fact = new PolymorphicFact( new Integer( 10 ) );
-        final org.kie.runtime.rule.FactHandle handle = ksession.insert( fact );
+        final org.kie.api.runtime.rule.FactHandle handle = ksession.insert( fact );
 
         ksession.fireAllRules();
 
@@ -5238,7 +5238,7 @@ public class MiscTest extends CommonTestMethodBase {
         fact.setBooleanWrapper( new Boolean( true ) );
         fact.setObject( new Boolean( true ) );
         fact.setCharPrimitive( 'X' );
-        final org.kie.runtime.rule.FactHandle handle = ksession.insert( fact );
+        final org.kie.api.runtime.rule.FactHandle handle = ksession.insert( fact );
 
         ksession.fireAllRules();
 
@@ -5627,7 +5627,7 @@ public class MiscTest extends CommonTestMethodBase {
         CheeseEqual cheese = new CheeseEqual( "stilton",
                                               10 );
         ksession.insert( cheese );
-        org.kie.runtime.rule.FactHandle fh = ksession.getFactHandle( new CheeseEqual( "stilton",
+        org.kie.api.runtime.rule.FactHandle fh = ksession.getFactHandle( new CheeseEqual( "stilton",
                                                                                          10 ) );
         assertNotNull( fh );
     }
@@ -5689,8 +5689,8 @@ public class MiscTest extends CommonTestMethodBase {
         Cheese cheese2 = new Cheese();
         bob.setCheese( cheese2 );
 
-        org.kie.runtime.rule.FactHandle p = session.insert( bob );
-        org.kie.runtime.rule.FactHandle c = session.insert( cheesery );
+        org.kie.api.runtime.rule.FactHandle p = session.insert( bob );
+        org.kie.api.runtime.rule.FactHandle c = session.insert( cheesery );
 
         session.fireAllRules();
 
@@ -5982,8 +5982,8 @@ public class MiscTest extends CommonTestMethodBase {
         FactA a = new FactA();
         FactB b = new FactB( Integer.valueOf( 0 ) );
 
-        org.kie.runtime.rule.FactHandle aHandle = ksession.insert( a );
-        org.kie.runtime.rule.FactHandle bHandle = ksession.insert( b );
+        org.kie.api.runtime.rule.FactHandle aHandle = ksession.insert( a );
+        org.kie.api.runtime.rule.FactHandle bHandle = ksession.insert( b );
 
         ksession.fireAllRules();
 
@@ -6585,8 +6585,8 @@ public class MiscTest extends CommonTestMethodBase {
 
         ksession.addEventListener( wml );
 
-        org.kie.runtime.rule.FactHandle personFH = ksession.insert( new Person( "Toni" ) );
-        org.kie.runtime.rule.FactHandle petFH = ksession.insert( new Pet( "Toni" ) );
+        org.kie.api.runtime.rule.FactHandle personFH = ksession.insert( new Person( "Toni" ) );
+        org.kie.api.runtime.rule.FactHandle petFH = ksession.insert( new Pet( "Toni" ) );
 
         int fired = ksession.fireAllRules();
         assertEquals( 1,
@@ -6965,7 +6965,7 @@ public class MiscTest extends CommonTestMethodBase {
                             list );
 
         Person p1 = new Person( "darth", 25 );
-        org.kie.runtime.rule.FactHandle fh = ksession.insert( p1 );
+        org.kie.api.runtime.rule.FactHandle fh = ksession.insert( p1 );
         ksession.fireAllRules();
         assertEquals( 0, list.size() );
 
@@ -8014,7 +8014,7 @@ public class MiscTest extends CommonTestMethodBase {
         //upon final rule firing an NPE will be thrown in org.drools.core.rule.Accumulate
         for ( int i = 0; i < magicFoos.length; i++ ) {
             Foo tehFoo = fooList[magicFoos[i]];
-            org.kie.runtime.rule.FactHandle fooFactHandle = ksession.getFactHandle( tehFoo );
+            org.kie.api.runtime.rule.FactHandle fooFactHandle = ksession.getFactHandle( tehFoo );
             tehFoo.setBar( barList[magicBars[i]] );
             ksession.update( fooFactHandle, tehFoo );
             ksession.fireAllRules();
@@ -8617,7 +8617,7 @@ public class MiscTest extends CommonTestMethodBase {
 
         Person p1 = new Person( "John", "nobody", 25 );
         ksession.execute( CommandFactory.newInsert( p1 ) );
-        org.kie.runtime.rule.FactHandle fh = ksession.getFactHandle( p1 );
+        org.kie.api.runtime.rule.FactHandle fh = ksession.getFactHandle( p1 );
 
         Person p = new Person( "Frank", "nobody", 30 );
         List<Setter> setterList = new ArrayList<Setter>();
@@ -8697,7 +8697,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( new FactC() );
         ksession.fireAllRules();
 
-        for ( org.kie.runtime.rule.FactHandle fact : ksession.getFactHandles() ) {
+        for ( org.kie.api.runtime.rule.FactHandle fact : ksession.getFactHandles() ) {
             InternalFactHandle internalFact = (InternalFactHandle) fact;
             assertTrue( internalFact.getObject() instanceof FactB );
         }

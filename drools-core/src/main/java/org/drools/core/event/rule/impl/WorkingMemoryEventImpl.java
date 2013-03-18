@@ -18,7 +18,7 @@ package org.drools.core.event.rule.impl;
 
 import org.kie.api.event.rule.WorkingMemoryEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.runtime.rule.PropagationContext;
+import org.kie.api.runtime.rule.PropagationContext;
 
 import java.io.Externalizable;
 import java.io.IOException;

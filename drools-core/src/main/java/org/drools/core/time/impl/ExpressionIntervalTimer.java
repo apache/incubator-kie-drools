@@ -25,7 +25,7 @@ import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.Trigger;
-import org.kie.runtime.Calendars;
+import org.kie.api.runtime.Calendars;
 
 import java.io.Externalizable;
 import java.io.IOException;

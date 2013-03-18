@@ -26,8 +26,8 @@ import org.drools.games.wumpus.Reset;
 import org.drools.games.wumpus.Score;
 import org.drools.games.wumpus.ShootCommand;
 import org.drools.games.wumpus.WumpusWorldConfiguration;
-import org.kie.runtime.Channel;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class GameUI {
 

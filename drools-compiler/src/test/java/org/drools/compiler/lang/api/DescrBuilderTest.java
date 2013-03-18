@@ -40,7 +40,7 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 import org.mockito.ArgumentCaptor;
 
 /**

@@ -26,8 +26,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class JTMSTest {
     protected StatefulKnowledgeSession getSessionFromString( String drlString) {
@@ -101,8 +101,8 @@ public class JTMSTest {
                 "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" + 
                 "        \n" + 
-                "        public void unMatch(org.kie.runtime.rule.Session wm,\n" +
-                "                            org.kie.runtime.rule.Match activation) {\n" +
+                "        public void unMatch(org.kie.api.runtime.rule.Session wm,\n" +
+                "                            org.kie.api.runtime.rule.Match activation) {\n" +
                 "            l.remove( s );\n" + 
                 "        }\n" + 
                 "    } );" +
@@ -117,8 +117,8 @@ public class JTMSTest {
                 "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" +
                 "        \n" +
-                "        public void unMatch(org.kie.runtime.rule.Session wm,\n" +
-                "                            org.kie.runtime.rule.Match activation) {\n" +
+                "        public void unMatch(org.kie.api.runtime.rule.Session wm,\n" +
+                "                            org.kie.api.runtime.rule.Match activation) {\n" +
                 "            l.remove( s );\n" +
                 "        }\n" +
                 "    } );" +
@@ -390,8 +390,8 @@ public class JTMSTest {
                 "    AgendaItem item = ( AgendaItem ) kcontext.getMatch(); \n" +
                 "    item.setActivationUnMatchListener( new ActivationUnMatchListener() { \n" + 
                 "        \n" + 
-                "        public void unMatch(org.kie.runtime.rule.Session wm, \n" +
-                "                            org.kie.runtime.rule.Match activation) { \n" +
+                "        public void unMatch(org.kie.api.runtime.rule.Session wm, \n" +
+                "                            org.kie.api.runtime.rule.Match activation) { \n" +
                 "            l.remove( s ); \n" + 
                 "        }\n" + 
                 "    } );" + 

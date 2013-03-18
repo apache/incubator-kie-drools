@@ -26,7 +26,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.lang.reflect.Array;
 import java.util.HashMap;
@@ -46,10 +46,10 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.conf.ClockTypeOption;
-import org.kie.runtime.conf.TimerJobFactoryOption;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.kie.runtime.ObjectFilter;
+import org.kie.api.runtime.ObjectFilter;
 
 public class JavaIteratorAdapter
     implements

@@ -19,7 +19,7 @@ import org.junit.*;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.ExecutionResults;
+import org.kie.api.runtime.ExecutionResults;
 import org.drools.core.command.GetVariableCommand;
 import org.drools.core.command.KnowledgeContextResolveFromContextCommand;
 import org.drools.core.command.ResolvingKnowledgeCommandContext;

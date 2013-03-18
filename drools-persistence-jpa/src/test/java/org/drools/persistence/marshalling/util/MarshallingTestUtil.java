@@ -22,7 +22,7 @@ import static org.drools.persistence.util.PersistenceUtil.getDatasourcePropertie
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.kie.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.io.ByteArrayInputStream;
 import java.lang.annotation.Annotation;
@@ -59,8 +59,8 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

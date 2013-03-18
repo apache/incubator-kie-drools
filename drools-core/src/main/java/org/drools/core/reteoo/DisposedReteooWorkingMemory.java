@@ -58,15 +58,15 @@ import org.drools.core.spi.GlobalResolver;
 import org.drools.core.time.TimerService;
 import org.drools.core.type.DateFormats;
 import org.kie.api.event.process.ProcessEventListener;
-import org.kie.runtime.Calendars;
-import org.kie.runtime.Channel;
-import org.kie.runtime.Environment;
-import org.kie.runtime.ObjectFilter;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItemManager;
-import org.kie.runtime.rule.LiveQuery;
-import org.kie.runtime.rule.ViewChangedEventListener;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.ViewChangedEventListener;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 import org.kie.time.SessionClock;
 
 @SuppressWarnings( "deprecation" )
@@ -305,7 +305,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public Object getObject( org.kie.runtime.rule.FactHandle handle ) {
+    public Object getObject( org.kie.api.runtime.rule.FactHandle handle ) {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -437,15 +437,15 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public void retract( org.kie.runtime.rule.FactHandle handle ) throws FactException {
+    public void retract( org.kie.api.runtime.rule.FactHandle handle ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public void delete( org.kie.runtime.rule.FactHandle handle ) throws FactException {
+    public void delete( org.kie.api.runtime.rule.FactHandle handle ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public void update( org.kie.runtime.rule.FactHandle handle, Object object ) throws FactException {
+    public void update( org.kie.api.runtime.rule.FactHandle handle, Object object ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -465,11 +465,11 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles( ObjectFilter filter ) {
+    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles( ObjectFilter filter ) {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -477,7 +477,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public void update( org.kie.runtime.rule.FactHandle handle, Object object, long mask, Activation activation ) throws FactException {
+    public void update( org.kie.api.runtime.rule.FactHandle handle, Object object, long mask, Activation activation ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 

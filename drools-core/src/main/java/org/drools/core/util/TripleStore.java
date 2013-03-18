@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.kie.runtime.rule.Variable;
+import org.kie.api.runtime.rule.Variable;
 
 
 public class TripleStore extends AbstractHashTable implements Externalizable {

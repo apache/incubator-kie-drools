@@ -30,7 +30,7 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.kie.internal.utils.CompositeClassLoader;
-import org.kie.runtime.rule.Variable;
+import org.kie.api.runtime.rule.Variable;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableStatement;

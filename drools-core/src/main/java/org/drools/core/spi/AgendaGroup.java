@@ -17,7 +17,7 @@
 package org.drools.core.spi;
 
 import org.drools.core.common.DefaultAgenda;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.Match;
 
 /**
  *  The <code>Agenda</code> can be partitioned into groups, called <code>AgendaGroup</code>s. <code>Rule</code>s can be assigned to
@@ -27,7 +27,7 @@ import org.kie.runtime.rule.Match;
  */
 public interface AgendaGroup
     extends
-    org.kie.runtime.rule.AgendaGroup {
+    org.kie.api.runtime.rule.AgendaGroup {
     
     /**
      * Static reference to determine the default <code>AgendaGroup</code> name.

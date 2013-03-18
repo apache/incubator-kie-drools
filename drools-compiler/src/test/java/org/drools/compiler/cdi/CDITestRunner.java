@@ -32,7 +32,7 @@ import org.kie.api.KieServices;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
-import org.kie.runtime.KieContainer;
+import org.kie.api.runtime.KieContainer;
 
 public class CDITestRunner extends BlockJUnit4ClassRunner {
 

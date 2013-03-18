@@ -33,9 +33,9 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.kie.internal.command.Context;
 import org.kie.api.command.Setter;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 import org.mvel2.MVEL;
 
 @XmlAccessorType(XmlAccessType.NONE)

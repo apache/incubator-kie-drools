@@ -37,7 +37,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.Environment;
+import org.kie.api.runtime.Environment;
 
 public class ReteooStatefulSession extends ReteooWorkingMemory
     implements

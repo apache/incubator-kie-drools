@@ -35,9 +35,9 @@ import org.drools.core.QueryResult;
 import org.drools.core.rule.Declaration;
 import org.drools.core.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.QueryResults;
-import org.kie.runtime.rule.QueryResultsRow;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
 
 @XmlAccessorType( XmlAccessType.FIELD )
 @XmlType(name="query-results")

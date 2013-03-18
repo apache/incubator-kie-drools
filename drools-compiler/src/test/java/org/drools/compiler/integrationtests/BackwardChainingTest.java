@@ -1,7 +1,7 @@
 package org.drools.compiler.integrationtests;
 
 import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
-import static org.kie.runtime.rule.Variable.v;
+import static org.kie.api.runtime.rule.Variable.v;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -45,13 +45,13 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.LiveQuery;
-import org.kie.runtime.rule.QueryResults;
-import org.kie.runtime.rule.QueryResultsRow;
-import org.kie.runtime.rule.Row;
-import org.kie.runtime.rule.Variable;
-import org.kie.runtime.rule.ViewChangedEventListener;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
+import org.kie.api.runtime.rule.Row;
+import org.kie.api.runtime.rule.Variable;
+import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1593,7 +1593,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         assertEquals( 1,
                       results.size() );
 
-        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             food.addAll( (Collection) row.get( "food" ) );
             logger.debug( row.get( "food" ).toString() );
         }
@@ -1650,7 +1650,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         assertEquals( 1,
                       results.size() );
 
-        for ( org.kie.runtime.rule.QueryResultsRow row : results ) {
+        for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             food.addAll( (Collection) row.get( "food" ) );
             logger.debug( row.get( "food" ).toString() );
         }

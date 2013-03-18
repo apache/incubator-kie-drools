@@ -2,9 +2,9 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
-import org.kie.runtime.KieContainer;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.StatelessKieSession;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 
 public interface InternalKieContainer extends KieContainer {
 

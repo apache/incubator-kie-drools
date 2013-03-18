@@ -45,7 +45,7 @@ import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.*;
 

@@ -23,9 +23,9 @@ import java.util.Map;
 import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.GlobalResolver;
-import org.kie.runtime.Environment;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.time.SessionClock;
 
 /**
@@ -131,7 +131,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      *
      * @return The associated object.
      */
-    Object getObject(org.kie.runtime.rule.FactHandle handle);
+    Object getObject(org.kie.api.runtime.rule.FactHandle handle);
 
     /**
      * Retrieve the <code>FactHandle</code> associated with an Object.
@@ -163,7 +163,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator<?> iterateObjects(org.kie.runtime.ObjectFilter filter);
+    Iterator<?> iterateObjects(org.kie.api.runtime.ObjectFilter filter);
 
     /**
      * Returns an Iterator for the FactHandles in the Working Memory. This Iterator is not thread safe.
@@ -183,7 +183,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator<?> iterateFactHandles(org.kie.runtime.ObjectFilter filter);
+    Iterator<?> iterateFactHandles(org.kie.api.runtime.ObjectFilter filter);
 
     /**
      * Set the focus to the specified AgendaGroup

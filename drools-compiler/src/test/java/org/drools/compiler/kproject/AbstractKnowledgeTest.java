@@ -25,9 +25,9 @@ import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.StatelessKieSession;
-import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 import java.io.IOException;
 import java.util.ArrayList;

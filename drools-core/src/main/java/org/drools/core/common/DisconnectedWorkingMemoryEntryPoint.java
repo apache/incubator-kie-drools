@@ -3,9 +3,9 @@ package org.drools.core.common;
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.kie.runtime.ObjectFilter;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 public class DisconnectedWorkingMemoryEntryPoint implements SessionEntryPoint, Serializable {
     

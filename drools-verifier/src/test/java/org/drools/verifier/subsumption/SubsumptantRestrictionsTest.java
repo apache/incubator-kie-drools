@@ -24,7 +24,7 @@ import org.drools.verifier.report.components.Subsumption;
 import org.junit.Test;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.ClassObjectFilter;
+import org.kie.api.runtime.ClassObjectFilter;
 
 import java.util.Collection;
 

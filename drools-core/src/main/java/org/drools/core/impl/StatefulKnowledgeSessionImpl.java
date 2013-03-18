@@ -83,22 +83,22 @@ import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.Calendars;
-import org.kie.runtime.Channel;
-import org.kie.runtime.Environment;
-import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.Globals;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItemManager;
-import org.kie.runtime.rule.Agenda;
-import org.kie.runtime.rule.AgendaFilter;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.LiveQuery;
-import org.kie.runtime.rule.QueryResults;
-import org.kie.runtime.rule.SessionEntryPoint;
-import org.kie.runtime.rule.ViewChangedEventListener;
+import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.rule.Agenda;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.time.SessionClock;
 
 public class StatefulKnowledgeSessionImpl
@@ -144,7 +144,7 @@ public class StatefulKnowledgeSessionImpl
         return session.getWorkingMemoryEntryPoint( name );
     }
 
-    public Collection< ? extends org.kie.runtime.rule.SessionEntryPoint> getEntryPoints() {
+    public Collection< ? extends org.kie.api.runtime.rule.SessionEntryPoint> getEntryPoints() {
         return session.getWorkingMemoryEntryPoints();
     }
 
@@ -393,13 +393,13 @@ public class StatefulKnowledgeSessionImpl
     //        return new FutureAdapter( this.session.asyncFireAllRules() );
     //    }
 
-    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        null,
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
-    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles(org.kie.runtime.ObjectFilter filter) {
+    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles(org.kie.api.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.FACT_HANDLE );
@@ -411,7 +411,7 @@ public class StatefulKnowledgeSessionImpl
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public Collection<Object> getObjects(org.kie.runtime.ObjectFilter filter) {
+    public Collection<Object> getObjects(org.kie.api.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.OBJECT );
@@ -478,13 +478,13 @@ public class StatefulKnowledgeSessionImpl
 
     public static class ObjectStoreWrapper extends AbstractImmutableCollection {
         public ObjectStore                     store;
-        public org.kie.runtime.ObjectFilter filter;
+        public org.kie.api.runtime.ObjectFilter filter;
         public int                             type;           // 0 == object, 1 == facthandle
         public static final int                OBJECT      = 0;
         public static final int                FACT_HANDLE = 1;
 
         public ObjectStoreWrapper(ObjectStore store,
-                                  org.kie.runtime.ObjectFilter filter,
+                                  org.kie.api.runtime.ObjectFilter filter,
                                   int type) {
             this.store = store;
             this.filter = filter;

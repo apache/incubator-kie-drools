@@ -12,8 +12,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.LiveQuery;
-import org.kie.runtime.rule.Row;
+import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.Row;
 
 import ca.odell.glazedlists.SortedList;
 
@@ -54,12 +54,12 @@ public class DroolsEventListTest extends CommonTestMethodBase {
         Cheese cheddar3 = new Cheese( "cheddar",
                                       3 );
 
-        org.kie.runtime.rule.FactHandle s1Fh = ksession.insert( stilton1 );
-        org.kie.runtime.rule.FactHandle s2Fh = ksession.insert( stilton2 );
-        org.kie.runtime.rule.FactHandle s3Fh = ksession.insert( stilton3 );
-        org.kie.runtime.rule.FactHandle c1Fh = ksession.insert( cheddar1 );
-        org.kie.runtime.rule.FactHandle c2Fh = ksession.insert( cheddar2 );
-        org.kie.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
+        org.kie.api.runtime.rule.FactHandle s1Fh = ksession.insert( stilton1 );
+        org.kie.api.runtime.rule.FactHandle s2Fh = ksession.insert( stilton2 );
+        org.kie.api.runtime.rule.FactHandle s3Fh = ksession.insert( stilton3 );
+        org.kie.api.runtime.rule.FactHandle c1Fh = ksession.insert( cheddar1 );
+        org.kie.api.runtime.rule.FactHandle c2Fh = ksession.insert( cheddar2 );
+        org.kie.api.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
                       
         DroolsEventList list = new DroolsEventList();
         // Open the LiveQuery

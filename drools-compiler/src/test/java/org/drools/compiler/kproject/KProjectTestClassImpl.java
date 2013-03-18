@@ -1,9 +1,9 @@
 package org.drools.compiler.kproject;
 
 import org.kie.api.KieBase;
-import org.kie.runtime.KieContainer;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.StatelessKieSession;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 
 public class KProjectTestClassImpl implements KProjectTestClass {
     

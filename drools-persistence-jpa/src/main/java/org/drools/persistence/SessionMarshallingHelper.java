@@ -8,10 +8,10 @@ import org.kie.api.KieBase;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 
 public class SessionMarshallingHelper {
 

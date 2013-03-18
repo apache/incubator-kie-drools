@@ -11,7 +11,7 @@ import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
-import org.kie.runtime.KieContainer;
+import org.kie.api.runtime.KieContainer;
 
 import java.io.IOException;
 

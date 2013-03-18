@@ -37,10 +37,10 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.Match;
-import org.kie.runtime.rule.QueryResults;
-import org.kie.runtime.rule.Variable;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.Variable;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -66,11 +66,11 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.kie.runtime.rule.FactHandle[] cheeseHandles = new org.kie.runtime.rule.FactHandle[cheese.length];
+        final org.kie.api.runtime.rule.FactHandle[] cheeseHandles = new org.kie.api.runtime.rule.FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
-        final org.kie.runtime.rule.FactHandle bobHandle = wm.insert( bob );
+        final org.kie.api.runtime.rule.FactHandle bobHandle = wm.insert( bob );
 
         // ---------------- 1st scenario
         wm.fireAllRules();
@@ -201,11 +201,11 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.kie.runtime.rule.FactHandle[] cheeseHandles = new org.kie.runtime.rule.FactHandle[cheese.length];
+        final org.kie.api.runtime.rule.FactHandle[] cheeseHandles = new org.kie.api.runtime.rule.FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
-        final org.kie.runtime.rule.FactHandle bobHandle = wm.insert( bob );
+        final org.kie.api.runtime.rule.FactHandle bobHandle = wm.insert( bob );
 
         // ---------------- 1st scenario
         wm.fireAllRules();
@@ -267,11 +267,11 @@ public class AccumulateTest extends CommonTestMethodBase {
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
-        final org.kie.runtime.rule.FactHandle[] cheeseHandles = new org.kie.runtime.rule.FactHandle[cheese.length];
+        final org.kie.api.runtime.rule.FactHandle[] cheeseHandles = new org.kie.api.runtime.rule.FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
         }
-        final org.kie.runtime.rule.FactHandle bobHandle = wm.insert( bob );
+        final org.kie.api.runtime.rule.FactHandle bobHandle = wm.insert( bob );
 
         // ---------------- 1st scenario
         wm.fireAllRules();

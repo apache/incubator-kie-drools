@@ -12,8 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 public class PongUI {
     private PongConfiguration pconf;

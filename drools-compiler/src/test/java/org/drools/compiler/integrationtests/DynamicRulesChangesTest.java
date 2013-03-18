@@ -25,7 +25,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.FactHandle;
 
 public class DynamicRulesChangesTest {
 

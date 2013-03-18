@@ -15,10 +15,10 @@ import org.drools.persistence.info.WorkItemInfo;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItemHandler;
 
 public class JPAWorkItemManager implements WorkItemManager {
 

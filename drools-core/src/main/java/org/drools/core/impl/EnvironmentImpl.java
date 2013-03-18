@@ -19,7 +19,7 @@ package org.drools.core.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.runtime.Environment;
+import org.kie.api.runtime.Environment;
 
 public class EnvironmentImpl implements Environment {
 

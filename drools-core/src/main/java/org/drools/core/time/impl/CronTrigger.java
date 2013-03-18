@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.drools.core.time.Trigger;
-import org.kie.runtime.Calendars;
+import org.kie.api.runtime.Calendars;
 
 public class CronTrigger
     implements

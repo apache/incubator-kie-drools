@@ -69,25 +69,25 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.runtime.Calendars;
-import org.kie.runtime.Channel;
-import org.kie.runtime.Environment;
-import org.kie.runtime.Globals;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.ObjectFilter;
+import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.ObjectFilter;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.rule.ActivationGroup;
-import org.kie.runtime.rule.Agenda;
-import org.kie.runtime.rule.AgendaFilter;
-import org.kie.runtime.rule.AgendaGroup;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.LiveQuery;
-import org.kie.runtime.rule.QueryResults;
-import org.kie.runtime.rule.RuleFlowGroup;
-import org.kie.runtime.rule.SessionEntryPoint;
-import org.kie.runtime.rule.ViewChangedEventListener;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.rule.ActivationGroup;
+import org.kie.api.runtime.rule.Agenda;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.AgendaGroup;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.RuleFlowGroup;
+import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.time.SessionClock;
 
 public class CommandBasedStatefulKnowledgeSession
@@ -346,12 +346,12 @@ public class CommandBasedStatefulKnowledgeSession
         return this.commandService.execute( new GetFactHandleCommand( object ) );
     }
 
-    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles() {
+    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         return (Collection<T>) this.commandService.execute( new GetFactHandlesCommand() );
 
     }
 
-    public <T extends org.kie.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
+    public <T extends org.kie.api.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
         return (Collection<T>) this.commandService.execute( new GetFactHandlesCommand( filter ) );
     }
 

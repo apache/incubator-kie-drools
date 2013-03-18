@@ -22,7 +22,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.command.Context;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 public class GetWorkingMemoryEventListenersCommand
     implements

@@ -21,14 +21,14 @@ import java.util.regex.Pattern;
 
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaFilter;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.Match;
 
 /**
  * Filters activations based on a specified regular expression.
  */
 public class RuleNameMatchesAgendaFilter
     implements
-    AgendaFilter, org.kie.runtime.rule.AgendaFilter {
+    AgendaFilter, org.kie.api.runtime.rule.AgendaFilter {
     private final Pattern pattern;
 
     private final boolean accept;

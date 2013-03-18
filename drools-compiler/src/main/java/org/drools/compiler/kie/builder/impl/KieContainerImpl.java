@@ -16,10 +16,10 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.utils.CompositeClassLoader;
-import org.kie.runtime.Environment;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatelessKieSession;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.StatelessKieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

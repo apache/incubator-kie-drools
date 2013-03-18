@@ -80,15 +80,15 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.runtime.Calendars;
-import org.kie.runtime.Channel;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.Globals;
-import org.kie.runtime.process.ProcessInstance;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.time.SessionClock;
 
 /**
@@ -698,7 +698,7 @@ public abstract class AbstractWorkingMemory
      *            The <code>FactHandle</code> reference for the
      *            <code>Object</code> lookup
      */
-    public Object getObject(org.kie.runtime.rule.FactHandle handle) {
+    public Object getObject(org.kie.api.runtime.rule.FactHandle handle) {
         // the handle might have been disconnected, so reconnect if it has
         if ( ((InternalFactHandle)handle).isDisconnected() ) {
             handle = this.defaultEntryPoint.getObjectStore().reconnect( handle );
@@ -736,7 +736,7 @@ public abstract class AbstractWorkingMemory
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
-    public Iterator iterateObjects(org.kie.runtime.ObjectFilter filter) {
+    public Iterator iterateObjects(org.kie.api.runtime.ObjectFilter filter) {
         return getObjectStore().iterateObjects( filter );
     }
 
@@ -752,7 +752,7 @@ public abstract class AbstractWorkingMemory
      * This class is not thread safe, changes to the working memory during
      * iteration may give unexpected results
      */
-    public Iterator iterateFactHandles(org.kie.runtime.ObjectFilter filter) {
+    public Iterator iterateFactHandles(org.kie.api.runtime.ObjectFilter filter) {
         return getObjectStore().iterateFactHandles( filter );
     }
 
@@ -842,13 +842,13 @@ public abstract class AbstractWorkingMemory
                                        typeConf );
     }
 
-    public void retract(final org.kie.runtime.rule.FactHandle handle) throws FactException {
+    public void retract(final org.kie.api.runtime.rule.FactHandle handle) throws FactException {
         delete( (FactHandle) handle,
                  null,
                  null );
     }
 
-    public void delete(final org.kie.runtime.rule.FactHandle handle) throws FactException {
+    public void delete(final org.kie.api.runtime.rule.FactHandle handle) throws FactException {
         delete( (FactHandle) handle,
                  null,
                  null );
@@ -866,7 +866,7 @@ public abstract class AbstractWorkingMemory
         return ((InternalWorkingMemoryEntryPoint) this.defaultEntryPoint).getEntryPointNode();
     }
 
-    public void update(final org.kie.runtime.rule.FactHandle handle,
+    public void update(final org.kie.api.runtime.rule.FactHandle handle,
                        final Object object) throws FactException {
         update( (FactHandle) handle,
                 object,
@@ -874,7 +874,7 @@ public abstract class AbstractWorkingMemory
                 null );
     }
 
-    public void update(final org.kie.runtime.rule.FactHandle factHandle,
+    public void update(final org.kie.api.runtime.rule.FactHandle factHandle,
                        final Object object,
                        final long mask,
                        final Activation activation) throws FactException {

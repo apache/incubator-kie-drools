@@ -15,8 +15,8 @@ import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 
 public class RegisterWorkItemHandlerTest {
     
@@ -49,12 +49,12 @@ public class RegisterWorkItemHandlerTest {
         StatelessKnowledgeSession ks = kbase.newStatelessKnowledgeSession();
         ks.execute( CommandFactory.newRegisterWorkItemHandlerCommand( new WorkItemHandler() {
             
-            public void executeWorkItem(org.kie.runtime.process.WorkItem workItem,
+            public void executeWorkItem(org.kie.api.runtime.process.WorkItem workItem,
                                         WorkItemManager manager) {
                 answer[0] = true;
             }
             
-            public void abortWorkItem(org.kie.runtime.process.WorkItem workItem,
+            public void abortWorkItem(org.kie.api.runtime.process.WorkItem workItem,
                                       WorkItemManager manager) {
                 // TODO Auto-generated method stub
                 

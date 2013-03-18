@@ -36,8 +36,8 @@ import org.kie.api.definition.type.FactType;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.ClassObjectFilter;
-import org.kie.runtime.rule.FactHandle;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.rule.FactHandle;
 
 /**
  * Test for declared bean Extension

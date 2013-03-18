@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.FactHandleFactory;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 public abstract class AbstractFactHandleFactory
     implements

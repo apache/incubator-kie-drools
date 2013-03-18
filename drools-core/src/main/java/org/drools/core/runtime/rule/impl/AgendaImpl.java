@@ -16,9 +16,9 @@
 
 package org.drools.core.runtime.rule.impl;
 
-import org.kie.runtime.rule.ActivationGroup;
-import org.kie.runtime.rule.AgendaGroup;
-import org.kie.runtime.rule.RuleFlowGroup;
+import org.kie.api.runtime.rule.ActivationGroup;
+import org.kie.api.runtime.rule.AgendaGroup;
+import org.kie.api.runtime.rule.RuleFlowGroup;
 
 public class AgendaImpl
     implements

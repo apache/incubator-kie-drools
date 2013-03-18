@@ -36,9 +36,9 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.type.DateFormats;
-import org.kie.runtime.Calendars;
-import org.kie.runtime.Channel;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 public interface InternalWorkingMemory
     extends

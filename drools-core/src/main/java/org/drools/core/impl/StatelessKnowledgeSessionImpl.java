@@ -47,13 +47,13 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.Environment;
-import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.Globals;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatelessKieSession;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.AgendaFilter;
 
 public class StatelessKnowledgeSessionImpl
     implements

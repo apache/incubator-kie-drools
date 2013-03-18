@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class Operator
     implements
-    Externalizable, org.kie.runtime.rule.Operator {
+    Externalizable, org.kie.api.runtime.rule.Operator {
 
     private static final long                  serialVersionUID = 510l;
 

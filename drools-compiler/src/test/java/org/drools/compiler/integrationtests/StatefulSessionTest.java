@@ -23,7 +23,7 @@ import org.kie.api.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.ExecutionResults;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class StatefulSessionTest extends CommonTestMethodBase {

@@ -26,7 +26,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.NumberUtils;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.Trigger;
-import org.kie.runtime.Calendars;
+import org.kie.api.runtime.Calendars;
 
 public class DurationTimer
     implements

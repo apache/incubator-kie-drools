@@ -16,9 +16,9 @@
 package org.drools.core.workitem;
 
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.process.WorkItem;
-import org.kie.runtime.process.WorkItemHandler;
-import org.kie.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 
 public class CustomWorkItemHandler implements WorkItemHandler {
     

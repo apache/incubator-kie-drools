@@ -25,7 +25,7 @@ import org.drools.core.rule.Rule;
 
 
 import org.drools.core.spi.Activation;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 public interface InternalWorkingMemoryEntryPoint extends SessionEntryPoint {
     ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
@@ -33,7 +33,7 @@ public interface InternalWorkingMemoryEntryPoint extends SessionEntryPoint {
     public void delete(final FactHandle factHandle,
                         final Rule rule,
                         final Activation activation) throws FactException;
-    public void update(org.kie.runtime.rule.FactHandle handle,
+    public void update(org.kie.api.runtime.rule.FactHandle handle,
                        Object object,
                        long mask,
                        Activation activation) throws FactException;

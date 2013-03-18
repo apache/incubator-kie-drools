@@ -62,7 +62,7 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.internal.utils.CompositeClassLoader;
-import org.kie.runtime.rule.ConsequenceExceptionHandler;
+import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -33,9 +33,9 @@ import org.drools.core.util.StringUtils;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.xml.jaxb.util.JaxbCollectionAdapter;
 import org.kie.internal.command.Context;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.rule.FactHandle;
-import org.kie.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.SessionEntryPoint;
 
 @XmlAccessorType( XmlAccessType.NONE )
 public class InsertElementsCommand

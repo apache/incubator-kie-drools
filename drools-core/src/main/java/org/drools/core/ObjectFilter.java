@@ -19,6 +19,6 @@ package org.drools.core;
 /**
  * ObjectFilter is used with WorkingMemories to filter out instances during Iteration
  */
-public interface ObjectFilter extends org.kie.runtime.ObjectFilter {
+public interface ObjectFilter extends org.kie.api.runtime.ObjectFilter {
 
 }

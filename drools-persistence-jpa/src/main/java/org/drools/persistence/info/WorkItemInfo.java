@@ -22,7 +22,7 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.OutputMarshaller;
 import org.drools.core.process.instance.WorkItem;
-import org.kie.runtime.Environment;
+import org.kie.api.runtime.Environment;
 
 @Entity
 @SequenceGenerator(name="workItemInfoIdSeq", sequenceName="WORKITEMINFO_ID_SEQ")

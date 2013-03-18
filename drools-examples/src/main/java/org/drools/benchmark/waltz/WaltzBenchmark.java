@@ -24,7 +24,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.runtime.rule.Session;
+import org.kie.api.runtime.rule.Session;
 
 import java.io.BufferedReader;
 import java.io.IOException;
