@@ -1,6 +1,6 @@
 package org.drools.compiler
 
-import org.kie.event.rule.WorkingMemoryEventListener
+import org.kie.api.event.rule.WorkingMemoryEventListener
 
 rule "remove listener"
 when
