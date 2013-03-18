@@ -111,7 +111,7 @@ public class EntryPointNode extends ObjectSource
         this.entryPoint = entryPoint;
         this.objectTypeNodes = new ConcurrentHashMap<ObjectType, ObjectTypeNode>();
         
-        this.unlinkingEnabled = ((Rete)objectSource).getRuleBase().getConfiguration().isUnlinkingEnabled();
+        this.unlinkingEnabled = ((Rete)objectSource).getRuleBase().getConfiguration().isPhreakEnabled();
     }
 
     // ------------------------------------------------------------

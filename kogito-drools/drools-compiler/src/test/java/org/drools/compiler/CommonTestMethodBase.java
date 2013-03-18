@@ -22,7 +22,7 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.conf.LRUnlinkingOption;
+import org.kie.builder.conf.PhreakOption;
 import org.kie.builder.conf.LanguageLevelOption;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.ResourceFactory;
@@ -40,36 +40,36 @@ import org.kie.runtime.conf.KieSessionOption;
  * common so that tests in drools-compiler can be reused (with persistence)
  * in drools-persistence-jpa.
  */
-public class CommonTestMethodBase extends Assert {    
-    private static LRUnlinkingOption preak = LRUnlinkingOption.DISABLED;
+public class CommonTestMethodBase extends Assert {
+    private static PhreakOption preak = PhreakOption.DISABLED;
 
     // ***********************************************
     // METHODS TO BE REMOVED FOR 6.0.0
 
     protected RuleBase getRuleBase() throws Exception {
         return RuleBaseFactory.newRuleBase(RuleBase.RETEOO,
-                null);
+                                           null);
     }
 
     protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
+        return RuleBaseFactory.newRuleBase(RuleBase.RETEOO,
+                                           config);
     }
 
     protected RuleBase getSinglethreadRuleBase() throws Exception {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
-        config.setMultithreadEvaluation( false );
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
+        config.setMultithreadEvaluation(false);
+        return RuleBaseFactory.newRuleBase(RuleBase.RETEOO,
+                                           config);
     }
 
     protected org.drools.core.rule.Package loadPackage(final String classPathResource) throws DroolsParserException,
-                                                                                 IOException {
+            IOException {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( classPathResource ) ) );
+        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream(classPathResource)));
 
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
+        if (builder.hasErrors()) {
+            fail(builder.getErrors().toString());
         }
 
         final org.drools.core.rule.Package pkg = builder.getPackage();
@@ -77,12 +77,12 @@ public class CommonTestMethodBase extends Assert {
     }
 
     protected RuleBase loadRuleBase(final Reader reader) throws IOException,
-                                                        DroolsParserException,
-                                                        Exception {
-        final DrlParser parser = new DrlParser( LanguageLevelOption.DRL5 );
-        final PackageDescr packageDescr = parser.parse( reader );
-        if ( parser.hasErrors() ) {
-            fail( "Error messages in parser, need to sort this our (or else collect error messages):\n"
+            DroolsParserException,
+            Exception {
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
+        final PackageDescr packageDescr = parser.parse(reader);
+        if (parser.hasErrors()) {
+            fail("Error messages in parser, need to sort this our (or else collect error messages):\n"
                   + parser.getErrors() );
         }
         // pre build the package
@@ -136,7 +136,7 @@ public class CommonTestMethodBase extends Assert {
         return loadKnowledgeBaseFromString( null, null, preak, drlContentStrings );
     }
 
-    protected KnowledgeBase loadKnowledgeBaseFromString(LRUnlinkingOption phreak, String... drlContentStrings) {
+    protected KnowledgeBase loadKnowledgeBaseFromString(PhreakOption phreak, String... drlContentStrings) {
         return loadKnowledgeBaseFromString( null, null, phreak, drlContentStrings );
     }
 
@@ -152,7 +152,7 @@ public class CommonTestMethodBase extends Assert {
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config,
                                                         KieBaseConfiguration kBaseConfig,
-                                                        LRUnlinkingOption phreak, 
+                                                        PhreakOption phreak,
                                                         String... drlContentStrings) {
         KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder( config );
         for ( String drlContentString : drlContentStrings ) {

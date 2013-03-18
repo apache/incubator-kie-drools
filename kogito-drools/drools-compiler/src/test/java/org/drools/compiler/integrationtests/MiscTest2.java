@@ -32,7 +32,7 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.conf.LRUnlinkingOption;
+import org.kie.builder.conf.PhreakOption;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.type.Modifies;
 import org.kie.definition.type.PropertyReactive;
@@ -95,7 +95,7 @@ public class MiscTest2 extends CommonTestMethodBase {
             throw new RuntimeException(builder.getErrors().toString());
         }
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );                
+        kconf.setOption( PhreakOption.ENABLED );
         KnowledgeBase knowledgeBase  = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
 
@@ -158,7 +158,7 @@ public class MiscTest2 extends CommonTestMethodBase {
             out.close();
 
             KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-            kconf.setOption( LRUnlinkingOption.ENABLED );                
+            kconf.setOption( PhreakOption.ENABLED );
             KnowledgeBase kbase  = KnowledgeBaseFactory.newKnowledgeBase(kconf);
 
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(root, "test.drl.compiled")));

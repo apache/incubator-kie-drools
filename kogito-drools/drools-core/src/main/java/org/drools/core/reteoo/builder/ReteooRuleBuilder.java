@@ -172,7 +172,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         baseTerminalNode.networkUpdated(new UpdateContext());
         baseTerminalNode.attach(context);
         
-        if ( context.getRuleBase().getConfiguration().isUnlinkingEnabled() && !unlinkingAllowedForRule(context.getRule() ) ) {
+        if ( context.getRuleBase().getConfiguration().isPhreakEnabled() && !unlinkingAllowedForRule(context.getRule() ) ) {
             setUnlinkDisabledCount( null, terminal.getLeftTupleSource(),  ( context.getWorkingMemories().length == 0) ? null : context.getWorkingMemories() ); 
         }               
 
@@ -208,7 +208,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
 //                    continue;
 //                }
 //
-//                if ( wms != null && betaNode.isUnlinkingEnabled() ) {
+//                if ( wms != null && betaNode.isPhreakEnabled() ) {
 //                    for ( InternalWorkingMemory wm : wms ) {
 //                        BetaMemory bm;
 //                        if ( NodeTypeEnums.AccumulateNode == lt.getType() ) {
@@ -223,12 +223,12 @@ public class ReteooRuleBuilder implements RuleBuilder {
 //                        bm.clearStagingMemory();
 //                    }
 //                }
-//                betaNode.setUnlinkingEnabled( false );
+//                betaNode.setPhreakEnabled( false );
 //                betaNode.setUnlinkedDisabledCount( betaNode.getUnlinkedDisabledCount() + 1 );
 //            } else if ( NodeTypeEnums.LeftInputAdapterNode == lt.getType() ) {
 //                LeftInputAdapterNode liaNode = ((LeftInputAdapterNode) lt);
 //
-//                if ( wms != null && liaNode.isUnlinkingEnabled() ) {
+//                if ( wms != null && liaNode.isPhreakEnabled() ) {
 //                    for ( InternalWorkingMemory wm : wms ) {
 //                        LiaNodeMemory lm = (LiaNodeMemory) wm.getNodeMemory( (LeftInputAdapterNode) lt );
 //                        LeftTupleList list = lm.getStagedLeftTupleList();
@@ -240,7 +240,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
 //                }   
 //                
 //                liaNode.setUnlinkedDisabledCount( liaNode.getUnlinkedDisabledCount() + 1 );
-//                liaNode.setUnlinkingEnabled( false );
+//                liaNode.setPhreakEnabled( false );
 //            }
 //            lt = lt.getLeftTupleSource();
 //        }

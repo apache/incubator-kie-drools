@@ -604,7 +604,7 @@ public class QueryTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("Ingored for Phreak, as test is order sensitive")
+    @Ignore("Ingored for PhreakOption, as test is order sensitive")
     public void testOpenQuery() throws Exception {
         String str = "";
         str += "package org.drools.compiler.test  \n";

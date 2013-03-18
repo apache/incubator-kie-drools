@@ -89,7 +89,7 @@ public class AccumulateBuilder
             existSubNetwort = true;
         }
         
-        if ( !context.getRuleBase().getConfiguration().isUnlinkingEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
+        if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
             // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
             context.setTupleSource( (LeftTupleSource) utils.attachNode( context, new QueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );   
         }          

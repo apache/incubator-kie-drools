@@ -795,7 +795,7 @@ public class ReteDslTestEngineTest {
     public void testConfigOptions() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "Config:\n";
-        str += "    drools.lrUnlinkingEnabled, true;\n";
+        str += "    drools.phreakEnabled, true;\n";
         str += "ObjectTypeNode:\n";
         str += "    otn1, java.lang.Integer;\n";
         
@@ -803,7 +803,7 @@ public class ReteDslTestEngineTest {
         Map<String, Object> map = result.context;
 
         BuildContext buildCtx = (BuildContext) map.get( ReteDslTestEngine.BUILD_CONTEXT );
-        assertTrue(buildCtx.getRuleBase().getConfiguration().isUnlinkingEnabled());
+        assertTrue(buildCtx.getRuleBase().getConfiguration().isPhreakEnabled());
     }
 
 

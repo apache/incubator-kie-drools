@@ -84,7 +84,7 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleSource = source;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.startTupleSource = startTupleSource;        
-        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();
+        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
     }
 
     public void readExternal(ObjectInput in) throws IOException,

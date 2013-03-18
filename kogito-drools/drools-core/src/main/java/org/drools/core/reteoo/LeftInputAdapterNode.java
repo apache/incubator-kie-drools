@@ -93,7 +93,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         ObjectTypeNode otn = ( ObjectTypeNode ) current;
         rootQueryNode = ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( otn.getObjectType() );
         
-        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();      
+        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
     }    
 
     public void readExternal(ObjectInput in) throws IOException,

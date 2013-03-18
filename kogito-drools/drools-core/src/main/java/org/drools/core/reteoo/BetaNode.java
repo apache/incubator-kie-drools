@@ -151,7 +151,7 @@ public abstract class BetaNode extends LeftTupleSource
 
         initMasks( context, leftInput );        
         
-        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();      
+        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
         this.unlinkedDisabledCount = 0;
     }
     

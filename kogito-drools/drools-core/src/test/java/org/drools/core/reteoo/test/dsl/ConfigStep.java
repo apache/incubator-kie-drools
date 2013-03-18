@@ -23,7 +23,7 @@ import org.drools.core.reteoo.builder.BuildContext;
  * <pre>
  * Setup
  *     Config:
- *         drools.lrUnlinkingEnabled, true;
+ *         drools.phreakEnabled, true;
  *     ObjectTypeNode:
  *         otnLeft1, org.drools.Person;
  *     LeftInputAdapterNode:

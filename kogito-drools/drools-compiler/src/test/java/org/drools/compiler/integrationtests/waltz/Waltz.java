@@ -41,7 +41,7 @@ import org.kie.KnowledgeBase;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.conf.LRUnlinkingOption;
+import org.kie.builder.conf.PhreakOption;
 import org.kie.builder.conf.LanguageLevelOption;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
@@ -135,7 +135,7 @@ public abstract class Waltz {
             
         }
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );        
+        kconf.setOption( PhreakOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         
         kbase.addKnowledgePackages( kBuilder.getKnowledgePackages() );

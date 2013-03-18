@@ -18,7 +18,7 @@ import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.conf.LRUnlinkingOption;
+import org.kie.builder.conf.PhreakOption;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
@@ -209,7 +209,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -282,7 +282,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -385,7 +385,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -470,7 +470,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -537,7 +537,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -601,7 +601,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -684,7 +684,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -855,7 +855,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -935,7 +935,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -989,7 +989,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1060,7 +1060,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1144,7 +1144,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1204,7 +1204,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1259,7 +1259,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1332,7 +1332,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -1393,7 +1393,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -1455,7 +1455,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1531,7 +1531,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1584,7 +1584,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1641,7 +1641,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1703,7 +1703,7 @@ public class LinkingTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

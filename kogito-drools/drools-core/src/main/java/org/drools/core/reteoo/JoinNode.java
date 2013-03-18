@@ -156,7 +156,7 @@ public class JoinNode extends BetaNode {
 //            rightTuple.setNext( next ); // preserve for 'not' node iterator
 //        }
 //                
-//        if (  isUnlinkingEnabled() && memory.getAndDecCounter() == 0 && !isRightInputIsRiaNode() ) {
+//        if (  isPhreakEnabled() && memory.getAndDecCounter() == 0 && !isRightInputIsRiaNode() ) {
 //            // unlink node
 //            memory.unlinkNode( workingMemory );            
 //        }
