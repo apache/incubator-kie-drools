@@ -18,8 +18,8 @@ package org.drools.core.fluent.impl;
 
 import org.drools.core.command.KnowledgeBaseAddKnowledgePackagesCommand;
 import org.drools.core.command.builder.KnowledgeBuilderAddCommand;
-import org.kie.fluent.CommandScript;
-import org.kie.fluent.FluentKnowledgeBase;
+import org.kie.internal.fluent.CommandScript;
+import org.kie.internal.fluent.FluentKnowledgeBase;
 import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceType;
