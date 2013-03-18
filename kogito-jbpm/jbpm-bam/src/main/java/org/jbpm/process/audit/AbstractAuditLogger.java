@@ -4,7 +4,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.audit.event.DefaultAuditEventBuilderImpl;
-import org.kie.event.process.ProcessEventListener;
+import org.kie.api.event.process.ProcessEventListener;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;

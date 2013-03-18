@@ -11,7 +11,7 @@ public class ProcessEvent implements Serializable {
     private String version;
     private int state;
     
-    public ProcessEvent(org.kie.event.process.ProcessEvent event) {
+    public ProcessEvent(org.kie.api.event.process.ProcessEvent event) {
         this.processId = event.getProcessInstance().getProcessId();
         this.version = event.getProcessInstance().getProcess().getVersion();
         this.processInstanceId = event.getProcessInstance().getId();

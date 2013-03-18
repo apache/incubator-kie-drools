@@ -11,7 +11,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.api.definition.type.FactType;
-import org.kie.event.rule.DebugAgendaEventListener;
+import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;

@@ -26,7 +26,7 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
-import org.kie.event.kiebase.KieBaseEventListener;
+import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.Environment;

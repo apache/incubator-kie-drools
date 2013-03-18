@@ -7,7 +7,7 @@ import org.droolsjbpm.services.api.IdentityProvider;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.event.AuditEvent;
 import org.jbpm.process.audit.event.DefaultAuditEventBuilderImpl;
-import org.kie.event.process.ProcessStartedEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
 
 @ApplicationScoped
 public class IdentityAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl {

@@ -1,6 +1,6 @@
 package org.droolsjbpm.services.impl.event;
 
-import org.kie.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 
 public class NodeInstanceTriggeredEvent extends NodeInstanceEvent {
 

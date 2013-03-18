@@ -1,6 +1,6 @@
 package org.droolsjbpm.services.impl.event;
 
-import org.kie.event.process.ProcessNodeLeftEvent;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
 
 public class NodeInstanceLeftEvent extends NodeInstanceEvent {
 

@@ -2,7 +2,7 @@ package org.droolsjbpm.services.impl.event;
 
 import java.io.Serializable;
 
-import org.kie.event.process.ProcessNodeEvent;
+import org.kie.api.event.process.ProcessNodeEvent;
 
 public class NodeInstanceEvent implements Serializable {
 
