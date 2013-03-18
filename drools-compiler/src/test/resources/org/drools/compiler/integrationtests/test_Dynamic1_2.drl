@@ -1,6 +1,6 @@
 package org.drools.compiler.test;
 
-import org.drools.Address;
+import org.drools.compiler.Address;
 
 global java.util.List results;
 

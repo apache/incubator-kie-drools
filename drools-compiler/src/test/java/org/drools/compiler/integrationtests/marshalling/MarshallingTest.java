@@ -2497,7 +2497,7 @@ public class MarshallingTest extends CommonTestMethodBase {
     public void testAccumulateSerialization() {
         try {
             KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            knowledgeBuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/marshalling/test_SerializableAccumulate.drl" ),
+            knowledgeBuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/marshalling/test_SerializableAccumulate.drl" ),
                                   ResourceType.DRL );
 
             if ( knowledgeBuilder.hasErrors() ) {
