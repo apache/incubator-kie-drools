@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kie.ChangeSet;
-import org.kie.KnowledgeBase;
+import org.kie.internal.ChangeSet;
+import org.kie.internal.KnowledgeBase;
 import org.kie.agent.KnowledgeAgent.ResourceStatus;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.definition.KnowledgeDefinition;

@@ -4,7 +4,7 @@ import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class NullSafeDereferencingTest extends CommonTestMethodBase {

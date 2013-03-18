@@ -19,7 +19,7 @@ package org.drools.core.io.impl;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.kie.ChangeSet;
+import org.kie.internal.ChangeSet;
 import org.kie.io.Resource;
 
 public class ChangeSetImpl implements ChangeSet {

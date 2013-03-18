@@ -1,7 +1,7 @@
 package org.drools.compiler;
 
 import org.junit.Test;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class InlineCastTest extends CommonTestMethodBase {

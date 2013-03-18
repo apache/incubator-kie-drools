@@ -21,7 +21,7 @@ import java.util.Hashtable;
 import org.drools.core.impl.KnowledgeBaseFactoryServiceImpl;
 import org.drools.core.io.impl.ResourceFactoryServiceImpl;
 import org.drools.core.marshalling.impl.MarshallerProviderImpl;
-import org.kie.KnowledgeBaseFactoryService;
+import org.kie.internal.KnowledgeBaseFactoryService;
 import org.kie.Service;
 import org.kie.io.KieResources;
 import org.kie.marshalling.KieMarshallers;

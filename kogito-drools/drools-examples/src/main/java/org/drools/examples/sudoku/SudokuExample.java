@@ -36,7 +36,7 @@ import javax.swing.WindowConstants;
 import org.drools.examples.sudoku.rules.DroolsUtil;
 import org.drools.examples.sudoku.swing.SudokuGridSamples;
 import org.drools.examples.sudoku.swing.SudokuGridView;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 
 /**
  * This example shows how Drools can be used to solve a 9x9 Sudoku Grid.

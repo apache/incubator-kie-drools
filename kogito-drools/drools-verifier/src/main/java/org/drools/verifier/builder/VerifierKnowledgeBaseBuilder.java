@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierError;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderError;

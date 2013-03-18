@@ -9,8 +9,8 @@ import java.util.HashMap;
 import org.drools.compiler.command.KBuilderBatchExecutionTest;
 import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -26,7 +26,7 @@ public class KBuilderBatchExecutionPersistenceTest extends KBuilderBatchExecutio
         context = null;
     }
 
-    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) { 
+    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
         if( context == null ) { 
             context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         }

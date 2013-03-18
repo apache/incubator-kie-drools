@@ -34,7 +34,7 @@ import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.definition.rule.Rule;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.QueryListenerOption;

@@ -6,7 +6,7 @@ import org.drools.compiler.Mailbox.FolderType;
 import org.drools.compiler.Message;
 import org.junit.Assert;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 /**

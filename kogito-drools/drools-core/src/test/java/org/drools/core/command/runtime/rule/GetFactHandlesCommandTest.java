@@ -3,13 +3,12 @@ package org.drools.core.command.runtime.rule;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
-import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.core.common.InternalFactHandle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 

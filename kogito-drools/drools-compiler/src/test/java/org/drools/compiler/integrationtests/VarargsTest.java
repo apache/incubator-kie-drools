@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.definition.type.PropertyReactive;
 import org.kie.runtime.StatefulKnowledgeSession;
 

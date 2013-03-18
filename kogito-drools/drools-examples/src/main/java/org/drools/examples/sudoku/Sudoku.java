@@ -22,7 +22,7 @@ import java.util.Set;
 import org.drools.examples.sudoku.swing.AbstractSudokuGridModel;
 import org.drools.examples.sudoku.swing.SudokuGridEvent;
 import org.drools.examples.sudoku.swing.SudokuGridModel;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;

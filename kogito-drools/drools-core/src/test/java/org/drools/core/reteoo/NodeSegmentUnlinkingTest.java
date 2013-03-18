@@ -20,8 +20,8 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
-import org.kie.KieBaseConfiguration;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KieBaseConfiguration;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.builder.conf.PhreakOption;
 
 public class NodeSegmentUnlinkingTest {

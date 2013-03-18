@@ -60,9 +60,9 @@ import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.rule.Package;
 import org.junit.Test;
-import org.kie.KieBaseConfiguration;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KieBaseConfiguration;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderConfiguration;
 import org.kie.builder.KnowledgeBuilderFactory;
@@ -1028,8 +1028,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             Thread.currentThread().setContextClassLoader( ccl );
 
             // create another kbase
-            KieBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
-                                                                                                        loader2 );
+            KieBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null,
+                    loader2);
             KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf2 );
             kbase2.addKnowledgePackages( pkgs2 );
 

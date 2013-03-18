@@ -36,7 +36,7 @@ import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 import org.drools.core.spi.GlobalResolver;
 import org.kie.KieBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.MarshallingConfiguration;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;

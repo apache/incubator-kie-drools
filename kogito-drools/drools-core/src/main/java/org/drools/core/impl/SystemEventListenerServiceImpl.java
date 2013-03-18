@@ -1,10 +1,10 @@
 package org.drools.core.impl;
 
 import org.drools.core.util.DelegatingSystemEventListener;
-import org.kie.SystemEventListener;
-import org.kie.SystemEventListenerService;
+import org.kie.internal.SystemEventListener;
+import org.kie.internal.SystemEventListenerService;
 
-public class SystemEventListenerServiceImpl implements SystemEventListenerService{
+public class SystemEventListenerServiceImpl implements SystemEventListenerService {
 
     private DelegatingSystemEventListener listener = new DelegatingSystemEventListener( new DoNothingSystemEventListener() );
 

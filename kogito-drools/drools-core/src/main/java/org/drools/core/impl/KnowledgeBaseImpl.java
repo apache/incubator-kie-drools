@@ -61,7 +61,7 @@ import org.drools.core.event.knowlegebase.impl.BeforeRuleRemovedEventImpl;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.rule.Package;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.definition.KiePackage;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.process.Process;

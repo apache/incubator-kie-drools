@@ -7,7 +7,7 @@ import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.JaxbConfiguration;
 import org.kie.builder.KnowledgeBuilder;

@@ -19,9 +19,9 @@ package org.drools.core.impl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.SessionConfiguration;
-import org.kie.KnowledgeBase;
-import org.kie.KieBaseConfiguration;
-import org.kie.KnowledgeBaseFactoryService;
+import org.kie.internal.KieBaseConfiguration;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactoryService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
 

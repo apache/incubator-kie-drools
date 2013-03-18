@@ -23,9 +23,9 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KieBaseConfiguration;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KieBaseConfiguration;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.conf.PhreakOption;
@@ -112,7 +112,7 @@ public class SegmentCreationTest {
     
     @Test
     public void testSingleSharedPattern() throws Exception {
-        KnowledgeBase kbase = buildKnowledgeBase( "   A() \n", 
+        KnowledgeBase kbase = buildKnowledgeBase( "   A() \n",
                                                   "   A() \n");
 
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;

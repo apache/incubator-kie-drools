@@ -16,7 +16,7 @@
 
 package org.drools.core.event.knowlegebase.impl;
 
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.definition.rule.Rule;
 import org.kie.event.kiebase.BeforeRuleAddedEvent;
 

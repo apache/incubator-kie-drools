@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KieBaseConfiguration;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KieBaseConfiguration;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.conf.EqualityBehaviorOption;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
