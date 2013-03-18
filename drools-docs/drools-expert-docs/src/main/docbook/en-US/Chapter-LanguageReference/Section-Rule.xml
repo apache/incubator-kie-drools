@@ -2283,7 +2283,7 @@ end</programlisting>
           the implementation of the <literal>average</literal>
           function:</para>
 
-          <programlisting language="java"><![CDATA[<![CDATA[<![CDATA[<![CDATA[<![CDATA[<![CDATA[<![CDATA[/**
+          <programlisting language="java">/**
  * An implementation of an accumulator capable of calculating average values
  */
 public class AverageAccumulateFunction implements org.drools.core.runtime.rule.TypedAccumulateFunction {
@@ -2310,7 +2310,11 @@ public class AverageAccumulateFunction implements org.drools.core.runtime.rule.T
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeInt(count);
             out.writeDouble(total);
-      org.drools.core.base /* (non-Javadoc)
+        }
+
+    }
+
+    /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#createContext()
      */
     public Serializable createContext() {
@@ -2318,7 +2322,7 @@ public class AverageAccumulateFunction implements org.drools.core.runtime.rule.T
     }
 
     /* (non-Javadoc)
-   org.drools.core.baseools.base.accumulators.AccumulateFunction#init(java.lang.Object)
+     * @see org.drools.core.base.accumulators.AccumulateFunction#init(java.lang.Object)
      */
     public void init(Serializable context) throws Exception {
         AverageData data = (AverageData) context;
@@ -2326,22 +2330,28 @@ public class AverageAccumulateFunction implements org.drools.core.runtime.rule.T
         data.total = 0;
     }
 
-    /* (noorg.drools.core.base * @see org.drools.base.accumulators.AccumulateFunction#accumulate(java.lang.Object, java.lang.Object)
+    /* (non-Javadoc)
+     * @see org.drools.core.base.accumulators.AccumulateFunction#accumulate(java.lang.Object, java.lang.Object)
      */
     public void accumulate(Serializable context,
                            Object value) {
         AverageData data = (AverageData) context;
         data.count++;
-        data.total += ((Number) value).doubleValorg.drools.core.base  /* (non-Javadoc)
-     * @see org.drools.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
+        data.total += ((Number) value).doubleValue();
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.core.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
      */
     public void reverse(Serializable context,
                         Object value) throws Exception {
         AverageData data = (AverageData) context;
         data.count--;
         data.total -= ((Number) value).doubleValue();
-   org.drools.core.base-Javadoc)
-     * @see org.drools.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.core.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
     public Object getResult(Serializable context) throws Exception {
         AverageData data = (AverageData) context;
@@ -2363,15 +2373,14 @@ public class AverageAccumulateFunction implements org.drools.core.runtime.rule.T
     }
 
 }
-]]>]]>]]>]]>]]>]]>]]></programlisting>
+</programlisting>
 
           <para>The code for the function is very simple, as we could expect,
           as all the "dirty" integration work is done by the engine. Finally,
           to plug the function into the engine, we added it to the
           configuration file:</para>
 
-          <programlisting>drools.accumulate.function.average =
-            org.drools.core.base.accumulators.AverageAccumulateFunction</programlisting>
+          <programlisting>drools.accumulate.function.average = org.drools.core.base.accumulators.AverageAccumulateFunction</programlisting>
 
           <para>Here, "drools.accumulate.function." is a prefix that must
             always be used, "average" is how the function will be used in the
