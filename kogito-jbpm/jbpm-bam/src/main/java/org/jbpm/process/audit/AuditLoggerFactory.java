@@ -8,7 +8,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.jbpm.process.audit.jms.AsyncAuditLogProducer;
-import org.kie.event.KnowledgeRuntimeEventManager;
 import org.kie.runtime.KieSession;
 
 /**
