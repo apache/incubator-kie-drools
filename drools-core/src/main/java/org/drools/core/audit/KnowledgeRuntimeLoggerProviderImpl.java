@@ -19,7 +19,7 @@ package org.drools.core.audit;
 import org.kie.event.KieRuntimeEventManager;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
-import org.kie.logger.KieLoggers;
+import org.kie.api.logger.KieLoggers;
 
 import javax.inject.Singleton;
 

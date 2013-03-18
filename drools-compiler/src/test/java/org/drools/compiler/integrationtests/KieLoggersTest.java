@@ -14,7 +14,7 @@ import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.Resource;
-import org.kie.logger.KieRuntimeLogger;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatelessKieSession;
 import static org.mockito.Mockito.*;

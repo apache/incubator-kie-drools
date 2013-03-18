@@ -19,7 +19,7 @@ import org.kie.api.concurrent.KieExecutors;
 import org.kie.internal.io.ResourceFactoryService;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.io.KieResources;
-import org.kie.logger.KieLoggers;
+import org.kie.api.logger.KieLoggers;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.runtime.KieContainer;
