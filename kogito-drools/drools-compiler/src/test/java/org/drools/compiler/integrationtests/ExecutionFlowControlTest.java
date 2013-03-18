@@ -743,7 +743,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                 "    final TotalHolder finalTotalHolder = totalHolder;\n" +
                 "    final int finalWf = $wf;\n" +
                 "     org.kie.common.AgendaItem agendaItem = (org.kie.common.AgendaItem) kcontext.getActivation();" +
-                "     agendaItem.setActivationUnMatchListener(new org.kie.event.rule.ActivationUnMatchListener() {" +
+                "     agendaItem.setActivationUnMatchListener(new org.kie.internal.event.rule.ActivationUnMatchListener() {" +
                 "            public void unMatch(org.kie.runtime.rule.WorkingMemory workingMemory, org.kie.runtime.rule.Activation activation) {" +
                 "                finalTotalHolder.subtract(finalWf);" +
                 "                System.out.println(\"unmatch \" + finalTotalHolder.getTotal());\n" +

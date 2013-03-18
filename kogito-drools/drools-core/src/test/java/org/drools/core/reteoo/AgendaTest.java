@@ -61,7 +61,7 @@ import org.drools.core.time.impl.DurationTimer;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.event.rule.MatchCancelledCause;
-import org.kie.event.rule.ActivationUnMatchListener;
+import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.runtime.rule.Match;
 
 import static org.junit.Assert.*;
