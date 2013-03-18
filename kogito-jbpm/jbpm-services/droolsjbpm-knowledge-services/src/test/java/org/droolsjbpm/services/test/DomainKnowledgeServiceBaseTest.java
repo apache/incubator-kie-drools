@@ -31,38 +31,39 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
-import org.jbpm.shared.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
-import org.droolsjbpm.services.impl.SessionManagerImpl;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
+import org.droolsjbpm.services.impl.SessionManagerImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
 import org.droolsjbpm.services.impl.model.VariableStateDesc;
+import org.jbpm.shared.services.api.Domain;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.query.TaskSummary;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.commons.java.nio.file.Path;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.commons.java.nio.file.Path;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.TaskSummary;
+
 
 public abstract class DomainKnowledgeServiceBaseTest {
 
     @Inject
-    protected TaskServiceEntryPoint taskService;
+    protected TaskService taskService;
     @Inject
     private BPMN2DataService bpmn2Service;
     @Inject

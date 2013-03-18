@@ -29,6 +29,7 @@ import javax.enterprise.inject.Alternative;
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
 
+import org.kie.internal.task.api.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

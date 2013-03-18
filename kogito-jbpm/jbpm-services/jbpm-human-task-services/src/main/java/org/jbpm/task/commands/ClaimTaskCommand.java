@@ -15,15 +15,19 @@
  */
 package org.jbpm.task.commands;
 
+import java.util.List;
+
 import javax.enterprise.util.AnnotationLiteral;
-import org.kie.internal.command.Context;
+
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.User;
 import org.jbpm.task.events.AfterTaskClaimedEvent;
 import org.jbpm.task.events.BeforeTaskClaimedEvent;
 import org.jbpm.task.exception.PermissionDeniedException;
+import org.kie.internal.command.Context;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.User;
 
 /**
  * Operation.Claim 
@@ -49,8 +53,8 @@ public class ClaimTaskCommand extends TaskCommand {
         User user = context.getTaskIdentityService().getUserById(userId);
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskClaimedEvent>() {}).fire(task);
         // CHeck for potential Owner allowed (decorator?)
-        boolean potOwnerAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getPotentialOwners());
-        boolean adminAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getBusinessAdministrators());
+        boolean potOwnerAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), (List<OrganizationalEntity>) task.getPeopleAssignments().getPotentialOwners());
+        boolean adminAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), (List<OrganizationalEntity>) task.getPeopleAssignments().getBusinessAdministrators());
         
         if (!potOwnerAllowed && !adminAllowed) {
             String errorMessage = "The user" + user + "is not allowed to Start the task "+task.getId();

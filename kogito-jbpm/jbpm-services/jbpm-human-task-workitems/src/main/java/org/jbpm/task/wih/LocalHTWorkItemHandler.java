@@ -18,21 +18,23 @@ package org.jbpm.task.wih;
 import java.util.Date;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.jbpm.shared.services.api.SessionManager;
-import org.jbpm.task.ContentData;
-import org.jbpm.task.Task;
 import org.jbpm.task.annotations.External;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.exception.PermissionDeniedException;
+import org.jbpm.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.task.impl.factories.TaskFactory;
 import org.jbpm.task.utils.OnErrorAction;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,12 +46,14 @@ public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private static final Logger logger = LoggerFactory.getLogger(LocalHTWorkItemHandler.class);
     
     @Inject
-    private TaskServiceEntryPoint taskService;
+    private TaskService taskService;
 
     @Inject @External
     private ExternalTaskEventListener listener;
     
     @Inject
+    private Instance<SessionManager> sessionManagerInjected;
+    
     private SessionManager sessionManager;
 
     private KieSession kieSessionLocal;
@@ -72,25 +76,33 @@ public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
         this.sessionManager = sessionManager;
     }
 
-    public void setTaskService(TaskServiceEntryPoint taskService) {
+    public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
     }
 
     public void setTaskEventListener(ExternalTaskEventListener listener) {
         this.listener = listener;
-        taskService.registerTaskLifecycleEventListener(listener);
+        ((TaskServiceEntryPointImpl)taskService).registerTaskLifecycleEventListener(listener);
     }
 
-    public TaskServiceEntryPoint getTaskService() {
+    public TaskService getTaskService() {
         return taskService;
+    }
+    
+    protected SessionManager getSessionManager() {
+        if (this.sessionManager == null && sessionManagerInjected != null) {
+            this.sessionManager = sessionManagerInjected.get();
+        }
+        
+        return this.sessionManager;
     }
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         KieSession ksessionById = null;
-        if(sessionManager != null){
-            int sessionId = sessionManager.getSessionForProcessInstanceId(workItem.getProcessInstanceId());
-            ksessionById = sessionManager.getKsessionById(sessionId);
+        if(getSessionManager() != null){
+            int sessionId = getSessionManager().getSessionForProcessInstanceId(workItem.getProcessInstanceId());
+            ksessionById = getSessionManager().getKsessionById(sessionId);
         }else{
             ksessionById = this.kieSessionLocal;
         }

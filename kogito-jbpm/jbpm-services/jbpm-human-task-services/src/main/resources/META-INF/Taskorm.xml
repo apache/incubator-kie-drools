@@ -6,7 +6,7 @@
       <named-query name="TasksAssignedAsBusinessAdministrator">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -25,13 +25,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner             
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity businessAdministrator
+    OrganizationalEntityImpl businessAdministrator
 where
     t.archived = 0 and
     businessAdministrator.id = :userId and
@@ -59,7 +59,7 @@ where
       <named-query name="TasksAssignedAsExcludedOwner">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -78,13 +78,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner 
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity excludedOwners
+    OrganizationalEntityImpl excludedOwners
 where
     t.archived = 0 and
     excludedOwners.id = :userId and
@@ -112,7 +112,7 @@ where
       <named-query name="TasksAssignedAsPotentialOwner">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -131,13 +131,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t
+    TaskImpl t
     left join t.taskData.createdBy as createdBy 
     left join t.taskData.actualOwner as actualOwner
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity potentialOwners
+    OrganizationalEntityImpl potentialOwners
 where
     t.archived = 0 and
     potentialOwners.id = :userId and
@@ -167,7 +167,7 @@ where
       <named-query name="TasksAssignedAsPotentialOwnerByStatus">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -186,13 +186,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity potentialOwners
+    OrganizationalEntityImpl potentialOwners
 where
     t.archived = 0 and
     potentialOwners.id = :userId and
@@ -222,7 +222,7 @@ where
             <named-query name="TasksAssignedAsPotentialOwnerByStatusByGroup">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -241,13 +241,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity potentialOwners
+    OrganizationalEntityImpl potentialOwners
 where
     t.archived = 0 and
     ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
@@ -278,7 +278,7 @@ where
             <named-query name="TasksAssignedAsPotentialOwnerWithGroups">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -297,13 +297,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity potentialOwners
+    OrganizationalEntityImpl potentialOwners
 where
     t.archived = 0 and
     ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
@@ -333,7 +333,7 @@ where
  <named-query name="TasksAssignedAsPotentialOwnerByStatusWithGroups">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -352,13 +352,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity potentialOwners
+    OrganizationalEntityImpl potentialOwners
 where
     t.archived = 0 and
     ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
@@ -388,7 +388,7 @@ where
        <named-query name="TasksAssignedAsPotentialOwnerByGroup">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -407,13 +407,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity potentialOwners
+    OrganizationalEntityImpl potentialOwners
 where
     t.archived = 0 and
     t.taskData.actualOwner = null and
@@ -450,9 +450,9 @@ select
      potentialOwners.id
 
 from
-    Task t, 
+    TaskImpl t, 
     
-              OrganizationalEntity potentialOwners        
+              OrganizationalEntityImpl potentialOwners        
 
 where
     
@@ -480,9 +480,9 @@ select
      potentialOwners.id
 
 from
-    Task t, 
+    TaskImpl t, 
     
-              OrganizationalEntity potentialOwners        
+              OrganizationalEntityImpl potentialOwners        
 
 where
     
@@ -508,9 +508,9 @@ select
      potentialOwners.id
 
 from
-    Task t, 
+    TaskImpl t, 
     
-              OrganizationalEntity potentialOwners        
+              OrganizationalEntityImpl potentialOwners        
 
 where
     
@@ -531,7 +531,7 @@ where
       <named-query name="SubTasksAssignedAsPotentialOwner">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -550,13 +550,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity potentialOwners
+    OrganizationalEntityImpl potentialOwners
 where
     t.archived = 0 and
     t.taskData.parentId = :parentId and
@@ -588,7 +588,7 @@ where
 <named-query name="GetSubTasksByParentTaskId">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -607,7 +607,7 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t
+    TaskImpl t
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner
     left join t.subjects as subject
@@ -643,7 +643,7 @@ where
       <named-query name="TasksAssignedAsRecipient">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -662,13 +662,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner 
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity recipients
+    OrganizationalEntityImpl recipients
 where
     t.archived = 0 and
     recipients.id = :userId and
@@ -696,7 +696,7 @@ where
       <named-query name="TasksAssignedAsTaskInitiator">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -715,13 +715,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner           
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity taskInitiator
+    OrganizationalEntityImpl taskInitiator
 where
     t.archived = 0 and
     taskInitiator.id = :userId and
@@ -749,7 +749,7 @@ where
       <named-query name="TasksAssignedAsTaskStakeholder">
           <query>
 select
-     new org.jbpm.task.query.TaskSummary(
+     new org.jbpm.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -768,13 +768,13 @@ select
      t.subTaskStrategy,
      t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner           
     left join t.subjects as subject
     left join t.descriptions as description
     left join t.names as name,
-    OrganizationalEntity taskStakeholder
+    OrganizationalEntityImpl taskStakeholder
 where
     t.archived = 0 and
     taskStakeholder.id = :userId and
@@ -802,7 +802,7 @@ where
       <named-query name="TasksOwned">
           <query>
 select
-    new org.jbpm.task.query.TaskSummary(
+    new org.jbpm.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
     name.text,
@@ -821,7 +821,7 @@ select
     t.subTaskStrategy,
     t.taskData.parentId              )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner 
     left join t.subjects as subject
@@ -854,7 +854,7 @@ where
        <named-query name="TasksOwnedWithParticularStatusByExpirationDate">
           <query>
 select
-    new org.jbpm.task.query.TaskSummary(
+    new org.jbpm.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
     name.text,
@@ -873,7 +873,7 @@ select
     t.subTaskStrategy,
     t.taskData.parentId )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner 
     left join t.subjects as subject
@@ -906,7 +906,7 @@ where
         <named-query name="TasksOwnedWithParticularStatusByExpirationDateOptional">
           <query>
 select
-    new org.jbpm.task.query.TaskSummary(
+    new org.jbpm.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
     name.text,
@@ -925,7 +925,7 @@ select
     t.subTaskStrategy,
     t.taskData.parentId )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner 
     left join t.subjects as subject
@@ -961,7 +961,7 @@ where
     <named-query name="TasksByStatus">
         <query>
             select
-            new org.jbpm.task.query.TaskSummary(
+            new org.jbpm.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
             name.text,
@@ -980,7 +980,7 @@ where
             t.subTaskStrategy,
             t.taskData.parentId            )
             from
-            Task t 
+            TaskImpl t 
             left join t.taskData.createdBy as createdBy
             left join t.taskData.actualOwner as actualOwner 
             left join t.subjects as subject
@@ -1013,7 +1013,7 @@ where
     <named-query name="TasksByStatusSince">
         <query>
             select
-            new org.jbpm.task.query.TaskSummary(
+            new org.jbpm.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
             name.text,
@@ -1032,7 +1032,7 @@ where
             t.subTaskStrategy,
             t.taskData.parentId         )
             from
-            Task t 
+            TaskImpl t 
             left join t.taskData.createdBy as createdBy
             left join t.taskData.actualOwner as actualOwner 
             left join t.subjects as subject
@@ -1065,7 +1065,7 @@ where
     <named-query name="ArchivedTasks">
         <query>
             select
-            new org.jbpm.task.query.TaskSummary(
+            new org.jbpm.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
             name.text,
@@ -1084,7 +1084,7 @@ where
             t.subTaskStrategy,
             t.taskData.parentId       )
             from
-            Task t 
+            TaskImpl t 
             left join t.taskData.createdBy as createdBy
             left join t.taskData.actualOwner as actualOwner 
             left join t.subjects as subject
@@ -1117,7 +1117,7 @@ where
       <named-query name="TasksOwnedWithParticularStatus">
           <query>
 select
-    new org.jbpm.task.query.TaskSummary(
+    new org.jbpm.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
     name.text,
@@ -1136,7 +1136,7 @@ select
     t.subTaskStrategy,
     t.taskData.parentId )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner 
     left join t.subjects as subject
@@ -1170,7 +1170,7 @@ where
           <named-query name="TaskSummariesByIds">
           <query>
 select
-    new org.jbpm.task.query.TaskSummary(
+    new org.jbpm.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
     name.text,
@@ -1189,7 +1189,7 @@ select
     t.subTaskStrategy,
     t.taskData.parentId )
 from
-    Task t 
+    TaskImpl t 
     left join t.taskData.createdBy as createdBy
     left join t.taskData.actualOwner as actualOwner 
     left join t.subjects as subject
@@ -1226,8 +1226,8 @@ select
      potentialOwners.id
 
 from
-    Task t, 
-    OrganizationalEntity potentialOwners        
+    TaskImpl t, 
+    OrganizationalEntityImpl potentialOwners        
 
 where
     
@@ -1246,13 +1246,13 @@ where
 	  <named-query name="UnescalatedEndDeadlines">
           <query>
 select
-     new org.jbpm.task.query.DeadlineSummary(
+     new org.jbpm.task.query.DeadlineSummaryImpl(
      t.id,
      d.id,
      d.date)
 from
-    Task t,
-    Deadline d
+    TaskImpl t,
+    DeadlineImpl d
 where
     t.archived = 0 and
     d in elements( t.deadlines.endDeadlines ) and
@@ -1266,13 +1266,13 @@ order by
           <named-query name="UnescalatedStartDeadlines">
           <query>
 select
-     new org.jbpm.task.query.DeadlineSummary(
+     new org.jbpm.task.query.DeadlineSummaryImpl(
      t.id,
      d.id,
      d.date)
 from
-    Task t,
-    Deadline d
+    TaskImpl t,
+    DeadlineImpl d
 where
     t.archived = 0 and
     d in elements( t.deadlines.startDeadlines ) and
@@ -1287,7 +1287,7 @@ order by
 select
     t
 from
-    Task t
+    TaskImpl t
 where
     t.archived = 0 and
     t.taskData.workItemId = :workItemId
@@ -1297,7 +1297,7 @@ where
       <named-query name="TasksByStatusByProcessId">
         <query>
             select
-            new org.jbpm.task.query.TaskSummary(
+            new org.jbpm.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
             name.text,
@@ -1316,7 +1316,7 @@ where
             t.subTaskStrategy,
             t.taskData.parentId )
             from
-            Task t 
+            TaskImpl t 
             left join t.taskData.actualOwner as actualOwner            
             left join t.taskData.createdBy as createdBy
             left join t.subjects as subject
@@ -1349,7 +1349,7 @@ where
     <named-query name="TasksByStatusByProcessIdByTaskName">
         <query>
             select
-            new org.jbpm.task.query.TaskSummary(
+            new org.jbpm.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
             name.text,
@@ -1368,7 +1368,7 @@ where
             t.subTaskStrategy,
             t.taskData.parentId )
             from
-            Task t
+            TaskImpl t
             left join t.taskData.actualOwner as actualOwner
             left join t.taskData.createdBy as createdBy
             left join t.subjects as subject
@@ -1404,7 +1404,7 @@ where
 select
     t.id
 from
-    Task t
+    TaskImpl t
 where
     t.archived = 0 and
     t.taskData.processInstanceId = :processInstanceId

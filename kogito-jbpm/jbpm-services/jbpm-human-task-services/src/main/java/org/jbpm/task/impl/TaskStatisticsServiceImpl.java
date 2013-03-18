@@ -17,13 +17,15 @@ package org.jbpm.task.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.task.Status;
-import org.jbpm.task.api.TaskQueryService;
-import org.jbpm.task.api.TaskStatisticsService;
-import org.jbpm.task.query.TaskSummary;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.TaskStatisticsService;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.TaskSummary;
 
 /**
  *

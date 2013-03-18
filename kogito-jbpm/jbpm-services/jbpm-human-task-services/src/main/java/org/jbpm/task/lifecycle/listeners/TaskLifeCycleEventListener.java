@@ -4,7 +4,7 @@
  */
 package org.jbpm.task.lifecycle.listeners;
 
-import org.jbpm.task.Task;
+import org.kie.internal.task.api.model.Task;
 
 /**
  *

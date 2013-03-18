@@ -5,12 +5,14 @@
 package org.jbpm.task.impl;
 
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.TaskEvent;
-import org.jbpm.task.api.TaskEventsService;
+import org.kie.internal.task.api.TaskEventsService;
+import org.kie.internal.task.api.model.TaskEvent;
 
 /**
  *

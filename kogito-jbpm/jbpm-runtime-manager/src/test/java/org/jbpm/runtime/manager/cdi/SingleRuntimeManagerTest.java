@@ -17,23 +17,20 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.runtime.manager.util.TestUtil;
-import org.jbpm.task.Status;
-import org.jbpm.task.TaskService;
-import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
-import org.jbpm.task.identity.UserGroupCallbackManager;
-import org.jbpm.task.query.TaskSummary;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.manager.RuntimeManager;
-import org.kie.runtime.manager.cdi.qualifier.PerProcessInstance;
-import org.kie.runtime.manager.cdi.qualifier.PerRequest;
-import org.kie.runtime.manager.cdi.qualifier.Singleton;
-import org.kie.runtime.manager.context.EmptyContext;
-import org.kie.runtime.manager.context.ProcessInstanceIdContext;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
+import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
+import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
+import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.TaskSummary;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -61,6 +58,7 @@ public class SingleRuntimeManagerTest {
                 .addPackage("org.jbpm.task.deadlines") // deadlines
                 .addPackage("org.jbpm.task.deadlines.notifications.impl")
                 .addPackage("org.jbpm.task.subtask")
+                .addPackage("org.jbpm.shared.services.impl")
                 .addPackage("org.jbpm.runtime.manager")
                 .addPackage("org.jbpm.runtime.manager.impl")
                 .addPackage("org.jbpm.runtime.manager.impl.cdi.qualifier")
@@ -88,12 +86,11 @@ public class SingleRuntimeManagerTest {
         Properties props = new Properties();
         props.setProperty("john", "user");
         
-        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(props));
     }
     
     @AfterClass
     public static void teardown() {
-        UserGroupCallbackManager.resetCallback();
+
         pds.close();
     }
     /*
@@ -116,7 +113,7 @@ public class SingleRuntimeManagerTest {
     public void testSingleSingletonManager() {
         assertNotNull(singletonManager);
         
-        org.kie.runtime.manager.Runtime runtime = singletonManager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.Runtime runtime = singletonManager.getRuntime(EmptyContext.get());
         assertNotNull(runtime);
         testProcessStartOnManager(runtime);
         
@@ -127,7 +124,7 @@ public class SingleRuntimeManagerTest {
     public void testSinglePerRequestManager() {
         assertNotNull(perRequestManager);
         
-        org.kie.runtime.manager.Runtime runtime = perRequestManager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.Runtime runtime = perRequestManager.getRuntime(EmptyContext.get());
         assertNotNull(runtime);
         testProcessStartOnManager(runtime);   
         perRequestManager.disposeRuntime(runtime);
@@ -137,14 +134,14 @@ public class SingleRuntimeManagerTest {
     public void testSinglePerProcessInstanceManager() {
         assertNotNull(perProcessInstanceManager);
         
-        org.kie.runtime.manager.Runtime runtime = perProcessInstanceManager.getRuntime(ProcessInstanceIdContext.get());
+        org.kie.internal.runtime.manager.Runtime runtime = perProcessInstanceManager.getRuntime(ProcessInstanceIdContext.get());
         assertNotNull(runtime);
         testProcessStartOnManager(runtime);  
         perProcessInstanceManager.disposeRuntime(runtime);
     }
     
     
-    private void testProcessStartOnManager(org.kie.runtime.manager.Runtime<TaskService> runtime) {
+    private void testProcessStartOnManager(org.kie.internal.runtime.manager.Runtime runtime) {
         
         
         KieSession ksession = runtime.getKieSession();

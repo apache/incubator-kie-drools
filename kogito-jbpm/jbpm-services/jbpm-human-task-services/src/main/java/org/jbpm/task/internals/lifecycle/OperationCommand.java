@@ -17,8 +17,9 @@
 package org.jbpm.task.internals.lifecycle;
 
 import java.util.List;
-import org.jbpm.task.Operation;
-import org.jbpm.task.Status;
+
+import org.kie.internal.task.api.model.Operation;
+import org.kie.internal.task.api.model.Status;
 
 
 public class OperationCommand {

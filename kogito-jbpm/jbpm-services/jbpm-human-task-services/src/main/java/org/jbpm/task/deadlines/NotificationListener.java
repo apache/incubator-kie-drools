@@ -15,7 +15,7 @@
  */
 package org.jbpm.task.deadlines;
 
-import org.jbpm.task.events.NotificationEvent;
+import org.kie.internal.task.api.model.NotificationEvent;
 
 /**
  *

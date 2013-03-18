@@ -6,14 +6,14 @@ import java.util.Map.Entry;
 
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
-import org.kie.event.process.ProcessEventListener;
-import org.kie.event.rule.AgendaEventListener;
-import org.kie.event.rule.WorkingMemoryEventListener;
-import org.kie.runtime.manager.RegisterableItemsFactory;
-import org.kie.runtime.manager.Runtime;
-import org.kie.runtime.manager.RuntimeEnvironment;
-import org.kie.runtime.manager.RuntimeManager;
-import org.kie.runtime.process.WorkItemHandler;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.internal.runtime.manager.RegisterableItemsFactory;
+import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.manager.RuntimeManager;
 
 public abstract class AbstractRuntimeManager implements RuntimeManager {
 

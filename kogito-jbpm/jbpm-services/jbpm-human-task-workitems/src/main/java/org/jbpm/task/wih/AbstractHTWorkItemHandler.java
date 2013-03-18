@@ -19,13 +19,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jbpm.task.ContentData;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.User;
+import org.jbpm.task.impl.model.I18NTextImpl;
+import org.jbpm.task.impl.model.TaskDataImpl;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.jbpm.task.impl.model.UserImpl;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
 import org.jbpm.task.wih.util.HumanTaskHandlerHelper;
@@ -35,6 +32,12 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.PeopleAssignments;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,11 +64,11 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
     }
 
     protected Task createTaskBasedOnWorkItemParams(KieSession session, WorkItem workItem) {
-        Task task = new Task();
+        Task task = new TaskImpl();
         String taskName = (String) workItem.getParameter("TaskName");
         if (taskName != null) {
             List<I18NText> names = new ArrayList<I18NText>();
-            names.add(new I18NText("en-UK", taskName));
+            names.add(new I18NTextImpl("en-UK", taskName));
             task.setNames(names);
         }
         String comment = (String) workItem.getParameter("Comment");
@@ -73,10 +76,10 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             comment = "";
         }
         List<I18NText> descriptions = new ArrayList<I18NText>();
-        descriptions.add(new I18NText("en-UK", comment));
+        descriptions.add(new I18NTextImpl("en-UK", comment));
         task.setDescriptions(descriptions);
         List<I18NText> subjects = new ArrayList<I18NText>();
-        subjects.add(new I18NText("en-UK", comment));
+        subjects.add(new I18NTextImpl("en-UK", comment));
         task.setSubjects(subjects);
         String priorityString = (String) workItem.getParameter("Priority");
         int priority = 0;
@@ -88,7 +91,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             }
         }
         task.setPriority(priority);
-        TaskData taskData = new TaskData();
+        TaskData taskData = new TaskDataImpl();
         taskData.setWorkItemId(workItem.getId());
         taskData.setProcessInstanceId(workItem.getProcessInstanceId());
         if (session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
@@ -105,7 +108,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         }
         String createdBy = (String) workItem.getParameter("CreatedBy");
         if (createdBy != null && createdBy.trim().length() > 0) {
-            taskData.setCreatedBy(new User(createdBy));
+            taskData.setCreatedBy(new UserImpl(createdBy));
         }
         PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper();
         peopleAssignmentHelper.handlePeopleAssignments(workItem, task, taskData);

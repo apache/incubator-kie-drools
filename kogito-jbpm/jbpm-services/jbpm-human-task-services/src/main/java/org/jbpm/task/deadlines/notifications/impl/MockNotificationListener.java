@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import org.jbpm.task.deadlines.NotificationListener;
-import org.jbpm.task.events.NotificationEvent;
+import org.kie.internal.task.api.model.NotificationEvent;
 
 /**
  *

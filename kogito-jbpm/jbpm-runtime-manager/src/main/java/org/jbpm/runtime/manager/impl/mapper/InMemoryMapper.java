@@ -3,8 +3,8 @@ package org.jbpm.runtime.manager.impl.mapper;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kie.runtime.manager.Context;
-import org.kie.runtime.manager.Mapper;
+import org.kie.internal.runtime.manager.Context;
+import org.kie.internal.runtime.manager.Mapper;
 
 public class InMemoryMapper implements Mapper {
 

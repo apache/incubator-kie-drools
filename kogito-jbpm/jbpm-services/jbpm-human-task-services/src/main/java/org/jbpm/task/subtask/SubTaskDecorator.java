@@ -18,19 +18,22 @@ package org.jbpm.task.subtask;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
+
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.ContentData;
-import org.jbpm.task.FaultData;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.SubTasksStrategy;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskInstanceService;
-import org.jbpm.task.api.TaskQueryService;
-import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.SubTasksStrategy;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskSummary;
 
 /**
  *
@@ -173,7 +176,7 @@ public class SubTaskDecorator implements TaskInstanceService {
         Task task = queryService.getTaskInstanceById(taskId);
         Task parentTask = null;
         if(task.getTaskData().getParentId() != -1){
-            parentTask = pm.find(Task.class, task.getTaskData().getParentId());
+            parentTask = pm.find(TaskImpl.class, task.getTaskData().getParentId());
         }
         if(parentTask != null){
             if(parentTask.getSubTaskStrategy().equals(SubTasksStrategy.EndParentOnAllSubTasksEnd)){

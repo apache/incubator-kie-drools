@@ -30,12 +30,13 @@ import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
-import org.jbpm.task.TaskDef;
+import org.jbpm.task.impl.model.TaskDefImpl;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.io.ResourceType;
+
 
 /**
  *
@@ -100,7 +101,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     }
 
 
-    public Collection<TaskDef> getAllTasksDef(String processId){
+    public Collection<TaskDefImpl> getAllTasksDef(String processId){
         if (processId == null || "".equals(processId)) {
             throw new IllegalStateException("The Process id cannot be Empty!");
         }

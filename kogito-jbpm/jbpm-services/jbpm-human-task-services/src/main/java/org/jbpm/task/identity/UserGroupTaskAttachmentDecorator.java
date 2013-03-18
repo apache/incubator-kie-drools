@@ -20,9 +20,10 @@ import java.util.List;
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.Content;
-import org.jbpm.task.api.TaskAttachmentService;
+
+import org.kie.internal.task.api.TaskAttachmentService;
+import org.kie.internal.task.api.model.Attachment;
+import org.kie.internal.task.api.model.Content;
 
 /**
  *

@@ -17,17 +17,18 @@ package org.jbpm.task.commands;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.task.annotations.Internal;
+import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.World;
-import org.jbpm.task.Task;
-import org.jbpm.task.annotations.Internal;
-import org.jbpm.task.api.TaskContentService;
-import org.jbpm.task.api.TaskDefService;
-import org.jbpm.task.api.TaskIdentityService;
-import org.jbpm.task.api.TaskQueryService;
-import org.jbpm.task.identity.UserGroupCallback;
-import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
+import org.kie.internal.task.api.TaskContentService;
+import org.kie.internal.task.api.TaskDefService;
+import org.kie.internal.task.api.TaskIdentityService;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.UserGroupCallback;
+import org.kie.internal.task.api.model.Task;
 
 /**
  *

@@ -5,12 +5,15 @@
 package org.jbpm.task.impl;
 
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.TaskDef;
-import org.jbpm.task.api.TaskDefService;
+import org.jbpm.task.impl.model.TaskDefImpl;
+import org.kie.internal.task.api.TaskDefService;
+import org.kie.internal.task.api.model.TaskDef;
 
 /**
  *
@@ -35,10 +38,10 @@ public class TaskDefServiceImpl implements TaskDefService{
         return resultList;
     }
 
-    public TaskDef getTaskDefById(String name) {
+    public TaskDefImpl getTaskDefById(String name) {
         //TODO: FIX LOGIC
         
-        List<TaskDef> resultList =  (List<TaskDef>)pm.queryStringWithParametersInTransaction("select td from TaskDef td where td.name = :name", pm.addParametersToMap("name", name));
+        List<TaskDefImpl> resultList =  (List<TaskDefImpl>)pm.queryStringWithParametersInTransaction("select td from TaskDef td where td.name = :name", pm.addParametersToMap("name", name));
                                  
         
         if(resultList.size() > 0){
@@ -49,7 +52,7 @@ public class TaskDefServiceImpl implements TaskDefService{
     }
     
     public void undeployTaskDef(String name) {
-        TaskDef taskDef = getTaskDefById(name);
+        TaskDefImpl taskDef = getTaskDefById(name);
         pm.remove(taskDef);    
     }
     

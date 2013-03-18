@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.Set;
 import javax.enterprise.inject.Alternative;
 
+import org.kie.internal.task.api.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

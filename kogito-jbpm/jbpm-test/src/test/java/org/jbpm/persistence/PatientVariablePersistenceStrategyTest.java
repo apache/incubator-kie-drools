@@ -11,20 +11,21 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 import org.jbpm.persistence.objects.MedicalRecord;
 import org.jbpm.persistence.objects.Patient;
 import org.jbpm.persistence.objects.RecordRow;
-import org.jbpm.task.Content;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.Content;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitTestCase {
 
     
     
-    protected TaskServiceEntryPoint taskService ;
+    protected TaskService taskService ;
 
     
     protected StatefulKnowledgeSession ksession;

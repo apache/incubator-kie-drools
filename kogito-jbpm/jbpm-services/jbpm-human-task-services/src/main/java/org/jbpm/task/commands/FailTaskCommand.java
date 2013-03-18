@@ -16,18 +16,20 @@
 package org.jbpm.task.commands;
 
 import java.util.Map;
+
 import javax.enterprise.util.AnnotationLiteral;
-import org.kie.internal.command.Context;
+
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.task.Content;
-import org.jbpm.task.FaultData;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.User;
 import org.jbpm.task.events.AfterTaskFailedEvent;
 import org.jbpm.task.events.BeforeTaskFailedEvent;
 import org.jbpm.task.exception.PermissionDeniedException;
+import org.jbpm.task.impl.model.ContentImpl;
+import org.jbpm.task.impl.model.FaultDataImpl;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.internal.command.Context;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.User;
 
 /**
  * Operation.Fail : [ new OperationCommand().{ status = [ Status.InProgress ],
@@ -63,8 +65,8 @@ public class FailTaskCommand<Void> extends TaskCommand {
 
         if (data != null) {
 
-            FaultData faultData = ContentMarshallerHelper.marshalFault(data, null);
-            Content content = new Content();
+            FaultDataImpl faultData = ContentMarshallerHelper.marshalFault(data, null);
+            ContentImpl content = new ContentImpl();
             content.setContent(faultData.getContent());
             context.getPm().persist(content);
             task.getTaskData().setFault(content.getId(), faultData);

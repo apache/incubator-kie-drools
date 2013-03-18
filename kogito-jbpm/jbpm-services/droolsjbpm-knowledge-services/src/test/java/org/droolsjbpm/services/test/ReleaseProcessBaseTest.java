@@ -28,30 +28,31 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
-import org.jbpm.shared.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
-import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
 import org.droolsjbpm.services.impl.example.NotificationWorkItemHandler;
 import org.droolsjbpm.services.impl.example.TriggerTestsWorkItemHandler;
+import org.jbpm.shared.services.api.Domain;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.query.TaskSummary;
+import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.commons.java.nio.file.Path;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.commons.java.nio.file.Path;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.TaskSummary;
+
 
 public abstract class ReleaseProcessBaseTest {
 
     @Inject
-    protected TaskServiceEntryPoint taskService;
+    protected TaskService taskService;
     @Inject
     private BPMN2DataService bpmn2Service;
     @Inject

@@ -17,6 +17,7 @@ package org.jbpm.task;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 import org.junit.After;
 import org.junit.Before;
 

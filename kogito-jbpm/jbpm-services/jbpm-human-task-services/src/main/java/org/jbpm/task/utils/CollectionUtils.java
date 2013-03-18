@@ -23,19 +23,29 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jbpm.task.Attachment;
-import org.jbpm.task.BooleanExpression;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Deadline;
-import org.jbpm.task.EmailNotification;
-import org.jbpm.task.Escalation;
-import org.jbpm.task.Group;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.Notification;
-import org.jbpm.task.NotificationType;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Reassignment;
-import org.jbpm.task.User;
+import org.jbpm.task.impl.model.AttachmentImpl;
+import org.jbpm.task.impl.model.BooleanExpressionImpl;
+import org.jbpm.task.impl.model.CommentImpl;
+import org.jbpm.task.impl.model.DeadlineImpl;
+import org.jbpm.task.impl.model.EmailNotificationImpl;
+import org.jbpm.task.impl.model.EscalationImpl;
+import org.jbpm.task.impl.model.GroupImpl;
+import org.jbpm.task.impl.model.I18NTextImpl;
+import org.jbpm.task.impl.model.NotificationImpl;
+import org.jbpm.task.impl.model.ReassignmentImpl;
+import org.jbpm.task.impl.model.UserImpl;
+import org.kie.internal.task.api.model.Attachment;
+import org.kie.internal.task.api.model.BooleanExpression;
+import org.kie.internal.task.api.model.Comment;
+import org.kie.internal.task.api.model.Deadline;
+import org.kie.internal.task.api.model.Escalation;
+import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.Notification;
+import org.kie.internal.task.api.model.NotificationType;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Reassignment;
+import org.kie.internal.task.api.model.User;
 
 public class CollectionUtils {
     
@@ -100,7 +110,7 @@ public class CollectionUtils {
         int size = in.readInt();
         List<Comment> list = new ArrayList<Comment>(size);
         for ( int i = 0; i < size; i++ ) {
-            Comment item = new Comment();
+            Comment item = new CommentImpl();
             item.readExternal( in );
             list.add( item );
         }
@@ -119,7 +129,7 @@ public class CollectionUtils {
         int size = in.readInt();
         List<Attachment> list = new ArrayList<Attachment>(size);
         for ( int i = 0; i < size; i++ ) {
-            Attachment item = new Attachment();
+            Attachment item = new AttachmentImpl();
             item.readExternal( in );
             list.add( item );
         }
@@ -137,7 +147,7 @@ public class CollectionUtils {
         int size = in.readInt();
         List<BooleanExpression> list = new ArrayList<BooleanExpression>(size);
         for ( int i = 0; i < size; i++ ) {
-            BooleanExpression item = new BooleanExpression();
+            BooleanExpression item = new BooleanExpressionImpl();
             item.readExternal( in );
             list.add( item );
         }
@@ -161,11 +171,11 @@ public class CollectionUtils {
             Notification item = null;
             switch( NotificationType.valueOf(  in.readUTF() ) ) {
                 case Default : {
-                    item = new Notification();
+                    item = new NotificationImpl();
                     break;
                 }
                 case Email : {
-                    item = new EmailNotification();
+                    item = new EmailNotificationImpl();
                     break;
                 }
             }
@@ -188,7 +198,7 @@ public class CollectionUtils {
         int size = in.readInt();
         List<Reassignment> list = new ArrayList<Reassignment>(size);
         for ( int i = 0; i < size; i++ ) {
-            Reassignment item = new Reassignment();
+            Reassignment item = new ReassignmentImpl();
             item.readExternal( in );
             list.add( item );
         }
@@ -206,7 +216,7 @@ public class CollectionUtils {
         int size = in.readInt();
         List<Deadline> list = new ArrayList<Deadline>(size);
         for ( int i = 0; i < size; i++ ) {
-            Deadline item = new Deadline();
+            Deadline item = new DeadlineImpl();
             item.readExternal( in );
             list.add( item );
         }
@@ -224,7 +234,7 @@ public class CollectionUtils {
         int size = in.readInt();
         List<Escalation> list = new ArrayList<Escalation>(size);
         for ( int i = 0; i < size; i++ ) {
-            Escalation item = new Escalation();
+            Escalation item = new EscalationImpl();
             item.readExternal( in );
             list.add( item );
         }
@@ -242,7 +252,7 @@ public class CollectionUtils {
         int size = in.readInt();
         List<I18NText> list = new ArrayList<I18NText>(size);
         for ( int i = 0; i < size; i++ ) {
-            I18NText item = new I18NText();
+            I18NText item = new I18NTextImpl();
             item.readExternal( in );
             list.add( item );
         }
@@ -267,11 +277,11 @@ public class CollectionUtils {
         for ( int i = 0; i < size; i++ ) {
             short type = in.readShort();
             if ( type == 0 ) {
-                User user = new User();
+                User user = new UserImpl();
                 user.readExternal( in );
                 list.add( user ); 
             } else {
-                Group group = new Group();
+                Group group = new GroupImpl();
                 group.readExternal( in );
                 list.add( group );
             }

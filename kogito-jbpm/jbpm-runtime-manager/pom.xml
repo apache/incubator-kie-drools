@@ -102,4 +102,16 @@
       <artifactId>jbpm-human-task-workitems</artifactId>
     </dependency>
    </dependencies> 
+   <build>
+    <plugins>    
+      <plugin>
+      <!-- we need to fork always as we have mixture of both arquillian tests and regular 
+    and to avoid clashing between them as both need to setup data source and bound it to JNDI -->
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>always</forkMode>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

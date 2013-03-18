@@ -34,12 +34,13 @@ import org.jbpm.shared.services.api.Domain;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.jbpm.shared.services.cdi.Startup;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.wih.LocalHTWorkItemHandler;
+import org.kie.api.runtime.KieSession;
 import org.kie.commons.io.IOService;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.task.api.TaskService;
+
 
 /**
  * @author salaboy
@@ -60,7 +61,7 @@ public class KnowledgeDomainServiceImpl implements KnowledgeDomainService {
   @Inject
   private IOService ioService;
   @Inject
-  private TaskServiceEntryPoint taskService;
+  private TaskService taskService;
   @Inject
   private ServicesSessionManager sessionManager;
   @Inject

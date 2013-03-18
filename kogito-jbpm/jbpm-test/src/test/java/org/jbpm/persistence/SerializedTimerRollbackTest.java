@@ -1,9 +1,5 @@
 package org.jbpm.persistence;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -14,6 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.InitialContext;
+import javax.persistence.EntityManager;
+import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
@@ -21,26 +21,21 @@ import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
-import org.jbpm.task.Group;
-import org.jbpm.task.User;
-
-import org.jbpm.task.query.TaskSummary;
-
-import org.junit.Test;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.ProcessInstance;
-
-import bitronix.tm.TransactionManagerServices;
-import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
-import javax.transaction.TransactionManager;
-import javax.transaction.UserTransaction;
-import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.task.impl.model.UserImpl;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.internal.task.api.model.User;
+
+import bitronix.tm.TransactionManagerServices;
 
 public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
 
@@ -75,10 +70,10 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
             StatefulKnowledgeSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
             System.out.println("Created knowledge session");
 
-            TaskServiceEntryPoint taskService = getTaskService(sesion);
+            TaskService taskService = getTaskService(sesion);
             Map<String, User> users = new HashMap<String, User>();
-            users.put("Administrator", new User("Administrator"));
-            users.put("john", new User("john"));
+            users.put("Administrator", new UserImpl("Administrator"));
+            users.put("john", new UserImpl("john"));
             Map<String, Group> groups = new HashMap<String, Group>();
             taskService.addUsersAndGroups(users, groups);
 
@@ -141,11 +136,11 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
             StatefulKnowledgeSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
             System.out.println("Created knowledge session");
              
-            TaskServiceEntryPoint taskService = getTaskService(sesion);
+            TaskService taskService = getTaskService(sesion);
             System.out.println("Task service created");
             Map<String, User> users = new HashMap<String, User>();
-            users.put("Administrator", new User("Administrator"));
-            users.put("john", new User("john"));
+            users.put("Administrator", new UserImpl("Administrator"));
+            users.put("john", new UserImpl("john"));
             Map<String, Group> groups = new HashMap<String, Group>();
             taskService.addUsersAndGroups(users, groups);
 

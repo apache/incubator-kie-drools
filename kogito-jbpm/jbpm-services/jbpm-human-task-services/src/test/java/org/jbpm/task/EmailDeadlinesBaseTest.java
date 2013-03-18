@@ -28,16 +28,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.mail.Message;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.jbpm.task.impl.factories.TaskFactory;
+import org.jbpm.task.impl.model.ContentDataImpl;
+import org.jbpm.task.impl.model.ContentImpl;
+import org.jbpm.task.impl.model.PeopleAssignmentsImpl;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.jbpm.task.impl.model.UserImpl;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.internal.task.api.model.Content;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.PeopleAssignments;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
@@ -85,12 +95,12 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (Task) TaskFactory.evalTask(reader, vars);
+        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
         
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new Content();
+        Content content = new ContentImpl();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
         ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
@@ -144,13 +154,13 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotificationContentSingleObject));
-        Task task = (Task) TaskFactory.evalTask(reader, vars);
+        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
      
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new Content();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal("'singleobject'", null);
+        Content content = new ContentImpl();
+        ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal("'singleobject'", null);
         content.setContent(marshalledObject.getContent());
        
         taskService.addContent(taskId, content);
@@ -197,16 +207,16 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (Task) TaskFactory.evalTask(reader, vars, false);
+        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars, false);
         
         task.getTaskData().setSkipable(true);
-        PeopleAssignments assignments = new PeopleAssignments();
+        PeopleAssignments assignments = new PeopleAssignmentsImpl();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
-        ba.add(new User("Administrator"));
+        ba.add(new UserImpl("Administrator"));
         assignments.setBusinessAdministrators(ba);
         
         List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
-        po.add(new User("Administrator"));
+        po.add(new UserImpl("Administrator"));
         assignments.setPotentialOwners(po);
         
         task.setPeopleAssignments(assignments);
@@ -216,10 +226,10 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new Content();
+        Content content = new ContentImpl();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -260,16 +270,16 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (Task) TaskFactory.evalTask(reader, vars, false);
+        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars, false);
         
         task.getTaskData().setSkipable(true);
-        PeopleAssignments assignments = new PeopleAssignments();
+        PeopleAssignments assignments = new PeopleAssignmentsImpl();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
-        ba.add(new User("Administrator"));
+        ba.add(new UserImpl("Administrator"));
         assignments.setBusinessAdministrators(ba);
         
         List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
-        po.add(new User("Administrator"));
+        po.add(new UserImpl("Administrator"));
         assignments.setPotentialOwners(po);
         
         task.setPeopleAssignments(assignments);
@@ -279,10 +289,10 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new Content();
+        Content content = new ContentImpl();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -320,26 +330,26 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (Task) TaskFactory.evalTask(reader, vars);
+        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
         
         task.getTaskData().setSkipable(true);
-        PeopleAssignments assignments = new PeopleAssignments();
+        PeopleAssignments assignments = new PeopleAssignmentsImpl();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
-        ba.add(new User("Administrator"));
+        ba.add(new UserImpl("Administrator"));
         assignments.setBusinessAdministrators(ba);
         
         List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
-        po.add(new User("Administrator"));
+        po.add(new UserImpl("Administrator"));
         assignments.setPotentialOwners(po);
         
         task.setPeopleAssignments(assignments);
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new Content();
+        Content content = new ContentImpl();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -376,26 +386,26 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (Task) TaskFactory.evalTask(reader, vars);
+        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
         
         task.getTaskData().setSkipable(true);
-        PeopleAssignments assignments = new PeopleAssignments();
+        PeopleAssignments assignments = new PeopleAssignmentsImpl();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
-        ba.add(new User("Administrator"));
+        ba.add(new UserImpl("Administrator"));
         assignments.setBusinessAdministrators(ba);
         
         List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
-        po.add(new User("Administrator"));
+        po.add(new UserImpl("Administrator"));
         assignments.setPotentialOwners(po);
         
         task.setPeopleAssignments(assignments);
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new Content();
+        Content content = new ContentImpl();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -435,7 +445,7 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithReassignment));
-        Task task = (Task) TaskFactory.evalTask(reader, vars);
+        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
@@ -444,7 +454,7 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         
         
         task = taskService.getTaskById(taskId);
-        List<OrganizationalEntity> potentialOwners = task.getPeopleAssignments().getPotentialOwners();
+        List<OrganizationalEntity> potentialOwners = (List<OrganizationalEntity>) task.getPeopleAssignments().getPotentialOwners();
         List<String> ids = new ArrayList<String>(potentialOwners.size());
         for (OrganizationalEntity entity : potentialOwners) {
             ids.add(entity.getId());
@@ -461,7 +471,7 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
         
         task = taskService.getTaskById(taskId);
         assertEquals(Status.Ready, task.getTaskData().getStatus());
-        potentialOwners = task.getPeopleAssignments().getPotentialOwners();
+        potentialOwners = (List<OrganizationalEntity>) task.getPeopleAssignments().getPotentialOwners();
 
         ids = new ArrayList<String>(potentialOwners.size());
         for (OrganizationalEntity entity : potentialOwners) {
@@ -479,16 +489,16 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
           vars.put("now", new Date());
 
           Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-          Task task = (Task) TaskFactory.evalTask(reader, vars, false);
+          Task task = (TaskImpl) TaskFactory.evalTask(reader, vars, false);
           
           task.getTaskData().setSkipable(true);
-          PeopleAssignments assignments = new PeopleAssignments();
+          PeopleAssignments assignments = new PeopleAssignmentsImpl();
           List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
-          ba.add(new User("Administrator"));
+          ba.add(new UserImpl("Administrator"));
           assignments.setBusinessAdministrators(ba);
           
           List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
-          po.add(new User("Administrator"));
+          po.add(new UserImpl("Administrator"));
           assignments.setPotentialOwners(po);
           
           task.setPeopleAssignments(assignments);
@@ -498,10 +508,10 @@ public abstract class EmailDeadlinesBaseTest extends BaseTest {
           taskService.addTask(task, new HashMap<String, Object>());
           long taskId = task.getId();
 
-          Content content = new Content();
+          Content content = new ContentImpl();
           
           Map<String, String> params = fillMarshalSubjectAndBodyParams();
-          ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+          ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
           content.setContent(marshalledObject.getContent());
           taskService.addContent(taskId, content);
           long contentId = content.getId();

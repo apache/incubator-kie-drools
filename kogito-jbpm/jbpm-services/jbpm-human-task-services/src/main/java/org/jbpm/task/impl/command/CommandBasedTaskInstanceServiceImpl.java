@@ -18,19 +18,12 @@ package org.jbpm.task.impl.command;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
+
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.task.ContentData;
-import org.jbpm.task.FaultData;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.SubTasksStrategy;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskDef;
 import org.jbpm.task.annotations.CommandBased;
-import org.jbpm.task.api.TaskCommandExecutor;
-import org.jbpm.task.api.TaskInstanceService;
 import org.jbpm.task.commands.ActivateTaskCommand;
 import org.jbpm.task.commands.AddTaskCommand;
 import org.jbpm.task.commands.ClaimNextAvailableTaskCommand;
@@ -47,6 +40,18 @@ import org.jbpm.task.commands.SkipTaskCommand;
 import org.jbpm.task.commands.StartTaskCommand;
 import org.jbpm.task.commands.StopTaskCommand;
 import org.jbpm.task.commands.SuspendTaskCommand;
+import org.jbpm.task.impl.model.ContentDataImpl;
+import org.jbpm.task.impl.model.FaultDataImpl;
+import org.jbpm.task.impl.model.TaskDefImpl;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.kie.internal.task.api.TaskCommandExecutor;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskDef;
 
 /**
  *
@@ -186,7 +191,7 @@ public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
+    public void setSubTaskStrategy(long taskId, org.kie.internal.task.api.model.SubTasksStrategy strategy) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -206,7 +211,7 @@ public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public SubTasksStrategy getSubTaskStrategy(long taskId) {
+    public org.kie.internal.task.api.model.SubTasksStrategy getSubTaskStrategy(long taskId) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -9,26 +9,25 @@ import java.io.ObjectOutputStream;
 
 import javax.annotation.PostConstruct;
 
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.kie.runtime.manager.Context;
-import org.kie.runtime.manager.Disposable;
-import org.kie.runtime.manager.Runtime;
-import org.kie.runtime.manager.RuntimeEnvironment;
-import org.kie.runtime.manager.SessionFactory;
-import org.kie.runtime.manager.TaskServiceFactory;
+import org.kie.internal.runtime.manager.Context;
+import org.kie.internal.runtime.manager.Disposable;
+import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.manager.SessionFactory;
+import org.kie.internal.runtime.manager.TaskServiceFactory;
 
 public class SingletonRuntimeManager extends AbstractRuntimeManager {
     
-    private Runtime<TaskServiceEntryPoint> singleton;
+    private Runtime singleton;
     private SessionFactory factory;
-    private TaskServiceFactory<TaskServiceEntryPoint> taskServiceFactory;
+    private TaskServiceFactory taskServiceFactory;
     
     public SingletonRuntimeManager() {
         super(null);
         // no-op just for cdi, spring and other frameworks
     }
     
-    public SingletonRuntimeManager(RuntimeEnvironment environment, SessionFactory factory, TaskServiceFactory<TaskServiceEntryPoint> taskServiceFactory) {
+    public SingletonRuntimeManager(RuntimeEnvironment environment, SessionFactory factory, TaskServiceFactory taskServiceFactory) {
         super(environment);
         this.factory = factory;
         this.taskServiceFactory = taskServiceFactory;
@@ -50,7 +49,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
             this.singleton = new SynchronizedRuntimeImpl(factory.newKieSession(), taskServiceFactory.newTaskService());
             persistSessionId(location, singleton.getKieSession().getId());
         }
-        
+        ((RuntimeImpl) singleton).setManager(this);
         registerItems(this.singleton);
     }
 
@@ -62,7 +61,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     }
 
     @Override
-    public void disposeRuntime(org.kie.runtime.manager.Runtime runtime) {
+    public void disposeRuntime(org.kie.internal.runtime.manager.Runtime runtime) {
         // no-op, singleton session is always active
     }
 

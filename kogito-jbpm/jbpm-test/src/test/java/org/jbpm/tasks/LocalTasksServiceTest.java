@@ -11,22 +11,22 @@ import javax.persistence.Persistence;
 import org.jbpm.persistence.objects.MockUserInfo;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
-import org.jbpm.task.Group;
 import org.jbpm.task.HumanTaskServiceFactory;
-import org.jbpm.task.User;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.wih.LocalHTWorkItemHandler;
+import org.jbpm.task.impl.model.GroupImpl;
+import org.jbpm.task.impl.model.UserImpl;
 import org.jbpm.task.wih.ExternalTaskEventListener;
 import org.jbpm.task.wih.HTWorkItemHandlerFactory;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,9 +36,9 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
     private HashMap<String, Object> context;
     
     private EntityManagerFactory emfTasks;
-    protected Map<String, User> users;
-    protected Map<String, Group> groups;
-    protected TaskServiceEntryPoint taskService;
+    protected Map<String, UserImpl> users;
+    protected Map<String, GroupImpl> groups;
+    protected TaskService taskService;
 
     protected MockUserInfo userInfo;
     protected Properties conf;

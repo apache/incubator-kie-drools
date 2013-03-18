@@ -27,26 +27,27 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
-import org.jbpm.shared.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
-import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.example.MoveFileWorkItemHandler;
+import org.jbpm.shared.services.api.Domain;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
-import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.commons.java.nio.file.Path;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.commons.java.nio.file.Path;
+import org.kie.internal.task.api.TaskService;
+
 
 public abstract class DomainKnowledgeServiceWorkItemsTest {
 
     @Inject
-    protected TaskServiceEntryPoint taskService;
+    protected TaskService taskService;
     @Inject
     protected KnowledgeDataService dataService;
     @Inject

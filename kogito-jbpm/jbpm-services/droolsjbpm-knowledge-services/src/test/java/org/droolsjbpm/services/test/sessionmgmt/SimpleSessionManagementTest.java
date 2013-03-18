@@ -25,10 +25,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.jbpm.shared.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
-import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
@@ -38,13 +36,16 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jbpm.shared.services.api.Domain;
 import org.jbpm.shared.services.api.FileException;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.query.TaskSummary;
+import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.TaskSummary;
+
 
 /**
  *
@@ -110,7 +111,7 @@ public class SimpleSessionManagementTest {
     }
 
     @Inject
-    protected TaskServiceEntryPoint taskService;
+    protected TaskService taskService;
     @Inject
     private BPMN2DataService bpmn2Service;
     @Inject

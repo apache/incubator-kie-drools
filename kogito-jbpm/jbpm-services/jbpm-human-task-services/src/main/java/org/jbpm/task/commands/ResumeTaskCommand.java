@@ -16,17 +16,20 @@
 package org.jbpm.task.commands;
 
 import java.util.List;
+
 import javax.enterprise.util.AnnotationLiteral;
-import org.kie.internal.command.Context;
+
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.task.Group;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.User;
 import org.jbpm.task.events.AfterTaskResumedEvent;
 import org.jbpm.task.events.BeforeTaskResumedEvent;
 import org.jbpm.task.exception.PermissionDeniedException;
+import org.jbpm.task.impl.model.GroupImpl;
+import org.jbpm.task.impl.model.OrganizationalEntityImpl;
+import org.jbpm.task.impl.model.UserImpl;
+import org.kie.internal.command.Context;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.User;
 
 /**
  * Operation.Resume : [ new OperationCommand().{ previousStatus = [ Status.Ready
@@ -84,13 +87,13 @@ public class ResumeTaskCommand extends TaskCommand {
         return null;
     }
 
-    private boolean isAllowed(final User user, final List<String> groupIds, final List<OrganizationalEntity> entities) {
+    private boolean isAllowed(final UserImpl user, final List<String> groupIds, final List<OrganizationalEntityImpl> entities) {
         // for now just do a contains, I'll figure out group membership later.
-        for (OrganizationalEntity entity : entities) {
-            if (entity instanceof User && entity.equals(user)) {
+        for (OrganizationalEntityImpl entity : entities) {
+            if (entity instanceof UserImpl && entity.equals(user)) {
                 return true;
             }
-            if (entity instanceof Group && groupIds != null && groupIds.contains(entity.getId())) {
+            if (entity instanceof GroupImpl && groupIds != null && groupIds.contains(entity.getId())) {
                 return true;
             }
         }

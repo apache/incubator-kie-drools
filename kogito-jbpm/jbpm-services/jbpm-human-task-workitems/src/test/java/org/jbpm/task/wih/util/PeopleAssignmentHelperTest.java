@@ -22,13 +22,13 @@ import junit.framework.TestCase;
 
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.jbpm.task.Group;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.User;
+import org.jbpm.task.impl.model.GroupImpl;
+import org.jbpm.task.impl.model.TaskDataImpl;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.jbpm.task.impl.model.UserImpl;
 import org.junit.Test;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.PeopleAssignments;
 
 /**
  * @author Eric Spiegelberg
@@ -54,8 +54,8 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		assertTrue(organizationalEntities.size() == 2);
 		organizationalEntities.contains("drbug");
 		organizationalEntities.contains("espiegelberg");
-		assertTrue(organizationalEntities.get(0) instanceof User);
-		assertTrue(organizationalEntities.get(1) instanceof User);
+		assertTrue(organizationalEntities.get(0) instanceof UserImpl);
+		assertTrue(organizationalEntities.get(1) instanceof UserImpl);
 		
 		ids = null;
 		organizationalEntities = new ArrayList<OrganizationalEntity>();
@@ -74,14 +74,14 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		assertTrue(organizationalEntities.size() == 0);		
 		peopleAssignmentHelper.processPeopleAssignments(ids, organizationalEntities, false);
 		assertTrue(organizationalEntities.size() == 1);
-		assertTrue(organizationalEntities.get(0) instanceof Group);
+		assertTrue(organizationalEntities.get(0) instanceof GroupImpl);
 		
 		// Test that a duplicate is not added; only 1 of the 2 passed in should be added
 		ids = "Software Developer,Project Manager";
 		peopleAssignmentHelper.processPeopleAssignments(ids, organizationalEntities, false);
 		assertTrue(organizationalEntities.size() == 2);
-		assertTrue(organizationalEntities.get(0) instanceof Group);
-		assertTrue(organizationalEntities.get(1) instanceof Group);
+		assertTrue(organizationalEntities.get(0) instanceof GroupImpl);
+		assertTrue(organizationalEntities.get(1) instanceof GroupImpl);
 		
 	}
 	
@@ -90,8 +90,8 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		
 		String actorId = "espiegelberg";
 		
-		Task task = new Task();
-		TaskData taskData = new TaskData();
+		TaskImpl task = new TaskImpl();
+		TaskDataImpl taskData = new TaskDataImpl();
 		PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		
 		WorkItem workItem = new WorkItemImpl();		
@@ -99,7 +99,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		
 		peopleAssignmentHelper.assignActors(workItem, peopleAssignments, taskData);
 		OrganizationalEntity organizationalEntity1 = peopleAssignments.getPotentialOwners().get(0);
-		assertTrue(organizationalEntity1 instanceof User);
+		assertTrue(organizationalEntity1 instanceof UserImpl);
 		assertEquals(actorId, organizationalEntity1.getId());		
 		assertEquals(actorId, taskData.getCreatedBy().getId());
 		
@@ -127,7 +127,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 	
 		String businessAdministratorId = "espiegelberg";
 		
-		Task task = new Task();
+		TaskImpl task = new TaskImpl();
 		PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		
 		WorkItem workItem = new WorkItemImpl();		
@@ -136,10 +136,10 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		peopleAssignmentHelper.assignBusinessAdministrators(workItem, peopleAssignments);
 		assertEquals(2, peopleAssignments.getBusinessAdministrators().size());
 		OrganizationalEntity organizationalEntity1 = peopleAssignments.getBusinessAdministrators().get(0);
-		assertTrue(organizationalEntity1 instanceof User);
+		assertTrue(organizationalEntity1 instanceof UserImpl);
 		assertEquals("Administrator", organizationalEntity1.getId());
 		OrganizationalEntity organizationalEntity2 = peopleAssignments.getBusinessAdministrators().get(1);		
-		assertTrue(organizationalEntity2 instanceof User);				
+		assertTrue(organizationalEntity2 instanceof UserImpl);				
 		assertEquals(businessAdministratorId, organizationalEntity2.getId());
 		
 	}
@@ -149,7 +149,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 	
 		String taskStakeholderId = "espiegelberg";
 		
-		Task task = new Task();
+		TaskImpl task = new TaskImpl();
 		PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		
 		WorkItem workItem = new WorkItemImpl();		
@@ -158,7 +158,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		peopleAssignmentHelper.assignTaskStakeholders(workItem, peopleAssignments);
 		assertEquals(1, peopleAssignments.getTaskStakeholders().size());
 		OrganizationalEntity organizationalEntity1 = peopleAssignments.getTaskStakeholders().get(0);		
-		assertTrue(organizationalEntity1 instanceof User);				
+		assertTrue(organizationalEntity1 instanceof UserImpl);				
 		assertEquals(taskStakeholderId, organizationalEntity1.getId());
 		
 	}
@@ -168,7 +168,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		
 		String groupId = "Software Developers, Project Managers";
 		
-		Task task = new Task();
+		TaskImpl task = new TaskImpl();
 		PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		
 		WorkItem workItem = new WorkItemImpl();		
@@ -176,10 +176,10 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		
 		peopleAssignmentHelper.assignGroups(workItem, peopleAssignments);
 		OrganizationalEntity organizationalEntity1 = peopleAssignments.getPotentialOwners().get(0);
-		assertTrue(organizationalEntity1 instanceof Group);
+		assertTrue(organizationalEntity1 instanceof GroupImpl);
 		assertEquals("Software Developers", organizationalEntity1.getId());
 		OrganizationalEntity organizationalEntity2 = peopleAssignments.getPotentialOwners().get(1);
-		assertTrue(organizationalEntity2 instanceof Group);
+		assertTrue(organizationalEntity2 instanceof GroupImpl);
 		assertEquals("Project Managers", organizationalEntity2.getId());
 		
 	}
@@ -187,7 +187,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 	@Test
 	public void testgetNullSafePeopleAssignments() {
 		
-		Task task = new Task();
+		TaskImpl task = new TaskImpl();
 		
 		PeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		assertNotNull(peopleAssignment);
@@ -209,8 +209,8 @@ public class PeopleAssignmentHelperTest extends TestCase {
 	@Test
 	public void testHandlePeopleAssignments() {
 		
-		Task task = new Task();
-		TaskData taskData = new TaskData();
+		TaskImpl task = new TaskImpl();
+		TaskDataImpl taskData = new TaskDataImpl();
 		PeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		assertNotNull(peopleAssignment);
 		assertEquals(0, peopleAssignment.getPotentialOwners().size());
@@ -258,8 +258,8 @@ public class PeopleAssignmentHelperTest extends TestCase {
     @Test
     public void testHandleMultiPeopleAssignments() {
 
-        Task task = new Task();
-        TaskData taskData = new TaskData();
+        TaskImpl task = new TaskImpl();
+        TaskDataImpl taskData = new TaskDataImpl();
         PeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
         assertNotNull(peopleAssignment);
         assertEquals(0, peopleAssignment.getPotentialOwners().size());
@@ -314,7 +314,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 
         String excludedOwnerId = "espiegelberg";
 
-        Task task = new Task();
+        TaskImpl task = new TaskImpl();
         PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 
         WorkItem workItem = new WorkItemImpl();
@@ -323,7 +323,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
         peopleAssignmentHelper.assignExcludedOwners(workItem, peopleAssignments);
         assertEquals(1, peopleAssignments.getExcludedOwners().size());
         OrganizationalEntity organizationalEntity1 = peopleAssignments.getExcludedOwners().get(0);
-        assertTrue(organizationalEntity1 instanceof User);
+        assertTrue(organizationalEntity1 instanceof UserImpl);
         assertEquals(excludedOwnerId, organizationalEntity1.getId());
 
     }
@@ -333,7 +333,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 
         String recipientId = "espiegelberg";
 
-        Task task = new Task();
+        TaskImpl task = new TaskImpl();
         PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 
         WorkItem workItem = new WorkItemImpl();
@@ -342,7 +342,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
         peopleAssignmentHelper.assignRecipients(workItem, peopleAssignments);
         assertEquals(1, peopleAssignments.getRecipients().size());
         OrganizationalEntity organizationalEntity1 = peopleAssignments.getRecipients().get(0);
-        assertTrue(organizationalEntity1 instanceof User);
+        assertTrue(organizationalEntity1 instanceof UserImpl);
         assertEquals(recipientId, organizationalEntity1.getId());
 
     }

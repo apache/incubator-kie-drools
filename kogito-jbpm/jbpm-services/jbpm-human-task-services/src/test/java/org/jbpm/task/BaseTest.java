@@ -24,19 +24,20 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 
-import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.task.impl.model.UserImpl;
 import org.jbpm.task.utils.MVELUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.kie.internal.task.api.TaskService;
 
 public abstract class BaseTest {
 
     protected static Logger logger;
     protected static boolean usersLoaded = false;
     @Inject
-    protected TaskServiceEntryPoint taskService;
+    protected TaskService taskService;
 
     @Before
     public void setUp() {
@@ -44,7 +45,7 @@ public abstract class BaseTest {
         if (!usersLoaded) {
 
             try {
-                taskService.addUser(new User("Administrator"));
+                taskService.addUser(new UserImpl("Administrator"));
                 usersLoaded = true;
             } catch (Exception ex) {
                 java.util.logging.Logger.getLogger(LifeCycleBaseTest.class.getName()).log(Level.SEVERE, null, ex);

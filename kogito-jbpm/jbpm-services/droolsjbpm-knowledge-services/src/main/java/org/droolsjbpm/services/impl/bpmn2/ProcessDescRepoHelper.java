@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
-import org.jbpm.task.TaskDef;
+import org.jbpm.task.impl.model.TaskDefImpl;
 
 /**
  *
@@ -29,7 +29,7 @@ import org.jbpm.task.TaskDef;
 public class ProcessDescRepoHelper {
 
     private ProcessDesc process;
-    private Map<String, TaskDef> tasks = new HashMap<String, TaskDef>();
+    private Map<String, TaskDefImpl> tasks = new HashMap<String, TaskDefImpl>();
     private Map<String, Map<String, String>> taskInputMappings = new HashMap<String, Map<String, String>>();
     private Map<String, Map<String, String>> taskOutputMappings = new HashMap<String, Map<String, String>>();
     private Map<String, String> inputs = new HashMap<String, String>();
@@ -48,7 +48,7 @@ public class ProcessDescRepoHelper {
         return process;
     }
 
-    public Map<String, TaskDef> getTasks() {
+    public Map<String, TaskDefImpl> getTasks() {
         return tasks;
     }
 

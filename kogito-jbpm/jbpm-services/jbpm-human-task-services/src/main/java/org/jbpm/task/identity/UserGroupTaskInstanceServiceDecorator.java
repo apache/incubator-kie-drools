@@ -23,13 +23,12 @@ import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 
-import org.jbpm.task.ContentData;
-import org.jbpm.task.FaultData;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.SubTasksStrategy;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskInstanceService;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Task;
 
 @Decorator
 public class UserGroupTaskInstanceServiceDecorator extends
@@ -204,7 +203,7 @@ public class UserGroupTaskInstanceServiceDecorator extends
     }
 
     @Override
-    public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
+    public void setSubTaskStrategy(long taskId, org.kie.internal.task.api.model.SubTasksStrategy strategy) {
         delegate.setSubTaskStrategy(taskId, strategy);
     }
 
@@ -230,7 +229,7 @@ public class UserGroupTaskInstanceServiceDecorator extends
     }
 
     @Override
-    public SubTasksStrategy getSubTaskStrategy(long taskId) {
+    public org.kie.internal.task.api.model.SubTasksStrategy getSubTaskStrategy(long taskId) {
         return delegate.getSubTaskStrategy(taskId);
     }
 

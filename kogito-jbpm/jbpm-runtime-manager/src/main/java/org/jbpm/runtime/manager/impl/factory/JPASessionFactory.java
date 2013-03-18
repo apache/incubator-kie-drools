@@ -1,9 +1,9 @@
 package org.jbpm.runtime.manager.impl.factory;
 
-import org.kie.persistence.jpa.JPAKnowledgeService;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.manager.RuntimeEnvironment;
-import org.kie.runtime.manager.SessionFactory;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.manager.SessionFactory;
 
 public class JPASessionFactory implements SessionFactory {
 

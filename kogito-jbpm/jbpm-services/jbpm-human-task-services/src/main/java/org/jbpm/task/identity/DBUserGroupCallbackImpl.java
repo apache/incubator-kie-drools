@@ -29,6 +29,7 @@ import javax.enterprise.inject.Alternative;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.kie.internal.task.api.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

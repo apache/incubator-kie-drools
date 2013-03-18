@@ -88,7 +88,7 @@
     <!--module>jbpm-gwt</module-->
     <module>jbpm-test</module>
     <module>jbpm-examples</module>
-    <module>jbpm-session-manager</module>
+    <module>jbpm-runtime-manager</module>
   </modules>
 
   <dependencyManagement>

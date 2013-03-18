@@ -13224,7 +13224,7 @@ public final class JBPMMessages {
     org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance getTimer();
     org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstanceOrBuilder getTimerOrBuilder();
     
-    // optional .org.drools.marshalling.Trigger trigger = 2;
+    // optional .org.drools.core.marshalling.Trigger trigger = 2;
     boolean hasTrigger();
     org.drools.core.marshalling.impl.ProtobufMessages.Trigger getTrigger();
     org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder getTriggerOrBuilder();
@@ -13951,7 +13951,7 @@ public final class JBPMMessages {
       return timer_;
     }
     
-    // optional .org.drools.marshalling.Trigger trigger = 2;
+    // optional .org.drools.core.marshalling.Trigger trigger = 2;
     public static final int TRIGGER_FIELD_NUMBER = 2;
     private org.drools.core.marshalling.impl.ProtobufMessages.Trigger trigger_;
     public boolean hasTrigger() {
@@ -14362,7 +14362,7 @@ public final class JBPMMessages {
         return timerBuilder_;
       }
       
-      // optional .org.drools.marshalling.Trigger trigger = 2;
+      // optional .org.drools.core.marshalling.Trigger trigger = 2;
       private org.drools.core.marshalling.impl.ProtobufMessages.Trigger trigger_ = org.drools.core.marshalling.impl.ProtobufMessages.Trigger.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           org.drools.core.marshalling.impl.ProtobufMessages.Trigger, org.drools.core.marshalling.impl.ProtobufMessages.Trigger.Builder, org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder> triggerBuilder_;
@@ -14439,7 +14439,7 @@ public final class JBPMMessages {
         }
       }
       private com.google.protobuf.SingleFieldBuilder<
-          org.drools.core.marshalling.impl.ProtobufMessages.Trigger, org.drools.core.marshalling.impl.ProtobufMessages.Trigger.Builder, org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder>
+          org.drools.core.marshalling.impl.ProtobufMessages.Trigger, org.drools.core.marshalling.impl.ProtobufMessages.Trigger.Builder, org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder> 
           getTriggerFieldBuilder() {
         if (triggerBuilder_ == null) {
           triggerBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -14623,110 +14623,111 @@ public final class JBPMMessages {
   static {
     java.lang.String[] descriptorData = {
       "\n\'org/jbpm/marshalling/jbpmmessages.prot" +
-      "o\022\024org.jbpm.marshalling\032+org/drools/mars" +
-      "halling/droolsmessages.proto\"\227\030\n\017Process" +
-      "Instance\022\024\n\014process_type\030\001 \001(\t\022\n\n\002id\030\002 \001" +
-      "(\003\022\022\n\nprocess_id\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\022\035\n" +
-      "\025node_instance_counter\030\005 \001(\003\022\023\n\013process_" +
-      "xml\030\013 \001(\t\022W\n\020swimlane_context\030\006 \003(\0132=.or" +
-      "g.jbpm.marshalling.ProcessInstance.Swiml" +
-      "aneContextInstance\022I\n\rnode_instance\030\007 \003(" +
-      "\01322.org.jbpm.marshalling.ProcessInstance",
-      ".NodeInstance\0220\n\010variable\030\010 \003(\0132\036.org.jb" +
-      "pm.marshalling.Variable\022U\n\017exclusive_gro" +
-      "up\030\n \003(\0132<.org.jbpm.marshalling.ProcessI" +
-      "nstance.ExclusiveGroupInstance\032=\n\027Swimla" +
-      "neContextInstance\022\020\n\010swimlane\030\001 \001(\t\022\020\n\010a" +
-      "ctor_id\030\002 \001(\t\032w\n\014NodeInstance\022\n\n\002id\030\001 \001(" +
-      "\003\022\017\n\007node_id\030\002 \001(\003\022J\n\007content\030\004 \001(\01329.or" +
+      "o\022\024org.jbpm.marshalling\0320org/drools/core" +
+      "/marshalling/droolsmessages.proto\"\227\030\n\017Pr" +
+      "ocessInstance\022\024\n\014process_type\030\001 \001(\t\022\n\n\002i" +
+      "d\030\002 \001(\003\022\022\n\nprocess_id\030\003 \001(\t\022\r\n\005state\030\004 \001" +
+      "(\005\022\035\n\025node_instance_counter\030\005 \001(\003\022\023\n\013pro" +
+      "cess_xml\030\013 \001(\t\022W\n\020swimlane_context\030\006 \003(\013" +
+      "2=.org.jbpm.marshalling.ProcessInstance." +
+      "SwimlaneContextInstance\022I\n\rnode_instance" +
+      "\030\007 \003(\01322.org.jbpm.marshalling.ProcessIns",
+      "tance.NodeInstance\0220\n\010variable\030\010 \003(\0132\036.o" +
+      "rg.jbpm.marshalling.Variable\022U\n\017exclusiv" +
+      "e_group\030\n \003(\0132<.org.jbpm.marshalling.Pro" +
+      "cessInstance.ExclusiveGroupInstance\032=\n\027S" +
+      "wimlaneContextInstance\022\020\n\010swimlane\030\001 \001(\t" +
+      "\022\020\n\010actor_id\030\002 \001(\t\032w\n\014NodeInstance\022\n\n\002id" +
+      "\030\001 \001(\003\022\017\n\007node_id\030\002 \001(\003\022J\n\007content\030\004 \001(\013" +
+      "29.org.jbpm.marshalling.ProcessInstance." +
+      "NodeInstanceContent\0328\n\026ExclusiveGroupIns" +
+      "tance\022\036\n\026group_node_instance_id\030\001 \003(\003\032\326\020",
+      "\n\023NodeInstanceContent\022D\n\004type\030\001 \001(\01626.or" +
       "g.jbpm.marshalling.ProcessInstance.NodeI" +
-      "nstanceContent\0328\n\026ExclusiveGroupInstance" +
-      "\022\036\n\026group_node_instance_id\030\001 \003(\003\032\326\020\n\023Nod",
-      "eInstanceContent\022D\n\004type\030\001 \001(\01626.org.jbp" +
-      "m.marshalling.ProcessInstance.NodeInstan" +
-      "ceType\022W\n\010rule_set\030\002 \001(\0132E.org.jbpm.mars" +
+      "nstanceType\022W\n\010rule_set\030\002 \001(\0132E.org.jbpm" +
+      ".marshalling.ProcessInstance.NodeInstanc" +
+      "eContent.RuleSetNode\022[\n\nhuman_task\030\003 \001(\013" +
+      "2G.org.jbpm.marshalling.ProcessInstance." +
+      "NodeInstanceContent.HumanTaskNode\022Y\n\twor" +
+      "k_item\030\004 \001(\0132F.org.jbpm.marshalling.Proc" +
+      "essInstance.NodeInstanceContent.WorkItem" +
+      "Node\022]\n\013sub_process\030\005 \001(\0132H.org.jbpm.mar",
+      "shalling.ProcessInstance.NodeInstanceCon" +
+      "tent.SubProcessNode\022Z\n\tmilestone\030\006 \001(\0132G" +
+      ".org.jbpm.marshalling.ProcessInstance.No" +
+      "deInstanceContent.MilestoneNode\022R\n\005event" +
+      "\030\007 \001(\0132C.org.jbpm.marshalling.ProcessIns" +
+      "tance.NodeInstanceContent.EventNode\022R\n\005t" +
+      "imer\030\010 \001(\0132C.org.jbpm.marshalling.Proces" +
+      "sInstance.NodeInstanceContent.TimerNode\022" +
+      "P\n\004join\030\t \001(\0132B.org.jbpm.marshalling.Pro" +
+      "cessInstance.NodeInstanceContent.JoinNod",
+      "e\022R\n\005state\030\n \001(\0132C.org.jbpm.marshalling." +
+      "ProcessInstance.NodeInstanceContent.Stat" +
+      "eNode\022a\n\tcomposite\030\013 \001(\0132N.org.jbpm.mars" +
       "halling.ProcessInstance.NodeInstanceCont" +
-      "ent.RuleSetNode\022[\n\nhuman_task\030\003 \001(\0132G.or" +
-      "g.jbpm.marshalling.ProcessInstance.NodeI" +
-      "nstanceContent.HumanTaskNode\022Y\n\twork_ite" +
-      "m\030\004 \001(\0132F.org.jbpm.marshalling.ProcessIn" +
-      "stance.NodeInstanceContent.WorkItemNode\022" +
-      "]\n\013sub_process\030\005 \001(\0132H.org.jbpm.marshall",
-      "ing.ProcessInstance.NodeInstanceContent." +
-      "SubProcessNode\022Z\n\tmilestone\030\006 \001(\0132G.org." +
-      "jbpm.marshalling.ProcessInstance.NodeIns" +
-      "tanceContent.MilestoneNode\022R\n\005event\030\007 \001(" +
-      "\0132C.org.jbpm.marshalling.ProcessInstance" +
-      ".NodeInstanceContent.EventNode\022R\n\005timer\030" +
-      "\010 \001(\0132C.org.jbpm.marshalling.ProcessInst" +
-      "ance.NodeInstanceContent.TimerNode\022P\n\004jo" +
-      "in\030\t \001(\0132B.org.jbpm.marshalling.ProcessI" +
-      "nstance.NodeInstanceContent.JoinNode\022R\n\005",
-      "state\030\n \001(\0132C.org.jbpm.marshalling.Proce" +
-      "ssInstance.NodeInstanceContent.StateNode" +
-      "\022a\n\tcomposite\030\013 \001(\0132N.org.jbpm.marshalli" +
-      "ng.ProcessInstance.NodeInstanceContent.C" +
-      "ompositeContextNode\022W\n\010for_each\030\014 \001(\0132E." +
-      "org.jbpm.marshalling.ProcessInstance.Nod" +
-      "eInstanceContent.ForEachNode\032\324\001\n\013RuleSet" +
-      "Node\022\031\n\021timer_instance_id\030\001 \003(\003\022d\n\010mapEn" +
-      "try\030\002 \003(\0132R.org.jbpm.marshalling.Process" +
-      "Instance.NodeInstanceContent.RuleSetNode",
-      ".TextMapEntry\022\027\n\017rule_flow_group\030\003 \001(\t\032+" +
-      "\n\014TextMapEntry\022\014\n\004name\030\001 \001(\t\022\r\n\005value\030\002 " +
-      "\001(\t\032@\n\rHumanTaskNode\022\024\n\014work_item_id\030\001 \001" +
-      "(\003\022\031\n\021timer_instance_id\030\002 \003(\003\032?\n\014WorkIte" +
-      "mNode\022\024\n\014work_item_id\030\001 \001(\003\022\031\n\021timer_ins" +
-      "tance_id\030\002 \003(\003\032H\n\016SubProcessNode\022\033\n\023proc" +
-      "ess_instance_id\030\001 \001(\003\022\031\n\021timer_instance_" +
-      "id\030\002 \003(\003\032*\n\rMilestoneNode\022\031\n\021timer_insta" +
-      "nce_id\030\001 \003(\003\032\013\n\tEventNode\032\035\n\tTimerNode\022\020" +
-      "\n\010timer_id\030\001 \001(\003\032\234\001\n\010JoinNode\022_\n\007trigger",
-      "\030\001 \003(\0132N.org.jbpm.marshalling.ProcessIns" +
-      "tance.NodeInstanceContent.JoinNode.JoinT" +
-      "rigger\032/\n\013JoinTrigger\022\017\n\007node_id\030\001 \001(\003\022\017" +
-      "\n\007counter\030\002 \001(\005\032&\n\tStateNode\022\031\n\021timer_in" +
-      "stance_id\030\001 \003(\003\032\205\002\n\024CompositeContextNode" +
-      "\022\031\n\021timer_instance_id\030\002 \003(\003\0220\n\010variable\030" +
-      "\003 \003(\0132\036.org.jbpm.marshalling.Variable\022I\n" +
-      "\rnode_instance\030\004 \003(\01322.org.jbpm.marshall" +
-      "ing.ProcessInstance.NodeInstance\022U\n\017excl" +
-      "usive_group\030\005 \003(\0132<.org.jbpm.marshalling",
-      ".ProcessInstance.ExclusiveGroupInstance\032" +
-      "X\n\013ForEachNode\022I\n\rnode_instance\030\001 \003(\01322." +
-      "org.jbpm.marshalling.ProcessInstance.Nod" +
-      "eInstance\"\222\002\n\020NodeInstanceType\022\021\n\rRULE_S" +
-      "ET_NODE\020\000\022\023\n\017HUMAN_TASK_NODE\020\001\022\022\n\016WORK_I" +
-      "TEM_NODE\020\002\022\023\n\017SUBPROCESS_NODE\020\003\022\022\n\016MILES" +
-      "TONE_NODE\020\004\022\016\n\nEVENT_NODE\020\005\022\016\n\nTIMER_NOD" +
-      "E\020\006\022\r\n\tJOIN_NODE\020\007\022\016\n\nSTATE_NODE\020\010\022\032\n\026CO" +
-      "MPOSITE_CONTEXT_NODE\020\t\022\021\n\rFOR_EACH_NODE\020" +
-      "\n\022\020\n\014DYNAMIC_NODE\020\013\022\031\n\025EVENT_SUBPROCESS_",
-      "NODE\020\014\"?\n\010Variable\022\014\n\004name\030\001 \001(\t\022\026\n\016stra" +
-      "tegy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\203\001\n\010Work" +
-      "Item\022\n\n\002id\030\001 \001(\003\022\034\n\024process_instances_id" +
-      "\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220\n\010v" +
-      "ariable\030\005 \003(\0132\036.org.jbpm.marshalling.Var" +
-      "iable\"\235\002\n\014ProcessTimer\022?\n\005timer\030\001 \001(\01320." +
-      "org.jbpm.marshalling.ProcessTimer.TimerI" +
-      "nstance\0220\n\007trigger\030\002 \001(\0132\037.org.drools.ma" +
-      "rshalling.Trigger\032\231\001\n\rTimerInstance\022\n\n\002i" +
-      "d\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003",
-      "\022\016\n\006period\030\004 \001(\003\022\033\n\023process_instance_id\030" +
-      "\005 \001(\003\022\026\n\016activated_time\030\006 \001(\003\022\026\n\016last_tr" +
-      "iggered\030\007 \001(\003:d\n\020process_instance\022#.org." +
-      "drools.marshalling.ProcessData\030\n \003(\0132%.o" +
-      "rg.jbpm.marshalling.ProcessInstance:V\n\tw" +
-      "ork_item\022#.org.drools.marshalling.Proces" +
-      "sData\030\013 \003(\0132\036.org.jbpm.marshalling.WorkI" +
-      "tem:5\n\010timer_id\022#.org.drools.marshalling" +
-      ".ProcessData\030\r \001(\003:^\n\rprocess_timer\022#.or" +
-      "g.drools.marshalling.ProcessData\030\014 \003(\0132\"",
-      ".org.jbpm.marshalling.ProcessTimer:\\\n\npr" +
-      "oc_timer\022$.org.drools.marshalling.Timers" +
-      ".Timer\030d \001(\0132\".org.jbpm.marshalling.Proc" +
-      "essTimerB)\n\031org.jbpm.marshalling.implB\014J" +
-      "BPMMessages"
+      "ent.CompositeContextNode\022W\n\010for_each\030\014 \001" +
+      "(\0132E.org.jbpm.marshalling.ProcessInstanc" +
+      "e.NodeInstanceContent.ForEachNode\032\324\001\n\013Ru" +
+      "leSetNode\022\031\n\021timer_instance_id\030\001 \003(\003\022d\n\010" +
+      "mapEntry\030\002 \003(\0132R.org.jbpm.marshalling.Pr" +
+      "ocessInstance.NodeInstanceContent.RuleSe",
+      "tNode.TextMapEntry\022\027\n\017rule_flow_group\030\003 " +
+      "\001(\t\032+\n\014TextMapEntry\022\014\n\004name\030\001 \001(\t\022\r\n\005val" +
+      "ue\030\002 \001(\t\032@\n\rHumanTaskNode\022\024\n\014work_item_i" +
+      "d\030\001 \001(\003\022\031\n\021timer_instance_id\030\002 \003(\003\032?\n\014Wo" +
+      "rkItemNode\022\024\n\014work_item_id\030\001 \001(\003\022\031\n\021time" +
+      "r_instance_id\030\002 \003(\003\032H\n\016SubProcessNode\022\033\n" +
+      "\023process_instance_id\030\001 \001(\003\022\031\n\021timer_inst" +
+      "ance_id\030\002 \003(\003\032*\n\rMilestoneNode\022\031\n\021timer_" +
+      "instance_id\030\001 \003(\003\032\013\n\tEventNode\032\035\n\tTimerN" +
+      "ode\022\020\n\010timer_id\030\001 \001(\003\032\234\001\n\010JoinNode\022_\n\007tr",
+      "igger\030\001 \003(\0132N.org.jbpm.marshalling.Proce" +
+      "ssInstance.NodeInstanceContent.JoinNode." +
+      "JoinTrigger\032/\n\013JoinTrigger\022\017\n\007node_id\030\001 " +
+      "\001(\003\022\017\n\007counter\030\002 \001(\005\032&\n\tStateNode\022\031\n\021tim" +
+      "er_instance_id\030\001 \003(\003\032\205\002\n\024CompositeContex" +
+      "tNode\022\031\n\021timer_instance_id\030\002 \003(\003\0220\n\010vari" +
+      "able\030\003 \003(\0132\036.org.jbpm.marshalling.Variab" +
+      "le\022I\n\rnode_instance\030\004 \003(\01322.org.jbpm.mar" +
+      "shalling.ProcessInstance.NodeInstance\022U\n" +
+      "\017exclusive_group\030\005 \003(\0132<.org.jbpm.marsha",
+      "lling.ProcessInstance.ExclusiveGroupInst" +
+      "ance\032X\n\013ForEachNode\022I\n\rnode_instance\030\001 \003" +
+      "(\01322.org.jbpm.marshalling.ProcessInstanc" +
+      "e.NodeInstance\"\222\002\n\020NodeInstanceType\022\021\n\rR" +
+      "ULE_SET_NODE\020\000\022\023\n\017HUMAN_TASK_NODE\020\001\022\022\n\016W" +
+      "ORK_ITEM_NODE\020\002\022\023\n\017SUBPROCESS_NODE\020\003\022\022\n\016" +
+      "MILESTONE_NODE\020\004\022\016\n\nEVENT_NODE\020\005\022\016\n\nTIME" +
+      "R_NODE\020\006\022\r\n\tJOIN_NODE\020\007\022\016\n\nSTATE_NODE\020\010\022" +
+      "\032\n\026COMPOSITE_CONTEXT_NODE\020\t\022\021\n\rFOR_EACH_" +
+      "NODE\020\n\022\020\n\014DYNAMIC_NODE\020\013\022\031\n\025EVENT_SUBPRO",
+      "CESS_NODE\020\014\"?\n\010Variable\022\014\n\004name\030\001 \001(\t\022\026\n" +
+      "\016strategy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\203\001\n" +
+      "\010WorkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024process_instanc" +
+      "es_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005" +
+      "\0220\n\010variable\030\005 \003(\0132\036.org.jbpm.marshallin" +
+      "g.Variable\"\242\002\n\014ProcessTimer\022?\n\005timer\030\001 \001" +
+      "(\01320.org.jbpm.marshalling.ProcessTimer.T" +
+      "imerInstance\0225\n\007trigger\030\002 \001(\0132$.org.droo" +
+      "ls.core.marshalling.Trigger\032\231\001\n\rTimerIns" +
+      "tance\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005d",
+      "elay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023process_in" +
+      "stance_id\030\005 \001(\003\022\026\n\016activated_time\030\006 \001(\003\022" +
+      "\026\n\016last_triggered\030\007 \001(\003:i\n\020process_insta" +
+      "nce\022(.org.drools.core.marshalling.Proces" +
+      "sData\030\n \003(\0132%.org.jbpm.marshalling.Proce" +
+      "ssInstance:[\n\twork_item\022(.org.drools.cor" +
+      "e.marshalling.ProcessData\030\013 \003(\0132\036.org.jb" +
+      "pm.marshalling.WorkItem::\n\010timer_id\022(.or" +
+      "g.drools.core.marshalling.ProcessData\030\r " +
+      "\001(\003:c\n\rprocess_timer\022(.org.drools.core.m",
+      "arshalling.ProcessData\030\014 \003(\0132\".org.jbpm." +
+      "marshalling.ProcessTimer:a\n\nproc_timer\022)" +
+      ".org.drools.core.marshalling.Timers.Time" +
+      "r\030d \001(\0132\".org.jbpm.marshalling.ProcessTi" +
+      "merB)\n\031org.jbpm.marshalling.implB\014JBPMMe" +
+      "ssages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

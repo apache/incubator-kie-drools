@@ -11,11 +11,10 @@ import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 
-
-import org.jbpm.task.Operation;
 import org.jbpm.task.annotations.Mvel;
 import org.jbpm.task.exception.TaskException;
 import org.jbpm.task.internals.lifecycle.LifeCycleManager;
+import org.kie.internal.task.api.model.Operation;
 
 /**
  *

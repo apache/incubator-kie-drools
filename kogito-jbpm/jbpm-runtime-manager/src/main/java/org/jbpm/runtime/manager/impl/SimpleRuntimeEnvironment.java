@@ -4,20 +4,21 @@ import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.drools.impl.EnvironmentFactory;
+import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
-import org.kie.KieBase;
-import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.io.Resource;
-import org.kie.io.ResourceType;
-import org.kie.runtime.Environment;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.manager.Mapper;
-import org.kie.runtime.manager.RegisterableItemsFactory;
-import org.kie.runtime.manager.RuntimeEnvironment;
+import org.kie.api.KieBase;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.runtime.manager.Mapper;
+import org.kie.internal.runtime.manager.RegisterableItemsFactory;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.task.api.UserGroupCallback;
 
 public class SimpleRuntimeEnvironment implements RuntimeEnvironment {
     
@@ -27,6 +28,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment {
     protected KnowledgeBuilder kbuilder;
     protected RegisterableItemsFactory registerableItemsFactory;
     protected Mapper mapper;
+    protected UserGroupCallback userGroupCallback;
     
     protected Properties sessionConfigProperties;
     
@@ -125,5 +127,14 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment {
     @Override
     public Mapper getMapper() {
         return this.mapper;
+    }
+    
+    @Override
+    public UserGroupCallback getUserGroupCallback() {
+        return this.userGroupCallback;
+    }
+    
+    public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
+        this.userGroupCallback = userGroupCallback;
     }
 }

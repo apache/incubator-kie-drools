@@ -26,6 +26,7 @@ public class TaskQueryServiceLocalTest extends TaskQueryServiceBaseTest {
                 .addPackage("org.jbpm.task.annotations")
                 .addPackage("org.jbpm.task.api")
                 .addPackage("org.jbpm.task.impl")
+                .addPackage("org.jbpm.task.impl.model")
                 .addPackage("org.jbpm.task.events")
                 .addPackage("org.jbpm.task.exception")
                 .addPackage("org.jbpm.task.identity")

@@ -10,12 +10,12 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
 import org.jbpm.runtime.manager.impl.jpa.ContextMappingInfo;
-import org.kie.process.CorrelationKey;
-import org.kie.process.CorrelationProperty;
-import org.kie.runtime.manager.Context;
-import org.kie.runtime.manager.Mapper;
-import org.kie.runtime.manager.context.CorrelationKeyContext;
-import org.kie.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.process.CorrelationKey;
+import org.kie.internal.process.CorrelationProperty;
+import org.kie.internal.runtime.manager.Context;
+import org.kie.internal.runtime.manager.Mapper;
+import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 @SuppressWarnings("rawtypes")
 public class JPAMapper implements Mapper {
@@ -33,7 +33,7 @@ public class JPAMapper implements Mapper {
        // handle transaction
        em.joinTransaction();
        em.persist(new ContextMappingInfo(resolveContext(context, em).getContextId().toString(), ksessionId));
-
+       
        em.close();
     }
 

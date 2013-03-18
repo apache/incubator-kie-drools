@@ -15,27 +15,31 @@
  */
 package org.droolsjbpm.services.wih.events;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.droolsjbpm.services.impl.helpers.KieSessionDelegate;
 import org.jbpm.shared.services.api.ServicesSessionManager;
+import org.jbpm.task.exception.PermissionDeniedException;
+import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.exception.PermissionDeniedException;
-import org.jbpm.task.query.TaskSummary;
-
-import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.Ignore;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.AccessType;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskSummary;
 
 public abstract class HTWorkItemHandlerBaseTest {
 
@@ -50,13 +54,13 @@ public abstract class HTWorkItemHandlerBaseTest {
     protected ServicesSessionManager sessionManager;
 
     @Inject
-    protected TaskServiceEntryPoint taskService; 
+    protected TaskService taskService; 
 
     public void setSessionManager(ServicesSessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 
-    public void setTaskService(TaskServiceEntryPoint taskService) {
+    public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
     }
     

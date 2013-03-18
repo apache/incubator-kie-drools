@@ -74,10 +74,13 @@ public class JbpmServicesEventImpl<T> implements Event<T>, Serializable {
                     m.invoke(listener, t);
                 } catch (IllegalAccessException ex) {
                     Logger.getLogger(JbpmServicesEventImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new RuntimeException(ex.getCause());
                 } catch (IllegalArgumentException ex) {
                     Logger.getLogger(JbpmServicesEventImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new RuntimeException(ex.getCause());
                 } catch (InvocationTargetException ex) {
                     Logger.getLogger(JbpmServicesEventImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new RuntimeException(ex.getCause());
                 }
        }
        invokeMethods.clear();

@@ -15,12 +15,15 @@
  */
 package org.jbpm.task.commands;
 
-import org.jbpm.task.annotations.CommandBased;
 import javax.inject.Inject;
-import org.kie.internal.command.Context;
-import org.jboss.seam.transaction.Transactional;
 
-import org.jbpm.task.api.TaskCommandExecutor;
+import org.drools.core.command.impl.GenericCommand;
+import org.jboss.seam.transaction.Transactional;
+import org.jbpm.task.annotations.CommandBased;
+import org.kie.api.command.Command;
+import org.kie.internal.command.Context;
+import org.kie.internal.task.api.TaskCommandExecutor;
+
 
 /**
  *
@@ -30,8 +33,8 @@ public class TaskCommandExecutorImpl implements TaskCommandExecutor{
     @Inject
     private TaskContext context;
 
-    public <T> T executeTaskCommand(TaskCommand<T> command) {
-        return (T)command.execute((Context)context);
+    public <T> T executeTaskCommand(Command<T> command) {
+        return (T)((GenericCommand) command).execute((Context)context);
     }
     
 }

@@ -9,17 +9,16 @@ import javax.persistence.Persistence;
 
 import org.drools.core.impl.EnvironmentFactory;
 import org.h2.tools.Server;
-
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.jbpm.task.HumanTaskServiceFactory;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.task.api.TaskService;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
-import org.jbpm.task.HumanTaskServiceFactory;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 
 public final class JBPMHelper {
 
@@ -81,7 +80,7 @@ public final class JBPMHelper {
         return pds;
     }
 
-    public static TaskServiceEntryPoint startTaskService() {
+    public static TaskService startTaskService() {
         Properties properties = getProperties();
         String dialect = properties.getProperty("persistence.persistenceunit.dialect", "org.hibernate.dialect.H2Dialect");
         Map<String, String> map = new HashMap<String, String>();
@@ -105,7 +104,7 @@ public final class JBPMHelper {
 //        	throw new RuntimeException("Unknown task service transport " + transport);
 //        }
         HumanTaskServiceFactory.setEntityManagerFactory(emf);
-        TaskServiceEntryPoint taskService = HumanTaskServiceFactory.newTaskService();
+        TaskService taskService = HumanTaskServiceFactory.newTaskService();
         return taskService;
     }
 

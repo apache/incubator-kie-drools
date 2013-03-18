@@ -20,24 +20,21 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
-import org.jbpm.task.Status;
-import org.jbpm.task.TaskService;
-import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
-import org.jbpm.task.identity.UserGroupCallbackManager;
-import org.jbpm.task.query.TaskSummary;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.io.ResourceFactory;
-import org.kie.io.ResourceType;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.manager.Context;
-import org.kie.runtime.manager.RuntimeManager;
-import org.kie.runtime.manager.RuntimeManagerFactory;
-import org.kie.runtime.manager.context.EmptyContext;
-import org.kie.runtime.manager.context.ProcessInstanceIdContext;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.Context;
+import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.TaskSummary;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -65,6 +62,7 @@ public class MultipleRuntimeManagerTest {
                 .addPackage("org.jbpm.task.deadlines") // deadlines
                 .addPackage("org.jbpm.task.deadlines.notifications.impl")
                 .addPackage("org.jbpm.task.subtask")
+                .addPackage("org.jbpm.shared.services.impl")
                 .addPackage("org.jbpm.runtime.manager")
                 .addPackage("org.jbpm.runtime.manager.impl")
                 .addPackage("org.jbpm.runtime.manager.impl.cdi.qualifier")
@@ -92,12 +90,10 @@ public class MultipleRuntimeManagerTest {
         Properties props = new Properties();
         props.setProperty("john", "user");
         
-        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(props));
     }
     
     @AfterClass
     public static void teardown() {
-        UserGroupCallbackManager.resetCallback();
         pds.close();
     }
     /*
@@ -141,7 +137,7 @@ public class MultipleRuntimeManagerTest {
     private void testProcessStartOnManager(RuntimeManager manager, Context context) {
         assertNotNull(manager);
         
-        org.kie.runtime.manager.Runtime<TaskService> runtime = manager.getRuntime(context);
+        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(context);
         assertNotNull(runtime);
         
         KieSession ksession = runtime.getKieSession();

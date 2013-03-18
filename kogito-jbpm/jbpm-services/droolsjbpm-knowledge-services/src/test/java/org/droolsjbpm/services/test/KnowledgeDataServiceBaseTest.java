@@ -10,28 +10,29 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.jbpm.shared.services.api.Domain;
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.KnowledgeDataService;
 import org.droolsjbpm.services.api.KnowledgeDomainService;
-import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
+import org.jbpm.shared.services.api.Domain;
 import org.jbpm.shared.services.api.FileService;
-import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.task.api.TaskService;
+
 
 public abstract class KnowledgeDataServiceBaseTest {
 
     @Inject
-    protected transient TaskServiceEntryPoint taskService;
+    protected transient TaskService taskService;
     @Inject
     private BPMN2DataService bpmn2Service;
     @Inject

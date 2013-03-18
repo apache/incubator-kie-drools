@@ -8,24 +8,21 @@ import java.util.Properties;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.jbpm.task.DefaultUserInfo;
 
-import org.jbpm.task.UserInfo;
 import org.jbpm.task.admin.listener.TaskCleanUpProcessEventListener;
-
-import org.jbpm.task.api.TaskServiceEntryPoint;
-
-import org.jbpm.task.query.TaskSummary;
-
+import org.jbpm.task.identity.DefaultUserInfo;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.UserInfo;
+import org.kie.internal.task.api.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +66,7 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
         KnowledgeBase kbase = createKnowledgeBase("patient-appointment.bpmn");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        TaskServiceEntryPoint taskService = getTaskService(ksession);
+        TaskService taskService = getTaskService(ksession);
 
         taskService.setUserInfo(userInfo);
 
@@ -129,14 +126,14 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
 
 
         final EntityManager em = emfTasks.createEntityManager();
-        Assert.assertEquals(0, em.createQuery("select t from Task t").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select i from I18NText i").getResultList().size());
+        Assert.assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
+        Assert.assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select c from Content c").getResultList().size());
+        Assert.assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
         em.close();
     }
 
@@ -147,7 +144,7 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
         StatefulKnowledgeSession ksession = createKnowledgeSession("patient-appointment.bpmn");
         KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
 
-        TaskServiceEntryPoint taskService = getTaskService(ksession);
+        TaskService taskService = getTaskService(ksession);
         taskService.setUserInfo(userInfo);
 
         ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));
@@ -200,14 +197,14 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
 
         final EntityManager em = emfTasks.createEntityManager();
 
-        Assert.assertEquals(0, em.createQuery("select t from Task t").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select i from I18NText i").getResultList().size());
+        Assert.assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
+        Assert.assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_ExclOwners").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_PotOwners").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Recipients").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_Stakeholders").getResultList().size());
-        Assert.assertEquals(0, em.createQuery("select c from Content c").getResultList().size());
+        Assert.assertEquals(0, em.createQuery("select c from ContentImpl c").getResultList().size());
         em.close();
     }
 }

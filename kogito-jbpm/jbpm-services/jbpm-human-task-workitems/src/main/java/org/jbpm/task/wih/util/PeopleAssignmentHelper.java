@@ -18,13 +18,15 @@ package org.jbpm.task.wih.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.task.Group;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.User;
+import org.jbpm.task.impl.model.GroupImpl;
+import org.jbpm.task.impl.model.PeopleAssignmentsImpl;
+import org.jbpm.task.impl.model.UserImpl;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.PeopleAssignments;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskData;
+
 
 /**
  * A class responsible for assigning the various ownerships (actors, groups, business 
@@ -67,7 +69,7 @@ public class PeopleAssignmentHelper {
         if (potentialOwners.size() > 0 && taskData.getCreatedBy() == null) {
         	
         	OrganizationalEntity firstPotentialOwner = potentialOwners.get(0);
-        	taskData.setCreatedBy((User) firstPotentialOwner);
+        	taskData.setCreatedBy((UserImpl) firstPotentialOwner);
 
         }
         
@@ -87,7 +89,7 @@ public class PeopleAssignmentHelper {
 		String businessAdministratorIds = (String) workItem.getParameter(BUSINESSADMINISTRATOR_ID);
         List<OrganizationalEntity> businessAdministrators = peopleAssignments.getBusinessAdministrators();
         
-        User administrator = new User("Administrator");        
+        UserImpl administrator = new UserImpl("Administrator");        
         businessAdministrators.add(administrator);
         
         processPeopleAssignments(businessAdministratorIds, businessAdministrators, true);
@@ -138,9 +140,9 @@ public class PeopleAssignmentHelper {
                 if (!exists) {
                     OrganizationalEntity organizationalEntity = null;
                     if (user) {
-                        organizationalEntity = new User(id);
+                        organizationalEntity = new UserImpl(id);
                     } else {
-                        organizationalEntity = new Group(id);
+                        organizationalEntity = new GroupImpl(id);
                     }
                     organizationalEntities.add(organizationalEntity);
 
@@ -155,7 +157,7 @@ public class PeopleAssignmentHelper {
         
         if (peopleAssignments == null) {
         	
-        	peopleAssignments = new PeopleAssignments();
+        	peopleAssignments = new PeopleAssignmentsImpl();
         	peopleAssignments.setPotentialOwners(new ArrayList<OrganizationalEntity>());
         	peopleAssignments.setBusinessAdministrators(new ArrayList<OrganizationalEntity>());
         	peopleAssignments.setExcludedOwners(new ArrayList<OrganizationalEntity>());

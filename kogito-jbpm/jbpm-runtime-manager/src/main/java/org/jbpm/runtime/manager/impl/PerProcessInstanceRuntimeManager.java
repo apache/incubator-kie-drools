@@ -1,23 +1,28 @@
 package org.jbpm.runtime.manager.impl;
 
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.kie.event.process.DefaultProcessEventListener;
-import org.kie.event.process.ProcessCompletedEvent;
-import org.kie.event.process.ProcessStartedEvent;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.manager.Context;
-import org.kie.runtime.manager.Disposable;
-import org.kie.runtime.manager.Mapper;
-import org.kie.runtime.manager.RuntimeEnvironment;
-import org.kie.runtime.manager.SessionFactory;
-import org.kie.runtime.manager.SessionNotFoundException;
-import org.kie.runtime.manager.TaskServiceFactory;
-import org.kie.runtime.manager.context.ProcessInstanceIdContext;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.kie.api.event.process.DefaultProcessEventListener;
+import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.runtime.manager.Context;
+import org.kie.internal.runtime.manager.Disposable;
+import org.kie.internal.runtime.manager.Mapper;
+import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.manager.SessionFactory;
+import org.kie.internal.runtime.manager.SessionNotFoundException;
+import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 
     private SessionFactory factory;
-    private TaskServiceFactory<TaskServiceEntryPoint> taskServiceFactory;
+    private TaskServiceFactory taskServiceFactory;
+    
+    private static ThreadLocal<Map<Object, org.kie.internal.runtime.manager.Runtime>> local = new ThreadLocal<Map<Object, org.kie.internal.runtime.manager.Runtime>>();
     
     private Mapper mapper;
     
@@ -29,8 +34,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     }
     
     @Override
-    public org.kie.runtime.manager.Runtime getRuntime(Context context) {
+    public org.kie.internal.runtime.manager.Runtime getRuntime(Context context) {
   
+
         Object contextId = context.getContextId();
         KieSession ksession = null;
         Integer ksessionId = null;
@@ -38,6 +44,10 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             ksession = factory.newKieSession();
             ksessionId = ksession.getId();                 
         } else {
+            Runtime localRuntime = findLocalRuntime(contextId);
+            if (localRuntime != null) {
+                return localRuntime;
+            }
             ksessionId = mapper.findMapping(context);
             if (ksessionId == null) {
                 throw new SessionNotFoundException("No session found for context " + context);
@@ -45,16 +55,18 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             ksession = factory.findKieSessionById(ksessionId);
         }
         
-        org.kie.runtime.manager.Runtime runtime = new RuntimeImpl(ksession, taskServiceFactory.newTaskService());
+        org.kie.internal.runtime.manager.Runtime runtime = new RuntimeImpl(ksession, taskServiceFactory.newTaskService());
+        ((RuntimeImpl) runtime).setManager(this);
         registerDisposeCallback(runtime);
         registerItems(runtime);
         
-        ksession.addEventListener(new MaintainMappingListener(ksessionId));
+        ksession.addEventListener(new MaintainMappingListener(ksessionId, runtime));
         return runtime;
     }
 
     @Override
-    public void disposeRuntime(org.kie.runtime.manager.Runtime runtime) {
+    public void disposeRuntime(org.kie.internal.runtime.manager.Runtime runtime) {
+        removeLocalRuntime(runtime);
         if (runtime instanceof Disposable) {
             ((Disposable) runtime).dispose();
         }
@@ -79,18 +91,22 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     private class MaintainMappingListener extends DefaultProcessEventListener {
 
         private Integer ksessionId;
+        private Runtime runtime;
         
-        MaintainMappingListener(Integer ksessionId) {
+        MaintainMappingListener(Integer ksessionId, Runtime runtime) {
             this.ksessionId = ksessionId;
+            this.runtime = runtime;
         }
         @Override
         public void afterProcessCompleted(ProcessCompletedEvent event) {
             mapper.removeMapping(ProcessInstanceIdContext.get(event.getProcessInstance().getId()));
+            removeLocalRuntime(runtime);
         }
 
         @Override
         public void beforeProcessStarted(ProcessStartedEvent event) {
-            mapper.saveMapping(ProcessInstanceIdContext.get(event.getProcessInstance().getId()), ksessionId);                    
+            mapper.saveMapping(ProcessInstanceIdContext.get(event.getProcessInstance().getId()), ksessionId);  
+            saveLocalRuntime(event.getProcessInstance().getId(), runtime);
         }
         
     }
@@ -118,5 +134,40 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 
     public void setMapper(Mapper mapper) {
         this.mapper = mapper;
+    }
+    
+    protected org.kie.internal.runtime.manager.Runtime findLocalRuntime(Object processInstanceId) {
+        Map<Object, org.kie.internal.runtime.manager.Runtime> map = local.get();
+        if (map == null) {
+            return null;
+        } else {
+            return map.get(processInstanceId);
+        }
+    }
+    
+    protected void saveLocalRuntime(Long processInstanceId, Runtime runtime) {
+        Map<Object, org.kie.internal.runtime.manager.Runtime> map = local.get();
+        if (map == null) {
+            map = new HashMap<Object, Runtime>();
+            local.set(map);
+        } 
+        
+        map.put(processInstanceId, runtime);
+        
+    }
+    
+    protected void removeLocalRuntime(Runtime runtime) {
+        Map<Object, org.kie.internal.runtime.manager.Runtime> map = local.get();
+        Object keyToRemove = -1l;
+        if (map != null) {
+            for (Map.Entry<Object, Runtime> entry : map.entrySet()) {
+                if (runtime.equals(entry.getValue())) {
+                    keyToRemove = entry.getKey();
+                    break;
+                }
+            }
+            
+            map.remove(keyToRemove);
+        }
     }
 }

@@ -16,17 +16,19 @@
 package org.jbpm.task.commands;
 
 import java.util.List;
+
 import javax.enterprise.util.AnnotationLiteral;
-import org.kie.internal.command.Context;
+
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.task.Group;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.User;
 import org.jbpm.task.events.AfterTaskReleasedEvent;
 import org.jbpm.task.events.BeforeTaskReleasedEvent;
 import org.jbpm.task.exception.PermissionDeniedException;
+import org.kie.internal.command.Context;
+import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.User;
 
 /**
  * Operation.Release 

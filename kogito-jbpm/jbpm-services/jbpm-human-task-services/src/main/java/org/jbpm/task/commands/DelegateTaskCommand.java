@@ -16,15 +16,16 @@
 package org.jbpm.task.commands;
 
 import javax.enterprise.util.AnnotationLiteral;
-import org.kie.internal.command.Context;
+
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.User;
 import org.jbpm.task.events.AfterTaskDelegatedEvent;
 import org.jbpm.task.events.BeforeTaskDelegatedEvent;
 import org.jbpm.task.exception.PermissionDeniedException;
+import org.kie.internal.command.Context;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.User;
 
 /**
 *Operation.Delegate 

@@ -2,13 +2,14 @@ package org.jbpm.runtime.manager.impl.factory;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.task.HumanTaskServiceFactory;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.manager.RuntimeEnvironment;
-import org.kie.runtime.manager.TaskServiceFactory;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.kie.internal.task.api.TaskService;
 
-public class LocalTaskServiceFactory implements TaskServiceFactory<TaskServiceEntryPoint> {
+public class LocalTaskServiceFactory implements TaskServiceFactory {
 
     private RuntimeEnvironment runtimeEnvironment;
     
@@ -16,13 +17,17 @@ public class LocalTaskServiceFactory implements TaskServiceFactory<TaskServiceEn
         this.runtimeEnvironment = runtimeEnvironment;
     }
     @Override
-    public TaskServiceEntryPoint newTaskService() {
+    public TaskService newTaskService() {
         EntityManagerFactory emf = (EntityManagerFactory) 
                 runtimeEnvironment.getEnvironment().get(EnvironmentName.ENTITY_MANAGER_FACTORY);
         if (emf != null) {
-            HumanTaskServiceFactory.setEntityManagerFactory(emf);
-            TaskServiceEntryPoint internalTaskService = HumanTaskServiceFactory.newTaskService(); 
-
+            
+            TaskService internalTaskService =   HumanTaskServiceFactory.newTaskServiceConfigurator()
+            .transactionManager(new JbpmJTATransactionManager())
+            .entityManagerFactory(emf)
+            .userGroupCallback(runtimeEnvironment.getUserGroupCallback())
+            .getTaskService();
+                        
             return internalTaskService;
         } else {
             return null;

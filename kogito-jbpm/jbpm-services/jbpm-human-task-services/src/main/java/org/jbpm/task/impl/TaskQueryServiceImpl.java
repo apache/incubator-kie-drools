@@ -24,15 +24,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskQueryService;
-import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.TaskSummary;
 
 /**
  *
@@ -240,19 +242,19 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                                 pm.addParametersToMap("parentId", parentId, "language", "en-UK"))).size();
     }
 
-    public Task getTaskInstanceById(long taskId) {
-        Task taskInstance = pm.find(Task.class, taskId);
+    public TaskImpl getTaskInstanceById(long taskId) {
+        TaskImpl taskInstance = pm.find(TaskImpl.class, taskId);
         return taskInstance;
 
     }
 
-    public Task getTaskByWorkItemId(long workItemId) {
-        List<Task> tasks = (List<Task>)pm.queryWithParametersInTransaction("TaskByWorkItemId", 
+    public TaskImpl getTaskByWorkItemId(long workItemId) {
+        List<TaskImpl> tasks = (List<TaskImpl>)pm.queryWithParametersInTransaction("TaskByWorkItemId", 
                                 pm.addParametersToMap("workItemId", workItemId,"maxResults", 1));
         if (tasks.isEmpty())
             return null;
         else 
-            return (Task) (tasks.get(0));
+            return (TaskImpl) (tasks.get(0));
     }
 
     @Override

@@ -4,14 +4,13 @@ import java.util.List;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 
-
-import org.jbpm.task.query.TaskSummary;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +29,7 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
     @Test
     public void testProcess() throws Exception {
         StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskServiceEntryPoint taskService = getTaskService(ksession);
+        TaskService taskService = getTaskService(ksession);
 
         ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 
@@ -71,7 +70,7 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
     @Test
     public void testTransactions() throws Exception {
         StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskServiceEntryPoint taskService = getTaskService(ksession);
+        TaskService taskService = getTaskService(ksession);
 
         UserTransaction ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();

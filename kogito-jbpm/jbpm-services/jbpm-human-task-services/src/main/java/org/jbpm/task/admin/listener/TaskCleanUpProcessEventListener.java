@@ -19,11 +19,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.event.DefaultProcessEventListener;
-import org.jbpm.task.Status;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.query.TaskSummary;
-
 import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.TaskSummary;
+
 
 /**
  *
@@ -31,9 +31,9 @@ import org.kie.api.event.process.ProcessCompletedEvent;
  */
 public class TaskCleanUpProcessEventListener extends DefaultProcessEventListener {
 
-    private TaskServiceEntryPoint taskService;
+    private TaskService taskService;
     
-    public TaskCleanUpProcessEventListener(TaskServiceEntryPoint taskService) {
+    public TaskCleanUpProcessEventListener(TaskService taskService) {
         this.taskService = taskService;
     }
 

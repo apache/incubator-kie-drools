@@ -15,12 +15,15 @@
  */
 package org.droolsjbpm.services.impl.form;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -31,22 +34,19 @@ import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jbpm.form.builder.services.model.InputData;
 import org.jbpm.form.builder.services.model.OutputData;
-import org.jbpm.task.Content;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskContentService;
-import org.jbpm.task.api.TaskInstanceService;
-import org.jbpm.task.api.TaskQueryService;
+import org.jbpm.shared.services.api.FileException;
+import org.jbpm.shared.services.api.FileService;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.commons.java.nio.file.Path;
+import org.kie.internal.task.api.TaskContentService;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.model.Content;
+import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.Task;
 
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
-import java.io.ByteArrayInputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.jbpm.shared.services.api.FileException;
-import org.jbpm.shared.services.api.FileService;
-import org.kie.commons.java.nio.file.Path;
 
 @ApplicationScoped
 public class FormProviderServiceImpl implements FormProviderService {

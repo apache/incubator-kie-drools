@@ -8,42 +8,45 @@ package org.jbpm.task.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.ContentData;
-import org.jbpm.task.FaultData;
-import org.jbpm.task.Group;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Status;
-import org.jbpm.task.SubTasksStrategy;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskDef;
-import org.jbpm.task.TaskEvent;
-import org.jbpm.task.User;
-import org.jbpm.task.UserInfo;
-import org.jbpm.task.api.TaskAdminService;
-import org.jbpm.task.api.TaskAttachmentService;
-import org.jbpm.task.api.TaskCommentService;
-import org.jbpm.task.api.TaskContentService;
-import org.jbpm.task.api.TaskDefService;
-import org.jbpm.task.api.TaskEventsService;
-import org.jbpm.task.api.TaskIdentityService;
-import org.jbpm.task.api.TaskInstanceService;
-import org.jbpm.task.api.TaskQueryService;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.api.TaskStatisticsService;
-import org.jbpm.task.events.NotificationEvent;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
-import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.internal.task.api.EventService;
+import org.kie.internal.task.api.TaskAdminService;
+import org.kie.internal.task.api.TaskAttachmentService;
+import org.kie.internal.task.api.TaskCommentService;
+import org.kie.internal.task.api.TaskContentService;
+import org.kie.internal.task.api.TaskDefService;
+import org.kie.internal.task.api.TaskEventsService;
+import org.kie.internal.task.api.TaskIdentityService;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.TaskStatisticsService;
+import org.kie.internal.task.api.UserInfo;
+import org.kie.internal.task.api.model.Attachment;
+import org.kie.internal.task.api.model.Comment;
+import org.kie.internal.task.api.model.Content;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.NotificationEvent;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.SubTasksStrategy;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskDef;
+import org.kie.internal.task.api.model.TaskEvent;
+import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.internal.task.api.model.User;
 
 
 /**
@@ -51,7 +54,7 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
  */
 @Transactional
 @ApplicationScoped
-public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
+public class TaskServiceEntryPointImpl implements TaskService, EventService<JbpmServicesEventListener<NotificationEvent>,JbpmServicesEventListener<Task>> {
 
     @Inject
     private TaskDefService taskDefService;
@@ -87,7 +90,6 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
     public TaskServiceEntryPointImpl() {
     }
 
-    @Override
     public TaskDefService getTaskDefService() {
         return taskDefService;
     }
@@ -116,22 +118,18 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
         this.taskStatisticService = taskStatisticService;
     }
     
-    @Override
     public TaskInstanceService getTaskInstanceService() {
         return taskInstanceService;
     }
 
-    @Override
     public TaskIdentityService getTaskIdentityService() {
         return taskIdentityService;
     }
 
-    @Override
     public TaskAdminService getTaskAdminService() {
         return taskAdminService;
     }
 
-    @Override
     public TaskQueryService getTaskQueryService() {
         return taskQueryService;
     }
@@ -614,22 +612,19 @@ public class TaskServiceEntryPointImpl implements TaskServiceEntryPoint {
         return taskQueryService.getTasksByProcessInstanceId(processInstanceId);
     }
 
-    @Override
+    
     public Event<Task> getTaskLifecycleEventListeners() {
         return taskEvents;
     }
 
-    @Override
     public Event<NotificationEvent> getTaskNotificationEventListeners() {
         return taskNotificationEvents;
     }
 
-    @Override
     public void clearTaskLifecycleEventListeners() {
         ((JbpmServicesEventImpl)taskEvents).clearListeners();
     }
 
-    @Override
     public void clearTasknotificationEventListeners() {
         ((JbpmServicesEventImpl)taskNotificationEvents).clearListeners();
     }

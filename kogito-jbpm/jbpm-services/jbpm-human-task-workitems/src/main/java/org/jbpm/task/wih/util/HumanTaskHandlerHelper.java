@@ -8,20 +8,28 @@ import java.util.Map;
 
 import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendar;
-import org.jbpm.task.Deadline;
-import org.jbpm.task.Deadlines;
-import org.jbpm.task.EmailNotification;
-import org.jbpm.task.EmailNotificationHeader;
-import org.jbpm.task.Escalation;
-import org.jbpm.task.Group;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.Language;
-import org.jbpm.task.Notification;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Reassignment;
-import org.jbpm.task.User;
+import org.jbpm.task.impl.model.DeadlineImpl;
+import org.jbpm.task.impl.model.DeadlinesImpl;
+import org.jbpm.task.impl.model.EmailNotificationHeaderImpl;
+import org.jbpm.task.impl.model.EmailNotificationImpl;
+import org.jbpm.task.impl.model.EscalationImpl;
+import org.jbpm.task.impl.model.GroupImpl;
+import org.jbpm.task.impl.model.I18NTextImpl;
+import org.jbpm.task.impl.model.LanguageImpl;
+import org.jbpm.task.impl.model.ReassignmentImpl;
+import org.jbpm.task.impl.model.UserImpl;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.internal.task.api.model.Deadline;
+import org.kie.internal.task.api.model.Deadlines;
+import org.kie.internal.task.api.model.EmailNotificationHeader;
+import org.kie.internal.task.api.model.Escalation;
+import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.Language;
+import org.kie.internal.task.api.model.Notification;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Reassignment;
+
 
 public class HumanTaskHandlerHelper {
 	
@@ -40,7 +48,7 @@ public class HumanTaskHandlerHelper {
 		String notCompletedNotify = (String) workItem.getParameter("NotCompletedNotify");
 		
 
-	    Deadlines deadlinesTotal = new Deadlines();
+	    Deadlines deadlinesTotal = new DeadlinesImpl();
 	    
 	    List<Deadline> startDeadlines = new ArrayList<Deadline>();
 	    startDeadlines.addAll(parseDeadlineString(notStartedNotify, businessAdministrators, environment));
@@ -83,7 +91,7 @@ public class HumanTaskHandlerHelper {
 	            Deadline taskDeadline = null;
 	            
 	            for (String expiresAt : expireElements) {
-	                taskDeadline = new Deadline();
+	                taskDeadline = new DeadlineImpl();
 	                if (businessCalendar != null) {
 	                	taskDeadline.setDate(businessCalendar.calculateBusinessTimeAsDate(expiresAt));
 	                } else {
@@ -91,7 +99,7 @@ public class HumanTaskHandlerHelper {
 	                }
 	                List<Escalation> escalations = new ArrayList<Escalation>();
 	                
-	                Escalation escalation = new Escalation();
+	                EscalationImpl escalation = new EscalationImpl();
 	                escalations.add(escalation);
 	                
 	                escalation.setName("Default escalation");
@@ -118,7 +126,7 @@ public class HumanTaskHandlerHelper {
 			if (locale == null) {
 				locale = "en-UK";
 			}
-			EmailNotification emailNotification = new EmailNotification();
+			EmailNotificationImpl emailNotification = new EmailNotificationImpl();
 			notifications.add(emailNotification);
 
 			emailNotification.setBusinessAdministrators(businessAdministrators);
@@ -128,25 +136,25 @@ public class HumanTaskHandlerHelper {
 			List<I18NText> names = new ArrayList<I18NText>();
 			List<OrganizationalEntity> notificationRecipients = new ArrayList<OrganizationalEntity>();
 
-			EmailNotificationHeader emailHeader = new EmailNotificationHeader();
+			EmailNotificationHeaderImpl emailHeader = new EmailNotificationHeaderImpl();
 			emailHeader.setBody(parameters.get("body"));
 			emailHeader.setFrom(parameters.get("from"));
 			emailHeader.setReplyTo(parameters.get("replyto"));
 			emailHeader.setLanguage(locale);
 			emailHeader.setSubject(parameters.get("subject"));
 
-			emailHeaders.put(new Language(locale), emailHeader);
+			emailHeaders.put(new LanguageImpl(locale), emailHeader);
 
-			subjects.add(new I18NText(locale, emailHeader.getSubject()));
+			subjects.add(new I18NTextImpl(locale, emailHeader.getSubject()));
 
-			names.add(new I18NText(locale, emailHeader.getSubject()));
+			names.add(new I18NTextImpl(locale, emailHeader.getSubject()));
 
 			String recipients = parameters.get("tousers");
 			if (recipients != null && recipients.trim().length() > 0) {
 				String[] recipientsIds = recipients.split(ATTRIBUTES_ELEMENTS_SEPARATOR);
 
 				for (String id : recipientsIds) {
-					notificationRecipients.add(new User(id.trim()));
+					notificationRecipients.add(new UserImpl(id.trim()));
 				}
 
 			}
@@ -155,7 +163,7 @@ public class HumanTaskHandlerHelper {
 				String[] groupRecipientsIds = groupRecipients.split(ATTRIBUTES_ELEMENTS_SEPARATOR);
 
 				for (String id : groupRecipientsIds) {
-					notificationRecipients.add(new Group(id.trim()));
+					notificationRecipients.add(new GroupImpl(id.trim()));
 				}
 			}
 
@@ -176,13 +184,13 @@ public class HumanTaskHandlerHelper {
     	
     	if (parameters.containsKey("users") || parameters.containsKey("groups")) {
 	        
-            Reassignment reassignment = new Reassignment();
+            Reassignment reassignment = new ReassignmentImpl();
             List<OrganizationalEntity> reassignmentUsers = new ArrayList<OrganizationalEntity>();
             String recipients = parameters.get("users");
             if (recipients != null && recipients.trim().length() > 0) {
                 String[] recipientsIds = recipients.split(ATTRIBUTES_ELEMENTS_SEPARATOR);
                 for (String id: recipientsIds) {
-                    reassignmentUsers.add(new User(id.trim()));
+                    reassignmentUsers.add(new UserImpl(id.trim()));
                 }
             }
             
@@ -190,7 +198,7 @@ public class HumanTaskHandlerHelper {
             if (recipients != null && recipients.trim().length() > 0) {
                 String[] recipientsIds = recipients.split(ATTRIBUTES_ELEMENTS_SEPARATOR);
                 for (String id: recipientsIds) {
-                    reassignmentUsers.add(new Group(id.trim()));
+                    reassignmentUsers.add(new GroupImpl(id.trim()));
                 }
             }
             reassignment.setPotentialOwners(reassignmentUsers);

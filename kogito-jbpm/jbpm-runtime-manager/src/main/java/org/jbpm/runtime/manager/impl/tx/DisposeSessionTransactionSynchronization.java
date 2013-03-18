@@ -1,8 +1,8 @@
 package org.jbpm.runtime.manager.impl.tx;
 
 import org.drools.persistence.TransactionSynchronization;
-import org.kie.runtime.manager.Runtime;
-import org.kie.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeManager;
 
 public class DisposeSessionTransactionSynchronization implements TransactionSynchronization {
 
@@ -20,7 +20,7 @@ public class DisposeSessionTransactionSynchronization implements TransactionSync
 	public void afterCompletion(int status) {
 	    try {
 	        manager.disposeRuntime(runtime);
-	    } catch (Exception e) {
+	    } catch (Throwable e) {
 	        // catch exception as it's only clean up and should not affect runtime
 	    }
 	}

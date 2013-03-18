@@ -30,6 +30,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -38,20 +39,22 @@ import javax.inject.Inject;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.cdi.Startup;
-import org.jbpm.task.Content;
-import org.jbpm.task.Deadline;
-import org.jbpm.task.Escalation;
-import org.jbpm.task.Notification;
-import org.jbpm.task.NotificationType;
-import org.jbpm.task.Reassignment;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.api.TaskDeadlinesService;
-import org.jbpm.task.events.NotificationEvent;
-import org.jbpm.task.query.DeadlineSummary;
+import org.jbpm.task.impl.model.ContentImpl;
+import org.jbpm.task.impl.model.DeadlineImpl;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.jbpm.task.query.DeadlineSummaryImpl;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.kie.api.runtime.Environment;
+import org.kie.internal.task.api.TaskDeadlinesService;
+import org.kie.internal.task.api.model.Deadline;
+import org.kie.internal.task.api.model.Escalation;
+import org.kie.internal.task.api.model.Notification;
+import org.kie.internal.task.api.model.NotificationEvent;
+import org.kie.internal.task.api.model.NotificationType;
+import org.kie.internal.task.api.model.Reassignment;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.TaskData;
+
 
 /**
  *
@@ -98,15 +101,15 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
        // UserTransaction ut = setupEnvironment();
         
         long now = System.currentTimeMillis();
-        List<DeadlineSummary> resultList = (List<DeadlineSummary>)pm.queryInTransaction("UnescalatedStartDeadlines");
-        for (DeadlineSummary summary : resultList) {
+        List<DeadlineSummaryImpl> resultList = (List<DeadlineSummaryImpl>)pm.queryInTransaction("UnescalatedStartDeadlines");
+        for (DeadlineSummaryImpl summary : resultList) {
             long delay = summary.getDate().getTime() - now;
             schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.START);
 
         }
         
-        resultList = (List<DeadlineSummary>)pm.queryInTransaction("UnescalatedEndDeadlines");
-        for (DeadlineSummary summary : resultList) {
+        resultList = (List<DeadlineSummaryImpl>)pm.queryInTransaction("UnescalatedEndDeadlines");
+        for (DeadlineSummaryImpl summary : resultList) {
             long delay = summary.getDate().getTime() - now;
             schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.END);
         }
@@ -117,8 +120,8 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
        // UserTransaction ut = setupEnvironment();
        // EntityManager entityManager = getEntityManager();
         
-        Task task = (Task) pm.find(Task.class, taskId);
-        Deadline deadline = (Deadline) pm.find(Deadline.class, deadlineId);
+        TaskImpl task = (TaskImpl) pm.find(TaskImpl.class, taskId);
+        Deadline deadline = (DeadlineImpl) pm.find(DeadlineImpl.class, deadlineId);
 
         TaskData taskData = task.getTaskData();
         
@@ -129,7 +132,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                 Map<String, Object> variables = null;
 
 
-                    Content content = (Content) pm.find(Content.class, taskData.getDocumentContentId());
+                    ContentImpl content = (ContentImpl) pm.find(ContentImpl.class, taskData.getDocumentContentId());
 
                     if (content != null) {
                         Object objectFromBytes = ContentMarshallerHelper.unmarshall(content.getContent(), getEnvironment(), getClassLoader());

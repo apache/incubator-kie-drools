@@ -15,21 +15,25 @@
  */
 package org.droolsjbpm.services.test.ci;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.SessionManagerImpl;
 import org.droolsjbpm.services.impl.SimpleDomainImpl;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.query.TaskSummary;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.TaskSummary;
+
 
 /**
  *
@@ -38,7 +42,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 public abstract class SessionMGMTandCIBaseTest extends AbstractKieCiTest {
 
   @Inject
-  protected TaskServiceEntryPoint taskService;
+  protected TaskService taskService;
   @Inject
   private BPMN2DataService bpmn2Service;
   @Inject

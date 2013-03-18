@@ -8,17 +8,17 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.Content;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskAdminService;
-import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.impl.model.ContentImpl;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.kie.internal.task.api.TaskAdminService;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.TaskSummary;
 
 /**
  *
@@ -84,7 +84,7 @@ public class TaskAdminServiceImpl implements TaskAdminService {
         int archivedTasks = 0;
         for (TaskSummary sum : tasks) {
             long taskId = sum.getId();
-            Task task = (Task) pm.find(Task.class, taskId);
+            TaskImpl task = (TaskImpl) pm.find(TaskImpl.class, taskId);
             task.setArchived(true);
             pm.persist(task);
             archivedTasks++;
@@ -105,8 +105,8 @@ public class TaskAdminServiceImpl implements TaskAdminService {
         for (TaskSummary sum : tasks) {
             long taskId = sum.getId();
             // Only remove archived tasks
-            Task task = (Task) pm.find(Task.class, taskId);
-            Content content = (Content) pm.find(Content.class, task.getTaskData().getDocumentContentId());
+            TaskImpl task = (TaskImpl) pm.find(TaskImpl.class, taskId);
+            ContentImpl content = (ContentImpl) pm.find(ContentImpl.class, task.getTaskData().getDocumentContentId());
             if (task.isArchived()) {
                 pm.remove(task);
                 if (content != null) {
@@ -122,9 +122,9 @@ public class TaskAdminServiceImpl implements TaskAdminService {
     }
 
     public int removeAllTasks() {
-        List<Task> tasks = (List<Task>) pm.queryStringInTransaction("select t from Task t");
+        List<TaskImpl> tasks = (List<TaskImpl>) pm.queryStringInTransaction("select t from TaskImpl t");
         int count = 0;
-        for (Task t : tasks) {
+        for (TaskImpl t : tasks) {
             pm.remove(t);
             count++;
         }

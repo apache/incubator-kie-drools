@@ -10,10 +10,11 @@ import java.util.Properties;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 
-import org.jbpm.task.Group;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.User;
-import org.jbpm.task.UserInfo;
+import org.jbpm.task.impl.model.OrganizationalEntityImpl;
+import org.jbpm.task.impl.model.UserImpl;
+import org.kie.internal.task.api.UserInfo;
+import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.OrganizationalEntity;
 
 @Alternative
 @ApplicationScoped
@@ -119,9 +120,9 @@ public class PropertyUserInfoImpl implements UserInfo {
                     }
                     String[] members = memberList.split(",");
                     
-                    List<OrganizationalEntity> membersList = new ArrayList<OrganizationalEntity>();
+                    List<OrganizationalEntityImpl> membersList = new ArrayList<OrganizationalEntityImpl>();
                     for (String member : members) {
-                        membersList.add(new User(member));
+                        membersList.add(new UserImpl(member));
                     }
                     entityInfo.put("members", membersList);
                 }

@@ -18,13 +18,14 @@ package org.jbpm.persistence;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.query.TaskSummary;
+
 import org.jbpm.test.JbpmJUnitTestCase;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.TaskSummary;
+
 
 /**
  *
@@ -40,7 +41,7 @@ public class SupportProcessTest extends JbpmJUnitTestCase{
     @Test
     public void simpleSupportProcessTest() {
         StatefulKnowledgeSession ksession = createKnowledgeSession("support.bpmn");
-        TaskServiceEntryPoint taskService = getTaskService(ksession);
+        TaskService taskService = getTaskService(ksession);
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("customer", "salaboy");

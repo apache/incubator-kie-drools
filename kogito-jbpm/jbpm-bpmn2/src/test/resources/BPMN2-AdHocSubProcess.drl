@@ -16,7 +16,7 @@
 
 package org.drools.bpmn2
 
-import org.kie.runtime.process.ProcessContext
+import org.kie.api.runtime.process.ProcessContext
 
 rule "Auto-activate Hello1" ruleflow-group "Hello"
   when

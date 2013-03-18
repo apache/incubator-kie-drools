@@ -16,16 +16,17 @@
 package org.jbpm.task.commands;
 
 import java.util.List;
-import org.jbpm.task.Group;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.User;
+
+import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.User;
 
 /**
  *
 
  */
 public class CommandsUtil {
-    public static boolean isAllowed(final User user, final List<String> groupIds, final List<OrganizationalEntity> entities) {
+    public static boolean isAllowed(final User user, final List<String> groupIds, final List<? extends OrganizationalEntity> entities) {
         // for now just do a contains, I'll figure out group membership later.
         for (OrganizationalEntity entity : entities) {
             if (entity instanceof User && entity.equals(user)) {

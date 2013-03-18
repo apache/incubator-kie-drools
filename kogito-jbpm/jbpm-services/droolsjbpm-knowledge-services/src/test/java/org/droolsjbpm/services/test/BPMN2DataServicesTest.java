@@ -32,7 +32,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.task.TaskDef;
+import org.jbpm.task.impl.model.TaskDefImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -106,7 +106,7 @@ public class BPMN2DataServicesTest {
         String theString = "org.jbpm.writedocument";
         
 
-        Collection<TaskDef> processTasks = bpmn2Service.getAllTasksDef(theString);
+        Collection<TaskDefImpl> processTasks = bpmn2Service.getAllTasksDef(theString);
         
         assertEquals(3, processTasks.size());
         Map<String, String> processData = bpmn2Service.getProcessData(theString);

@@ -7,7 +7,7 @@ package org.jbpm.task.lifecycle.listeners;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
-import org.jbpm.task.Task;
+
 import org.jbpm.task.annotations.Internal;
 import org.jbpm.task.events.AfterTaskActivatedEvent;
 import org.jbpm.task.events.AfterTaskAddedEvent;
@@ -17,6 +17,7 @@ import org.jbpm.task.events.AfterTaskFailedEvent;
 import org.jbpm.task.events.AfterTaskSkippedEvent;
 import org.jbpm.task.events.AfterTaskStartedEvent;
 import org.jbpm.task.events.AfterTaskStoppedEvent;
+import org.kie.internal.task.api.model.Task;
 
 
 /**

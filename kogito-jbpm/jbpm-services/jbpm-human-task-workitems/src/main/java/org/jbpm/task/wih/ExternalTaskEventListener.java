@@ -17,22 +17,25 @@ package org.jbpm.task.wih;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
+
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
-import org.jbpm.task.Content;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
 import org.jbpm.task.annotations.External;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.events.AfterTaskCompletedEvent;
 import org.jbpm.task.events.AfterTaskFailedEvent;
 import org.jbpm.task.events.AfterTaskSkippedEvent;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.Content;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
+
 
 /**
  *
@@ -43,7 +46,7 @@ import org.kie.api.runtime.KieSession;
 public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  implements TaskLifeCycleEventListener {
 
     @Inject
-    private TaskServiceEntryPoint taskService;
+    private TaskService taskService;
     
     private Map<Integer, KieSession> kruntimes = new HashMap<Integer,KieSession>();
     private Map<Integer, ClassLoader> classLoaders = new HashMap<Integer,ClassLoader>();
@@ -53,11 +56,11 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
     }
     
 
-    public TaskServiceEntryPoint getTaskService() {
+    public TaskService getTaskService() {
         return taskService;
     }
 
-    public void setTaskService(TaskServiceEntryPoint taskService) {
+    public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
     }
 

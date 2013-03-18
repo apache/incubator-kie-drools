@@ -16,24 +16,18 @@
 package org.jbpm.task;
 
 import java.util.logging.LogManager;
+
 import javax.enterprise.event.Event;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.jbpm.task.api.TaskAdminService;
-import org.jbpm.task.api.TaskContentService;
-import org.jbpm.task.api.TaskDeadlinesService;
-import org.jbpm.task.api.TaskIdentityService;
-import org.jbpm.task.api.TaskInstanceService;
-import org.jbpm.task.api.TaskQueryService;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
 import org.jbpm.task.deadlines.DeadlinesDecorator;
-import org.jbpm.task.events.NotificationEvent;
 import org.jbpm.task.identity.MvelUserGroupCallbackImpl;
-import org.jbpm.task.identity.UserGroupCallback;
 import org.jbpm.task.identity.UserGroupLifeCycleManagerDecorator;
 import org.jbpm.task.identity.UserGroupTaskInstanceServiceDecorator;
 import org.jbpm.task.identity.UserGroupTaskQueryServiceDecorator;
@@ -48,6 +42,15 @@ import org.jbpm.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.task.internals.lifecycle.MVELLifeCycleManager;
 import org.jbpm.task.subtask.SubTaskDecorator;
 import org.junit.Before;
+import org.kie.internal.task.api.TaskAdminService;
+import org.kie.internal.task.api.TaskContentService;
+import org.kie.internal.task.api.TaskDeadlinesService;
+import org.kie.internal.task.api.TaskIdentityService;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.UserGroupCallback;
+import org.kie.internal.task.api.model.NotificationEvent;
+import org.kie.internal.task.api.model.Task;
 
 /**
  *
@@ -88,15 +91,15 @@ public class NoCDILifeCycleLocalTest extends LifeCycleBaseTest {
         userGroupTaskQueryServiceDecorator.setUserGroupCallback(userGroupCallback);
         userGroupTaskQueryServiceDecorator.setDelegate(queryService);
         
-        taskService.setTaskQueryService(userGroupTaskQueryServiceDecorator);
+        ((TaskServiceEntryPointImpl)taskService).setTaskQueryService(userGroupTaskQueryServiceDecorator);
         
         TaskIdentityService identityService = new TaskIdentityServiceImpl();
         ((TaskIdentityServiceImpl)identityService).setPm(pm);
-        taskService.setTaskIdentityService(identityService);
+        ((TaskServiceEntryPointImpl)taskService).setTaskIdentityService(identityService);
         
         TaskAdminService adminService = new TaskAdminServiceImpl();
         ((TaskAdminServiceImpl)adminService).setPm(pm);
-        taskService.setTaskAdminService(adminService);
+        ((TaskServiceEntryPointImpl)taskService).setTaskAdminService(adminService);
         
         TaskInstanceService instanceService = new TaskInstanceServiceImpl();
         ((TaskInstanceServiceImpl)instanceService).setPm(pm);
@@ -110,7 +113,7 @@ public class NoCDILifeCycleLocalTest extends LifeCycleBaseTest {
         
         TaskContentService contentService = new TaskContentServiceImpl();
         ((TaskContentServiceImpl)contentService).setPm(pm);
-        taskService.setTaskContentService(contentService);
+        ((TaskServiceEntryPointImpl)taskService).setTaskContentService(contentService);
         
         LifeCycleManager mvelLifeCycleManager = new MVELLifeCycleManager();
         ((MVELLifeCycleManager)mvelLifeCycleManager).setPm(pm);
@@ -150,7 +153,7 @@ public class NoCDILifeCycleLocalTest extends LifeCycleBaseTest {
         
         
         
-        taskService.setTaskInstanceService(deadlinesDecorator);
+        ((TaskServiceEntryPointImpl)taskService).setTaskInstanceService(deadlinesDecorator);
 
         super.setUp();
         

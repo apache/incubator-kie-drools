@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jbpm.bpmn2.xml.UserTaskHandler;
-import org.jbpm.task.TaskDef;
+import org.jbpm.task.impl.model.TaskDefImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 
 import org.w3c.dom.Element;
@@ -72,7 +72,7 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         NamedNodeMap map = xmlNode.getParentNode().getAttributes();
         Node nodeName = map.getNamedItem("name");
         String name = nodeName.getNodeValue();
-        TaskDef task = new TaskDef();
+        TaskDefImpl task = new TaskDefImpl();
         task.setName(name);
 
         Map<String, String> inputParams = new HashMap<String, String>();

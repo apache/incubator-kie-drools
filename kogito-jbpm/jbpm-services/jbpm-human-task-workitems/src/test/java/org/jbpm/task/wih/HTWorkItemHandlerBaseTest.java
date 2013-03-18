@@ -31,13 +31,8 @@ import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.events.AfterTaskAddedEvent;
 import org.jbpm.task.exception.PermissionDeniedException;
-import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.test.MyObject;
 import org.jbpm.task.test.TestStatefulKnowledgeSession;
 import org.jbpm.task.utils.ContentMarshallerHelper;
@@ -45,6 +40,12 @@ import org.jbpm.task.utils.OnErrorAction;
 import org.junit.Test;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.AccessType;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskSummary;
+
 
 public abstract class HTWorkItemHandlerBaseTest {
 
@@ -56,7 +57,7 @@ public abstract class HTWorkItemHandlerBaseTest {
     protected TestStatefulKnowledgeSession ksession;
 
     @Inject
-    protected TaskServiceEntryPoint taskService; 
+    protected TaskService taskService; 
     
     @Inject
     protected AddedTaskListener listenr;

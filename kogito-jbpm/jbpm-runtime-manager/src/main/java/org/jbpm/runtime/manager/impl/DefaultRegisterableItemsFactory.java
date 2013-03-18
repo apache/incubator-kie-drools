@@ -7,19 +7,17 @@ import java.util.Map;
 
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
-import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
-import org.jbpm.task.TaskService;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.utils.OnErrorAction;
-import org.kie.event.process.ProcessEventListener;
-import org.kie.event.rule.AgendaEventListener;
-import org.kie.event.rule.WorkingMemoryEventListener;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.manager.Disposable;
-import org.kie.runtime.manager.DisposeListener;
-import org.kie.runtime.manager.Runtime;
-import org.kie.runtime.process.WorkItemHandler;
+import org.jbpm.task.wih.ManagedExternalTaskEventListener;
+import org.jbpm.task.wih.ManagedLocalHTWorkItemHandler;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.manager.Disposable;
+import org.kie.internal.runtime.manager.DisposeListener;
+import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.task.api.EventService;
 
 public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFactory {
 
@@ -66,23 +64,30 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     }
 
 
-    protected WorkItemHandler getHTWorkItemHandler(Runtime<TaskServiceEntryPoint> runtime) {
-        final LocalHTWorkItemHandler handler = new LocalHTWorkItemHandler(
-                runtime.getTaskService(), (KnowledgeRuntime)runtime.getKieSession(), OnErrorAction.RETHROW);
-        handler.connect();
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected WorkItemHandler getHTWorkItemHandler(Runtime runtime) {
+        
+        ManagedExternalTaskEventListener listener = new ManagedExternalTaskEventListener();
+        listener.setRuntimeManager(((RuntimeImpl)runtime).getManager());
+        
+        ManagedLocalHTWorkItemHandler humanTaskHandler = new ManagedLocalHTWorkItemHandler();
+        humanTaskHandler.setRuntimeManager(((RuntimeImpl)runtime).getManager());
+        if (runtime.getTaskService() instanceof EventService) {
+            ((EventService)runtime.getTaskService()).registerTaskLifecycleEventListener(listener);
+        }
+        
         if (runtime instanceof Disposable) {
             ((Disposable)runtime).addDisposeListener(new DisposeListener() {
                 
                 @Override
                 public void onDispose(Runtime runtime) {
-                    try {
-                        handler.dispose();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    if (runtime.getTaskService() instanceof EventService) {
+                        ((EventService)runtime.getTaskService()).clearTaskLifecycleEventListeners();
+                        ((EventService)runtime.getTaskService()).clearTasknotificationEventListeners();
                     }
                 }
             });
         }
-        return handler;
+        return humanTaskHandler;
     }    
 }

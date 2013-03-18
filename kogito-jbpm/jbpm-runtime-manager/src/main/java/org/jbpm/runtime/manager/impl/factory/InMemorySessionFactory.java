@@ -3,11 +3,11 @@ package org.jbpm.runtime.manager.impl.factory;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kie.KieBase;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.manager.RuntimeEnvironment;
-import org.kie.runtime.manager.SessionFactory;
-import org.kie.runtime.manager.SessionNotFoundException;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.manager.SessionFactory;
+import org.kie.internal.runtime.manager.SessionNotFoundException;
 
 public class InMemorySessionFactory implements SessionFactory {
 

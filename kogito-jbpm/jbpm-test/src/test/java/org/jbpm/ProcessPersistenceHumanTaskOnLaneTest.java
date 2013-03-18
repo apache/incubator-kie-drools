@@ -3,13 +3,13 @@ package org.jbpm;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.task.Status;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.query.TaskSummary;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,7 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitTestCase {
     @Test 
     public void testProcess() throws Exception {
         StatefulKnowledgeSession ksession = createKnowledgeSession("HumanTaskOnLane.bpmn2");
-        TaskServiceEntryPoint taskService = getTaskService(ksession);
+        TaskService taskService = getTaskService(ksession);
 
         ProcessInstance processInstance = ksession.startProcess("UserTask");
 

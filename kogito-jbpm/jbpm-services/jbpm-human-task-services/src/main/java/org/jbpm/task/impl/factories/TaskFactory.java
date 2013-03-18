@@ -11,15 +11,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jbpm.task.Group;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.TaskDef;
-import org.jbpm.task.User;
+
 import org.jbpm.task.exception.IllegalTaskStateException;
+import org.jbpm.task.impl.model.GroupImpl;
+import org.jbpm.task.impl.model.TaskDataImpl;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.jbpm.task.impl.model.UserImpl;
 import org.jbpm.task.utils.MVELUtils;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskData;
+import org.kie.internal.task.api.model.TaskDef;
 
 /**
  *
@@ -27,8 +30,8 @@ import org.jbpm.task.utils.MVELUtils;
 public class TaskFactory {
 
     public static Task newTask(TaskDef taskDef) {
-        Task task = new Task();
-        TaskData taskData = new TaskData();
+        Task task = new TaskImpl();
+        TaskData taskData = new TaskDataImpl();
         taskData.initialize();
         task.setTaskData(taskData);
         initializeTask(taskDef, task);
@@ -88,13 +91,13 @@ public class TaskFactory {
             // if there is a single potential owner, assign and set status to Reserved
             OrganizationalEntity potentialOwner = task.getPeopleAssignments().getPotentialOwners().get(0);
             // if there is a single potential user owner, assign and set status to Reserved
-            if (potentialOwner instanceof User) {
-                task.getTaskData().setActualOwner((User) potentialOwner);
+            if (potentialOwner instanceof UserImpl) {
+                task.getTaskData().setActualOwner((UserImpl) potentialOwner);
 
                 assignedStatus = Status.Reserved;
             }
             //If there is a group set as potentialOwners, set the status to Ready ??
-            if (potentialOwner instanceof Group) {
+            if (potentialOwner instanceof GroupImpl) {
 
                 assignedStatus = Status.Ready;
             }
@@ -111,17 +114,17 @@ public class TaskFactory {
 
         if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
-            businessAdmins.add(new User("Administrator"));
+            businessAdmins.add(new UserImpl("Administrator"));
             businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
 
     }
 
-    public static Task evalTask(Reader reader, Map<String, Object> vars, boolean initialize) {
-        Task task = null;
+    public static TaskImpl evalTask(Reader reader, Map<String, Object> vars, boolean initialize) {
+        TaskImpl task = null;
         try {
-            task = (Task) MVELUtils.eval(MVELUtils.toString(reader), vars);
+            task = (TaskImpl) MVELUtils.eval(MVELUtils.toString(reader), vars);
             if (initialize) {
                 initializeTask(task);
             }
@@ -132,19 +135,19 @@ public class TaskFactory {
         return task;
     }
 
-    public static Task evalTask(String taskString, Map<String, Object> vars, boolean initialize) {
-        Task task = (Task) MVELUtils.eval(taskString, vars);
+    public static TaskImpl evalTask(String taskString, Map<String, Object> vars, boolean initialize) {
+        TaskImpl task = (TaskImpl) MVELUtils.eval(taskString, vars);
         if (initialize) {
             initializeTask(task);
         }
         return task;
     }
 
-    public static Task evalTask(Reader reader) {
+    public static TaskImpl evalTask(Reader reader) {
         return evalTask(reader, null);
     }
 
-    public static Task evalTask(Reader reader, Map<String, Object> vars) {
+    public static TaskImpl evalTask(Reader reader, Map<String, Object> vars) {
         return evalTask(reader, vars, true);
     }
 }

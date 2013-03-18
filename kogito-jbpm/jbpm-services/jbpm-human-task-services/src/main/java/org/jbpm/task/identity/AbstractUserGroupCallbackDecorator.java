@@ -9,18 +9,21 @@ import javax.inject.Inject;
 
 import org.drools.core.util.StringUtils;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.Deadline;
-import org.jbpm.task.Deadlines;
-import org.jbpm.task.Escalation;
-import org.jbpm.task.Group;
-import org.jbpm.task.Notification;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Reassignment;
-import org.jbpm.task.Status;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.User;
 import org.jbpm.task.exception.CannotAddTaskException;
+import org.jbpm.task.impl.model.GroupImpl;
+import org.jbpm.task.impl.model.UserImpl;
+import org.kie.internal.task.api.UserGroupCallback;
+import org.kie.internal.task.api.model.Deadline;
+import org.kie.internal.task.api.model.Deadlines;
+import org.kie.internal.task.api.model.Escalation;
+import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.Notification;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.PeopleAssignments;
+import org.kie.internal.task.api.model.Reassignment;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.TaskData;
+import org.kie.internal.task.api.model.User;
 
 public class AbstractUserGroupCallbackDecorator {
 
@@ -71,9 +74,9 @@ public class AbstractUserGroupCallbackDecorator {
 
     protected void addUserFromCallbackOperation(String userId) {
         try {
-            boolean userExists = pm.find(User.class, userId) != null;
+            boolean userExists = pm.find(UserImpl.class, userId) != null;
             if (!StringUtils.isEmpty(userId) && !userExists) {
-                User user = new User(userId);
+                UserImpl user = new UserImpl(userId);
                 pm.persist(user);
             }
         } catch (Throwable t) {
@@ -117,9 +120,9 @@ public class AbstractUserGroupCallbackDecorator {
 
     protected void addGroupFromCallbackOperation(String groupId) {
         try {
-            boolean groupExists = pm.find(Group.class, groupId) != null;
+            boolean groupExists = pm.find(GroupImpl.class, groupId) != null;
             if (!StringUtils.isEmpty(groupId) && !groupExists) {
-                Group group = new Group(groupId);
+                GroupImpl group = new GroupImpl(groupId);
                 pm.persist(group);
             }
         } catch (Throwable t) {
@@ -177,16 +180,16 @@ public class AbstractUserGroupCallbackDecorator {
         List<OrganizationalEntity> nonExistingEntities = new ArrayList<OrganizationalEntity>();
 
         if (assignments != null) {
-            List<OrganizationalEntity> businessAdmins = assignments.getBusinessAdministrators();
+            List<? extends OrganizationalEntity> businessAdmins = assignments.getBusinessAdministrators();
             if (businessAdmins != null) {
                 for (OrganizationalEntity admin : businessAdmins) {
-                    if (admin instanceof User) {
+                    if (admin instanceof UserImpl) {
                         boolean userExists = doCallbackUserOperation(admin.getId());
                         if (!userExists) {
                             nonExistingEntities.add(admin);
                         }
                     }
-                    if (admin instanceof Group) {
+                    if (admin instanceof GroupImpl) {
                         boolean groupExists = doCallbackGroupOperation(admin.getId());
                         if (!groupExists) {
                             nonExistingEntities.add(admin);
@@ -205,7 +208,7 @@ public class AbstractUserGroupCallbackDecorator {
                 throw new CannotAddTaskException("There are no known Business Administrators, task cannot be created according to WS-HT specification");
             }
 
-            List<OrganizationalEntity> potentialOwners = assignments.getPotentialOwners();
+            List<? extends OrganizationalEntity> potentialOwners = assignments.getPotentialOwners();
             if (potentialOwners != null) {
                 for (OrganizationalEntity powner : potentialOwners) {
                     if (powner instanceof User) {
@@ -231,7 +234,7 @@ public class AbstractUserGroupCallbackDecorator {
                 doCallbackUserOperation(assignments.getTaskInitiator().getId());
             }
 
-            List<OrganizationalEntity> excludedOwners = assignments.getExcludedOwners();
+            List<? extends OrganizationalEntity> excludedOwners = assignments.getExcludedOwners();
             if (excludedOwners != null) {
                 for (OrganizationalEntity exowner : excludedOwners) {
                     if (exowner instanceof User) {
@@ -253,7 +256,7 @@ public class AbstractUserGroupCallbackDecorator {
                 }
             }
 
-            List<OrganizationalEntity> recipients = assignments.getRecipients();
+            List<? extends OrganizationalEntity> recipients = assignments.getRecipients();
             if (recipients != null) {
                 for (OrganizationalEntity recipient : recipients) {
                     if (recipient instanceof User) {
@@ -262,7 +265,7 @@ public class AbstractUserGroupCallbackDecorator {
                             nonExistingEntities.add(recipient);
                         }
                     }
-                    if (recipient instanceof Group) {
+                    if (recipient instanceof GroupImpl) {
                         boolean groupExists = doCallbackGroupOperation(recipient.getId());
                         if (!groupExists) {
                             nonExistingEntities.add(recipient);
@@ -275,7 +278,7 @@ public class AbstractUserGroupCallbackDecorator {
                 }
             }
 
-            List<OrganizationalEntity> stakeholders = assignments.getTaskStakeholders();
+            List<? extends OrganizationalEntity> stakeholders = assignments.getTaskStakeholders();
             if (stakeholders != null) {
                 for (OrganizationalEntity stakeholder : stakeholders) {
                     if (stakeholder instanceof User) {
@@ -303,16 +306,16 @@ public class AbstractUserGroupCallbackDecorator {
      protected void doCallbackOperationForTaskDeadlines(Deadlines deadlines) {
         if(deadlines != null) {
             if(deadlines.getStartDeadlines() != null) {
-                List<Deadline> startDeadlines = deadlines.getStartDeadlines();
+                List<? extends Deadline> startDeadlines = deadlines.getStartDeadlines();
                 for(Deadline startDeadline : startDeadlines) {
-                    List<Escalation> escalations = startDeadline.getEscalations();
+                    List<? extends Escalation> escalations = startDeadline.getEscalations();
                     if(escalations != null) {
                         for(Escalation escalation : escalations) {
-                            List<Notification> notifications = escalation.getNotifications();
-                            List<Reassignment> ressignments = escalation.getReassignments();
+                            List<? extends Notification> notifications = escalation.getNotifications();
+                            List<? extends Reassignment> ressignments = escalation.getReassignments();
                             if(notifications != null) {
                                 for(Notification notification : notifications) {
-                                    List<OrganizationalEntity> recipients = notification.getRecipients();
+                                    List<? extends OrganizationalEntity> recipients = notification.getRecipients();
                                     if(recipients != null) {
                                         for(OrganizationalEntity recipient : recipients) {
                                             if(recipient instanceof User) {
@@ -323,7 +326,7 @@ public class AbstractUserGroupCallbackDecorator {
                                             }
                                         }
                                     }
-                                    List<OrganizationalEntity> administrators = notification.getBusinessAdministrators();
+                                    List<? extends OrganizationalEntity> administrators = notification.getBusinessAdministrators();
                                     if(administrators != null) {
                                         for(OrganizationalEntity administrator : administrators) {
                                             if(administrator instanceof User) {
@@ -338,7 +341,7 @@ public class AbstractUserGroupCallbackDecorator {
                             }
                             if(ressignments != null) {
                                 for(Reassignment reassignment : ressignments) {
-                                    List<OrganizationalEntity> potentialOwners = reassignment.getPotentialOwners();
+                                    List<? extends OrganizationalEntity> potentialOwners = reassignment.getPotentialOwners();
                                     if(potentialOwners != null) {
                                         for(OrganizationalEntity potentialOwner : potentialOwners) {
                                             if(potentialOwner instanceof User) {
@@ -357,16 +360,16 @@ public class AbstractUserGroupCallbackDecorator {
             }
             
             if(deadlines.getEndDeadlines() != null) {
-                List<Deadline> endDeadlines = deadlines.getEndDeadlines();
+                List<? extends Deadline> endDeadlines = deadlines.getEndDeadlines();
                 for(Deadline endDeadline : endDeadlines) {
-                    List<Escalation> escalations = endDeadline.getEscalations();
+                    List<? extends Escalation> escalations = endDeadline.getEscalations();
                     if(escalations != null) {
                         for(Escalation escalation : escalations) {
-                            List<Notification> notifications = escalation.getNotifications();
-                            List<Reassignment> ressignments = escalation.getReassignments();
+                            List<? extends Notification> notifications = escalation.getNotifications();
+                            List<? extends Reassignment> ressignments = escalation.getReassignments();
                             if(notifications != null) {
                                 for(Notification notification : notifications) {
-                                    List<OrganizationalEntity> recipients = notification.getRecipients();
+                                    List<? extends OrganizationalEntity> recipients = notification.getRecipients();
                                     if(recipients != null) {
                                         for(OrganizationalEntity recipient : recipients) {
                                             if(recipient instanceof User) {
@@ -377,7 +380,7 @@ public class AbstractUserGroupCallbackDecorator {
                                             }
                                         }
                                     }
-                                    List<OrganizationalEntity> administrators = notification.getBusinessAdministrators();
+                                    List<? extends OrganizationalEntity> administrators = notification.getBusinessAdministrators();
                                     if(administrators != null) {
                                         for(OrganizationalEntity administrator : administrators) {
                                             if(administrator instanceof User) {
@@ -392,7 +395,7 @@ public class AbstractUserGroupCallbackDecorator {
                             }
                             if(ressignments != null) {
                                 for(Reassignment reassignment : ressignments) {
-                                    List<OrganizationalEntity> potentialOwners = reassignment.getPotentialOwners();
+                                    List<? extends OrganizationalEntity> potentialOwners = reassignment.getPotentialOwners();
                                     if(potentialOwners != null) {
                                         for(OrganizationalEntity potentialOwner : potentialOwners) {
                                             if(potentialOwner instanceof User) {

@@ -6,14 +6,14 @@ import javax.enterprise.inject.Produces;
 import org.jbpm.runtime.manager.impl.factory.InMemorySessionFactory;
 import org.jbpm.runtime.manager.impl.factory.JPASessionFactory;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
-import org.kie.runtime.manager.RuntimeEnvironment;
-import org.kie.runtime.manager.RuntimeManager;
-import org.kie.runtime.manager.RuntimeManagerFactory;
-import org.kie.runtime.manager.SessionFactory;
-import org.kie.runtime.manager.TaskServiceFactory;
-import org.kie.runtime.manager.cdi.qualifier.PerProcessInstance;
-import org.kie.runtime.manager.cdi.qualifier.PerRequest;
-import org.kie.runtime.manager.cdi.qualifier.Singleton;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.runtime.manager.SessionFactory;
+import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
+import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
+import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
 
 @ApplicationScoped
 public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {

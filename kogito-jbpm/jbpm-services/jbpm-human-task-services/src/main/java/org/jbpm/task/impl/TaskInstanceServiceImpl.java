@@ -14,33 +14,29 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-import org.drools.core.util.StringUtils;
-import org.jbpm.task.internals.lifecycle.LifeCycleManager;
-import org.jbpm.task.annotations.Mvel;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.Content;
-import org.jbpm.task.ContentData;
-import org.jbpm.task.FaultData;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.Operation;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.SubTasksStrategy;
-import org.jbpm.task.Task;
-
-import org.jbpm.task.TaskData;
-import org.jbpm.task.User;
-import org.jbpm.task.api.TaskInstanceService;
-import org.jbpm.task.api.TaskQueryService;
+import org.jbpm.task.annotations.Mvel;
 import org.jbpm.task.events.AfterTaskAddedEvent;
-import org.jbpm.task.exception.CannotAddTaskException;
-import org.jbpm.task.identity.UserGroupCallback;
 import org.jbpm.task.identity.UserGroupLifeCycleManagerDecorator;
-
+import org.jbpm.task.impl.model.ContentDataImpl;
+import org.jbpm.task.impl.model.ContentImpl;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.jbpm.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.task.internals.lifecycle.MVELLifeCycleManager;
-import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.Operation;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.SubTasksStrategy;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskSummary;
 
 /**
  *
@@ -85,11 +81,12 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
 
     public long addTask(Task task, Map<String, Object> params) {
         if (params != null) {
-            ContentData contentData = ContentMarshallerHelper.marshal(params, null);
-            Content content = new Content(contentData.getContent());
+            ContentDataImpl contentData = ContentMarshallerHelper.marshal(params, null);
+            ContentImpl content = new ContentImpl(contentData.getContent());
             pm.persist(content);
             task.getTaskData().setDocument(content.getId(), contentData);
         }
+        
         pm.persist(task);
         if(taskEvents != null){
             taskEvents.select(new AnnotationLiteral<AfterTaskAddedEvent>() {}).fire(task);
@@ -98,11 +95,10 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public long addTask(Task task, ContentData contentData) {
-
         pm.persist(task);
 
         if (contentData != null) {
-            Content content = new Content(contentData.getContent());
+            ContentImpl content = new ContentImpl(contentData.getContent());
             pm.persist(content);
             task.getTaskData().setDocument(content.getId(), contentData);
         }
@@ -125,8 +121,8 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void claimNextAvailable(String userId, String language) {
-        List<org.jbpm.task.Status> status = new ArrayList<org.jbpm.task.Status>();
-        status.add(org.jbpm.task.Status.Ready);
+        List<Status> status = new ArrayList<Status>();
+        status.add(Status.Ready);
         List<TaskSummary> queryTasks = taskQueryService.getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
         if (queryTasks.size() > 0) {
             lifeCycleManager.taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, null);
@@ -188,12 +184,12 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void setPriority(long taskId, int priority) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         task.setPriority(priority);
     }
 
     public void setTaskNames(long taskId, List<I18NText> taskNames) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         task.setNames(taskNames);
     }
 
@@ -224,47 +220,47 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         task.setSubTaskStrategy(strategy);
     }
 
     public void setExpirationDate(long taskId, Date date) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         task.getTaskData().setExpirationTime(date);
     }
 
     public void setDescriptions(long taskId, List<I18NText> descriptions) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         task.setDescriptions(descriptions);
     }
 
     public void setSkipable(long taskId, boolean skipable) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         task.getTaskData().setSkipable(skipable);
     }
 
     public int getPriority(long taskId) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         return task.getPriority();
     }
 
     public Date getExpirationDate(long taskId) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         return task.getTaskData().getExpirationTime();
     }
 
     public List<I18NText> getDescriptions(long taskId) {
-        Task task = pm.find(Task.class, taskId);
-        return task.getDescriptions();
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
+        return (List<I18NText>) task.getDescriptions();
     }
 
     public boolean isSkipable(long taskId) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         return task.getTaskData().isSkipable();
     }
 
     public SubTasksStrategy getSubTaskStrategy(long taskId) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         return task.getSubTaskStrategy();
     }
 }

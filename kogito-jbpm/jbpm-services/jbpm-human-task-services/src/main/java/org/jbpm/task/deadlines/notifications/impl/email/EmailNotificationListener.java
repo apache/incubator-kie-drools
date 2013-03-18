@@ -43,16 +43,19 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.jbpm.shared.services.cdi.Startup;
-import org.jbpm.task.EmailNotification;
-import org.jbpm.task.EmailNotificationHeader;
-import org.jbpm.task.Group;
-import org.jbpm.task.Language;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Task;
-import org.jbpm.task.User;
-import org.jbpm.task.UserInfo;
 import org.jbpm.task.deadlines.NotificationListener;
-import org.jbpm.task.events.NotificationEvent;
+import org.jbpm.task.impl.model.GroupImpl;
+import org.jbpm.task.impl.model.LanguageImpl;
+import org.jbpm.task.impl.model.UserImpl;
+import org.kie.internal.task.api.UserInfo;
+import org.kie.internal.task.api.model.EmailNotification;
+import org.kie.internal.task.api.model.EmailNotificationHeader;
+import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.Language;
+import org.kie.internal.task.api.model.NotificationEvent;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.User;
 import org.mvel2.templates.TemplateRuntime;
 
 @ApplicationScoped
@@ -107,7 +110,7 @@ public class EmailNotificationListener implements NotificationListener {
             }
 
             for (OrganizationalEntity entity : notification.getRecipients()) {
-                if (entity instanceof Group) {
+                if (entity instanceof GroupImpl) {
                     buildMapByLanguage(users, (Group) entity);
                 } else {
                     buildMapByLanguage(users, (User) entity);
@@ -117,7 +120,7 @@ public class EmailNotificationListener implements NotificationListener {
             Map<String, Object> variables = event.getContent();
 
 
-            Map<Language, EmailNotificationHeader> headers = notification
+            Map<? extends Language, ? extends EmailNotificationHeader> headers = notification
                     .getEmailHeaders();
 
             for (Iterator<Map.Entry<String, List<User>>> it = users.entrySet()
@@ -126,7 +129,7 @@ public class EmailNotificationListener implements NotificationListener {
                 try { 
                     Map.Entry<String, List<User>> entry = it.next();
                 
-                    EmailNotificationHeader header = headers.get(new Language(entry.getKey()));
+                    EmailNotificationHeader header = headers.get(new LanguageImpl(entry.getKey()));
     
                     Message msg = new MimeMessage(mailSession);
                     
@@ -138,14 +141,14 @@ public class EmailNotificationListener implements NotificationListener {
                     
     
                     if (header.getFrom() != null && header.getFrom().trim().length() > 0) {
-                        msg.setFrom( new InternetAddress(userInfo.getEmailForEntity(new User(header.getFrom()))));
+                        msg.setFrom( new InternetAddress(userInfo.getEmailForEntity(new UserImpl(header.getFrom()))));
                     } else {
                         msg.setFrom( new InternetAddress(mailSession.getProperty("mail.from")));
                     }
     
                     if (header.getReplyTo() != null && header.getReplyTo().trim().length() > 0) {
                         msg.setReplyTo( new InternetAddress[] {  
-                                new InternetAddress(userInfo.getEmailForEntity(new User(header.getReplyTo())))});
+                                new InternetAddress(userInfo.getEmailForEntity(new UserImpl(header.getReplyTo())))});
                     } else if (mailSession.getProperty("mail.replyto") != null) {
                         msg.setReplyTo( new InternetAddress[] {  new InternetAddress(mailSession.getProperty("mail.replyto"))});
                     }

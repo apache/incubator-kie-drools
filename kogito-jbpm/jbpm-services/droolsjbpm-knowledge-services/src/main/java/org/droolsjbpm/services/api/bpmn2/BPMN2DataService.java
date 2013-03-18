@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.droolsjbpm.services.impl.model.ProcessDesc;
-import org.jbpm.task.TaskDef;
+import org.jbpm.task.impl.model.TaskDefImpl;
 
 /**
  *
@@ -31,7 +31,7 @@ public interface BPMN2DataService {
     List<String> getAssociatedDomainObjects(String processId);
     Map<String, String> getProcessData(String processId);
     List<String> getAssociatedForms(String processId);
-    Collection<TaskDef> getAllTasksDef(String processId);
+    Collection<TaskDefImpl> getAllTasksDef(String processId);
     ProcessDesc getProcessDesc(String processId);
     Map<String, String> getTaskInputMappings(String processId, String taskName);
     Map<String, String> getTaskOutputMappings(String processId, String taskName);

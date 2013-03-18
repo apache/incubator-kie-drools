@@ -16,14 +16,17 @@
 package org.jbpm.task.impl;
 
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.Content;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskAttachmentService;
+import org.jbpm.task.impl.model.AttachmentImpl;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.kie.internal.task.api.TaskAttachmentService;
+import org.kie.internal.task.api.model.Attachment;
+import org.kie.internal.task.api.model.Content;
 
 /**
  *
@@ -40,7 +43,7 @@ public class TaskAttachmentServiceImpl implements TaskAttachmentService {
  
     public long addAttachment(long taskId, Attachment attachment, Content content) {
         //@TODO: The attachment is not being persisted! 
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         // doCallbackOperationForAttachment(attachment); -> This should go in a decorator
         pm.persist(content);
         attachment.setContent(content);
@@ -49,7 +52,7 @@ public class TaskAttachmentServiceImpl implements TaskAttachmentService {
     }
 
     public void deleteAttachment(long taskId, long attachmentId) {
-       Task task = pm.find(Task.class, taskId);
+       TaskImpl task = pm.find(TaskImpl.class, taskId);
        task.getTaskData().removeAttachment(attachmentId);
        //TODO: should I remove the content?
        
@@ -59,7 +62,7 @@ public class TaskAttachmentServiceImpl implements TaskAttachmentService {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Attachment getAttachmentById(long attachId) {
-        return pm.find(Attachment.class, attachId);
+    public AttachmentImpl getAttachmentById(long attachId) {
+        return pm.find(AttachmentImpl.class, attachId);
     }
 }

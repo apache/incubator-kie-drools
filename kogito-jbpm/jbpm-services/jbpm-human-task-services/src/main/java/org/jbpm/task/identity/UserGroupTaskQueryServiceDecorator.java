@@ -7,10 +7,10 @@ import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskQueryService;
-import org.jbpm.task.query.TaskSummary;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskSummary;
 
 @Decorator
 public class UserGroupTaskQueryServiceDecorator extends

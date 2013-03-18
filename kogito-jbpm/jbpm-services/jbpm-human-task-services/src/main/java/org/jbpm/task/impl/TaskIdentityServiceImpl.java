@@ -5,14 +5,19 @@
 package org.jbpm.task.impl;
 
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.Group;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.User;
-import org.jbpm.task.api.TaskIdentityService;
+import org.jbpm.task.impl.model.GroupImpl;
+import org.jbpm.task.impl.model.OrganizationalEntityImpl;
+import org.jbpm.task.impl.model.UserImpl;
+import org.kie.internal.task.api.TaskIdentityService;
+import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.User;
 
 /**
  *
@@ -42,12 +47,12 @@ public class TaskIdentityServiceImpl implements TaskIdentityService {
     }
 
     public void removeGroup(String groupId) {
-        Group group = pm.find(Group.class, groupId);
+        GroupImpl group = pm.find(GroupImpl.class, groupId);
         pm.remove(group);
     }
     
     public void removeUser(String userId) {
-        User user = pm.find(User.class, userId);
+        UserImpl user = pm.find(UserImpl.class, userId);
         pm.remove(user);
     }
 
@@ -60,14 +65,14 @@ public class TaskIdentityServiceImpl implements TaskIdentityService {
     }
 
     public User getUserById(String userId) {
-        return pm.find(User.class, userId);
+        return pm.find(UserImpl.class, userId);
     }
 
     public Group getGroupById(String groupId) {
-        return pm.find(Group.class, groupId);
+        return pm.find(GroupImpl.class, groupId);
     }
 
     public OrganizationalEntity getOrganizationalEntityById(String entityId) {
-        return pm.find(OrganizationalEntity.class, entityId);
+        return pm.find(OrganizationalEntityImpl.class, entityId);
     }
 }

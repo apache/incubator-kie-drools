@@ -1,20 +1,20 @@
 package org.jbpm.runtime.manager.impl;
 
 import org.jbpm.runtime.manager.impl.task.SynchronizedTaskService;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.task.api.TaskService;
 
 public class SynchronizedRuntimeImpl extends RuntimeImpl {
 
-    private TaskServiceEntryPoint synchronizedTaskService;
+    private TaskService synchronizedTaskService;
     
-    public SynchronizedRuntimeImpl(KieSession ksession, TaskServiceEntryPoint taskService) {
+    public SynchronizedRuntimeImpl(KieSession ksession, TaskService taskService) {
         super(ksession, taskService);
         this.synchronizedTaskService = new SynchronizedTaskService(ksession, taskService);
     }
 
     @Override
-    public TaskServiceEntryPoint getTaskService() {
+    public TaskService getTaskService() {
 
         return this.synchronizedTaskService;
     }

@@ -3,24 +3,24 @@ package org.jbpm.examples;
 
 import java.util.Map;
 import java.util.HashMap;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.droolsjbpm.services.impl.event.ProcessInstanceStartedEvent;
 import org.droolsjbpm.services.impl.event.ProcessInstanceCompletedEvent;
 import org.droolsjbpm.services.impl.event.NodeInstanceTriggeredEvent;
 import org.droolsjbpm.services.impl.event.NodeInstanceLeftEvent;
-import org.jbpm.task.api.TaskServiceEntryPoint;
+import org.kie.internal.task.api.TaskService;
 import org.jbpm.task.impl.factories.TaskFactory;
 import java.io.StringReader;
-import org.jbpm.task.Task;
+import org.kie.internal.task.api.model.Task;
 import org.droolsjbpm.services.api.RulesNotificationService;
-import org.kie.runtime.KieSession;
+import org.kie.api.runtime.KieSession;
 
 
 
 global RulesNotificationService rulesNotificationService;
 
-global TaskServiceEntryPoint taskService;
+global TaskService taskService;
 
 declare ProcessInstanceStartedEvent
 	@role(event)

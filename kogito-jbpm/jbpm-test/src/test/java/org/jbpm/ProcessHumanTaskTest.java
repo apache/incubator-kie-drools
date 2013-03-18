@@ -3,15 +3,15 @@ package org.jbpm;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 
-
-import org.jbpm.task.query.TaskSummary;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.TaskSummary;
+
 
 /**
  * This is a sample file to test a process.
@@ -25,7 +25,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
 	@Test
 	public void testProcess() {
 		StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-                TaskServiceEntryPoint taskService = getTaskService(ksession);
+                TaskService taskService = getTaskService(ksession);
 		
 		ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 
@@ -55,7 +55,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
     @Test @Ignore //-> task CreatedBy in summary is not filled ??
     public void testProcessWithCreatedBy() {
         StatefulKnowledgeSession ksession = createKnowledgeSession("humantaskwithcreatedby.bpmn");
-        TaskServiceEntryPoint taskService = getTaskService(ksession);
+        TaskService taskService = getTaskService(ksession);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", "krisv");
         ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello.createdby", params);

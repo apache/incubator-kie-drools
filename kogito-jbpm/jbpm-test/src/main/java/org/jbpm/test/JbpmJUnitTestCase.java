@@ -1,8 +1,23 @@
 package org.jbpm.test;
 
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import static org.jbpm.test.JBPMHelper.createEnvironment;
+import static org.jbpm.test.JBPMHelper.txStateName;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.Transaction;
+
 import junit.framework.Assert;
+
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
@@ -12,30 +27,26 @@ import org.drools.core.impl.EnvironmentFactory;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.jbpm.process.audit.AuditLoggerFactory;
+import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
-import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
-
+import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
+import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
+import org.jbpm.task.HumanTaskServiceFactory;
+import org.jbpm.task.wih.HTWorkItemHandlerFactory;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.definition.process.Node;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
@@ -44,30 +55,20 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.task.api.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-import javax.transaction.Transaction;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
-import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
-import org.jbpm.task.HumanTaskServiceFactory;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.wih.HTWorkItemHandlerFactory;
-import org.jbpm.task.wih.LocalHTWorkItemHandler;
-
-import static org.jbpm.test.JBPMHelper.createEnvironment;
-import static org.jbpm.test.JBPMHelper.txStateName;
+import bitronix.tm.TransactionManagerServices;
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 /**
  * Base test case for the jbpm-bpmn2 module.
@@ -84,7 +85,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
     private EntityManagerFactory emf;
     private PoolingDataSource ds;
     private H2Server server = new H2Server();
-    private TaskServiceEntryPoint taskService;
+    private TaskService taskService;
     private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
     private WorkingMemoryInMemoryLogger logger;
     private JPAProcessInstanceDbLog log;
@@ -551,7 +552,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
         }
     }
 
-    public TaskServiceEntryPoint getTaskService(StatefulKnowledgeSession ksession) {
+    public TaskService getTaskService(StatefulKnowledgeSession ksession) {
        
         if (taskService == null) {
             JbpmServicesTransactionManager txManager = new JbpmJTATransactionManager();
@@ -568,7 +569,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
         return taskService;
     }
 
-    public TaskServiceEntryPoint getService() {
+    public TaskService getService() {
         return HumanTaskServiceFactory.newTaskService();
     }
     private static class H2Server {

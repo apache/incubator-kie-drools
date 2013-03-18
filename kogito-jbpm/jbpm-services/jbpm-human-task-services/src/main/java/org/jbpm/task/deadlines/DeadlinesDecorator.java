@@ -19,22 +19,24 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
+
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.ContentData;
-import org.jbpm.task.Deadline;
-import org.jbpm.task.Deadlines;
-import org.jbpm.task.FaultData;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.SubTasksStrategy;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskDeadlinesService;
-import org.jbpm.task.api.TaskDeadlinesService.DeadlineType;
-import org.jbpm.task.api.TaskInstanceService;
-import org.jbpm.task.api.TaskQueryService;
+import org.jbpm.task.impl.model.FaultDataImpl;
+import org.kie.internal.task.api.TaskDeadlinesService;
+import org.kie.internal.task.api.TaskDeadlinesService.DeadlineType;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.Deadline;
+import org.kie.internal.task.api.model.Deadlines;
+import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Task;
 
 /**
  *
@@ -190,13 +192,13 @@ public class DeadlinesDecorator implements TaskInstanceService {
         Deadlines deadlines = task.getDeadlines();
         
         if (deadlines != null) {
-            final List<Deadline> startDeadlines = deadlines.getStartDeadlines();
+            final List<? extends Deadline> startDeadlines = deadlines.getStartDeadlines();
     
             if (startDeadlines != null) {
                 scheduleDeadlines(startDeadlines, now, task.getId(), DeadlineType.START);
             }
     
-            final List<Deadline> endDeadlines = deadlines.getEndDeadlines();
+            final List<? extends Deadline> endDeadlines = deadlines.getEndDeadlines();
     
             if (endDeadlines != null) {
                 scheduleDeadlines(endDeadlines, now, task.getId(), DeadlineType.END);
@@ -204,7 +206,7 @@ public class DeadlinesDecorator implements TaskInstanceService {
         }
     }
 
-    private void scheduleDeadlines(final List<Deadline> deadlines, final long now, final long taskId, DeadlineType type) {
+    private void scheduleDeadlines(final List<? extends Deadline> deadlines, final long now, final long taskId, DeadlineType type) {
         for (Deadline deadline : deadlines) {
             if (!deadline.isEscalated()) {
                 // only escalate when true - typically this would only be true
@@ -221,7 +223,7 @@ public class DeadlinesDecorator implements TaskInstanceService {
             return;
         }
 
-        Iterator<Deadline> it = null;
+        Iterator<? extends Deadline> it = null;
 
         if (removeStart) {
             if (task.getDeadlines().getStartDeadlines() != null) {
@@ -259,7 +261,7 @@ public class DeadlinesDecorator implements TaskInstanceService {
         instanceService.setSkipable(taskId, skipable);
     }
 
-    public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
+    public void setSubTaskStrategy(long taskId, org.kie.internal.task.api.model.SubTasksStrategy strategy) {
         instanceService.setSubTaskStrategy(taskId, strategy);
     }
 
@@ -279,11 +281,12 @@ public class DeadlinesDecorator implements TaskInstanceService {
         return instanceService.isSkipable(taskId);
     }
 
-    public SubTasksStrategy getSubTaskStrategy(long taskId) {
+    public org.kie.internal.task.api.model.SubTasksStrategy getSubTaskStrategy(long taskId) {
         return instanceService.getSubTaskStrategy(taskId);
     }
 
     public void setTaskNames(long taskId, List<I18NText> taskNames) {
         instanceService.setTaskNames(taskId, taskNames);
     }
+
 }

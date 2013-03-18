@@ -16,15 +16,16 @@
 package org.jbpm.task.wih;
 
 import org.jbpm.shared.services.api.ServicesSessionManager;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.task.api.TaskService;
+
 
 /**
  *
  * @author salaboy
  */
 public class HTWorkItemHandlerFactory {
-    public static LocalHTWorkItemHandler newHandler(KieSession ksession, TaskServiceEntryPoint taskService){
+    public static LocalHTWorkItemHandler newHandler(KieSession ksession, TaskService taskService){
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
         externalTaskEventListener.addSession(ksession);
@@ -36,7 +37,7 @@ public class HTWorkItemHandlerFactory {
         return humanTaskHandler;
     }
     
-    public static LocalHTWorkItemHandler newHandler(ServicesSessionManager sessionManager, TaskServiceEntryPoint taskService){
+    public static LocalHTWorkItemHandler newHandler(ServicesSessionManager sessionManager, TaskService taskService){
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
 

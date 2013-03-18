@@ -16,13 +16,13 @@
 
 package org.jbpm.task.exception;
 
-import org.jbpm.task.ContentData;
+import org.jbpm.task.impl.model.ContentDataImpl;
 
 /**
  * Exception thrown from the <code>TaskServiceSession</code> when there is a problem adding task. This exception
  * is specififically thrown when custom logic in rules has not allowed the <code>Task</code> to be added.
  *
- * @see org.jbpm.task.service.TaskServiceSession#addTask(org.jbpm.task.Task, ContentData)
+ * @see org.jbpm.task.service.TaskServiceSession#addTask(org.jbpm.task.Task, ContentDataImpl)
  */
 public class CannotAddTaskException extends TaskException {
     public CannotAddTaskException(String message) {

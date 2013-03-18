@@ -12,56 +12,58 @@ import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SimpleRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
-import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
-import org.jbpm.task.identity.UserGroupCallbackManager;
+import org.jbpm.task.identity.JBossUserGroupCallbackImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.KieInternalServices;
-import org.kie.io.ResourceFactory;
-import org.kie.io.ResourceType;
-import org.kie.process.CorrelationAwareProcessRuntime;
-import org.kie.process.CorrelationKey;
-import org.kie.process.CorrelationKeyFactory;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.manager.Runtime;
-import org.kie.runtime.manager.RuntimeManager;
-import org.kie.runtime.manager.RuntimeManagerFactory;
-import org.kie.runtime.manager.context.CorrelationKeyContext;
-import org.kie.runtime.manager.context.ProcessInstanceIdContext;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.KieInternalServices;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.process.CorrelationAwareProcessRuntime;
+import org.kie.internal.process.CorrelationKey;
+import org.kie.internal.process.CorrelationKeyFactory;
+import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.UserGroupCallback;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class PerProcessInstanceRuntimeManagerTest {
     private PoolingDataSource pds;
-        
+    private UserGroupCallback userGroupCallback;    
     @Before
     public void setup() {
-        Properties props = new Properties();
-        props.setProperty("john", "user");
-        
-        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl(props));
-        
+        Properties properties= new Properties();
+        properties.setProperty("mary", "HR");
+        properties.setProperty("john", "HR");
+        userGroupCallback = new JBossUserGroupCallbackImpl(properties);
+
         pds = TestUtil.setupPoolingDataSource();
     }
     
     @After
     public void teardown() {
-        UserGroupCallbackManager.resetCallback(); 
+
         pds.close();
     }
     
     @Test
     public void testCreationOfSession() {
         SimpleRuntimeEnvironment environment = new SimpleRuntimeEnvironment();
+        environment.setUserGroupCallback(userGroupCallback);
         ((SimpleRegisterableItemsFactory)environment.getRegisterableItemsFactory()).addWorkItemHandler("Human Task", DoNothingWorkItemHandler.class);
         
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2);
         
-        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);        
+        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
         assertNotNull(manager);
+       
         // ksession for process instance #1
         // since there is no process instance yet we need to get new session
         Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
@@ -103,6 +105,7 @@ public class PerProcessInstanceRuntimeManagerTest {
     @Test
     public void testCreationOfSessionWithPersistence() {
         SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
+        environment.setUserGroupCallback(userGroupCallback);
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2);
         
@@ -164,6 +167,7 @@ public class PerProcessInstanceRuntimeManagerTest {
     @Test
     public void testCreationOfSessionWithPersistenceByCorrelationKey() {
         SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
+        environment.setUserGroupCallback(userGroupCallback);
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2);
         

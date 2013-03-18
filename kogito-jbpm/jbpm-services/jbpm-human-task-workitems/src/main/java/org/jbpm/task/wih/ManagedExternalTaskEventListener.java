@@ -21,22 +21,22 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
+import javax.enterprise.inject.Alternative;
 
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
-import org.jbpm.task.Content;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
 import org.jbpm.task.annotations.External;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.events.AfterTaskCompletedEvent;
 import org.jbpm.task.events.AfterTaskFailedEvent;
 import org.jbpm.task.events.AfterTaskSkippedEvent;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.manager.Runtime;
-import org.kie.runtime.manager.RuntimeManager;
-import org.kie.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.model.Content;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
 
 /**
  *
@@ -44,6 +44,7 @@ import org.kie.runtime.manager.context.ProcessInstanceIdContext;
  */
 @ApplicationScoped
 @External
+@Alternative
 public class ManagedExternalTaskEventListener extends JbpmServicesEventListener<Task>  implements TaskLifeCycleEventListener {
 
     private RuntimeManager runtimeManager;
@@ -68,7 +69,7 @@ public class ManagedExternalTaskEventListener extends JbpmServicesEventListener<
 
         long workItemId = task.getTaskData().getWorkItemId();
         long processInstanceId = task.getTaskData().getProcessInstanceId();
-        Runtime<TaskServiceEntryPoint> runtime = runtimeManager.getRuntime(ProcessInstanceIdContext.get(processInstanceId));
+        Runtime runtime = runtimeManager.getRuntime(ProcessInstanceIdContext.get(processInstanceId));
         KieSession session = runtime.getKieSession();
         
         if (task.getTaskData().getStatus() == Status.Completed) {
@@ -120,7 +121,7 @@ public class ManagedExternalTaskEventListener extends JbpmServicesEventListener<
 
     public void afterTaskCompletedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskCompletedEvent Task task) {
         long processInstanceId = task.getTaskData().getProcessInstanceId();
-        Runtime<TaskServiceEntryPoint> runtime = runtimeManager.getRuntime(ProcessInstanceIdContext.get(processInstanceId));
+        Runtime runtime = runtimeManager.getRuntime(ProcessInstanceIdContext.get(processInstanceId));
         KieSession session = runtime.getKieSession();
         if (session != null) {
             System.out.println(">> I've recieved an event for a known session (" + task.getTaskData().getProcessSessionId()+")");

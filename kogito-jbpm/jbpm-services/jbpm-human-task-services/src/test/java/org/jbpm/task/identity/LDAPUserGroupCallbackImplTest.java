@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.internal.task.api.UserGroupCallback;
 //Ignore it as it relies on external LDAP server
 @Ignore
 public class LDAPUserGroupCallbackImplTest {

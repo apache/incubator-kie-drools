@@ -4,7 +4,6 @@
  */
 package org.jbpm.task.internals.lifecycle;
 
-import org.jbpm.task.annotations.Mvel;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,30 +14,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
+
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.Content;
-import org.jbpm.task.FaultData;
-import org.jbpm.task.Group;
-import org.jbpm.task.Operation;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.User;
 import org.jbpm.task.annotations.Internal;
-import org.jbpm.task.api.TaskContentService;
-import org.jbpm.task.api.TaskIdentityService;
-import org.jbpm.task.api.TaskQueryService;
+import org.jbpm.task.annotations.Mvel;
 import org.jbpm.task.events.AfterTaskActivatedEvent;
 import org.jbpm.task.events.AfterTaskClaimedEvent;
-
 import org.jbpm.task.events.AfterTaskCompletedEvent;
 import org.jbpm.task.events.AfterTaskDelegatedEvent;
 import org.jbpm.task.events.AfterTaskExitedEvent;
@@ -64,8 +52,23 @@ import org.jbpm.task.events.BeforeTaskStoppedEvent;
 import org.jbpm.task.events.BeforeTaskSuspendedEvent;
 import org.jbpm.task.exception.PermissionDeniedException;
 import org.jbpm.task.exception.TaskException;
+import org.jbpm.task.impl.model.ContentImpl;
+import org.jbpm.task.impl.model.FaultDataImpl;
+import org.jbpm.task.impl.model.TaskImpl;
+import org.jbpm.task.impl.model.UserImpl;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.internal.task.api.TaskContentService;
+import org.kie.internal.task.api.TaskIdentityService;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.Operation;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.PeopleAssignments;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskData;
+import org.kie.internal.task.api.model.User;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -196,11 +199,11 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                     break;
                 }
                 case PotentialOwner: {
-                    operationAllowed = isAllowed(user, groupIds, task.getPeopleAssignments().getPotentialOwners());
+                    operationAllowed = isAllowed(user, groupIds, (List<OrganizationalEntity>) task.getPeopleAssignments().getPotentialOwners());
                     break;
                 }
                 case BusinessAdministrator: {
-                    operationAllowed = isAllowed(user, groupIds, task.getPeopleAssignments().getBusinessAdministrators());
+                    operationAllowed = isAllowed(user, groupIds, (List<OrganizationalEntity>) task.getPeopleAssignments().getBusinessAdministrators());
                     break;
                 }
                 case Anyone: {
@@ -267,7 +270,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         if (command.getExec() != null) {
             switch (command.getExec()) {
                 case Claim: {
-                    taskData.setActualOwner((User) targetEntity);
+                    taskData.setActualOwner((UserImpl) targetEntity);
                     // @TODO: Ical stuff
                     // Task was reserved so owner should get icals
 //                    SendIcal.getInstance().sendIcalForTask(task, service.getUserinfo());
@@ -324,8 +327,8 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 case Fail: {
                     if (data != null) {
 
-                        FaultData faultData = ContentMarshallerHelper.marshalFault(data, null);
-                        Content content = new Content();
+                        FaultDataImpl faultData = ContentMarshallerHelper.marshalFault(data, null);
+                        ContentImpl content = new ContentImpl();
                         content.setContent(faultData.getContent());
                         pm.persist(content);
                         task.getTaskData().setFault(content.getId(), faultData);
@@ -510,7 +513,9 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
     public static Object eval(String str, Map<String, Object> vars) {
         ParserConfiguration pconf = new ParserConfiguration();
+        pconf.addPackageImport("org.kie.internal.task.api.model");
         pconf.addPackageImport("org.jbpm.task");
+        pconf.addPackageImport("org.jbpm.task.impl.model");
         pconf.addPackageImport("org.jbpm.task.query");
         pconf.addPackageImport("org.jbpm.task.internals.lifecycle");
 
@@ -529,9 +534,9 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     }
 
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
-        final Task task = pm.find(Task.class, taskId);
-        final User user = pm.find(User.class, userId);
-        if (isAllowed(user, null, task.getPeopleAssignments().getBusinessAdministrators())) {
+        final TaskImpl task = pm.find(TaskImpl.class, taskId);
+        final UserImpl user = pm.find(UserImpl.class, userId);
+        if (isAllowed(user, null, (List<OrganizationalEntity>) task.getPeopleAssignments().getBusinessAdministrators())) {
 
 
             task.getTaskData().assignOwnerAndStatus(potentialOwners);

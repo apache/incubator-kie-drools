@@ -5,30 +5,39 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Properties;
+
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.jbpm.task.identity.JBossUserGroupCallbackImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.io.ResourceFactory;
-import org.kie.io.ResourceType;
-import org.kie.runtime.KieSession;
-import org.kie.runtime.manager.Runtime;
-import org.kie.runtime.manager.RuntimeManager;
-import org.kie.runtime.manager.RuntimeManagerFactory;
-import org.kie.runtime.manager.context.EmptyContext;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.task.api.UserGroupCallback;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class SingletonRuntimeManagerTest {
     
     private PoolingDataSource pds;
+    private UserGroupCallback userGroupCallback;  
     
     @Before
     public void setup() {
         TestUtil.cleanupSingletonSessionId();
         pds = TestUtil.setupPoolingDataSource();
+        Properties properties= new Properties();
+        properties.setProperty("mary", "HR");
+        properties.setProperty("john", "HR");
+        userGroupCallback = new JBossUserGroupCallbackImpl(properties);
     }
     
     @After
@@ -39,6 +48,7 @@ public class SingletonRuntimeManagerTest {
     @Test
     public void testCreationOfSession() {
         SimpleRuntimeEnvironment environment = new SimpleRuntimeEnvironment();
+        environment.setUserGroupCallback(userGroupCallback);
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
         
         RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
@@ -70,6 +80,7 @@ public class SingletonRuntimeManagerTest {
     @Test
     public void testCreationOfSessionWithPersistence() {
         SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
+        environment.setUserGroupCallback(userGroupCallback);
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
         
         RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        

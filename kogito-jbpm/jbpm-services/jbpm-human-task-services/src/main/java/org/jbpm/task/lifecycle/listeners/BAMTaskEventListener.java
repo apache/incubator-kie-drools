@@ -21,13 +21,11 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.persistence.EntityManager;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.Task;
 import org.jbpm.task.events.AfterTaskActivatedEvent;
 import org.jbpm.task.events.AfterTaskAddedEvent;
 import org.jbpm.task.events.AfterTaskClaimedEvent;
@@ -36,10 +34,12 @@ import org.jbpm.task.events.AfterTaskExitedEvent;
 import org.jbpm.task.events.AfterTaskFailedEvent;
 import org.jbpm.task.events.AfterTaskStartedEvent;
 import org.jbpm.task.events.AfterTaskStoppedEvent;
-import org.jbpm.task.impl.model.BAMTaskSummary;
+import org.jbpm.task.impl.model.BAMTaskSummaryImpl;
+import org.kie.internal.task.api.model.Task;
 
 @ApplicationScoped
 @Transactional
+@Alternative
 public class BAMTaskEventListener implements TaskLifeCycleEventListener {
 
     @Inject
@@ -49,20 +49,20 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
     }
 
     public void afterTaskStartedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskStartedEvent Task ti) {
-        List<BAMTaskSummary> taskSummaries = (List<BAMTaskSummary>) pm.queryStringWithParametersInTransaction("select bts from BAMTaskSummary bts where bts.taskId=:taskId", 
+        List<BAMTaskSummaryImpl> taskSummaries = (List<BAMTaskSummaryImpl>) pm.queryStringWithParametersInTransaction("select bts from BAMTaskSummary bts where bts.taskId=:taskId", 
                 pm.addParametersToMap("taskId", ti.getId()));
         if (taskSummaries.isEmpty()) {
             String actualOwner = "";
             if (ti.getTaskData().getActualOwner() != null) {
                 actualOwner = ti.getTaskData().getActualOwner().getId();
             }
-            BAMTaskSummary bamTaskSummary = new BAMTaskSummary(ti.getId(), ti.getNames().get(0).getText(), "Started", new Date(), actualOwner, ti.getTaskData().getProcessInstanceId());
+            BAMTaskSummaryImpl bamTaskSummary = new BAMTaskSummaryImpl(ti.getId(), ti.getNames().get(0).getText(), "Started", new Date(), actualOwner, ti.getTaskData().getProcessInstanceId());
             bamTaskSummary.setStartDate(new Date());
             pm.persist(bamTaskSummary);
             
         } else if (taskSummaries.size() == 1) {
             
-            BAMTaskSummary taskSummaryById = taskSummaries.get(0);
+            BAMTaskSummaryImpl taskSummaryById = taskSummaries.get(0);
             taskSummaryById.setStatus("Started");
             taskSummaryById.setStartDate(new Date());
             if (ti.getTaskData().getActualOwner() != null) {
@@ -81,7 +81,7 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
 
     public void afterTaskClaimedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskClaimedEvent Task ti) {
         
-        List<BAMTaskSummary> taskSummaries = (List<BAMTaskSummary>) pm.queryStringWithParametersInTransaction("select bts from BAMTaskSummary bts where bts.taskId=:taskId",
+        List<BAMTaskSummaryImpl> taskSummaries = (List<BAMTaskSummaryImpl>) pm.queryStringWithParametersInTransaction("select bts from BAMTaskSummary bts where bts.taskId=:taskId",
                 pm.addParametersToMap("taskId", ti.getId()));
         if (taskSummaries.isEmpty()) {
             
@@ -90,10 +90,10 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
                 actualOwner = ti.getTaskData().getActualOwner().getId();
             }
 
-            pm.persist(new BAMTaskSummary(ti.getId(), ti.getNames().get(0).getText(), "Claimed", new Date(), actualOwner, ti.getTaskData().getProcessInstanceId()));
+            pm.persist(new BAMTaskSummaryImpl(ti.getId(), ti.getNames().get(0).getText(), "Claimed", new Date(), actualOwner, ti.getTaskData().getProcessInstanceId()));
         } else if (taskSummaries.size() == 1) {
             
-            BAMTaskSummary taskSummaryById = taskSummaries.get(0);
+            BAMTaskSummaryImpl taskSummaryById = taskSummaries.get(0);
             taskSummaryById.setStatus("Claimed");
             if (ti.getTaskData().getActualOwner() != null) {
                 taskSummaryById.setUserId(ti.getTaskData().getActualOwner().getId());
@@ -114,12 +114,12 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
 
     public void afterTaskCompletedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskCompletedEvent Task ti) {
 
-        List<BAMTaskSummary> summaries = (List<BAMTaskSummary>) pm.queryStringWithParametersInTransaction("select bts from BAMTaskSummary bts where bts.taskId=:taskId",
+        List<BAMTaskSummaryImpl> summaries = (List<BAMTaskSummaryImpl>) pm.queryStringWithParametersInTransaction("select bts from BAMTaskSummary bts where bts.taskId=:taskId",
                 pm.addParametersToMap("taskId", ti.getId()));
         
         if(summaries.size() == 1){
         
-          BAMTaskSummary taskSummaryById = (BAMTaskSummary)summaries.get(0);
+          BAMTaskSummaryImpl taskSummaryById = (BAMTaskSummaryImpl)summaries.get(0);
 
           taskSummaryById.setStatus("Completed");
           Date completedDate = new Date();

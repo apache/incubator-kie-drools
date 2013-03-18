@@ -1,31 +1,46 @@
 package org.jbpm.runtime.manager.impl.task;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
+import javax.enterprise.event.Event;
+
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.ContentData;
-import org.jbpm.task.FaultData;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskServiceEntryPoint;
-import org.jbpm.task.query.TaskSummary;
-import org.kie.runtime.KieSession;
+import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.task.api.EventService;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.UserInfo;
+import org.kie.internal.task.api.model.Attachment;
+import org.kie.internal.task.api.model.Comment;
+import org.kie.internal.task.api.model.Content;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.NotificationEvent;
+import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.Status;
+import org.kie.internal.task.api.model.SubTasksStrategy;
+import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.TaskDef;
+import org.kie.internal.task.api.model.TaskEvent;
+import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.internal.task.api.model.User;
 
-public class SynchronizedTaskService implements TaskServiceEntryPoint {
+public class SynchronizedTaskService 
+            implements TaskService, EventService<JbpmServicesEventListener<NotificationEvent>,JbpmServicesEventListener<Task>> {
 	
 	// TODO: when engine controls transaction boundaries, this is probably sufficient
 	// however, with user transactions, we should make sure we sync on the ksession
 	// until the transaction is committed
 	
 	private Object ksession;
-	private TaskServiceEntryPoint taskService;
+	private TaskService taskService;
 	
-	public SynchronizedTaskService(KieSession ksession, TaskServiceEntryPoint taskService) {
+	public SynchronizedTaskService(KieSession ksession, TaskService taskService) {
 	    if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
 	        this.ksession = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
 	    } else {
@@ -34,364 +49,810 @@ public class SynchronizedTaskService implements TaskServiceEntryPoint {
 		this.taskService = taskService;
 	}
 
-	public void activate(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.activate(arg0, arg1);
-		}
-	}
 
-	public void addAttachment(long arg0, Attachment arg1, Content arg2) {
-		synchronized (ksession) {
-			taskService.addAttachment(arg0, arg1, arg2);
-		}
-	}
-	
-	public void addComment(long arg0, Comment arg1) {
-		synchronized (ksession) {
-			taskService.addComment(arg0, arg1);
-		}
-	}
-	
-	public void addTask(Task arg0, ContentData arg1) {
-		synchronized (ksession) {
-			taskService.addTask(arg0, arg1);
-		}
-	}
-	
-	public void claim(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.claim(arg0, arg1);
-		}
-	}
-	
-	public void claim(long arg0, String arg1, List<String> arg2) {
-		synchronized (ksession) {
-			taskService.claim(arg0, arg1, arg2);
-		}
-	}
-	
-	public void claimNextAvailable(String arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.claimNextAvailable(arg0, arg1);
-		}
-	}
-	
-	public void claimNextAvailable(String arg0, List<String> arg1, String arg2) {
-		synchronized (ksession) {
-			taskService.claimNextAvailable(arg0, arg1, arg2);
-		}
-	}
-	
-	public void complete(long arg0, String arg1, ContentData arg2) {
-		synchronized (ksession) {
-			taskService.complete(arg0, arg1, arg2);
-		}
-	}
-	
-	public void completeWithResults(long arg0, String arg1, Object arg2) {
-		synchronized (ksession) {
-			taskService.completeWithResults(arg0, arg1, arg2);
-		}
-	}
+    @Override
+    public void activate(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.activate(taskId, userId);
+        }
+    }
 
-	public boolean connect() {
-		synchronized (ksession) {
-			return taskService.connect();
-		}
-	}
-	
-	public boolean connect(String arg0, int arg1) {
-		synchronized (ksession) {
-			return taskService.connect(arg0, arg1);
-		}
-	}
-	
-	public void delegate(long arg0, String arg1, String arg2) {
-		synchronized (ksession) {
-			taskService.delegate(arg0, arg1, arg2);
-		}
-	}
-	
-	public void deleteAttachment(long arg0, long arg1, long arg2) {
-		synchronized (ksession) {
-			taskService.deleteAttachment(arg0, arg1, arg2);
-		}
-	}
-	
-	public void deleteComment(long arg0, long arg1) {
-		synchronized (ksession) {
-			taskService.deleteComment(arg0, arg1);
-		}
-	}
-	
-	public void deleteFault(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.deleteFault(arg0, arg1);
-		}
-	}
-	
-	public void deleteOutput(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.deleteOutput(arg0, arg1);
-		}
-	}
-	
-	public void disconnect() throws Exception {
-		synchronized (ksession) {
-			taskService.disconnect();
-		}
-	}
-	
-	public void exit(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.exit(arg0, arg1);
-		}
-	}
-	
-	public void fail(long arg0, String arg1, FaultData arg2) {
-		synchronized (ksession) {
-			taskService.fail(arg0, arg1, arg2);
-		}
-	}
-	
-	public void forward(long arg0, String arg1, String arg2) {
-		synchronized (ksession) {
-			taskService.forward(arg0, arg1, arg2);
-		}
-	}
-	
-	public Content getContent(long arg0) {
-		synchronized (ksession) {
-			return taskService.getContent(arg0);
-		}
-	}
-	
-	public List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long arg0,
-			String arg1, String arg2) {
-		synchronized (ksession) {
-			return taskService.getSubTasksAssignedAsPotentialOwner(arg0, arg1, arg2);
-		}
-	}
-	
-	public List<TaskSummary> getSubTasksByParent(long arg0) {
-		synchronized (ksession) {
-			return taskService.getSubTasksByParent(arg0);
-		}
-	}
-	
-	public Task getTask(long arg0) {
-		synchronized (ksession) {
-			return taskService.getTask(arg0);
-		}
-	}
-	
-	public Task getTaskByWorkItemId(long arg0) {
-		synchronized (ksession) {
-			return taskService.getTaskByWorkItemId(arg0);
-		}
-	}
-	
-	public List<Long> getTasksByProcessInstanceId(long arg0) {
-		synchronized (ksession) {
-			return taskService.getTasksByProcessInstanceId(arg0);
-		}
-	}
-	
-	public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(
-			String arg0, String arg1) {
-		synchronized (ksession) {
-			return taskService.getTasksAssignedAsBusinessAdministrator(arg0, arg1);
-		}
-	}
-	
-	public List<TaskSummary> getTasksAssignedAsExcludedOwner(String arg0,
-			String arg1) {
-		synchronized (ksession) {
-			return taskService.getTasksAssignedAsExcludedOwner(arg0, arg1);
-		}
-	}
-	
-	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String arg0,
-			String arg1) {
-		synchronized (ksession) {
-			return taskService.getTasksAssignedAsPotentialOwner(arg0, arg1);
-		}
-	}
-	
-	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String arg0,
-			List<String> arg1, String arg2) {
-		synchronized (ksession) {
-			return taskService.getTasksAssignedAsPotentialOwner(arg0, arg1, arg2);
-		}
-	}
+    @Override
+    public void addGroup(Group group) {
+        synchronized (ksession) {
+            taskService.addGroup(group);
+        }
+    }
 
-	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String arg0,
-			List<String> arg1, String arg2, int arg3, int arg4) {
-		synchronized (ksession) {
-			return taskService.getTasksAssignedAsPotentialOwner(arg0, arg1, arg2, arg3, arg4);
-		}
-	}
-	
-	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(
-			String arg0, List<Status> arg1, String arg2) {
-		synchronized (ksession) {
-			return taskService.getTasksAssignedAsPotentialOwnerByStatus(arg0, arg1, arg2);
-		}
-	}
-	
-	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(
-			String arg0, List<String> arg1, List<Status> arg2, String arg3) {
-		synchronized (ksession) {
-			return taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup(arg0, arg1, arg2, arg3);
-		}
-	}
-	
-	public List<TaskSummary> getTasksAssignedAsRecipient(String arg0,
-			String arg1) {
-		synchronized (ksession) {
-			return taskService.getTasksAssignedAsRecipient(arg0, arg1);
-		}
-	}
-	
-	public List<TaskSummary> getTasksAssignedAsTaskInitiator(String arg0,
-			String arg1) {
-		synchronized (ksession) {
-			return taskService.getTasksAssignedAsTaskInitiator(arg0, arg1);
-		}
-	}
-	
-	public List<TaskSummary> getTasksAssignedAsTaskStakeholder(String arg0,
-			String arg1) {
-		synchronized (ksession) {
-			return taskService.getTasksAssignedAsTaskStakeholder(arg0, arg1);
-		}
-	}
-	
-	public List<TaskSummary> getTasksOwned(String arg0, String arg1) {
-		synchronized (ksession) {
-			return taskService.getTasksOwned(arg0, arg1);
-		}
-	}
-	
-	public List<TaskSummary> getTasksOwned(String arg0, List<Status> arg1,
-			String arg2) {
-		synchronized (ksession) {
-			return taskService.getTasksOwned(arg0, arg1, arg2);
-		}
-	}
-	
-	public void nominate(long arg0, String arg1, List<OrganizationalEntity> arg2) {
-		synchronized (ksession) {
-			taskService.nominate(arg0, arg1, arg2);
-		}
-	}
-	
-	public List<?> query(String arg0, Integer arg1, Integer arg2) {
-		synchronized (ksession) {
-			return taskService.query(arg0, arg1, arg2);
-		}
-	}
-	
-	public void register(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.register(arg0, arg1);
-		}
-	}
+    @Override
+    public void addUser(User user) {
+        synchronized (ksession) {
+            taskService.addUser(user);
+        }
+    }
 
-	public void registerForEvent(EventKey arg0, boolean arg1,
-			EventResponseHandler arg2) {
-		synchronized (ksession) {
-			taskService.registerForEvent(arg0, arg1, arg2);
-		}
-	}
-	
-	public void release(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.release(arg0, arg1);
-		}
-	}
-	
-	public void remove(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.remove(arg0, arg1);
-		}
-	}
-	
-	public void resume(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.resume(arg0, arg1);
-		}
-	}
-	
-	public void setDocumentContent(long arg0, Content arg1) {
-		synchronized (ksession) {
-			taskService.setDocumentContent(arg0, arg1);
-		}
-	}
-	
-	public void setFault(long arg0, String arg1, FaultData arg2) {
-		synchronized (ksession) {
-			taskService.setFault(arg0, arg1, arg2);
-		}
-	}
-	
-	public void setOutput(long arg0, String arg1, ContentData arg2) {
-		synchronized (ksession) {
-			taskService.setOutput(arg0, arg1, arg2);
-		}
-	}
-	
-	public void setPriority(long arg0, String arg1, int arg2) {
-		synchronized (ksession) {
-			taskService.setPriority(arg0, arg1, arg2);
-		}
-	}
-	
-	public void skip(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.skip(arg0, arg1);
-		}
-	}
-	
-	public void start(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.start(arg0, arg1);
-		}
-	}
-	
-	public void stop(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.stop(arg0, arg1);
-		}
-	}
-	
-	public void suspend(long arg0, String arg1) {
-		synchronized (ksession) {
-			taskService.suspend(arg0, arg1);
-		}
-	}
-	
-	public void unregisterForEvent(EventKey arg0) {
-		synchronized (ksession) {
-			taskService.unregisterForEvent(arg0);
-		}
-	}
+    @Override
+    public int archiveTasks(List<TaskSummary> tasks) {
+        synchronized (ksession) {
+            return taskService.archiveTasks(tasks);
+        }
+    }
 
-	public List<TaskSummary> getTasksByStatusByProcessId(
-			long processInstanceId, List<Status> status, String language) {
-		synchronized (ksession) {
-			return taskService.getTasksByStatusByProcessId(
-				processInstanceId, status, language);
-		}
-	}
+    @Override
+    public void claim(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.claim(taskId, userId);
+        }
+    }
 
-	public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(
-			long processInstanceId, List<Status> status, String taskName,
-			String language) {
-		synchronized (ksession) {
-			return getTasksByStatusByProcessIdByTaskName(
-				processInstanceId, status, taskName, language);
-		}
-	}
+    @Override
+    public void claim(long taskId, String userId, List<String> groupIds) {
+        synchronized (ksession) {
+            taskService.claim(taskId, userId, groupIds);
+        }
+    }
+
+    @Override
+    public void claimNextAvailable(String userId, List<String> groupIds,
+            String language) {
+        synchronized (ksession) {
+            taskService.claimNextAvailable(userId, groupIds, language);
+        }
+    }
+
+    @Override
+    public void claimNextAvailable(String userId, String language) {
+        synchronized (ksession) {
+            taskService.claimNextAvailable(userId, language);
+        }
+    }
+
+    @Override
+    public void complete(long taskId, String userId, Map<String, Object> data) {
+        synchronized (ksession) {
+            taskService.complete(taskId, userId, data);
+        }
+    }
+
+    @Override
+    public void delegate(long taskId, String userId, String targetUserId) {
+        synchronized (ksession) {
+            taskService.delegate(taskId, userId, targetUserId);
+        }
+    }
+
+    @Override
+    public void deleteFault(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.deleteFault(taskId, userId);
+        }
+    }
+
+    @Override
+    public void deleteOutput(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.deleteOutput(taskId, userId);
+        }
+    }
+
+    @Override
+    public void deployTaskDef(TaskDef def) {
+        synchronized (ksession) {
+            taskService.deployTaskDef(def);
+        }
+    }
+
+    @Override
+    public void exit(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.exit(taskId, userId);
+        }
+    }
+
+    @Override
+    public void fail(long taskId, String userId, Map<String, Object> faultData) {
+        synchronized (ksession) {
+            taskService.fail(taskId, userId, faultData);
+        }
+    }
+
+    @Override
+    public void forward(long taskId, String userId, String targetEntityId) {
+        synchronized (ksession) {
+            taskService.forward(taskId, userId, targetEntityId);
+        }
+    }
+
+    @Override
+    public List<TaskSummary> getActiveTasks() {
+        synchronized (ksession) {
+            return taskService.getActiveTasks();
+        }
+    }
+
+    @Override
+    public List<TaskSummary> getActiveTasks(Date since) {
+        synchronized (ksession) {
+            return taskService.getActiveTasks(since);
+        }
+    }
+
+    @Override
+    public List<TaskDef> getAllTaskDef(String filter) {
+        synchronized (ksession) {
+            return taskService.getAllTaskDef(filter);
+        }
+    }
+
+    @Override
+    public List<TaskSummary> getArchivedTasks() {
+        synchronized (ksession) {
+            return taskService.getArchivedTasks();
+        }
+    }
+
+    @Override
+    public List<TaskSummary> getCompletedTasks() {
+        synchronized (ksession) {
+            return taskService.getCompletedTasks();
+        }
+    }
+
+    @Override
+    public List<TaskSummary> getCompletedTasks(Date since) {
+        synchronized (ksession) {
+            return taskService.getCompletedTasks(since);
+        }
+    }
+
+    @Override
+    public List<TaskSummary> getCompletedTasksByProcessId(Long processId) {
+        synchronized (ksession) {
+            return taskService.getCompletedTasksByProcessId(processId);
+        }
+    }
+
+    @Override
+    public Group getGroupById(String groupId) {
+        synchronized (ksession) {
+            return taskService.getGroupById(groupId);
+        }
+    }
+
+    @Override
+    public List<Group> getGroups() {
+        synchronized (ksession) {
+            return taskService.getGroups();
+        }
+    }
+
+    @Override
+    public List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId,
+            String userId, String language) {
+        synchronized (ksession) {
+            return taskService.getSubTasksAssignedAsPotentialOwner(parentId, userId, language);
+        }
+    }
+
+    @Override
+    public List<TaskSummary> getSubTasksByParent(long parentId) {
+        synchronized (ksession) {
+            return taskService.getSubTasksByParent(parentId);
+        }
+    }
+
+    @Override
+    public int getPendingSubTasksByParent(long parentId) {
+        synchronized (ksession) {
+            return taskService.getPendingSubTasksByParent(parentId);
+        }
+    }
+
+    @Override
+    public Task getTaskByWorkItemId(long workItemId) {
+        synchronized (ksession) {
+            return taskService.getTaskByWorkItemId(workItemId);
+        }
+    }
+
+    @Override
+    public TaskDef getTaskDefById(String id) {
+        synchronized (ksession) {
+            return taskService.getTaskDefById(id);
+        }
+    }
+
+    @Override
+    public Task getTaskById(long taskId) {
+        synchronized (ksession) {
+            return taskService.getTaskById(taskId);
+        }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(
+            String userId, String language) {
+        synchronized (ksession) {
+            return taskService.getTasksAssignedAsBusinessAdministrator(userId, language);
+        }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId,
+            String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedAsExcludedOwner(userId, language);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId,
+            List<String> groupIds, String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedAsExcludedOwner(userId, language);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId,
+            List<String> groupIds, String language, int firstResult,
+            int maxResults) {
+        synchronized (ksession) {
+           return  taskService.getTasksAssignedAsPotentialOwner(userId, groupIds, language, firstResult, maxResults);
+        }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId,
+            String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedAsPotentialOwner(userId, language);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(
+            String salaboy, List<Status> status, String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedAsPotentialOwnerByStatus(salaboy, status, language);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(
+            String userId, List<String> groupIds, List<Status> status,
+            String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup(userId, groupIds, status, language);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsRecipient(String userId,
+            String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedAsRecipient(userId, language);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId,
+            String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedAsTaskInitiator(userId, language);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId,
+            String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedAsTaskStakeholder(userId, language);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksOwned(String userId) {
+        synchronized (ksession) {
+            return  taskService.getTasksOwned(userId);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksOwned(String userId, List<Status> status,
+            String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksOwned(userId, status, language);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksOwnedByExpirationDate(String userId,
+            List<Status> statuses, Date expirationDate) {
+        synchronized (ksession) {
+            return  taskService.getTasksOwnedByExpirationDate(userId, statuses, expirationDate);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksOwnedByExpirationDateOptional(
+            String userId, List<Status> statuses, Date expirationDate) {
+        synchronized (ksession) {
+            return  taskService.getTasksOwnedByExpirationDateOptional(userId, statuses, expirationDate);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(
+            List<String> groupIds, String language, Date expirationDate) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedByGroupsByExpirationDate(groupIds, language, expirationDate);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(
+            List<String> groupIds, String language, Date expirationDate) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedByGroupsByExpirationDateOptional(groupIds, language, expirationDate);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessId(
+            long processInstanceId, List<Status> status, String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksByStatusByProcessId(processInstanceId, status, language);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(
+            long processInstanceId, List<Status> status, String taskName,
+            String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksByStatusByProcessIdByTaskName(processInstanceId, status, taskName, language);
+         }
+    }
+
+    @Override
+    public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
+        synchronized (ksession) {
+            return  taskService.getTasksByProcessInstanceId(processInstanceId);
+         }
+    }
+
+    @Override
+    public User getUserById(String userId) {
+        synchronized (ksession) {
+            return  taskService.getUserById(userId);
+         }
+    }
+
+    @Override
+    public List<User> getUsers() {
+        synchronized (ksession) {
+            return  taskService.getUsers();
+         }
+    }
+
+    @Override
+    public long addTask(Task task, Map<String, Object> params) {
+        synchronized (ksession) {
+            return  taskService.addTask(task, params);
+         }
+    }
+
+    @Override
+    public long addTask(Task task, ContentData data) {
+        synchronized (ksession) {
+            return  taskService.addTask(task, data);
+         }
+    }
+
+    @Override
+    public void release(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.release(taskId, userId);
+         }
+    }
+
+    @Override
+    public void remove(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.remove(taskId, userId);
+         }
+    }
+
+    @Override
+    public void removeGroup(String groupId) {
+        synchronized (ksession) {
+            taskService.removeGroup(groupId);            
+         }
+    }
+
+    @Override
+    public int removeTasks(List<TaskSummary> tasks) {
+        synchronized (ksession) {
+            return  taskService.removeTasks(tasks);
+         }
+    }
+
+    @Override
+    public void removeUser(String userId) {
+        synchronized (ksession) {
+            taskService.removeUser(userId);
+         }
+    }
+
+    @Override
+    public void resume(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.resume(taskId, userId);
+         }
+    }
+
+    @Override
+    public void setFault(long taskId, String userId, FaultData fault) {
+        synchronized (ksession) {
+            taskService.setFault(taskId, userId, fault);
+         }
+    }
+
+    @Override
+    public void setOutput(long taskId, String userId, Object outputContentData) {
+        synchronized (ksession) {
+            taskService.setOutput(taskId, userId, outputContentData);
+         }
+    }
+
+    @Override
+    public void setPriority(long taskId, int priority) {
+        synchronized (ksession) {
+            taskService.setPriority(taskId, priority);
+         }
+    }
+
+    @Override
+    public void setTaskNames(long taskId, List<I18NText> taskNames) {
+        synchronized (ksession) {
+            taskService.setTaskNames(taskId, taskNames);
+         }
+    }
+
+    @Override
+    public void skip(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.skip(taskId, userId);
+         } 
+    }
+
+    @Override
+    public void start(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.start(taskId, userId);
+         }
+    }
+
+    @Override
+    public void stop(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.stop(taskId, userId);
+         }
+    }
+
+    @Override
+    public void suspend(long taskId, String userId) {
+        synchronized (ksession) {
+            taskService.suspend(taskId, userId);
+         }
+    }
+
+    @Override
+    public void undeployTaskDef(String id) {
+        synchronized (ksession) {
+            taskService.undeployTaskDef(id);            
+         }
+    }
+
+    @Override
+    public List<TaskEvent> getTaskEventsById(long taskId) {
+        synchronized (ksession) {
+            return  taskService.getTaskEventsById(taskId);
+         }
+    }
+
+    @Override
+    public UserInfo getUserInfo() {
+        synchronized (ksession) {
+            return  taskService.getUserInfo();
+         }
+    }
+
+    @Override
+    public void setUserInfo(UserInfo userInfo) {
+        synchronized (ksession) {
+            taskService.setUserInfo(userInfo);
+         }
+    }
+
+    @Override
+    public void addUsersAndGroups(Map<String, User> users,
+            Map<String, Group> groups) {
+        synchronized (ksession) {
+            taskService.addUsersAndGroups(users, groups);
+         }
+    }
+
+    @Override
+    public void nominate(long taskId, String userId,
+            List<OrganizationalEntity> potentialOwners) {
+        synchronized (ksession) {
+            taskService.nominate(taskId, userId, potentialOwners);
+         }
+    }
+
+    @Override
+    public int removeAllTasks() {
+        synchronized (ksession) {
+            return  taskService.removeAllTasks();
+         }
+    }
+
+    @Override
+    public long addContent(long taskId, Content content) {
+        synchronized (ksession) {
+            return  taskService.addContent(taskId, content);
+         }
+    }
+
+    @Override
+    public long addContent(long taskId, Map<String, Object> params) {
+        synchronized (ksession) {
+            return  taskService.addContent(taskId, params);
+         }
+    }
+
+    @Override
+    public void deleteContent(long taskId, long contentId) {
+        synchronized (ksession) {
+            taskService.deleteContent(taskId, contentId);
+         }
+    }
+
+    @Override
+    public List<Content> getAllContentByTaskId(long taskId) {
+        synchronized (ksession) {
+            return  taskService.getAllContentByTaskId(taskId);
+         }
+    }
+
+    @Override
+    public Content getContentById(long contentId) {
+        synchronized (ksession) {
+            return  taskService.getContentById(contentId);
+         }
+    }
+
+    @Override
+    public long addAttachment(long taskId, Attachment attachment,
+            Content content) {
+        synchronized (ksession) {
+            return  taskService.addAttachment(taskId, attachment, content);
+         }
+    }
+
+    @Override
+    public void deleteAttachment(long taskId, long attachmentId) {
+        synchronized (ksession) {
+            taskService.deleteAttachment(taskId, attachmentId);
+         }
+    }
+
+    @Override
+    public List<Attachment> getAllAttachmentsByTaskId(long taskId) {
+        synchronized (ksession) {
+            return  taskService.getAllAttachmentsByTaskId(taskId);
+         }
+    }
+
+    @Override
+    public Attachment getAttachmentById(long attachId) {
+        synchronized (ksession) {
+            return  taskService.getAttachmentById(attachId);
+         }
+    }
+
+    @Override
+    public void removeTaskEventsById(long taskId) {
+        synchronized (ksession) {
+            taskService.removeTaskEventsById(taskId);
+         }
+    }
+
+    @Override
+    public OrganizationalEntity getOrganizationalEntityById(String entityId) {
+        synchronized (ksession) {
+            return  taskService.getOrganizationalEntityById(entityId);
+         }
+    }
+
+    @Override
+    public void setExpirationDate(long taskId, Date date) {
+        synchronized (ksession) {
+            taskService.setExpirationDate(taskId, date);
+         }
+    }
+
+    @Override
+    public void setDescriptions(long taskId, List<I18NText> descriptions) {
+        synchronized (ksession) {
+            taskService.setDescriptions(taskId, descriptions);
+         }
+    }
+
+    @Override
+    public void setSkipable(long taskId, boolean skipable) {
+        synchronized (ksession) {
+            taskService.setSkipable(taskId, skipable);
+         }
+    }
+
+    @Override
+    public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
+        synchronized (ksession) {
+            taskService.setSubTaskStrategy(taskId, strategy);
+         }
+    }
+
+    @Override
+    public int getPriority(long taskId) {
+        synchronized (ksession) {
+            return  taskService.getPriority(taskId);
+         }
+    }
+
+    @Override
+    public Date getExpirationDate(long taskId) {
+        synchronized (ksession) {
+            return  taskService.getExpirationDate(taskId);
+         }
+    }
+
+    @Override
+    public List<I18NText> getDescriptions(long taskId) {
+        synchronized (ksession) {
+            return  taskService.getDescriptions(taskId);
+         }
+    }
+
+    @Override
+    public boolean isSkipable(long taskId) {
+        synchronized (ksession) {
+            return  taskService.isSkipable(taskId);
+         }
+    }
+
+    @Override
+    public SubTasksStrategy getSubTaskStrategy(long taskId) {
+        synchronized (ksession) {
+            return  taskService.getSubTaskStrategy(taskId);
+         }
+    }
+
+    @Override
+    public Task getTaskInstanceById(long taskId) {
+        synchronized (ksession) {
+            return  taskService.getTaskInstanceById(taskId);
+         }
+    }
+
+    @Override
+    public int getCompletedTaskByUserId(String userId) {
+        synchronized (ksession) {
+            return  taskService.getCompletedTaskByUserId(userId);
+         }
+    }
+
+    @Override
+    public int getPendingTaskByUserId(String userId) {
+        synchronized (ksession) {
+            return  taskService.getPendingTaskByUserId(userId);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedByGroup(String groupId,
+            String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedByGroup(groupId, language);
+         }
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds,
+            String language) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedByGroups(groupIds, language);
+         }
+    }
+
+    @Override
+    public long addComment(long taskId, Comment comment) {
+        synchronized (ksession) {
+            return  taskService.addComment(taskId, comment);
+         }
+    }
+
+    @Override
+    public void deleteComment(long taskId, long commentId) {
+        synchronized (ksession) {
+            taskService.deleteComment(taskId, commentId);
+         }
+    }
+
+    @Override
+    public List<Comment> getAllCommentsByTaskId(long taskId) {
+        synchronized (ksession) {
+            return  taskService.getAllCommentsByTaskId(taskId);
+         }
+    }
+
+    @Override
+    public Comment getCommentById(long commentId) {
+        synchronized (ksession) {
+            return  taskService.getCommentById(commentId);
+         }
+    }
+
+    @Override
+    public Map<String, Object> getTaskContent(long taskId) {
+        synchronized (ksession) {
+            return  taskService.getTaskContent(taskId);
+         }
+    }
+
+    @Override
+    public void registerTaskLifecycleEventListener(JbpmServicesEventListener<Task> taskLifecycleEventListener) {
+        synchronized (ksession) {
+            ((EventService)taskService).registerTaskLifecycleEventListener(taskLifecycleEventListener);
+         }
+    }
+
+    @Override
+    public void registerTaskNotificationEventListener(JbpmServicesEventListener<NotificationEvent> notificationEventListener) {
+        synchronized (ksession) {
+            ((EventService)taskService).registerTaskNotificationEventListener(notificationEventListener);
+         }
+    }
+
+    @Override
+    public Event<Task> getTaskLifecycleEventListeners() {
+        synchronized (ksession) {
+            return  ((EventService)taskService).getTaskLifecycleEventListeners();
+         }
+    }
+
+    @Override
+    public Event<NotificationEvent> getTaskNotificationEventListeners() {
+        synchronized (ksession) {
+            return  ((EventService)taskService).getTaskNotificationEventListeners();
+         }
+    }
+
+    @Override
+    public void clearTaskLifecycleEventListeners() {
+        synchronized (ksession) {
+            ((EventService)taskService).clearTaskLifecycleEventListeners();
+         }
+    }
+
+    @Override
+    public void clearTasknotificationEventListeners() {
+        synchronized (ksession) {
+            ((EventService)taskService).clearTasknotificationEventListeners();
+         }
+    }
+
 
 }

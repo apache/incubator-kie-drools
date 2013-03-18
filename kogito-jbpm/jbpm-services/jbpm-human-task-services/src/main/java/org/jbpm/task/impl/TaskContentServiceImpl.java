@@ -17,15 +17,18 @@ package org.jbpm.task.impl;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.task.Content;
-import org.jbpm.task.ContentData;
-import org.jbpm.task.Task;
-import org.jbpm.task.api.TaskContentService;
+import org.jbpm.task.impl.model.ContentDataImpl;
+import org.jbpm.task.impl.model.ContentImpl;
+import org.jbpm.task.impl.model.TaskImpl;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.internal.task.api.TaskContentService;
+import org.kie.internal.task.api.model.Content;
 
 /**
  *
@@ -45,14 +48,14 @@ public class TaskContentServiceImpl implements TaskContentService {
     }
     
     public long addContent(long taskId, Map<String, Object> params) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         long outputContentId = task.getTaskData().getOutputContentId();
-        Content outputContent = pm.find(Content.class, outputContentId);
+        ContentImpl outputContent = pm.find(ContentImpl.class, outputContentId);
         
         long contentId = -1;
         if (outputContent == null) {
-            ContentData outputContentData = ContentMarshallerHelper.marshal(params, null);
-            Content content = new Content(outputContentData.getContent());
+            ContentDataImpl outputContentData = ContentMarshallerHelper.marshal(params, null);
+            ContentImpl content = new ContentImpl(outputContentData.getContent());
             pm.persist(content);
             
             task.getTaskData().setOutput(content.getId(), outputContentData);
@@ -63,7 +66,7 @@ public class TaskContentServiceImpl implements TaskContentService {
             if(unmarshalledObject != null && unmarshalledObject instanceof Map){
                 ((Map<String, Object>)unmarshalledObject).putAll(params);
             }
-            ContentData outputContentData = ContentMarshallerHelper.marshal(unmarshalledObject, null);
+            ContentDataImpl outputContentData = ContentMarshallerHelper.marshal(unmarshalledObject, null);
             outputContent.setContent(outputContentData.getContent());
             contentId = outputContentId;
         }
@@ -71,16 +74,16 @@ public class TaskContentServiceImpl implements TaskContentService {
     }
 
     public long addContent(long taskId, Content content) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         pm.persist(content);
         task.getTaskData().setDocumentContentId(content.getId());
         return content.getId();
     }
 
     public void deleteContent(long taskId, long contentId) {
-        Task task = pm.find(Task.class, taskId);
+        TaskImpl task = pm.find(TaskImpl.class, taskId);
         task.getTaskData().setDocumentContentId(-1);
-        Content content = pm.find(Content.class, contentId);
+        ContentImpl content = pm.find(ContentImpl.class, contentId);
         pm.remove(content);
 
     }
@@ -89,7 +92,7 @@ public class TaskContentServiceImpl implements TaskContentService {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Content getContentById(long contentId) {
-        return pm.find(Content.class, contentId);
+    public ContentImpl getContentById(long contentId) {
+        return pm.find(ContentImpl.class, contentId);
     }
 }

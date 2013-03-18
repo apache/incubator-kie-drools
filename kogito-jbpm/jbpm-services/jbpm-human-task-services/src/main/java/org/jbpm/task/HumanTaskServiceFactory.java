@@ -23,16 +23,8 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.jbpm.task.api.TaskAdminService;
-import org.jbpm.task.api.TaskContentService;
-import org.jbpm.task.api.TaskDeadlinesService;
-import org.jbpm.task.api.TaskIdentityService;
-import org.jbpm.task.api.TaskInstanceService;
-import org.jbpm.task.api.TaskQueryService;
-import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.deadlines.DeadlinesDecorator;
 import org.jbpm.task.identity.MvelUserGroupCallbackImpl;
-import org.jbpm.task.identity.UserGroupCallback;
 import org.jbpm.task.identity.UserGroupLifeCycleManagerDecorator;
 import org.jbpm.task.identity.UserGroupTaskInstanceServiceDecorator;
 import org.jbpm.task.identity.UserGroupTaskQueryServiceDecorator;
@@ -46,6 +38,14 @@ import org.jbpm.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.task.internals.lifecycle.MVELLifeCycleManager;
 import org.jbpm.task.subtask.SubTaskDecorator;
+import org.kie.internal.task.api.TaskAdminService;
+import org.kie.internal.task.api.TaskContentService;
+import org.kie.internal.task.api.TaskDeadlinesService;
+import org.kie.internal.task.api.TaskIdentityService;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.UserGroupCallback;
 
 /**
  *
@@ -53,7 +53,7 @@ import org.jbpm.task.subtask.SubTaskDecorator;
  */
 public class HumanTaskServiceFactory {
     
-    private static TaskServiceEntryPoint service;
+    private static TaskService service;
     
     private static EntityManagerFactory emf;
     
@@ -80,9 +80,14 @@ public class HumanTaskServiceFactory {
     private static UserGroupLifeCycleManagerDecorator userGroupLifeCycleDecorator = new UserGroupLifeCycleManagerDecorator();
     
      
-    public static TaskServiceEntryPoint newTaskService(){
+    public static TaskService newTaskService(){
         configure();
         return service;
+    }
+    
+    public static HumanTaskConfigurator newTaskServiceConfigurator(){
+        
+        return new HumanTaskConfigurator();
     }
     
     public static JbpmServicesPersistenceManager getJbpmServicesPersistenceManager(){
@@ -99,19 +104,19 @@ public class HumanTaskServiceFactory {
         // Task Query
         configureTaskQueryService(pm);
         TaskQueryService userGroupQueryServiceDecorator = configureUserGroupQueryServiceDecorator(queryService, userGroupCallback);
-        service.setTaskQueryService(userGroupQueryServiceDecorator);
+        ((TaskServiceEntryPointImpl)service).setTaskQueryService(userGroupQueryServiceDecorator);
         
         // Task Identity
         configureTaskIdentityService(pm);
-        service.setTaskIdentityService(identityService);
+        ((TaskServiceEntryPointImpl)service).setTaskIdentityService(identityService);
         
         // Task Admin
         configureTaskAdminService(pm);
-        service.setTaskAdminService(adminService);
+        ((TaskServiceEntryPointImpl)service).setTaskAdminService(adminService);
         
         // Task Content
         configureTaskContentService(pm);
-        service.setTaskContentService(contentService);
+        ((TaskServiceEntryPointImpl)service).setTaskContentService(contentService);
         
         // Task Deadlines
         configureTaskDeadlinesService(pm);
@@ -136,7 +141,7 @@ public class HumanTaskServiceFactory {
         // Task Decorators - Deadlines
         DeadlinesDecorator deadlinesDecorator = createDeadlinesDecorator(pm, queryService, deadlinesService, subTaskDecorator);
         
-        service.setTaskInstanceService(deadlinesDecorator);
+        ((TaskServiceEntryPointImpl)service).setTaskInstanceService(deadlinesDecorator);
         
     }
 
@@ -184,14 +189,14 @@ public class HumanTaskServiceFactory {
     public static void configureTaskDeadlinesService(JbpmServicesPersistenceManager pm){
         ((TaskDeadlinesServiceImpl)deadlinesService).setPm(pm);
         ((TaskDeadlinesServiceImpl)deadlinesService).setLogger(logger);
-        ((TaskDeadlinesServiceImpl)deadlinesService).setNotificationEvents(service.getTaskNotificationEventListeners());
+        ((TaskDeadlinesServiceImpl)deadlinesService).setNotificationEvents(((TaskServiceEntryPointImpl)service).getTaskNotificationEventListeners());
         ((TaskDeadlinesServiceImpl)deadlinesService).init();
     }
     
     public static void configureTaskInstanceService(JbpmServicesPersistenceManager pm, TaskQueryService queryService){
         ((TaskInstanceServiceImpl)instanceService).setPm(pm);
         ((TaskInstanceServiceImpl)instanceService).setTaskQueryService(queryService);
-        ((TaskInstanceServiceImpl)instanceService).setTaskEvents(service.getTaskLifecycleEventListeners());
+        ((TaskInstanceServiceImpl)instanceService).setTaskEvents(((TaskServiceEntryPointImpl)service).getTaskLifecycleEventListeners());
     }
     
     public static void configureLifeCycleManager(JbpmServicesPersistenceManager pm, 
@@ -201,7 +206,7 @@ public class HumanTaskServiceFactory {
         ((MVELLifeCycleManager)lifeCycleManager).setTaskIdentityService(identityService);
         ((MVELLifeCycleManager)lifeCycleManager).setTaskQueryService(queryService);
         ((MVELLifeCycleManager)lifeCycleManager).setTaskContentService(contentService);
-        ((MVELLifeCycleManager)lifeCycleManager).setTaskEvents(service.getTaskLifecycleEventListeners());
+        ((MVELLifeCycleManager)lifeCycleManager).setTaskEvents(((TaskServiceEntryPointImpl)service).getTaskLifecycleEventListeners());
         ((MVELLifeCycleManager)lifeCycleManager).setLogger(logger);
         ((MVELLifeCycleManager)lifeCycleManager).initMVELOperations();
         

@@ -16,15 +16,18 @@
 package org.jbpm.task.commands;
 
 import java.util.Map;
+
 import javax.enterprise.util.AnnotationLiteral;
-import org.kie.internal.command.Context;
+
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.task.Content;
-import org.jbpm.task.ContentData;
-import org.jbpm.task.Task;
 import org.jbpm.task.events.AfterTaskAddedEvent;
 import org.jbpm.task.events.BeforeTaskAddedEvent;
+import org.jbpm.task.impl.model.ContentDataImpl;
+import org.jbpm.task.impl.model.ContentImpl;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.internal.command.Context;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.Task;
 
 /**
  * Operation.Start : [ new OperationCommand().{ status = [ Status.Ready ],
@@ -55,13 +58,13 @@ public class AddTaskCommand<Long> extends TaskCommand {
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskAddedEvent>() {
         }).fire(task);
         if (params != null) {
-            ContentData contentData = ContentMarshallerHelper.marshal(params, null);
-            Content content = new Content(contentData.getContent());
+            ContentDataImpl contentData = ContentMarshallerHelper.marshal(params, null);
+            ContentImpl content = new ContentImpl(contentData.getContent());
             context.getPm().persist(content);
             task.getTaskData().setDocument(content.getId(), contentData);
         }
         if (data != null) {
-            Content content = new Content(data.getContent());
+            ContentImpl content = new ContentImpl(data.getContent());
             context.getPm().persist(content);
             task.getTaskData().setDocument(content.getId(), data);
         }
