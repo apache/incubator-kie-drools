@@ -14,45 +14,47 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.internal.conf;
 
+
+import org.kie.conf.SingleValueKieBaseOption;
 
 /**
- * A class for the composite key depth configuration.
+ * A class for the max threads configuration.
  */
-public class CompositeKeyDepthOption implements SingleValueKieBaseOption {
+public class MaxThreadsOption implements SingleValueKieBaseOption {
 
     private static final long serialVersionUID = 510l;
 
     /**
-     * The property name for the default DIALECT
+     * The property name for the max threads
      */
-    public static final String PROPERTY_NAME = "drools.compositeKeyDepth";
+    public static final String PROPERTY_NAME = "drools.maxThreads";
     
     /**
-     * dialect name
+     * max threads
      */
-    private final int depth;
+    private final int maxThreads;
     
     /**
      * Private constructor to enforce the use of the factory method
-     * @param depth
+     * @param maxThreads
      */
-    private CompositeKeyDepthOption( int depth ) {
-        this.depth = depth;
+    private MaxThreadsOption( int maxThreads ) {
+        this.maxThreads = maxThreads;
     }
     
     /**
-     * This is a factory method for this CompositeKeyDepth configuration.
+     * This is a factory method for this Max Threads configuration.
      * The factory method is a best practice for the case where the 
      * actual object construction is changed in the future.
      * 
-     * @param depth the composite key depth value
+     * @param maxThreads the maximum number of threads for partition evaluation
      * 
-     * @return the actual type safe CompositeKeyDepth configuration.
+     * @return the actual type safe max threads configuration.
      */
-    public static CompositeKeyDepthOption get( int depth ) {
-        return new CompositeKeyDepthOption( depth );
+    public static MaxThreadsOption get( int threshold ) {
+        return new MaxThreadsOption( threshold );
     }
     
     /**
@@ -63,19 +65,19 @@ public class CompositeKeyDepthOption implements SingleValueKieBaseOption {
     }
     
     /**
-     * Returns the depth value for composite key indexing
+     * Returns the maximum number of threads for partition evaluation
      * 
      * @return
      */
-    public int getDepth() {
-        return depth;
+    public int getMaxThreads() {
+        return maxThreads;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + depth;
+        result = prime * result + maxThreads;
         return result;
     }
 
@@ -84,8 +86,8 @@ public class CompositeKeyDepthOption implements SingleValueKieBaseOption {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        CompositeKeyDepthOption other = (CompositeKeyDepthOption) obj;
-        if ( depth != other.depth ) return false;
+        MaxThreadsOption other = (MaxThreadsOption) obj;
+        if ( maxThreads != other.maxThreads ) return false;
         return true;
     }
     

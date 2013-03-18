@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.internal.conf;
 
+
+import org.kie.conf.SingleValueKieBaseOption;
 
 /**
- * An Enum for ShareBetaNodes option.
+ * An Enum for ShareAlphaNodes option.
  * 
- * drools.shareBetaNodes = &lt;true|false&gt;
+ * drools.shareAlphaNodes = &lt;true|false&gt;
  * 
  * DEFAULT = true
  */
-public enum ShareBetaNodesOption implements SingleValueKieBaseOption {
+public enum ShareAlphaNodesOption implements SingleValueKieBaseOption {
     
     YES(true),
     NO(false);
 
     /**
-     * The property name for the share beta nodes option
+     * The property name for the sequential mode option
      */
-    public static final String PROPERTY_NAME = "drools.shareBetaNodes";
+    public static final String PROPERTY_NAME = "drools.shareAlphaNodes";
     
     private boolean value;
     
-    ShareBetaNodesOption( final boolean value ) {
+    ShareAlphaNodesOption( final boolean value ) {
         this.value = value;
     }
     
@@ -47,7 +49,7 @@ public enum ShareBetaNodesOption implements SingleValueKieBaseOption {
         return PROPERTY_NAME;
     }
     
-    public boolean isShareBetaNodes() {
+    public boolean isShareAlphaNodes() {
         return this.value;
     }
 

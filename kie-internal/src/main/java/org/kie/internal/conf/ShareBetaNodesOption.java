@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.internal.conf;
 
+
+import org.kie.conf.SingleValueKieBaseOption;
 
 /**
- * An Enum for indexLeftBetaMemory option.
+ * An Enum for ShareBetaNodes option.
  * 
- * drools.indexLeftBetaMemory = &lt;true|false&gt;
+ * drools.shareBetaNodes = &lt;true|false&gt;
  * 
  * DEFAULT = true
  */
-public enum IndexLeftBetaMemoryOption implements SingleValueKieBaseOption {
+public enum ShareBetaNodesOption implements SingleValueKieBaseOption {
     
     YES(true),
     NO(false);
@@ -32,11 +34,11 @@ public enum IndexLeftBetaMemoryOption implements SingleValueKieBaseOption {
     /**
      * The property name for the share beta nodes option
      */
-    public static final String PROPERTY_NAME = "drools.indexLeftBetaMemory";
+    public static final String PROPERTY_NAME = "drools.shareBetaNodes";
     
     private boolean value;
     
-    IndexLeftBetaMemoryOption( final boolean value ) {
+    ShareBetaNodesOption( final boolean value ) {
         this.value = value;
     }
     
@@ -47,7 +49,7 @@ public enum IndexLeftBetaMemoryOption implements SingleValueKieBaseOption {
         return PROPERTY_NAME;
     }
     
-    public boolean isIndexLeftBetaMemory() {
+    public boolean isShareBetaNodes() {
         return this.value;
     }
 

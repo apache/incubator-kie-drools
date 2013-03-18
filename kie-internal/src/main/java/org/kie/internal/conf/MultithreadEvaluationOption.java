@@ -14,29 +14,35 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.internal.conf;
 
+
+import org.kie.conf.SingleValueKieBaseOption;
 
 /**
- * An Enum for ShareAlphaNodes option.
+ * An Enum for multithread evaluation option.
  * 
- * drools.shareAlphaNodes = &lt;true|false&gt;
+ * IMPORTANT: this option is currently not supported. It might be enabled again in the future.
  * 
- * DEFAULT = true
+ * drools.multithreadEvaluation = &lt;true|false&gt;
+ * 
+ * DEFAULT = false
+ * 
+ * @deprecated
  */
-public enum ShareAlphaNodesOption implements SingleValueKieBaseOption {
+public enum MultithreadEvaluationOption implements SingleValueKieBaseOption {
     
     YES(true),
     NO(false);
 
     /**
-     * The property name for the sequential mode option
+     * The property name for the multithread evaluation option
      */
-    public static final String PROPERTY_NAME = "drools.shareAlphaNodes";
+    public static final String PROPERTY_NAME = "drools.multithreadEvaluation";
     
     private boolean value;
     
-    ShareAlphaNodesOption( final boolean value ) {
+    MultithreadEvaluationOption( final boolean value ) {
         this.value = value;
     }
     
@@ -47,7 +53,7 @@ public enum ShareAlphaNodesOption implements SingleValueKieBaseOption {
         return PROPERTY_NAME;
     }
     
-    public boolean isShareAlphaNodes() {
+    public boolean isMultithreadEvaluation() {
         return this.value;
     }
 

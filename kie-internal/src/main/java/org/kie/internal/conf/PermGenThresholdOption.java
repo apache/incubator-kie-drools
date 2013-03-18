@@ -1,4 +1,6 @@
-package org.kie.conf;
+package org.kie.internal.conf;
+
+import org.kie.conf.SingleValueKieBaseOption;
 
 /**
  * A class PermGen threshold configuration.
