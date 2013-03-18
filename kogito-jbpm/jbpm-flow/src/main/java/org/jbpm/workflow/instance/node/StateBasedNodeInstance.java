@@ -39,7 +39,7 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.event.rule.MatchCreatedEvent;
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.NodeInstance;
 import org.mvel2.MVEL;

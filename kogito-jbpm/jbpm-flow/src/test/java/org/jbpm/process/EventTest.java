@@ -43,7 +43,7 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessContext;
 import org.kie.runtime.process.ProcessInstance;
 
@@ -332,7 +332,7 @@ public class EventTest {
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
         assertEquals(0, myList.size());

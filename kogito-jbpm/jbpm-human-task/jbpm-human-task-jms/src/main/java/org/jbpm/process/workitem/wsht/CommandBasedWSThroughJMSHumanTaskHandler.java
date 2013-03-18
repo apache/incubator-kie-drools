@@ -10,7 +10,7 @@ import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.WSHumanTaskJMSProperties;
 import org.kie.internal.SystemEventListenerFactory;
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.KnowledgeRuntime;
 
 @Deprecated
 public class CommandBasedWSThroughJMSHumanTaskHandler extends CommandBasedWSHumanTaskHandler {

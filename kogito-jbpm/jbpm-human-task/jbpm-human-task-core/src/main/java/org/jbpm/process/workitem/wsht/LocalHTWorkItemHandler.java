@@ -17,7 +17,7 @@ package org.jbpm.process.workitem.wsht;
 
 import org.jbpm.task.TaskService;
 import org.jbpm.task.utils.OnErrorAction;
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.KnowledgeRuntime;
 
 
 public class LocalHTWorkItemHandler extends GenericHTWorkItemHandler{

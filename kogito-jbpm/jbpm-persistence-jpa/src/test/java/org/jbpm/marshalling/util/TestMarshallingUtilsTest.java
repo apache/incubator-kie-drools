@@ -37,7 +37,7 @@ import org.drools.core.impl.EnvironmentFactory;
 
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.ClockTypeOption;
 import org.kie.runtime.conf.TimerJobFactoryOption;
 import org.junit.*;

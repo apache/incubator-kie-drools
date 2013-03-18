@@ -31,10 +31,10 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 
 public class ProcessInstanceResolverStrategyTest {

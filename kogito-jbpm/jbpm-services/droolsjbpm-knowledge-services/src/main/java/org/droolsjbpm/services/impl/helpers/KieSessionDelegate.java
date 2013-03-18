@@ -26,7 +26,7 @@ import org.kie.runtime.Environment;
 import org.kie.runtime.Globals;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.ObjectFilter;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItemManager;
 import org.kie.runtime.rule.Agenda;
@@ -40,7 +40,7 @@ import org.kie.time.SessionClock;
 
 import java.util.Collection;
 import java.util.Map;
-import org.jbpm.shared.services.api.SessionManager;
+
 import org.kie.KieBase;
 import org.kie.runtime.KieSession;
 

@@ -23,7 +23,7 @@ import org.jbpm.workflow.instance.node.SplitInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class JavaReturnValueConstraintEvaluatorBuilderTest extends TestCase {
 

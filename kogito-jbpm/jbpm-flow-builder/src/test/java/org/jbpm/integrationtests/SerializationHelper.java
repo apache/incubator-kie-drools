@@ -7,10 +7,10 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ReteooStatefulSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.marshalling.Marshaller;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

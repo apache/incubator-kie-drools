@@ -5,7 +5,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.instance.WorkItemHandler;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkItemManager;
 import org.jbpm.process.instance.ProcessInstance;

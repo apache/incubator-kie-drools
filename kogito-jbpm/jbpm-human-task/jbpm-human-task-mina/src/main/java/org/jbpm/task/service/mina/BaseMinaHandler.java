@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.jbpm.task.service.BaseHandler;
-import org.kie.task.service.ResponseHandler;
+import org.kie.internal.task.service.ResponseHandler;
 
 public class BaseMinaHandler extends IoHandlerAdapter implements BaseHandler
 {       

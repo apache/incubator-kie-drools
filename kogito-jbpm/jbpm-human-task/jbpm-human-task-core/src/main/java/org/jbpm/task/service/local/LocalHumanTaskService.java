@@ -6,9 +6,9 @@ import javax.persistence.Persistence;
 import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
 import org.jbpm.task.service.TaskService;
 import org.kie.internal.SystemEventListenerFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class LocalHumanTaskService {
 	

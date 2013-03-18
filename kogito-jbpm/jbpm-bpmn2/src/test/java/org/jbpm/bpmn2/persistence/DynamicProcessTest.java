@@ -29,9 +29,9 @@ import org.kie.event.process.ProcessNodeTriggeredEvent;
 import org.kie.event.process.ProcessStartedEvent;
 import org.kie.event.process.ProcessVariableChangedEvent;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
 import org.kie.runtime.Environment;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 /**
  * This is a sample file to launch a process.

@@ -19,7 +19,7 @@ package org.jbpm.task.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.task.service.ResponseHandler;
+import org.kie.internal.task.service.ResponseHandler;
 
 public class BaseClientHandler implements BaseHandler {
 

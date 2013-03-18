@@ -13,9 +13,9 @@ import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class JpaBasedPersistenceTest extends MapPersistenceTest {
 

@@ -42,7 +42,7 @@ import org.kie.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 
 public class TimerPersistenceTest {

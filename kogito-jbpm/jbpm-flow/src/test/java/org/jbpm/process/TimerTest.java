@@ -29,7 +29,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class TimerTest extends Assert {
 
@@ -47,7 +47,7 @@ public class TimerTest extends Assert {
 //        final StatefulSession workingMemory = new ReteooStatefulSession(1, ruleBase, executorService);
 //        executorService.setCommandExecutor( new CommandExecutor( workingMemory ) );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        final StatefulKnowledgeSession workingMemory = kbase.newStatefulKnowledgeSession(); 
+        final StatefulKnowledgeSession workingMemory = kbase.newStatefulKnowledgeSession();
 
         RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance() {
 			private static final long serialVersionUID = 510l;

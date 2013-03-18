@@ -24,9 +24,9 @@ import org.drools.core.impl.EnvironmentFactory;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactoryService;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class ProcessBaseFactoryService implements KnowledgeBaseFactoryService {
 

@@ -13,8 +13,8 @@ import org.kie.internal.command.CommandFactory;
 import org.kie.definition.type.FactType;
 import org.kie.event.rule.DebugAgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.AgendaFilter;
 import org.kie.runtime.rule.Match;
 

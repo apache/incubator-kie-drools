@@ -42,7 +42,7 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessContext;
 
 public class ForEachTest {
@@ -110,7 +110,7 @@ public class ForEachTest {
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         
         Map<String, Object> parameters = new HashMap<String, Object>();
         List<Person> persons = new ArrayList<Person>();

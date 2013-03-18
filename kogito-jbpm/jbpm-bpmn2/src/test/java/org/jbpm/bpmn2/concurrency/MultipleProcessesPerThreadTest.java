@@ -16,8 +16,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.event.process.*;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class MultipleProcessesPerThreadTest {
     
     private static Logger logger = LoggerFactory.getLogger(MultipleProcessesPerThreadTest.class);
     
-    protected static StatefulKnowledgeSession createStatefulKnowledgeSession(KnowledgeBase kbase) { 
+    protected static StatefulKnowledgeSession createStatefulKnowledgeSession(KnowledgeBase kbase) {
         return kbase.newStatefulKnowledgeSession();
     }
     

@@ -16,7 +16,7 @@
 
 package org.jbpm.eventmessaging;
 
-import org.kie.task.service.ResponseHandler;
+import org.kie.internal.task.service.ResponseHandler;
 
 public interface EventResponseHandler extends ResponseHandler {
     public void execute(Payload payload);

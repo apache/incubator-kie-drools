@@ -20,7 +20,8 @@ import static org.jbpm.task.service.test.impl.TestServerUtil.createTestTaskClien
 import org.jbpm.process.workitem.wsht.AsyncGenericHTWorkItemHandler;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.KnowledgeRuntime;
+
 /**
  *
  * This class provides the default configurations for a test WorkItem Handler

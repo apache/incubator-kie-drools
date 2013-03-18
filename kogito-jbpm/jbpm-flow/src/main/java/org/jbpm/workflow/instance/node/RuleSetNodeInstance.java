@@ -24,8 +24,8 @@ import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.process.core.datatype.DataType;
-import org.kie.runtime.KnowledgeRuntime;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.rule.FactHandle;

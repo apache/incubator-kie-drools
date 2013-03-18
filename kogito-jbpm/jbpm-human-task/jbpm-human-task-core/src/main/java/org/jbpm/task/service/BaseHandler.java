@@ -16,7 +16,7 @@
 
 package org.jbpm.task.service;
 
-import org.kie.task.service.ResponseHandler;
+import org.kie.internal.task.service.ResponseHandler;
 
 public interface BaseHandler {
 	

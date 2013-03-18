@@ -28,7 +28,7 @@ import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.NodeInstance;
 import org.drools.core.spi.ProcessContext;

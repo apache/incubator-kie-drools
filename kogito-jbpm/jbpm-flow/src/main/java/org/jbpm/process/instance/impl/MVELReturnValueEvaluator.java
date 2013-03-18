@@ -25,8 +25,8 @@ import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.GlobalResolver;
 import org.kie.definition.KiePackage;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.process.ProcessContext;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
@@ -89,7 +89,7 @@ public class MVELReturnValueEvaluator
         InternalWorkingMemory internalWorkingMemory = null;
         if( context.getKieRuntime() instanceof StatefulKnowledgeSessionImpl ) {
             internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKieRuntime()).session;
-        } else if( context.getKieRuntime() instanceof StatelessKnowledgeSession ) {
+        } else if( context.getKieRuntime() instanceof StatelessKnowledgeSession) {
             StatefulKnowledgeSession statefulKnowledgeSession = ((StatelessKnowledgeSessionImpl) context.getKieRuntime()).newWorkingMemory();
             internalWorkingMemory = ((StatefulKnowledgeSessionImpl) statefulKnowledgeSession).session;
         }

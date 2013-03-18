@@ -19,7 +19,8 @@ import org.jbpm.task.TaskService;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.mina.AsyncMinaTaskClient;
 import org.jbpm.task.utils.OnErrorAction;
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.KnowledgeRuntime;
+
 /**
  *
  * This class provides the default configurations for a Mina WorkItem Handler

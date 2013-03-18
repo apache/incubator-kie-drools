@@ -29,7 +29,7 @@ import org.jbpm.task.query.TaskSummary;
 import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;
 
 import bitronix.tm.TransactionManagerServices;

@@ -13,7 +13,7 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.map.EnvironmentBuilder;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.jbpm.persistence.ProcessStorage;
 import org.jbpm.persistence.ProcessStorageEnvironmentBuilder;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;

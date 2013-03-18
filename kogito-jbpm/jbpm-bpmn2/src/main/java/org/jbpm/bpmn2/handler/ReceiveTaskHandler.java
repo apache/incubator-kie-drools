@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.runtime.KieSession;
-import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.process.*;
 
 public class ReceiveTaskHandler implements WorkItemHandler {
