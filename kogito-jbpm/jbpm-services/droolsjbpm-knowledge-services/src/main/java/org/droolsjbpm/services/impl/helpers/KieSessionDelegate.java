@@ -16,7 +16,7 @@
 package org.droolsjbpm.services.impl.helpers;
 
 import org.jbpm.shared.services.api.ServicesSessionManager;
-import org.kie.command.Command;
+import org.kie.api.command.Command;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;

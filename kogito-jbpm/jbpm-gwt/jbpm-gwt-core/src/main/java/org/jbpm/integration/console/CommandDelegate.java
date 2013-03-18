@@ -28,7 +28,7 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.kie.KnowledgeBase;
-import org.kie.command.Context;
+import org.kie.api.command.Context;
 import org.kie.definition.KnowledgePackage;
 import org.kie.definition.process.Process;
 import org.kie.runtime.StatefulKnowledgeSession;

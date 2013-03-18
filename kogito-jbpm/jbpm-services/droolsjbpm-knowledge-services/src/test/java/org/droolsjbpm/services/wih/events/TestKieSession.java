@@ -8,7 +8,7 @@ import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 
 import org.kie.internal.KnowledgeBase;
-import org.kie.command.Command;
+import org.kie.api.command.Command;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;
