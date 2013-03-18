@@ -1,4 +1,4 @@
-package org.kie.builder;
+package org.kie.api.builder;
 
 /**
  * A KieModule is a container of all the resources necessary to define a set of KieBases like

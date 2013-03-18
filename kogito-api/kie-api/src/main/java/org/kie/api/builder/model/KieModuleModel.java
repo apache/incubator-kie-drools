@@ -1,10 +1,10 @@
-package org.kie.builder.model;
+package org.kie.api.builder.model;
 
 import java.util.Map;
 
 /**
  * KieModuleModel is a model allowing to programmatically define a KieModule
- * @see org.kie.builder.KieModule
+ * @see org.kie.api.builder.KieModule
  */
 public interface KieModuleModel {
 

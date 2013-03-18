@@ -1,6 +1,6 @@
-package org.kie.builder;
+package org.kie.api.builder;
 
-import org.kie.builder.Message.Level;
+import org.kie.api.builder.Message.Level;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.kie.builder.model;
+package org.kie.api.builder.model;
 
 /**
  * WorkItemHandlerModel is a model allowing to programmatically define a WorkItemHandler and wire it to a KieSession

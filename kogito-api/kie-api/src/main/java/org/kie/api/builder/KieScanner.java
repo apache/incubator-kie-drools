@@ -1,4 +1,4 @@
-package org.kie.builder;
+package org.kie.api.builder;
 
 /**
  * A KieScanner is a scanner of the maven repositories (both local and remote)

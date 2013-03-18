@@ -1,6 +1,6 @@
 package org.kie.internal.builder;
 
-import org.kie.builder.Message;
+import org.kie.api.builder.Message;
 
 import java.util.List;
 
