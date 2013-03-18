@@ -193,7 +193,7 @@ public class ServiceRegistryImpl
         addDefault(  KieServices.class,
                      "org.drools.compiler.kie.builder.impl.KieServicesImpl");
         addDefault( KieScanner.class,
-                    "org.drools.scanner.KieRepositoryScannerImpl");
+                    "org.kie.scanner.KieRepositoryScannerImpl");
         addDefault( KieStoreServices.class,
                     "org.drools.persistence.jpa.KnowledgeStoreServiceImpl");
         addDefault( CorrelationKeyFactory.class,
