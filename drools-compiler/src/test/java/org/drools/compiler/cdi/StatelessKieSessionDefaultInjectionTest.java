@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
 import org.kie.api.cdi.KReleaseId;
-import org.kie.command.KieCommands;
+import org.kie.api.command.KieCommands;
 import org.kie.runtime.StatelessKieSession;
 
 @RunWith(CDITestRunner.class)

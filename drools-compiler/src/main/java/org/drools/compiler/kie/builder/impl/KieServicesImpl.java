@@ -14,7 +14,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.KieScanner;
-import org.kie.command.KieCommands;
+import org.kie.api.command.KieCommands;
 import org.kie.concurrent.KieExecutors;
 import org.kie.internal.io.ResourceFactoryService;
 import org.kie.internal.utils.ServiceRegistryImpl;

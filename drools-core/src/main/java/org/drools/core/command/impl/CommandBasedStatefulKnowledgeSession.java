@@ -63,7 +63,7 @@ import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.rule.EntryPoint;
 import org.kie.internal.KnowledgeBase;
-import org.kie.command.Command;
+import org.kie.api.command.Command;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;

@@ -32,7 +32,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.kie.internal.command.Context;
-import org.kie.command.Setter;
+import org.kie.api.command.Setter;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.SessionEntryPoint;

@@ -18,7 +18,7 @@ package org.drools.core.command.impl;
 
 import org.kie.internal.command.Context;
 
-public interface GenericCommand<T> extends org.kie.command.Command<T> {
+public interface GenericCommand<T> extends org.kie.api.command.Command<T> {
 
     T execute(Context context);
 

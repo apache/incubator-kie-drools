@@ -16,7 +16,7 @@
 
 package org.drools.core.command.impl;
 
-import org.kie.command.Command;
+import org.kie.api.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
