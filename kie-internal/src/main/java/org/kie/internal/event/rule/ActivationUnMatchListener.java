@@ -1,4 +1,4 @@
-package org.kie.event.rule;
+package org.kie.internal.event.rule;
 
 import org.kie.runtime.rule.Match;
 import org.kie.runtime.rule.Session;
