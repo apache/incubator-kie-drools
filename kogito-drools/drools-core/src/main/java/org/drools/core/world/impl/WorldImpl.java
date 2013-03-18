@@ -19,7 +19,7 @@ package org.drools.core.world.impl;
 import org.drools.core.command.GetDefaultValue;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.GenericCommand;
-import org.kie.command.Command;
+import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.World;
 import org.kie.runtime.CommandExecutor;

@@ -17,7 +17,7 @@
 package org.drools.core.command.impl;
 
 import org.drools.core.command.CommandService;
-import org.kie.command.Command;
+import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
 
 public class DefaultCommandService implements CommandService {

@@ -6,7 +6,7 @@ import org.drools.core.command.runtime.process.SignalEventCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.command.runtime.process.StartProcessInstanceCommand;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
-import org.kie.command.Command;
+import org.kie.api.command.Command;
 
 public class FireAllRulesInterceptor extends AbstractInterceptor {
 
