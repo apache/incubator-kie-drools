@@ -21,9 +21,9 @@ import java.math.BigDecimal;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.holder.AbstractScoreHolder;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
-import org.kie.runtime.rule.Match;
-import org.kie.runtime.rule.RuleContext;
-import org.kie.runtime.rule.Session;
+import org.kie.api.runtime.rule.Match;
+import org.kie.api.runtime.rule.RuleContext;
+import org.kie.api.runtime.rule.Session;
 
 public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
 

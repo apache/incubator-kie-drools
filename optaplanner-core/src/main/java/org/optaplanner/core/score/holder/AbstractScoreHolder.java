@@ -20,8 +20,8 @@ import java.io.Serializable;
 
 import org.drools.core.common.AgendaItem;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
-import org.kie.runtime.rule.RuleContext;
-import org.kie.runtime.rule.Session;
+import org.kie.api.runtime.rule.RuleContext;
+import org.kie.api.runtime.rule.Session;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
