@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.agent;
+package org.kie.internal.agent;
 
 import org.kie.PropertiesConfiguration;
 
 /**
- * <p> This class configures and allows inspection of the current configuration of a {@link org.kie.agent.KnowledgeAgent KnowledgeAgent}</p>
+ * <p> This class configures and allows inspection of the current configuration of a {@link org.kie.internal.agent.KnowledgeAgent KnowledgeAgent}</p>
  * <ul>
  * <li><code><b>drools.agent.scanResources</b> = &lt;<b>true</b>|false&gt;</code></li>
  * Enables(true) or Disables(false) the continuous scan of resources.
@@ -43,7 +43,7 @@ import org.kie.PropertiesConfiguration;
  * <li><code><b>drools.agent.validationTimeout</b> = &lt;milliseconds&gt;</code></li>
  * Sets the timeout for the validation of remote XML schemas. Default is 0 (that means no timeout).
  * </ul>
- * @see org.kie.agent.KnowledgeAgent
+ * @see org.kie.internal.agent.KnowledgeAgent
  */
 public interface KnowledgeAgentConfiguration
         extends

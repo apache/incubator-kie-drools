@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.agent;
+package org.kie.internal.agent;
 
 import java.util.Properties;
 
@@ -102,22 +102,22 @@ import org.kie.builder.KnowledgeBuilderConfiguration;
  *
  * <p>
  * The default implementation of KnowledgeAgent returned by this factory is
- * "org.kie.agent.impl.KnowledgeAgentProviderImpl". You can change it using
+ * "org.kie.internal.agent.impl.KnowledgeAgentProviderImpl". You can change it using
  *  the system property {@link #PROVIDER_CLASS_NAME_PROPERTY_NAME} to point to a diverse
- * implementation of "org.kie.agent.KnowledgeAgentProvider".
+ * implementation of "org.kie.internal.agent.KnowledgeAgentProvider".
  * </p>
  * 
- * @see org.kie.agent.KnowledgeAgent
- * @see org.kie.agent.KnowledgeAgent
+ * @see org.kie.internal.agent.KnowledgeAgent
+ * @see org.kie.internal.agent.KnowledgeAgent
  */
 public class KnowledgeAgentFactory {
 
     public static final String PROVIDER_CLASS_NAME_PROPERTY_NAME = "drools.agent.factory.provider";
     /**
-     * The provider class name. The default provider is org.kie.agent.impl.KnowledgeAgentProviderImpl.
+     * The provider class name. The default provider is org.kie.internal.agent.impl.KnowledgeAgentProviderImpl.
      * If you need a different provider you can use the system property
      * {@link #PROVIDER_CLASS_NAME_PROPERTY_NAME}  to point to a diverse implementation of
-     * "org.kie.agent.KnowledgeAgentProvider"
+     * "org.kie.internal.agent.KnowledgeAgentProvider"
      */
     private static String providerClassName = "org.drools.agent.impl.KnowledgeAgentProviderImpl";
 

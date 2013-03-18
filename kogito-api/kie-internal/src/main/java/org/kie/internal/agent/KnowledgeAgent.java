@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.agent;
+package org.kie.internal.agent;
 
 import org.kie.internal.ChangeSet;
 import org.kie.internal.KnowledgeBase;
@@ -27,8 +27,8 @@ import org.kie.runtime.StatelessKnowledgeSession;
 /**
  * The KnowledgeAgentFactory provides detailed information on how to create and use the KnowledgeAgent.
  * 
- * @see org.kie.agent.KnowledgeAgentFactory
- * @see org.kie.agent.KnowledgeAgentConfiguration
+ * @see org.kie.internal.agent.KnowledgeAgentFactory
+ * @see org.kie.internal.agent.KnowledgeAgentConfiguration
  */
 public interface KnowledgeAgent {
 
