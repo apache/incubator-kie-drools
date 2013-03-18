@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.marshalling;
+package org.kie.internal.marshalling;
 
 import org.kie.KieBase;
 import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.marshalling.KieMarshallers;
+import org.kie.marshalling.Marshaller;
+import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.marshalling.ObjectMarshallingStrategyAcceptor;
 
 
 /**
