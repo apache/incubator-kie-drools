@@ -134,8 +134,8 @@ public class ChangeSetTest extends CommonTestMethodBase {
         // JBRULES-3630
         String absolutePath = new File("file").getAbsolutePath();
         String jarPath = absolutePath.contains("drools-compiler") ?
-                "src/test/resources/org/drools/compiler/xml/changeset/changeset.jar" :
-                "drools-compiler/src/test/resources/org/drools/compiler/xml/changeset/changeset.jar";
+                "src/test/resources/org/drools/compiler/compiler/xml/changeset/changeset.jar" :
+                "drools-compiler/src/test/resources/org/drools/compiler/compiler//xml/changeset/changeset.jar";
         File jar = new File(jarPath);
         assertTrue(jar.exists());
         ClassLoader classLoader = URLClassLoader.newInstance(new URL[]{jar.toURI().toURL()}, getClass().getClassLoader());
