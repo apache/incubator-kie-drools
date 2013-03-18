@@ -20,7 +20,7 @@ import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
-import org.kie.builder.conf.LRUnlinkingOption;
+import org.kie.builder.conf.PhreakOption;
 
 public class RuleUnlinkingWithSegmentMemoryTest {
     ReteooRuleBase     ruleBase;
@@ -90,7 +90,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     
     public void setUp(int type) {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );        
+        kconf.setOption( PhreakOption.ENABLED );
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf);
         
         buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
@@ -151,7 +151,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         setUp( JOIN_NODE );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration) kconf) );
         
         PathMemory rs = (PathMemory) wm.getNodeMemory( rtn1 );
@@ -173,7 +173,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         setUp( JOIN_NODE );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
 
         BetaMemory bm = null;
@@ -277,7 +277,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         setUp( JOIN_NODE );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( LRUnlinkingOption.ENABLED );
+        kconf.setOption( PhreakOption.ENABLED );
         ReteooWorkingMemory wm = new ReteooWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
 
         BetaMemory bm = null;

@@ -39,7 +39,7 @@ import org.kie.KieBaseConfiguration;
 import org.kie.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.conf.LRUnlinkingOption;
+import org.kie.builder.conf.PhreakOption;
 import org.kie.conf.EventProcessingOption;
 import org.kie.conf.MBeansOption;
 import org.kie.definition.rule.Rule;
@@ -253,7 +253,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         conf.setOption( MBeansOption.ENABLED );
-        conf.setOption( LRUnlinkingOption.ENABLED );
+        conf.setOption( PhreakOption.ENABLED );
 
         KnowledgeBase kbase = loadKnowledgeBase( "kb1",
                                                  drl,

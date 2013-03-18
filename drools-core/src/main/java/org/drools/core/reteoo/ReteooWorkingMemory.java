@@ -262,7 +262,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
     private BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
         BaseNode[] tnodes = ( BaseNode[] ) ruleBase.getReteooBuilder().getTerminalNodes(queryName);
-        if ( this.ruleBase.getConfiguration().isUnlinkingEnabled() ) {
+        if ( this.ruleBase.getConfiguration().isPhreakEnabled() ) {
             if ( tnodes == null ) {
                 throw new RuntimeException( "Query '" + queryName + "' does not exist");
             }
@@ -312,7 +312,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                                                                       factHandle,
                                                                                       getEntryPoint() );
 
-            if ( this.ruleBase.getConfiguration().isUnlinkingEnabled() ) {
+            if ( this.ruleBase.getConfiguration().isPhreakEnabled() ) {
                 LeftInputAdapterNode lian = ( LeftInputAdapterNode ) factHandle.getFirstLeftTuple().getLeftTupleSink().getLeftTupleSource();
                 LiaNodeMemory lmem = (LiaNodeMemory) getNodeMemory( (MemoryFactory) lian);
                 SegmentMemory lsmem = lmem.getSegmentMemory();

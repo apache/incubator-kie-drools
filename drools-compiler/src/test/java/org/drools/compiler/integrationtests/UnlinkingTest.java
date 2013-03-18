@@ -27,7 +27,7 @@ public class UnlinkingTest {
         final Package pkg = builder.getPackage();
 
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setUnlinkingEnabled( true );
+        conf.setPhreakEnabled(true);
         RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
 
         ruleBase.addPackage( pkg );

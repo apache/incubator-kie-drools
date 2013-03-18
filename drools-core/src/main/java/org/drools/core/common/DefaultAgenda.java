@@ -183,7 +183,7 @@ public class DefaultAgenda
         
         this.declarativeAgenda =  rb.getConfiguration().isDeclarativeAgenda();
         
-        this.unlinkingEnabled = rb.getConfiguration().isUnlinkingEnabled();
+        this.unlinkingEnabled = rb.getConfiguration().isPhreakEnabled();
     }
     
     public RuleNetworkEvaluatorActivation createRuleNetworkEvaluatorActivation(final int salience,

@@ -347,7 +347,7 @@ public class ReteDslTestEngine {
         
         final boolean lrUnlinkingEnabled = ((BuildContext) context
                 .get( BUILD_CONTEXT )).getRuleBase().getConfiguration()
-                .isUnlinkingEnabled();
+                .isPhreakEnabled();
 
         try {
             List<String[]> cmds = step.getCommands();

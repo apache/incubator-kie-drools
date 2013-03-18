@@ -111,15 +111,15 @@ public class RuleBaseConfigurationTest {
     public void testLRUnlinking() {
         RuleBaseConfiguration cfg = new RuleBaseConfiguration();
         assertEquals( false,
-                      cfg.isUnlinkingEnabled() );
+                      cfg.isPhreakEnabled() );
 
         Properties properties = new Properties();
-        properties.setProperty( "drools.lrUnlinkingEnabled",
+        properties.setProperty( "drools.phreakEnabled",
                                 "true" );
         cfg = new RuleBaseConfiguration( properties );
 
         assertEquals( true,
-                      cfg.isUnlinkingEnabled() );
+                      cfg.isPhreakEnabled() );
     }
 
     

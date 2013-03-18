@@ -1489,7 +1489,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     }
 
     @Test (timeout = 10000)
-    @Ignore("Ingored for Phreak, as test is order sensitive")
+    @Ignore("Ingored for PhreakOption, as test is order sensitive")
     public void testSubNetworksAndQueries() throws Exception {
         String str = "" +
                      "package org.drools.compiler.test  \n" +

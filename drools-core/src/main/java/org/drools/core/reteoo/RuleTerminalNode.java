@@ -117,7 +117,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         this.subrule = subrule;
         this.subruleIndex = subruleIndex;
         
-        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();
+        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
 
         setFireDirect( rule.getActivationListener().equals( "direct" ) );
         if ( isFireDirect() ) {

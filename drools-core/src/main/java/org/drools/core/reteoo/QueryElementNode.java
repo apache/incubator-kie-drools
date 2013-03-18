@@ -88,7 +88,7 @@ public class QueryElementNode extends LeftTupleSource
         this.queryElement = queryElement;
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.openQuery = openQuery;
-        this.unlinkedEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();
+        this.unlinkedEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
         initMasks( context, tupleSource );
     }
 

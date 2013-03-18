@@ -38,7 +38,7 @@ import org.drools.core.spi.ConflictResolver;
 import org.kie.KieBaseConfiguration;
 import org.kie.builder.conf.ClassLoaderCacheOption;
 import org.kie.builder.conf.DeclarativeAgendaOption;
-import org.kie.builder.conf.LRUnlinkingOption;
+import org.kie.builder.conf.PhreakOption;
 import org.kie.conf.AlphaThresholdOption;
 import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.CompositeKeyDepthOption;
@@ -103,7 +103,7 @@ import org.slf4j.LoggerFactory;
  * drools.sessionClock = &lt;qualified class name&gt;
  * drools.mbeans = &lt;enabled|disabled&gt;
  * drools.classLoaderCacheEnabled = &lt;true|false&gt;
- * drools.lrUnlinkingEnabled = &lt;true|false&gt; 
+ * drools.phreakEnabled = &lt;true|false&gt;
  * drools.declarativeAgendaEnabled =  &lt;true|false&gt; 
  * </pre>
  */
@@ -111,99 +111,99 @@ public class RuleBaseConfiguration
     implements
     KieBaseConfiguration,
     Externalizable {
-    private static final long              serialVersionUID = 510l;
-    
-    public static final String          DEFAULT_SIGN_ON_SERIALIZATION = "false";
+    private static final long serialVersionUID = 510l;
+
+    public static final String DEFAULT_SIGN_ON_SERIALIZATION = "false";
 
     protected static transient Logger logger = LoggerFactory.getLogger(RuleBaseConfiguration.class);
 
-    private ChainedProperties              chainedProperties;
+    private ChainedProperties chainedProperties;
 
-    private boolean                        immutable;
+    private boolean immutable;
 
-    private boolean                        sequential;
-    private SequentialAgenda               sequentialAgenda;
+    private boolean          sequential;
+    private SequentialAgenda sequentialAgenda;
 
-    private boolean                        maintainTms;
-    private boolean                        removeIdentities;
-    private boolean                        shareAlphaNodes;
-    private boolean                        shareBetaNodes;
-    private int                            permGenThreshold;
-    private int                            alphaNodeHashingThreshold;
-    private int                            compositeKeyDepth;
-    private boolean                        indexLeftBetaMemory;
-    private boolean                        indexRightBetaMemory;
-    private AssertBehaviour                assertBehaviour;
-    private String                         executorService;
-    private String                         consequenceExceptionHandler;
-    private String                         ruleBaseUpdateHandler;
-    private boolean                        classLoaderCacheEnabled;
-    private boolean                        unlinkingEnabled;
+    private boolean         maintainTms;
+    private boolean         removeIdentities;
+    private boolean         shareAlphaNodes;
+    private boolean         shareBetaNodes;
+    private int             permGenThreshold;
+    private int             alphaNodeHashingThreshold;
+    private int             compositeKeyDepth;
+    private boolean         indexLeftBetaMemory;
+    private boolean         indexRightBetaMemory;
+    private AssertBehaviour assertBehaviour;
+    private String          executorService;
+    private String          consequenceExceptionHandler;
+    private String          ruleBaseUpdateHandler;
+    private boolean         classLoaderCacheEnabled;
+    private boolean         phreakEnabled;
 
-    private boolean                        declarativeAgenda;
-    
-    private EventProcessingOption          eventProcessingMode;
+    private boolean declarativeAgenda;
 
-    private IndexPrecedenceOption          indexPrecedenceOption;
+    private EventProcessingOption eventProcessingMode;
+
+    private IndexPrecedenceOption indexPrecedenceOption;
 
     // if "true", rulebase builder will try to split
     // the rulebase into multiple partitions that can be evaluated
     // in parallel by using multiple internal threads
-    private boolean                        multithread;
-    private int                            maxThreads;
+    private boolean multithread;
+    private int     maxThreads;
 
     // this property activates MBean monitoring and management
-    private boolean                        mbeansEnabled;
+    private boolean mbeansEnabled;
 
-    private ConflictResolver               conflictResolver;
-    
+    private ConflictResolver conflictResolver;
+
     private Map<String, ActivationListenerFactory> activationListeners;
 
-    private List<Map<String, Object>>      workDefinitions;
-    private boolean                        advancedProcessRuleIntegration;
+    private List<Map<String, Object>> workDefinitions;
+    private boolean                   advancedProcessRuleIntegration;
 
     private transient CompositeClassLoader classLoader;
 
-    private ReteooComponentFactory         componentFactory;
+    private ReteooComponentFactory componentFactory;
 
     private static final RuleBaseConfiguration defaultConf = new RuleBaseConfiguration();
-    
+
     public static RuleBaseConfiguration getDefaultInstance() {
         return defaultConf;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( chainedProperties );
-        out.writeBoolean( immutable );
-        out.writeBoolean( sequential );
-        out.writeObject( sequentialAgenda );
-        out.writeBoolean( maintainTms );
-        out.writeBoolean( removeIdentities );
-        out.writeBoolean( shareAlphaNodes );
-        out.writeBoolean( shareBetaNodes );
-        out.writeInt( permGenThreshold );
-        out.writeInt( alphaNodeHashingThreshold );
-        out.writeInt( compositeKeyDepth );
-        out.writeBoolean( indexLeftBetaMemory );
-        out.writeBoolean( indexRightBetaMemory );
-        out.writeObject( indexPrecedenceOption );
-        out.writeObject( assertBehaviour );
-        out.writeObject( executorService );
-        out.writeObject( consequenceExceptionHandler );
-        out.writeObject( ruleBaseUpdateHandler );
-        out.writeObject( conflictResolver );
-        out.writeBoolean( advancedProcessRuleIntegration );
-        out.writeBoolean( multithread );
-        out.writeInt( maxThreads );
-        out.writeObject( eventProcessingMode );
-        out.writeBoolean( classLoaderCacheEnabled );
-        out.writeBoolean( unlinkingEnabled );
-        out.writeBoolean(  declarativeAgenda );
-        out.writeObject( componentFactory );
+        out.writeObject(chainedProperties);
+        out.writeBoolean(immutable);
+        out.writeBoolean(sequential);
+        out.writeObject(sequentialAgenda);
+        out.writeBoolean(maintainTms);
+        out.writeBoolean(removeIdentities);
+        out.writeBoolean(shareAlphaNodes);
+        out.writeBoolean(shareBetaNodes);
+        out.writeInt(permGenThreshold);
+        out.writeInt(alphaNodeHashingThreshold);
+        out.writeInt(compositeKeyDepth);
+        out.writeBoolean(indexLeftBetaMemory);
+        out.writeBoolean(indexRightBetaMemory);
+        out.writeObject(indexPrecedenceOption);
+        out.writeObject(assertBehaviour);
+        out.writeObject(executorService);
+        out.writeObject(consequenceExceptionHandler);
+        out.writeObject(ruleBaseUpdateHandler);
+        out.writeObject(conflictResolver);
+        out.writeBoolean(advancedProcessRuleIntegration);
+        out.writeBoolean(multithread);
+        out.writeInt(maxThreads);
+        out.writeObject(eventProcessingMode);
+        out.writeBoolean(classLoaderCacheEnabled);
+        out.writeBoolean(phreakEnabled);
+        out.writeBoolean(declarativeAgenda);
+        out.writeObject(componentFactory);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
         chainedProperties = (ChainedProperties) in.readObject();
         immutable = in.readBoolean();
         sequential = in.readBoolean();
@@ -228,7 +228,7 @@ public class RuleBaseConfiguration
         maxThreads = in.readInt();
         eventProcessingMode = (EventProcessingOption) in.readObject();
         classLoaderCacheEnabled = in.readBoolean();
-        unlinkingEnabled = in.readBoolean();
+        phreakEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
         componentFactory = (ReteooComponentFactory) in.readObject();
     }
@@ -243,8 +243,8 @@ public class RuleBaseConfiguration
      * @param properties
      */
     public RuleBaseConfiguration(Properties properties) {
-        init( properties,
-              null );
+        init(properties,
+             null);
     }
 
     /**
@@ -256,8 +256,8 @@ public class RuleBaseConfiguration
      * the RuleBaseConfiguration.class.getClassLoader() class loader will be used.
      */
     public RuleBaseConfiguration() {
-        init( null,
-              null );
+        init(null,
+             null);
     }
 
     /**
@@ -267,18 +267,18 @@ public class RuleBaseConfiguration
      * @param classLoaders
      */
     public RuleBaseConfiguration(ClassLoader... classLoaders) {
-        init( null,
-              classLoaders );
+        init(null,
+             classLoaders);
     }
 
     public void setProperty(String name,
                             String value) {
         name = name.trim();
-        if ( StringUtils.isEmpty( name ) ) {
+        if (StringUtils.isEmpty(name)) {
             return;
         }
 
-        if ( name.equals( SequentialAgendaOption.PROPERTY_NAME ) ) {
+        if (name.equals(SequentialAgendaOption.PROPERTY_NAME ) ) {
             setSequentialAgenda( SequentialAgenda.determineSequentialAgenda( StringUtils.isEmpty( value ) ? "sequential" : value ) );
         } else if ( name.equals( SequentialOption.PROPERTY_NAME ) ) {
             setSequential( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
@@ -320,8 +320,8 @@ public class RuleBaseConfiguration
             setMBeansEnabled(MBeansOption.isEnabled(value));
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
-        } else if ( name.equals( LRUnlinkingOption.PROPERTY_NAME ) ) {
-            setUnlinkingEnabled(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
+        } else if ( name.equals( PhreakOption.PROPERTY_NAME ) ) {
+            setPhreakEnabled(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
         }
     }
 
@@ -375,8 +375,8 @@ public class RuleBaseConfiguration
             return isMBeansEnabled() ? "enabled" : "disabled";
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isClassLoaderCacheEnabled() );
-        } else if ( name.equals( LRUnlinkingOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isUnlinkingEnabled() );
+        } else if ( name.equals( PhreakOption.PROPERTY_NAME ) ) {
+            return Boolean.toString( isPhreakEnabled() );
         }
 
         return null;
@@ -484,8 +484,8 @@ public class RuleBaseConfiguration
         setClassLoaderCacheEnabled( Boolean.valueOf( this.chainedProperties.getProperty( ClassLoaderCacheOption.PROPERTY_NAME,
                                                                                          "true" ) ) );
         
-        setUnlinkingEnabled( Boolean.valueOf( this.chainedProperties.getProperty( LRUnlinkingOption.PROPERTY_NAME,
-                                                                                    "false" ) ) );
+        setPhreakEnabled(Boolean.valueOf(this.chainedProperties.getProperty(PhreakOption.PROPERTY_NAME,
+                                                                            "false")));
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );        
 
@@ -518,7 +518,7 @@ public class RuleBaseConfiguration
 
     public void setSequential(boolean sequential) {
         this.sequential = sequential;
-        if (sequential && isUnlinkingEnabled()) {
+        if (sequential && isPhreakEnabled()) {
             throw new IllegalArgumentException( "Sequential mode cannot be used when Left & Right unlinking is enabled." );
         }
     }
@@ -706,7 +706,7 @@ public class RuleBaseConfiguration
             throw new IllegalArgumentException( "Multithread mode is currently not supported. Please disable it." );
         }
         this.multithread = enableMultithread;
-        if (multithread && isUnlinkingEnabled()) {
+        if (multithread && isPhreakEnabled()) {
             throw new IllegalArgumentException( "Multithread evaluation cannot be used when Left & Right Unlinking is enabled." );
         }
     }
@@ -758,8 +758,8 @@ public class RuleBaseConfiguration
     /**
      * @return whether or not Unlinking is enabled.
      */
-    public boolean isUnlinkingEnabled() {
-        return this.unlinkingEnabled;
+    public boolean isPhreakEnabled() {
+        return this.phreakEnabled;
     }
     
     /**
@@ -767,9 +767,9 @@ public class RuleBaseConfiguration
      * and multithread evaluation as these are incompatible with L&R unlinking.
      * @param enabled
      */
-    public void setUnlinkingEnabled(boolean enabled) {
+    public void setPhreakEnabled(boolean enabled) {
         checkCanChange(); // throws an exception if a change isn't possible;
-        this.unlinkingEnabled = enabled;
+        this.phreakEnabled = enabled;
 
         if ( enabled && isSequential() ) {
             throw new IllegalArgumentException( "Sequential mode cannot be used when Left & Right Unlinking is enabled." );
@@ -1187,8 +1187,8 @@ public class RuleBaseConfiguration
             return (T) (this.isMBeansEnabled() ? MBeansOption.ENABLED : MBeansOption.DISABLED);
         } else if ( ClassLoaderCacheOption.class.equals( option ) ) {
             return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
-        } else if ( LRUnlinkingOption.class.equals( option ) ) {
-            return (T) (this.isUnlinkingEnabled() ? LRUnlinkingOption.ENABLED : LRUnlinkingOption.DISABLED);
+        } else if ( PhreakOption.class.equals( option ) ) {
+            return (T) (this.isPhreakEnabled() ? PhreakOption.ENABLED : PhreakOption.DISABLED);
         } else if ( DeclarativeAgendaOption.class.equals( option )  ) {
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
         }
@@ -1233,8 +1233,8 @@ public class RuleBaseConfiguration
             setMBeansEnabled(((MBeansOption) option).isEnabled());
         } else if ( option instanceof ClassLoaderCacheOption ) {
             setClassLoaderCacheEnabled(((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled());
-        } else if ( option instanceof LRUnlinkingOption ) {
-            setUnlinkingEnabled(((LRUnlinkingOption) option).isLRUnlinkingEnabled());
+        } else if ( option instanceof PhreakOption) {
+            setPhreakEnabled(((PhreakOption) option).isLRUnlinkingEnabled());
         } else if ( option instanceof DeclarativeAgendaOption ) {
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
         }

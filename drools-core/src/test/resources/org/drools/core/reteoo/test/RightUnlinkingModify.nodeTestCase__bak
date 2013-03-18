@@ -5,7 +5,7 @@ import org.drools.core.test.model.Person;
 
 Setup
 	Config:
-		drools.lrUnlinkingEnabled, true;
+		drools.phreakEnabled, true;
 	ObjectTypeNode:
 	    otnLeft1, Person;
 	LeftInputAdapterNode:

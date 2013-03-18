@@ -41,7 +41,7 @@ public class MannersBenchmark {
 
         // add the package to a rulebase
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setUnlinkingEnabled( true );
+        conf.setPhreakEnabled(true);
         
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
         ruleBase.addPackage(pkg);
