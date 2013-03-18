@@ -1,11 +1,11 @@
 //created on: 25/03/2006
 package org.benchmarks.waltz
 
-import org.drools.integrationtests.waltz.Stage
-import org.drools.integrationtests.waltz.Line
-import org.drools.integrationtests.waltz.Edge
-import org.drools.integrationtests.waltz.Junction
-import org.drools.integrationtests.waltz.WaltzUtil
+import org.drools.compiler.integrationtests.waltz.Stage
+import org.drools.compiler.integrationtests.waltz.Line
+import org.drools.compiler.integrationtests.waltz.Edge
+import org.drools.compiler.integrationtests.waltz.Junction
+import org.drools.compiler.integrationtests.waltz.WaltzUtil
 import org.drools.compiler.integrationtests.waltz.Junction
 import org.drools.compiler.integrationtests.waltz.WaltzUtil
 import org.drools.compiler.integrationtests.waltz.Stage

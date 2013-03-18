@@ -110,7 +110,8 @@ public class JavaDialectBinaryEqualityTest{
     public KnowledgePackage getKnowledgePackage1() {
       
         String str = "";
-        str += "package org.drools\n";
+        str += "package org.drools.compiler.test\n";
+        str += "import " + Person.class.getName() + ";\n";
         str += "global java.util.List list\n";
         str += "rule rule1 dialect\"java\" \n";
         str += "when\n";
@@ -138,13 +139,14 @@ public class JavaDialectBinaryEqualityTest{
         
         assertEquals( new Person( "darth", 34 ), list.get( 0 ) );
         
-        return kbase.getKnowledgePackage( "org.drools" );
+        return kbase.getKnowledgePackage( "org.drools.compiler.test" );
     }
     
     public KnowledgePackage getKnowledgePackage2() {
         
         String str = "";
-        str += "package org.drools\n";
+        str += "package org.drools.compiler.test\n";
+        str += "import " + Person.class.getName() + ";\n";
         str += "global java.util.List list\n";
         str += "rule rule1 dialect\"java\" \n";
         str += "when\n";
@@ -172,7 +174,7 @@ public class JavaDialectBinaryEqualityTest{
         ksession.fireAllRules();
         
         assertEquals( new Person( "darth", 36 ), list.get( 0 ) );
-        
-        return kbase.getKnowledgePackage( "org.drools" );
+
+        return kbase.getKnowledgePackage( "org.drools.compiler.test" );
     }
 }
