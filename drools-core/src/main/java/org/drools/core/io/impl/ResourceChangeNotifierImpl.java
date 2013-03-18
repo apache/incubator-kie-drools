@@ -31,7 +31,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.kie.internal.ChangeSet;
 import org.kie.internal.SystemEventListener;
 import org.kie.internal.SystemEventListenerFactory;
-import org.kie.event.io.ResourceChangeListener;
+import org.kie.internal.event.io.ResourceChangeListener;
 import org.kie.io.Resource;
 import org.kie.io.ResourceChangeMonitor;
 import org.kie.io.ResourceChangeNotifier;

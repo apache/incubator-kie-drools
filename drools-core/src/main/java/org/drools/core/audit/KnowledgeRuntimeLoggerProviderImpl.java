@@ -17,7 +17,7 @@
 package org.drools.core.audit;
 
 import org.kie.event.KieRuntimeEventManager;
-import org.kie.event.KnowledgeRuntimeEventManager;
+import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.logger.KieLoggers;
 import org.kie.logger.KnowledgeRuntimeLogger;
 
