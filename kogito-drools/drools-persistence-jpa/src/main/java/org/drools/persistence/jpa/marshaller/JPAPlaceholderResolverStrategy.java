@@ -30,7 +30,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
 
 import org.drools.core.common.DroolsObjectInputStream;
-import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.slf4j.Logger;

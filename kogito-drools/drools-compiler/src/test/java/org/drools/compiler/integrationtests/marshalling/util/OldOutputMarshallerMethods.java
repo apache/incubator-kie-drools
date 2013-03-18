@@ -11,8 +11,8 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.process.instance.WorkItem;
-import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 
 public class OldOutputMarshallerMethods {
 

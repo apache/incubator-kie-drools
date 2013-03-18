@@ -34,9 +34,9 @@ import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.RuleBaseUpdateListener;
 import org.drools.core.spi.RuleBaseUpdateListenerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.marshalling.Marshaller;
+import org.kie.api.marshalling.Marshaller;
 import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
 
 public class ReteooStatefulSession extends ReteooWorkingMemory

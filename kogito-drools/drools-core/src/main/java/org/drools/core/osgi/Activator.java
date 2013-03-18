@@ -24,7 +24,7 @@ import org.drools.core.marshalling.impl.MarshallerProviderImpl;
 import org.kie.internal.KnowledgeBaseFactoryService;
 import org.kie.api.Service;
 import org.kie.io.KieResources;
-import org.kie.marshalling.KieMarshallers;
+import org.kie.api.marshalling.KieMarshallers;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

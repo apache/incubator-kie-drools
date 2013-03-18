@@ -34,8 +34,8 @@ import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.PropagationContext;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 

@@ -16,9 +16,9 @@
 
 package org.drools.core.marshalling.impl;
 
-import org.kie.marshalling.MarshallingConfiguration;
-import org.kie.marshalling.ObjectMarshallingStrategy;
-import org.kie.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.api.marshalling.MarshallingConfiguration;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 
 public class MarshallingConfigurationImpl
     implements
