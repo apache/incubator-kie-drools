@@ -25,7 +25,7 @@ import org.kie.event.rule.DebugAgendaEventListener;
 import org.kie.event.rule.DebugWorkingMemoryEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -17,7 +17,7 @@
 package org.drools.core.event.rule.impl;
 
 import org.kie.event.rule.AgendaGroupPoppedEvent;
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.runtime.rule.AgendaGroup;
 
 public class AgendaGroupPoppedEventImpl extends AgendaGroupEventImpl implements AgendaGroupPoppedEvent {

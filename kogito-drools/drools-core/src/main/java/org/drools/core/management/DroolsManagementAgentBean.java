@@ -21,7 +21,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.kie.internal.KnowledgeBase;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * Simple POJO that encapsulates DroolsManagmentAgent to make it work with Spring Framework

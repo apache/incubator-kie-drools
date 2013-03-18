@@ -1,8 +1,8 @@
 package org.drools.persistence;
 
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public interface ApplicationScopedPersistenceContext {
 

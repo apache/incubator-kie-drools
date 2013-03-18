@@ -44,11 +44,11 @@ import org.kie.KieBase;
 import org.kie.command.BatchExecutionCommand;
 import org.kie.command.Command;
 import org.kie.internal.command.Context;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -254,7 +254,7 @@ public class SingleSessionCommandService
         ((SessionConfiguration) conf).getTimerJobFactoryManager().setCommandService(this);
 
         // if this.ksession is null, it'll create a new one, else it'll use the existing one
-        this.ksession = (StatefulKnowledgeSession) 
+        this.ksession = (StatefulKnowledgeSession)
     		this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
                                                  this.ksession );
 

@@ -4,7 +4,7 @@ import java.util.Queue;
 
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.time.TimerService;
-import org.kie.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.KnowledgeRuntime;
 
 public interface InternalKnowledgeRuntime extends KnowledgeRuntime {
 

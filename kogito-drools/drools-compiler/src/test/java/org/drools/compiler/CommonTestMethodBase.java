@@ -26,11 +26,11 @@ import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.io.ResourceType;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
-import org.kie.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.conf.KieSessionOption;
 
 /**

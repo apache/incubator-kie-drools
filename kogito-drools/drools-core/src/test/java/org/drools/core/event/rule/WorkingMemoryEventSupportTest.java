@@ -28,7 +28,7 @@ import org.kie.event.rule.ObjectInsertedEvent;
 import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;
 import org.kie.event.rule.WorkingMemoryEventListener;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 
 import static org.junit.Assert.*;

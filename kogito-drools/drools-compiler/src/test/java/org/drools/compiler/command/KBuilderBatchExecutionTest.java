@@ -24,10 +24,10 @@ import org.kie.command.Command;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ExecutionResults;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
 

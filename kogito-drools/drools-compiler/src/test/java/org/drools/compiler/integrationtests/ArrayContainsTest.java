@@ -7,7 +7,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Primitives;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 
 public class ArrayContainsTest extends CommonTestMethodBase {

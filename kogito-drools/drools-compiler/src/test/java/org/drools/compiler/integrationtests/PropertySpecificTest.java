@@ -35,8 +35,8 @@ import org.kie.definition.type.FactType;
 import org.kie.definition.type.Modifies;
 import org.kie.definition.type.PropertyReactive;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
-import org.kie.runtime.StatefulKnowledgeSession;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
 

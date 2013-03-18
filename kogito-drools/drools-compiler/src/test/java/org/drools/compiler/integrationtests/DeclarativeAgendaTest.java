@@ -18,7 +18,7 @@ import org.kie.event.rule.AgendaGroupPushedEvent;
 import org.kie.event.rule.BeforeMatchFiredEvent;
 import org.kie.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.Match;
 

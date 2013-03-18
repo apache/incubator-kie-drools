@@ -24,7 +24,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.command.Command;
 import org.kie.internal.command.Context;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class KnowledgeContextResolveFromContextCommand
     implements

@@ -40,9 +40,9 @@ import org.kie.cdi.KReleaseId;
 import org.kie.cdi.KSession;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
-import org.kie.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.StatelessKieSession;
-import org.kie.runtime.StatelessKnowledgeSession;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

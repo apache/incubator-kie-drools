@@ -37,13 +37,13 @@ import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarsha
 import org.drools.core.spi.GlobalResolver;
 import org.kie.KieBase;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.marshalling.Marshaller;
 import org.kie.marshalling.MarshallingConfiguration;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KieSessionConfiguration;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.time.SessionClock;
 
 public class DefaultMarshaller

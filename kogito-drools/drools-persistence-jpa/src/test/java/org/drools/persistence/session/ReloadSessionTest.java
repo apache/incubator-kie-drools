@@ -44,11 +44,11 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.event.rule.DefaultAgendaEventListener;
 import org.kie.event.rule.DefaultWorkingMemoryEventListener;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 
 public class ReloadSessionTest {
@@ -129,7 +129,7 @@ public class ReloadSessionTest {
         env = createEnvironment(context);
        
         // Re-initialize the knowledge session:
-        StatefulKnowledgeSession newCommandKSession 
+        StatefulKnowledgeSession newCommandKSession
             = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionInfoId, kbase, null, env);
        
         // Test that the session has been successfully reinitialized

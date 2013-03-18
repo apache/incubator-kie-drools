@@ -19,7 +19,7 @@ package org.drools.core.impl;
 import java.util.Collection;
 import java.util.Map;
 
-import org.kie.runtime.StatelessKnowledgeSessionResults;
+import org.kie.internal.runtime.StatelessKnowledgeSessionResults;
 
 public class StatelessKnowledgeSessionResultsImpl implements StatelessKnowledgeSessionResults {
 

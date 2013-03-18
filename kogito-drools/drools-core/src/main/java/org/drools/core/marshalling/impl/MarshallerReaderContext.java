@@ -33,17 +33,17 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.PropagationContext;
 import org.kie.internal.marshalling.MarshallerFactory;
+import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
-import org.kie.runtime.KnowledgeRuntime;
 
 public class MarshallerReaderContext extends ObjectInputStream {
     public final MarshallerReaderContext                                           stream;
     public final InternalRuleBase                                                  ruleBase;
     public InternalWorkingMemory                                                   wm;
-    public KnowledgeRuntime                                                        kruntime;
+    public KnowledgeRuntime kruntime;
     public final Map<Integer, BaseNode>                                            sinks;
 
     public Map<Integer, InternalFactHandle>                                        handles;
