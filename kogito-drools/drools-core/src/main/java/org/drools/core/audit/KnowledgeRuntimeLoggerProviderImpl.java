@@ -18,8 +18,8 @@ package org.drools.core.audit;
 
 import org.kie.event.KieRuntimeEventManager;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
+import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.logger.KieLoggers;
-import org.kie.logger.KnowledgeRuntimeLogger;
 
 import javax.inject.Singleton;
 
@@ -71,7 +71,7 @@ public class KnowledgeRuntimeLoggerProviderImpl
 
     private class KnowledgeRuntimeThreadedFileLoggerWrapper
         implements
-        KnowledgeRuntimeLogger {
+            KnowledgeRuntimeLogger {
 
         private ThreadedWorkingMemoryFileLogger logger;
 

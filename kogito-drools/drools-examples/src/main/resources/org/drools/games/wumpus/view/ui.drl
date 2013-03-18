@@ -19,6 +19,8 @@ import org.kie.logger.KnowledgeRuntimeLoggerFactory
 import javax.swing.JOptionPane
 
 import java.util.ArrayList
+import org.kie.internal.logger.KnowledgeRuntimeLogger
+import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory
 
 global org.drools.games.wumpus.WumpusWorldConfiguration wumpusWorldConfiguration;
 
@@ -48,7 +50,7 @@ then
     $gv.setKbase( ((StatefulKnowledgeSession) kcontext.knowledgeRuntime).knowledgeBase );
     
     new java.io.File("log").mkdir();
-    KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus", 500);   
+    KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus", 500);
     $gv.setKlogger( klogger );
          
     $ui.gameView = $gv; 
