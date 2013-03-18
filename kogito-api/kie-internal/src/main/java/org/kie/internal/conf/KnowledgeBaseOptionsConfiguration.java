@@ -16,8 +16,8 @@
 
 package org.kie.internal.conf;
 
-import org.kie.conf.KieBaseOption;
-import org.kie.conf.SingleValueKieBaseOption;
+import org.kie.api.conf.KieBaseOption;
+import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
  * A base interface for type safe configurations

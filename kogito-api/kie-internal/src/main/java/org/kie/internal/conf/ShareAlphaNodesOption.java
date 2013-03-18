@@ -17,7 +17,7 @@
 package org.kie.internal.conf;
 
 
-import org.kie.conf.SingleValueKieBaseOption;
+import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
  * An Enum for ShareAlphaNodes option.

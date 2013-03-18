@@ -21,10 +21,10 @@ import java.util.Set;
 
 import org.kie.api.KieBase;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.definition.process.Process;
-import org.kie.definition.rule.Query;
-import org.kie.definition.rule.Rule;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.rule.Query;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.FactType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.Environment;

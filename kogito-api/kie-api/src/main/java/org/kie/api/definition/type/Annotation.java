@@ -1,4 +1,4 @@
-package org.kie.definition.type;
+package org.kie.api.definition.type;
 
 /*
  * Copyright 2012 JBoss Inc

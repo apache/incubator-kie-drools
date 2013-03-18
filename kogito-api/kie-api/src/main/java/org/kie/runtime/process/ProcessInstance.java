@@ -16,7 +16,7 @@
 
 package org.kie.runtime.process;
 
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 /**
  * A process instance represents one specific instance of a process

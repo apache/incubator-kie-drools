@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.definition.process;
+package org.kie.api.definition.process;
 
 /**
  * A NodeContainer contains a set of Nodes

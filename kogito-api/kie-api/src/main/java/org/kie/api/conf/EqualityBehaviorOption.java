@@ -14,31 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.conf;
+package org.kie.api.conf;
 
 
 /**
- * An Enum for Remove Identities option.
+ * An Enum for EqualityBehavior option.
  * 
- * drools.removeIdentities = &lt;true|false&gt;
+ * drools.equalityBehavior = &lt;identity|equality&gt;
  * 
- * DEFAULT = false
+ * DEFAULT = identity
  */
-public enum RemoveIdentitiesOption implements SingleValueKieBaseOption {
+public enum EqualityBehaviorOption implements SingleValueKieBaseOption {
     
-    YES(true),
-    NO(false);
+    IDENTITY,
+    EQUALITY;
 
     /**
-     * The property name for the remove identities option
+     * The property name for the sequential mode option
      */
-    public static final String PROPERTY_NAME = "drools.removeIdentities";
-    
-    private boolean value;
-    
-    RemoveIdentitiesOption( final boolean value ) {
-        this.value = value;
-    }
+    public static final String PROPERTY_NAME = "drools.equalityBehavior";
     
     /**
      * {@inheritDoc}
@@ -47,8 +41,4 @@ public enum RemoveIdentitiesOption implements SingleValueKieBaseOption {
         return PROPERTY_NAME;
     }
     
-    public boolean isRemoveIdentities() {
-        return this.value;
-    }
-
 }

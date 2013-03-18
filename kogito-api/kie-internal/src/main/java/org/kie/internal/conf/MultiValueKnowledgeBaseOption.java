@@ -17,7 +17,7 @@
 package org.kie.internal.conf;
 
 
-import org.kie.conf.KieBaseOption;
+import org.kie.api.conf.KieBaseOption;
 
 /**
  * A markup interface for MultiValueKnowledgeBaseConfiguration options

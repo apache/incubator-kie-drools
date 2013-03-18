@@ -1,4 +1,4 @@
-package org.kie.definition.type;
+package org.kie.api.definition.type;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

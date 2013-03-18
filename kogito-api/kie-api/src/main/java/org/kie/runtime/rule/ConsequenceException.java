@@ -19,7 +19,7 @@ package org.kie.runtime.rule;
 import java.io.PrintStream;
 import java.util.Collection;
 
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 public class ConsequenceException extends RuntimeException {
     private Session workingMemory;

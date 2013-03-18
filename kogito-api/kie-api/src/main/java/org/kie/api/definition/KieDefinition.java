@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.definition.process;
+package org.kie.api.definition;
 
 /**
- * A WorkflowProcess is a type of Process that uses a flow chart (as a collection of Nodes and Connections)
- * to model the business logic.
+ * Marker interface for all KnowlegeDefinition's
  */
-public interface WorkflowProcess
-    extends
-    Process,
-    NodeContainer {
+public interface KieDefinition {
+    
+    public KnowledgeType getKnowledgeType();
+    
+    public String getNamespace();
+    
+    public String getId();
 
+    public enum KnowledgeType {
+        RULE, TYPE, WINDOW, ENUM, PROCESS, FUNCTION, QUERY
+    }
 }

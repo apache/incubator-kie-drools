@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.definition.process;
+package org.kie.api.definition.process;
 
-import org.kie.definition.KieDefinition;
+import org.kie.api.definition.KieDefinition;
 
 import java.util.Map;
 

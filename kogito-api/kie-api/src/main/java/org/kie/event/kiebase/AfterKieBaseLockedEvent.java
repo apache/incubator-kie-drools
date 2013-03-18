@@ -18,7 +18,7 @@ package org.kie.event.kiebase;
 
 
 
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 public interface AfterKieBaseLockedEvent
     extends
