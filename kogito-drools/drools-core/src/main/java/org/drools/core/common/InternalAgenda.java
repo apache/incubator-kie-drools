@@ -85,18 +85,6 @@ public interface InternalAgenda
     
     public boolean isDeclarativeAgenda();
 
-    public void increaseActiveActivations();
-
-    public void decreaseActiveActivations();
-
-    public void increaseDormantActivations();
-
-    public void decreaseDormantActivations();
-
-    public int getActiveActivations();
-
-    public int getDormantActivations();
-
     /**
      * Returns true if there is at least one activation of the given rule name
      * in the given ruleflow group name

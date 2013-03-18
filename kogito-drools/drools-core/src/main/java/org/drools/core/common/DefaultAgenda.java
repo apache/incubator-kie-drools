@@ -107,10 +107,6 @@ public class DefaultAgenda
 
     protected KnowledgeHelper                                   knowledgeHelper;
 
-    public int                                                  activeActivations;
-
-    public int                                                  dormantActivations;
-
     private ConsequenceExceptionHandler                         legacyConsequenceExceptionHandler;
 
     private org.kie.runtime.rule.ConsequenceExceptionHandler consequenceExceptionHandler;
@@ -244,8 +240,6 @@ public class DefaultAgenda
         main = (InternalAgendaGroup) in.readObject();
         agendaGroupFactory = (AgendaGroupFactory) in.readObject();
         knowledgeHelper = (KnowledgeHelper) in.readObject();
-        activeActivations = in.readInt();
-        dormantActivations = in.readInt();
         legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
         declarativeAgenda = in.readBoolean();
     }
@@ -261,8 +255,6 @@ public class DefaultAgenda
         out.writeObject( main );
         out.writeObject( agendaGroupFactory );
         out.writeObject( knowledgeHelper );
-        out.writeInt( activeActivations );
-        out.writeInt( dormantActivations );
         out.writeObject( legacyConsequenceExceptionHandler );
         out.writeBoolean( declarativeAgenda );
     }
@@ -353,14 +345,6 @@ public class DefaultAgenda
             addActivation( activation, true );
             return true;
         }
-    } 
-    
-    public void setActiveActivations(int activeActivations) {
-        this.activeActivations = activeActivations;
-    }
-
-    public void setDormantActivations(int dormantActivations) {
-        this.dormantActivations = dormantActivations;
     }
 
     public boolean isDeclarativeAgenda() {
@@ -543,8 +527,7 @@ public class DefaultAgenda
             }
             
             item.setActivated( true );
-            tuple.increaseActivationCountForEvents();  
-            increaseActiveActivations();
+            tuple.increaseActivationCountForEvents();
             fireActivation( item );  // Control rules fire straight away.       
             return true;
         }
@@ -632,12 +615,10 @@ public class DefaultAgenda
                                                                     context, 
                                                                     workingMemory,
                                                                     rtn ) ) {
-            increaseDormantActivations();
             return false;
         }
         item.setActivated( true );
-        tuple.increaseActivationCountForEvents();  
-        increaseActiveActivations();        
+        tuple.increaseActivationCountForEvents();
         item.setSequenence( rtn.getSequence() );                
         
         ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
@@ -698,12 +679,10 @@ public class DefaultAgenda
                                                                     context,
                                                                     workingMemory,
                                                                     rtn ) ) {
-            increaseDormantActivations();
             return false;
         }
         item.setActivated( true );
         tuple.increaseActivationCountForEvents();
-        increaseActiveActivations();
         item.setSequenence( rtn.getSequence() );
 
         ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
@@ -722,7 +701,6 @@ public class DefaultAgenda
 
         if ( isDeclarativeAgenda() && activation.getFactHandle() == null ) {
             // This a control rule activation, nothing to do except update counters. As control rules are not in agenda-groups etc.
-            decreaseDormantActivations(); // because we know ControlRules fire straight away and then become dormant
             return;
         } else {
             // we are retracting an actual Activation, so also remove it and it's handle from the WM. 
@@ -748,10 +726,7 @@ public class DefaultAgenda
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
                                                                                                 workingMemory,
                                                                                                 MatchCancelledCause.WME_MODIFY );
-                decreaseActiveActivations();
             }
-        } else {
-            decreaseDormantActivations();
         }
         
         if ( item.getActivationUnMatchListener() != null ) {
@@ -1401,9 +1376,6 @@ public class DefaultAgenda
         this.workingMemory.startOperation();
         isFiringActivation = true;
         try {
-            increaseDormantActivations();
-            decreaseActiveActivations();
-
             final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
             eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation,
@@ -1486,30 +1458,6 @@ public class DefaultAgenda
         } else {
             return false;
         }
-    }
-
-    public void increaseActiveActivations() {
-        this.activeActivations++;
-    }
-
-    public void decreaseActiveActivations() {
-        this.activeActivations--;
-    }
-
-    public void increaseDormantActivations() {
-        this.dormantActivations++;
-    }
-
-    public void decreaseDormantActivations() {
-        this.dormantActivations--;
-    }
-
-    public int getActiveActivations() {
-        return this.activeActivations;
-    }
-
-    public int getDormantActivations() {
-        return this.dormantActivations;
     }
 
     /**

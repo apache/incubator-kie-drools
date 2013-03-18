@@ -46,10 +46,6 @@ public class PropagationContextImpl
 
     private long                            propagationNumber;
 
-    public int                              activeActivations;
-
-    public int                              dormantActivations;
-
     private EntryPoint                      entryPoint;
     
     private int                             originOffset;    
@@ -82,8 +78,6 @@ public class PropagationContextImpl
               rule,
               leftTuple,
               factHandle,
-              0,
-              0,
               EntryPoint.DEFAULT,
               Long.MAX_VALUE,
               null );
@@ -95,16 +89,12 @@ public class PropagationContextImpl
                                   final Rule rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle,
-                                  final int activeActivations,
-                                  final int dormantActivations,
                                   final EntryPoint entryPoint) {
         this( number,
               type,
               rule,
               leftTuple,
               factHandle,
-              activeActivations,
-              dormantActivations,
               entryPoint,
               Long.MAX_VALUE,
               null );
@@ -124,8 +114,6 @@ public class PropagationContextImpl
               rule,
               leftTuple,
               factHandle,
-              activeActivations,
-              dormantActivations,
               entryPoint,
               modificationMask,
               null );
@@ -136,8 +124,6 @@ public class PropagationContextImpl
                                   final Rule rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle,
-                                  final int activeActivations,
-                                  final int dormantActivations,
                                   final EntryPoint entryPoint,
                                   final MarshallerReaderContext readerContext) {
         this( number,
@@ -145,8 +131,6 @@ public class PropagationContextImpl
               rule,
               leftTuple,
               factHandle,
-              activeActivations,
-              dormantActivations,
               entryPoint,
               Long.MAX_VALUE,
               readerContext );
@@ -157,8 +141,6 @@ public class PropagationContextImpl
                                   final Rule rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle,
-                                  final int activeActivations,
-                                  final int dormantActivations,
                                   final EntryPoint entryPoint,
                                   final long modificationMask,
                                   final MarshallerReaderContext readerContext) {
@@ -167,8 +149,6 @@ public class PropagationContextImpl
         this.leftTuple = leftTuple;
         this.factHandle = factHandle;
         this.propagationNumber = number;
-        this.activeActivations = activeActivations;
-        this.dormantActivations = dormantActivations;
         this.entryPoint = entryPoint;
         this.originOffset = -1;
         this.modificationMask = modificationMask;
@@ -178,8 +158,6 @@ public class PropagationContextImpl
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         this.type = in.readInt();
-        this.activeActivations = in.readInt();
-        this.dormantActivations = in.readInt();
         this.propagationNumber = in.readLong();
         this.rule = (Rule) in.readObject();
         this.leftTuple = (LeftTuple) in.readObject();
@@ -190,8 +168,6 @@ public class PropagationContextImpl
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeInt( this.type );
-        out.writeInt( this.activeActivations );
-        out.writeInt( this.dormantActivations );
         out.writeLong( this.propagationNumber );
         out.writeObject( this.rule );
         out.writeObject( this.leftTuple );
@@ -244,14 +220,6 @@ public class PropagationContextImpl
      */
     public int getType() {
         return this.type;
-    }
-
-    public int getActiveActivations() {
-        return this.activeActivations;
-    }
-
-    public int getDormantActivations() {
-        return this.dormantActivations;
     }
 
     public void releaseResources() {
@@ -361,7 +329,7 @@ public class PropagationContextImpl
 
     @Override
     public String toString() {
-        return "PropagationContextImpl [activeActivations=" + activeActivations + ", dormantActivations=" + dormantActivations + ", entryPoint=" + entryPoint + ", factHandle=" + factHandle + ", leftTuple=" + leftTuple + ", originOffset="
+        return "PropagationContextImpl [entryPoint=" + entryPoint + ", factHandle=" + factHandle + ", leftTuple=" + leftTuple + ", originOffset="
                + originOffset + ", propagationNumber=" + propagationNumber + ", rule=" + rule + ", type=" + type + "]";
     }
 }

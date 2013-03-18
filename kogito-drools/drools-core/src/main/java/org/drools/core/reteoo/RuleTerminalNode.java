@@ -310,7 +310,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                                       this,
                                       workingMemory )) ||
              (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
-            agenda.increaseDormantActivations();
             return;
         }
 
@@ -323,9 +322,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         }
         boolean fire = agenda.createActivation( leftTuple, context, workingMemory, this, reuseActivation );
         if ( fire && !isFireDirect() ) {
-            // This activation is currently dormant and about to reactivated, so decrease the dormant count.
-            agenda.decreaseDormantActivations();
-
             agenda.modifyActivation( (AgendaItem) leftTuple.getObject(), false );
         }
     }

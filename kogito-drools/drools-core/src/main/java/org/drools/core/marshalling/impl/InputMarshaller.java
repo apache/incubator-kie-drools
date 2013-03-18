@@ -336,9 +336,6 @@ public class InputMarshaller {
             DefaultAgenda agenda ) throws IOException {
         ObjectInputStream stream = context.stream;
 
-        agenda.setDormantActivations( stream.readInt() );
-        agenda.setActiveActivations( stream.readInt() );
-
         while (stream.readShort() == PersisterEnums.AGENDA_GROUP) {
             BinaryHeapQueueAgendaGroup group = new BinaryHeapQueueAgendaGroup( stream.readUTF(),
                                                                                context.ruleBase );
@@ -1106,8 +1103,6 @@ public class InputMarshaller {
         int factHandleId = stream.readInt();
         InternalFactHandle factHandle = context.handles.get( factHandleId );
 
-        int activeActivations = stream.readInt();
-        int dormantActivations = stream.readInt();
         String entryPointId = stream.readUTF();
 
         EntryPoint entryPoint = context.entryPoints.get( entryPointId );
@@ -1122,8 +1117,6 @@ public class InputMarshaller {
                                                             rule,
                                                             leftTuple,
                                                             factHandle,
-                                                            activeActivations,
-                                                            dormantActivations,
                                                             entryPoint );
         context.propagationContexts.put( propagationNumber,
                                          pc );

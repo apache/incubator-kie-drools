@@ -463,8 +463,6 @@ public class ProtobufInputMarshaller {
                                                                                 null,
                                                                                 null,
                                                                                 handle,
-                                                                                ((DefaultAgenda) wm.getAgenda()).getActiveActivations(),
-                                                                                ((DefaultAgenda) wm.getAgenda()).getDormantActivations(),
                                                                                 ep.getEntryPoint(),
                                                                                 context);
 
