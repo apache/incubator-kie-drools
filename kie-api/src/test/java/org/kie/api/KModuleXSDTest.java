@@ -1,4 +1,4 @@
-package org.kie;
+package org.kie.api;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
