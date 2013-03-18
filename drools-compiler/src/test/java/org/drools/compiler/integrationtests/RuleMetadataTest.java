@@ -5,7 +5,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.rule.ConsequenceMetaData;
 import org.drools.core.rule.Rule;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 
 public class RuleMetadataTest extends CommonTestMethodBase {
 

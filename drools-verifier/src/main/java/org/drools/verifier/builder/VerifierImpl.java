@@ -34,7 +34,7 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
 import org.drools.verifier.visitor.PackageDescrVisitor;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilderError;
 import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;
@@ -49,7 +49,7 @@ public class VerifierImpl
     implements
     Verifier {
 
-    private KnowledgeBase               verifierKnowledgeBase;
+    private KnowledgeBase verifierKnowledgeBase;
     private StatefulKnowledgeSession    ksession;
 
     private final VerifierConfiguration conf;

@@ -16,8 +16,8 @@
 package org.drools.core.command.runtime.rule;
 
 import org.junit.*;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.drools.core.command.GetVariableCommand;
@@ -26,7 +26,6 @@ import org.drools.core.command.ResolvingKnowledgeCommandContext;
 import org.drools.core.command.SetVariableCommandFromCommand;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
-import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.NativeQueryResults;
 import org.drools.core.world.impl.WorldImpl;

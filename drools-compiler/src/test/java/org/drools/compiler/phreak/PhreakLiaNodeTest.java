@@ -2,9 +2,9 @@ package org.drools.compiler.phreak;
 
 import org.drools.core.common.InternalFactHandle;
 import org.junit.Test;
-import org.kie.KieBaseConfiguration;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KieBaseConfiguration;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.builder.conf.PhreakOption;
@@ -58,7 +58,7 @@ public class PhreakLiaNodeTest {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( PhreakOption.ENABLED );
         
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(kconf);        
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
 
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();

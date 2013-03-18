@@ -1,8 +1,8 @@
 package org.drools.games.wumpus;
 
 import org.drools.games.wumpus.view.GameView;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.runtime.Channel;
@@ -34,7 +34,7 @@ public class WumpusWorldMain {
         if ( kbuilder.hasErrors() ) {
             throw new RuntimeException( kbuilder.getErrors().toString() );
         }
-        KnowledgeBase serverKBase = KnowledgeBaseFactory.newKnowledgeBase( );        
+        KnowledgeBase serverKBase = KnowledgeBaseFactory.newKnowledgeBase( );
         serverKBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
         kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -43,7 +43,7 @@ public class WumpusWorldMain {
             throw new RuntimeException( kbuilder.getErrors().toString() );
         }
         
-        KnowledgeBase clientKBase = KnowledgeBaseFactory.newKnowledgeBase( );        
+        KnowledgeBase clientKBase = KnowledgeBaseFactory.newKnowledgeBase();
         clientKBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );        
 
         final StatefulKnowledgeSession serverKsession = serverKBase.newStatefulKnowledgeSession();        

@@ -15,10 +15,9 @@
  */
 package org.drools.compiler.conf;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.conf.ClockTypeOption;
 

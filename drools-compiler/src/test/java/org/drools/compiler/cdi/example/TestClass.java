@@ -1,6 +1,6 @@
 package org.drools.compiler.cdi.example;
 
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 
 public interface TestClass {
     public KnowledgeBase getKBase1();

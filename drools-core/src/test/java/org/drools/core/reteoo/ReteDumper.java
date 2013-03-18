@@ -4,7 +4,7 @@ import org.drools.core.RuleBase;
 import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.runtime.KnowledgeRuntime;
 
 import java.util.Collection;

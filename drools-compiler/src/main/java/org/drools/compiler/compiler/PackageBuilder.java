@@ -99,7 +99,7 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.type.DateFormats;
 import org.drools.core.type.DateFormatsImpl;
 import org.drools.core.xml.XmlChangeSetReader;
-import org.kie.ChangeSet;
+import org.kie.internal.ChangeSet;
 import org.kie.builder.DecisionTableConfiguration;
 import org.kie.builder.KnowledgeBuilderResult;
 import org.kie.builder.KnowledgeBuilderResults;

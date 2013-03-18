@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.event.rule.ObjectInsertedEvent;
 import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectUpdatedEvent;

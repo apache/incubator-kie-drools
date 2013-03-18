@@ -24,7 +24,7 @@ import org.drools.core.io.impl.ChangeSetImpl;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
-import org.kie.ChangeSet;
+import org.kie.internal.ChangeSet;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
