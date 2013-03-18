@@ -19,7 +19,7 @@ package org.kie.internal.agent;
 import org.kie.internal.ChangeSet;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.SystemEventListener;
-import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
+import org.kie.internal.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.kie.io.Resource;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatelessKnowledgeSession;

@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.kie.internal.ChangeSet;
 import org.kie.internal.SystemEventListener;
-import org.kie.event.io.ResourceChangeListener;
+import org.kie.internal.event.io.ResourceChangeListener;
 
 /**
  * <p>

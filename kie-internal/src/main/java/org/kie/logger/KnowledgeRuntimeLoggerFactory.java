@@ -16,7 +16,7 @@
 
 package org.kie.logger;
 
-import org.kie.event.KnowledgeRuntimeEventManager;
+import org.kie.internal.event.KnowledgeRuntimeEventManager;
 
 /**
  * <p>

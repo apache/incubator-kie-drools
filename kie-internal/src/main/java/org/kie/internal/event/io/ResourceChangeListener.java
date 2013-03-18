@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.event.io;
+package org.kie.internal.event.io;
 
 import org.kie.internal.ChangeSet;
 

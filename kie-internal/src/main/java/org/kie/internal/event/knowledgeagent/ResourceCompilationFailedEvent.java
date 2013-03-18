@@ -14,43 +14,42 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgeagent;
+package org.kie.internal.event.knowledgeagent;
 
-import org.kie.internal.ChangeSet;
-import org.kie.internal.agent.KnowledgeAgent.ResourceStatus;
+import java.util.EventObject;
+
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
 
-public class AfterResourceProcessedEvent extends ChangeSetProcessingEvent{
+public class ResourceCompilationFailedEvent extends EventObject{
 
     private static final long serialVersionUID = 510l;
 
     private final Resource resource;
     private final ResourceType resourceType;
-    private final ResourceStatus status;
 
-    public AfterResourceProcessedEvent(ChangeSet changeSet, Resource resource, ResourceType resourceType, ResourceStatus status) {
-        super(changeSet);
+    public ResourceCompilationFailedEvent(KnowledgeBuilder kbuilder, Resource resource, ResourceType resourceType) {
+        super(kbuilder);
         this.resource = resource;
         this.resourceType = resourceType;
-        this.status = status;
     }
 
     public Resource getResource() {
         return resource;
     }
 
-    public ResourceStatus getStatus() {
-        return status;
-    }
-
     public ResourceType getResourceType() {
         return resourceType;
     }
 
+    public KnowledgeBuilder getKnowledgeBuilder() {
+        return (KnowledgeBuilder)this.getSource();
+    }
+
     @Override
-     public String toString() {
-        return "==>[AfterResourceProcessedEvent("+getStatus()+"): " + getResource()+ "]";
+    public String toString() {
+        return "==>[ResourceCompilationFailedEvent: " + getKnowledgeBuilder() + "]";
     }
 
 }

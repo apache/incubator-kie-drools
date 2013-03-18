@@ -16,7 +16,7 @@
 
 package org.kie.runtime;
 
-import org.kie.event.KnowledgeRuntimeEventManager;
+import org.kie.internal.event.KnowledgeRuntimeEventManager;
 
 
 /**

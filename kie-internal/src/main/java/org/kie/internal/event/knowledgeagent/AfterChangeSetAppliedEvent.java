@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgeagent;
+package org.kie.internal.event.knowledgeagent;
 
 import org.kie.internal.ChangeSet;
 
-public class BeforeChangeSetProcessedEvent extends ChangeSetProcessingEvent{
+public class AfterChangeSetAppliedEvent extends ChangeSetProcessingEvent{
 
-    private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510L;
 
-    public BeforeChangeSetProcessedEvent(ChangeSet changeSet) {
+    public AfterChangeSetAppliedEvent(ChangeSet changeSet) {
         super(changeSet);
     }
 
     @Override
-     public String toString() {
-        return "==>[BeforeChangeSetProcessedEvent: " + getChangeSet()+ "]";
+    public String toString() {
+        return "==>[AfterChangeSetAppliedEvent: " + getChangeSet()+ "]";
     }
 
 }

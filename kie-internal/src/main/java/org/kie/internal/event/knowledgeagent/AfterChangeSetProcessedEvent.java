@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgeagent;
+package org.kie.internal.event.knowledgeagent;
 
 import java.util.List;
 import java.util.Map;
