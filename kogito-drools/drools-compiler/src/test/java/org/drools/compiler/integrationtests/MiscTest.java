@@ -109,7 +109,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.DefaultPackageNameOption;
 import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.kie.command.CommandFactory;
+import org.kie.internal.command.CommandFactory;
 import org.kie.command.Setter;
 import org.kie.conf.EqualityBehaviorOption;
 import org.kie.conf.RemoveIdentitiesOption;

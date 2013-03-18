@@ -17,7 +17,7 @@ package org.drools.core.command.runtime;
 
 import org.drools.core.command.CommandService;
 import org.drools.core.command.SingleSessionCommandService;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 
 public class DestroySessionCommand extends DisposeCommand {
 

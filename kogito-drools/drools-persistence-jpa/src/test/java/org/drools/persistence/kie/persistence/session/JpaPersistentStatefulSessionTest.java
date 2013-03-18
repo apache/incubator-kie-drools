@@ -29,7 +29,7 @@ import org.kie.KieBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.builder.KieFileSystem;
 import org.kie.KieServices;
-import org.kie.command.CommandFactory;
+import org.kie.internal.command.CommandFactory;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;

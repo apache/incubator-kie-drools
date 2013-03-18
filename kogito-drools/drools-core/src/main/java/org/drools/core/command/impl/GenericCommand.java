@@ -16,7 +16,7 @@
 
 package org.drools.core.command.impl;
 
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 
 public interface GenericCommand<T> extends org.kie.command.Command<T> {
 

@@ -22,7 +22,7 @@ import java.util.Map;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.util.StringUtils;
 import org.kie.command.Command;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 import org.mvel2.MVEL;
 
 public class AssertEquals

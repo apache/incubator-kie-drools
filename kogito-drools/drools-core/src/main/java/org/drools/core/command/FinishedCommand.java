@@ -17,7 +17,7 @@
 package org.drools.core.command;
 
 import org.drools.core.command.impl.GenericCommand;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 
 public class FinishedCommand
     implements

@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 import org.kie.runtime.KieSession;
 
 @XmlAccessorType(XmlAccessType.NONE)

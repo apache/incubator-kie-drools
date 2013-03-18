@@ -19,8 +19,8 @@ package org.drools.core.command.impl;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kie.command.Context;
-import org.kie.command.World;
+import org.kie.internal.command.Context;
+import org.kie.internal.command.World;
 
 public class ContextImpl
     implements

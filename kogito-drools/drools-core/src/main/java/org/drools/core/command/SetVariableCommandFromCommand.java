@@ -18,8 +18,8 @@ package org.drools.core.command;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.kie.command.Command;
-import org.kie.command.Context;
-import org.kie.command.World;
+import org.kie.internal.command.Context;
+import org.kie.internal.command.World;
 
 public class SetVariableCommandFromCommand
     implements
