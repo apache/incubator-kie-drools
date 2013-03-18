@@ -1,7 +1,7 @@
 package org.drools.compiler.compiler;
 
 
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  * This is used for reporting errors with loading a ruleflow.

@@ -13,7 +13,7 @@ import org.drools.compiler.lang.api.ImportDescrBuilder;
 import org.drools.compiler.lang.api.QueryDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.FunctionImportDescr;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  * A builder implementation for PackageDescrs using a fluent API.

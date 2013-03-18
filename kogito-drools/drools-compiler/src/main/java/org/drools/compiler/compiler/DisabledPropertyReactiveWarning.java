@@ -1,6 +1,6 @@
 package org.drools.compiler.compiler;
 
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 public class DisabledPropertyReactiveWarning extends DroolsWarning {
 

@@ -25,7 +25,7 @@ import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  * A Dialect implementation handles the building and execution of code

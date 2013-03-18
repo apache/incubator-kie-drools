@@ -22,7 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.kie.internal.definition.KnowledgeDefinition;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 public class Function implements  KnowledgeDefinition, Dialectable, Externalizable {
     private String name;

@@ -61,7 +61,7 @@ import org.drools.core.xml.jaxb.util.JaxbListWrapper;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.help.DroolsJaxbHelperProvider;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 

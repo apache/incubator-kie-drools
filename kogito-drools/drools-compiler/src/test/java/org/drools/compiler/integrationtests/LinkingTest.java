@@ -20,7 +20,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;

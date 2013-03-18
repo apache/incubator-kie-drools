@@ -3,7 +3,7 @@ package org.drools.compiler.compiler;
 import java.io.IOException;
 import java.util.List;
 
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 public interface ProcessBuilder {
 

@@ -33,7 +33,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 
 public class KnowledgePackageMetaDataTest {
 

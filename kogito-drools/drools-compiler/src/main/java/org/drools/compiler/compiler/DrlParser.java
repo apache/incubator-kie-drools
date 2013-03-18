@@ -38,7 +38,7 @@ import org.drools.compiler.lang.Location;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  * This is a low level parser API. This will return textual AST representations

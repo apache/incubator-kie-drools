@@ -33,7 +33,7 @@ import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.kie.internal.io.ResourceChangeNotifier;
 import org.kie.internal.io.ResourceChangeScanner;
 import org.kie.internal.io.ResourceChangeScannerConfiguration;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

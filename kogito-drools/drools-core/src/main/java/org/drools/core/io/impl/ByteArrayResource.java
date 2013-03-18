@@ -17,7 +17,7 @@
 package org.drools.core.io.impl;
 
 import org.drools.core.io.internal.InternalResource;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 import java.io.ByteArrayInputStream;
 import java.io.Externalizable;

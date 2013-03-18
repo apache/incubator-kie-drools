@@ -29,7 +29,7 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.*;
 import org.junit.Test;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -50,7 +50,7 @@ import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;

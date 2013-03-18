@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.kie.internal.ChangeSet;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 public class ChangeSetImpl implements ChangeSet {
     private Collection<Resource> resourcesRemoved = Collections.<Resource>emptyList();

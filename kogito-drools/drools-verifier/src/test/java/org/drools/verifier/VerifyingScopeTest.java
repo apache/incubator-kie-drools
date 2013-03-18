@@ -31,7 +31,7 @@ import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.junit.Test;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 
 public class VerifyingScopeTest {
 

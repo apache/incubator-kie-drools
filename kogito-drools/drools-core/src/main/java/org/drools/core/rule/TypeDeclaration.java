@@ -34,7 +34,7 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.ClassUtils;
 import org.kie.internal.definition.KnowledgeDefinition;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  * The type declaration class stores all type's metadata

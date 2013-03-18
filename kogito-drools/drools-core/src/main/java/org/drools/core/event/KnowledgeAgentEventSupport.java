@@ -36,8 +36,8 @@ import org.kie.internal.event.knowledgeagent.BeforeResourceProcessedEvent;
 import org.kie.internal.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.kie.internal.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
 import org.kie.internal.event.knowledgeagent.ResourceCompilationFailedEvent;
-import org.kie.io.Resource;
-import org.kie.io.ResourceType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 
 public class KnowledgeAgentEventSupport extends AbstractEventSupport<KnowledgeAgentEventListener> {
 

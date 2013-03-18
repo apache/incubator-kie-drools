@@ -13,7 +13,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.StatelessKieSession;

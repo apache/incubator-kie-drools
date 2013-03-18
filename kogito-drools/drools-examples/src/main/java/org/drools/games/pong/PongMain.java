@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.kie.internal.io.ResourceFactory.newClassPathResource;
-import static org.kie.io.ResourceType.DRL;
+import static org.kie.api.io.ResourceType.DRL;
 
 public class PongMain {
 

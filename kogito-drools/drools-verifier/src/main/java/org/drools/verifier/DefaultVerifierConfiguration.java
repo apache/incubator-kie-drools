@@ -17,7 +17,7 @@
 package org.drools.verifier;
 
 import org.kie.internal.io.ResourceFactory;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 
 public class DefaultVerifierConfiguration extends VerifierConfigurationImpl {
 

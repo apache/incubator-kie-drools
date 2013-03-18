@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.command.KieCommands;
-import org.kie.io.KieResources;
+import org.kie.api.io.KieResources;
 
 import static org.junit.Assert.*;
 

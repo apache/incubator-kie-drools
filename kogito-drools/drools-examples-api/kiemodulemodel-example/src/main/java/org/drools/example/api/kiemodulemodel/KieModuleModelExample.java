@@ -6,7 +6,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
 
