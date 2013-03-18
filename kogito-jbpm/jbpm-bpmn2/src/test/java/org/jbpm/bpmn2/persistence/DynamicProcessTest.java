@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 import org.kie.definition.process.Connection;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessEventListener;

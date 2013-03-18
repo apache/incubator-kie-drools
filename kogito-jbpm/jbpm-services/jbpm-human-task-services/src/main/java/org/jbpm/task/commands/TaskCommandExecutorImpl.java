@@ -17,12 +17,10 @@ package org.jbpm.task.commands;
 
 import org.jbpm.task.annotations.CommandBased;
 import javax.inject.Inject;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 import org.jboss.seam.transaction.Transactional;
 
 import org.jbpm.task.api.TaskCommandExecutor;
-import org.jbpm.task.commands.TaskCommand;
-import org.jbpm.task.commands.TaskContext;
 
 /**
  *

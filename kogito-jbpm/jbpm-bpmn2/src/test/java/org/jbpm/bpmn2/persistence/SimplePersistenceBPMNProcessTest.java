@@ -25,7 +25,7 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.ForEachNodeInstance;
 import org.junit.Test;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 import org.kie.definition.process.Process;
 import org.kie.event.process.*;
 import org.kie.event.process.DefaultProcessEventListener;

@@ -17,7 +17,7 @@ package org.jbpm.task.commands;
 
 import java.util.Map;
 import javax.enterprise.util.AnnotationLiteral;
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.task.Content;
 import org.jbpm.task.ContentData;
