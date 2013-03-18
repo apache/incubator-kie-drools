@@ -21,7 +21,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
@@ -38,8 +38,8 @@ public class HonestPoliticianExample {
 //                                           "target" );
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "HonestPolitician.drl",
-                                                                    HonestPoliticianExample.class ),
+        kbuilder.add( ResourceFactory.newClassPathResource("HonestPolitician.drl",
+                HonestPoliticianExample.class),
                               ResourceType.DRL );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

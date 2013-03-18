@@ -22,7 +22,7 @@ import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.report.components.Subsumption;
 import org.junit.Test;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ClassObjectFilter;
 
@@ -40,7 +40,7 @@ public class SubsumptantRestrictionsTest {
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("SubsumptantRestriction1.drl",
-                                                                           getClass()),
+                getClass()),
                                       ResourceType.DRL);
 
         //        for ( VerifierError error : verifier.getMissingClasses() ) {

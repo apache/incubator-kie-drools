@@ -19,7 +19,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
@@ -104,7 +104,7 @@ public class MarshallingIssuesTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "../Sample.drl" ) ),
+        kbuilder.add( ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("../Sample.drl")),
                       ResourceType.DRL );
 
         assertFalse( kbuilder.getErrors().toString(),

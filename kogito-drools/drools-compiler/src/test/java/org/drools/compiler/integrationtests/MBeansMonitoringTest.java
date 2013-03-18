@@ -22,7 +22,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.conf.MBeansOption;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
 public class MBeansMonitoringTest {
@@ -74,7 +74,7 @@ public class MBeansMonitoringTest {
                                              String drl,
                                              KieBaseConfiguration conf ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+        kbuilder.add( ResourceFactory.newReaderResource(new StringReader(drl)),
                       ResourceType.DRL );
         Assert.assertFalse( kbuilder.getErrors().toString(),
                             kbuilder.hasErrors() );

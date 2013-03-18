@@ -29,7 +29,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
 public class JavaDialectTest {
@@ -48,7 +48,7 @@ public class JavaDialectTest {
         drl += "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+        kbuilder.add( ResourceFactory.newReaderResource(new StringReader(drl)),
                       ResourceType.DRL );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( kbuilder.hasErrors() ) {

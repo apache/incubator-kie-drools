@@ -22,8 +22,8 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.Resource;
-import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.xml.sax.SAXException;
@@ -77,8 +77,8 @@ public class ChangeSetTest extends CommonTestMethodBase {
     @Test
     public void testIntegregation() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml",
-                                                            getClass() ),
+        kbuilder.add( ResourceFactory.newClassPathResource("changeset1Test.xml",
+                getClass()),
                       ResourceType.CHANGE_SET );
         assertFalse( kbuilder.hasErrors() );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

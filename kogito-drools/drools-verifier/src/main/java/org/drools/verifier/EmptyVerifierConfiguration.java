@@ -16,15 +16,15 @@
 
 package org.drools.verifier;
 
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
 public class EmptyVerifierConfiguration extends VerifierConfigurationImpl {
 
     public EmptyVerifierConfiguration() {
         //Ensure mandatory bootstrap items have been setup
-        verifyingResources.put( ResourceFactory.newClassPathResource( "bootstrap-essentials.drl",
-                                                                      getClass() ),
+        verifyingResources.put( ResourceFactory.newClassPathResource("bootstrap-essentials.drl",
+                getClass()),
                                 ResourceType.DRL );
     }
 

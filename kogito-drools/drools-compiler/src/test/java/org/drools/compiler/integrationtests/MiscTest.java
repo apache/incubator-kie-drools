@@ -119,7 +119,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.FactType;
 import org.kie.event.rule.ObjectDeletedEvent;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
@@ -7635,7 +7635,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         try {
-            kbuilder.add( ResourceFactory.newClassPathResource( "some.rf" ),
+            kbuilder.add( ResourceFactory.newClassPathResource("some.rf"),
                           ResourceType.DRL );
             fail( "adding a missing resource should fail" );
         } catch ( RuntimeException e ) {

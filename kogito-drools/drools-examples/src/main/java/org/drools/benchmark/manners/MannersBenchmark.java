@@ -22,7 +22,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
@@ -57,8 +57,8 @@ public class MannersBenchmark {
         KnowledgeBuilderConfiguration kbuilderConfig = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbuilderConfig );
-        kbuilder.add( ResourceFactory.newClassPathResource( "manners.drl",
-                                                                    MannersBenchmark.class ),
+        kbuilder.add( ResourceFactory.newClassPathResource("manners.drl",
+                MannersBenchmark.class),
                               ResourceType.DRL );
         Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
 

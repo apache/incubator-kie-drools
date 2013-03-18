@@ -24,8 +24,8 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.Resource;
-import org.kie.io.ResourceFactory;
 import org.kie.runtime.KieSession;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class SpreadsheetIntegrationExampleTest {
     @Test
     public void testExecuteUsingKieAPI() throws Exception {
         // get the resource
-        Resource dt = ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() );
+        Resource dt = ResourceFactory.newClassPathResource("/data/IntegrationExampleTest.xls", getClass());
         
         // create the builder
         KieSession ksession = getKieSession( dt );

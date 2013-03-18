@@ -19,7 +19,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatelessKnowledgeSession;
 
@@ -75,7 +75,7 @@ public class SerializedPackageMergeTest {
 
         for ( String drl : DRLs ) {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( drl ) ),
+            kbuilder.add( ResourceFactory.newInputStreamResource(getClass().getResourceAsStream(drl)),
                           ResourceType.DRL );
             
             assertFalse( kbuilder.getErrors().toString(),

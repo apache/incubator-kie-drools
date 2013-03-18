@@ -4,9 +4,9 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.KieFileSystem;
+import org.kie.internal.io.ResourceTypeImpl;
 import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;
-import org.kie.io.ResourceTypeImpl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class KieFileSystemImpl
                 write( RESOURCE_PATH_PREFIX+target, readBytesFromInputStream(resource.getInputStream()) );
                 ResourceConfiguration conf = resource.getConfiguration();
                 if( conf != null ) {
-                    Properties prop = ResourceTypeImpl.toProperties( conf );
+                    Properties prop = ResourceTypeImpl.toProperties(conf);
                     ByteArrayOutputStream buff = new ByteArrayOutputStream();
                     prop.store( buff, "Configuration properties for resource: "+target );
                     write( RESOURCE_PATH_PREFIX+target+".properties", buff.toByteArray() );

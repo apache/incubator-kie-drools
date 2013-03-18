@@ -32,13 +32,13 @@ import org.kie.internal.ChangeSet;
 import org.kie.internal.SystemEventListener;
 import org.kie.internal.SystemEventListenerFactory;
 import org.kie.internal.event.io.ResourceChangeListener;
+import org.kie.internal.io.ResourceChangeMonitor;
+import org.kie.internal.io.ResourceChangeNotifier;
 import org.kie.io.Resource;
-import org.kie.io.ResourceChangeMonitor;
-import org.kie.io.ResourceChangeNotifier;
 
 public class ResourceChangeNotifierImpl
     implements
-    ResourceChangeNotifier {
+        ResourceChangeNotifier {
     private Map<Resource, Set<ResourceChangeListener>> subscriptions;
     private List<ResourceChangeMonitor>                monitors;
     private SystemEventListener                        listener;

@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.kie.io.ResourceFactory.newClassPathResource;
+import static org.kie.internal.io.ResourceFactory.newClassPathResource;
 import static org.kie.io.ResourceType.DRL;
 
 public class GameEngine {

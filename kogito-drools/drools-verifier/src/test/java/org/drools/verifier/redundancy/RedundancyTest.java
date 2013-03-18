@@ -23,7 +23,7 @@ import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Subsumption;
 import org.junit.Test;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ClassObjectFilter;
 
@@ -41,7 +41,7 @@ public class RedundancyTest {
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource("RedundantRestrictions.drl",
-                                                                           getClass()),
+                getClass()),
                                       ResourceType.DRL);
 
         assertFalse(verifier.hasErrors());

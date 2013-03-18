@@ -71,7 +71,7 @@ import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.MatchCancelledEvent;
 import org.kie.event.rule.MatchCreatedEvent;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.Environment;
@@ -1224,8 +1224,8 @@ public class DynamicRulesTest extends CommonTestMethodBase {
     private void addDrlToKBase(KnowledgeBase kbase,
                                String drlName) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( drlName,
-                                                            DynamicRulesTest.class ),
+        kbuilder.add( ResourceFactory.newClassPathResource(drlName,
+                DynamicRulesTest.class),
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {

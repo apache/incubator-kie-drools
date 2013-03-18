@@ -24,7 +24,7 @@ import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.report.components.Overlap;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.ClassObjectFilter;
 

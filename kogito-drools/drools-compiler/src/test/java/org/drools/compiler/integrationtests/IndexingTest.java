@@ -33,7 +33,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.definition.type.FactType;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
@@ -53,7 +53,7 @@ public class IndexingTest extends CommonTestMethodBase {
         drl += "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+        kbuilder.add( ResourceFactory.newReaderResource(new StringReader(drl)),
                 ResourceType.DRL );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( kbuilder.hasErrors() ) {

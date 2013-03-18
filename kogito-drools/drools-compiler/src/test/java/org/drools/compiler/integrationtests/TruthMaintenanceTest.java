@@ -47,7 +47,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
 import org.kie.event.rule.WorkingMemoryEventListener;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.logger.KnowledgeRuntimeLogger;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
@@ -68,8 +68,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     @Test
     public void testLogicalInsertionsDynamicRule() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsDynamicRule.drl",
-                                                            getClass() ),
+        kbuilder.add( ResourceFactory.newClassPathResource("test_LogicalInsertionsDynamicRule.drl",
+                getClass()),
                       ResourceType.DRL );
         
         if ( kbuilder.hasErrors() ) {

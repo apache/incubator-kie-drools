@@ -19,7 +19,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.Channel;
 import org.kie.runtime.StatefulKnowledgeSession;
@@ -45,7 +45,7 @@ public class IntegrationInterfacesTest extends CommonTestMethodBase {
                                                                   ClassNotFoundException {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for ( Reader reader : readers ) {
-            kbuilder.add( ResourceFactory.newReaderResource( reader ),
+            kbuilder.add( ResourceFactory.newReaderResource(reader),
                           ResourceType.DRL );
         }
         assertFalse( kbuilder.getErrors().toString(),

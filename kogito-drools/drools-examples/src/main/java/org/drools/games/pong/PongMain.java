@@ -11,7 +11,7 @@ import org.kie.runtime.StatefulKnowledgeSession;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.kie.io.ResourceFactory.newClassPathResource;
+import static org.kie.internal.io.ResourceFactory.newClassPathResource;
 import static org.kie.io.ResourceType.DRL;
 
 public class PongMain {

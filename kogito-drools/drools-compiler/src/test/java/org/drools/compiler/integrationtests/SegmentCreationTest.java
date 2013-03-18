@@ -29,7 +29,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PhreakOption;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
 public class SegmentCreationTest {
@@ -353,7 +353,7 @@ public class SegmentCreationTest {
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
                       ResourceType.DRL );
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );

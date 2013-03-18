@@ -44,7 +44,7 @@ import org.kie.conf.EventProcessingOption;
 import org.kie.conf.MBeansOption;
 import org.kie.definition.rule.Rule;
 import org.kie.definition.type.Position;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
 public class AnnotationsTest  extends CommonTestMethodBase {

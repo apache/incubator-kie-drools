@@ -19,7 +19,7 @@ package org.drools.core.io.impl;
 import java.util.Properties;
 
 import org.drools.core.util.StringUtils;
-import org.kie.io.ResourceChangeScannerConfiguration;
+import org.kie.internal.io.ResourceChangeScannerConfiguration;
 
 public class ResourceChangeScannerConfigurationImpl implements ResourceChangeScannerConfiguration {
     

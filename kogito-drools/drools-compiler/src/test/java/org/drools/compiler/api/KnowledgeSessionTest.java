@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
 
@@ -36,7 +36,7 @@ public class KnowledgeSessionTest {
         str += "when\n";
         str += "then\n";
         str += "end\n";
-        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        builder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
 
         Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
 

@@ -8,7 +8,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PhreakOption;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 
@@ -49,7 +49,7 @@ public class PhreakLiaNodeTest {
                 
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL);
+        builder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
 
         if ( builder.hasErrors() ) {
             throw new RuntimeException(builder.getErrors().toString());

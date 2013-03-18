@@ -30,8 +30,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.conf.EventProcessingOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.definition.type.FactType;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.Resource;
-import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.EnvironmentName;
@@ -78,7 +78,7 @@ public class TimerAndCalendarTest {
                            "when \n" + "then \n" +
                            "        list.add(list.size()); \n" +
                            " end";
-        Resource resource = ResourceFactory.newByteArrayResource( timerRule.getBytes() );
+        Resource resource = ResourceFactory.newByteArrayResource(timerRule.getBytes());
         Collection<KnowledgePackage> kpackages = buildKnowledgePackage( resource,
                                                                         ResourceType.DRL );
         kbase.addKnowledgePackages( kpackages );

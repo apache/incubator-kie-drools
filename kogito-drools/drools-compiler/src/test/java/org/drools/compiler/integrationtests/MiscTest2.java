@@ -39,7 +39,7 @@ import org.kie.definition.type.PropertyReactive;
 import org.kie.event.kiebase.DefaultKieBaseEventListener;
 import org.kie.event.kiebase.KieBaseEventListener;
 import org.kie.event.rule.AgendaEventListener;
-import org.kie.io.ResourceFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
@@ -1016,7 +1016,7 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
         assertTrue( kbuilder.hasErrors() );
     }
 
