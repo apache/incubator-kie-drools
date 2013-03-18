@@ -87,6 +87,7 @@ message RuleData {
     repeated EntryPoint entry_point = 10;
 
     optional ActionQueue action_queue = 11;
+    optional TruthMaintenanceSystem OBSOLETE_tms = 12;
 }
 
 message ProcessData {
@@ -237,6 +238,7 @@ message Tuple {
 
 message TruthMaintenanceSystem {
     repeated EqualityKey key = 1;
+    repeated BeliefSet OBSOLETE_justification = 2;
 }
 
 message EqualityKey {
