@@ -17,7 +17,7 @@
 package org.drools.core.io.impl;
 
 import org.drools.core.io.internal.InternalResource;
-import org.kie.definition.KieDescr;
+import org.kie.api.definition.KieDescr;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
 

@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Arrays;
 
-import org.kie.definition.type.Annotation;
-import org.kie.definition.type.FactField;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.type.Annotation;
+import org.kie.api.definition.type.FactField;
+import org.kie.api.definition.type.FactType;
 
 /**
  * Declares a class to be dynamically created

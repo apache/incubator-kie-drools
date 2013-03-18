@@ -25,7 +25,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 /**
  * This context class is used during rule removal to ensure

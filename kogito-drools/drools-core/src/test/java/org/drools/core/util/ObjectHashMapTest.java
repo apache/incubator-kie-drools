@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 

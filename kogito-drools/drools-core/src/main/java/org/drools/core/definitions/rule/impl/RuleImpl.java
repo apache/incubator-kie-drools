@@ -17,12 +17,12 @@
 package org.drools.core.definitions.rule.impl;
 
 import org.drools.core.rule.Rule;
-import org.kie.definition.rule.Query;
+import org.kie.api.definition.rule.Query;
 
 import java.util.Collection;
 import java.util.Map;
 
-public class RuleImpl implements org.kie.definition.rule.Rule, Query {
+public class RuleImpl implements org.kie.api.definition.rule.Rule, Query {
     private final Rule rule;
 
     public RuleImpl(Rule rule) {

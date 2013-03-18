@@ -29,8 +29,8 @@ import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.util.StringUtils;
 import org.drools.core.factmodel.traits.Alias;
 
-import org.kie.definition.type.Annotation;
-import org.kie.definition.type.FactField;
+import org.kie.api.definition.type.Annotation;
+import org.kie.api.definition.type.FactField;
 import org.mvel2.MVEL;
 
 /**

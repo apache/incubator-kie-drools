@@ -9,7 +9,7 @@ import org.drools.core.RuleBase;
 import org.drools.core.WorkingMemory;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 import static org.junit.Assert.*;
 

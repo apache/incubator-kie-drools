@@ -22,7 +22,7 @@ import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.RuleComponent;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 import java.io.IOException;
 import java.io.ObjectInput;

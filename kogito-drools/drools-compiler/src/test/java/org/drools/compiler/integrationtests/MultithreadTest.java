@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.rule.FactHandle;
 import org.kie.runtime.rule.SessionEntryPoint;

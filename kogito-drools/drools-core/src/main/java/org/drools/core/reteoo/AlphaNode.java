@@ -34,7 +34,7 @@ import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
 

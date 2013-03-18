@@ -55,7 +55,7 @@ public class Rule
     Externalizable,
     Wireable,
     Dialectable,
-    org.kie.definition.rule.Rule {
+    org.kie.api.definition.rule.Rule {
     private static final long        serialVersionUID = 510l;
 
     public static final String DEFAULT_CONSEQUENCE_NAME = "default";

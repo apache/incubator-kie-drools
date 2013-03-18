@@ -31,7 +31,7 @@ import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 import java.io.IOException;
 import java.io.ObjectInput;

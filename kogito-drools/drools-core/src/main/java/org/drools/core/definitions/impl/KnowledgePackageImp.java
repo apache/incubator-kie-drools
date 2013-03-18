@@ -32,11 +32,11 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.Package;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.definition.process.Process;
-import org.kie.definition.rule.Global;
-import org.kie.definition.rule.Query;
-import org.kie.definition.rule.Rule;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.rule.Global;
+import org.kie.api.definition.rule.Query;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.FactType;
 
 public class KnowledgePackageImp
     implements
@@ -108,9 +108,9 @@ public class KnowledgePackageImp
     
 
     public Collection<Process> getProcesses() {
-        Collection<org.kie.definition.process.Process> processes = pkg.getRuleFlows().values();
+        Collection<org.kie.api.definition.process.Process> processes = pkg.getRuleFlows().values();
         List<Process> list = new ArrayList<Process>( processes.size() );
-        for ( org.kie.definition.process.Process process : processes ) {
+        for ( org.kie.api.definition.process.Process process : processes ) {
             list.add( process );
         }
         return Collections.unmodifiableCollection( list );

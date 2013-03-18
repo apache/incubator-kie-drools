@@ -19,7 +19,7 @@ package org.drools.core.event;
 import org.drools.core.RuleBase;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 import java.util.Iterator;
 

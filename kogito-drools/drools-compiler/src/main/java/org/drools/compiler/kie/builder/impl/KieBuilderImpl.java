@@ -32,8 +32,8 @@ import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
-import org.kie.definition.KiePackage;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.type.FactType;
 import org.kie.io.Resource;
 
 import java.io.ByteArrayInputStream;

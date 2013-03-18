@@ -11,7 +11,7 @@ import org.drools.core.rule.TypeDeclaration.Role;
 import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.definition.type.Position;
+import org.kie.api.definition.type.Position;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 

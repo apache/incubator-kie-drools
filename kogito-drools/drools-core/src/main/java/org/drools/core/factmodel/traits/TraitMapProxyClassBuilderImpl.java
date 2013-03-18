@@ -22,7 +22,7 @@ import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
-import org.kie.definition.type.FactField;
+import org.kie.api.definition.type.FactField;
 import org.mvel2.asm.*;
 
 import java.beans.IntrospectionException;

@@ -17,7 +17,7 @@
 package org.drools.core.event.knowlegebase.impl;
 
 import org.kie.internal.KnowledgeBase;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 import org.kie.event.kiebase.BeforeRuleRemovedEvent;
 
 public class BeforeRuleRemovedEventImpl extends KnowledgeBaseEventImpl implements BeforeRuleRemovedEvent {

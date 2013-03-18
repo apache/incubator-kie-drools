@@ -23,7 +23,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Package;
 import org.drools.core.spi.Activation;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 

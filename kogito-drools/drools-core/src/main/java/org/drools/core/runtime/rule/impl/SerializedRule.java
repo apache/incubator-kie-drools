@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 public class SerializedRule
     implements

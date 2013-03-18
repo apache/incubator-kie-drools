@@ -1,6 +1,6 @@
 package org.drools.games.wumpus;
 
-import org.kie.definition.type.PropertyReactive;
+import org.kie.api.definition.type.PropertyReactive;
 
 @PropertyReactive
 public class Hero extends Thing {

@@ -82,7 +82,7 @@ import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -118,7 +118,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         map = SerializationHelper.serializeObject( map );
         kbase = map.get( "x" );
 
-        final org.kie.definition.rule.Rule[] rules = kbase.getKnowledgePackages().iterator().next().getRules().toArray( new org.kie.definition.rule.Rule[0] );
+        final org.kie.api.definition.rule.Rule[] rules = kbase.getKnowledgePackages().iterator().next().getRules().toArray( new org.kie.api.definition.rule.Rule[0] );
         assertEquals( 4,
                       rules.length );
 
