@@ -262,7 +262,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     public PackageBuilder( Package pkg,
-            PackageBuilderConfiguration configuration ) {
+                           PackageBuilderConfiguration configuration ) {
         if (configuration == null) {
             this.configuration = new PackageBuilderConfiguration();
         } else {
@@ -288,6 +288,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         pkgRegistry.setDialect( this.defaultDialect );
         this.pkgRegistryMap.put( pkg.getName(),
                                  pkgRegistry );
+
+        // add imports to pkg registry
+        for (final ImportDeclaration implDecl : pkg.getImports().values()) {
+            pkgRegistry.addImport( new ImportDescr(implDecl.getTarget()) );
+        }
 
         globals = new HashMap<String, Class<?>>();
 
