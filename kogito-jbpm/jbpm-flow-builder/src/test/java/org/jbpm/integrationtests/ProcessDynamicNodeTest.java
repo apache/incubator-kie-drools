@@ -22,7 +22,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.process.WorkItem;
 import org.kie.runtime.process.WorkflowProcessInstance;

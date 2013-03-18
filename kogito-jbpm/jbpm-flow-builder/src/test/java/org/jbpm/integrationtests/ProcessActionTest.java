@@ -13,7 +13,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 import org.kie.runtime.ObjectFilter;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItem;

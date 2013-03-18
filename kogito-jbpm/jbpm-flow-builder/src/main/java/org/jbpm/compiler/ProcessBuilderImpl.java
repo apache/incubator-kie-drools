@@ -73,7 +73,7 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 /**
  * A ProcessBuilder can be used to build processes based on XML files

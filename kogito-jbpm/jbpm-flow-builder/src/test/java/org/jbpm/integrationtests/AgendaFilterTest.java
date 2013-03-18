@@ -14,7 +14,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 import org.kie.runtime.rule.AgendaFilter;
 import org.kie.runtime.rule.Match;
 

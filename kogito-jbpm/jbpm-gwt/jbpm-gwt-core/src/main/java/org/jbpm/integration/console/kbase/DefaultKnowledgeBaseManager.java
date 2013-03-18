@@ -40,9 +40,9 @@ import org.kie.internal.agent.KnowledgeAgentFactory;
 import org.kie.api.builder.KnowledgeBuilder;
 import org.kie.api.builder.KnowledgeBuilderFactory;
 import org.kie.api.definition.KnowledgePackage;
-import org.kie.io.ResourceChangeScannerConfiguration;
-import org.kie.io.ResourceFactory;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceChangeScannerConfiguration;
+import org.kie.api.io.ResourceFactory;
+import org.kie.api.io.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

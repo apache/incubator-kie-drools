@@ -29,7 +29,7 @@ import org.drools.core.rule.Package;
 import org.jbpm.process.core.Context;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.kie.api.definition.process.Process;
-import org.kie.io.Resource;
+import org.kie.api.io.Resource;
 
 public class PackageBuilderTest extends TestCase {
 

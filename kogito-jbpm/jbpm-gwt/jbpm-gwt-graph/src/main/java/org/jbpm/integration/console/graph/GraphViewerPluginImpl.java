@@ -53,8 +53,8 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
-import org.kie.io.ResourceFactory;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceFactory;
+import org.kie.api.io.ResourceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -32,7 +32,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.io.ResourceType;
+import org.kie.api.io.ResourceType;
 import org.kie.runtime.KieSession;
 
 public class LoggingTaskHandlerWrapperTest extends Assert {
