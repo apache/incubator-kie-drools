@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.kie.definition.KnowledgeDefinition;
+import org.kie.internal.definition.KnowledgeDefinition;
 
 /**
  * The window declaration defines a window that can be used by patterns

@@ -11,7 +11,7 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.Results;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.io.ResourceConfiguration;
 import org.kie.io.ResourceFactory;

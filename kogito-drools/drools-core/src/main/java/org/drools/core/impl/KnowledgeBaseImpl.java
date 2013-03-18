@@ -63,7 +63,7 @@ import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.rule.Package;
 import org.kie.internal.KnowledgeBase;
 import org.kie.definition.KiePackage;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.definition.process.Process;
 import org.kie.definition.rule.Query;
 import org.kie.definition.rule.Rule;

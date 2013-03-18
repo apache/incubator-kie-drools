@@ -26,7 +26,7 @@ import org.kie.internal.ChangeSet;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.agent.KnowledgeAgent.ResourceStatus;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.definition.KnowledgeDefinition;
+import org.kie.internal.definition.KnowledgeDefinition;
 import org.kie.event.knowledgeagent.AfterChangeSetAppliedEvent;
 import org.kie.event.knowledgeagent.AfterChangeSetProcessedEvent;
 import org.kie.event.knowledgeagent.AfterResourceProcessedEvent;

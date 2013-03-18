@@ -31,7 +31,7 @@ import org.drools.core.definitions.rule.impl.GlobalImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.Package;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.definition.process.Process;
 import org.kie.definition.rule.Global;
 import org.kie.definition.rule.Query;

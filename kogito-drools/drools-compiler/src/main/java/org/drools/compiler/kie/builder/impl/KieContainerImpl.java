@@ -14,7 +14,7 @@ import org.kie.builder.ReleaseId;
 import org.kie.builder.Results;
 import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.model.KieSessionModel;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;

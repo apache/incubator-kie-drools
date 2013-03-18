@@ -43,7 +43,7 @@ import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.event.rule.ObjectDeletedEvent;
 import org.kie.event.rule.ObjectInsertedEvent;
 import org.kie.event.rule.WorkingMemoryEventListener;

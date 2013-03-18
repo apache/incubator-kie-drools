@@ -29,7 +29,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.command.Command;
 import org.kie.internal.command.CommandFactory;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.io.Resource;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;

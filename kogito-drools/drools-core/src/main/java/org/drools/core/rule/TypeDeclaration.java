@@ -33,7 +33,7 @@ import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.ClassUtils;
-import org.kie.definition.KnowledgeDefinition;
+import org.kie.internal.definition.KnowledgeDefinition;
 import org.kie.io.Resource;
 
 /**

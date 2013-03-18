@@ -5,7 +5,7 @@ import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModule;
 import org.kie.builder.model.KieModuleModel;
 import org.kie.builder.Results;
-import org.kie.definition.KnowledgePackage;
+import org.kie.internal.definition.KnowledgePackage;
 
 import java.io.File;
 import java.util.Collection;
