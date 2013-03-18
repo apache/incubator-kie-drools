@@ -33,7 +33,7 @@ import org.jbpm.task.service.MockEscalatedDeadlineHandler;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 
 public abstract class TaskServiceEscalationBaseTest extends BaseTest {
 
@@ -94,7 +94,7 @@ public abstract class TaskServiceEscalationBaseTest extends BaseTest {
 
         // now create a new service, to see if it initiates from the DB correctly
         MockEscalatedDeadlineHandler handler = new MockEscalatedDeadlineHandler();
-        new TaskService(emf, SystemEventListenerFactory.getSystemEventListener(), handler);      
+        new TaskService(emf, SystemEventListenerFactory.getSystemEventListener(), handler);
         
         testDeadlines(now, handler);
     }

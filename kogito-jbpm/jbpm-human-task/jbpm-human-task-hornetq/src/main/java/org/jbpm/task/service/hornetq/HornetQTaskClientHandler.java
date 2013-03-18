@@ -24,7 +24,7 @@ import org.hornetq.api.core.client.ClientSession;
 import org.jbpm.task.service.BaseClientHandler;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskClientHandler;
-import org.kie.SystemEventListener;
+import org.kie.internal.SystemEventListener;
 
 public class HornetQTaskClientHandler extends BaseClientHandler {
     

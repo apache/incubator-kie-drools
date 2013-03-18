@@ -31,7 +31,7 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.event.process.DefaultProcessEventListener;

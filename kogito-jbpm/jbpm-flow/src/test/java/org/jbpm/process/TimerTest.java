@@ -27,8 +27,8 @@ import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
 
 public class TimerTest extends Assert {

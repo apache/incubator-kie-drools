@@ -29,9 +29,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.kie.KnowledgeBase;
-import org.kie.KieBaseConfiguration;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KieBaseConfiguration;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.conf.EventProcessingOption;
 import org.drools.core.impl.EnvironmentFactory;
 

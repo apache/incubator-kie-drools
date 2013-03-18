@@ -47,7 +47,7 @@ import org.jbpm.task.service.local.LocalTaskService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 

@@ -19,8 +19,8 @@ package org.jbpm.bpmn2;
 import java.util.Properties;
 
 import org.drools.core.impl.EnvironmentFactory;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.io.ResourceFactory;

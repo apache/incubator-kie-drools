@@ -15,7 +15,7 @@
 // */
 //package org.jbpm.process.workitem.wsht.mina.async;
 //
-//import org.kie.SystemEventListenerFactory;
+//import org.kie.internal.SystemEventListenerFactory;
 //import org.jbpm.process.workitem.wsht.AsyncWSHumanTaskHandler;
 //import org.jbpm.process.workitem.wsht.async.WSHumanTaskHandlerBaseAsyncTest;
 //import org.jbpm.task.TestStatefulKnowledgeSession;

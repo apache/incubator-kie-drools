@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.persistence.util.PersistenceUtil;

@@ -16,7 +16,7 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;

@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.jbpm.bpmn2.objects.Status;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.io.ResourceFactory;

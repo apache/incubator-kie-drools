@@ -28,7 +28,7 @@ import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.KieBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.io.ResourceFactory;

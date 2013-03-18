@@ -28,7 +28,7 @@ import org.jbpm.task.service.base.async.IcalBaseAsyncTest;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.subethamail.wiser.Wiser;

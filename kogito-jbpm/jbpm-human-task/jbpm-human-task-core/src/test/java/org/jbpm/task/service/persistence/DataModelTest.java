@@ -22,7 +22,7 @@ import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskService;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 
 public class DataModelTest extends BaseTest {
 

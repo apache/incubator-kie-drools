@@ -9,7 +9,7 @@ import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.WSHumanTaskJMSProperties;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 
 @Deprecated
 public class WSThroughJMSHumanTaskHandler extends WSHumanTaskHandler {

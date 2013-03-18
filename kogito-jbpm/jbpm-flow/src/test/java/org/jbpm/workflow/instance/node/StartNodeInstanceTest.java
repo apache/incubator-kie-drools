@@ -21,8 +21,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.NodeInstance;

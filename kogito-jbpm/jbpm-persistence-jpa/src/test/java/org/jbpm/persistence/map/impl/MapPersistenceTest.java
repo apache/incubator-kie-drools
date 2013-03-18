@@ -1,7 +1,7 @@
 package org.jbpm.persistence.map.impl;
 
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.instance.WorkItemHandler;

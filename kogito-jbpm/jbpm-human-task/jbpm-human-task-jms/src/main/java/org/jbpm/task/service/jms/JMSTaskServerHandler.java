@@ -11,7 +11,7 @@ import javax.jms.Topic;
 
 import org.jbpm.task.service.TaskServerHandler;
 import org.jbpm.task.service.TaskService;
-import org.kie.SystemEventListener;
+import org.kie.internal.SystemEventListener;
 
 public class JMSTaskServerHandler {
 	

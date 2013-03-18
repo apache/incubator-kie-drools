@@ -10,8 +10,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.jbpm.task.DefaultUserInfo;
 
-import org.jbpm.task.Group;
-import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
 import org.jbpm.task.admin.listener.TaskCleanUpProcessEventListener;
 
@@ -23,9 +21,8 @@ import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessInstance;

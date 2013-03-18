@@ -11,7 +11,7 @@ import org.jbpm.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.StatefulKnowledgeSession;

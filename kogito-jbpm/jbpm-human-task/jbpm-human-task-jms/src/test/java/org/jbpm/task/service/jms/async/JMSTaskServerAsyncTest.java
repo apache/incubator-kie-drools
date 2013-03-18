@@ -28,7 +28,7 @@ import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 
 /**
  * Test case to see if this component works.

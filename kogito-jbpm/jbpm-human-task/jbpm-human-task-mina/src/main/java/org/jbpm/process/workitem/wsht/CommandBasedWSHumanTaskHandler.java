@@ -52,7 +52,7 @@ import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItem;

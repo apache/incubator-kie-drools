@@ -18,7 +18,7 @@ import org.jbpm.persistence.processinstance.JPAProcessInstanceManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.io.ResourceFactory;

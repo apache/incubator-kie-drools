@@ -33,7 +33,7 @@ import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskServiceSession.TransactedOperation;
-import org.kie.SystemEventListener;
+import org.kie.internal.SystemEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

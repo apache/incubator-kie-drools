@@ -27,7 +27,7 @@ import org.jbpm.task.service.base.async.TaskLifeCycleBaseAsyncTest;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 
 public class TaskLifeCycleJMSAsyncTest extends TaskLifeCycleBaseAsyncTest {
 

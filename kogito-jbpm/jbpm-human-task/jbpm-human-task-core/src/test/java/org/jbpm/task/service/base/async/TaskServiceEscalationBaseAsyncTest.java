@@ -33,7 +33,7 @@ import org.jbpm.task.service.MockEscalatedDeadlineHandler;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 
 public abstract class TaskServiceEscalationBaseAsyncTest extends BaseTest {
 

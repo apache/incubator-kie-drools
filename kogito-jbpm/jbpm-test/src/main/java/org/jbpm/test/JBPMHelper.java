@@ -10,7 +10,7 @@ import javax.persistence.Persistence;
 import org.drools.core.impl.EnvironmentFactory;
 import org.h2.tools.Server;
 
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;

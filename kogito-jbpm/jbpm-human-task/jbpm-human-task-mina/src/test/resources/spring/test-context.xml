@@ -26,7 +26,7 @@
 
   <!-- human-task beans -->
 
-  <bean id="systemEventListener" class="org.kie.SystemEventListenerFactory" factory-method="getSystemEventListener" />
+  <bean id="systemEventListener" class="org.kie.internal.SystemEventListenerFactory" factory-method="getSystemEventListener" />
 
   <bean id="springTaskSessionFactory" class="org.jbpm.task.service.persistence.TaskSessionSpringFactoryImpl"
         init-method="initialize" >

@@ -20,7 +20,7 @@ import java.util.concurrent.BlockingQueue;
 
 import org.jbpm.task.service.TaskServerHandler;
 import org.jbpm.task.service.TaskService;
-import org.kie.SystemEventListener;
+import org.kie.internal.SystemEventListener;
 
 class TestTaskServerHandler {
 	

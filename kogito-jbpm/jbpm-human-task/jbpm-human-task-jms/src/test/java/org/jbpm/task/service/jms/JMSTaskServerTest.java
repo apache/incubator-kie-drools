@@ -24,7 +24,7 @@ import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 
 /**
  * Test case to see if this component works.

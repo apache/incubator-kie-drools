@@ -33,6 +33,8 @@ import org.kie.*;
 import org.kie.builder.*;
 import org.kie.event.process.DefaultProcessEventListener;
 import org.kie.event.process.ProcessStartedEvent;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.KieSession;

@@ -17,7 +17,7 @@ import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.builder.*;
 import org.kie.definition.process.Node;
 import org.kie.io.ResourceFactory;

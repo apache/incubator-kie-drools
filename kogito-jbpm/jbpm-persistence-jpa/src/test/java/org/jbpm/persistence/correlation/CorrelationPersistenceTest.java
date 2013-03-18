@@ -20,7 +20,7 @@ import javax.transaction.UserTransaction;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.KieInternalServices;
+import org.kie.internal.KieInternalServices;
 import org.kie.process.CorrelationKeyFactory;
 import org.kie.runtime.EnvironmentName;
 

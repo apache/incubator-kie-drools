@@ -22,7 +22,7 @@ import org.hornetq.api.core.client.ClientProducer;
 import org.hornetq.api.core.client.ClientSession;
 import org.jbpm.task.service.TaskServerHandler;
 import org.jbpm.task.service.TaskService;
-import org.kie.SystemEventListener;
+import org.kie.internal.SystemEventListener;
 
 public class HornetQTaskServerHandler {
 

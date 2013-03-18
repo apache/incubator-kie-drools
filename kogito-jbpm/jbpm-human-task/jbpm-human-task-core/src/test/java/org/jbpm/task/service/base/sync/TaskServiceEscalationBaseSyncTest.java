@@ -22,9 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
-import javax.transaction.UserTransaction;
 
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.MvelFilePath;
@@ -32,7 +30,7 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler;
 import org.jbpm.task.service.TaskServer;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 
 public abstract class TaskServiceEscalationBaseSyncTest extends BaseTest {
 

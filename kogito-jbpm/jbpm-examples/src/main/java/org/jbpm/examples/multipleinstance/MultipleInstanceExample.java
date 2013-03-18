@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.builder.KnowledgeBuilderFactory;
 import org.kie.io.ResourceFactory;

@@ -20,8 +20,8 @@ import org.jbpm.process.instance.impl.MVELReturnValueEvaluator;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.instance.node.SplitInstance;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.definition.KnowledgePackage;
 import org.kie.runtime.StatefulKnowledgeSession;
 

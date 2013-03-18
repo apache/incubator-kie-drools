@@ -19,6 +19,8 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.kie.*;
 import org.kie.builder.*;
 import org.kie.definition.process.Process;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.runtime.KieSession;

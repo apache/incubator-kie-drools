@@ -33,7 +33,6 @@ import javax.persistence.Transient;
 import junit.framework.Assert;
 
 import org.kie.KieBase;
-import org.kie.KnowledgeBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;

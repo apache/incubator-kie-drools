@@ -23,7 +23,7 @@ import org.jbpm.task.api.TaskServiceEntryPoint;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
-import org.kie.KieInternalServices;
+import org.kie.internal.KieInternalServices;
 import org.kie.process.CorrelationAwareProcessRuntime;
 import org.kie.process.CorrelationKey;
 import org.kie.process.CorrelationKeyFactory;

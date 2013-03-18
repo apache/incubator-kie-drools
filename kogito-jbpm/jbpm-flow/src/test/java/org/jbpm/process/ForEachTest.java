@@ -40,8 +40,8 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.junit.Test;
-import org.kie.KnowledgeBase;
-import org.kie.KnowledgeBaseFactory;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.ProcessContext;
 

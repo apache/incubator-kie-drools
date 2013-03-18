@@ -49,7 +49,7 @@ import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 import org.kie.runtime.KnowledgeRuntime;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.WorkItem;

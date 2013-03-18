@@ -37,7 +37,7 @@ import org.jbpm.task.service.SendIcal;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
-import org.kie.SystemEventListenerFactory;
+import org.kie.internal.SystemEventListenerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
