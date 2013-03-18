@@ -18,7 +18,7 @@ package org.kie.event.knowledgeagent;
 
 import java.util.EventObject;
 
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 
 public class KnowledgeBaseUpdatedEvent extends EventObject{
 

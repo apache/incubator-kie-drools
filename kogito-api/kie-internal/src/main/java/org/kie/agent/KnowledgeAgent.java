@@ -16,9 +16,9 @@
 
 package org.kie.agent;
 
-import org.kie.ChangeSet;
-import org.kie.KnowledgeBase;
-import org.kie.SystemEventListener;
+import org.kie.internal.ChangeSet;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.SystemEventListener;
 import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.kie.io.Resource;
 import org.kie.runtime.KieSessionConfiguration;

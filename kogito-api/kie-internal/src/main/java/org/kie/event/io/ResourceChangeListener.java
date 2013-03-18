@@ -16,7 +16,7 @@
 
 package org.kie.event.io;
 
-import org.kie.ChangeSet;
+import org.kie.internal.ChangeSet;
 
 /**
  * Interface that provides informed on changes resources, via the ChangeSet interface.

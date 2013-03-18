@@ -18,7 +18,7 @@ package org.kie.builder;
 
 import java.util.Collection;
 
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.definition.KnowledgePackage;
 import org.kie.io.Resource;
 import org.kie.io.ResourceConfiguration;

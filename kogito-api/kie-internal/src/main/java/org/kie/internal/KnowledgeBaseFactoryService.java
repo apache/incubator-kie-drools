@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie;
+package org.kie.internal;
 
+import org.kie.Service;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
 

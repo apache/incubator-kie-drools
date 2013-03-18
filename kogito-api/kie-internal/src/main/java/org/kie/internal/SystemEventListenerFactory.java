@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie;
+package org.kie.internal;
 
 import org.kie.internal.utils.ServiceRegistryImpl;
 

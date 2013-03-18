@@ -16,7 +16,7 @@
 
 package org.kie.runtime;
 
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.event.KnowledgeRuntimeEventManager;
 
 

@@ -16,7 +16,7 @@
 
 package org.kie.builder;
 
-import org.kie.KnowledgeBase;
+import org.kie.internal.KnowledgeBase;
 import org.kie.Service;
 
 import java.util.Properties;

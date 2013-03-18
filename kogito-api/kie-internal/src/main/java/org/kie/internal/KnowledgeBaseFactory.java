@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie;
+package org.kie.internal;
 
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.runtime.Environment;
@@ -48,7 +48,7 @@ import java.util.Properties;
  * properties.setProperty( "org.kie.sequential", "true");
  * </pre>
  *
- * @see org.kie.KnowledgeBase
+ * @see KnowledgeBase
  */
 public class KnowledgeBaseFactory  {
     private static KnowledgeBaseFactoryService factoryService;

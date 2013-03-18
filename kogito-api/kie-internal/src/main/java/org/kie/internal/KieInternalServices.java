@@ -1,4 +1,4 @@
-package org.kie;
+package org.kie.internal;
 
 import org.kie.process.CorrelationKeyFactory;
 
