@@ -33,7 +33,7 @@ package org.kie.internal.utils;
 import org.kie.api.KieServices;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScanner;
-import org.kie.concurrent.KieExecutors;
+import org.kie.api.concurrent.KieExecutors;
 import org.kie.marshalling.KieMarshallers;
 import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.internal.process.CorrelationKeyFactory;
