@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.fluent;
+package org.kie.internal.fluent.test;
 
-public interface FluentRoot {
+import org.kie.command.Context;
 
-    <P> VariableContext<P> getVariableContext();
+public interface ReflectiveMatcherAssert {
+
+    void eval(Context context);
 
 }

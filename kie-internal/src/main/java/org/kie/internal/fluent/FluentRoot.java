@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.fluent;
+package org.kie.internal.fluent;
 
-public interface FluentKnowledgeBase<T> {
-    
-    T addKnowledgePackages();
-    
+public interface FluentRoot {
+
+    <P> VariableContext<P> getVariableContext();
+
 }

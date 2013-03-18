@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.fluent.test;
+package org.kie.internal.fluent;
 
-import java.util.Map;
-
-import org.kie.command.Context;
-
-public interface ReflectiveMatcherAssert {
-
-    void eval(Context context);
+public interface VariableContext<P> {
+    
+    P get(String name);
+    
+    <T> T get(String name, Class<T> type);
 
 }

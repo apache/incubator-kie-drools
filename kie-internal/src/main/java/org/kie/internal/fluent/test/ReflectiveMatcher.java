@@ -14,19 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.fluent;
+package org.kie.internal.fluent.test;
 
-import org.kie.io.Resource;
-import org.kie.io.ResourceConfiguration;
-import org.kie.io.ResourceType;
-
-public interface FluentKnowledgeBuilder<T> {
-    
-    T add(Resource resource,
-          ResourceType type);
-
-    T add(Resource resource,
-          ResourceType type,
-          ResourceConfiguration configuration);
-
+public interface ReflectiveMatcher {
 }

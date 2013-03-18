@@ -1,4 +1,4 @@
-package org.kie.fluent;
+package org.kie.internal.fluent;
 
 import org.kie.command.Command;
 

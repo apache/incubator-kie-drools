@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.fluent.test;
+package org.kie.internal.fluent;
 
-public interface ReflectiveMatcher {
+import org.kie.command.Command;
+import org.kie.simulation.Simulation;
+
+public interface InternalSimulation extends Simulation, CommandScript {
+
+    void addCommand(Command cmd);
+
+    void newInternalStep(long distance);
+
 }
