@@ -16,7 +16,7 @@
 
 package org.kie.internal.builder.conf;
 
-import org.kie.runtime.rule.EvaluatorDefinition;
+import org.kie.api.runtime.rule.EvaluatorDefinition;
 
 /**
  * A class for the evaluators configuration. 

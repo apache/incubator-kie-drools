@@ -1,6 +1,6 @@
 package org.kie.internal.runtime;
 
-import org.kie.runtime.KieRuntime;
+import org.kie.api.runtime.KieRuntime;
 
 public interface KnowledgeRuntime extends KieRuntime {
 }

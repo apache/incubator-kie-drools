@@ -1,12 +1,12 @@
 package org.kie.api.builder.model;
 
-import org.kie.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.ClockTypeOption;
 
 import java.util.List;
 
 /**
  * KieSessionModel is a model allowing to programmatically define a KieSession
- * @see org.kie.runtime.KieSession
+ * @see org.kie.api.runtime.KieSession
  */
 public interface KieSessionModel {
 

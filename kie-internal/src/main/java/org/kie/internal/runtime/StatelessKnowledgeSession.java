@@ -17,7 +17,7 @@
 package org.kie.internal.runtime;
 
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
-import org.kie.runtime.StatelessKieSession;
+import org.kie.api.runtime.StatelessKieSession;
 
 
 /**
@@ -108,13 +108,13 @@ import org.kie.runtime.StatelessKieSession;
  * </pre>
  * 
  * 
- * @see org.kie.runtime.CommandExecutor
- * @see org.kie.runtime.command.CommandFactory
- * @see org.kie.runtime.command.BatchExecution
- * @see org.kie.runtime.ExecutionResults.BatchExecutionResults
- * @see org.kie.runtime.help.BatchExecutionHelp
- * @see org.kie.runtime.pipeline.PipelineFactory
- * @see org.kie.runtime.Globals
+ * @see org.kie.api.runtime.CommandExecutor
+ * @see org.kie.api.runtime.command.CommandFactory
+ * @see org.kie.api.runtime.command.BatchExecution
+ * @see org.kie.api.runtime.ExecutionResults.BatchExecutionResults
+ * @see org.kie.api.runtime.help.BatchExecutionHelp
+ * @see org.kie.api.runtime.pipeline.PipelineFactory
+ * @see org.kie.api.runtime.Globals
  */
 public interface StatelessKnowledgeSession
     extends

@@ -17,7 +17,7 @@ package org.kie.internal.process;
 
 import java.util.Map;
 
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.ProcessInstance;
 
 /**
  * Classes that implement this interface will provide additional capabilities 

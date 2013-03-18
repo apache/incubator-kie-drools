@@ -18,7 +18,7 @@ package org.kie.api.event.rule;
 
 
 import org.kie.api.event.KieRuntimeEvent;
-import org.kie.runtime.rule.Match;
+import org.kie.api.runtime.rule.Match;
 
 public interface MatchEvent
     extends
