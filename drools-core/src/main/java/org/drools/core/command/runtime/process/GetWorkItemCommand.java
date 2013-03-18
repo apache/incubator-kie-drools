@@ -49,7 +49,7 @@ public class GetWorkItemCommand implements GenericCommand<WorkItem> {
     }
 
     public String toString() {
-        return "((org.kie.process.instance.WorkItemManager) session.getWorkItemManager()).getWorkItem("
+        return "((org.kie.internal.process.instance.WorkItemManager) session.getWorkItemManager()).getWorkItem("
             + workItemId +  ");";
     }
 

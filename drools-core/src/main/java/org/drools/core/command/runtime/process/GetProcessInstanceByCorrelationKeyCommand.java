@@ -19,8 +19,8 @@ package org.drools.core.command.runtime.process;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.command.Context;
-import org.kie.process.CorrelationAwareProcessRuntime;
-import org.kie.process.CorrelationKey;
+import org.kie.internal.process.CorrelationAwareProcessRuntime;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.process.ProcessInstance;
 
