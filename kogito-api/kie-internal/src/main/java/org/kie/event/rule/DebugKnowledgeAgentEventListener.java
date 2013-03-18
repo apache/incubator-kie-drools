@@ -18,15 +18,15 @@ package org.kie.event.rule;
 
 import java.io.PrintStream;
 
-import org.kie.event.knowledgeagent.AfterChangeSetAppliedEvent;
-import org.kie.event.knowledgeagent.AfterChangeSetProcessedEvent;
-import org.kie.event.knowledgeagent.AfterResourceProcessedEvent;
-import org.kie.event.knowledgeagent.BeforeChangeSetAppliedEvent;
-import org.kie.event.knowledgeagent.BeforeChangeSetProcessedEvent;
-import org.kie.event.knowledgeagent.BeforeResourceProcessedEvent;
-import org.kie.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.kie.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
-import org.kie.event.knowledgeagent.ResourceCompilationFailedEvent;
+import org.kie.internal.event.knowledgeagent.AfterChangeSetAppliedEvent;
+import org.kie.internal.event.knowledgeagent.AfterChangeSetProcessedEvent;
+import org.kie.internal.event.knowledgeagent.AfterResourceProcessedEvent;
+import org.kie.internal.event.knowledgeagent.BeforeChangeSetAppliedEvent;
+import org.kie.internal.event.knowledgeagent.BeforeChangeSetProcessedEvent;
+import org.kie.internal.event.knowledgeagent.BeforeResourceProcessedEvent;
+import org.kie.internal.event.knowledgeagent.KnowledgeAgentEventListener;
+import org.kie.internal.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
+import org.kie.internal.event.knowledgeagent.ResourceCompilationFailedEvent;
 
 public class DebugKnowledgeAgentEventListener
     implements

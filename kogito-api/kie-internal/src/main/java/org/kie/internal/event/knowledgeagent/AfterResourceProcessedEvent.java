@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgeagent;
+package org.kie.internal.event.knowledgeagent;
 
 import org.kie.internal.ChangeSet;
 import org.kie.internal.agent.KnowledgeAgent.ResourceStatus;
 import org.kie.io.Resource;
 import org.kie.io.ResourceType;
 
-public class BeforeResourceProcessedEvent extends ChangeSetProcessingEvent{
+public class AfterResourceProcessedEvent extends ChangeSetProcessingEvent{
 
     private static final long serialVersionUID = 510l;
 
@@ -29,7 +29,7 @@ public class BeforeResourceProcessedEvent extends ChangeSetProcessingEvent{
     private final ResourceType resourceType;
     private final ResourceStatus status;
 
-    public BeforeResourceProcessedEvent(ChangeSet changeSet, Resource resource, ResourceType resourceType, ResourceStatus status) {
+    public AfterResourceProcessedEvent(ChangeSet changeSet, Resource resource, ResourceType resourceType, ResourceStatus status) {
         super(changeSet);
         this.resource = resource;
         this.resourceType = resourceType;
@@ -49,8 +49,8 @@ public class BeforeResourceProcessedEvent extends ChangeSetProcessingEvent{
     }
 
     @Override
-    public String toString() {
-        return "==>[BeforeResourceProcessedEvent(" + getStatus() + "): " + getResource() + "]";
+     public String toString() {
+        return "==>[AfterResourceProcessedEvent("+getStatus()+"): " + getResource()+ "]";
     }
 
 }

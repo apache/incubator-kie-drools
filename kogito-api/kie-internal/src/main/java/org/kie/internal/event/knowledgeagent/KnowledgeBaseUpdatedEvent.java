@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package org.kie.event.knowledgeagent;
+package org.kie.internal.event.knowledgeagent;
 
-import org.kie.internal.ChangeSet;
+import java.util.EventObject;
 
-public class BeforeChangeSetAppliedEvent extends ChangeSetProcessingEvent{
+import org.kie.internal.KnowledgeBase;
+
+public class KnowledgeBaseUpdatedEvent extends EventObject{
 
     private static final long serialVersionUID = 510l;
 
-    public BeforeChangeSetAppliedEvent(ChangeSet changeSet) {
-        super(changeSet);
+
+    public KnowledgeBaseUpdatedEvent(KnowledgeBase kbase) {
+        super(kbase);
+    }
+
+    public KnowledgeBase getKnowledgeBase() {
+        return (KnowledgeBase)this.getSource();
     }
 
     @Override
-     public String toString() {
-        return "==>[BeforeChangeSetAppliedEvent: " + getChangeSet()+ "]";
+    public String toString() {
+        return "==>[KnowledgeBaseUpdatedEvent: " + getKnowledgeBase()+ "]";
     }
 
 }
