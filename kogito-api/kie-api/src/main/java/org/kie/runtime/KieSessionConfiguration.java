@@ -16,7 +16,7 @@
 
 package org.kie.runtime;
 
-import org.kie.PropertiesConfiguration;
+import org.kie.api.PropertiesConfiguration;
 import org.kie.runtime.conf.KieSessionOptionsConfiguration;
 
 /**

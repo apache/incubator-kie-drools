@@ -3,7 +3,7 @@ package org.kie.concurrent;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 
-import org.kie.Service;
+import org.kie.api.Service;
 
 public interface KieExecutors extends Service {
 

@@ -1,6 +1,6 @@
 package org.kie.runtime;
 
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.Results;
 

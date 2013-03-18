@@ -1,4 +1,4 @@
-package org.kie;
+package org.kie.api;
 
 import org.kie.definition.KiePackage;
 import org.kie.definition.process.Process;

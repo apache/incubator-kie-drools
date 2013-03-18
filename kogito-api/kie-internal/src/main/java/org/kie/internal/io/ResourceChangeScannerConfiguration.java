@@ -16,7 +16,7 @@
 
 package org.kie.internal.io;
 
-import org.kie.PropertiesConfiguration;
+import org.kie.api.PropertiesConfiguration;
 
 /**
  * 

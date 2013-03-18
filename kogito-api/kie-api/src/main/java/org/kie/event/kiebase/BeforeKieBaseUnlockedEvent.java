@@ -16,7 +16,7 @@
 
 package org.kie.event.kiebase;
 
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 
 
 public interface BeforeKieBaseUnlockedEvent

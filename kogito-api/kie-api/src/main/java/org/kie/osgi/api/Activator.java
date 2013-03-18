@@ -20,7 +20,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.concurrent.Callable;
 
-import org.kie.Service;
+import org.kie.api.Service;
 import org.kie.marshalling.KieMarshallers;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

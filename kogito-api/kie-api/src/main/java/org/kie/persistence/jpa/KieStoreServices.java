@@ -16,7 +16,7 @@
 
 package org.kie.persistence.jpa;
 
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.KieSessionConfiguration;

@@ -16,7 +16,7 @@
 
 package org.kie.io;
 
-import org.kie.Service;
+import org.kie.api.Service;
 import org.kie.definition.KieDescr;
 
 import java.io.File;
