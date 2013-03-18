@@ -2,7 +2,7 @@ package org.kie.builder.impl;
 
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.utils.ServiceRegistryImpl;
-import org.kie.process.CorrelationKeyFactory;
+import org.kie.internal.process.CorrelationKeyFactory;
 
 public class KieInternalServicesImpl implements KieInternalServices {
 
