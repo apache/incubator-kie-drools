@@ -26,7 +26,7 @@ import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.VariableScopeResolverFactory;
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.definition.process.Node;
 import org.kie.definition.process.Process;
 import org.kie.runtime.process.EventListener;

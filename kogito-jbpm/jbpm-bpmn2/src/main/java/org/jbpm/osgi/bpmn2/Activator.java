@@ -20,7 +20,7 @@ import java.util.Hashtable;
 
 import org.drools.compiler.compiler.BPMN2ProcessProvider;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
-import org.kie.Service;
+import org.kie.api.Service;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

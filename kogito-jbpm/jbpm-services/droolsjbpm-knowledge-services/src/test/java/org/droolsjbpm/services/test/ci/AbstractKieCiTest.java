@@ -1,6 +1,6 @@
 package org.droolsjbpm.services.test.ci;
 
-import org.kie.KieServices;
+import org.kie.api.KieServices;
 import org.kie.builder.model.KieBaseModel;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;

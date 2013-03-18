@@ -18,7 +18,7 @@ package org.jbpm.osgi.flow.core;
 
 import java.util.Hashtable;
 
-import org.kie.Service;
+import org.kie.api.Service;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;

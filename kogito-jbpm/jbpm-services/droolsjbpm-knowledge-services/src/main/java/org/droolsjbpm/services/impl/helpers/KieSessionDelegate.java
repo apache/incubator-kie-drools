@@ -41,7 +41,7 @@ import org.kie.time.SessionClock;
 import java.util.Collection;
 import java.util.Map;
 
-import org.kie.KieBase;
+import org.kie.api.KieBase;
 import org.kie.runtime.KieSession;
 
 /**
