@@ -24,7 +24,7 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
-import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.io.Resource;
 
 /**

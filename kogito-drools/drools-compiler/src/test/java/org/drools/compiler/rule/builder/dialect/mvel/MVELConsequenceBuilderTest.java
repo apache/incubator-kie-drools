@@ -39,7 +39,7 @@ import org.drools.compiler.rule.builder.RuleBuilder;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
 import org.junit.Test;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.debug.DebugTools;

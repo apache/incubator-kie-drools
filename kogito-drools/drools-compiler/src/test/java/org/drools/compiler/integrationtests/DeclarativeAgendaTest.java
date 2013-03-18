@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.builder.conf.DeclarativeAgendaOption;
+import org.kie.internal.builder.conf.DeclarativeAgendaOption;
 import org.kie.event.rule.MatchCancelledEvent;
 import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.event.rule.AfterMatchFiredEvent;

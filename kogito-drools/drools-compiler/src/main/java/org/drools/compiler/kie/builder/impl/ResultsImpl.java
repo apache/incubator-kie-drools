@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
-import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.builder.Message;
 import org.kie.builder.Message.Level;
 import org.kie.builder.Results;

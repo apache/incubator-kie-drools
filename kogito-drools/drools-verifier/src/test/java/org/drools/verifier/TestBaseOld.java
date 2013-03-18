@@ -38,8 +38,8 @@ import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.visitor.PackageDescrVisitor;
 import org.junit.Before;
-import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 abstract public class TestBaseOld {
 

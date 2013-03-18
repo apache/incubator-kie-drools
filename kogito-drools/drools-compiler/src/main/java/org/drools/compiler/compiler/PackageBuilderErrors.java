@@ -6,12 +6,12 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 
-import org.kie.builder.KnowledgeBuilderError;
-import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.internal.builder.KnowledgeBuilderErrors;
 
 public class PackageBuilderErrors extends ArrayList<KnowledgeBuilderError>
     implements
-    KnowledgeBuilderErrors,
+        KnowledgeBuilderErrors,
     Externalizable {
     private DroolsError[] errors;
 

@@ -46,9 +46,9 @@ import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.builder.KnowledgeBuilderResult;
-import org.kie.builder.ResultSeverity;
-import org.kie.builder.conf.KBuilderSeverityOption;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.conf.KBuilderSeverityOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.io.Resource;
 

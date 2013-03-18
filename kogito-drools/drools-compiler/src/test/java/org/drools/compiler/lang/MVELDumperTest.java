@@ -13,7 +13,7 @@ import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 public class MVELDumperTest {
 

@@ -21,9 +21,9 @@ import org.drools.compiler.kproject.xml.PomModel;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.KieServices;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.builder.InternalKieBuilder;
+import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.builder.KieBuilder;
-import org.kie.builder.KieBuilderSet;
+import org.kie.internal.builder.KieBuilderSet;
 import org.kie.builder.KieFileSystem;
 import org.kie.builder.KieModule;
 import org.kie.builder.Message.Level;
@@ -51,7 +51,7 @@ import java.util.zip.ZipFile;
 
 public class KieBuilderImpl
     implements
-    InternalKieBuilder {
+        InternalKieBuilder {
 
     static final String   RESOURCES_ROOT = "src/main/resources/";
 

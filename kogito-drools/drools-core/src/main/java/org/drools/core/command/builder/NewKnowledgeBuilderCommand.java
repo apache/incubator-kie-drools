@@ -21,9 +21,9 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.util.StringUtils;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.internal.KnowledgeBase;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.command.Context;
 
 public class NewKnowledgeBuilderCommand
@@ -83,7 +83,7 @@ public class NewKnowledgeBuilderCommand
         }
         
         if ( this.kbuilderConf == null ) {
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.attachedKnowledgeBase );
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(this.attachedKnowledgeBase);
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.attachedKnowledgeBase,
                                                                     this.kbuilderConf );

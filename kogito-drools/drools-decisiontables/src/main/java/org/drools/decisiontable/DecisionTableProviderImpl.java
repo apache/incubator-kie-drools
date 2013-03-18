@@ -6,9 +6,9 @@ import java.io.Reader;
 
 import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.core.util.StringUtils;
-import org.kie.builder.DecisionTableConfiguration;
-import org.kie.builder.DecisionTableInputType;
-import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.DecisionTableConfiguration;
+import org.kie.internal.builder.DecisionTableInputType;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 
 public class DecisionTableProviderImpl
     implements

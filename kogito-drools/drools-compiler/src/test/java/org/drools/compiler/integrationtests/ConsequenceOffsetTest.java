@@ -11,7 +11,7 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 public class ConsequenceOffsetTest {
     

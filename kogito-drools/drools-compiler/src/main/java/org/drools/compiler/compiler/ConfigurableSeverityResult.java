@@ -15,9 +15,9 @@
 */
 package org.drools.compiler.compiler;
 
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.ResultSeverity;
-import org.kie.builder.conf.KBuilderSeverityOption;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.conf.KBuilderSeverityOption;
 import org.kie.io.Resource;
 
 

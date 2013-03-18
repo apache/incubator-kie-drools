@@ -19,8 +19,8 @@ package org.drools.core.command.builder;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderErrors;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.command.Context;
 
 public class KnowledgeBuilderGetErrorsCommand

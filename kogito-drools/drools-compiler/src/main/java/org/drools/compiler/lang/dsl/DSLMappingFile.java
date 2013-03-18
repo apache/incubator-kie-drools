@@ -16,7 +16,7 @@
 
 package org.drools.compiler.lang.dsl;
 
-import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 import java.io.IOException;
 import java.io.Reader;

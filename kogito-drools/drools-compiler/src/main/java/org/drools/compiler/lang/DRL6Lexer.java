@@ -3,7 +3,7 @@
     package org.drools.compiler.lang;
 
     import org.drools.compiler.compiler.DroolsParserException;
-    import org.kie.builder.conf.LanguageLevelOption;
+    import org.kie.internal.builder.conf.LanguageLevelOption;
 
 
     import org.antlr.runtime.*;

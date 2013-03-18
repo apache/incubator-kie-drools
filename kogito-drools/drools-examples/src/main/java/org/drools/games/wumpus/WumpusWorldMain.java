@@ -3,8 +3,8 @@ package org.drools.games.wumpus;
 import org.drools.games.wumpus.view.GameView;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.runtime.Channel;
 import org.kie.runtime.StatefulKnowledgeSession;
 

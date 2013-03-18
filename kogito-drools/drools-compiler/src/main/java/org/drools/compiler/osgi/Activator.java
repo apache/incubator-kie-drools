@@ -25,7 +25,7 @@ import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.kie.Service;
-import org.kie.builder.KnowledgeBuilderFactoryService;
+import org.kie.internal.builder.KnowledgeBuilderFactoryService;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.osgi.api.Activator.BundleContextInstantiator;
 import org.osgi.framework.BundleActivator;

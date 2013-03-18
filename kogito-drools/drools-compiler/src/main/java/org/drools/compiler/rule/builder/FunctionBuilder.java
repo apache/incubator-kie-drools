@@ -23,7 +23,7 @@ import org.drools.core.base.TypeResolver;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.core.rule.LineMappings;
 import org.drools.core.rule.Package;
-import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public interface FunctionBuilder extends EngineElementBuilder {
     public String build(final Package pkg,

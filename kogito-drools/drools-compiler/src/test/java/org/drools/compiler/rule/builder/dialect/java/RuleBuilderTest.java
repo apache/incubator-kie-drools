@@ -49,7 +49,7 @@ import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.IntervalTimer;
 import org.drools.core.type.DateFormatsImpl;
 import org.junit.Test;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import antlr.collections.List;
 

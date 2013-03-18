@@ -81,7 +81,7 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELFromBuilder;
-import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.io.Resource;
 
 public class JavaDialect

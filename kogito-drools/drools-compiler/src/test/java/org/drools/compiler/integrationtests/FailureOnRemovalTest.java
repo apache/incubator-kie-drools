@@ -12,10 +12,10 @@ import org.junit.Test;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.builder.KnowledgeBuilder;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.conf.DefaultDialectOption;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.conf.SequentialOption;
 import org.kie.conf.ShareAlphaNodesOption;
 import org.kie.conf.ShareBetaNodesOption;
@@ -68,7 +68,7 @@ public class FailureOnRemovalTest extends CommonTestMethodBase {
 
     private Collection<KnowledgePackage> compileRule(String name) throws DroolsParserException,
                                                                  IOException {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( createKnowledgeBuilderConfiguration() );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(createKnowledgeBuilderConfiguration());
         String drl = getDrl( name );
         Reader drlReader = new StringReader( drl );
         kbuilder.add( ResourceFactory.newReaderResource( drlReader ),

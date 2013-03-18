@@ -19,7 +19,7 @@ package org.drools.core.command;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.KnowledgeBase;
-import org.kie.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.command.Context;
 
 public class KnowledgeBaseAddKnowledgePackagesCommand

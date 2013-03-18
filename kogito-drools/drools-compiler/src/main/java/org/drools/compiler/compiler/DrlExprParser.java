@@ -28,7 +28,7 @@ import org.drools.compiler.lang.DRLLexer;
 import org.drools.compiler.lang.ParserHelper;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
  * This is a helper class that provides helper methods to parse expressions

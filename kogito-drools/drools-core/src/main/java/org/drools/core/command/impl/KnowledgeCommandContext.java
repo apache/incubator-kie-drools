@@ -1,7 +1,7 @@
 package org.drools.core.command.impl;
 
 import org.kie.KieBase;
-import org.kie.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.command.Context;
 import org.kie.runtime.ExecutionResults;
 import org.kie.runtime.KieSession;

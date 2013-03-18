@@ -8,7 +8,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.core.rule.LineMappings;
 import org.drools.core.rule.Package;
-import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.TemplateRuntime;
 

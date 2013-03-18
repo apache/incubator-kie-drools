@@ -8,7 +8,7 @@ import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.builder.KieModule;
 import org.kie.builder.KieRepository;
-import org.kie.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.builder.Message.Level;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.Results;

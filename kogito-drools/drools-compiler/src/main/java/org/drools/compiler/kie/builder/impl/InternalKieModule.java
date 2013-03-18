@@ -1,6 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.kie.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.builder.ReleaseId;
 import org.kie.builder.KieModule;
 import org.kie.builder.model.KieModuleModel;

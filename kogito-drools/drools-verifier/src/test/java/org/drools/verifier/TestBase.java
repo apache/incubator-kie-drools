@@ -21,7 +21,7 @@ import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.visitor.PackageDescrVisitor;
 import org.junit.Before;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 public class TestBase {
 

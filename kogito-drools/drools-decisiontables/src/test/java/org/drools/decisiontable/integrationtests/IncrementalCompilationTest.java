@@ -5,8 +5,8 @@ import java.io.InputStream;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.KieServices;
-import org.kie.builder.IncrementalResults;
-import org.kie.builder.InternalKieBuilder;
+import org.kie.internal.builder.IncrementalResults;
+import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.builder.KieBuilder;
 import org.kie.builder.KieFileSystem;
 

@@ -18,9 +18,9 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
-import org.kie.builder.KnowledgeBuilderConfiguration;
-import org.kie.builder.KnowledgeBuilderFactory;
-import org.kie.builder.conf.EvaluatorOption;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.EvaluatorOption;
 
 public class CustomOperatorTest extends CommonTestMethodBase {
 

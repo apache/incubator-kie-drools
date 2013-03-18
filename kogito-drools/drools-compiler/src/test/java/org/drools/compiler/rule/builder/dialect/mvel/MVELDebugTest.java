@@ -2,7 +2,7 @@ package org.drools.compiler.rule.builder.dialect.mvel;
 
 import org.drools.compiler.compiler.PackageBuilder;
 import org.junit.Test;
-import org.kie.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.junit.Assert.*;
 

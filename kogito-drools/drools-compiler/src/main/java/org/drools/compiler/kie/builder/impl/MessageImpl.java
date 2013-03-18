@@ -1,7 +1,7 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
-import org.kie.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.builder.Message;
 
 import java.util.ArrayList;
