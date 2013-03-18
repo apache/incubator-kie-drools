@@ -17,7 +17,7 @@
 package org.kie.runtime;
 
 import org.kie.api.KieBase;
-import org.kie.event.KieRuntimeEventManager;
+import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.runtime.process.ProcessRuntime;
 import org.kie.runtime.rule.Session;
 import org.kie.time.SessionClock;

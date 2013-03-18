@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.api.logger;
+package org.kie.api.event.process;
 
-import org.kie.api.event.KieRuntimeEventManager;
+import org.kie.runtime.process.NodeInstance;
 
 /**
- * KieLoggers is a factory for KieRuntimeLogger
+ * An event related to the execution of a node instance within a process instance.
  */
-public interface KieLoggers {
+public interface ProcessNodeEvent
+    extends
+    ProcessEvent {
 
-    KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
-                                         String fileName);
-
-    KieRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
-                                                 String fileName,
-                                                 int interval);
-
-    KieRuntimeLogger newConsoleLogger(KieRuntimeEventManager session);
+	/**
+	 * The node instance this event is related to.
+	 * 
+	 * @return the node instance
+	 */
+    NodeInstance getNodeInstance();
 
 }

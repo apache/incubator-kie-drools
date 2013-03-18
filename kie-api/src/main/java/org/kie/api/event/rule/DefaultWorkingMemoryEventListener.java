@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.api.logger;
+package org.kie.api.event.rule;
 
-import org.kie.api.event.KieRuntimeEventManager;
+public class DefaultWorkingMemoryEventListener
+    implements
+    WorkingMemoryEventListener {
 
-/**
- * KieLoggers is a factory for KieRuntimeLogger
- */
-public interface KieLoggers {
+    public void objectInserted(ObjectInsertedEvent event) {
+        // intentionally left blank
+    }
 
-    KieRuntimeLogger newFileLogger(KieRuntimeEventManager session,
-                                         String fileName);
+    public void objectDeleted(ObjectDeletedEvent event) {
+        // intentionally left blank
+    }
 
-    KieRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
-                                                 String fileName,
-                                                 int interval);
-
-    KieRuntimeLogger newConsoleLogger(KieRuntimeEventManager session);
+    public void objectUpdated(ObjectUpdatedEvent event) {
+        // intentionally left blank
+    }
 
 }
