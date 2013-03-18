@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.kie.internal.ChangeSet;
 import org.kie.internal.KnowledgeBase;
-import org.kie.agent.KnowledgeAgent.ResourceStatus;
+import org.kie.internal.agent.KnowledgeAgent.ResourceStatus;
 import org.kie.builder.KnowledgeBuilder;
 import org.kie.definition.KnowledgeDefinition;
 import org.kie.event.knowledgeagent.AfterChangeSetAppliedEvent;

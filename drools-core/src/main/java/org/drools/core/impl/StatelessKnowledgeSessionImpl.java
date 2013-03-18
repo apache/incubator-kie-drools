@@ -41,7 +41,7 @@ import org.drools.core.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.kie.agent.KnowledgeAgent;
+import org.kie.internal.agent.KnowledgeAgent;
 import org.kie.command.Command;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
