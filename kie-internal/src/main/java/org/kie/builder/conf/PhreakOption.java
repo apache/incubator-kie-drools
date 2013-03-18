@@ -25,7 +25,7 @@ import org.kie.conf.SingleValueKieBaseOption;
  * </p>
  * 
  * <pre>
- * drools.lrUnlinkingEnabled = &lt;true|false&gt;
+ * drools.phreakEnabled = &lt;true|false&gt;
  * </pre>
  * 
  * <b>DEFAULT = false.</b>
@@ -52,18 +52,18 @@ import org.kie.conf.SingleValueKieBaseOption;
  * </p>
  * 
  */
-public enum LRUnlinkingOption implements SingleValueKieBaseOption {
+public enum PhreakOption implements SingleValueKieBaseOption {
 
     ENABLED(true), DISABLED(false);
 
     /**
      * The property name for the L&R Unlinking option
      */
-    public static final String PROPERTY_NAME = "drools.lrUnlinkingEnabled";
+    public static final String PROPERTY_NAME = "drools.phreakEnabled";
 
     private boolean value;
 
-    LRUnlinkingOption(final boolean value) {
+    PhreakOption(final boolean value) {
         this.value = value;
     }
 

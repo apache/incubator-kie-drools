@@ -25,7 +25,7 @@ import org.drools.conf.SingleValueKnowledgeBaseOption;
  * </p>
  * 
  * <pre>
- * drools.lrUnlinkingEnabled = &lt;true|false&gt;
+ * drools.phreakEnabled = &lt;true|false&gt;
  * </pre>
  * 
  * <b>DEFAULT = false.</b>
@@ -59,7 +59,7 @@ public enum LRUnlinkingOption implements SingleValueKnowledgeBaseOption {
     /**
      * The property name for the L&R Unlinking option
      */
-    public static final String PROPERTY_NAME = "drools.lrUnlinkingEnabled";
+    public static final String PROPERTY_NAME = "drools.phreakEnabled";
 
     private boolean value;
 
