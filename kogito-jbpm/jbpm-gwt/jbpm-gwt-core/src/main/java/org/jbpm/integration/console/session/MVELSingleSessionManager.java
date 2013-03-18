@@ -47,7 +47,7 @@ import org.kie.KnowledgeBaseFactory;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.WorkingMemoryEventListener;
-import org.kie.persistence.jpa.JPAKnowledgeService;
+import org.kie.api.persistence.jpa.JPAKnowledgeService;
 import org.kie.runtime.Environment;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.KieSessionConfiguration;
