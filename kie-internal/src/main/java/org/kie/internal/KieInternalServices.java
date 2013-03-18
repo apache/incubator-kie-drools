@@ -1,6 +1,6 @@
 package org.kie.internal;
 
-import org.kie.process.CorrelationKeyFactory;
+import org.kie.internal.process.CorrelationKeyFactory;
 
 public interface KieInternalServices {
     

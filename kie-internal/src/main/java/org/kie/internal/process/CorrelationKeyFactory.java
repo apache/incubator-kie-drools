@@ -1,4 +1,4 @@
-package org.kie.process;
+package org.kie.internal.process;
 
 import java.util.List;
 
