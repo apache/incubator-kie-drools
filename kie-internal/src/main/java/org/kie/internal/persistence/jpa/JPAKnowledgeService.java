@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.persistence.jpa;
+package org.kie.internal.persistence.jpa;
 
 import org.kie.KieBase;
+import org.kie.persistence.jpa.KieStoreServices;
 import org.kie.runtime.Environment;
 import org.kie.runtime.KieSessionConfiguration;
 import org.kie.runtime.StatefulKnowledgeSession;
