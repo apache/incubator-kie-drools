@@ -1,6 +1,4 @@
-package org.kie.command;
-
-import org.kie.runtime.ExecutionResults;
+package org.kie.internal.command;
 
 public interface ShadowWorld extends World {
     //public ShadowContext createContext(String identifier);

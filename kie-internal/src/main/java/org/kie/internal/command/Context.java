@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.command;
+package org.kie.internal.command;
 
+public interface Context {
+    
+    World getContextManager();
+    
+    String getName();
+    
+    Object get(String identifier);
 
-public interface World extends Context {
-    public static final String        ROOT             = "ROOT";
-    
-    //public Context createContext(String identifier);   
-    
-    public Context getContext(String identifier);   
+    void set(String identifier,
+             Object value);
+
+    void remove(String identifier);
 }

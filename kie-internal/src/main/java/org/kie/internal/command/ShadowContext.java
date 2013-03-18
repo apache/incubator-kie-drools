@@ -1,4 +1,4 @@
-package org.kie.command;
+package org.kie.internal.command;
 
 public interface ShadowContext extends Context {
     

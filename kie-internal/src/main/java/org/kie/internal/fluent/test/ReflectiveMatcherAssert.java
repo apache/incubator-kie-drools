@@ -16,7 +16,7 @@
 
 package org.kie.internal.fluent.test;
 
-import org.kie.command.Context;
+import org.kie.internal.command.Context;
 
 public interface ReflectiveMatcherAssert {
 
