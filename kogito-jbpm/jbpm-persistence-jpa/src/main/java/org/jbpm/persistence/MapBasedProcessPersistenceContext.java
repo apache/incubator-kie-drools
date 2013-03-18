@@ -5,14 +5,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.persistence.map.MapBasedPersistenceContext;
 import org.jbpm.persistence.correlation.CorrelationKeyInfo;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
-import org.kie.process.CorrelationKey;
-import org.kie.runtime.process.ProcessInstance;
+import org.kie.internal.process.CorrelationKey;
 
 public class MapBasedProcessPersistenceContext extends MapBasedPersistenceContext
     implements

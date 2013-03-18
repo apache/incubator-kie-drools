@@ -10,7 +10,7 @@ import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.kie.definition.process.Process;
-import org.kie.process.CorrelationKey;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.runtime.EnvironmentName;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkflowProcessInstance;

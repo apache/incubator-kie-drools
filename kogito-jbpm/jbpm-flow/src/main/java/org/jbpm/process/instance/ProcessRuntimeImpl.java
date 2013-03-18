@@ -35,7 +35,7 @@ import org.kie.event.rule.DefaultAgendaEventListener;
 import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.internal.utils.CompositeClassLoader;
-import org.kie.process.CorrelationKey;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.ProcessInstance;

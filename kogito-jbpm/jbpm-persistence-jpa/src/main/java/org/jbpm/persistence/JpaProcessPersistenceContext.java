@@ -12,8 +12,8 @@ import javax.persistence.Query;
 import org.drools.persistence.jpa.JpaPersistenceContext;
 import org.jbpm.persistence.correlation.CorrelationKeyInfo;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
-import org.kie.process.CorrelationKey;
-import org.kie.process.CorrelationProperty;
+import org.kie.internal.process.CorrelationKey;
+import org.kie.internal.process.CorrelationProperty;
 
 public class JpaProcessPersistenceContext extends JpaPersistenceContext
     implements

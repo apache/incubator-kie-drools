@@ -24,7 +24,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Version;
 
-import org.kie.process.CorrelationProperty;
+import org.kie.internal.process.CorrelationProperty;
 
 @Entity
 @SequenceGenerator(name="correlationPropertyInfoIdSeq", sequenceName="CORRELATION_PROPERTY_INFO_ID_SEQ")

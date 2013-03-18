@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.kie.definition.process.Process;
-import org.kie.process.CorrelationKey;
+import org.kie.internal.process.CorrelationKey;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;

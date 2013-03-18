@@ -17,8 +17,8 @@ package org.jbpm.persistence.correlation;
 
 import java.util.List;
 
-import org.kie.process.CorrelationKey;
-import org.kie.process.CorrelationKeyFactory;
+import org.kie.internal.process.CorrelationKey;
+import org.kie.internal.process.CorrelationKeyFactory;
 
 public class JPACorrelationKeyFactory implements CorrelationKeyFactory {
 

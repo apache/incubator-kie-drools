@@ -5,7 +5,7 @@ import java.util.List;
 import org.drools.persistence.PersistenceContext;
 import org.jbpm.persistence.correlation.CorrelationKeyInfo;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
-import org.kie.process.CorrelationKey;
+import org.kie.internal.process.CorrelationKey;
 
 public interface ProcessPersistenceContext
     extends
