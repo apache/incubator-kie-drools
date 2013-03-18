@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.definition.process.Process;
-import org.kie.definition.rule.Global;
-import org.kie.definition.rule.Query;
-import org.kie.definition.rule.Rule;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.rule.Global;
+import org.kie.api.definition.rule.Query;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.FactType;
 
 public class ProcessPackage implements KnowledgePackage {
 

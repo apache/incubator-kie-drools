@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.Node;
 import org.kie.runtime.process.NodeInstance;
 import org.jbpm.process.core.context.exclusive.ExclusiveGroup;
 import org.jbpm.process.instance.ContextInstanceContainer;

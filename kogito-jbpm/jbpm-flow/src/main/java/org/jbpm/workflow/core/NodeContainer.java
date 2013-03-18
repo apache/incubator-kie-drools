@@ -16,14 +16,14 @@
 
 package org.jbpm.workflow.core;
 
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 import org.jbpm.process.core.Context;
 
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface NodeContainer extends org.kie.definition.process.NodeContainer {
+public interface NodeContainer extends org.kie.api.definition.process.NodeContainer {
 
     /**
      * Method for adding a node to this node container. 

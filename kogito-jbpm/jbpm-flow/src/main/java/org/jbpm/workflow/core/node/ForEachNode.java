@@ -19,7 +19,7 @@ package org.jbpm.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 import org.drools.core.process.core.datatype.DataType;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;

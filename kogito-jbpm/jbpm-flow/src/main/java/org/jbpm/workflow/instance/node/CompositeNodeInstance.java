@@ -34,9 +34,9 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactory;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
 import org.kie.runtime.process.EventListener;
 
 /**

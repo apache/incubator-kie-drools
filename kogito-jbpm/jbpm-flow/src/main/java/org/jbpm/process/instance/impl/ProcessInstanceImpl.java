@@ -30,7 +30,7 @@ import org.jbpm.process.core.impl.XmlProcessDumperFactory;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.kie.runtime.rule.Agenda;
 
 /**

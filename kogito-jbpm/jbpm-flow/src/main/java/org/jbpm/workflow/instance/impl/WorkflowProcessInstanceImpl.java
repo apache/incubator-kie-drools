@@ -47,9 +47,9 @@ import org.jbpm.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
-import org.kie.definition.process.WorkflowProcess;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.NodeInstanceContainer;
 

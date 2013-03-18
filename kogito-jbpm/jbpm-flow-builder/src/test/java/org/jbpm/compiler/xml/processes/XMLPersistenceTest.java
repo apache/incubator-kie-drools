@@ -76,7 +76,7 @@ import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 public class XMLPersistenceTest extends TestCase {
     
@@ -84,7 +84,7 @@ public class XMLPersistenceTest extends TestCase {
         RuleFlowProcess process = new RuleFlowProcess() {
             private static final long serialVersionUID = 510l;
             int id = 0;
-            public void addNode(org.kie.definition.process.Node node) {
+            public void addNode(org.kie.api.definition.process.Node node) {
                 ((Node) node).setId(++id);
                 super.addNode(node);
             }
@@ -141,7 +141,7 @@ public class XMLPersistenceTest extends TestCase {
         RuleFlowProcess process = new RuleFlowProcess() {
             private static final long serialVersionUID = 510l;
             int id = 0;
-            public void addNode(org.kie.definition.process.Node node) {
+            public void addNode(org.kie.api.definition.process.Node node) {
                 ((Node) node).setId(++id);
                 super.addNode(node);
             }

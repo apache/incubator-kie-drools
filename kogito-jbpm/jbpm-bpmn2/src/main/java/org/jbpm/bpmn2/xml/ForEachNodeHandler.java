@@ -23,7 +23,7 @@ import org.drools.compiler.compiler.xml.XmlDumper;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.ForEachNode;
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 import org.xml.sax.Attributes;
 
 public class ForEachNodeHandler extends AbstractNodeHandler {
@@ -87,7 +87,7 @@ public class ForEachNodeHandler extends AbstractNodeHandler {
 	protected List<Node> getSubNodes(ForEachNode forEachNode) {
     	List<Node> subNodes =
     		new ArrayList<Node>();
-        for (org.kie.definition.process.Node subNode: forEachNode.getNodes()) {
+        for (org.kie.api.definition.process.Node subNode: forEachNode.getNodes()) {
         	// filter out composite start and end nodes as they can be regenerated
         	if ((!(subNode instanceof CompositeNode.CompositeNodeStart)) &&
     			(!(subNode instanceof CompositeNode.CompositeNodeEnd))) {
@@ -99,7 +99,7 @@ public class ForEachNodeHandler extends AbstractNodeHandler {
     
     protected List<Connection> getSubConnections(ForEachNode forEachNode) {
     	List<Connection> connections = new ArrayList<Connection>();
-        for (org.kie.definition.process.Node subNode: forEachNode.getNodes()) {
+        for (org.kie.api.definition.process.Node subNode: forEachNode.getNodes()) {
         	// filter out composite start and end nodes as they can be regenerated
             if (!(subNode instanceof CompositeNode.CompositeNodeEnd)) {
                 for (Connection connection: subNode.getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE)) {

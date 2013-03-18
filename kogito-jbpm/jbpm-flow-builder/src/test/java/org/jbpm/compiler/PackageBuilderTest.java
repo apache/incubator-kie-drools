@@ -28,7 +28,7 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.rule.Package;
 import org.jbpm.process.core.Context;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.kie.io.Resource;
 
 public class PackageBuilderTest extends TestCase {

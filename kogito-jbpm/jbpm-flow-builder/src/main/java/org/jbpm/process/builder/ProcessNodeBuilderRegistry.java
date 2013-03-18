@@ -3,7 +3,7 @@ package org.jbpm.process.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;

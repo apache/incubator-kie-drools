@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.NodeContainer;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeContainer;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.workflow.core.Constraint;

@@ -20,9 +20,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.compiler.compiler.ReturnValueDescr;
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.Process;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.compiler.xml.XmlWorkflowProcessDumper;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -95,7 +95,7 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
     protected List<Node> getSubNodes(CompositeNode compositeNode) {
     	List<Node> subNodes =
     		new ArrayList<Node>();
-        for (org.kie.definition.process.Node subNode: compositeNode.getNodes()) {
+        for (org.kie.api.definition.process.Node subNode: compositeNode.getNodes()) {
         	// filter out composite start and end nodes as they can be regenerated
         	if ((!(subNode instanceof CompositeNode.CompositeNodeStart)) &&
     			(!(subNode instanceof CompositeNode.CompositeNodeEnd))) {
@@ -107,7 +107,7 @@ public class CompositeNodeHandler extends AbstractNodeHandler {
     
     protected List<Connection> getSubConnections(CompositeNode compositeNode) {
     	List<Connection> connections = new ArrayList<Connection>();
-        for (org.kie.definition.process.Node subNode: compositeNode.getNodes()) {
+        for (org.kie.api.definition.process.Node subNode: compositeNode.getNodes()) {
         	// filter out composite start and end nodes as they can be regenerated
             if (!(subNode instanceof CompositeNode.CompositeNodeEnd)) {
                 for (Connection connection: subNode.getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE)) {

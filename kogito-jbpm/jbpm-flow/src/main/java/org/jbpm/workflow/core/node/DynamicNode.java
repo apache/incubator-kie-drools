@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.core.node;
 
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 
 
 public class DynamicNode extends CompositeContextNode {

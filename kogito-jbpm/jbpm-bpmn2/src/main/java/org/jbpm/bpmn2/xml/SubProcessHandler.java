@@ -72,7 +72,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
 				ForEachNode forEachNode = new ForEachNode();
 				forEachNode.setId(node.getId());
 				forEachNode.setName(node.getName());
-				for (org.kie.definition.process.Node subNode: ((CompositeContextNode) node).getNodes()) {
+				for (org.kie.api.definition.process.Node subNode: ((CompositeContextNode) node).getNodes()) {
 					forEachNode.addNode(subNode);
 				}
 				forEachNode.setMetaData("UniqueId", ((CompositeContextNode) node).getMetaData("UniqueId"));

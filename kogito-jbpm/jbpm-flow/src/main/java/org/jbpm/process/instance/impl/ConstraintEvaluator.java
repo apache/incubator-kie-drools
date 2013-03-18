@@ -16,7 +16,7 @@
 
 package org.jbpm.process.instance.impl;
 
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.instance.NodeInstance;
 

@@ -3,7 +3,7 @@ package org.jbpm.process.builder;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.core.rule.Package;

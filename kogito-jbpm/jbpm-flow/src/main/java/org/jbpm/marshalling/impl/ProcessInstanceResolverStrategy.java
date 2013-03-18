@@ -24,7 +24,7 @@ import org.drools.core.reteoo.ReteooStatefulSession;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.kie.runtime.process.ProcessInstance;
 

@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.instance.impl.factory;
 
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.NodeInstanceContainer;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;

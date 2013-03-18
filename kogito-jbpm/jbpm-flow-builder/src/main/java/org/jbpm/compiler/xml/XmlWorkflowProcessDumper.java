@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.WorkflowProcess;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.WorkflowProcess;
 import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.xml.Handler;

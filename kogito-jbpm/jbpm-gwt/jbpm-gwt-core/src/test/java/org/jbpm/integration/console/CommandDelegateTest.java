@@ -6,7 +6,7 @@ import java.util.List;
 import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.junit.Test;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 
 public class CommandDelegateTest extends JbpmGwtCoreTestCase {

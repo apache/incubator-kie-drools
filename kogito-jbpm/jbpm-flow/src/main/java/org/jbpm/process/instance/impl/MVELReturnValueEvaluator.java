@@ -24,7 +24,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.GlobalResolver;
-import org.kie.definition.KiePackage;
+import org.kie.api.definition.KiePackage;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.runtime.process.ProcessContext;

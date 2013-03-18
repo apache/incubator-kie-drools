@@ -17,7 +17,7 @@ import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.kie.api.KieBase;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;

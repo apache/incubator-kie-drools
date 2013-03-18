@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 import org.drools.core.process.core.Work;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;

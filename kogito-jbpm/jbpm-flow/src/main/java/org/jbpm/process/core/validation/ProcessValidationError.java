@@ -16,7 +16,7 @@
 
 package org.jbpm.process.core.validation;
 
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 /**
  * Represents a RuleFlow validation error. 

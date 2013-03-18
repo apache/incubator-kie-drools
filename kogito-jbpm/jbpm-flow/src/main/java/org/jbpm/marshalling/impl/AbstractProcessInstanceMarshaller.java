@@ -30,7 +30,7 @@ import java.util.Map;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.StringUtils;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.kie.marshalling.ObjectMarshallingStrategy;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;

@@ -32,7 +32,7 @@ import javax.persistence.EntityManagerFactory;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.drools.core.impl.EnvironmentFactory;
 
 import org.kie.runtime.Environment;

@@ -21,8 +21,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.Node;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.ForEachNode;

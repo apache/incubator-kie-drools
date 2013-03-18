@@ -193,7 +193,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
         
         KnowledgePackage pckg = kbuilder.getKnowledgePackages().iterator().next();
         
-        org.kie.definition.process.Process process = pckg.getProcesses().iterator().next();
+        org.kie.api.definition.process.Process process = pckg.getProcesses().iterator().next();
         return new ProcessDesc(process.getId(), process.getName(), process.getVersion()
                 , process.getPackageName(), process.getType(), process.getKnowledgeType().name(),
                 process.getNamespace(), null);

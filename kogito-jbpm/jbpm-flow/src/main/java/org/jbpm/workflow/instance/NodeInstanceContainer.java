@@ -18,8 +18,8 @@ package org.jbpm.workflow.instance;
 
 import java.util.Collection;
 
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
 
 /**
  * 

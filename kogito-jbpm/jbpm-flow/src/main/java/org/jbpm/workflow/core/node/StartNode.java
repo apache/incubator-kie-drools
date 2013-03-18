@@ -20,7 +20,7 @@ import java.util.*;
 
 import org.jbpm.process.core.context.variable.Mappable;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 
 /**
  * Default implementation of a start node.

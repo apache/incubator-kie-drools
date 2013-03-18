@@ -17,7 +17,7 @@
 package org.jbpm.workflow.instance.node;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 import org.kie.event.rule.MatchCreatedEvent;
 import org.kie.runtime.process.EventListener;
 import org.kie.runtime.process.NodeInstance;

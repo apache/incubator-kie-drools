@@ -8,7 +8,7 @@ import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 import org.kie.event.process.ProcessCompletedEvent;
 import org.kie.event.process.ProcessNodeLeftEvent;
 import org.kie.event.process.ProcessNodeTriggeredEvent;

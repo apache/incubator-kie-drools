@@ -34,7 +34,7 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;

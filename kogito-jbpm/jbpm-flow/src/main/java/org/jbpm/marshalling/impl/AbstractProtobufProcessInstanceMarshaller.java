@@ -58,7 +58,7 @@ import org.jbpm.workflow.instance.node.StateNodeInstance;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.kie.runtime.process.NodeInstance;
 import org.kie.runtime.process.NodeInstanceContainer;
 import org.kie.runtime.process.ProcessInstance;

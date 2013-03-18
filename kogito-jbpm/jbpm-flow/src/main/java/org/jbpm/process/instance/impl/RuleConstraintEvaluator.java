@@ -18,7 +18,7 @@ package org.jbpm.process.instance.impl;
 
 import java.io.Serializable;
 
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 import org.kie.runtime.process.WorkflowProcessInstance;
 import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.jbpm.process.instance.ProcessInstance;

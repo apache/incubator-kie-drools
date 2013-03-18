@@ -57,8 +57,8 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.Trigger;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -488,7 +488,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             actionsAttachedTo = new ArrayList<DroolsAction>();
                         }
                         DroolsConsequenceAction actionAttachedTo =  new DroolsConsequenceAction("java", "" +
-                        		"org.kie.definition.process.Node node = context.getNodeInstance().getNode().getNodeContainer().getNode(" +id+ ");" +
+                        		"org.kie.api.definition.process.Node node = context.getNodeInstance().getNode().getNodeContainer().getNode(" +id+ ");" +
                         		"if (node instanceof org.jbpm.workflow.core.node.EventNode) {" +
                         		" ((org.jbpm.workflow.core.node.EventNode)node).getEventFilters().clear();" +
                         		"((org.jbpm.workflow.core.node.EventNode)node).addEventFilter(new org.jbpm.process.core.event.EventFilter () " +
@@ -525,7 +525,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             actionsAttachedTo = new ArrayList<DroolsAction>();
                         }
                         DroolsConsequenceAction actionAttachedTo =  new DroolsConsequenceAction("java", "" +
-                                "org.kie.definition.process.Node node = context.getNodeInstance().getNode().getNodeContainer().getNode(" +id+ ");" +
+                                "org.kie.api.definition.process.Node node = context.getNodeInstance().getNode().getNodeContainer().getNode(" +id+ ");" +
                                 "if (node instanceof org.jbpm.workflow.core.node.EventNode) {" +
                                 " ((org.jbpm.workflow.core.node.EventNode)node).getEventFilters().clear();" +
                                 "((org.jbpm.workflow.core.node.EventNode)node).addEventFilter(new org.jbpm.process.core.event.EventFilter () " +
@@ -570,7 +570,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 Constraint constraint = new ConstraintImpl();
                 constraint.setConstraint(condition);
                 constraint.setType("rule");
-                for (org.kie.definition.process.Connection connection: stateNode.getDefaultOutgoingConnections()) {
+                for (org.kie.api.definition.process.Connection connection: stateNode.getDefaultOutgoingConnections()) {
                     stateNode.setConstraint(connection, constraint);
                 }
             } else if (node instanceof NodeContainer) {

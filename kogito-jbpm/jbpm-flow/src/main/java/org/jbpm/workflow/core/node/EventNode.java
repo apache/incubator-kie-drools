@@ -19,7 +19,7 @@ package org.jbpm.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;

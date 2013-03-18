@@ -17,7 +17,7 @@
 package org.jbpm.process.instance;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 /**
  * A process instance is the representation of a process during its execution.

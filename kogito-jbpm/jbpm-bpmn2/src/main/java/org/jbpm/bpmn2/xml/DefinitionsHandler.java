@@ -25,7 +25,7 @@ import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

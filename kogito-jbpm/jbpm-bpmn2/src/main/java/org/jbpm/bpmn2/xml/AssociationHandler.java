@@ -28,7 +28,7 @@ import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.workflow.core.Node;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.jbpm.workflow.core.Node;
 
 public class ProcessBuildData {

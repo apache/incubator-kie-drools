@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.instance.node;
 
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 import org.kie.runtime.process.NodeInstance;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.runtime.rule.impl.InternalAgenda;

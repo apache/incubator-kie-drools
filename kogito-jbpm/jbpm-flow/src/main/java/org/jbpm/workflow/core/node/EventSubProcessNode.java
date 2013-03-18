@@ -18,10 +18,9 @@ package org.jbpm.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.DroolsAction;
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 
 public class EventSubProcessNode extends CompositeContextNode {
 

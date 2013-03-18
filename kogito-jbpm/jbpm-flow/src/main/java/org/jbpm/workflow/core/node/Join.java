@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.core.node;
 
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 import org.jbpm.workflow.core.impl.NodeImpl;
 
 /**

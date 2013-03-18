@@ -88,7 +88,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             // id is not in the expected format, generating a new one
             long newId = 0;
             NodeContainer nodeContainer = (NodeContainer) parser.getParent();
-            for (org.kie.definition.process.Node n: nodeContainer.getNodes()) {
+            for (org.kie.api.definition.process.Node n: nodeContainer.getNodes()) {
                 if (n.getId() > newId) {
                     newId = n.getId();
                 }

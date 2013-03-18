@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 

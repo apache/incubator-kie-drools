@@ -52,7 +52,7 @@ import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.process.ProcessInstance;
 import org.kie.runtime.process.WorkItem;

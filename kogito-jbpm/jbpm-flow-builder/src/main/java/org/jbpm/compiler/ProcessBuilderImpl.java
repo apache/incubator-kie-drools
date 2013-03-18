@@ -68,11 +68,11 @@ import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.Trigger;
-import org.kie.definition.process.Connection;
-import org.kie.definition.process.Node;
-import org.kie.definition.process.NodeContainer;
-import org.kie.definition.process.Process;
-import org.kie.definition.process.WorkflowProcess;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.NodeContainer;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.io.Resource;
 
 /**

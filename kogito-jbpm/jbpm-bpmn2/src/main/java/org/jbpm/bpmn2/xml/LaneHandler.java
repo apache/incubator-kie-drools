@@ -29,7 +29,7 @@ import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
-import org.kie.definition.process.WorkflowProcess;
+import org.kie.api.definition.process.WorkflowProcess;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

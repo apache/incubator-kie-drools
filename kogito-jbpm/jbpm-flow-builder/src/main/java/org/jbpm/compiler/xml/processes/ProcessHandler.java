@@ -62,7 +62,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     }
 
     public Class generateNodeFor() {
-        return org.kie.definition.process.Process.class;
+        return org.kie.api.definition.process.Process.class;
     }    
 
 }

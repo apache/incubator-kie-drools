@@ -14,7 +14,7 @@ public class TransformTest extends JbpmGwtCoreTestCase {
 
 	@Test
 	public void testProcessDefinition(){
-		org.kie.definition.process.Process process = CommandDelegate.getProcess("Minimal");
+		org.kie.api.definition.process.Process process = CommandDelegate.getProcess("Minimal");
 		ProcessDefinitionRef processDefinitionRef = Transform.processDefinition(process);
 		assertEquals(processDefinitionRef.getId(),process.getId());
 		assertEquals(processDefinitionRef.getPackageName(),process.getPackageName());

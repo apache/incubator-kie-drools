@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 import org.drools.core.xml.SemanticModules;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 public class TestXml extends TestCase {
 

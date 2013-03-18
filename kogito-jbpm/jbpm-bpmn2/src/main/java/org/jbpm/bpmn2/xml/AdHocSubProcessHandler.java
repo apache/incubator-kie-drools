@@ -23,7 +23,7 @@ import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.DynamicNode;
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

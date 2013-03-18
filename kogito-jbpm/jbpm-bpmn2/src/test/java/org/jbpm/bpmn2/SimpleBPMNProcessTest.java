@@ -64,7 +64,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.kie.event.process.DefaultProcessEventListener;
 import org.kie.event.process.ProcessEventListener;
 import org.kie.event.process.ProcessNodeLeftEvent;

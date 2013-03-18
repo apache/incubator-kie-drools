@@ -28,7 +28,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;

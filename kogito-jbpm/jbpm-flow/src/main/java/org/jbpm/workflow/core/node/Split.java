@@ -17,10 +17,9 @@
 package org.jbpm.workflow.core.node;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.definition.process.Connection;
+import org.kie.api.definition.process.Connection;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.NodeImpl;

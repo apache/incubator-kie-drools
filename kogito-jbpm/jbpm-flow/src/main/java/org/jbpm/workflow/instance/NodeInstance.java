@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.instance;
 
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 import org.jbpm.process.instance.ContextInstance;
 
 /**

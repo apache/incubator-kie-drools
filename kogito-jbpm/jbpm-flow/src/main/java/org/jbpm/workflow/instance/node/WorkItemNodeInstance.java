@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
-import org.kie.definition.process.Node;
+import org.kie.api.definition.process.Node;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.instance.WorkItem;
