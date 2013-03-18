@@ -16,7 +16,7 @@
 
 package org.drools.core.io.impl;
 
-import org.kie.definition.KieDescr;
+import org.kie.api.definition.KieDescr;
 import org.kie.internal.io.ResourceChangeNotifier;
 import org.kie.internal.io.ResourceFactoryService;
 import org.kie.io.Resource;

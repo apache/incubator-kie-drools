@@ -24,7 +24,7 @@ import java.io.ObjectOutput;
 import org.drools.core.WorkingMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 public class SalienceInteger
     implements

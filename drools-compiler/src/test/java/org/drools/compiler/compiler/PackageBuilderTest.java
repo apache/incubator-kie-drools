@@ -95,7 +95,7 @@ import org.drools.core.spi.PropagationContext;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.definition.type.FactField;
+import org.kie.api.definition.type.FactField;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.internal.utils.CompositeClassLoader;
 

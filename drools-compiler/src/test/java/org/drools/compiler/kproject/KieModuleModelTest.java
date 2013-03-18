@@ -10,8 +10,8 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.builder.model.ListenerModel;
 import org.kie.api.builder.model.WorkItemHandlerModel;
-import org.kie.conf.EqualityBehaviorOption;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.runtime.conf.ClockTypeOption;
 
 import java.util.List;

@@ -14,7 +14,7 @@ import org.drools.core.StatefulSession;
 import org.drools.core.StatelessSession;
 import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.rule.Package;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.type.FactType;
 import org.kie.marshalling.Marshaller;
 import org.kie.runtime.Environment;
 

@@ -40,7 +40,7 @@ import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.AcceptsWriteAccessor;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.InternalReadAccessor;
-import org.kie.definition.type.FactField;
+import org.kie.api.definition.type.FactField;
 
 public class ClassFieldAccessorStore
     implements

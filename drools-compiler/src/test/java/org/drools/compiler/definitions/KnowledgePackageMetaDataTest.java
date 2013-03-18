@@ -30,9 +30,9 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.definition.rule.Query;
-import org.kie.definition.type.FactField;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.rule.Query;
+import org.kie.api.definition.type.FactField;
+import org.kie.api.definition.type.FactType;
 import org.kie.io.ResourceType;
 
 public class KnowledgePackageMetaDataTest {

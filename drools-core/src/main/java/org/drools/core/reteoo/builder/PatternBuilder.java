@@ -53,7 +53,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.CompositeMaxDurationTimer;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.Timer;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 

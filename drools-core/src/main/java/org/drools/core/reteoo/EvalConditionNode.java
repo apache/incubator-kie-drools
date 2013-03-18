@@ -30,7 +30,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 import java.io.Externalizable;
 import java.io.IOException;

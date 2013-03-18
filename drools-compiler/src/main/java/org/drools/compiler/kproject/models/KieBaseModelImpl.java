@@ -9,8 +9,8 @@ import org.drools.core.util.Predicate;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
-import org.kie.conf.EqualityBehaviorOption;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.io.ResourceType;
 
 import java.util.ArrayList;
@@ -186,7 +186,7 @@ public class KieBaseModelImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieBaseModel#setEqualsBehavior(org.kie.conf.EqualityBehaviorOption)
+     * @see org.kie.kproject.KieBaseModel#setEqualsBehavior(org.kie.api.conf.EqualityBehaviorOption)
      */
     public KieBaseModel setEqualsBehavior(EqualityBehaviorOption equalsBehaviour) {
         this.equalsBehavior = equalsBehaviour;
@@ -201,7 +201,7 @@ public class KieBaseModelImpl
     }
 
     /* (non-Javadoc)
-     * @see org.kie.kproject.KieBaseModel#setEventProcessingMode(org.kie.conf.EventProcessingOption)
+     * @see org.kie.kproject.KieBaseModel#setEventProcessingMode(org.kie.api.conf.EventProcessingOption)
      */
     public KieBaseModel setEventProcessingMode(EventProcessingOption eventProcessingMode) {
         this.eventProcessingMode = eventProcessingMode;

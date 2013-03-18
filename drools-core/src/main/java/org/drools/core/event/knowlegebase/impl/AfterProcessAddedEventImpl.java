@@ -17,7 +17,7 @@
 package org.drools.core.event.knowlegebase.impl;
 
 import org.kie.internal.KnowledgeBase;
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 import org.kie.event.kiebase.AfterProcessAddedEvent;
 
 public class AfterProcessAddedEventImpl extends KnowledgeBaseEventImpl implements AfterProcessAddedEvent {

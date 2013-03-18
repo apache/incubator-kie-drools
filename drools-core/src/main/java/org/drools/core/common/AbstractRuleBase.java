@@ -40,8 +40,8 @@ import org.drools.core.rule.Rule;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.spi.FactHandleFactory;
-import org.kie.definition.process.Process;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.type.FactType;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.internal.utils.CompositeClassLoader;
 
@@ -634,8 +634,8 @@ abstract public class AbstractRuleBase
 
                 // add the flows to the RuleBase
                 if ( newPkg.getRuleFlows() != null ) {
-                    final Map<String, org.kie.definition.process.Process> flows = newPkg.getRuleFlows();
-                    for ( org.kie.definition.process.Process process : flows.values() ) {
+                    final Map<String, org.kie.api.definition.process.Process> flows = newPkg.getRuleFlows();
+                    for ( org.kie.api.definition.process.Process process : flows.values() ) {
                         // XXX: we could take the lock inside addProcess() out, but OTOH: this is what the VM is supposed to do ...
                         addProcess( process );
                     }

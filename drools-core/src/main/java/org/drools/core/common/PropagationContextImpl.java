@@ -193,7 +193,7 @@ public class PropagationContextImpl
         return this.rule;
     }
 
-    public org.kie.definition.rule.Rule getRule() {
+    public org.kie.api.definition.rule.Rule getRule() {
         return this.rule;
     }
 

@@ -35,7 +35,7 @@ import org.drools.core.spi.ObjectType;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.runtime.conf.QueryListenerOption;
 import org.kie.runtime.rule.LiveQuery;

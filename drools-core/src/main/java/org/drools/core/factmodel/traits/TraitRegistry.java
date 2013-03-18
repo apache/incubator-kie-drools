@@ -19,7 +19,7 @@ package org.drools.core.factmodel.traits;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.TypeDeclaration;
-import org.kie.definition.type.FactField;
+import org.kie.api.definition.type.FactField;
 
 import java.io.*;
 import java.util.HashMap;

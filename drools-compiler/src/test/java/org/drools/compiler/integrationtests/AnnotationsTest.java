@@ -40,10 +40,10 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PhreakOption;
-import org.kie.conf.EventProcessingOption;
-import org.kie.conf.MBeansOption;
-import org.kie.definition.rule.Rule;
-import org.kie.definition.type.Position;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.MBeansOption;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.Position;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 
@@ -91,7 +91,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
 
         String drl = "package org.drools.compiler.test;\n " +
                      "" +
-                     "import org.kie.definition.type.Position; \n " +
+                     "import org.kie.api.definition.type.Position; \n " +
                      "import " + AnnotationsTest.class.getCanonicalName() + "; \n" +
                      "import " + AnnotationsTest.Annot.class.getCanonicalName() + "; \n" +
                      "" +

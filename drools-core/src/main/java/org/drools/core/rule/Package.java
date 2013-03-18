@@ -23,8 +23,8 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;
-import org.kie.definition.process.Process;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.type.FactType;
 import org.kie.io.Resource;
 
 import java.io.ByteArrayInputStream;

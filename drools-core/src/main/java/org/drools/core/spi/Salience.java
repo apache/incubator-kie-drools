@@ -19,7 +19,7 @@ package org.drools.core.spi;
 import java.io.Serializable;
 
 import org.drools.core.WorkingMemory;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 
 public interface Salience extends Serializable {
     public int getValue(final KnowledgeHelper khelper,

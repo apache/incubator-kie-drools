@@ -1,7 +1,7 @@
 package org.drools.games.pong;
 
 
-import org.kie.definition.type.PropertyReactive;
+import org.kie.api.definition.type.PropertyReactive;
 
 @PropertyReactive
 public class Bat {

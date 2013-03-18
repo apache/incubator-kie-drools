@@ -20,8 +20,8 @@ import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
-import org.kie.conf.EqualityBehaviorOption;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.runtime.KieContainer;
 import org.kie.runtime.KieSession;
 

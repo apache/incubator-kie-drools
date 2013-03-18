@@ -33,7 +33,7 @@ import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.kie.definition.rule.Rule;
+import org.kie.api.definition.rule.Rule;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;

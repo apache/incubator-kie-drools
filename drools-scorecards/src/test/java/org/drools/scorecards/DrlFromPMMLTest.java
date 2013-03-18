@@ -8,7 +8,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.type.FactType;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;

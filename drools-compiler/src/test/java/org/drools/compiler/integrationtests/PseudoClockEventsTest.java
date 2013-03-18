@@ -34,7 +34,7 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.internal.runtime.StatefulKnowledgeSession;

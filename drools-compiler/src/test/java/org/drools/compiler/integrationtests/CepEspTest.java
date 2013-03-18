@@ -33,10 +33,10 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.conf.EqualityBehaviorOption;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.type.FactType;
 import org.kie.event.rule.AfterMatchFiredEvent;
 import org.kie.event.rule.AgendaEventListener;
 import org.kie.event.rule.MatchCreatedEvent;
@@ -2284,7 +2284,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 0,
                       rulesFired );
 
-        org.kie.definition.type.FactType event = kbase.getFactType( "org.drools.cloud",
+        org.kie.api.definition.type.FactType event = kbase.getFactType( "org.drools.cloud",
                                                                        "Event" );
         Object e1 = event.newInstance();
         event.set( e1,

@@ -18,7 +18,7 @@ package org.drools.core.event;
 
 import java.util.EventObject;
 
-import org.kie.definition.process.Process;
+import org.kie.api.definition.process.Process;
 
 public class AfterProcessRemovedEvent extends EventObject {
 

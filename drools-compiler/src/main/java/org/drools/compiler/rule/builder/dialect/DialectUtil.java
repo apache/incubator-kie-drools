@@ -35,7 +35,7 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.KnowledgeHelper;
-import org.kie.definition.type.FactField;
+import org.kie.api.definition.type.FactField;
 import org.mvel2.CompileException;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;

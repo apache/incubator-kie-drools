@@ -56,7 +56,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.marshalling.Marshaller;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.marshalling.ObjectMarshallingStrategy;

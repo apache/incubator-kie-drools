@@ -18,7 +18,7 @@ package org.drools.core.factmodel;
 
 
 import org.drools.core.base.TypeResolver;
-import org.kie.definition.type.Annotation;
+import org.kie.api.definition.type.Annotation;
 
 import java.io.Externalizable;
 import java.io.IOException;

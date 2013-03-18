@@ -11,8 +11,8 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.KieSessionModel.KieSessionType;
-import org.kie.conf.EqualityBehaviorOption;
-import org.kie.conf.EventProcessingOption;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.runtime.KieSession;
 import org.kie.runtime.conf.ClockTypeOption;
 

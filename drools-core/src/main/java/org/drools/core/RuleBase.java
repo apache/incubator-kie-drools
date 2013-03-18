@@ -20,7 +20,7 @@ import java.io.Externalizable;
 import java.util.Set;
 
 import org.drools.core.rule.Package;
-import org.kie.definition.type.FactType;
+import org.kie.api.definition.type.FactType;
 import org.kie.runtime.Environment;
 
 /**
