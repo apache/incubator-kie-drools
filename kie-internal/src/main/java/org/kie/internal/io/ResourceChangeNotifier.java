@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.io;
+package org.kie.internal.io;
 
 import java.util.Collection;
 
 import org.kie.internal.ChangeSet;
 import org.kie.internal.SystemEventListener;
 import org.kie.internal.event.io.ResourceChangeListener;
+import org.kie.io.Resource;
 
 /**
  * <p>

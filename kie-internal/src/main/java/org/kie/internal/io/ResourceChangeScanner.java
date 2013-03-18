@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.io;
+package org.kie.internal.io;
 
 import java.util.Properties;
 

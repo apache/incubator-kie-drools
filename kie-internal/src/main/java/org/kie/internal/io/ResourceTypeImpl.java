@@ -1,7 +1,8 @@
-package org.kie.io;
+package org.kie.internal.io;
 
 import java.util.Properties;
 
+import org.kie.io.ResourceConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

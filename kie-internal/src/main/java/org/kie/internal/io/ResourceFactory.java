@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.io;
+package org.kie.internal.io;
 
 import java.io.File;
 import java.io.InputStream;
@@ -23,6 +23,7 @@ import java.net.URL;
 
 import org.kie.internal.definition.KnowledgeDescr;
 import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.io.Resource;
 
 /**
  * <p>
