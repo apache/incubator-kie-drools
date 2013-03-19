@@ -78,7 +78,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     
     public void setProcessXml(String processXml) {
     	if (processXml != null && processXml.trim().length() > 0) {
-        	System.out.println("setProcessXml " + processXml);
+//        	System.out.println("setProcessXml " + processXml);
     		this.processXml = processXml;
     	}
     }
