@@ -6,6 +6,7 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.process.audit.jms.AsyncAuditLogProducer;
 import org.kie.api.runtime.KieSession;
@@ -28,7 +29,7 @@ public class AuditLoggerFactory {
     }
     
     /**
-     * Creates new isntances of audit logger based on given type and parameters and 
+     * Creates new instance of audit logger based on given type and parameters and 
      * registers it directly in given ksession to receive its events.
      * Depending on the types several properties are supported:
      * <bold>JPA</bold>
@@ -91,5 +92,84 @@ public class AuditLoggerFactory {
         return logger;
     }
     
+    /**
+     * Creates new instance of JPA audit logger with given EntityManagerFactory
+     * NOTE: this will build the logger but it is not registered directly on a session son once received needs to be 
+     * registered as event listener
+     * @param emf EntityManagerFactory used to provide JPA entity manager instances on demand.
+     * @return new instance of JPA audit logger
+     */
+    public static AbstractAuditLogger newJPAInstance(EntityManagerFactory emf) {
+        return new JPAWorkingMemoryDbLogger(emf);
+    }
+    
+    /**
+     * Creates new instance of JMS audit logger based on given parameters.
+     * Supported parameters are as follows:
+     * <ul>
+     * <li>jbpm.audit.jms.transacted - determines if JMS session is transacted or not - default true - type Boolean</li>
+     * <li>jbpm.audit.jms.connection.factory - connection factory instance - type javax.jms.ConnectionFactory</li>
+     * <li>jbpm.audit.jms.queue - JMS queue instance - type javax.jms.Queue</li>
+     * <li>jbpm.audit.jms.connection.factory.jndi - JNDI name of the connection factory to look up - type String</li>
+     * <li>jbpm.audit.jms.queue.jndi - JNDI name of the queue to look up - type String</li>
+     * </ul>
+     * NOTE: this will build the logger but it is not registered directly on a session son once received needs to be 
+     * registered as event listener
+     * @param properties - optional properties for the type of logger to initialize it
+     * @return new instance of JMS audit logger
+     */
+    public static AbstractAuditLogger newJMSInstance(Map<String, Object> properties) {
+        AsyncAuditLogProducer logger = new AsyncAuditLogProducer();
+        boolean transacted = true;
+        if (properties.containsKey("jbpm.audit.jms.transacted")) {
+            transacted = (Boolean) properties.get("jbpm.audit.jms.transacted");
+        }
+        
+        logger.setTransacted(transacted);
+        
+        // set connection factory and queue if given as property
+        if (properties.containsKey("jbpm.audit.jms.connection.factory")) {
+            ConnectionFactory connFactory = (ConnectionFactory) properties.get("jbpm.audit.jms.connection.factory"); 
+            logger.setConnectionFactory(connFactory);
+        }                
+        if (properties.containsKey("jbpm.audit.jms.queue")) {
+            Queue queue = (Queue) properties.get("jbpm.audit.jms.queue"); 
+            logger.setQueue(queue);
+        }
+        try {
+            // look up connection factory and queue if given as property
+            if (properties.containsKey("jbpm.audit.jms.connection.factory.jndi")) {
+                ConnectionFactory connFactory = (ConnectionFactory) InitialContext.doLookup(
+                        (String)properties.get(properties.get("jbpm.audit.jms.connection.factory.jndi"))); 
+                logger.setConnectionFactory(connFactory);
+            }                
+            if (properties.containsKey("jbpm.audit.jms.queue.jndi")) {
+                Queue queue = (Queue) InitialContext.doLookup((String)properties.get("jbpm.audit.jms.queue.jndi")); 
+               logger.setQueue(queue);
+            }
+        } catch (NamingException e) {
+            throw new RuntimeException("Error when looking up ConnectionFactory/Queue", e);
+        }
+        
+        return logger;
+    }
+    
+    /**
+     * Creates new instance of JMS audit logger based on given connection factory and queue.
+     * NOTE: this will build the logger but it is not registered directly on a session son once received needs to be 
+     * registered as event listener
+     * @param transacted determines if JMS session is transacted or not
+     * @param connFactory connection factory instance
+     * @param queue JMS queue instance
+     * @return new instance of JMS audit logger
+     */
+    public static AbstractAuditLogger newJMSInstance(boolean transacted, ConnectionFactory connFactory, Queue queue) {
+        AsyncAuditLogProducer logger = new AsyncAuditLogProducer();
+        logger.setTransacted(transacted);
+        logger.setConnectionFactory(connFactory);
+        logger.setQueue(queue);
+        
+        return logger;
+    }
     
 }

@@ -231,6 +231,43 @@ public class AsyncAuditLogProducerTest {
         assertTrue(processInstances.isEmpty());
     }
     
+    @Test
+    public void testAsyncAuditLoggerCompleteDirectCreation() throws Exception {
+        Environment env = createEnvironment(context);
+        // load the process
+        KnowledgeBase kbase = createKnowledgeBase();
+        // create a new session
+        StatefulKnowledgeSession session = createSession(kbase, env);
+        
+
+        AbstractAuditLogger logger = AuditLoggerFactory.newJMSInstance(true, factory, queue);
+        assertNotNull(logger);
+        assertTrue((logger instanceof AsyncAuditLogProducer));
+        session.addEventListener(logger);
+
+        // start process instance
+        ProcessInstance processInstance = session.startProcess("com.sample.ruleflow");
+        
+        MessageReceiver receiver = new MessageReceiver();
+        receiver.receiveAndProcess(queue, ((EntityManagerFactory)env.get(EnvironmentName.ENTITY_MANAGER_FACTORY)));
+     
+        // validate if everything is stored in db
+        JPAProcessInstanceDbLog.setEnvironment(env);
+        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        assertEquals(1, processInstances.size());
+        List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstance.getId());
+        assertEquals(6, nodeInstances.size());
+        for (NodeInstanceLog nodeInstance: nodeInstances) {
+
+            assertEquals(processInstance.getId(), nodeInstance.getProcessInstanceId());
+            assertEquals("com.sample.ruleflow", nodeInstance.getProcessId());
+            assertNotNull(nodeInstance.getDate());
+        }
+        JPAProcessInstanceDbLog.clear();
+        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        assertTrue(processInstances.isEmpty());
+    }
+    
     private KnowledgeBase createKnowledgeBase() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(new ClassPathResource("ruleflow.rf"), ResourceType.DRF);

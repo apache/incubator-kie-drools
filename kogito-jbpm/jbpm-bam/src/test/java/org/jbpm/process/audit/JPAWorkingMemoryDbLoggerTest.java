@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
@@ -44,6 +46,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
@@ -374,6 +377,55 @@ public class JPAWorkingMemoryDbLoggerTest {
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow", processInstance.getProcessId());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getStatus());
+        List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+        assertEquals(6, nodeInstances.size());
+        for (NodeInstanceLog nodeInstance: nodeInstances) {
+            logger.debug(nodeInstance.toString());
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals("com.sample.ruleflow", processInstance.getProcessId());
+            assertNotNull(nodeInstance.getDate());
+        }
+        JPAProcessInstanceDbLog.clear();
+        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        assertTrue(processInstances.isEmpty());
+    }
+    
+    @Test
+    public void testLoggerWithEMF() throws Exception {
+        
+        // load the process
+        KnowledgeBase kbase = createKnowledgeBase();
+        // create a new session
+        Environment env = createEnvironment(context);
+        Properties properties = new Properties();
+        properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
+        properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
+        KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
+        StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
+        AbstractAuditLogger dblogger = AuditLoggerFactory.newJPAInstance((EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY));
+        assertNotNull(dblogger);
+        assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
+        session.addEventListener(dblogger);
+        JPAProcessInstanceDbLog.setEnvironment(env);
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+
+        // record the initial count to compare to later
+        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        int initialProcessInstanceSize = processInstances.size();
+        
+        // start process instance
+        long processInstanceId = session.startProcess("com.sample.ruleflow").getId();
+        
+        logger.debug("Checking process instances for process 'com.sample.ruleflow'");
+        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        assertEquals(initialProcessInstanceSize + 1, processInstances.size());
+        ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
+        logger.debug(processInstance.toString() 
+        + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+        assertNotNull(processInstance.getStart());
+        assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals("com.sample.ruleflow", processInstance.getProcessId());
         List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {

@@ -50,7 +50,10 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
     private Queue queue;
     private boolean transacted = true;
 
-
+    public AsyncAuditLogProducer() {
+        
+    }
+    
     public AsyncAuditLogProducer(KieSession session, boolean transacted) {
         super(session);
         this.transacted = transacted;
@@ -171,6 +174,14 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
                 }
             }
         }
+    }
+
+    public boolean isTransacted() {
+        return transacted;
+    }
+
+    public void setTransacted(boolean transacted) {
+        this.transacted = transacted;
     }
 
 
