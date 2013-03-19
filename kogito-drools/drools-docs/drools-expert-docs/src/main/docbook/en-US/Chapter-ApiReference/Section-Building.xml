@@ -14,7 +14,7 @@
 
     <mediaobject>
       <imageobject>
-        <!-- HACK remove me when https://issues.jboss.org/browse/PRESSGANG-81 is fixed -->      
+        <!-- HACK remove me when https://issues.jboss.org/browse/PRESSGANG-81 is fixed -->
         <imagedata fileref="images/Chapter-User_Guide/builder.png" width="75%"/>
       </imageobject>
     </mediaobject>

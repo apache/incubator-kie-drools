@@ -39,7 +39,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-IDE/all.png" format="PNG" width=""></imagedata>
+        <imagedata fileref="images/Chapter-IDE/all.png" format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -156,7 +156,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/drools-runtimes.png"
-                     format="PNG" role="" width=""></imagedata>
+                     format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
 
@@ -216,7 +216,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/drools-runtimes2.png"
-                     format="PNG" role="" width=""></imagedata>
+                     format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
 
@@ -229,7 +229,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/drools-runtimes3.png"
-                     format="PNG" role="" width=""></imagedata>
+                     format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
 
@@ -994,7 +994,7 @@ logger.close();</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-IDE/preferences.png" format="PNG" width=""></imagedata>
+        <imagedata fileref="images/Chapter-IDE/preferences.png" format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
 
