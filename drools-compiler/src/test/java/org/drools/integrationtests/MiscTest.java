@@ -10472,7 +10472,7 @@ public class MiscTest extends CommonTestMethodBase {
                 "    zint\t: Integer[] \n" + "\t= new Integer[] {2,3}                   @key \n" +
                 "    aaaa\t: String[][] \n" +
                 "    bbbb\t: int[][] \n" +
-                "    aprs\t: Person[] \n" + "\t= new org.drools.test.Person[] { new org.drools.test.Man() }" +
+                "    aprs\t: Person[] \n" + "\t= new Person[] { new Man() }" +
                 "end\n" +
                 "\n" +
                 "rule \"Init\"\n" +

@@ -2581,7 +2581,67 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         generateDeclaredBean( typeDescr,
                               type,
                               pkgRegistry,
-                              def );
+                              expandImportsInFieldInitExpr( def, pkgRegistry ) );
+    }
+
+    private ClassDefinition expandImportsInFieldInitExpr(ClassDefinition def, PackageRegistry pkgRegistry) {
+        TypeResolver typeResolver = pkgRegistry.getPackage().getTypeResolver();
+        for (FieldDefinition field : def.getFieldsDefinitions()) {
+            field.setInitExpr(rewriteInitExprWithImports(field.getInitExpr(), typeResolver));
+        }
+        return def;
+    }
+
+    private String rewriteInitExprWithImports(String expr, TypeResolver typeResolver) {
+        if (expr == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean inQuotes = false;
+        boolean inTypeName = false;
+        boolean afterDot = false;
+        int typeStart = 0;
+        for (int i = 0; i < expr.length(); i++) {
+            char ch = expr.charAt(i);
+            if (Character.isJavaIdentifierStart(ch)) {
+                if (!inTypeName && !inQuotes && !afterDot) {
+                    typeStart = i;
+                    inTypeName = true;
+                }
+            } else if (!Character.isJavaIdentifierPart(ch)) {
+                if (ch == '"') {
+                    inQuotes = !inQuotes;
+                } else if (ch == '.' && !inQuotes) {
+                    afterDot = true;
+                } else if (!Character.isSpaceChar(ch)) {
+                    afterDot = false;
+                }
+                if (inTypeName) {
+                    inTypeName = false;
+                    String type = expr.substring(typeStart, i);
+                    sb.append(getFullTypeName(type, typeResolver));
+                }
+            }
+            if (!inTypeName) {
+                sb.append(ch);
+            }
+        }
+        if (inTypeName) {
+            String type = expr.substring(typeStart);
+            sb.append(getFullTypeName(type, typeResolver));
+        }
+        return sb.toString();
+    }
+
+    private String getFullTypeName(String type, TypeResolver typeResolver) {
+        if (type.equals("new")) {
+            return type;
+        }
+        try {
+            return typeResolver.getFullTypeName(type);
+        } catch (ClassNotFoundException e) {
+            return type;
+        }
     }
 
     private void generateDeclaredBean( AbstractClassTypeDeclarationDescr typeDescr,
