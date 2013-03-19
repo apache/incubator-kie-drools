@@ -68,12 +68,12 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix</groupId>
+      <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix</groupId>
+      <groupId>org.osgi</groupId>
       <artifactId>org.osgi.compendium</artifactId>
       <scope>provided</scope>
     </dependency>
