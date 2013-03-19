@@ -172,7 +172,7 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
             } else {
                 String[] nullCheckAndExpr = processNullSafeDereferencing(expr, atomicExpr, nullSafePos);
                 expr = nullCheckAndExpr[1];
-                constrAndExpr = new String[] { constrAndExpr[0] + nullCheckAndExpr[0], expr };
+                constrAndExpr = new String[] { constrAndExpr[0].contains(nullCheckAndExpr[0]) ? constrAndExpr[0] : constrAndExpr[0] + nullCheckAndExpr[0], expr };
             }
             sharpPos = hasQuotes ? indexOfOutOfQuotes(expr, '#') : expr.indexOf('#');
             nullSafePos = hasQuotes ? indexOfOutOfQuotes(expr, "!.") : expr.indexOf("!.");
@@ -216,9 +216,43 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
         // convert "field1!.field2" in ["field1 != null && ", "field1.field2"]
         String field1 = expr.substring(0, nullSafePos).trim();
         expr = field1 + "." + expr.substring(nullSafePos+2).trim();
-        String[] nullCheckAndExpr = new String[] { field1 + " != null && ", expr };
+        String[] nullCheckAndExpr = new String[] { getPreconditionsToAppend(field1) + " != null && ", expr };
         atomicExpr.setRewrittenExpression(nullCheckAndExpr[1]);
         return nullCheckAndExpr;
+    }
+
+    private String getPreconditionsToAppend(String field1) {
+        int parenthesisDepth = 0;
+        int squareDepth = 0;
+        String precondition = field1;
+        for (int i = field1.length()-1; i >= 0; i--) {
+            switch (field1.charAt(i)) {
+                case '(':
+                    parenthesisDepth--;
+                    if (parenthesisDepth < 0) {
+                        return field1.substring(i+1, field1.length()).trim();
+                    }
+                    break;
+                case ')':
+                    parenthesisDepth++;
+                    break;
+                case '[':
+                    squareDepth--;
+                    if (squareDepth < 0) {
+                        return field1.substring(i+1, field1.length()).trim();
+                    }
+                    break;
+                case ']':
+                    squareDepth++;
+                    break;
+                case ',':
+                    if (squareDepth == 0 && parenthesisDepth == 0) {
+                        return field1.substring(i+1, field1.length()).trim();
+                    }
+                    break;
+            }
+        }
+        return field1;
     }
 
     private String processEval(String expr) {
