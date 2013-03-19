@@ -724,13 +724,17 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     }
     
     @Test 
-    @Ignore("FIXME for Planner")
     public void testUnMatchListenerForChainedPlanningEntities() {
         String str =""+
-                "package org.kie.test;\n" +
+                "package org.drools.compiler.integrationtests;\n" +
                 "\n" +
-                "import org.kie.Father;\n" +
-                "import org.kie.TotalHolder;\n" +
+                "import org.drools.compiler.Father;\n" +
+                "import org.drools.compiler.TotalHolder;\n" +
+                "\n" +
+                "import org.drools.core.common.AgendaItem;\n" +
+                "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
+                "import org.kie.api.runtime.rule.Session;\n" +
+                "import org.kie.api.runtime.rule.Match;\n" +
                 "\n" +
                 "global TotalHolder totalHolder;\n" +
                 "\n" +
@@ -739,16 +743,18 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                 "    $h: Father(father != null, $wf : weightOfFather)\n" +
                 "then\n" +
                 "    totalHolder.add($wf);\n" +
-"    System.out.println(\"match \" + totalHolder.getTotal());\n" +
                 "    final TotalHolder finalTotalHolder = totalHolder;\n" +
                 "    final int finalWf = $wf;\n" +
-                "     org.kie.common.AgendaItem agendaItem = (org.kie.common.AgendaItem) kcontext.getActivation();" +
-                "     agendaItem.setActivationUnMatchListener(new org.kie.internal.event.rule.ActivationUnMatchListener() {" +
-                "            public void unMatch(org.kie.api.runtime.rule.WorkingMemory workingMemory, org.kie.api.runtime.rule.Activation activation) {" +
+                "    AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();" +
+                "    if (agendaItem.getActivationUnMatchListener() != null) {\n" +
+                "        Session session = null; // Should not be used by the undoListener anyway\n" +
+                "        agendaItem.getActivationUnMatchListener().unMatch(session, agendaItem);\n" +
+                "    }" +
+                "    agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {" +
+                "            public void unMatch(Session session, Match match) {" +
                 "                finalTotalHolder.subtract(finalWf);" +
-                "                System.out.println(\"unmatch \" + finalTotalHolder.getTotal());\n" +
                 "            }" +
-                "     });" +
+                "    });" +
                 "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
