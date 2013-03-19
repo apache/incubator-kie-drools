@@ -60,6 +60,31 @@ public class NullSafeDereferencingTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testNullSafeNullComparisonReverse() {
+        String str = "import org.drools.compiler.*;\n" +
+                "rule R1 when\n" +
+                "   Person(  \"Main Street\".equalsIgnoreCase(address!.street)) \n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Person("Mario", 38));
+
+        Person mark = new Person("Mark", 37);
+        mark.setAddress(new Address("Main Street"));
+        ksession.insert(mark);
+
+        Person edson = new Person("Edson", 34);
+        edson.setAddress(new Address(null));
+        ksession.insert(edson);
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
     public void testDoubleNullSafe() {
         String str = "import org.drools.compiler.*;\n" +
                 "rule R1 when\n" +
