@@ -81,7 +81,7 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
 
     @After
     public void tearDown() throws Exception {
-
+        super.tearDown();
         if (emfTasks != null && emfTasks.isOpen()) {
             emfTasks.close();
         }
