@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.score.director.incremental;
 
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * Abstract superclass for {@link IncrementalScoreCalculator}.

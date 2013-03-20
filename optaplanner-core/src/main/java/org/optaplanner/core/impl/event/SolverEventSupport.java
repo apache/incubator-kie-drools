@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import org.drools.core.event.AbstractEventSupport;
 import org.optaplanner.core.Solver;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * Internal API.

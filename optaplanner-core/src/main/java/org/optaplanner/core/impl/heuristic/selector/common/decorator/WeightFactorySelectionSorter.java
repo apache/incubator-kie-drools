@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.collections.comparators.ComparableComparator;
 import org.optaplanner.core.score.director.ScoreDirector;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 public class WeightFactorySelectionSorter implements SelectionSorter<Object> {
 

@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractXmlSolutionImporter;
 import org.optaplanner.examples.nurserostering.domain.DayOfWeek;
 import org.optaplanner.examples.nurserostering.domain.Employee;

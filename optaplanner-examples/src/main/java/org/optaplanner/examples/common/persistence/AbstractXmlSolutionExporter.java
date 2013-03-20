@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.output.Format;

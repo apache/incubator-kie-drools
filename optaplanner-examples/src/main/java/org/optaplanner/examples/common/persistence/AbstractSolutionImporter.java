@@ -19,7 +19,7 @@ package org.optaplanner.examples.common.persistence;
 import java.io.File;
 import java.util.Arrays;
 
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.app.LoggingMain;
 
 public abstract class AbstractSolutionImporter extends LoggingMain {

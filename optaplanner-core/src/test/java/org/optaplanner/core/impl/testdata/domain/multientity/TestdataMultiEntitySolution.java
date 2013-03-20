@@ -24,7 +24,7 @@ import org.optaplanner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataUtil;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;

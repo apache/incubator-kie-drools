@@ -19,7 +19,7 @@ package org.optaplanner.examples.examination.persistence;
 import java.io.IOException;
 import java.util.Collections;
 
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.examination.domain.Exam;

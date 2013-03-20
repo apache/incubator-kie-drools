@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.score;
 
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * A {@link Score} that supports {@link #isFeasible()}.

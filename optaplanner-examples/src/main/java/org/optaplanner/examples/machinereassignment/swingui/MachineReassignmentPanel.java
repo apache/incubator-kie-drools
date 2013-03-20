@@ -30,7 +30,7 @@ import javax.swing.JPanel;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.score.director.ScoreDirector;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;

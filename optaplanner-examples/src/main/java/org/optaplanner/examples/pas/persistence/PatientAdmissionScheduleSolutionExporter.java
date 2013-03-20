@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.Patient;

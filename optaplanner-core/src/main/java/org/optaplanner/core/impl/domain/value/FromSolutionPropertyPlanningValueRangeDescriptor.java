@@ -22,7 +22,7 @@ import org.optaplanner.api.domain.value.ValueRange;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 public class FromSolutionPropertyPlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {
 

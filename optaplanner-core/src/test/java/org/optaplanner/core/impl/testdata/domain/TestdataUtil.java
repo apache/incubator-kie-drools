@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.testdata.domain;
 
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 public class TestdataUtil {
 

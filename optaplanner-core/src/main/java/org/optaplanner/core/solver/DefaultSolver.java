@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.phase.SolverPhase;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirectorFactory;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.termination.Termination;
 import org.slf4j.Logger;

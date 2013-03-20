@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 public abstract class AbstractTxtSolutionExporter extends AbstractSolutionExporter {
 

@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirector;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * A Move represents a change of 1 or more planning variables of 1 or more planning entities in the {@link Solution}.

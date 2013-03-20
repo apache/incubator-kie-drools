@@ -30,7 +30,7 @@ import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.solution.ProblemIO;
+import org.optaplanner.core.impl.solution.ProblemIO;
 import org.optaplanner.persistence.xstream.XStreamProblemIO;
 
 @XStreamAlias("problemBenchmarks")

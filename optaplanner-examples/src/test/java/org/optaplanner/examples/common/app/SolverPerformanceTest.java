@@ -23,7 +23,7 @@ import org.optaplanner.config.XmlSolverFactory;
 import org.optaplanner.config.termination.TerminationConfig;
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.score.Score;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.junit.Before;
 

@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.event;
 import java.util.EventObject;
 
 import org.optaplanner.core.Solver;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * Delivered when the best solution changes during solving.

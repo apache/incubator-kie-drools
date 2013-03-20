@@ -24,7 +24,7 @@ import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
 import org.optaplanner.core.score.Score;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * This {@link SolverBenchmarkRankingWeightFactory} orders a {@link SolverBenchmark} by how how many time each of it's

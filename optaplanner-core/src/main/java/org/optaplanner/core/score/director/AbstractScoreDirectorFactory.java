@@ -19,7 +19,7 @@ package org.optaplanner.core.score.director;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.definition.ScoreDefinition;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

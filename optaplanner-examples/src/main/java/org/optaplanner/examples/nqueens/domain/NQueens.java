@@ -26,7 +26,7 @@ import org.optaplanner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.score.buildin.simple.SimpleScoreDefinition;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.XStreamScoreConverter;
 

@@ -31,7 +31,7 @@ import org.optaplanner.core.score.constraint.ConstraintOccurrence;
 import org.optaplanner.core.score.director.AbstractScoreDirector;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.core.score.holder.ScoreHolder;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * Drools implementation of {@link ScoreDirector}, which directs the Rule Engine to calculate the {@link Score}

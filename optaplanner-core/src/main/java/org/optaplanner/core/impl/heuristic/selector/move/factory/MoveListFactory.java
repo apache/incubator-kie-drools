@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * A simple interface to generate a {@link List} of custom {@link Move}s.

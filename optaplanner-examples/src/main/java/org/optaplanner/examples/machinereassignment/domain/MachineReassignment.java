@@ -28,7 +28,7 @@ import org.optaplanner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
 import org.optaplanner.persistence.xstream.XStreamScoreConverter;

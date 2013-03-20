@@ -19,7 +19,7 @@ package org.optaplanner.core.score.holder;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.core.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * A workaround class that wraps parts of a {@link Score}.

@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutionCloner;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 public class SolutionDescriptor {
 

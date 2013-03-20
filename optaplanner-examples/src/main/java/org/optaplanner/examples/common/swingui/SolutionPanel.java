@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
 
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

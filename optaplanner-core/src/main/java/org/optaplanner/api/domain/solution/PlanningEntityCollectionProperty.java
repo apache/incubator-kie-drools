@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.score.director.ScoreDirector;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;

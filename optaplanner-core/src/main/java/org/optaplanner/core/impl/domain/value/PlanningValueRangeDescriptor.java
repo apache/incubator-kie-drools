@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.domain.value;
 
 import java.util.Collection;
 
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 public interface PlanningValueRangeDescriptor {
 

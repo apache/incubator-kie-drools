@@ -28,7 +28,7 @@ import org.optaplanner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.pas.domain.solver.AdmissionPartConflict;
 import org.optaplanner.persistence.xstream.XStreamScoreConverter;

@@ -17,7 +17,7 @@
 package org.optaplanner.core.score.director.simple;
 
 import org.optaplanner.core.score.Score;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * Used for simple java {@link Score} calculation. This is non-incremental calculation, which is slow.

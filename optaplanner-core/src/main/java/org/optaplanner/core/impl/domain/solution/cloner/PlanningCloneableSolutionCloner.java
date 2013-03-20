@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.domain.solution.cloner;
 
 import org.optaplanner.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 public class PlanningCloneableSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {
 

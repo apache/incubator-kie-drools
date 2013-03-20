@@ -19,7 +19,7 @@ package org.optaplanner.core.score.director.simple;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.AbstractScoreDirector;
 import org.optaplanner.core.score.director.ScoreDirector;
-import org.optaplanner.core.solution.Solution;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * Simple java implementation of {@link ScoreDirector}, which recalculates the {@link Score}

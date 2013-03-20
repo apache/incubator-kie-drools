@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.solution;
+package org.optaplanner.core.impl.solution;
 
 import java.io.File;
 
