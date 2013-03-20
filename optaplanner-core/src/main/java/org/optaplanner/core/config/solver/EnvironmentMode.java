@@ -16,16 +16,20 @@
 
 package org.optaplanner.core.config.solver;
 
+import java.util.Random;
+
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.decider.DefaultDecider;
 import org.optaplanner.core.impl.move.Move;
 
 /**
- * A solver has a single Random instance. Some solver configurations use the Random instance a lot more than others.
+ * The environment mode also allows you to detect common bugs in your implementation.
+ * <p/>
+ * Also, a {@link Solver} has a single {@link Random} instance.
+ * Some optimization algorithms use the {@link Random} instance a lot more than others.
  * For example simulated annealing depends highly on random numbers,
  * while tabu search only depends on it to deal with score ties.
- * The environment mode influences the seed of that Random instance.
- * <p/>
- * The environment mode also allows you to detect common bugs in your implementation.
+ * This environment mode influences the seed of that {@link Random} instance.
  */
 public enum EnvironmentMode {
     /**
