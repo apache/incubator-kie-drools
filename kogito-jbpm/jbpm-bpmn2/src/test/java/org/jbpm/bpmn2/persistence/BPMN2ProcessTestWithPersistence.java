@@ -18,7 +18,6 @@ package org.jbpm.bpmn2.persistence;
 import java.util.*;
 
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
-import org.jbpm.bpmn2.SimpleBPMNProcessTest;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.kie.internal.KnowledgeBase;
@@ -36,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 public class BPMN2ProcessTestWithPersistence extends JbpmBpmn2TestCase {
 
-    private Logger logger = LoggerFactory.getLogger(SimpleBPMNProcessTest.class);
+    private Logger logger = LoggerFactory.getLogger(BPMN2ProcessTestWithPersistence.class);
     
     public void testCallActivityWithHistoryLog() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory

@@ -58,7 +58,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testExclusiveSplit() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -73,7 +73,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testExclusiveSplitXPathAdvanced() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -96,7 +96,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testExclusiveSplitXPathAdvanced2() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced-vars-not-signaled.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -119,7 +119,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testExclusiveSplitXPathAdvancedWithVars() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced-with-vars.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -142,7 +142,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testExclusiveSplitPriority() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitPriority.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -157,7 +157,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testExclusiveSplitDefault() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefault.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Email",
                 new SystemOutWorkItemHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -172,7 +172,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testExclusiveXORGateway() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-gatewayTest.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         Document document = DocumentBuilderFactory
                 .newInstance()
                 .newDocumentBuilder()
@@ -198,7 +198,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testInclusiveSplit() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplit.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
         ProcessInstance processInstance = ksession.startProcess(
@@ -210,7 +210,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testInclusiveSplitAndJoin() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoin.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -234,7 +234,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testInclusiveSplitAndJoinLoop() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinLoop.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -258,7 +258,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testInclusiveSplitAndJoinLoop2() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinLoop2.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -282,7 +282,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testInclusiveSplitAndJoinNested() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinNested.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -314,7 +314,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testInclusiveSplitAndJoinEmbedded() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinEmbedded.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -338,7 +338,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testInclusiveSplitAndJoinWithParallel() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinWithParallel.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -362,7 +362,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testInclusiveSplitAndJoinWithEnd() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinWithEnd.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -391,7 +391,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testInclusiveSplitAndJoinWithTimer() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinWithTimer.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -423,7 +423,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testInclusiveSplitAndJoinExtraPath() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitAndJoinExtraPath.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -454,7 +454,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testInclusiveSplitDefault() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitDefault.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", -5);
         ProcessInstance processInstance = ksession.startProcess(
@@ -467,7 +467,7 @@ public class FlowTest extends JbpmTestCase {
     public void testMultiInstanceLoopCharacteristicsProcessWithORGateway()
             throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcessWithORgateway.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -552,7 +552,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcess.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         List<String> myList = new ArrayList<String>();
         myList.add("First Item");
@@ -568,7 +568,7 @@ public class FlowTest extends JbpmTestCase {
     public void testMultiInstanceLoopCharacteristicsProcessWithOutput()
             throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutput.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         List<String> myList = new ArrayList<String>();
         List<String> myListOut = new ArrayList<String>();
@@ -588,7 +588,7 @@ public class FlowTest extends JbpmTestCase {
     public void testMultiInstanceLoopCharacteristicsTaskWithOutput()
             throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutput.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new SystemOutWorkItemHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -609,7 +609,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsTask() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsTask.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new SystemOutWorkItemHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -627,7 +627,7 @@ public class FlowTest extends JbpmTestCase {
     public void testMultipleInOutgoingSequenceFlows() throws Exception {
         System.setProperty("jbpm.enable.multi.con", "true");
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleInOutgoingSequenceFlows.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
 
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
@@ -670,7 +670,7 @@ public class FlowTest extends JbpmTestCase {
         String processId = "designer.conditional-flow";
 
         KieBase kbase = createKnowledgeBase("BPMN2-ConditionalFlowWithoutGateway.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
 
         WorkflowProcessInstance wpi = (WorkflowProcessInstance) ksession
                 .startProcess(processId);
@@ -679,6 +679,35 @@ public class FlowTest extends JbpmTestCase {
         assertNodeTriggered(wpi.getId(), "start", "script", "end1");
         System.clearProperty("jbpm.enable.multi.con");
 
+    }
+
+    @Test
+    public void testLane() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-Lane.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        assertEquals("john", workItem.getParameter("ActorId"));
+        Map<String, Object> results = new HashMap<String, Object>();
+        results.put("ActorId", "mary");
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(),
+                results);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        assertEquals("mary", workItem.getParameter("ActorId"));
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceFinished(processInstance, ksession);
     }
 
 }

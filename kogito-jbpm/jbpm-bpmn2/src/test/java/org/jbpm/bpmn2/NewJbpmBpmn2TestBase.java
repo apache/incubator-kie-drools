@@ -47,7 +47,7 @@ public class NewJbpmBpmn2TestBase extends Assert {
         // Dump and reread
         XmlProcessReader processReader 
             = new XmlProcessReader(((PackageBuilderConfiguration) conf).getSemanticModules(), getClass().getClassLoader());
-        List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/" + process));
+        List<Process> processes = processReader.read(NewJbpmBpmn2TestBase.class.getResourceAsStream("/" + process));
         for (Process p : processes) {
             RuleFlowProcess ruleFlowProcess = (RuleFlowProcess) p;
             String dumpedString = XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess);
@@ -79,7 +79,7 @@ public class NewJbpmBpmn2TestBase extends Assert {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
         kbuilder.add(
                 ResourceFactory.newReaderResource(new InputStreamReader(
-                        SimpleBPMNProcessTest.class.getResourceAsStream("/" + process))), 
+                        NewJbpmBpmn2TestBase.class.getResourceAsStream("/" + process))), 
                 ResourceType.BPMN2);
         
         // Print errors

@@ -319,7 +319,7 @@ public class SimplePersistenceBPMNProcessTest extends JbpmBpmn2TestCase {
                 ((PackageBuilderConfiguration) conf).getSemanticModules(),
                 getClass().getClassLoader());
         List<Process> processes = processReader
-                .read(SimpleBPMNProcessTest.class
+                .read(SimplePersistenceBPMNProcessTest.class
                         .getResourceAsStream("/BPMN2-RuleTaskWithFact.bpmn2"));
         assertNotNull(processes);
         assertEquals(1, processes.size());

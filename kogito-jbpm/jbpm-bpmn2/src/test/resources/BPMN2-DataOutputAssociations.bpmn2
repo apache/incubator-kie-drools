@@ -24,11 +24,11 @@
     <userTask id="_2" name="Task">
       <ioSpecification>
         <dataOutput id='output' name='output'/>
+        <inputSet>
+        </inputSet>
         <outputSet>
           <dataOutputRefs>output</dataOutputRefs>
         </outputSet>
-        <inputSet>
-        </inputSet>
       </ioSpecification>
       <dataOutputAssociation>
         <sourceRef>output</sourceRef>
