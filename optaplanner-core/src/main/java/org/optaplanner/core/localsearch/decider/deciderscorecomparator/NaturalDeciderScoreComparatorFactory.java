@@ -18,8 +18,8 @@ package org.optaplanner.core.localsearch.decider.deciderscorecomparator;
 
 import java.util.Comparator;
 
-import org.optaplanner.core.score.Score;
-import org.optaplanner.core.score.comparator.NaturalScoreComparator;
+import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.impl.score.comparator.NaturalScoreComparator;
 
 /**
  * Implementation of {@link DeciderScoreComparatorFactory}.

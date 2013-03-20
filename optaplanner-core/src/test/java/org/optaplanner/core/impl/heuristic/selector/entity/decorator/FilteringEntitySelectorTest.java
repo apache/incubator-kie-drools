@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFi
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.junit.Test;

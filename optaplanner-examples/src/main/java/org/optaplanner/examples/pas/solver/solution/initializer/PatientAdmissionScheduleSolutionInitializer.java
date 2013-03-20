@@ -25,9 +25,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
-import org.optaplanner.core.score.Score;
-import org.optaplanner.core.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;

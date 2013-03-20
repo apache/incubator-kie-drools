@@ -22,7 +22,7 @@ import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.localsearch.decider.forager.AcceptedForager;
 import org.optaplanner.core.localsearch.decider.forager.Forager;
 import org.optaplanner.core.localsearch.decider.forager.PickEarlyType;
-import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 @XStreamAlias("forager")
 public class ForagerConfig {

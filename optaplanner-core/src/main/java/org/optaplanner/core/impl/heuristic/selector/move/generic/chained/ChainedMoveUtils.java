@@ -21,7 +21,7 @@ import java.util.ListIterator;
 
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ChainedMoveUtils {
 

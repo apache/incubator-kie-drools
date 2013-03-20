@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.domain.variable.PlanningValueSorter;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Determines the order in which the planning values of 1 planning entity class are selected for an algorithm

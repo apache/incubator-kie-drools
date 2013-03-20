@@ -19,8 +19,8 @@ package org.optaplanner.examples.cloudbalancing.solver.score;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.optaplanner.core.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;

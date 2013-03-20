@@ -18,7 +18,7 @@ package org.optaplanner.examples.travelingtournament.solver.move.factory;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.travelingtournament.domain.Match;
 
 public class InverseMatchSwapMoveFilter implements SelectionFilter<SwapMove> {

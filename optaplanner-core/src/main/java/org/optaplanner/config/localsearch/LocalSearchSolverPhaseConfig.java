@@ -40,7 +40,7 @@ import org.optaplanner.core.localsearch.LocalSearchSolverPhase;
 import org.optaplanner.core.localsearch.decider.Decider;
 import org.optaplanner.core.localsearch.decider.DefaultDecider;
 import org.optaplanner.core.localsearch.decider.forager.Forager;
-import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("localSearch")

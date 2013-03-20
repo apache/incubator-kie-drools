@@ -20,8 +20,8 @@ import java.util.Collection;
 
 import org.drools.core.WorkingMemory;
 import org.optaplanner.core.impl.Solver;
-import org.optaplanner.core.score.Score;
-import org.optaplanner.core.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**

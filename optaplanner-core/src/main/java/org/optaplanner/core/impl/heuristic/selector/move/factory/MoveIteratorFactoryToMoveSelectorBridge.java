@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Bridges a {@link MoveIteratorFactory} to a {@link MoveSelector}.

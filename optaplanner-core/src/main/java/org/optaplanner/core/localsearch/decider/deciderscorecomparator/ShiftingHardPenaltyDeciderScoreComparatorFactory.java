@@ -20,10 +20,10 @@ import java.util.Comparator;
 
 import org.optaplanner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.score.Score;
-import org.optaplanner.core.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.score.comparator.FlatteningHardSoftScoreComparator;
-import org.optaplanner.core.score.comparator.NaturalScoreComparator;
+import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.comparator.FlatteningHardSoftScoreComparator;
+import org.optaplanner.core.impl.score.comparator.NaturalScoreComparator;
 
 /**
  * @see DeciderScoreComparatorFactory

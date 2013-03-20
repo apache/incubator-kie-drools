@@ -33,7 +33,7 @@ import org.optaplanner.core.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
 import org.optaplanner.core.localsearch.decider.acceptor.tabu.PlanningEntityTabuAcceptor;
 import org.optaplanner.core.localsearch.decider.acceptor.tabu.PlanningValueTabuAcceptor;
 import org.optaplanner.core.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
-import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 @XStreamAlias("acceptor")
 public class AcceptorConfig {

@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
 import static java.lang.annotation.ElementType.*;

@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.curriculumcourse.solver.move;
 
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.Period;
 import org.optaplanner.examples.curriculumcourse.domain.Room;

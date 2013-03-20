@@ -26,7 +26,7 @@ import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.impl.Solver;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.score.Score;
+import org.optaplanner.core.impl.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;

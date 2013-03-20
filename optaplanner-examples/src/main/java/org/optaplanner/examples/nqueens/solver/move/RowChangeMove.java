@@ -23,7 +23,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
 

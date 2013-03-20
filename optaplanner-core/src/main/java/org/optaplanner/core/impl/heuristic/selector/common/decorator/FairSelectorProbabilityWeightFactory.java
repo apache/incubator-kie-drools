@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
 import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class FairSelectorProbabilityWeightFactory implements SelectionProbabilityWeightFactory<IterableSelector> {
 

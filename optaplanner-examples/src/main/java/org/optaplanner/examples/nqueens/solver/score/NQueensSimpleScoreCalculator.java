@@ -18,8 +18,8 @@ package org.optaplanner.examples.nqueens.solver.score;
 
 import java.util.List;
 
-import org.optaplanner.core.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.score.director.simple.SimpleScoreCalculator;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 

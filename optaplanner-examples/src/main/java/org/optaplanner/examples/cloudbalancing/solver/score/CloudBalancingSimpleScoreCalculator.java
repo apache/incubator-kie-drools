@@ -16,8 +16,8 @@
 
 package org.optaplanner.examples.cloudbalancing.solver.score;
 
-import org.optaplanner.core.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.score.director.simple.SimpleScoreCalculator;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;

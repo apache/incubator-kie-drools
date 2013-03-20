@@ -20,7 +20,7 @@ import org.optaplanner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.score.Score;
+import org.optaplanner.core.impl.score.Score;
 
 /**
  * TODO this will be removed once the time gradient based {@link SimulatedAnnealingAcceptor} is always better.

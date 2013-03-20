@@ -23,7 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.AbstractCompositeTermination;
 import org.optaplanner.core.impl.termination.AndCompositeTermination;
 import org.optaplanner.core.impl.termination.OrCompositeTermination;

@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionPr
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.util.RandomUtils;
 

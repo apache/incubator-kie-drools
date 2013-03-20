@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.travelingtournament.solver.move;
 
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
 

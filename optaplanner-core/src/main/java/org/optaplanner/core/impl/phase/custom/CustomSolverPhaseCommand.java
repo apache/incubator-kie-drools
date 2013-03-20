@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.phase.custom;
 
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public interface CustomSolverPhaseCommand {
 

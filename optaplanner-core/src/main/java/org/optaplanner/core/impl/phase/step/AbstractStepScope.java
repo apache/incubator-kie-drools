@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.phase.step;
 import java.util.Random;
 
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.score.Score;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
 public abstract class AbstractStepScope {

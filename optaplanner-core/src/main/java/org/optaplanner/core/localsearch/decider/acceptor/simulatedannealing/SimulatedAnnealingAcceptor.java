@@ -20,7 +20,7 @@ import org.optaplanner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.score.Score;
+import org.optaplanner.core.impl.score.Score;
 
 /**
  * The time gradient implementation of simulated annealing.

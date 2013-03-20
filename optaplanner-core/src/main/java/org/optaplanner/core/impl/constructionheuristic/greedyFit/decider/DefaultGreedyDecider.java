@@ -24,8 +24,8 @@ import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFit
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningVariableWalker;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.score.Score;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

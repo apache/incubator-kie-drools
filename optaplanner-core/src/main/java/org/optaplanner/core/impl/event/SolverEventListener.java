@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.event;
 import java.util.EventListener;
 
 import org.optaplanner.core.impl.Solver;
-import org.optaplanner.core.score.Score;
+import org.optaplanner.core.impl.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 

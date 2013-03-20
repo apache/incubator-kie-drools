@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
-import org.optaplanner.core.score.Score;
-import org.optaplanner.core.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.manners2009.domain.Guest;
 import org.optaplanner.examples.manners2009.domain.Manners2009;

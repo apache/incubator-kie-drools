@@ -20,8 +20,8 @@ import java.util.Random;
 
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.score.Score;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
 public class GreedyMoveScope {

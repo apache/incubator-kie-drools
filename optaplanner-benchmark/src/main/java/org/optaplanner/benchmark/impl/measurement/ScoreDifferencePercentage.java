@@ -22,7 +22,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import org.apache.commons.lang.LocaleUtils;
-import org.optaplanner.core.score.Score;
+import org.optaplanner.core.impl.score.Score;
 
 public class ScoreDifferencePercentage implements Serializable {
 

@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 import java.util.Map;
 
 import org.optaplanner.core.impl.heuristic.selector.Selector;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class FixedSelectorProbabilityWeightFactory<Sel extends Selector>
         implements SelectionProbabilityWeightFactory<Sel> {

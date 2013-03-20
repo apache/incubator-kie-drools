@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.event.SolverEventSupport;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
-import org.optaplanner.core.score.Score;
+import org.optaplanner.core.impl.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;

@@ -27,7 +27,7 @@ import org.optaplanner.config.termination.TerminationConfig;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.impl.phase.SolverPhase;
-import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.PhaseToSolverTerminationBridge;
 import org.optaplanner.core.impl.termination.Termination;
 

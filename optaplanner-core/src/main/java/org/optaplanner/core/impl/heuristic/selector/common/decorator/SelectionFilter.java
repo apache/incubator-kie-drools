@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Decides on keeping or discarding a selection

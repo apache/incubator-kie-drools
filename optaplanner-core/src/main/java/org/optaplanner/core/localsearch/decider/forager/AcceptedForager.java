@@ -25,7 +25,7 @@ import org.optaplanner.core.localsearch.decider.deciderscorecomparator.DeciderSc
 import org.optaplanner.core.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.score.Score;
+import org.optaplanner.core.impl.score.Score;
 
 /**
  * An AcceptedForager is a Forager which forages accepted moves and ignores unaccepted moves.

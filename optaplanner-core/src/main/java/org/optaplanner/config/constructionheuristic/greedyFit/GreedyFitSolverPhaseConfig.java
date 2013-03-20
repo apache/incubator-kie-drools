@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.PlanningEntitySelecto
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueWalker;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningVariableWalker;
-import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("greedyFit")

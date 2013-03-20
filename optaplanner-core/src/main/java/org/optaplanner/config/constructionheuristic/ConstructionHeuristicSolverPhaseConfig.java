@@ -45,7 +45,7 @@ import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelect
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueWalker;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningVariableWalker;
 import org.optaplanner.core.impl.phase.SolverPhase;
-import org.optaplanner.core.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("constructionHeuristic")

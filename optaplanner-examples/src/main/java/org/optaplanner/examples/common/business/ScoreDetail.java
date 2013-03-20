@@ -25,12 +25,12 @@ import java.util.Set;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.optaplanner.core.score.constraint.ConstraintOccurrence;
-import org.optaplanner.core.score.constraint.ConstraintType;
-import org.optaplanner.core.score.constraint.DoubleConstraintOccurrence;
-import org.optaplanner.core.score.constraint.IntConstraintOccurrence;
-import org.optaplanner.core.score.constraint.LongConstraintOccurrence;
-import org.optaplanner.core.score.constraint.UnweightedConstraintOccurrence;
+import org.optaplanner.core.impl.score.constraint.ConstraintOccurrence;
+import org.optaplanner.core.impl.score.constraint.ConstraintType;
+import org.optaplanner.core.impl.score.constraint.DoubleConstraintOccurrence;
+import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
+import org.optaplanner.core.impl.score.constraint.LongConstraintOccurrence;
+import org.optaplanner.core.impl.score.constraint.UnweightedConstraintOccurrence;
 
 /**
  * TODO Replace this class with the ConstraintOccurrenceTotal class: https://jira.jboss.org/jira/browse/JBRULES-2510

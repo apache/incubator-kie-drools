@@ -25,7 +25,7 @@ import org.optaplanner.core.move.Move;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 @Deprecated

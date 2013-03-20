@@ -23,7 +23,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
-import org.optaplanner.core.score.Score;
+import org.optaplanner.core.impl.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**

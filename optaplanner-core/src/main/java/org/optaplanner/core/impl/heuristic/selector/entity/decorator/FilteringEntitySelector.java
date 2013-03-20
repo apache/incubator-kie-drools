@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSele
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * TODO This class isn't used because {@link EntitySelector}'s are upgraded to {@link SelectionCacheType#STEP}.

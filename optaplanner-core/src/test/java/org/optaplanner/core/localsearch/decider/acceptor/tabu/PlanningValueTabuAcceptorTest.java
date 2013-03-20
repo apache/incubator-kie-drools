@@ -7,7 +7,7 @@ import org.optaplanner.core.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.junit.Test;

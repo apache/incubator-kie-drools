@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.optaplanner.core.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
-import org.optaplanner.core.score.director.incremental.IncrementalScoreCalculator;
+import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
+import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;
 import org.optaplanner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;

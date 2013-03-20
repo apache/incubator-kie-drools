@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.pas.solver.move;
 
-import org.optaplanner.core.score.director.ScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 
