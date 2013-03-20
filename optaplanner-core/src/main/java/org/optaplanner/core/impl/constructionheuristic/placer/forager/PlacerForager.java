@@ -1,6 +1,6 @@
 package org.optaplanner.core.impl.constructionheuristic.placer.forager;
 
-import org.optaplanner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

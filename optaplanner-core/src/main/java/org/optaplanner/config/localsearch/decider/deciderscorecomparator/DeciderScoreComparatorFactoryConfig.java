@@ -18,9 +18,9 @@ package org.optaplanner.config.localsearch.decider.deciderscorecomparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
-import org.optaplanner.core.localsearch.decider.deciderscorecomparator.NaturalDeciderScoreComparatorFactory;
-import org.optaplanner.core.localsearch.decider.deciderscorecomparator.ShiftingHardPenaltyDeciderScoreComparatorFactory;
+import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
+import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.NaturalDeciderScoreComparatorFactory;
+import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.ShiftingHardPenaltyDeciderScoreComparatorFactory;
 
 @XStreamAlias("deciderScoreComparatorFactory")
 public class DeciderScoreComparatorFactoryConfig {

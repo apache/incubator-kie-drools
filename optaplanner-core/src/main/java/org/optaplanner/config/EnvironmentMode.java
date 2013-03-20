@@ -16,7 +16,7 @@
 
 package org.optaplanner.config;
 
-import org.optaplanner.core.localsearch.decider.DefaultDecider;
+import org.optaplanner.core.impl.localsearch.decider.DefaultDecider;
 import org.optaplanner.core.move.Move;
 
 /**

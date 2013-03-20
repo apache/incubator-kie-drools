@@ -24,15 +24,15 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.localsearch.decider.acceptor.Acceptor;
-import org.optaplanner.core.localsearch.decider.acceptor.CompositeAcceptor;
-import org.optaplanner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
-import org.optaplanner.core.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
-import org.optaplanner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
-import org.optaplanner.core.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
-import org.optaplanner.core.localsearch.decider.acceptor.tabu.PlanningEntityTabuAcceptor;
-import org.optaplanner.core.localsearch.decider.acceptor.tabu.PlanningValueTabuAcceptor;
-import org.optaplanner.core.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.CompositeAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.PlanningEntityTabuAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.PlanningValueTabuAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 @XStreamAlias("acceptor")

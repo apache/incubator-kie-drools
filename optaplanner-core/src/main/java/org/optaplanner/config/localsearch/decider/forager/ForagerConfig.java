@@ -19,9 +19,9 @@ package org.optaplanner.config.localsearch.decider.forager;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.localsearch.decider.forager.AcceptedForager;
-import org.optaplanner.core.localsearch.decider.forager.Forager;
-import org.optaplanner.core.localsearch.decider.forager.PickEarlyType;
+import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedForager;
+import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
+import org.optaplanner.core.impl.localsearch.decider.forager.PickEarlyType;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 @XStreamAlias("forager")

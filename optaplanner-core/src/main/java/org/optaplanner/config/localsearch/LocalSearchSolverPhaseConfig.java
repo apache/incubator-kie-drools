@@ -35,11 +35,11 @@ import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.localsearch.DefaultLocalSearchSolverPhase;
-import org.optaplanner.core.localsearch.LocalSearchSolverPhase;
-import org.optaplanner.core.localsearch.decider.Decider;
-import org.optaplanner.core.localsearch.decider.DefaultDecider;
-import org.optaplanner.core.localsearch.decider.forager.Forager;
+import org.optaplanner.core.impl.localsearch.DefaultLocalSearchSolverPhase;
+import org.optaplanner.core.impl.localsearch.LocalSearchSolverPhase;
+import org.optaplanner.core.impl.localsearch.decider.Decider;
+import org.optaplanner.core.impl.localsearch.decider.DefaultDecider;
+import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 
