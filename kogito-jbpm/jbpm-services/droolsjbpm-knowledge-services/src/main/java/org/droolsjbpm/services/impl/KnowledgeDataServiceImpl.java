@@ -15,20 +15,15 @@
  */
 package org.droolsjbpm.services.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 
 import org.droolsjbpm.services.api.KnowledgeDataService;
-import org.droolsjbpm.services.api.SessionLocator;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
@@ -48,7 +43,7 @@ import org.jbpm.process.audit.NodeInstanceLog;
 @Transactional
 public class KnowledgeDataServiceImpl implements KnowledgeDataService {
 
-    Map<String, SessionLocator> ksessionLocators = new HashMap<String, SessionLocator>();
+    
     @Inject
     private JbpmServicesPersistenceManager pm;
 

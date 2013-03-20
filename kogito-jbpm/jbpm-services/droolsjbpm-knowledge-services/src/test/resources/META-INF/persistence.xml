@@ -55,6 +55,11 @@
     <class>org.jbpm.process.audit.ProcessInstanceLog</class>
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
     <class>org.jbpm.process.audit.VariableInstanceLog</class>    
+    
+    <!-- domain --> 
+    <class>org.droolsjbpm.services.domain.entities.Domain</class>
+    <class>org.droolsjbpm.services.domain.entities.Organization</class>
+    <class>org.droolsjbpm.services.domain.entities.RuntimeId</class>
 
    
     <properties>

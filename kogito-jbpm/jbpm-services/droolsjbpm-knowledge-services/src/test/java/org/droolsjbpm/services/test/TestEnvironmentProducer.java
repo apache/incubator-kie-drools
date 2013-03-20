@@ -12,6 +12,7 @@ import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -26,9 +27,18 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
+import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.task.identity.JBossUserGroupCallbackImpl;
+import org.kie.api.io.ResourceType;
 
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
+import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
+import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
 
 /**
  *
@@ -54,6 +64,19 @@ public class TestEnvironmentProducer {
         }
         return this.emf;
     }
+    
+    @Produces
+    @Singleton
+    @PerRequest
+    @PerProcessInstance
+    public RuntimeEnvironment produceEnvironment(EntityManagerFactory emf) {
+        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment(emf);
+        Properties properties= new Properties();
+        environment.setUserGroupCallback( new JBossUserGroupCallbackImpl(properties));
+        return environment;
+    }
+    
+    
 
     @Produces
     @ApplicationScoped
