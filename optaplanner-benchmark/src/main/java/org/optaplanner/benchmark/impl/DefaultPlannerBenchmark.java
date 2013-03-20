@@ -39,7 +39,7 @@ import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.history.BenchmarkHistoryReport;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
-import org.optaplanner.core.Solver;
+import org.optaplanner.core.impl.Solver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

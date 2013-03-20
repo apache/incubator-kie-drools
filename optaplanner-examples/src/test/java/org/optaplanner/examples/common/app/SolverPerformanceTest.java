@@ -21,7 +21,7 @@ import java.io.File;
 import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.config.XmlSolverFactory;
 import org.optaplanner.config.termination.TerminationConfig;
-import org.optaplanner.core.Solver;
+import org.optaplanner.core.impl.Solver;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.persistence.SolutionDao;

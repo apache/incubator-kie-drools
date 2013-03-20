@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.config.XmlSolverFactory;
 import org.optaplanner.config.solver.SolverConfig;
-import org.optaplanner.core.Solver;
+import org.optaplanner.core.impl.Solver;
 import org.optaplanner.core.score.Score;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

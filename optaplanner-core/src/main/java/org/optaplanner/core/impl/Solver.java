@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core;
+package org.optaplanner.core.impl;
 
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;

@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.solver;
 
-import org.optaplanner.core.Solver;
+import org.optaplanner.core.impl.Solver;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;

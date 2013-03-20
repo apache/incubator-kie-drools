@@ -17,7 +17,7 @@
 package org.optaplanner.benchmark.impl.statistic;
 
 import org.optaplanner.benchmark.impl.SingleBenchmark;
-import org.optaplanner.core.Solver;
+import org.optaplanner.core.impl.Solver;
 
 /**
  * 1 statistic of {@link SingleBenchmark}

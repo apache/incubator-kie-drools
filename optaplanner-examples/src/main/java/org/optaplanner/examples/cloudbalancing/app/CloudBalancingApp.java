@@ -17,7 +17,7 @@
 package org.optaplanner.examples.cloudbalancing.app;
 
 import org.optaplanner.config.XmlSolverFactory;
-import org.optaplanner.core.Solver;
+import org.optaplanner.core.impl.Solver;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDaoImpl;
 import org.optaplanner.examples.cloudbalancing.swingui.CloudBalancingPanel;
 import org.optaplanner.examples.common.app.CommonApp;
