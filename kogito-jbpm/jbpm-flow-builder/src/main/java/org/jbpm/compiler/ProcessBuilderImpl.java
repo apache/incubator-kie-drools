@@ -147,7 +147,8 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
 		            ProcessDescr processDescr = new ProcessDescr();
 		            processDescr.setName(process.getPackageName() + "." + process.getName());
 		            processDescr.setResource( resource );
-		            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
+		            processDescr.setProcessId( process.getId() );
+		            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();
 		            Dialect dialect = dialectRegistry.getDialect( "java" );
 		            dialect.init(processDescr);
 		
