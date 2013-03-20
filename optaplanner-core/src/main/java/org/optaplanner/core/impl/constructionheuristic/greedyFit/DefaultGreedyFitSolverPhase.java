@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFit
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.phase.AbstractSolverPhase;
+import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.solution.Solution;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 

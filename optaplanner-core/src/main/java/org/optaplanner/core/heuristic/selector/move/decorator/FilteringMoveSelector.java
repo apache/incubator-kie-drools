@@ -24,7 +24,7 @@ import org.optaplanner.core.heuristic.selector.common.iterator.UpcomingSelection
 import org.optaplanner.core.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.score.director.ScoreDirector;
 
 public class FilteringMoveSelector extends AbstractMoveSelector {

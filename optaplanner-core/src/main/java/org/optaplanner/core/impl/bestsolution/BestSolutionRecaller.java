@@ -18,9 +18,9 @@ package org.optaplanner.core.impl.bestsolution;
 
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.impl.event.SolverEventSupport;
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.solution.Solution;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;

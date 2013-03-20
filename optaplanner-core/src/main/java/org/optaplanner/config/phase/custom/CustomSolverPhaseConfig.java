@@ -26,9 +26,9 @@ import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.config.phase.SolverPhaseConfig;
 import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.phase.custom.CustomSolverPhase;
-import org.optaplanner.core.phase.custom.CustomSolverPhaseCommand;
-import org.optaplanner.core.phase.custom.DefaultCustomSolverPhase;
+import org.optaplanner.core.impl.phase.custom.CustomSolverPhase;
+import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
+import org.optaplanner.core.impl.phase.custom.DefaultCustomSolverPhase;
 import org.optaplanner.core.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 

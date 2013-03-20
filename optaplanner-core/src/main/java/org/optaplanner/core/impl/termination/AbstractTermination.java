@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.termination;
 
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

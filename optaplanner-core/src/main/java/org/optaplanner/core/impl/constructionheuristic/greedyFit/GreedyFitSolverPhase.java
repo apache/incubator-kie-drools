@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.constructionheuristic.greedyFit;
 
-import org.optaplanner.core.phase.AbstractSolverPhase;
-import org.optaplanner.core.phase.SolverPhase;
+import org.optaplanner.core.impl.phase.AbstractSolverPhase;
+import org.optaplanner.core.impl.phase.SolverPhase;
 
 /**
  * A GreedyFitSolverPhase is a {@link SolverPhase} which uses the greedy algorithm, which is a construction heuristic.

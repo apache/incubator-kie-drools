@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.phase;
+package org.optaplanner.core.impl.phase;
 
 import java.util.List;
 import java.util.Random;
@@ -22,7 +22,7 @@ import java.util.Random;
 import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.definition.ScoreDefinition;
 import org.optaplanner.core.score.director.ScoreDirector;

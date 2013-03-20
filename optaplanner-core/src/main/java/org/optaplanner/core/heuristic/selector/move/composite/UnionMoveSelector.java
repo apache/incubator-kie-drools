@@ -28,7 +28,7 @@ import org.apache.commons.collections.iterators.IteratorChain;
 import org.optaplanner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.core.impl.util.RandomUtils;
 

@@ -23,8 +23,8 @@ import java.util.Random;
 
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;

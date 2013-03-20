@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.optaplanner.core.phase.custom.CustomSolverPhaseCommand;
+import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.score.director.ScoreDirector;

@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.termination;
 
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 

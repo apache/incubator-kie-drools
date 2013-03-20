@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.localsearch.scope;
 
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 
 public class LocalSearchSolverPhaseScope extends AbstractSolverPhaseScope {

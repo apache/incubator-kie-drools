@@ -22,8 +22,8 @@ import org.optaplanner.core.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.move.DummyMove;
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 import org.junit.Test;
 

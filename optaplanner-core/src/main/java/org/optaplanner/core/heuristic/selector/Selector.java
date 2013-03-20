@@ -23,7 +23,7 @@ import org.optaplanner.core.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 
 /**
  * General interface for {@link MoveSelector}, {@link EntitySelector} and {@link ValueSelector}

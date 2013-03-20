@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.phase;
+package org.optaplanner.core.impl.phase;
 
 import org.optaplanner.core.impl.bestsolution.BestSolutionRecaller;
 import org.optaplanner.core.localsearch.DefaultLocalSearchSolverPhase;
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleListener;
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleSupport;
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleSupport;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.termination.Termination;
 import org.slf4j.Logger;

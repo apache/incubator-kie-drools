@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.phase.custom.scope;
+package org.optaplanner.core.impl.phase.custom.scope;
 
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 
 public class CustomSolverPhaseScope extends AbstractSolverPhaseScope {

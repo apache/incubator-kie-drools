@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.constructionheuristic.scope;
 
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 
 public class ConstructionHeuristicStepScope extends AbstractStepScope {
 

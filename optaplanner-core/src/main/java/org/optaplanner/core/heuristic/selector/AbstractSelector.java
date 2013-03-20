@@ -19,9 +19,9 @@ package org.optaplanner.core.heuristic.selector;
 import java.util.Random;
 
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleSupport;
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleSupport;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -18,9 +18,9 @@ package org.optaplanner.core.impl.termination;
 
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.phase.SolverPhase;
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.SolverPhase;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 
 /**

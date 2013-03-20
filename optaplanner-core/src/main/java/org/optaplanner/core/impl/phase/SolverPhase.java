@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.phase;
+package org.optaplanner.core.impl.phase;
 
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 
 /**

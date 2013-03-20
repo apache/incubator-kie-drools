@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.phase.custom.scope;
+package org.optaplanner.core.impl.phase.custom.scope;
 
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 
 public class CustomStepScope extends AbstractStepScope {
 

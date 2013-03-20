@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.bruteforce.scope;
 
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 
 public class BruteForceStepScope extends AbstractStepScope {
 

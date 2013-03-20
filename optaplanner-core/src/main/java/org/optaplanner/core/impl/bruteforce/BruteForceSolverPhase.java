@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.bruteforce;
 
-import org.optaplanner.core.phase.AbstractSolverPhase;
-import org.optaplanner.core.phase.SolverPhase;
+import org.optaplanner.core.impl.phase.AbstractSolverPhase;
+import org.optaplanner.core.impl.phase.SolverPhase;
 
 /**
  * A {@link BruteForceSolverPhase} is a {@link SolverPhase} which uses the brute force algorithm.

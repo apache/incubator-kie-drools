@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.constructionheuristic.placer;
 
 import org.optaplanner.core.impl.constructionheuristic.placer.value.ValuePlacer;
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 
 /**
  * General interface for TODO and {@link ValuePlacer}

@@ -25,8 +25,8 @@ import java.util.Random;
 
 import org.optaplanner.core.domain.variable.PlanningValueSorter;
 import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.score.director.ScoreDirector;
 
 /**

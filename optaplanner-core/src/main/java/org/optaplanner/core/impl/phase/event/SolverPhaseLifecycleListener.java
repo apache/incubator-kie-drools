@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.phase.event;
+package org.optaplanner.core.impl.phase.event;
 
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.solver.event.SolverLifecycleListener;
 
 public interface SolverPhaseLifecycleListener extends SolverLifecycleListener {

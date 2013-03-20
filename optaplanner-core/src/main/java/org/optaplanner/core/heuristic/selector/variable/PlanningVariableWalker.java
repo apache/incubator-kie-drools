@@ -23,9 +23,9 @@ import java.util.List;
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.move.CompositeMove;
 import org.optaplanner.core.move.Move;
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleListener;
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 

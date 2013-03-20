@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.core.Solver;
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.solver.DefaultSolver;
 
 public class MemoryUseSingleStatistic extends AbstractSingleStatistic {

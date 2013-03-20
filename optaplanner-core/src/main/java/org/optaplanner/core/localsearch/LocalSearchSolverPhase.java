@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.localsearch;
 
-import org.optaplanner.core.phase.AbstractSolverPhase;
-import org.optaplanner.core.phase.SolverPhase;
+import org.optaplanner.core.impl.phase.AbstractSolverPhase;
+import org.optaplanner.core.impl.phase.SolverPhase;
 
 /**
  * A {@link LocalSearchSolverPhase} is a {@link SolverPhase} which uses a local search algorithm,

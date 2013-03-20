@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.constructionheuristic.greedyFit.scope;
 
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 
 public class GreedyFitSolverPhaseScope extends AbstractSolverPhaseScope {

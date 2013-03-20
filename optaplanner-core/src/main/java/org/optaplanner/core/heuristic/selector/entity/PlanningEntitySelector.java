@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.domain.entity.PlanningEntitySorter;
-import org.optaplanner.core.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 
 /**
  * Determines the order in which the planning entities of 1 planning entity class are selected for an algorithm
