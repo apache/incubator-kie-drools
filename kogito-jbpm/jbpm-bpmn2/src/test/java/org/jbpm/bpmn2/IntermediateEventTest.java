@@ -24,6 +24,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,25 @@ public class IntermediateEventTest extends JbpmTestCase {
             ksession.dispose();
             ksession = null;
         }
+    }
+
+    @Test
+    public void testSignalBoundaryEvent() throws Exception {
+        KieBase kbase = createKnowledgeBase(
+                "BPMN2-BoundarySignalEventOnTaskbpmn2.bpmn",
+                "BPMN2-IntermediateThrowEventSignal.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                handler);
+        ProcessInstance processInstance = ksession
+                .startProcess("BoundarySignalOnTask");
+
+        ProcessInstance processInstance2 = ksession
+                .startProcess("SignalIntermediateEvent");
+        assertProcessInstanceFinished(processInstance2, ksession);
+
+        assertProcessInstanceFinished(processInstance, ksession);
     }
 
     @Test
@@ -87,7 +107,7 @@ public class IntermediateEventTest extends JbpmTestCase {
                 .startProcess("BoundarySignalOnTask");
         ksession.signalEvent("MySignal", "value");
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -132,7 +152,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ksession.getWorkItemManager().completeWorkItem(
                 handler.getWorkItem().getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -148,7 +168,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ksession = restoreSession(ksession, true);
         ksession.signalEvent("MyMessage", null);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -161,7 +181,29 @@ public class IntermediateEventTest extends JbpmTestCase {
                 "SignalIntermediateEvent", params);
         assertEquals(ProcessInstance.STATE_COMPLETED,
                 processInstance.getState());
-        
+
+    }
+
+    @Test
+    public void testSignalBetweenProcesses() throws Exception {
+        KieBase kbase = createKnowledgeBase(
+                "BPMN2-IntermediateCatchSignalSingle.bpmn2",
+                "BPMN2-IntermediateThrowEventSignal.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                handler);
+
+        ProcessInstance processInstance = ksession
+                .startProcess("BPMN2-IntermediateCatchSignalSingle");
+        ksession.getWorkItemManager().completeWorkItem(
+                handler.getWorkItem().getId(), null);
+
+        ProcessInstance processInstance2 = ksession
+                .startProcess("SignalIntermediateEvent");
+        assertProcessInstanceFinished(processInstance2, ksession);
+
+        assertProcessInstanceFinished(processInstance, ksession);
     }
 
     @Test
@@ -193,7 +235,7 @@ public class IntermediateEventTest extends JbpmTestCase {
                 new SystemOutWorkItemHandler());
         ksession.signalEvent("No", "NoValue", processInstance.getId());
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -226,7 +268,7 @@ public class IntermediateEventTest extends JbpmTestCase {
                 new DoNothingWorkItemHandler());
         ksession.signalEvent("No", "NoValue", processInstance.getId());
         assertProcessInstanceActive(processInstance);
-        
+
     }
 
     @Test
@@ -257,7 +299,7 @@ public class IntermediateEventTest extends JbpmTestCase {
                 new DoNothingWorkItemHandler());
         // No
         ksession.signalEvent("No", "NoValue", processInstance.getId());
-        
+
     }
 
     @Test
@@ -302,7 +344,7 @@ public class IntermediateEventTest extends JbpmTestCase {
                 new SystemOutWorkItemHandler());
         ksession.fireAllRules();
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -336,7 +378,7 @@ public class IntermediateEventTest extends JbpmTestCase {
                 new SystemOutWorkItemHandler());
         ksession.insert(jack);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -369,7 +411,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ksession.signalEvent("Message-NoMessage", "NoValue",
                 processInstance.getId());
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -411,7 +453,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         receiveTaskHandler.messageReceived("NoMessage", "NoValue");
         assertProcessInstanceFinished(processInstance, ksession);
         receiveTaskHandler.messageReceived("YesMessage", "YesValue");
-        
+
     }
 
     @Test
@@ -455,7 +497,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
                 "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(4, executednodes.size());
-        
+
     }
 
     @Test
@@ -518,7 +560,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
                 "end", "Sub Process 1", "start-sub", "User Task 2", "end-sub");
         assertEquals(4, executednodes.size());
-        
+
     }
 
     @Test
@@ -554,7 +596,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
                 "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
-        
+
     }
 
     @Test
@@ -599,7 +641,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
                 "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(4, executednodes.size());
-        
+
     }
 
     @Test
@@ -635,7 +677,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
                 "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
-        
+
     }
 
     @Test
@@ -671,7 +713,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
                 "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
-        
+
     }
 
     @Test
@@ -707,7 +749,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
                 "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
-        
+
     }
 
     @Test
@@ -742,7 +784,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
                 "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
-        
+
     }
 
     @Test
@@ -777,7 +819,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
                 "end", "start-sub", "Script Task 1", "end-sub");
         assertEquals(4, executednodes.size());
-        
+
     }
 
     @Test
@@ -815,7 +857,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
                 "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
         assertEquals(1, executednodes.size());
-        
+
     }
 
     @Test
@@ -829,7 +871,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession.startProcess(
                 "MessageIntermediateEvent", params);
         assertProcessInstanceCompleted(processInstance);
-        
+
     }
 
     @Test
@@ -845,7 +887,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertProcessInstanceFinished(processInstance, ksession);
         assertNodeTriggered(processInstance.getId(), "StartProcess",
                 "User Task", "Boundary event", "Condition met", "End2");
-        
+
     }
 
     @Test
@@ -866,7 +908,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertProcessInstanceFinished(processInstance, ksession);
         assertNodeTriggered(processInstance.getId(), "StartProcess",
                 "User Task", "User Task2", "End1");
-        
+
     }
 
     @Test
@@ -876,7 +918,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("EscalationBoundaryEvent");
         assertProcessInstanceCompleted(processInstance);
-        
+
     }
 
     @Test
@@ -889,7 +931,7 @@ public class IntermediateEventTest extends JbpmTestCase {
                 .startProcess("EscalationBoundaryEvent");
         assertProcessInstanceCompleted(processInstance);
         // TODO: check for cancellation of task
-        
+
     }
 
     @Test
@@ -939,7 +981,7 @@ public class IntermediateEventTest extends JbpmTestCase {
 
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -949,7 +991,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("EscalationIntermediateThrowEvent");
         assertProcessInstanceAborted(processInstance);
-        
+
     }
 
     @Test
@@ -961,7 +1003,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("ErrorBoundaryEvent");
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1011,7 +1053,7 @@ public class IntermediateEventTest extends JbpmTestCase {
 
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1026,7 +1068,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         Thread.sleep(1000);
         ksession = restoreSession(ksession, true);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1041,7 +1083,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         Thread.sleep(1500);
         ksession = restoreSession(ksession, true);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1060,7 +1102,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         Thread.sleep(2000);
         ksession = restoreSession(ksession, true);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1075,7 +1117,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         Thread.sleep(1000);
         ksession = restoreSession(ksession, true);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1093,7 +1135,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertProcessInstanceActive(processInstance);
         ksession.abortProcessInstance(processInstance.getId());
         Thread.sleep(1000);
-        
+
     }
 
     @Test
@@ -1127,7 +1169,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         logger.debug("Firing timer");
         ksession.fireAllRules();
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1144,7 +1186,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         logger.debug("Firing timer");
         ksession.fireAllRules();
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1160,7 +1202,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         // now signal process instance
         ksession.signalEvent("MyMessage", "SomeValue", processInstance.getId());
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1177,7 +1219,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ksession.signalEvent("Message-HelloMessage", "SomeValue",
                 processInstance.getId());
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1196,7 +1238,7 @@ public class IntermediateEventTest extends JbpmTestCase {
                 new DoNothingWorkItemHandler());
         ksession.fireAllRules();
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1216,7 +1258,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         Thread.sleep(2000);
         ksession.fireAllRules();
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1235,7 +1277,7 @@ public class IntermediateEventTest extends JbpmTestCase {
                 new DoNothingWorkItemHandler());
         ksession.fireAllRules();
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1254,7 +1296,7 @@ public class IntermediateEventTest extends JbpmTestCase {
                 new DoNothingWorkItemHandler());
         ksession.fireAllRules();
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1284,7 +1326,7 @@ public class IntermediateEventTest extends JbpmTestCase {
             Thread.sleep(1000);
         }
         assertEquals(6, list.size());
-        
+
     }
 
     @Test
@@ -1303,7 +1345,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertProcessInstanceActive(processInstance);
         ksession.abortProcessInstance(processInstance.getId());
         Thread.sleep(1000);
-        
+
     }
 
     @Test
@@ -1319,7 +1361,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         person.setName("Jack");
         ksession.insert(person);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1365,7 +1407,7 @@ public class IntermediateEventTest extends JbpmTestCase {
                 ksession.getProcessInstance(pi1id));
         assertNotNull("Second process should NOT be completed",
                 ksession.getProcessInstance(pi2id));
-        
+
     }
 
     @Test
@@ -1396,7 +1438,7 @@ public class IntermediateEventTest extends JbpmTestCase {
 
         ksession.abortProcessInstance(processInstance.getId());
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1406,7 +1448,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("CompensateIntermediateThrowEvent");
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -1416,7 +1458,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession.startProcess(
                 "NoneIntermediateEvent", null);
         assertProcessInstanceCompleted(processInstance);
-        
+
     }
 
     @Test
@@ -1427,7 +1469,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("linkEventProcessExample");
         assertProcessInstanceCompleted(processInstance);
-        
+
     }
 
     @Test
@@ -1436,7 +1478,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("Composite");
         assertProcessInstanceCompleted(processInstance);
-        
+
     }
 
     @Test
@@ -1454,7 +1496,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertProcessInstanceFinished(processInstance, ksession);
         assertNodeTriggered(processInstance.getId(), "StartProcess",
                 "User Task", "Boundary event", "Condition met", "End2");
-        
+
     }
 
     @Test
@@ -1478,7 +1520,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertProcessInstanceFinished(processInstance, ksession);
         assertNodeTriggered(processInstance.getId(), "StartProcess",
                 "User Task", "User Task2", "End1");
-        
+
     }
 
     @Test
@@ -1498,7 +1540,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertProcessInstanceCompleted(processInstance);
         assertNodeTriggered(processInstance.getId(), "StartProcess",
                 "User Task", "Boundary event", "Condition met", "End2");
-        
+
     }
 
     @Test
@@ -1519,7 +1561,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertNodeTriggered(processInstance.getId(), "StartProcess", "Hello",
                 "StartSubProcess", "Task", "BoundaryEvent", "Goodbye",
                 "EndProcess");
-        
+
     }
 
 }

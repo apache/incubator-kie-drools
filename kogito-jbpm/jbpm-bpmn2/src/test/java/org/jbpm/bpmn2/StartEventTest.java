@@ -14,14 +14,14 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StartEventTest extends JbpmTestCase {
 
-    private Logger logger = LoggerFactory
-            .getLogger(StartEventTest.class);
+    private Logger logger = LoggerFactory.getLogger(StartEventTest.class);
 
     private StatefulKnowledgeSession ksession;
 
@@ -52,11 +52,12 @@ public class StartEventTest extends JbpmTestCase {
         person.setName("john");
         ksession.insert(person);
         ksession.fireAllRules();
-        
+
     }
 
     /**
      * FIXME when it's run without persistence, list contains only 4 identifiers
+     * 
      * @throws Exception
      */
     @Test
@@ -77,7 +78,7 @@ public class StartEventTest extends JbpmTestCase {
             Thread.sleep(500);
         }
         assertEquals(5, list.size());
-        
+
     }
 
     @Test
@@ -97,11 +98,11 @@ public class StartEventTest extends JbpmTestCase {
             Thread.sleep(1000);
         }
         assertEquals(6, list.size());
-        
-    }   
+
+    }
 
     @Test
-   public void testTimerStartDuration() throws Exception {
+    public void testTimerStartDuration() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStartDuration.bpmn2");
         ksession = createKnowledgeSession(kbase);
         final List<Long> list = new ArrayList<Long>();
@@ -117,7 +118,7 @@ public class StartEventTest extends JbpmTestCase {
         Thread.sleep(3000);
 
         assertEquals(1, list.size());
-        
+
     }
 
     @Test
@@ -137,7 +138,7 @@ public class StartEventTest extends JbpmTestCase {
             Thread.sleep(1000);
         }
         assertEquals(6, list.size());
-        
+
     }
 
     @Test
@@ -152,7 +153,7 @@ public class StartEventTest extends JbpmTestCase {
         });
         ksession.signalEvent("MySignal", "NewValue");
         assertEquals(1, list.size());
-        
+
     }
 
     @Test
@@ -169,7 +170,30 @@ public class StartEventTest extends JbpmTestCase {
         });
         ksession.signalEvent("MySignal", "NewValue");
         assertEquals(1, list.size());
-        
+
+    }
+
+    @Test
+    public void testSignalToStartProcess() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2",
+                "BPMN2-IntermediateThrowEventSignal.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                handler);
+        final List<String> startedProcesses = new ArrayList<String>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                startedProcesses.add(event.getProcessInstance().getProcessId());
+            }
+        });
+
+        ProcessInstance processInstance = ksession
+                .startProcess("SignalIntermediateEvent");
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertEquals(2, startedProcesses.size());
     }
 
     @Test
@@ -177,7 +201,7 @@ public class StartEventTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-MessageStart.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.signalEvent("Message-HelloMessage", "NewValue");
-        
+
     }
 
     @Test
@@ -185,8 +209,10 @@ public class StartEventTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("MultipleStartEvents");
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession
+                .startProcess("MultipleStartEvents");
         assertProcessInstanceActive(processInstance);
         ksession = restoreSession(ksession, true);
         WorkItem workItem = workItemHandler.getWorkItem();
@@ -194,7 +220,7 @@ public class StartEventTest extends JbpmTestCase {
         assertEquals("john", workItem.getParameter("ActorId"));
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
@@ -202,7 +228,8 @@ public class StartEventTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
@@ -216,7 +243,7 @@ public class StartEventTest extends JbpmTestCase {
             Thread.sleep(500);
         }
         assertEquals(5, list.size());
-        
+
     }
 
     @Test
@@ -224,7 +251,8 @@ public class StartEventTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleEventBasedStartEventProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
 
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
@@ -232,29 +260,33 @@ public class StartEventTest extends JbpmTestCase {
                 list.add(event.getProcessInstance().getId());
             }
         });
-        
+
         ksession.signalEvent("startSignal", null);
-        
+
         assertEquals(1, list.size());
         WorkItem workItem = workItemHandler.getWorkItem();
-        long processInstanceId = ((WorkItemImpl) workItem).getProcessInstanceId();
-        
-        ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
+        long processInstanceId = ((WorkItemImpl) workItem)
+                .getProcessInstanceId();
+
+        ProcessInstance processInstance = ksession
+                .getProcessInstance(processInstanceId);
         ksession = restoreSession(ksession, true);
-       
+
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
-        
+
     }
 
     @Test
-    public void testMultipleEventBasedStartEventsStartOnTimer() throws Exception {
+    public void testMultipleEventBasedStartEventsStartOnTimer()
+            throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleEventBasedStartEventProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
@@ -268,7 +300,7 @@ public class StartEventTest extends JbpmTestCase {
             Thread.sleep(500);
         }
         assertEquals(5, list.size());
-        
+
     }
 
 }
