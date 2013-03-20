@@ -18,9 +18,9 @@ package org.optaplanner.examples.common.app;
 
 import java.io.File;
 
-import org.optaplanner.config.EnvironmentMode;
-import org.optaplanner.config.XmlSolverFactory;
-import org.optaplanner.config.termination.TerminationConfig;
+import org.optaplanner.core.config.EnvironmentMode;
+import org.optaplanner.core.config.XmlSolverFactory;
+import org.optaplanner.core.config.termination.TerminationConfig;
 import org.optaplanner.core.impl.Solver;
 import org.optaplanner.core.impl.score.Score;
 import org.optaplanner.core.impl.solution.Solution;

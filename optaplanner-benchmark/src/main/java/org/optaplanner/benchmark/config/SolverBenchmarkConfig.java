@@ -24,7 +24,7 @@ import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
-import org.optaplanner.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
 
 @XStreamAlias("solverBenchmark")
 public class SolverBenchmarkConfig {

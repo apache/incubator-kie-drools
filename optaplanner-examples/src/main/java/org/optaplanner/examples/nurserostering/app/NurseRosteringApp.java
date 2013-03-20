@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.nurserostering.app;
 
-import org.optaplanner.config.XmlSolverFactory;
+import org.optaplanner.core.config.XmlSolverFactory;
 import org.optaplanner.core.impl.Solver;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;

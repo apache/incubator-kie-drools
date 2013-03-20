@@ -18,7 +18,7 @@ package org.optaplanner.examples.nqueens;
 
 import java.io.File;
 
-import org.optaplanner.config.EnvironmentMode;
+import org.optaplanner.core.config.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.persistence.NQueensDaoImpl;

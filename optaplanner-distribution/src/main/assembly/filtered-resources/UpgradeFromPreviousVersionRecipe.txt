@@ -2922,6 +2922,20 @@ Before in *.xml:
 After in *.xml:
     <...>org.optaplanner.core.api...</...>
 
+[MAJOR] The package org.optaplanner.config has been renamed to org.optaplanner.core.config
+Before in *.java, *.drl:
+    import org.optaplanner.config...
+After in *.java, *.drl:
+    import org.optaplanner.core.config...
+Before in *.java:
+    "/org/optaplanner/config/..."
+After in *.java:
+    "/org/optaplanner/core/config/..."
+Before in *.xml:
+    <...>org.optaplanner.config...</...>
+After in *.xml:
+    <...>org.optaplanner.core.config...</...>
+
 [MINOR] The package org.optaplanner.benchmark.core has been renamed to org.optaplanner.benchmark.impl
 Before in *.java, *.drl:
     import org.optaplanner.benchmark.core...
