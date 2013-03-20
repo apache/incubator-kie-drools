@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.domain.value;
+package org.optaplanner.core.impl.domain.value;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.optaplanner.api.domain.value.ValueRange;
 import org.optaplanner.api.domain.value.ValueRangeType;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.solution.Solution;
 
 public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {

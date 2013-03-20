@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.config.constructionheuristic.placer.PlacerConfig;
 import org.optaplanner.core.impl.constructionheuristic.placer.entity.EntityPlacer;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.termination.Termination;
 
 /**

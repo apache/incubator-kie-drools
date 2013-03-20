@@ -24,7 +24,7 @@ import org.optaplanner.config.constructionheuristic.ConstructionHeuristicSolverP
 import org.optaplanner.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.optaplanner.config.phase.custom.CustomSolverPhaseConfig;
 import org.optaplanner.config.termination.TerminationConfig;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.impl.phase.SolverPhase;
 import org.optaplanner.core.score.definition.ScoreDefinition;

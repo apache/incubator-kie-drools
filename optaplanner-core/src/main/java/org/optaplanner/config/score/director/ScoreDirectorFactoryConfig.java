@@ -33,7 +33,7 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.optaplanner.core.score.buildin.hardsoft.HardSoftScoreDefinition;

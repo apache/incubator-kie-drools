@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.impl.bestsolution.BestSolutionRecaller;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.event.SolverEventListener;
 import org.optaplanner.core.impl.event.SolverEventSupport;
 import org.optaplanner.core.impl.phase.SolverPhase;

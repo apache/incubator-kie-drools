@@ -18,7 +18,7 @@ package org.optaplanner.core.heuristic.selector.move.generic.chained;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.optaplanner.core.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.heuristic.selector.move.generic.GenericMoveSelector;

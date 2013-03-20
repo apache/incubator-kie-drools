@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.domain.solution.cloner;
+package org.optaplanner.core.impl.domain.solution.cloner;
 
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.solution.Solution;
 
 public class FieldAccessingSolutionClonerTest extends AbstractSolutionClonerTest {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.domain.solution;
+package org.optaplanner.core.impl.domain.solution;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -34,12 +34,12 @@ import org.optaplanner.api.domain.solution.PlanningSolution;
 import org.optaplanner.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.domain.common.PropertyAccessor;
-import org.optaplanner.core.domain.common.ReflectionPropertyAccessor;
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.domain.solution.cloner.FieldAccessingSolutionCloner;
-import org.optaplanner.core.domain.solution.cloner.PlanningCloneableSolutionCloner;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.common.PropertyAccessor;
+import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
+import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutionCloner;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.solution.Solution;
 
 public class SolutionDescriptor {

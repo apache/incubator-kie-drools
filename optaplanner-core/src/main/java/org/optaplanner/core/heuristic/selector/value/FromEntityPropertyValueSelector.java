@@ -21,8 +21,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.optaplanner.core.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.heuristic.selector.common.iterator.CachedListRandomIterator;
 

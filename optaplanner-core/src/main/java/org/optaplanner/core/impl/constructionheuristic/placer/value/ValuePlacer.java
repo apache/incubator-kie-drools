@@ -6,7 +6,7 @@ import org.optaplanner.core.impl.constructionheuristic.placer.AbstractPlacer;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.optaplanner.core.heuristic.selector.value.ValueSelector;

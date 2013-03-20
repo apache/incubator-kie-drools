@@ -1,6 +1,6 @@
 package org.optaplanner.core.heuristic.selector.entity.decorator;
 
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.score.director.ScoreDirector;
 

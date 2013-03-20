@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;

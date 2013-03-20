@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.domain.entity;
+package org.optaplanner.core.impl.domain.entity;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -30,8 +30,8 @@ import java.util.Map;
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.api.domain.variable.PlanningVariable;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.solution.Solution;

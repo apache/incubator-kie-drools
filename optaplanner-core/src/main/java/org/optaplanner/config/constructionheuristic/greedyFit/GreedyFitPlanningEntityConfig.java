@@ -19,8 +19,8 @@ package org.optaplanner.config.constructionheuristic.greedyFit;
 import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.heuristic.selector.entity.PlanningEntitySelectionOrder;
 import org.optaplanner.core.heuristic.selector.entity.PlanningEntitySelector;
 

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.domain.value;
+package org.optaplanner.core.impl.domain.value;
 
 import java.util.Collection;
 
 import org.optaplanner.api.domain.value.ValueRange;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.solution.Solution;
 
 public class UndefinedPlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {

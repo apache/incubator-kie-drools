@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import org.optaplanner.api.domain.value.ValueRange;
 import org.optaplanner.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.IterableSelector;
 import org.optaplanner.core.heuristic.selector.Selector;
 

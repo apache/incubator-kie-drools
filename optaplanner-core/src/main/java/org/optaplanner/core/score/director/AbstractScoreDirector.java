@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.definition.ScoreDefinition;
 import org.optaplanner.core.solution.Solution;

@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.optaplanner.core.domain.variable.PlanningValueSorter;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningValueSorter;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.score.director.ScoreDirector;

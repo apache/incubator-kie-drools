@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.optaplanner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.solution.Solution;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;

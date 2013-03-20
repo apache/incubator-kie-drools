@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.domain.variable;
+package org.optaplanner.core.impl.domain.variable;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -27,14 +27,14 @@ import org.optaplanner.api.domain.value.ValueRange;
 import org.optaplanner.api.domain.value.ValueRanges;
 import org.optaplanner.api.domain.variable.PlanningVariable;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.domain.common.PropertyAccessor;
-import org.optaplanner.core.domain.common.ReflectionPropertyAccessor;
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.domain.value.CompositePlanningValueRangeDescriptor;
-import org.optaplanner.core.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
-import org.optaplanner.core.domain.value.FromSolutionPropertyPlanningValueRangeDescriptor;
-import org.optaplanner.core.domain.value.PlanningValueRangeDescriptor;
-import org.optaplanner.core.domain.value.UndefinedPlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.common.PropertyAccessor;
+import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.value.CompositePlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.value.FromSolutionPropertyPlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.value.PlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.value.UndefinedPlanningValueRangeDescriptor;
 import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;

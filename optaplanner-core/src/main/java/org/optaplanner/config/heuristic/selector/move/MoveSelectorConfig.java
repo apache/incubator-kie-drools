@@ -36,7 +36,7 @@ import org.optaplanner.config.heuristic.selector.move.generic.SwapMoveSelectorCo
 import org.optaplanner.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;

@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.heuristic.selector.common.iterator.UpcomingSelectionIterator;

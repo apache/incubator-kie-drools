@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.move.CompositeMove;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;

@@ -22,7 +22,7 @@ import org.optaplanner.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.config.heuristic.selector.value.ValueSelectorConfig;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.heuristic.selector.move.MoveSelector;

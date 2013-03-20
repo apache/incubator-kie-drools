@@ -18,10 +18,10 @@ package org.optaplanner.core.score.director;
 
 import java.util.Arrays;
 
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.domain.solution.cloner.FieldAccessingSolutionCloner;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;

@@ -17,7 +17,7 @@
 package org.optaplanner.core.heuristic.selector.entity;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.heuristic.selector.ListIterableSelector;
 
 /**

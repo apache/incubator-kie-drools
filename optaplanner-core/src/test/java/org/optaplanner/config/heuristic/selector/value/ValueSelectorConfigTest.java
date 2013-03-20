@@ -18,8 +18,8 @@ package org.optaplanner.config.heuristic.selector.value;
 
 import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.config.heuristic.selector.common.SelectionOrder;
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.optaplanner.core.heuristic.selector.value.ValueSelector;

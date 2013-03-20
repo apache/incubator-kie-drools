@@ -18,8 +18,8 @@ package org.optaplanner.core.score.director;
 
 import java.util.List;
 
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.definition.ScoreDefinition;
 import org.optaplanner.core.solution.Solution;

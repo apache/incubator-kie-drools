@@ -19,8 +19,8 @@ package org.optaplanner.core.heuristic.selector.move.generic;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.optaplanner.core.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.heuristic.selector.entity.EntitySelector;

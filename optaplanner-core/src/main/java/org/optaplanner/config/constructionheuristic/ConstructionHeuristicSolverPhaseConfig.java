@@ -35,9 +35,9 @@ import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.GreedyD
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
 import org.optaplanner.core.impl.constructionheuristic.placer.entity.EntityPlacer;
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.entity.PlanningEntitySelectionOrder;
 import org.optaplanner.core.heuristic.selector.entity.PlanningEntitySelector;
 import org.optaplanner.core.heuristic.selector.variable.PlanningValueSelectionOrder;

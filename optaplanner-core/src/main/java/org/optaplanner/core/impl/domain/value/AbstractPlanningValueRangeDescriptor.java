@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.domain.value;
+package org.optaplanner.core.impl.domain.value;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,8 +22,8 @@ import java.util.Set;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.api.domain.value.ValueRange;
-import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 
 public abstract class AbstractPlanningValueRangeDescriptor implements PlanningValueRangeDescriptor {
 

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;

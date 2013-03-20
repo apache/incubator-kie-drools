@@ -25,7 +25,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.config.phase.SolverPhaseConfig;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.custom.CustomSolverPhase;
 import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.DefaultCustomSolverPhase;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.domain.common;
+package org.optaplanner.core.impl.domain.common;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;

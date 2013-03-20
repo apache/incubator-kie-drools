@@ -18,7 +18,7 @@ package org.optaplanner.core.heuristic.selector.variable;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.optaplanner.core.move.Move;

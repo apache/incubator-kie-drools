@@ -22,7 +22,7 @@ import org.optaplanner.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.impl.bruteforce.BruteForceEntityWalker;
 import org.optaplanner.core.impl.bruteforce.BruteForceSolverPhase;
 import org.optaplanner.core.impl.bruteforce.DefaultBruteForceSolverPhase;
-import org.optaplanner.core.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 

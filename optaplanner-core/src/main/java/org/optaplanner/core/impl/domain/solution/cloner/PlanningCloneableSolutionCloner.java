@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.domain.value;
+package org.optaplanner.core.impl.domain.solution.cloner;
 
-import java.util.Collection;
-
+import org.optaplanner.api.domain.solution.cloner.PlanningCloneable;
+import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.solution.Solution;
 
-public interface PlanningValueRangeDescriptor {
+public class PlanningCloneableSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {
 
-    boolean isEntityDependent();
-
-    Collection<?> extractAllValuesWithFiltering(Solution solution);
-
-    Collection<?> extractValuesWithFiltering(Solution solution, Object planningEntity);
-
-    long getProblemScale(Solution solution, Object planningEntity);
-
-    boolean isValuesCacheable();
+    public SolutionG cloneSolution(SolutionG original) {
+        return (SolutionG) ((PlanningCloneable) original).planningClone();
+    }
 
 }

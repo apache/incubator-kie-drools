@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;

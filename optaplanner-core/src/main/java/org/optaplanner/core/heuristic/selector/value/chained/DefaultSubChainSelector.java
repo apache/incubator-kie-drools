@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.AbstractSelector;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheLifecycleListener;

@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.optaplanner.core.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.heuristic.selector.entity.pillar.PillarSelector;

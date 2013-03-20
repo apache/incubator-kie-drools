@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.domain.variable;
+package org.optaplanner.core.impl.domain.variable;
 
 import java.util.Collections;
 import java.util.Comparator;
