@@ -10,6 +10,7 @@ public class ProcessDescr extends BaseDescr
     private String dialect;
     private String name;
     private String className;
+    private String processId;
     private Resource resource;
 
     public ProcessDescr() { }
@@ -50,4 +51,11 @@ public class ProcessDescr extends BaseDescr
         return this.dialect;
     }
 
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
 }
