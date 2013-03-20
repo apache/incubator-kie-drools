@@ -2301,11 +2301,11 @@ After in *BenchmarkConfig.xml:
 From 5.5.0.Final to 6.0.0.Alpha7
 --------------------------------
 
-[README] Starting from 6.1.0.Final, planner will have a backwards compatible API.
+[README] Starting from 6.1.0.Final for 6.2, .6.3, ..., planner will have a backwards compatible API.
 As preparation for that, every part of the API is being reviewed.
 
 [RECOMMENDED] Don't directly upgrade the jars to 6.0.0.Final.
-In 6.0.0.Beta1, Drools Planner has been renamed to OptaPlanner.
+In 6.0.0.Beta1, Drools Planner has been renamed to OptaPlanner and the java package structure has been changed severely.
 Instead, upgrade the jars to 6.0.0.Alpha9 first.
 Once that compiles, immediately upgrade the jars to your desired version and continue following the upgrade recipe.
 The 6.0.0.Alpha9 jars are available in the maven repository and in this zip:
@@ -2878,9 +2878,35 @@ After in *.xml:
 Note: because of other package name changes (see below), you 'll get a lot of compile errors after these changes.
 
 [README] The packages now make a clear distinction between api, config and implementation classes.
-The api classes will be backwards compatible starting from 6.1.
-Also, each artifact now has a unique package namespace.
-For example: all classes in optaplanner-core are now under org.optaplanner.core
+Starting from 6.1 for future versions (6.2, 6.3, ...):
+  The api namespaced classes will be backwards compatible.
+  The config namespaced classes will be backwards compatible on an XML level only.
+  The impl namespaced classes will NOT be backwards compatible.
+Also, each artifact now has a unique package namespace. For example:
+optaplanner-core*.jar:
+  org.optaplanner.core: this package contains all classes from this jar
+    .api
+    .config
+    .impl
+optaplanner-benchmark*.jar:
+  org.optaplanner.benchmark: this package contains all classes from this jar
+    .api
+    .config
+    .impl
+
+[MAJOR] The package org.optaplanner.core has been renamed to org.optaplanner.core.impl
+Before in *.java, *.drl:
+    import org.optaplanner.core...
+After in *.java, *.drl:
+    import org.optaplanner.core.impl...
+Before in *.java:
+    "/org/optaplanner/core/..."
+After in *.java:
+    "/org/optaplanner/core/impl/..."
+Before in *.xml:
+    <...>org.optaplanner.core...</...>
+After in *.xml:
+    <...>org.optaplanner.core.impl...</...>
 
 [MINOR] The package org.optaplanner.benchmark.core has been renamed to org.optaplanner.benchmark.impl
 Before in *.java, *.drl:
