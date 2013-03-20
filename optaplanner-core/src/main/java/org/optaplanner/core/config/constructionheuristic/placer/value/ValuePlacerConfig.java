@@ -17,7 +17,7 @@
 package org.optaplanner.core.config.constructionheuristic.placer.value;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.config.EnvironmentMode;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.constructionheuristic.placer.PlacerConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;

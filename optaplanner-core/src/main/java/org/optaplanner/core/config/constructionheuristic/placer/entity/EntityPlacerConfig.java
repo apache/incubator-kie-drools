@@ -17,7 +17,7 @@
 package org.optaplanner.core.config.constructionheuristic.placer.entity;
 
 import com.thoughtworks.xstream.annotations.XStreamInclude;
-import org.optaplanner.core.config.EnvironmentMode;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.constructionheuristic.placer.PlacerConfig;
 import org.optaplanner.core.impl.constructionheuristic.placer.entity.EntityPlacer;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;

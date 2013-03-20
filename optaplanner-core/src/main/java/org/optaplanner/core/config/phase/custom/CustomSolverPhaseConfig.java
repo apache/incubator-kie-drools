@@ -22,7 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
-import org.optaplanner.core.config.EnvironmentMode;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;

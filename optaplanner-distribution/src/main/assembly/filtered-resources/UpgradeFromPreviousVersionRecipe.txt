@@ -2942,14 +2942,22 @@ Before in *.java, *.drl:
 After in *.java, *.drl:
     import org.optaplanner.benchmark.impl...
 
-[MAJOR] The interface Solver has been moved from the package core.impl to core.api.solver
+[MAJOR] The interface Solver has been moved from the package ...core.impl to ...core.api.solver
 Before in *.java:
     import org.optaplanner.core.impl.Solver;
 After in *.java:
     import org.optaplanner.core.api.solver.Solver;
 
-[MAJOR] The interface SolverFactory has been moved from the package core.config to core.api.solver
+[MAJOR] The interface SolverFactory has been moved from the package ...core.config to ...core.api.solver
 Before in *.java:
     import org.optaplanner.core.config.SolverFactory;
 After in *.java:
     import org.optaplanner.core.api.solver.SolverFactory;
+
+[MAJOR] The classes EnvironmentMode and XmlSolverFactory has been moved from the package ...core.config to ...core.config.solver
+Before in *.java:
+    import org.optaplanner.core.config.EnvironmentMode;
+    import org.optaplanner.core.config.XmlSolverFactory;
+After in *.java:
+    import org.optaplanner.core.config.solver.EnvironmentMode;
+    import org.optaplanner.core.config.solver.XmlSolverFactory;

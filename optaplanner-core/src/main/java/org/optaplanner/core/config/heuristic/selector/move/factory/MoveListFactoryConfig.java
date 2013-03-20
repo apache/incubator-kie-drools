@@ -17,7 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.move.factory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.config.EnvironmentMode;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;

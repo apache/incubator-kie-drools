@@ -22,7 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
-import org.optaplanner.core.config.XmlSolverFactory;
+import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.Score;

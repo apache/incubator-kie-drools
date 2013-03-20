@@ -19,7 +19,7 @@ package org.optaplanner.examples.nqueens.app;
 import java.util.List;
 
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.XmlSolverFactory;
+import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;

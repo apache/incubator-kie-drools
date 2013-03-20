@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.optaplanner.core.config.XmlSolverFactory;
+import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;

@@ -31,7 +31,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.optaplanner.core.config.EnvironmentMode;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;

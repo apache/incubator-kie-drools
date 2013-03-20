@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config;
+package org.optaplanner.core.config.solver;
 
 import org.optaplanner.core.impl.localsearch.decider.DefaultDecider;
 import org.optaplanner.core.impl.move.Move;

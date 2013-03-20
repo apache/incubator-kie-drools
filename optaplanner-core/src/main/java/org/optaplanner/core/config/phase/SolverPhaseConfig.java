@@ -18,7 +18,7 @@ package org.optaplanner.core.config.phase;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
-import org.optaplanner.core.config.EnvironmentMode;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.bruteforce.BruteForceSolverPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchSolverPhaseConfig;

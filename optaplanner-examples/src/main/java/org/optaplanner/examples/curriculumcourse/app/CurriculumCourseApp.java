@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.curriculumcourse.app;
 
-import org.optaplanner.core.config.XmlSolverFactory;
+import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;

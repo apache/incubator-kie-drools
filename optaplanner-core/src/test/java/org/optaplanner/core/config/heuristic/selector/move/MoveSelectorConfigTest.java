@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.config.heuristic.selector.move;
 
-import org.optaplanner.core.config.EnvironmentMode;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;

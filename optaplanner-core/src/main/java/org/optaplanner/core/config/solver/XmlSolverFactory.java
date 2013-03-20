@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config;
+package org.optaplanner.core.config.solver;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,7 +27,6 @@ import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.api.solver.Solver;
 
 /**

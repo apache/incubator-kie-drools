@@ -17,7 +17,7 @@
 package org.optaplanner.core.config.bruteforce;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.config.EnvironmentMode;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.impl.bruteforce.BruteForceEntityWalker;
 import org.optaplanner.core.impl.bruteforce.BruteForceSolverPhase;
