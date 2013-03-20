@@ -27,8 +27,8 @@ import org.optaplanner.core.heuristic.selector.move.decorator.ShufflingMoveSelec
 import org.optaplanner.core.move.DummyMove;
 import org.junit.Test;
 
-import static org.optaplanner.core.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.testdata.util.PlannerAssert.assertSame;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
 import static org.junit.Assert.assertEquals;
 
 public class MoveSelectorConfigTest {

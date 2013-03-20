@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.testdata.domain.multivar;
+package org.optaplanner.core.impl.testdata.domain.multivar;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.api.domain.value.ValueRange;
@@ -22,8 +22,8 @@ import org.optaplanner.api.domain.value.ValueRangeType;
 import org.optaplanner.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.testdata.domain.TestdataObject;
-import org.optaplanner.core.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
 public class TestdataMultiVarEntity extends TestdataObject {

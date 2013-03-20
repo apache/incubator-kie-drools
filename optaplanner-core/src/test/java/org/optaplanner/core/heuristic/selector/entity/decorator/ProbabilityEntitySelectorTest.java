@@ -27,10 +27,10 @@ import org.optaplanner.core.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.phase.step.AbstractStepScope;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.junit.Test;
 
-import static org.optaplanner.core.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;

@@ -19,7 +19,7 @@ package org.optaplanner.core.move;
 import java.util.Collection;
 
 import org.optaplanner.core.score.director.ScoreDirector;
-import org.optaplanner.core.testdata.util.CodeAssertable;
+import org.optaplanner.core.impl.testdata.util.CodeAssertable;
 
 public class DummyMove implements Move, CodeAssertable {
 

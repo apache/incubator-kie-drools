@@ -23,10 +23,10 @@ import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.heuristic.selector.entity.FromSolutionEntitySelector;
 import org.optaplanner.core.heuristic.selector.entity.decorator.ShufflingEntitySelector;
-import org.optaplanner.core.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.junit.Test;
 
-import static org.optaplanner.core.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class EntitySelectorConfigTest {
 

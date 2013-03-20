@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.testdata.domain.setbased;
+package org.optaplanner.core.impl.testdata.domain.multientity;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.api.domain.value.ValueRange;
@@ -22,39 +22,38 @@ import org.optaplanner.api.domain.value.ValueRangeType;
 import org.optaplanner.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.testdata.domain.TestdataObject;
-import org.optaplanner.core.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningEntity
-public class TestdataSetBasedEntity extends TestdataObject {
+public class TestdataHerdEntity extends TestdataObject {
 
     public static PlanningEntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataSetBasedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.getPlanningEntityDescriptor(TestdataSetBasedEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataMultiEntitySolution.buildSolutionDescriptor();
+        return solutionDescriptor.getPlanningEntityDescriptor(TestdataHerdEntity.class);
     }
 
-    private TestdataValue value;
+    private TestdataLeadEntity leadEntity;
 
-    public TestdataSetBasedEntity() {
+    public TestdataHerdEntity() {
     }
 
-    public TestdataSetBasedEntity(String code) {
+    public TestdataHerdEntity(String code) {
         super(code);
     }
 
-    public TestdataSetBasedEntity(String code, TestdataValue value) {
-        this(code);
-        this.value = value;
+    public TestdataHerdEntity(String code, TestdataLeadEntity leadEntity) {
+        super(code);
+        this.leadEntity = leadEntity;
     }
 
     @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "valueSet")
-    public TestdataValue getValue() {
-        return value;
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "leadEntityList")
+    public TestdataLeadEntity getLeadEntity() {
+        return leadEntity;
     }
 
-    public void setValue(TestdataValue value) {
-        this.value = value;
+    public void setLeadEntity(TestdataLeadEntity leadEntity) {
+        this.leadEntity = leadEntity;
     }
 
     // ************************************************************************

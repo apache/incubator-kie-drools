@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.testdata.domain.multivar;
+package org.optaplanner.core.impl.testdata.domain.multientity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,27 +25,28 @@ import org.optaplanner.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.solution.Solution;
-import org.optaplanner.core.testdata.domain.TestdataObject;
-import org.optaplanner.core.testdata.domain.TestdataUtil;
-import org.optaplanner.core.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataUtil;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataMultiVarSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataMultiEntitySolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return TestdataUtil.buildSolutionDescriptor(TestdataMultiVarSolution.class, TestdataMultiVarEntity.class);
+        return TestdataUtil.buildSolutionDescriptor(TestdataMultiEntitySolution.class,
+                TestdataLeadEntity.class, TestdataHerdEntity.class);
     }
 
     private List<TestdataValue> valueList;
-    private List<TestdataOtherValue> otherValueList;
-    private List<TestdataMultiVarEntity> multiVarEntityList;
+    private List<TestdataLeadEntity> leadEntityList;
+    private List<TestdataHerdEntity> herdEntityList;
 
     private SimpleScore score;
 
-    public TestdataMultiVarSolution() {
+    public TestdataMultiEntitySolution() {
     }
 
-    public TestdataMultiVarSolution(String code) {
+    public TestdataMultiEntitySolution(String code) {
         super(code);
     }
 
@@ -57,21 +58,22 @@ public class TestdataMultiVarSolution extends TestdataObject implements Solution
         this.valueList = valueList;
     }
 
-    public List<TestdataOtherValue> getOtherValueList() {
-        return otherValueList;
+    @PlanningEntityCollectionProperty
+    public List<TestdataLeadEntity> getLeadEntityList() {
+        return leadEntityList;
     }
 
-    public void setOtherValueList(List<TestdataOtherValue> otherValueList) {
-        this.otherValueList = otherValueList;
+    public void setLeadEntityList(List<TestdataLeadEntity> leadEntityList) {
+        this.leadEntityList = leadEntityList;
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataMultiVarEntity> getMultiVarEntityList() {
-        return multiVarEntityList;
+    public List<TestdataHerdEntity> getHerdEntityList() {
+        return herdEntityList;
     }
 
-    public void setMultiVarEntityList(List<TestdataMultiVarEntity> multiVarEntityList) {
-        this.multiVarEntityList = multiVarEntityList;
+    public void setHerdEntityList(List<TestdataHerdEntity> herdEntityList) {
+        this.herdEntityList = herdEntityList;
     }
 
     public SimpleScore getScore() {
@@ -87,9 +89,8 @@ public class TestdataMultiVarSolution extends TestdataObject implements Solution
     // ************************************************************************
 
     public Collection<Object> getProblemFacts() {
-        List<Object> problemFacts = new ArrayList<Object>(valueList.size() + otherValueList.size());
+        List<Object> problemFacts = new ArrayList<Object>(valueList.size());
         problemFacts.addAll(valueList);
-        problemFacts.addAll(otherValueList);
         return problemFacts;
     }
 

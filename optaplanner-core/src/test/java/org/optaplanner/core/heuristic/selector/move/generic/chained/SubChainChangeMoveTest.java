@@ -8,8 +8,8 @@ import org.optaplanner.core.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.score.director.ScoreDirector;
-import org.optaplanner.core.testdata.domain.chained.TestdataChainedAnchor;
-import org.optaplanner.core.testdata.domain.chained.TestdataChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;

@@ -1,4 +1,4 @@
-package org.optaplanner.core.testdata.domain;
+package org.optaplanner.core.impl.testdata.domain;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.api.domain.value.ValueRange;

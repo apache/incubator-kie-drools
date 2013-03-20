@@ -1,4 +1,4 @@
-package org.optaplanner.core.testdata.domain.chained;
+package org.optaplanner.core.impl.testdata.domain.chained;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.api.domain.value.ValueRange;
@@ -7,7 +7,7 @@ import org.optaplanner.api.domain.value.ValueRanges;
 import org.optaplanner.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningEntity
 public class TestdataChainedEntity extends TestdataObject implements TestdataChainedObject {

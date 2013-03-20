@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.testdata.domain;
+package org.optaplanner.core.impl.testdata.domain;
 
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;

@@ -9,7 +9,7 @@ import org.optaplanner.core.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

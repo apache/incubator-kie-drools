@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.testdata.domain.chained;
+package org.optaplanner.core.impl.testdata.domain;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,43 +24,41 @@ import org.optaplanner.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.solution.Solution;
-import org.optaplanner.core.testdata.domain.TestdataObject;
-import org.optaplanner.core.testdata.domain.TestdataUtil;
 
 @PlanningSolution
-public class TestdataChainedSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataSolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return TestdataUtil.buildSolutionDescriptor(TestdataChainedSolution.class, TestdataChainedEntity.class);
+        return TestdataUtil.buildSolutionDescriptor(TestdataSolution.class, TestdataEntity.class);
     }
 
-    private List<TestdataChainedAnchor> chainedAnchorList;
-    private List<TestdataChainedEntity> chainedEntityList;
+    private List<TestdataValue> valueList;
+    private List<TestdataEntity> entityList;
 
     private SimpleScore score;
 
-    public TestdataChainedSolution() {
+    public TestdataSolution() {
     }
 
-    public TestdataChainedSolution(String code) {
+    public TestdataSolution(String code) {
         super(code);
     }
 
-    public List<TestdataChainedAnchor> getChainedAnchorList() {
-        return chainedAnchorList;
+    public List<TestdataValue> getValueList() {
+        return valueList;
     }
 
-    public void setChainedAnchorList(List<TestdataChainedAnchor> chainedAnchorList) {
-        this.chainedAnchorList = chainedAnchorList;
+    public void setValueList(List<TestdataValue> valueList) {
+        this.valueList = valueList;
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataChainedEntity> getChainedEntityList() {
-        return chainedEntityList;
+    public List<TestdataEntity> getEntityList() {
+        return entityList;
     }
 
-    public void setChainedEntityList(List<TestdataChainedEntity> chainedEntityList) {
-        this.chainedEntityList = chainedEntityList;
+    public void setEntityList(List<TestdataEntity> entityList) {
+        this.entityList = entityList;
     }
 
     public SimpleScore getScore() {
@@ -76,7 +74,7 @@ public class TestdataChainedSolution extends TestdataObject implements Solution<
     // ************************************************************************
 
     public Collection<? extends Object> getProblemFacts() {
-        return chainedAnchorList;
+        return valueList;
     }
 
 }

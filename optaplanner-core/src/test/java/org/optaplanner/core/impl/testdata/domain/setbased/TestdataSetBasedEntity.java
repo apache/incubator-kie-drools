@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.testdata.domain.multientity;
+package org.optaplanner.core.impl.testdata.domain.setbased;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.api.domain.value.ValueRange;
@@ -22,33 +22,33 @@ import org.optaplanner.api.domain.value.ValueRangeType;
 import org.optaplanner.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.testdata.domain.TestdataObject;
-import org.optaplanner.core.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
-public class TestdataLeadEntity extends TestdataObject {
+public class TestdataSetBasedEntity extends TestdataObject {
 
     public static PlanningEntityDescriptor buildEntityDescriptor() {
-        SolutionDescriptor solutionDescriptor = TestdataMultiEntitySolution.buildSolutionDescriptor();
-        return solutionDescriptor.getPlanningEntityDescriptor(TestdataLeadEntity.class);
+        SolutionDescriptor solutionDescriptor = TestdataSetBasedSolution.buildSolutionDescriptor();
+        return solutionDescriptor.getPlanningEntityDescriptor(TestdataSetBasedEntity.class);
     }
 
     private TestdataValue value;
 
-    public TestdataLeadEntity() {
+    public TestdataSetBasedEntity() {
     }
 
-    public TestdataLeadEntity(String code) {
+    public TestdataSetBasedEntity(String code) {
         super(code);
     }
 
-    public TestdataLeadEntity(String code, TestdataValue value) {
-        super(code);
+    public TestdataSetBasedEntity(String code, TestdataValue value) {
+        this(code);
         this.value = value;
     }
 
     @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "leadEntityList")
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "valueSet")
     public TestdataValue getValue() {
         return value;
     }

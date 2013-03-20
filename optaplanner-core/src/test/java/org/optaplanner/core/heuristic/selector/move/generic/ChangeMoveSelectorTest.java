@@ -25,11 +25,11 @@ import org.optaplanner.core.move.Move;
 import org.optaplanner.core.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.phase.step.AbstractStepScope;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.testdata.domain.TestdataEntity;
-import org.optaplanner.core.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.junit.Test;
 
-import static org.optaplanner.core.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 import static org.mockito.Mockito.*;
 
 public class ChangeMoveSelectorTest {

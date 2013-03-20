@@ -27,18 +27,18 @@ import java.util.TreeSet;
 import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.solution.Solution;
-import org.optaplanner.core.testdata.domain.TestdataEntity;
-import org.optaplanner.core.testdata.domain.TestdataSolution;
-import org.optaplanner.core.testdata.domain.TestdataValue;
-import org.optaplanner.core.testdata.domain.chained.TestdataChainedAnchor;
-import org.optaplanner.core.testdata.domain.chained.TestdataChainedEntity;
-import org.optaplanner.core.testdata.domain.chained.TestdataChainedObject;
-import org.optaplanner.core.testdata.domain.chained.TestdataChainedSolution;
-import org.optaplanner.core.testdata.domain.setbased.TestdataSetBasedEntity;
-import org.optaplanner.core.testdata.domain.setbased.TestdataSetBasedSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.setbased.TestdataSetBasedEntity;
+import org.optaplanner.core.impl.testdata.domain.setbased.TestdataSetBasedSolution;
 import org.junit.Test;
 
-import static org.optaplanner.core.testdata.util.PlannerAssert.assertCode;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 import static org.junit.Assert.*;
 
 public abstract class AbstractSolutionClonerTest {

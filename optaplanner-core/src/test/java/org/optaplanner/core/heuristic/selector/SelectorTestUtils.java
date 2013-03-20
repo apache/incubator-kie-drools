@@ -31,8 +31,8 @@ import org.optaplanner.core.heuristic.selector.value.EntityIndependentValueSelec
 import org.optaplanner.core.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.score.director.ScoreDirector;
-import org.optaplanner.core.testdata.domain.chained.TestdataChainedEntity;
-import org.optaplanner.core.testdata.domain.chained.TestdataChainedObject;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 

@@ -1,6 +1,6 @@
-package org.optaplanner.core.testdata.domain.chained;
+package org.optaplanner.core.impl.testdata.domain.chained;
 
-import org.optaplanner.core.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 public class TestdataChainedAnchor extends TestdataObject implements TestdataChainedObject {
 

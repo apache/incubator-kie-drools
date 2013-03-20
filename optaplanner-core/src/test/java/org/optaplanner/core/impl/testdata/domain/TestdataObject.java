@@ -1,6 +1,6 @@
-package org.optaplanner.core.testdata.domain;
+package org.optaplanner.core.impl.testdata.domain;
 
-import org.optaplanner.core.testdata.util.CodeAssertable;
+import org.optaplanner.core.impl.testdata.util.CodeAssertable;
 
 public class TestdataObject implements CodeAssertable {
 

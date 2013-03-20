@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.testdata.domain.setbased;
+package org.optaplanner.core.impl.testdata.domain.setbased;
 
 import java.util.Collection;
 import java.util.Set;
@@ -24,9 +24,9 @@ import org.optaplanner.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.solution.Solution;
-import org.optaplanner.core.testdata.domain.TestdataObject;
-import org.optaplanner.core.testdata.domain.TestdataUtil;
-import org.optaplanner.core.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataUtil;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
 public class TestdataSetBasedSolution extends TestdataObject implements Solution<SimpleScore> {

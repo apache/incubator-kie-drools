@@ -28,7 +28,7 @@ import org.optaplanner.core.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.score.director.drools.DroolsScoreDirectorFactory;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

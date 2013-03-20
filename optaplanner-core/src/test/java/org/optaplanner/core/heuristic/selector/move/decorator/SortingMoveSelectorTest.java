@@ -33,7 +33,7 @@ import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
 import org.junit.Test;
 
-import static org.optaplanner.core.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 import static org.mockito.Mockito.*;
 
 public class SortingMoveSelectorTest {

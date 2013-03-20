@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.testdata.domain.multientity;
+package org.optaplanner.core.impl.testdata.domain.multientity;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.api.domain.value.ValueRange;
@@ -22,38 +22,39 @@ import org.optaplanner.api.domain.value.ValueRangeType;
 import org.optaplanner.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
-public class TestdataHerdEntity extends TestdataObject {
+public class TestdataLeadEntity extends TestdataObject {
 
     public static PlanningEntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataMultiEntitySolution.buildSolutionDescriptor();
-        return solutionDescriptor.getPlanningEntityDescriptor(TestdataHerdEntity.class);
+        return solutionDescriptor.getPlanningEntityDescriptor(TestdataLeadEntity.class);
     }
 
-    private TestdataLeadEntity leadEntity;
+    private TestdataValue value;
 
-    public TestdataHerdEntity() {
+    public TestdataLeadEntity() {
     }
 
-    public TestdataHerdEntity(String code) {
+    public TestdataLeadEntity(String code) {
         super(code);
     }
 
-    public TestdataHerdEntity(String code, TestdataLeadEntity leadEntity) {
+    public TestdataLeadEntity(String code, TestdataValue value) {
         super(code);
-        this.leadEntity = leadEntity;
+        this.value = value;
     }
 
     @PlanningVariable
     @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "leadEntityList")
-    public TestdataLeadEntity getLeadEntity() {
-        return leadEntity;
+    public TestdataValue getValue() {
+        return value;
     }
 
-    public void setLeadEntity(TestdataLeadEntity leadEntity) {
-        this.leadEntity = leadEntity;
+    public void setValue(TestdataValue value) {
+        this.value = value;
     }
 
     // ************************************************************************

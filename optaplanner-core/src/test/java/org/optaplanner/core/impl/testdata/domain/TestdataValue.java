@@ -1,4 +1,4 @@
-package org.optaplanner.core.testdata.domain;
+package org.optaplanner.core.impl.testdata.domain;
 
 public class TestdataValue extends TestdataObject {
 

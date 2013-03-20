@@ -24,11 +24,11 @@ import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.optaplanner.core.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.heuristic.selector.value.decorator.ShufflingValueSelector;
-import org.optaplanner.core.testdata.domain.TestdataEntity;
-import org.optaplanner.core.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.junit.Test;
 
-import static org.optaplanner.core.testdata.util.PlannerAssert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.assertEquals;
 
 public class ValueSelectorConfigTest {
