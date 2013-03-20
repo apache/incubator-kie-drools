@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.optaplanner.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;

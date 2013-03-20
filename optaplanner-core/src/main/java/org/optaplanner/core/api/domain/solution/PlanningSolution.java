@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.api.domain.solution;
+package org.optaplanner.core.api.domain.solution;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.optaplanner.api.domain.solution.cloner.PlanningCloneable;
-import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
+import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.solution.Solution;
 
 import static java.lang.annotation.ElementType.*;

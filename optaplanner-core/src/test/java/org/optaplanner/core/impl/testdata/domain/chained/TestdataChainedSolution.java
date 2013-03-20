@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.testdata.domain.chained;
 import java.util.Collection;
 import java.util.List;
 
-import org.optaplanner.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.solution.Solution;

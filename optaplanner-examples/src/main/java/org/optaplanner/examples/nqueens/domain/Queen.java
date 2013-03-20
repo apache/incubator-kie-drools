@@ -17,10 +17,10 @@
 package org.optaplanner.examples.nqueens.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.api.domain.entity.PlanningEntity;
-import org.optaplanner.api.domain.value.ValueRange;
-import org.optaplanner.api.domain.value.ValueRangeType;
-import org.optaplanner.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRangeType;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.nqueens.domain.solution.QueenDifficultyWeightFactory;
 import org.optaplanner.examples.nqueens.domain.solution.RowStrengthWeightFactory;

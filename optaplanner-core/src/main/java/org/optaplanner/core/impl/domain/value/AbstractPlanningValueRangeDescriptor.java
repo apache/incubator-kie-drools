@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import org.optaplanner.api.domain.entity.PlanningEntity;
-import org.optaplanner.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 

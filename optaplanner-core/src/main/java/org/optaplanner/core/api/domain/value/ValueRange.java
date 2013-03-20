@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.api.domain.value;
+package org.optaplanner.core.api.domain.value;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
-import org.optaplanner.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.solution.Solution;
 
 import static java.lang.annotation.ElementType.*;

@@ -28,11 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.optaplanner.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.api.domain.solution.PlanningEntityProperty;
-import org.optaplanner.api.domain.solution.PlanningSolution;
-import org.optaplanner.api.domain.solution.cloner.PlanningCloneable;
-import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
+import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;

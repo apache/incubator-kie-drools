@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.solver.scope;
 import java.util.List;
 import java.util.Random;
 
-import org.optaplanner.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.score.Score;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;

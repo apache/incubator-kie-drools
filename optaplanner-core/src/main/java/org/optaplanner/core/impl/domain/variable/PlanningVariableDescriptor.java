@@ -23,9 +23,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.optaplanner.api.domain.value.ValueRange;
-import org.optaplanner.api.domain.value.ValueRanges;
-import org.optaplanner.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRanges;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;

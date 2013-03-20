@@ -17,7 +17,7 @@
 package org.optaplanner.config.heuristic.selector.move.generic.chained;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.config.heuristic.selector.move.MoveSelectorConfig;

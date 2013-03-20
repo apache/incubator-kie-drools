@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl.testdata.domain.multientity;
 
-import org.optaplanner.api.domain.entity.PlanningEntity;
-import org.optaplanner.api.domain.value.ValueRange;
-import org.optaplanner.api.domain.value.ValueRangeType;
-import org.optaplanner.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRangeType;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;

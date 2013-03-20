@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.api.domain.entity;
+package org.optaplanner.core.api.domain.entity;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Comparator;
 
-import org.optaplanner.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;

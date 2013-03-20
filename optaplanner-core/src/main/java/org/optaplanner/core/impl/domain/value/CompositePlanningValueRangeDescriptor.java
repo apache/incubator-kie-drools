@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.optaplanner.api.domain.value.ValueRange;
-import org.optaplanner.api.domain.value.ValueRangeType;
+import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRangeType;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 

@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package org.optaplanner.api.domain.value;
+package org.optaplanner.core.api.domain.value;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import org.optaplanner.core.impl.solution.Solution;
 
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
-
-/**
- * Plural of {@link ValueRange}.
- * The planning values of each {@link ValueRange} are unioned without duplication detection.
- */
-@Target({METHOD})
-@Retention(RUNTIME)
-public @interface ValueRanges {
-
+public enum ValueRangeType {
     /**
-     * @return never null
+     * The planning value range for the planning variable is defined by a property on the {@link Solution}.
      */
-    ValueRange[] value();
-
+    FROM_SOLUTION_PROPERTY,
+    /**
+     * The planning value range for the planning variable is defined by a property on the planning entity.
+     */
+    FROM_PLANNING_ENTITY_PROPERTY,
+    /**
+     * The planning value range for the planning variable is undefined.
+     * This is incompatible with several optimization algorithms.
+     */
+    UNDEFINED
 }

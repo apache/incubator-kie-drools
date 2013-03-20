@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.api.domain.solution.cloner;
+package org.optaplanner.core.api.domain.solution.cloner;
 
 import org.optaplanner.core.impl.solution.Solution;
 
