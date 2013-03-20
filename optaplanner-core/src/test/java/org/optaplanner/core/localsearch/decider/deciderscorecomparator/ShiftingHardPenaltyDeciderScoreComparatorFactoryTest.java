@@ -21,7 +21,7 @@ import org.optaplanner.core.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.score.comparator.FlatteningHardSoftScoreComparator;
 import org.optaplanner.core.score.comparator.NaturalScoreComparator;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

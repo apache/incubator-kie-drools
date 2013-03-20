@@ -21,7 +21,7 @@ import org.optaplanner.core.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

@@ -21,7 +21,7 @@ import org.optaplanner.core.impl.bruteforce.scope.BruteForceSolverPhaseScope;
 import org.optaplanner.core.impl.bruteforce.scope.BruteForceStepScope;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.score.Score;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * Default implementation of {@link BruteForceSolverPhase}.

@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.phase;
 
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * A SolverPhase

@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.score.director.ScoreDirector;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.util.RandomUtils;
 
 public class ProbabilityMoveSelector extends AbstractMoveSelector implements SelectionCacheLifecycleListener {

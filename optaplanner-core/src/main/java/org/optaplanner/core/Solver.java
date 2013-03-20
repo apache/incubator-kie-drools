@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.event.SolverEventListener;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.core.solver.ProblemFactChange;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.termination.Termination;
 
 /**

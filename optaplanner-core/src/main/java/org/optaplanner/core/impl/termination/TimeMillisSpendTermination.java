@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.termination;
 
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class TimeMillisSpendTermination extends AbstractTermination {
 

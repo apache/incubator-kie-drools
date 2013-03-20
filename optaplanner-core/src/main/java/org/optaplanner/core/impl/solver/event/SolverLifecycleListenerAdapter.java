@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.solver.event;
+package org.optaplanner.core.impl.solver.event;
 
-import java.util.EventListener;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+public abstract class SolverLifecycleListenerAdapter implements SolverLifecycleListener {
 
-public interface SolverLifecycleListener extends EventListener {
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        // Hook method
+    }
 
-    void solvingStarted(DefaultSolverScope solverScope);
-
-    void solvingEnded(DefaultSolverScope solverScope);
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        // Hook method
+    }
 
 }

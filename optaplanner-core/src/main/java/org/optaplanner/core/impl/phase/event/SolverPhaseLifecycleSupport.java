@@ -21,7 +21,7 @@ import java.util.Iterator;
 import org.drools.core.event.AbstractEventSupport;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * Internal API.

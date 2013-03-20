@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.common;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class SelectionCacheLifecycleBridge implements SolverPhaseLifecycleListener {
 

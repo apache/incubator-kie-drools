@@ -23,7 +23,7 @@ import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
-import org.optaplanner.core.solver.DefaultSolver;
+import org.optaplanner.core.impl.solver.DefaultSolver;
 
 public class MemoryUseSingleStatistic extends AbstractSingleStatistic {
 

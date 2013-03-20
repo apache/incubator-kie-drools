@@ -39,7 +39,7 @@ import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.core.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.core.solver.ProblemFactChange;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;

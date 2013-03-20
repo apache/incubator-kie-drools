@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.solver;
+package org.optaplanner.core.impl.solver;
 
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.score.Score;

@@ -37,8 +37,8 @@ import org.optaplanner.core.impl.phase.SolverPhase;
 import org.optaplanner.core.score.definition.ScoreDefinition;
 import org.optaplanner.core.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.core.solver.BasicPlumbingTermination;
-import org.optaplanner.core.solver.DefaultSolver;
+import org.optaplanner.core.impl.solver.BasicPlumbingTermination;
+import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("solver")

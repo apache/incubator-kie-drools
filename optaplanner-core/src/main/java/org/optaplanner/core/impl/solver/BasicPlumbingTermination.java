@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.solver;
+package org.optaplanner.core.impl.solver;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.termination.AbstractTermination;
 
 public class BasicPlumbingTermination extends AbstractTermination {

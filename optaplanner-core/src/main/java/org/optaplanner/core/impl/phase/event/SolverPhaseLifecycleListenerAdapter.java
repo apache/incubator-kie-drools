@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.phase.event;
 
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
-import org.optaplanner.core.solver.event.SolverLifecycleListenerAdapter;
+import org.optaplanner.core.impl.solver.event.SolverLifecycleListenerAdapter;
 
 public abstract class SolverPhaseLifecycleListenerAdapter extends SolverLifecycleListenerAdapter
         implements SolverPhaseLifecycleListener {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.solver;
+package org.optaplanner.core.impl.solver;
 
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

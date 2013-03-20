@@ -22,7 +22,7 @@ import org.drools.core.WorkingMemory;
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.drools.DroolsScoreDirector;
-import org.optaplanner.core.solver.ProblemFactChange;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
  * A Solution represents a problem and a possible solution of that problem.

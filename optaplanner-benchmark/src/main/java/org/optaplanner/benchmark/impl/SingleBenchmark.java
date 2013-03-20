@@ -28,8 +28,8 @@ import org.optaplanner.core.Solver;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.core.solver.DefaultSolver;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.DefaultSolver;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

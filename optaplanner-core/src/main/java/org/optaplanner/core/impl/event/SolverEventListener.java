@@ -21,7 +21,7 @@ import java.util.EventListener;
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.core.solver.ProblemFactChange;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 public interface SolverEventListener extends EventListener {
 

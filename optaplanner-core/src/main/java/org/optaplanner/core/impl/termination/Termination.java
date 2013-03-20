@@ -21,7 +21,7 @@ import org.optaplanner.core.localsearch.decider.acceptor.simulatedannealing.Simu
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.SolverPhase;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
-import org.optaplanner.core.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * A Termination determines when a {@link Solver} or a {@link SolverPhase} should stop.
