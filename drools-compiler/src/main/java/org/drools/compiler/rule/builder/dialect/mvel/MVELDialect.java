@@ -305,20 +305,22 @@ public class MVELDialect
 
         // @todo: why is this here, MVEL doesn't compile anything? mdp
         String pkgName = this.pkg == null ? "" : this.pkg.getName();
-        final String ruleClassName = DialectUtil.getUniqueLegalName(pkgName,
-                ruleDescr.getName(),
-                "mvel",
-                "Rule",
-                this.src);
+        final String ruleClassName = DialectUtil.getUniqueLegalName( pkgName,
+                                                                     ruleDescr.getName(),
+                                                                     ruleDescr.getConsequence().hashCode(),
+                                                                     "mvel",
+                                                                     "Rule",
+                                                                     this.src );
         ruleDescr.setClassName( StringUtils.ucFirst( ruleClassName ) );
     }
 
     public void init(final ProcessDescr processDescr) {
-        final String processDescrClassName = DialectUtil.getUniqueLegalName(this.pkg.getName(),
-                processDescr.getName(),
-                "mvel",
-                "Process",
-                this.src);
+        final String processDescrClassName = DialectUtil.getUniqueLegalName( this.pkg.getName(),
+                                                                             processDescr.getName(),
+                                                                             processDescr.getProcessId().hashCode(),
+                                                                             "mvel",
+                                                                             "Process",
+                                                                             this.src );
         processDescr.setClassName( StringUtils.ucFirst( processDescrClassName ) );
     }
 

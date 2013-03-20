@@ -246,20 +246,22 @@ public class JavaDialect
     }
 
     public void init(final RuleDescr ruleDescr) {
-        final String ruleClassName = DialectUtil.getUniqueLegalName(this.pkg.getName(),
-                ruleDescr.getName(),
-                "java",
-                "Rule",
-                this.src);
+        final String ruleClassName = DialectUtil.getUniqueLegalName( this.pkg.getName(),
+                                                                     ruleDescr.getName(),
+                                                                     ruleDescr.getConsequence().hashCode(),
+                                                                     "java",
+                                                                     "Rule",
+                                                                     this.src);
         ruleDescr.setClassName( StringUtils.ucFirst( ruleClassName ) );
     }
 
     public void init(final ProcessDescr processDescr) {
-        final String processDescrClassName = DialectUtil.getUniqueLegalName(this.pkg.getName(),
-                processDescr.getName(),
-                "java",
-                "Process",
-                this.src);
+        final String processDescrClassName = DialectUtil.getUniqueLegalName( this.pkg.getName(),
+                                                                             processDescr.getName(),
+                                                                             processDescr.getProcessId().hashCode(),
+                                                                             "java",
+                                                                             "Process",
+                                                                             this.src );
         processDescr.setClassName( StringUtils.ucFirst( processDescrClassName ) );
     }
 
