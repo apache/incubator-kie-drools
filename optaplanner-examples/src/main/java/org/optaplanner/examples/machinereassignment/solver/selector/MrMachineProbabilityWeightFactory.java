@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.machinereassignment.solver.selector;
 
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;

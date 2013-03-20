@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.nurserostering.domain.solver;
 
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;

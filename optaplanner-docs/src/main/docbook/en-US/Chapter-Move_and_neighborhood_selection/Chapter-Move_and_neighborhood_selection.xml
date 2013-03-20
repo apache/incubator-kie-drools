@@ -780,7 +780,7 @@
       <literal>FairSelectorProbabilityWeightFactory</literal>:</para>
 
       <programlisting language="xml">    &lt;unionMoveSelector&gt;
-      &lt;selectorProbabilityWeightFactoryClass&gt;org.optaplanner.core.heuristic.selector.common.decorator.FairSelectorProbabilityWeightFactory&lt;/selectorProbabilityWeightFactoryClass&gt;
+      &lt;selectorProbabilityWeightFactoryClass&gt;org.optaplanner.core.impl.heuristic.selector.common.decorator.FairSelectorProbabilityWeightFactory&lt;/selectorProbabilityWeightFactoryClass&gt;
       &lt;changeMoveSelector/&gt;
       &lt;swapMoveSelector/&gt;
     &lt;/unionMoveSelector&gt;</programlisting>

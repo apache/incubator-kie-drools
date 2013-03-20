@@ -21,8 +21,8 @@ import java.util.Set;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.heuristic.selector.entity.PlanningEntitySelectionOrder;
-import org.optaplanner.core.heuristic.selector.entity.PlanningEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.PlanningEntitySelectionOrder;
+import org.optaplanner.core.impl.heuristic.selector.entity.PlanningEntitySelector;
 
 @XStreamAlias("greedyFitPlanningEntity")
 @Deprecated // Use ConstructionHeuristicSolverPhaseConfig

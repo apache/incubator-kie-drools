@@ -7,7 +7,7 @@ import org.optaplanner.core.impl.constructionheuristic.placer.AbstractPlacer;
 import org.optaplanner.core.impl.constructionheuristic.placer.value.ValuePlacer;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
-import org.optaplanner.core.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 
 public class QueuedEntityPlacer extends AbstractPlacer implements EntityPlacer {

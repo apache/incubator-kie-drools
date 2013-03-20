@@ -21,10 +21,10 @@ import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.heuristic.selector.move.factory.MoveListFactory;
-import org.optaplanner.core.heuristic.selector.move.factory.MoveListFactoryToMoveSelectorBridge;
+import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactoryToMoveSelectorBridge;
 
 @XStreamAlias("moveListFactory")
 public class MoveListFactoryConfig extends MoveSelectorConfig {

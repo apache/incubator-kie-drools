@@ -26,15 +26,15 @@ import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
-import org.optaplanner.core.heuristic.selector.value.EntityIndependentValueSelector;
-import org.optaplanner.core.heuristic.selector.value.FromEntityPropertyValueSelector;
-import org.optaplanner.core.heuristic.selector.value.FromSolutionPropertyValueSelector;
-import org.optaplanner.core.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.heuristic.selector.value.decorator.CachingValueSelector;
-import org.optaplanner.core.heuristic.selector.value.decorator.ProbabilityValueSelector;
-import org.optaplanner.core.heuristic.selector.value.decorator.ShufflingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 
 @XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig {

@@ -25,10 +25,10 @@ import org.optaplanner.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.heuristic.selector.entity.pillar.PillarSelector;
-import org.optaplanner.core.heuristic.selector.entity.pillar.SameValuePillarSelector;
+import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.pillar.SameValuePillarSelector;
 
 @XStreamAlias("pillarSelector")
 public class PillarSelectorConfig extends SelectorConfig {

@@ -19,7 +19,7 @@ package org.optaplanner.examples.cloudbalancing.solver.move.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.optaplanner.core.heuristic.selector.move.factory.MoveListFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.solution.Solution;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;

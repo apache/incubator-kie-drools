@@ -26,11 +26,11 @@ import org.optaplanner.core.impl.bruteforce.scope.BruteForceStepScope;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.heuristic.selector.variable.PlanningValueSelectionOrder;
-import org.optaplanner.core.heuristic.selector.variable.PlanningValueSelectionPromotion;
-import org.optaplanner.core.heuristic.selector.variable.PlanningValueSelector;
-import org.optaplanner.core.heuristic.selector.variable.PlanningValueWalker;
-import org.optaplanner.core.heuristic.selector.variable.PlanningVariableWalker;
+import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelectionOrder;
+import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelectionPromotion;
+import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueWalker;
+import org.optaplanner.core.impl.heuristic.selector.variable.PlanningVariableWalker;
 
 public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleListener {
 

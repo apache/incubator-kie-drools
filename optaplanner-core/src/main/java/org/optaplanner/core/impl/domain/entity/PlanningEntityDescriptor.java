@@ -32,8 +32,8 @@ import org.optaplanner.api.domain.variable.PlanningVariable;
 import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.solution.Solution;
 
 public class PlanningEntityDescriptor {

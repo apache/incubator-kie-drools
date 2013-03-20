@@ -37,20 +37,20 @@ import org.optaplanner.config.heuristic.selector.move.generic.chained.SubChainCh
 import org.optaplanner.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.heuristic.selector.common.decorator.ComparatorSelectionSorter;
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionSorter;
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionSorterOrder;
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
-import org.optaplanner.core.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
-import org.optaplanner.core.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.heuristic.selector.move.decorator.CachingMoveSelector;
-import org.optaplanner.core.heuristic.selector.move.decorator.FilteringMoveSelector;
-import org.optaplanner.core.heuristic.selector.move.decorator.ProbabilityMoveSelector;
-import org.optaplanner.core.heuristic.selector.move.decorator.ShufflingMoveSelector;
-import org.optaplanner.core.heuristic.selector.move.decorator.SortingMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterOrder;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.decorator.CachingMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.decorator.FilteringMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.decorator.ProbabilityMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
 
 /**
  * General superclass for {@link ChangeMoveSelectorConfig}, etc.

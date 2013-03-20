@@ -23,8 +23,8 @@ import java.util.List;
 
 import org.optaplanner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.Solver;
-import org.optaplanner.core.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.heuristic.selector.move.factory.MoveListFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.core.solution.Solution;

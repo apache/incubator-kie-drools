@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.localsearch.decider;
 
-import org.optaplanner.core.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.localsearch.LocalSearchSolverPhase;
 import org.optaplanner.core.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.localsearch.decider.forager.Forager;

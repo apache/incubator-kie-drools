@@ -35,9 +35,9 @@ import org.optaplanner.core.impl.domain.value.FromEntityPropertyPlanningValueRan
 import org.optaplanner.core.impl.domain.value.FromSolutionPropertyPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.value.PlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.value.UndefinedPlanningValueRangeDescriptor;
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
-import org.optaplanner.core.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
 import org.optaplanner.core.solution.Solution;
 
 public class PlanningVariableDescriptor {

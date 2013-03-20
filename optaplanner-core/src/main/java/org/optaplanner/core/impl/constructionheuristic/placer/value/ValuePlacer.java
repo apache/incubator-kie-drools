@@ -7,9 +7,9 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.heuristic.selector.move.generic.ChangeMove;
-import org.optaplanner.core.heuristic.selector.move.generic.chained.ChainedChangeMove;
-import org.optaplanner.core.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirector;

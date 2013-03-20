@@ -27,7 +27,7 @@ import org.optaplanner.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 
 /**
  * General superclass for {@link MoveSelectorConfig}, {@link EntitySelectorConfig} and {@link ValueSelectorConfig}.

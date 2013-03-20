@@ -16,8 +16,8 @@
 
 package org.optaplanner.examples.curriculumcourse.solver.move;
 
-import org.optaplanner.core.heuristic.selector.common.decorator.SelectionFilter;
-import org.optaplanner.core.heuristic.selector.move.generic.SwapMove;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 

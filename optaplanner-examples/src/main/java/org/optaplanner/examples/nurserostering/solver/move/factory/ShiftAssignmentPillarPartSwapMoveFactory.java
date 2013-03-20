@@ -24,7 +24,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.optaplanner.core.heuristic.selector.move.factory.MoveListFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.move.CompositeMove;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.solution.Solution;

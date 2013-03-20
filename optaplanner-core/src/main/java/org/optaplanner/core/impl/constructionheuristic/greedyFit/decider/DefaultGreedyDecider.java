@@ -22,7 +22,7 @@ import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
-import org.optaplanner.core.heuristic.selector.variable.PlanningVariableWalker;
+import org.optaplanner.core.impl.heuristic.selector.variable.PlanningVariableWalker;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirector;

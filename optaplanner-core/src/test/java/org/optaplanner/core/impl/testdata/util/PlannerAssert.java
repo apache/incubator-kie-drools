@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.testdata.util;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.move.CompositeMove;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;

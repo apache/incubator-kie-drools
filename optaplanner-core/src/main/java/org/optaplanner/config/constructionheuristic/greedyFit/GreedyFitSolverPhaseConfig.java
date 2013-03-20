@@ -34,10 +34,10 @@ import org.optaplanner.core.impl.constructionheuristic.greedyFit.selector.Greedy
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.heuristic.selector.entity.PlanningEntitySelector;
-import org.optaplanner.core.heuristic.selector.variable.PlanningValueSelector;
-import org.optaplanner.core.heuristic.selector.variable.PlanningValueWalker;
-import org.optaplanner.core.heuristic.selector.variable.PlanningVariableWalker;
+import org.optaplanner.core.impl.heuristic.selector.entity.PlanningEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueWalker;
+import org.optaplanner.core.impl.heuristic.selector.variable.PlanningVariableWalker;
 import org.optaplanner.core.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 

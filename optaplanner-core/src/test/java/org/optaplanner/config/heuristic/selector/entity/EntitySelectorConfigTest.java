@@ -19,10 +19,10 @@ package org.optaplanner.config.heuristic.selector.entity;
 import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.heuristic.selector.entity.FromSolutionEntitySelector;
-import org.optaplanner.core.heuristic.selector.entity.decorator.ShufflingEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.FromSolutionEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ShufflingEntitySelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.junit.Test;
 

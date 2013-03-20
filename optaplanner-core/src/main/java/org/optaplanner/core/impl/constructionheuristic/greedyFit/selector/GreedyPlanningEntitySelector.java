@@ -23,7 +23,7 @@ import org.apache.commons.collections.iterators.IteratorChain;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
-import org.optaplanner.core.heuristic.selector.entity.PlanningEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.PlanningEntitySelector;
 
 /**
  * Determines the order in which the planning entities are fit into the solution

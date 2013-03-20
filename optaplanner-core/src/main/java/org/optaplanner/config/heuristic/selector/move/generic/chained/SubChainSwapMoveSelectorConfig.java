@@ -24,10 +24,10 @@ import org.optaplanner.config.heuristic.selector.value.chained.SubChainSelectorC
 import org.optaplanner.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.heuristic.selector.move.generic.chained.SubChainSwapMoveSelector;
-import org.optaplanner.core.heuristic.selector.value.chained.SubChainSelector;
+import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainSwapMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 
 @XStreamAlias("subChainSwapMoveSelector")
 public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {

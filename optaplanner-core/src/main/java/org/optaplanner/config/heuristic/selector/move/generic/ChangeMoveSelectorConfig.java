@@ -23,11 +23,11 @@ import org.optaplanner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.heuristic.selector.move.generic.ChangeMoveSelector;
-import org.optaplanner.core.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 @XStreamAlias("changeMoveSelector")
 public class ChangeMoveSelectorConfig extends MoveSelectorConfig {

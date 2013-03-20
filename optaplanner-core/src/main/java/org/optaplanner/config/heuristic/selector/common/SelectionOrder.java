@@ -17,7 +17,7 @@
 package org.optaplanner.config.heuristic.selector.common;
 
 import org.optaplanner.config.heuristic.selector.SelectorConfig;
-import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 
 /**
  * Defines in which order the elements or a selector are selected.
