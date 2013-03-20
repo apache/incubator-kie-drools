@@ -48,10 +48,10 @@
       <para>You can build a <literal>PlannerBenchmark</literal> instance with the
       <literal>XmlPlannerBenchmarkFactory</literal>. Configure it with a benchmark configuration xml file:</para>
 
-      <programlisting language="java">    XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory();
-    plannerBenchmarkFactory.configure("/org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
-    PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();
-    plannerBenchmark.benchmark();</programlisting>
+      <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(
+                "/org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
+        PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();
+        plannerBenchmark.benchmark();</programlisting>
 
       <para>A basic benchmark configuration file looks something like this:</para>
 
@@ -576,9 +576,9 @@
 
       <para>And configure it with the method <literal>configureFromTemplate</literal>:</para>
 
-      <programlisting language="java">    XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory();
-    plannerBenchmarkFactory.configureFromTemplate("/org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
-    PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();</programlisting>
+      <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory()
+                .configureFromTemplate("/org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
+        PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();</programlisting>
     </section>
   </section>
 </chapter>

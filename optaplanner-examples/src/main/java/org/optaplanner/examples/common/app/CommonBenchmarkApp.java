@@ -17,19 +17,19 @@
 package org.optaplanner.examples.common.app;
 
 import org.optaplanner.benchmark.api.PlannerBenchmark;
+import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.XmlPlannerBenchmarkFactory;
 
 public abstract class CommonBenchmarkApp extends LoggingMain {
 
     public void buildAndBenchmark(String benchmarkConfig) {
-        XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory()
-                .configure(benchmarkConfig);
+        PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory(benchmarkConfig);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         plannerBenchmark.benchmark();
     }
 
     public void buildFromTemplateAndBenchmark(String benchmarkConfigTemplate) {
-        XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory()
+        PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory()
                 .configureFromTemplate(benchmarkConfigTemplate);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         plannerBenchmark.benchmark();

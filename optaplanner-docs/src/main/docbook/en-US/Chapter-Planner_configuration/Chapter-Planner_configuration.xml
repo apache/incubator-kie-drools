@@ -55,9 +55,9 @@
       <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverFactory</literal>. Configure
       it with a solver configuration XML file:</para>
 
-      <programlisting language="java">        XmlSolverFactory solverFactory = new XmlSolverFactory();
-        solverFactory.configure("/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
-        Solver solver = solverFactory.buildSolver();</programlisting>
+      <programlisting language="java">       XmlSolverFactory solverFactory = new XmlSolverFactory(
+               "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
+       Solver solver = solverFactory.buildSolver();</programlisting>
 
       <para>A solver configuration file looks something like this:</para>
 
@@ -146,7 +146,7 @@
       runtime:</para>
 
       <programlisting language="java">        XmlSolverFactory solverFactory = new XmlSolverFactory();
-        solverFactory.configure("/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
+                "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
 
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.getTerminationConfig().setMaximumMinutesSpend(userInput);

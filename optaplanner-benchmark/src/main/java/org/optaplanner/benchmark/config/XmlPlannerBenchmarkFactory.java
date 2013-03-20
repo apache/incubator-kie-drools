@@ -30,9 +30,10 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
+import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 
-public class XmlPlannerBenchmarkFactory {
+public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
 
     private XStream xStream;
     private PlannerBenchmarkConfig plannerBenchmarkConfig = null;
@@ -40,6 +41,11 @@ public class XmlPlannerBenchmarkFactory {
     public XmlPlannerBenchmarkFactory() {
         xStream = XmlSolverFactory.buildXstream();
         xStream.processAnnotations(PlannerBenchmarkConfig.class);
+    }
+
+    public XmlPlannerBenchmarkFactory(String resource) {
+        this();
+        configure(resource);
     }
 
     // ************************************************************************

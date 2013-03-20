@@ -2961,3 +2961,9 @@ Before in *.java:
 After in *.java:
     import org.optaplanner.core.config.solver.EnvironmentMode;
     import org.optaplanner.core.config.solver.XmlSolverFactory;
+
+[RECOMMENDED] Use the interface PlannerBenchmarkFactory in favor of XmlPlannerBenchmarkFactory
+Before in *.java:
+    XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory("...BenchmarkConfig.xml");
+After in *.java:
+    PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory("...BenchmarkConfig.xml");
