@@ -106,7 +106,8 @@ public class JTMSBeliefSystem
                           node.getObject(),
                           node.getJustifier().getRule(),
                           node.getJustifier(),
-                          typeConf );
+                          typeConf,
+                          null );
         }
     }
 

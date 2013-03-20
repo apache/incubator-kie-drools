@@ -137,14 +137,17 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         if (log.isTraceEnabled()) {
             log.trace("UnlinkNode notify=true nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
         }
-        if (isSegmentLinked()) {
+
+        // some node unlinking does not unlink the segment, such as nodes after a Branch CE
+        boolean linked = isSegmentLinked();
+        linkedNodeMask = linkedNodeMask ^ mask;
+        if (linked && !isSegmentLinked()) {
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
                 pathMemories.get(i).unlinkedSegment(segmentPosMaskBit,
                                                     wm);
             }
         }
-        linkedNodeMask = linkedNodeMask ^ mask;
     }
 
     public void unlinkNodeWithoutRuleNotify(long mask) {

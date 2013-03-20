@@ -224,7 +224,7 @@ public class PropagationContextImpl
 
     public void releaseResources() {
         this.leftTuple = null;
-        this.rule = null;
+        //this.rule = null;
     }
 
     /**

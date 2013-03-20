@@ -1,6 +1,6 @@
 package org.drools.compiler.test;
  
-import org.drools.FromTestClass;
+import org.drools.compiler.FromTestClass;
 import org.drools.compiler.Person
 
 global FromTestClass testObject;

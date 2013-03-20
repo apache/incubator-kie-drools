@@ -839,7 +839,8 @@ public abstract class AbstractWorkingMemory
                                        object,
                                        rule,
                                        activation,
-                                       typeConf );
+                                       typeConf,
+                                       null );
     }
 
     public void retract(final org.kie.api.runtime.rule.FactHandle handle) throws FactException {

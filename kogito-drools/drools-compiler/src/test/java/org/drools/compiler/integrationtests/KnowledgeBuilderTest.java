@@ -116,7 +116,7 @@ public class KnowledgeBuilderTest {
     }
 
     @Test
-    @Ignore("problem during phreak work")
+    @Ignore("toString recursion of type declarations breaks phreak")
     public void testDifferentPackages() throws Exception {
         String rule = "package org.drools.compiler.test.rule\n" +
                       "import org.drools.compiler.testA.FactA\n" +
@@ -150,6 +150,7 @@ public class KnowledgeBuilderTest {
                 .add( ResourceFactory.newByteArrayResource( declarationA.getBytes() ) )
                 .add( ResourceFactory.newByteArrayResource( declarationB.getBytes() ) )
                 .build();
+
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );

@@ -1979,8 +1979,11 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("Disbaled due to phreak, as tests is order specific")
     public void testBasicFrom() throws Exception {
+        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+            return;  //Disbaled due to phreak, as tests is order specific
+        }
+
         KnowledgeBase kbase = loadKnowledgeBase("test_From.drl"  );
         kbase = SerializationHelper.serializeObject( kbase );
 
@@ -2020,17 +2023,17 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 2,
                       ((List) ksession.getGlobal( "list1" )).size() );
         assertEquals( cheddar,
-                      ((List) ksession.getGlobal( "list1" )).get( 0 ) );
-        assertEquals( stilton,
                       ((List) ksession.getGlobal( "list1" )).get( 1 ) );
+        assertEquals( stilton,
+                      ((List) ksession.getGlobal( "list1" )).get( 0 ) );
 
         // from using a declaration
         assertEquals( 2,
                       ((List) ksession.getGlobal( "list2" )).size() );
         assertEquals( cheddar,
-                      ((List) ksession.getGlobal( "list2" )).get( 0 ) );
-        assertEquals( stilton,
                       ((List) ksession.getGlobal( "list2" )).get( 1 ) );
+        assertEquals( stilton,
+                      ((List) ksession.getGlobal( "list2" )).get( 0 ) );
 
         // from using a declaration
         assertEquals( 1,
@@ -2040,8 +2043,11 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("Disbaled due to phreak, as tests is order specific")
     public void testFromWithParams() throws Exception {
+        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+            return;  //Disbaled due to phreak, as tests is order specific
+        }
+
         KnowledgeBase kbase = loadKnowledgeBase( "test_FromWithParams.drl" );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
@@ -2065,7 +2071,7 @@ public class MiscTest extends CommonTestMethodBase {
                       ((List) ksession.getGlobal( "list" )).size() );
 
         
-        final List array = (List) ((List) ksession.getGlobal( "list" )).get( 0 );
+        final List array = (List) ((List) ksession.getGlobal( "list" )).get( 5 );
         assertEquals( 3,
                       array.size() );
         final Person p = (Person) array.get( 0 );
@@ -2081,7 +2087,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( "y",
                       nested.get( 1 ) );
 
-        final Map map = (Map) ((List) ksession.getGlobal( "list" )).get( 5 );
+        final Map map = (Map) ((List) ksession.getGlobal( "list" )).get( 4 );
         assertEquals( 2,
                       map.keySet().size() );
 
@@ -2098,13 +2104,13 @@ public class MiscTest extends CommonTestMethodBase {
                       nestedMap.get( "key2" ) );
 
         assertEquals( new Integer( 42 ),
-                      ((List) ksession.getGlobal( "list" )).get( 4 ) );
-        assertEquals( "literal",
                       ((List) ksession.getGlobal( "list" )).get( 3 ) );
-        assertEquals( bob,
+        assertEquals( "literal",
                       ((List) ksession.getGlobal( "list" )).get( 2 ) );
-        assertEquals( globalObject,
+        assertEquals( bob,
                       ((List) ksession.getGlobal( "list" )).get( 1 ) );
+        assertEquals( globalObject,
+                      ((List) ksession.getGlobal( "list" )).get( 0 ) );
     }
 
     @Test
@@ -5093,8 +5099,10 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("Disbaled due to phreak, as tests is order specific")
     public void testFromArrayIteration() throws Exception {
+        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+            return;  //Disbaled due to phreak, as tests is order specific
+        }
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_FromArrayIteration.drl" ) );
         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
 
@@ -5110,11 +5118,11 @@ public class MiscTest extends CommonTestMethodBase {
                       list.size() );
 
         assertEquals( "Message3",
-                      list.get( 0 ) );
-        assertEquals( "Message2",
                       list.get( 2 ) );
-        assertEquals( "Message1",
+        assertEquals( "Message2",
                       list.get( 1 ) );
+        assertEquals( "Message1",
+                      list.get( 0 ) );
 
     }
 

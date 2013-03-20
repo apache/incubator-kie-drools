@@ -9,6 +9,9 @@ import java.io.ObjectOutputStream;
 import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.StatefulSession;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.drools.core.reteoo.ReteooStatefulSession;
@@ -122,7 +125,10 @@ public class SerializationHelper {
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
                                                                                  boolean dispose) throws Exception {
-        //if ( true ) return ksession;
+        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
+            return ksession;
+        }
+
         return getSerialisedStatefulKnowledgeSession( ksession, 
                                                       dispose, 
                                                       true );
@@ -133,7 +139,9 @@ public class SerializationHelper {
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
                                                                                  boolean dispose,
                                                                                  boolean testRoundTrip ) throws Exception {
-        //if ( true ) return ksession;
+        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
+            return ksession;
+        }
         
         ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller( ksession.getKieBase(),
                                                                  (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );

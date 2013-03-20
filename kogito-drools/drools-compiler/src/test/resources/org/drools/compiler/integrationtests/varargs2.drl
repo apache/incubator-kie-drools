@@ -10,8 +10,7 @@ then
     System.out.println( $ms.toString() );
 end
 
-rule "addSet"
-no-loop true
+rule "addSet" no-loop true
 when
     $ms: MySet()
 then
@@ -19,8 +18,7 @@ then
     insert( new MySet( "x", "y" ) );
 end
 
-rule "xySet"
-no-loop true
+rule "xySet" no-loop true salience 1000
 when
     $ms: MySet()
 then

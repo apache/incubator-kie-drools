@@ -18,6 +18,7 @@ package org.drools.core.common;
 
 import java.util.PriorityQueue;
 
+import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.Queueable;
 import org.drools.core.spi.Activation;
@@ -62,7 +63,12 @@ public class BinaryHeapQueueAgendaGroup
     public BinaryHeapQueueAgendaGroup(final String name,
                                       final InternalRuleBase ruleBase) {
         this.name = name;
-        this.queue = new BinaryHeapQueue( ruleBase.getConfiguration().getConflictResolver() );
+        if ( ruleBase.getConfiguration().isPhreakEnabled() ) {
+            this.queue = new BinaryHeapQueue( new PhreakConflictResolver());
+        } else {
+            this.queue = new BinaryHeapQueue( ruleBase.getConfiguration().getConflictResolver() );
+        }
+
         this.clearedForRecency = -1;
     }
 

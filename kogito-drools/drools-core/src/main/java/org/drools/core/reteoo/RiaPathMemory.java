@@ -58,9 +58,7 @@ public class RiaPathMemory extends PathMemory {
         if ( NodeTypeEnums.isTerminalNode(ltsink)) {
             terminalNodeNames.add( ((TerminalNode)ltsink).getRule().getName() );
         } else if ( ltsink.getType() == NodeTypeEnums.RightInputAdaterNode ) {
-            for ( Object childSink : ((RightInputAdapterNode)ltsink).getSinkPropagator().getSinks() )  {
-                findAndAddTN( ( LeftTupleSink ) childSink, terminalNodeNames);
-            }
+            // Do not traverse here, as we'll the other side of the target node anyway.
         } else {
             for ( LeftTupleSink childLtSink : ((LeftTupleSource)ltsink).getSinkPropagator().getSinks() )  {
                 findAndAddTN(childLtSink, terminalNodeNames);

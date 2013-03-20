@@ -2366,7 +2366,6 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     }
 
     @Test(timeout = 5000)
-    @Ignore("disabled during phreak work")
     public void testTypeDeclarationInitializationForPropertyReactive() {
         // JBRULES-3686
         String rule = "package org.drools.compiler.integrationtests\n" +

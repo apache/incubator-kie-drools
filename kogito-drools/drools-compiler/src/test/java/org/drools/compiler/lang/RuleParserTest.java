@@ -68,7 +68,6 @@ import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import static org.drools.compiler.compiler.DRLFactory.buildParser;
 
-@Ignore("problem during phreak work")
 public class RuleParserTest extends TestCase {
 
 
@@ -2903,7 +2902,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        assertEquals( "org.drools",
+        assertEquals( "org.drools.compiler",
                       pkg.getName() );
         assertEquals( 1,
                       pkg.getGlobals().size() );
@@ -2928,7 +2927,7 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "eval_parsing.drl" );
 
-        assertEquals( "org.drools",
+        assertEquals( "org.drools.compiler",
                       pkg.getName() );
         assertEquals( 1,
                       pkg.getRules().size() );

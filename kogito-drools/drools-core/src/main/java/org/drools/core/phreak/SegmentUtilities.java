@@ -61,6 +61,7 @@ public class SegmentUtilities {
     	// allLinkedTestMask is the resulting mask used to test if all nodes are linked in
     	long nodePosMask = 1;	
     	long allLinkedTestMask = 0;
+        boolean updateNodeBit = true;  // nodes after a branch CE can notify, but they cannot impact linking
     	
     	while ( true ) {
             if ( NodeTypeEnums.isBetaNode( tupleSource ) ) {
@@ -96,12 +97,13 @@ public class SegmentUtilities {
 
                     RiaNodeMemory riaMem = ( RiaNodeMemory ) wm.getNodeMemory( (MemoryFactory) riaNode );
                     bm.setRiaRuleMemory(riaMem.getRiaPathMemory());
-                    if ( riaMem.getRiaPathMemory().getAllLinkedMaskTest() > 0 ) {
+                    if ( updateNodeBit && riaMem.getRiaPathMemory().getAllLinkedMaskTest() > 0 ) {
                         // only ria's with reactive subnetworks can be disabled and thus need checking
                         allLinkedTestMask = allLinkedTestMask | nodePosMask;
                     }
-                } else if ( ( !(NodeTypeEnums.NotNode == tupleSource.getType() && !((NotNode)tupleSource).isEmptyBetaConstraints()) &&
-                           NodeTypeEnums.AccumulateNode != tupleSource.getType()) ) {
+                } else if ( updateNodeBit &&
+                            ( !(NodeTypeEnums.NotNode == tupleSource.getType() && !((NotNode)tupleSource).isEmptyBetaConstraints()) &&
+                            NodeTypeEnums.AccumulateNode != tupleSource.getType()) ) {
                         // non empty not nodes and accumulates can never be disabled and thus don't need checking
                         allLinkedTestMask = allLinkedTestMask | nodePosMask;
 
@@ -111,20 +113,18 @@ public class SegmentUtilities {
                     // not nodes start up linked in
                     smem.linkNodeWithoutRuleNotify(bm.getNodePosMaskBit());
                 }
-                nodePosMask = nodePosMask << 1;
             } else if ( tupleSource.getType() == NodeTypeEnums.LeftInputAdapterNode ) {                
                 LiaNodeMemory liaMemory = ( LiaNodeMemory ) smem.createNodeMemory( ( LeftInputAdapterNode ) tupleSource, wm );
                 liaMemory.setSegmentMemory( smem );
                 liaMemory.setNodePosMaskBit( nodePosMask );
                 allLinkedTestMask = allLinkedTestMask | nodePosMask;
-    
-                nodePosMask = nodePosMask << 1;                
             } else if ( tupleSource.getType() == NodeTypeEnums.EvalConditionNode ) {
-                EvalMemory evalMemory = ( EvalMemory ) smem.createNodeMemory( ( EvalConditionNode ) tupleSource, wm );
-                evalMemory.setSegmentMemory( smem );
+                EvalMemory evalMem = ( EvalMemory ) smem.createNodeMemory( ( EvalConditionNode ) tupleSource, wm );
+                evalMem.setSegmentMemory( smem );
             }  else if ( tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
-                ConditionalBranchMemory evalMemory = ( ConditionalBranchMemory ) smem.createNodeMemory( ( ConditionalBranchNode ) tupleSource, wm );
-                evalMemory.setSegmentMemory( smem );
+                ConditionalBranchMemory branchMem = ( ConditionalBranchMemory ) smem.createNodeMemory( ( ConditionalBranchNode ) tupleSource, wm );
+                branchMem.setSegmentMemory( smem );
+                updateNodeBit = false; // nodes after a branch CE can notify, but they cannot impact linking
             } else if ( tupleSource.getType() == NodeTypeEnums.FromNode ) {
                 FromMemory fromMemory = ( FromMemory ) smem.createNodeMemory( ( FromNode ) tupleSource, wm );
                 fromMemory.getBetaMemory().setSegmentMemory( smem );
@@ -139,8 +139,9 @@ public class SegmentUtilities {
                 }                               
                 QueryElementNodeMemory queryNodeMem = ( QueryElementNodeMemory ) smem.createNodeMemory( queryNode, wm );
                 queryNodeMem.setQuerySegmentMemory( querySmem );
-                queryNodeMem.setSegmentMemory( smem );                
+                queryNodeMem.setSegmentMemory( smem );
             }
+            nodePosMask = nodePosMask << 1;
 
             if ( tupleSource.getSinkPropagator().size() == 1 ) {
                 LeftTupleSinkNode sink = (LeftTupleSinkNode) tupleSource.getSinkPropagator().getFirstLeftTupleSink() ;

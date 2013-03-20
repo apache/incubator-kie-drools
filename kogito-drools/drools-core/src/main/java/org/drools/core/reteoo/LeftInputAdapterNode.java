@@ -267,7 +267,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             linkOrNotify = false; // we don't need to do any more notifcations
         }
 
-        LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink() ;                 
+        LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink();
         LeftTuple leftTuple = sink.createLeftTuple( factHandle, sink, useLeftMemory );
         leftTuple.setPropagationContext( context );
         long mask = sink.getLeftInferredMask();
@@ -288,8 +288,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             
             for ( sm = sm.getNext(); sm != null; sm = sm.getNext() ) {
                 sink =  sm.getSinkFactory();                
-                leftTuple = sink.createPeer( leftTuple );
-                leftTuple.setPropagationContext( context );
+                leftTuple = sink.createPeer( leftTuple ); // pctx is set during peer cloning
                 mask = ((LeftTupleSink)sm.getRootNode()).getLeftInferredMask();
                 if ( context.getType() == PropagationContext.INSERTION ||
                         mask == Long.MAX_VALUE ||
@@ -391,8 +390,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
         
         LeftTupleSets leftTuples = sm.getStagedLeftTuples();
                        
-        LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink() ;  
-        //leftTuple.setPropagationContext( context ); pctx is no longer updated, as it conflcits with no-loop, leaving commented code for future reference
+        LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink() ;
+
+        if ( leftTuple.getStagedType() != LeftTuple.INSERT ) {
+            // things staged as inserts, are left as inserts and use the pctx associated from the time of insertion
+            leftTuple.setPropagationContext( context );
+        }
         if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
             // if LeftTuple is already staged, leave it there
             long mask = sink.getLeftInferredMask();
@@ -417,7 +420,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 leftTuple = leftTuple.getPeer();
                 leftTuples = sm.getStagedLeftTuples();
 
-                //leftTuple.setPropagationContext( context ); pctx is no longer updated, as it conflcits with no-loop, leaving commented code for future reference
+                if ( leftTuple.getStagedType() != LeftTuple.INSERT ) {
+                    // things staged as inserts, are left as inserts and use the pctx associated from the time of insertion
+                    leftTuple.setPropagationContext( context );
+                }
                 if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
                     // if LeftTuple is already staged, leave it there
                     long mask =  ((LeftTupleSink) sm.getRootNode()).getLeftInferredMask();

@@ -542,16 +542,19 @@ public class RuleNetworkEvaluator {
         for (LeftTuple leftTuple = srcTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            InternalFactHandle handle = riaNode.createFactHandle(leftTuple, leftTuple.getPropagationContext(), wm);
+            PropagationContext pctx = leftTuple.getPropagationContext();
+            InternalFactHandle handle = riaNode.createFactHandle(leftTuple, pctx, wm);
 
             RightTuple rightTuple = new RightTuple(handle, betaNode);
             leftTuple.setObject(rightTuple);
+            rightTuple.setPropagationContext(pctx);
             bm.getStagedRightTuples().addInsert(rightTuple);
 
             if (bns != null) {
                 // Add peered RightTuples, they are attached to FH - unlink LeftTuples that has a peer ref
                 for (int i = 0; i < length; i++) {
                     rightTuple = new RightTuple(handle, bns[i]);
+                    rightTuple.setPropagationContext(pctx);
                     bms[i].getStagedRightTuples().addInsert(rightTuple);
                 }
             }
@@ -3605,7 +3608,7 @@ public class RuleNetworkEvaluator {
                                                                               propagationContext,
                                                                               fm.providerContext); it.hasNext(); ) {
                     final Object object = it.next();
-                    if (!resultClass.isAssignableFrom(object.getClass())) {
+                    if ( (object == null) || !resultClass.isAssignableFrom( object.getClass() ) ) {
                         continue; // skip anything if it not assignable
                     }
 
@@ -3675,7 +3678,7 @@ public class RuleNetworkEvaluator {
                                                                               propagationContext,
                                                                               fm.providerContext); it.hasNext(); ) {
                     final Object object = it.next();
-                    if (!resultClass.isAssignableFrom(object.getClass())) {
+                    if ( (object == null) || !resultClass.isAssignableFrom( object.getClass() ) ) {
                         continue; // skip anything if it not assignable
                     }
 

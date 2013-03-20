@@ -256,7 +256,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
             return true;
         }
 
-        if ( object == null || object.getClass() != EvalConditionNode.class ) {
+        if ( object == null || object.getClass() != ConditionalBranchNode.class ) {
             return false;
         }
 
@@ -268,10 +268,14 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new ConditionalBranchMemory( branchEvaluator.createContext() );
     }
-    
+
+    @Override
     public LeftTuple createPeer(LeftTuple original) {
-        return null;
-    }    
+        EvalNodeLeftTuple peer = new EvalNodeLeftTuple();
+        peer.initPeer( (BaseLeftTuple) original, this );
+        original.setPeer( peer );
+        return peer;
+    }
 
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
