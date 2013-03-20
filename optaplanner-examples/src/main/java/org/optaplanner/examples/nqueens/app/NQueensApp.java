@@ -33,7 +33,7 @@ import org.optaplanner.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.config.solver.SolverConfig;
 import org.optaplanner.config.termination.TerminationConfig;
 import org.optaplanner.core.Solver;
-import org.optaplanner.core.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
+import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;

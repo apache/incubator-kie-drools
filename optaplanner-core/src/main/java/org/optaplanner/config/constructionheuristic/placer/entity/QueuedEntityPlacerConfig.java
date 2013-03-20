@@ -27,8 +27,8 @@ import org.optaplanner.config.constructionheuristic.placer.value.ValuePlacerConf
 import org.optaplanner.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.config.util.ConfigUtils;
-import org.optaplanner.core.constructionheuristic.placer.entity.QueuedEntityPlacer;
-import org.optaplanner.core.constructionheuristic.placer.value.ValuePlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.entity.QueuedEntityPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.value.ValuePlacer;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.heuristic.selector.entity.EntitySelector;
