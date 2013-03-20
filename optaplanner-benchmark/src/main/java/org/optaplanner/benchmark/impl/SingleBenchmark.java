@@ -24,7 +24,7 @@ import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.score.Score;
 import org.optaplanner.core.impl.solution.Solution;

@@ -2941,3 +2941,9 @@ Before in *.java, *.drl:
     import org.optaplanner.benchmark.core...
 After in *.java, *.drl:
     import org.optaplanner.benchmark.impl...
+
+[MAJOR] The interface Solver has been moved from the package core.impl to core.api.solver
+Before in *.java:
+    import org.optaplanner.core.impl.Solver;
+After in *.java:
+    import org.optaplanner.core.api.solver.Solver;

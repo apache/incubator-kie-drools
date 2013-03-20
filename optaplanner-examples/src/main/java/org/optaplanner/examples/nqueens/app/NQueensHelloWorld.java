@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.optaplanner.core.config.SolverFactory;
 import org.optaplanner.core.config.XmlSolverFactory;
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;

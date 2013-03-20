@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
 

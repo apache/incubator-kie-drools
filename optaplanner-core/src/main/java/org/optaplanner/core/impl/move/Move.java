@@ -22,7 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
 import org.optaplanner.core.impl.score.Score;

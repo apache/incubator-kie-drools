@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.event;
 import java.util.Iterator;
 
 import org.drools.core.event.AbstractEventSupport;
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**

@@ -22,7 +22,7 @@ import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.bestsolution.BestSolutionRecaller;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.event.SolverEventListener;

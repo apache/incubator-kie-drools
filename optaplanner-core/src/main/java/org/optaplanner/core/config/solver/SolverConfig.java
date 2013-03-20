@@ -28,7 +28,7 @@ import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.bestsolution.BestSolutionRecaller;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;

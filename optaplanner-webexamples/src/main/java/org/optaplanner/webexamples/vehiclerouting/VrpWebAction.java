@@ -23,7 +23,7 @@ import javax.servlet.http.HttpSession;
 
 import org.optaplanner.core.config.SolverFactory;
 import org.optaplanner.core.config.XmlSolverFactory;
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;

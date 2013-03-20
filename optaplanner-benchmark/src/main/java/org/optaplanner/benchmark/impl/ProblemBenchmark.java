@@ -27,7 +27,7 @@ import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.core.config.termination.TerminationConfig;
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solution.ProblemIO;
 import org.optaplanner.core.impl.solution.Solution;
 import org.slf4j.Logger;

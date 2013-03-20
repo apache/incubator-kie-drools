@@ -17,7 +17,7 @@
 package org.optaplanner.core.config;
 
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 
 /**
  * Builds a {@link Solver}.

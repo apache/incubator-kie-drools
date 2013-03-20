@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.event;
 
 import java.util.EventObject;
 
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**

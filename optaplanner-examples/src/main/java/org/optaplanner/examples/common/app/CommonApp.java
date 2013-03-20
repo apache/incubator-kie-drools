@@ -21,7 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;

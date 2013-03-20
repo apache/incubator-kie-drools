@@ -29,7 +29,7 @@ import javax.swing.SwingUtilities;
 
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.WorkingMemory;
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
 import org.optaplanner.core.impl.move.Move;

@@ -18,7 +18,7 @@ package org.optaplanner.examples.cloudbalancing.app;
 
 import org.optaplanner.core.config.SolverFactory;
 import org.optaplanner.core.config.XmlSolverFactory;
-import org.optaplanner.core.impl.Solver;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
