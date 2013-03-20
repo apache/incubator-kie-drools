@@ -17,9 +17,9 @@
 package org.optaplanner.examples.pas.solver;
     dialect "java"
 
-import org.optaplanner.core.score.buildin.hardsoft.HardSoftScoreHolder;
-import org.optaplanner.core.score.constraint.IntConstraintOccurrence;
-import org.optaplanner.core.score.constraint.ConstraintType;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
+import org.optaplanner.core.impl.score.constraint.ConstraintType;
 
 import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
