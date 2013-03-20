@@ -19,16 +19,20 @@ package org.jbpm.bpmn2;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.junit.Test;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
+import org.kie.api.KieBase;
+import org.kie.api.io.Resource;
 
-public class ProcessFactoryTest extends JbpmBpmn2TestCase {
+public class ProcessFactoryTest extends JbpmTestCase {
+    
+    public ProcessFactoryTest() {
+        super(false);
+    }
 
-	public void testProcessFactory() {
+    @Test
+	public void testProcessFactory() throws Exception {
 		RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
 		factory
 			// header
@@ -42,11 +46,12 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 			.connection(1, 2)
 			.connection(2, 3);
 		RuleFlowProcess process = factory.validate().getProcess();
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes()), ResourceType.BPMN2);
-		KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+		Resource res = ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
+		res.setSourcePath("/tmp/processFactory.bpmn2"); // source path or target path must be set to be added into kbase
+		KieBase kbase = createKnowledgeBaseFromResources(res);
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.startProcess("org.jbpm.process");
+		ksession.dispose();
 	}
 
 }
