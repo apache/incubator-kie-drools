@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRand
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 
 public class SubChainSwapMoveSelector extends GenericMoveSelector {
 

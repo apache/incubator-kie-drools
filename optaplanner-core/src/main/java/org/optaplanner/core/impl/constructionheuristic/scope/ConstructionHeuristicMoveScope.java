@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.constructionheuristic.scope;
 
 import java.util.Random;
 
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;

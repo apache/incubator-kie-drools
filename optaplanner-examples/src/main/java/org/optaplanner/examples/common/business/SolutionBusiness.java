@@ -32,7 +32,7 @@ import org.drools.core.WorkingMemory;
 import org.optaplanner.core.impl.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.score.Score;
 import org.optaplanner.core.impl.score.constraint.ConstraintOccurrence;
 import org.optaplanner.core.impl.score.director.ScoreDirector;

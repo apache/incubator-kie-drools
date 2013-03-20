@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRa
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.CachingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValueSelector;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 
 /**
  * A {@link MoveSelector} that caches the result of its child {@link MoveSelector}.

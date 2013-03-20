@@ -17,7 +17,7 @@
 package org.optaplanner.config;
 
 import org.optaplanner.core.impl.localsearch.decider.DefaultDecider;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 
 /**
  * A solver has a single Random instance. Some solver configurations use the Random instance a lot more than others.

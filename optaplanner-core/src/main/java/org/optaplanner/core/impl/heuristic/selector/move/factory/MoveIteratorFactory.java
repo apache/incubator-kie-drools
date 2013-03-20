@@ -21,7 +21,7 @@ import java.util.Random;
 
 import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**

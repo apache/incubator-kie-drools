@@ -24,8 +24,8 @@ import java.util.NoSuchElementException;
 import org.apache.commons.collections.IteratorUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.move.CompositeMove;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.CompositeMove;
+import org.optaplanner.core.impl.move.Move;
 
 /**
  * A {@link CompositeMoveSelector} that cartesian products 2 or more {@link MoveSelector}s.

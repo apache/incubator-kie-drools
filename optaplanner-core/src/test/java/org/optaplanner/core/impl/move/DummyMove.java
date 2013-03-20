@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.move;
+package org.optaplanner.core.impl.move;
 
 import java.util.Collection;
 

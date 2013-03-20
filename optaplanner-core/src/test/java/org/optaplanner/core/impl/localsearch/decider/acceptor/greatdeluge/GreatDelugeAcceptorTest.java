@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.move.DummyMove;
+import org.optaplanner.core.impl.move.DummyMove;
 import org.optaplanner.core.impl.score.Score;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;

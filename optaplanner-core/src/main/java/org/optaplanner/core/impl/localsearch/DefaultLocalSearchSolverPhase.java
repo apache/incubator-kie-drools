@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.localsearch.decider.Decider;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 

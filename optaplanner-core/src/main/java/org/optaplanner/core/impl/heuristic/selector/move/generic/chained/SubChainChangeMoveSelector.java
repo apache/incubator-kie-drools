@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSele
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 
 public class SubChainChangeMoveSelector extends GenericMoveSelector {
 

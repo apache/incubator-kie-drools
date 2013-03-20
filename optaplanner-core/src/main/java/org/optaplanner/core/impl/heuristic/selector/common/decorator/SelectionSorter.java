@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.optaplanner.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**

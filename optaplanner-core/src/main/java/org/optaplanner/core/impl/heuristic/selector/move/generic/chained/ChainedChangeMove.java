@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ChainedChangeMove extends ChangeMove {

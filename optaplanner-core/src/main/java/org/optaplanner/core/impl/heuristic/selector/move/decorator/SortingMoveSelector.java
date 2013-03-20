@@ -21,7 +21,7 @@ import java.util.Iterator;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class SortingMoveSelector extends AbstractCachingMoveSelector {

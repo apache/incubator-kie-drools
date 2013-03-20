@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.constructionheuristic.greedyFit.scope;
 
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 
 public class GreedyFitStepScope extends AbstractStepScope {

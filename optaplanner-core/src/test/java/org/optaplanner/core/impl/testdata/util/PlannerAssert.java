@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.testdata.util;
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.move.CompositeMove;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.CompositeMove;
+import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;

@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractOriginalSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
-import org.optaplanner.core.move.Move;
+import org.optaplanner.core.impl.move.Move;
 
 public class PillarSwapMoveSelector extends GenericMoveSelector {
 
