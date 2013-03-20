@@ -14,31 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.bruteforce.scope;
+package org.optaplanner.core.impl.bruteforce.scope;
 
-import org.optaplanner.core.phase.step.AbstractStepScope;
+import org.optaplanner.core.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.solver.scope.DefaultSolverScope;
 
-public class BruteForceStepScope extends AbstractStepScope {
+public class BruteForceSolverPhaseScope extends AbstractSolverPhaseScope {
 
-    private final BruteForceSolverPhaseScope phaseScope;
+    private BruteForceStepScope lastCompletedStepScope;
 
-    public BruteForceStepScope(BruteForceSolverPhaseScope phaseScope) {
-        this.phaseScope = phaseScope;
+    public BruteForceSolverPhaseScope(DefaultSolverScope solverScope) {
+        super(solverScope);
     }
 
-    @Override
-    public BruteForceSolverPhaseScope getPhaseScope() {
-        return phaseScope;
+    public BruteForceStepScope getLastCompletedStepScope() {
+        return lastCompletedStepScope;
     }
 
-    @Override
-    public boolean isBestSolutionCloningDelayed() {
-        return false;
-    }
-
-    @Override
-    public int getUninitializedVariableCount() {
-        return 0;
+    public void setLastCompletedStepScope(BruteForceStepScope lastCompletedStepScope) {
+        this.lastCompletedStepScope = lastCompletedStepScope;
     }
 
     // ************************************************************************

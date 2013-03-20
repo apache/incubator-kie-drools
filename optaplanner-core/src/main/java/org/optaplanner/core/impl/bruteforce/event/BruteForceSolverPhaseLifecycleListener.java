@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.bruteforce.event;
+package org.optaplanner.core.impl.bruteforce.event;
 
 import java.util.EventListener;
 
-import org.optaplanner.core.bruteforce.scope.BruteForceSolverPhaseScope;
-import org.optaplanner.core.bruteforce.scope.BruteForceStepScope;
+import org.optaplanner.core.impl.bruteforce.scope.BruteForceSolverPhaseScope;
+import org.optaplanner.core.impl.bruteforce.scope.BruteForceStepScope;
 
 public interface BruteForceSolverPhaseLifecycleListener extends EventListener {
 

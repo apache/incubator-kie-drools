@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.bruteforce;
+package org.optaplanner.core.impl.bruteforce;
 
 import org.optaplanner.core.phase.AbstractSolverPhase;
 import org.optaplanner.core.phase.SolverPhase;

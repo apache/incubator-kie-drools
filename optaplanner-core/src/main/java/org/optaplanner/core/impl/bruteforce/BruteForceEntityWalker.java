@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.bruteforce;
+package org.optaplanner.core.impl.bruteforce;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.optaplanner.core.bruteforce.event.BruteForceSolverPhaseLifecycleListener;
-import org.optaplanner.core.bruteforce.scope.BruteForceSolverPhaseScope;
-import org.optaplanner.core.bruteforce.scope.BruteForceStepScope;
+import org.optaplanner.core.impl.bruteforce.event.BruteForceSolverPhaseLifecycleListener;
+import org.optaplanner.core.impl.bruteforce.scope.BruteForceSolverPhaseScope;
+import org.optaplanner.core.impl.bruteforce.scope.BruteForceStepScope;
 import org.optaplanner.core.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.domain.variable.PlanningVariableDescriptor;
