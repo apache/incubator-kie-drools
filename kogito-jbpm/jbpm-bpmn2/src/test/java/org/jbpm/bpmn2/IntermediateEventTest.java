@@ -45,7 +45,7 @@ public class IntermediateEventTest extends JbpmTestCase {
     @After
     public void dispose() {
         if (ksession != null) {
-            
+            ksession.dispose();
             ksession = null;
         }
     }

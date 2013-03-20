@@ -184,14 +184,6 @@ public abstract class JbpmTestCase extends Assert {
     @AfterClass
     public static void tearDownClass() throws Exception {
         if (setupDataSource) {
-            if (emf != null) {
-                try {
-                    emf.close();
-                } catch (Exception ex) {
-                    // ignore
-                }
-                emf = null;
-            }
             if (ds != null) {
                 try {
                     ds.close();
@@ -220,6 +212,15 @@ public abstract class JbpmTestCase extends Assert {
                             + txStateName[testTxState]
                             + " at the end of the test.");
                 }
+            }
+            
+            if (emf != null) {
+                try {
+                    emf.close();
+                } catch (Exception ex) {
+                    // ignore
+                }
+                emf = null;
             }
         }
     }

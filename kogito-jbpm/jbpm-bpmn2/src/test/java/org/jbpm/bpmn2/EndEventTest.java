@@ -33,7 +33,7 @@ public class EndEventTest extends JbpmTestCase {
     @After
     public void dispose() {
         if (ksession != null) {
-            
+            ksession.dispose();
             ksession = null;
         }
     }
