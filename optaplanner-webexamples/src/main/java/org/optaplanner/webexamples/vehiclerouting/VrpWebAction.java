@@ -21,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.servlet.http.HttpSession;
 
-import org.optaplanner.core.config.SolverFactory;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.XmlSolverFactory;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;

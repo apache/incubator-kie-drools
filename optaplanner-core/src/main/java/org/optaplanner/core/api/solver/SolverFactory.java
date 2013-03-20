@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config;
+package org.optaplanner.core.api.solver;
 
+import org.optaplanner.core.config.XmlSolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.api.solver.Solver;
 

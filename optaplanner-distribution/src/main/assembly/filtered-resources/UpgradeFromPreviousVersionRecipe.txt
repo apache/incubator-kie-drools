@@ -2947,3 +2947,9 @@ Before in *.java:
     import org.optaplanner.core.impl.Solver;
 After in *.java:
     import org.optaplanner.core.api.solver.Solver;
+
+[MAJOR] The interface SolverFactory has been moved from the package core.config to core.api.solver
+Before in *.java:
+    import org.optaplanner.core.config.SolverFactory;
+After in *.java:
+    import org.optaplanner.core.api.solver.SolverFactory;
