@@ -446,7 +446,8 @@ public class SessionManagerImpl implements ServicesSessionManager {
           scanner.scanNow();
 
           Environment env = EnvironmentFactory.newEnvironment();
-         
+          UserTransaction ut = setupEnvironment(env);
+          EntityManager entityManager = getEntityManager();
 
 
           KieBase kieBase = kieContainer.getKieBase("KBase-"+sessionName);
@@ -458,7 +459,7 @@ public class SessionManagerImpl implements ServicesSessionManager {
                 processDesc.setSessionName(sessionName);
                 processDesc.setDomainName(domain.getName());
 
-                pm.persist(processDesc);
+                entityManager.persist(processDesc);
           }
           AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
 
@@ -499,6 +500,63 @@ public class SessionManagerImpl implements ServicesSessionManager {
       return processes;
   }
 
+  
+
+/*
+   * following are supporting methods to allow execution on application startup
+   * as at that time RequestScoped entity manager cannot be used so instead
+   * use EntityMnagerFactory and manage transaction manually
+   */
+  protected EntityManager getEntityManager() {
+      try {
+          ((JbpmServicesPersistenceManagerImpl)this.pm).getEm().toString();          
+          return ((JbpmServicesPersistenceManagerImpl)this.pm).getEm();
+      } catch (ContextNotActiveException e) {
+          EntityManager em = ((JbpmServicesPersistenceManagerImpl)this.pm).getEmf().createEntityManager();
+          return em;
+      }
+  }
+  
+  protected UserTransaction setupEnvironment(Environment environment) {
+      UserTransaction ut = null;
+      try {
+          this.pm.toString();
+          environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, ((JbpmServicesPersistenceManagerImpl)this.pm).getEm().getEntityManagerFactory());
+      } catch (ContextNotActiveException e) {
+          try {
+              ut = InitialContext.doLookup("java:comp/UserTransaction");
+          } catch (Exception ex) {
+              try {
+                  ut = InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
+                  
+              } catch (Exception e1) {
+                  throw new RuntimeException("Cannot find UserTransaction", e1);
+              }
+          }
+          try {
+              ut.begin();
+              environment.set(EnvironmentName.TRANSACTION, ut);
+          } catch (Exception ex) {
+              
+          }
+          environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, ((JbpmServicesPersistenceManagerImpl)this.pm).getEmf());
+      }
+      
+      return ut;
+  }
+  protected void completeOperation(UserTransaction ut, EntityManager entityManager) {
+      if (ut != null) {
+          try {
+              ut.commit();
+              if (entityManager != null) {
+                  entityManager.clear();
+                  entityManager.close();
+              }
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
+      }
+  }
   
   //Remove this code, because this should be done by guvnor ng
    private File createKPom(ReleaseId releaseId)  {

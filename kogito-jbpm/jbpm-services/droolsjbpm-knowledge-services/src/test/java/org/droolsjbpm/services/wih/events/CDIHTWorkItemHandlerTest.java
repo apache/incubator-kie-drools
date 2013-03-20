@@ -69,6 +69,23 @@ public class CDIHTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
                 .addPackage("org.droolsjbpm.services.impl.audit")
                 .addPackage("org.droolsjbpm.services.impl.util")
                 .addPackage("org.jbpm.task.wih")
+                
+                .addPackage("org.kie.internal.runtime")
+                .addPackage("org.kie.internal.runtime.manager")
+                .addPackage("org.kie.internal.runtime.manager.cdi.qualifier")
+                .addPackage("org.jbpm.runtime.manager")
+                .addPackage("org.jbpm.runtime.manager.impl")
+                .addPackage("org.jbpm.runtime.manager.impl.cdi.qualifier")
+                .addPackage("org.jbpm.runtime.manager.impl.context")
+                .addPackage("org.jbpm.runtime.manager.impl.factory")
+                .addPackage("org.jbpm.runtime.manager.impl.jpa")
+                .addPackage("org.jbpm.runtime.manager.impl.manager")
+                .addPackage("org.jbpm.runtime.manager.mapper")
+                .addPackage("org.jbpm.runtime.manager.impl.task")
+                .addPackage("org.jbpm.runtime.manager.impl.tx")
+                
+                
+                
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
