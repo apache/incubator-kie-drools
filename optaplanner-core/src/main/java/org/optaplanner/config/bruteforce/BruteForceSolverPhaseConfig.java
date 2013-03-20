@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.bruteforce.BruteForceSolverPhase;
 import org.optaplanner.core.impl.bruteforce.DefaultBruteForceSolverPhase;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.score.definition.ScoreDefinition;
-import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("bruteForce")
 public class BruteForceSolverPhaseConfig extends SolverPhaseConfig {

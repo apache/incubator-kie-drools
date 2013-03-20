@@ -30,7 +30,7 @@ import org.optaplanner.core.phase.custom.CustomSolverPhase;
 import org.optaplanner.core.phase.custom.CustomSolverPhaseCommand;
 import org.optaplanner.core.phase.custom.DefaultCustomSolverPhase;
 import org.optaplanner.core.score.definition.ScoreDefinition;
-import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("customSolverPhase")
 public class CustomSolverPhaseConfig extends SolverPhaseConfig {

@@ -27,7 +27,7 @@ import org.optaplanner.core.move.Move;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirector;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.impl.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

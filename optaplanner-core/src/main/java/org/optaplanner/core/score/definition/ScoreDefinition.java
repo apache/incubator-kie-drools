@@ -20,7 +20,7 @@ import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.score.holder.ScoreHolder;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.impl.termination.Termination;
 
 /**
  * A ScoreDefinition knows how to compare {@link Score}s and what the perfect maximum/minimum {@link Score} is.

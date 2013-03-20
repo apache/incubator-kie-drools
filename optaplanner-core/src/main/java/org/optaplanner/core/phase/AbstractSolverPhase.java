@@ -22,7 +22,7 @@ import org.optaplanner.core.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.phase.event.SolverPhaseLifecycleSupport;
 import org.optaplanner.core.phase.step.AbstractStepScope;
 import org.optaplanner.core.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.impl.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

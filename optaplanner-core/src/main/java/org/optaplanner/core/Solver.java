@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.solution.Solution;
 import org.optaplanner.core.solver.ProblemFactChange;
-import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.impl.termination.Termination;
 
 /**
  * A Solver solves planning problems.

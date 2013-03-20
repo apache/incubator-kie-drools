@@ -13,7 +13,7 @@ import org.optaplanner.core.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.move.Move;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirector;
-import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.impl.termination.Termination;
 
 public class ValuePlacer extends AbstractPlacer {
 

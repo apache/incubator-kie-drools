@@ -21,7 +21,7 @@ import org.optaplanner.config.EnvironmentMode;
 import org.optaplanner.config.constructionheuristic.placer.PlacerConfig;
 import org.optaplanner.core.constructionheuristic.placer.entity.EntityPlacer;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.impl.termination.Termination;
 
 /**
  * General superclass for {@link QueuedEntityPlacerConfig} // TODO and {@link PooledEntityPlacerConfig}.

@@ -39,7 +39,7 @@ import org.optaplanner.core.heuristic.selector.variable.PlanningValueSelector;
 import org.optaplanner.core.heuristic.selector.variable.PlanningValueWalker;
 import org.optaplanner.core.heuristic.selector.variable.PlanningVariableWalker;
 import org.optaplanner.core.score.definition.ScoreDefinition;
-import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("greedyFit")
 @Deprecated // Use ConstructionHeuristicSolverPhaseConfig

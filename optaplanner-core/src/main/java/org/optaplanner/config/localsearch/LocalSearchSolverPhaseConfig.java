@@ -41,7 +41,7 @@ import org.optaplanner.core.localsearch.decider.Decider;
 import org.optaplanner.core.localsearch.decider.DefaultDecider;
 import org.optaplanner.core.localsearch.decider.forager.Forager;
 import org.optaplanner.core.score.definition.ScoreDefinition;
-import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("localSearch")
 public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {

@@ -39,7 +39,7 @@ import org.optaplanner.core.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.solution.Solution;
 import org.optaplanner.core.solver.BasicPlumbingTermination;
 import org.optaplanner.core.solver.DefaultSolver;
-import org.optaplanner.core.termination.Termination;
+import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("solver")
 public class SolverConfig {
