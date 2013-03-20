@@ -164,24 +164,26 @@ public class NamedEntryPoint
 
             InternalFactHandle handle = null;
 
-            if ( this.wm.isSequential() ) {
-                handle = createHandle( object,
-                                       typeConf );
-                insert( handle,
-                        object,
-                        rule,
-                        activation,
-                        typeConf );
-                return handle;
-            }
-            
             final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
                                                                                       PropagationContext.INSERTION,
                                                                                       rule,
                                                                                       (activation == null) ? null : activation.getTuple(),
                                                                                       handle,
                                                                                       entryPoint );
-            
+
+            if ( this.wm.isSequential() ) {
+                handle = createHandle( object,
+                                       typeConf );
+                propagationContext.setFactHandle(handle);
+                insert( handle,
+                        object,
+                        rule,
+                        activation,
+                        typeConf,
+                        propagationContext );
+                return handle;
+            }
+
             
             try {
                 this.lock.lock();
@@ -193,6 +195,7 @@ public class NamedEntryPoint
                     TruthMaintenanceSystem tms = getTruthMaintenanceSystem();
                     
                     if ( handle != null ) {
+                        propagationContext.setFactHandle(handle);
                         insertWhenHandleExists( object, tmsValue, logical, rule, activation, typeConf, handle, tms, propagationContext );
                         return handle;
                     }
@@ -253,7 +256,7 @@ public class NamedEntryPoint
                             handle = createHandle( object,
                                                    typeConf ); // we know the handle is null                                                    
                             handle.setEqualityKey( key );                                                    
-                            key.addFactHandle( handle );                            
+                            key.addFactHandle( handle );
                         }
                         key.setStatus( EqualityKey.STATED ); // KEY is always stated
                     }                    
@@ -265,6 +268,7 @@ public class NamedEntryPoint
                     handle = createHandle( object,
                                            typeConf );
                 }
+                propagationContext.setFactHandle(handle);
 
                 // if the dynamic parameter is true or if the user declared the fact type with the meta tag:
                 // @propertyChangeSupport
@@ -276,7 +280,8 @@ public class NamedEntryPoint
                         object,
                         rule,
                         activation,
-                        typeConf );
+                        typeConf,
+                        propagationContext );
 
             } finally {
                 this.ruleBase.readUnlock();
@@ -328,7 +333,8 @@ public class NamedEntryPoint
                        final Object object,
                        final Rule rule,
                        final Activation activation,
-                       ObjectTypeConf typeConf) {
+                       ObjectTypeConf typeConf,
+                       PropagationContext pctx) {
         this.ruleBase.executeQueuedActions();
 
         this.wm.executeQueuedActions();
@@ -337,12 +343,15 @@ public class NamedEntryPoint
             // release resources so that they can be GC'ed
             activation.getPropagationContext().releaseResources();
         }
-        final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
-                                                                                  PropagationContext.INSERTION,
-                                                                                  rule,
-                                                                                  (activation == null) ? null : activation.getTuple(),
-                                                                                  handle,
-                                                                                  entryPoint );
+        PropagationContext propagationContext = pctx;
+        if ( pctx == null ) {
+            propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
+                                                             PropagationContext.INSERTION,
+                                                             rule,
+                                                             (activation == null) ? null : activation.getTuple(),
+                                                             handle,
+                                                             entryPoint );
+        }
 
         this.entryPointNode.assertObject( handle,
                                           propagationContext,

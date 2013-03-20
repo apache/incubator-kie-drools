@@ -11,17 +11,8 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.InitialFactImpl;
-import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.core.reteoo.NotNode;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KieBaseConfiguration;
@@ -31,6 +22,8 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
+
+import org.kie.api.runtime.rule.FactHandle;
 
 public class SegmentCreationTest {
     
@@ -333,7 +326,113 @@ public class SegmentCreationTest {
         SegmentMemory notSmem = bSmem.getNext();
         assertEquals( notNode, notSmem.getRootNode() );
         assertEquals( rtn3, notSmem.getTipNode() );     
-    }       
+    }
+
+    @Test
+         public void testBranchCESingleSegment() throws Exception {
+        KnowledgeBase kbase = buildKnowledgeBase( "   $a : A() \n" +
+                                                  "   if ( $a != null ) do[t1] \n" +
+                                                  "   B() \n" );
+
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
+
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+
+        ConditionalBranchNode cen1Node = ( ConditionalBranchNode ) liaNode.getSinkPropagator().getSinks()[0];
+        JoinNode bNode = ( JoinNode ) cen1Node.getSinkPropagator().getSinks()[0];
+
+        RuleTerminalNode rtn1 = ( RuleTerminalNode ) bNode.getSinkPropagator().getSinks()[0];
+
+        FactHandle bFh = wm.insert( new LinkingTest.B() );
+        LiaNodeMemory liaMem = ( LiaNodeMemory ) wm.getNodeMemory( liaNode );
+        SegmentMemory smem = liaMem.getSegmentMemory();
+        assertEquals( 1, smem.getAllLinkedMaskTest() );
+        assertEquals( 4, smem.getLinkedNodeMask() ); // B links, but it will not trigger mask
+        assertFalse( smem.isSegmentLinked() );
+
+        PathMemory pmem = ( PathMemory ) wm.getNodeMemory(rtn1);
+        assertEquals( 1, pmem.getAllLinkedMaskTest() );
+        assertEquals( 0, pmem.getLinkedSegmentMask() );
+        assertFalse( pmem.isRuleLinked() );
+
+        wm.insert( new LinkingTest.A() );
+        assertEquals( 5, smem.getLinkedNodeMask() ); // A links in segment
+        assertTrue( smem.isSegmentLinked() );
+
+        assertEquals( 1, pmem.getLinkedSegmentMask() );
+        assertTrue( pmem.isRuleLinked() );
+
+        wm.delete(bFh); // retract B does not unlink the rule
+        assertEquals( 1, pmem.getLinkedSegmentMask() );
+        assertTrue( pmem.isRuleLinked() );
+    }
+
+    @Test
+    public void testBranchCEMultipleSegments() throws Exception {
+        KnowledgeBase kbase = buildKnowledgeBase( "   $a : A() \n", // r1
+                                                  "   $a : A() \n" +
+                                                  "   if ( $a != null ) do[t1] \n" +
+                                                  "   B() \n", // r2
+                                                  "   $a : A() \n"+
+                                                  "   if ( $a != null ) do[t1] \n" +
+                                                  "   B() \n" +
+                                                  "   C() \n" // r3
+                                                );
+
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
+
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+
+        ConditionalBranchNode cen1Node = ( ConditionalBranchNode ) liaNode.getSinkPropagator().getSinks()[1];
+        JoinNode bNode = ( JoinNode ) cen1Node.getSinkPropagator().getSinks()[0];
+        RuleTerminalNode rtn2 = ( RuleTerminalNode ) bNode.getSinkPropagator().getSinks()[0];
+
+        JoinNode cNode =  ( JoinNode ) bNode.getSinkPropagator().getSinks()[1];
+        RuleTerminalNode rtn3 = ( RuleTerminalNode ) cNode.getSinkPropagator().getSinks()[0];
+
+        FactHandle bFh = wm.insert( new LinkingTest.B() );
+        FactHandle cFh = wm.insert( new LinkingTest.C() );
+
+        BetaMemory bNodeBm = ( BetaMemory ) wm.getNodeMemory( bNode );
+        SegmentMemory bNodeSmem = bNodeBm.getSegmentMemory();
+        assertEquals( 0, bNodeSmem.getAllLinkedMaskTest() ); // no beta nodes before branch CE, so never unlinks
+        assertEquals( 2, bNodeSmem.getLinkedNodeMask() );
+
+        PathMemory pmemr2 = ( PathMemory ) wm.getNodeMemory(rtn2);
+        assertEquals( 1, pmemr2.getAllLinkedMaskTest() );
+        assertEquals( 2, pmemr2.getLinkedSegmentMask() );
+        assertEquals( 3, pmemr2.getSegmentMemories().length );
+        assertFalse( pmemr2.isRuleLinked() );
+
+        PathMemory pmemr3 = ( PathMemory ) wm.getNodeMemory(rtn3);
+        assertEquals( 1, pmemr3.getAllLinkedMaskTest() );  // notice only the first segment links
+        assertEquals( 3, pmemr3.getSegmentMemories().length );
+        assertFalse( pmemr3.isRuleLinked() );
+
+        BetaMemory cNodeBm = ( BetaMemory ) wm.getNodeMemory( cNode );
+        SegmentMemory cNodeSmem = cNodeBm.getSegmentMemory();
+
+        assertEquals( 1, cNodeSmem.getAllLinkedMaskTest() );
+        assertEquals( 1, cNodeSmem.getLinkedNodeMask() );
+
+        wm.insert( new LinkingTest.A() );
+
+        assertTrue( pmemr2.isRuleLinked() );
+        assertTrue( pmemr3.isRuleLinked() );
+
+        wm.delete(bFh); // retract B does not unlink the rule
+        wm.delete(cFh); // retract C does not unlink the rule
+
+        assertEquals( 3, pmemr2.getLinkedSegmentMask() ); // b segment never unlinks, as it has no impact on path unlinking anyway
+        assertTrue( pmemr2.isRuleLinked() );
+
+        assertEquals( 3, pmemr3.getLinkedSegmentMask() ); // b segment never unlinks, as it has no impact on path unlinking anyway
+        assertTrue( pmemr3.isRuleLinked() );
+    }
 
     private KnowledgeBase buildKnowledgeBase(String... rules) {
         String str = "";
@@ -348,6 +447,7 @@ public class SegmentCreationTest {
             str += "rule rule" + (i++) +"  when \n";
             str +=  lhs;
             str += "then \n";
+            str += "then[t1] \n";
             str += "end \n";            
         }
         

@@ -50,7 +50,8 @@ public class SimpleBeliefSystem
                        handle.getObject(),
                        node.getJustifier().getRule(),
                        node.getJustifier(),
-                       typeConf );
+                       typeConf,
+                       null );
         }
     }
 

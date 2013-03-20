@@ -14,8 +14,6 @@ import org.drools.compiler.factmodel.traits.IRole;
 
 global java.util.List list;
 
-
-
 declare trait IRole
 
 end
@@ -35,11 +33,6 @@ declare trait Person
     name : String
     age  : int
 end
-
-
-
-
-
 
 rule "Init"
 when

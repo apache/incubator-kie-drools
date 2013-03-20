@@ -197,12 +197,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWrapper_GetAndSetTriple() {
         traitWrapGetAndSet( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWrapper_GetAndSetMap() {
         traitWrapGetAndSet( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -246,12 +246,12 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitShedTriple() {
         traitShed( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitShedMap() {
         traitShed( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -287,12 +287,12 @@ public class TraitTest extends CommonTestMethodBase {
         System.out.println( Arrays.asList(x.getClass().getInterfaces() ));
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitDonTriple() {
         traitDon( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitDonMap() {
         traitDon( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -317,12 +317,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitMixinTriple() {
         mixin( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitMxinMap() {
         mixin( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -353,12 +353,12 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitObjMethodsTriple() {
         traitMethodsWithObjects( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitObjMethodsMap() {
         traitMethodsWithObjects( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -387,12 +387,12 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitPrimMethodsTriple() {
         traitMethodsWithPrimitives( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitPrimMethodsMap() {
         traitMethodsWithPrimitives( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -482,12 +482,12 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitProxyTriple() {
         traitProxy( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitProxyMap() {
         traitProxy( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -626,12 +626,12 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWrapperSizeTriple() {
         wrapperSize( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWrapperSizeMap() {
         wrapperSize( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -720,12 +720,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWrapperEmptyTriple() {
         wrapperEmpty( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWrapperEmptyMap() {
         wrapperEmpty( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -860,12 +860,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitContainskeyTriple() {
         wrapperContainsKey( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitContainskeyMap() {
         wrapperContainsKey( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -971,12 +971,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWrapperKSVTriple() {
         wrapperKeySetAndValues( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWrapperKSVMap() {
         wrapperKeySetAndValues( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1106,12 +1106,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWrapperClearTriples() {
         wrapperClearAndRemove( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWrapperClearMap() {
         wrapperClearAndRemove( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1146,13 +1146,13 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     @Ignore("problem during phreak work")
     public void testISATriple() {
         isA( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     @Ignore("problem during phreak work")
     public void testISAMap() {
         isA( TraitFactory.VirtualPropertyMode.MAP );
@@ -1176,12 +1176,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testOverrideTriple() {
         overrideType( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testOverrideMap() {
         overrideType( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1217,12 +1217,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testLegacyTriple() {
         traitLegacy( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testLegacyMap() {
         traitLegacy( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1255,12 +1255,12 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testCollectionsTriple() {
         traitCollections( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testCollectionsMap() {
         traitCollections( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1299,12 +1299,12 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testCoreTriple() {
         traitCore( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testCoreMap() {
         traitCore( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1326,12 +1326,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testEqTriple() {
         traitWithEquality( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testEqMap() {
         traitWithEquality( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1364,12 +1364,12 @@ public class TraitTest extends CommonTestMethodBase {
         assertFalse( untrueTraits.contains( 1 ) );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testDeclaredTriple() {
         traitDeclared( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testDeclaredMap() {
         traitDeclared( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1396,12 +1396,12 @@ public class TraitTest extends CommonTestMethodBase {
         assertFalse( untrueTraits.contains( 1 ) );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testPojoTriple() {
         traitPojo( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testPojoMap() {
         traitPojo( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1441,12 +1441,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testISA2Triple() {
         isAOperator( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testISA2Map() {
         isAOperator( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1514,12 +1514,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testManyTraitsTriples() {
         manyTraits( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testManyTraitsMap() {
         manyTraits( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1549,12 +1549,12 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testManyTriple() {
         traitManyTimes( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testManyMap() {
         traitManyTimes( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1636,12 +1636,12 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( list.contains( 2 ) );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testBatchTriple() {
         traitsInBatchExecution( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testBatchMap() {
         traitsInBatchExecution( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1709,12 +1709,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testManyStatelessTriple() {
         manyTraitsStateless( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testManyStatelessMap() {
         manyTraitsStateless( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1794,12 +1794,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testAliasingTriples() {
         aliasing( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testAliasingMap() {
         aliasing( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -1886,19 +1886,19 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testLogicalRemovalTriples() {
         traitLogicalRemoval( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testLogicalRemovalMap() {
         traitLogicalRemoval( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testTMSConsistencyWithNonTraitableBeans() {
 
         String s1 = "package org.drools.compiler.test;\n" +
@@ -1995,12 +1995,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWardTriple() {
         traitWard( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWardMap() {
         traitWard( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -2061,18 +2061,18 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitGrantTriple() {
         traitGrant( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitGrantMap() {
         traitGrant( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testInternalComponentsMap(  ) {
           String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -2125,7 +2125,7 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testInternalComponentsTriple(  ) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
 
@@ -2239,12 +2239,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWardOnHierarchyTriple() {
         traitWardOnHierarchy( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWardOnHierarchyMap() {
         traitWardOnHierarchy( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -2332,12 +2332,12 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitsBeanWrapperDataStructuresTriples() {
         traitsLegacyWrapperCoherence( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitsBeanWrapperDataStructuresMap() {
         traitsLegacyWrapperCoherence( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -2414,12 +2414,12 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitRedundancyTriples() {
         traitRedundancy(TraitFactory.VirtualPropertyMode.TRIPLES);
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitRedundancyMap() {
         traitRedundancy(TraitFactory.VirtualPropertyMode.MAP);
     }
@@ -2465,12 +2465,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWithSimpleTypesTriples() {
         traitSimpleTypes( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testTraitWithSimpleTypesMap() {
         traitSimpleTypes( TraitFactory.VirtualPropertyMode.MAP );
     }

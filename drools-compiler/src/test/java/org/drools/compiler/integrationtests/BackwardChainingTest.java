@@ -41,6 +41,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -1488,9 +1489,11 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         l );
     }
 
-    @Test (timeout = 10000)
-    @Ignore("Ingored for PhreakOption, as test is order sensitive")
+    @Test //(timeout = 10000)
     public void testSubNetworksAndQueries() throws Exception {
+        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+            return;  //Disbaled due to phreak, as tests is order specific
+        }
         String str = "" +
                      "package org.drools.compiler.test  \n" +
 

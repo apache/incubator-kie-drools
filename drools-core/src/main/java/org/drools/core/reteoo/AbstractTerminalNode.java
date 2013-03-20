@@ -131,28 +131,39 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
                 // it's shared, RTN is in it's own segment, so increase segmentCount
                 counter++;
             }
-            boolean updateBitInNewSegment = true; // avoids more than one isBetaNode check per segment
-            boolean updateAllLinkedTest = true;
+
+            ConditionalBranchNode cen = getConditionalBranchNode(tupleSource); // segments after a branch CE can notify, but they cannot impact linking
+            // @TODO optimization would be to split path's into two, to avoid wasted rule evaluation for segments after the first branch CE
+
+            boolean updateBitInNewSegment = true; // Avoids more than one isBetaNode check per segment
+            boolean updateAllLinkedTest = ( cen == null ) ? true : false; // if there is a CEN, do not set bit until it's reached
+            boolean subnetworkBoundaryCrossed = false;
             while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+                if ( !subnetworkBoundaryCrossed &&  tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
+                    // start recording now we are after the BranchCE, but only if we are not outside the target
+                    // subnetwork
+                    updateAllLinkedTest = true;
+                }
+
                 if ( updateAllLinkedTest && updateBitInNewSegment && NodeTypeEnums.isBetaNode( tupleSource )) {
                     updateBitInNewSegment = false;
                     BetaNode bn = ( BetaNode) tupleSource;
                     if ( bn.isRightInputIsRiaNode() ) {
                         // only ria's without reactive subnetworks can be disabled and thus need checking
-                        // The getNodeMemory will call this method recursive for sub networks it reaches
+                        // The getNodeMemory will7 call this method recursive for sub networks it reaches
                         RiaNodeMemory rnmem = ( RiaNodeMemory ) wm.getNodeMemory((MemoryFactory) bn.getRightInput());
                         if ( rnmem.getRiaPathMemory().getAllLinkedMaskTest() != 0 ) {
                             allLinkedTestMask = allLinkedTestMask | 1;
                         }
                     } else if ( ( !(NodeTypeEnums.NotNode == bn.getType() && !((NotNode)bn).isEmptyBetaConstraints()) &&
-                                 NodeTypeEnums.AccumulateNode != bn.getType()) )  {
+                                  NodeTypeEnums.AccumulateNode != bn.getType()) )  {
                         // non empty not nodes and accumulates can never be disabled and thus don't need checking
                         allLinkedTestMask = allLinkedTestMask | 1;
                     }
                 }
 
                 if ( !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
-                    updateBitInNewSegment = true;
+                    updateBitInNewSegment = true; // allow bit to be set for segment
                     allLinkedTestMask = allLinkedTestMask << 1;
                     counter++;
                 }
@@ -160,16 +171,29 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
                 tupleSource = tupleSource.getLeftTupleSource();
                 if ( tupleSource == startTupleSource ) {
                     // stop tracking if we move outside of a subnetwork boundary (if one is set)
+                    subnetworkBoundaryCrossed = true;
                     updateAllLinkedTest = false;
                 }
             }
 
-            if ( updateAllLinkedTest && tupleSource.getSinkPropagator().size() > 1 ) {
-                // tupleSource == LeftInputAdapterNode
+            if ( !subnetworkBoundaryCrossed ) {
                 allLinkedTestMask = allLinkedTestMask | 1;
             }
+
             pmem.setAllLinkedMaskTest( allLinkedTestMask );
             pmem.setSegmentMemories( new SegmentMemory[counter + 1] ); // +1 as arras are zero based.
+    }
+
+    private static ConditionalBranchNode getConditionalBranchNode(LeftTupleSource tupleSource) {
+        ConditionalBranchNode cen = null;
+        while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+            // find the first ConditionalBranch, if one exists
+            if ( tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
+                cen =  ( ConditionalBranchNode ) tupleSource;
+            }
+            tupleSource = tupleSource.getLeftTupleSource();
+        }
+        return cen;
     }
 
     public LeftTuple createPeer(LeftTuple original) {
