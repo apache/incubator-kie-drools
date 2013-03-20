@@ -484,6 +484,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
             hasErrors = parser.hasErrors();
         }
+        if (pkg != null) {
+            pkg.setResource(resource);
+        }
         return hasErrors ? null : pkg;
     }
 
@@ -1171,10 +1174,23 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                    rule.getColumn(),
                                                    packageDescr.getNamespace() ) );
             }
-            if (pkg != null && pkg.getRule( name ) != null) {
-                this.results.add( new DuplicateRule( rule,
-                                                     packageDescr,
-                                                     this.configuration ) );
+            if (pkg != null) {
+                Rule duplicatedRule = pkg.getRule( name );
+                if (duplicatedRule != null) {
+                    Resource resource = rule.getResource();
+                    Resource duplicatedResource = duplicatedRule.getResource();
+                    if (resource == null || duplicatedResource == null || duplicatedResource.getSourcePath().equals(resource.getSourcePath())) {
+                        this.results.add( new DuplicateRule( rule,
+                                                             packageDescr,
+                                                             this.configuration ) );
+                    } else {
+                        this.results.add( new ParserError( rule.getResource(),
+                                                           "Duplicate rule name: " + name,
+                                                           rule.getLine(),
+                                                           rule.getColumn(),
+                                                           packageDescr.getNamespace() ) );
+                    }
+                }
             }
             names.add( name );
         }

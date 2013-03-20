@@ -51,7 +51,6 @@ public class IncrementalCompilationTest {
     }
 
     @Test
-    @Ignore("This does not pass at the moment. Incremental Build gives different results to a full build")
     public void testIncrementalCompilationDuplicateXLSResources() throws Exception {
 
         KieServices ks = KieServices.Factory.get();

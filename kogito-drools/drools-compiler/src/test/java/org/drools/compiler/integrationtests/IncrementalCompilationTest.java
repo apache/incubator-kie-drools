@@ -272,6 +272,41 @@ public class IncrementalCompilationTest {
     }
 
     @Test
+    public void testIncrementalCompilationWithDuplicatedRule() throws Exception {
+        String drl1 = "package org.drools.compiler\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        String drl2 = "package org.drools.compiler\n" +
+                "rule R2 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .write( "src/main/resources/r1.drl", drl1 );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+
+        kfs.write( "src/main/resources/r2_1.drl", drl2  );
+        IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2_1.drl" ).build();
+
+        assertEquals( 0, addResults.getAddedMessages().size() );
+        assertEquals( 0, addResults.getRemovedMessages().size() );
+
+        kfs.write( "src/main/resources/r2_2.drl", drl2 );
+        IncrementalResults removeResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2_2.drl" ).build();
+
+        assertEquals( 1, removeResults.getAddedMessages().size() );
+        assertEquals( 0, removeResults.getRemovedMessages().size() );
+    }
+
+    @Test
     public void testIncrementalCompilationAddErrorBuildAllMessages() throws Exception {
         //Valid
         String drl1 = "package org.drools.compiler\n" +
