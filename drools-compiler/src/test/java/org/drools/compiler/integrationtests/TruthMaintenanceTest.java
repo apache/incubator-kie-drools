@@ -901,7 +901,6 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore( "phreak" )
     public void testLogicalInsertionsAccumulatorPattern() throws Exception {
         // JBRULES-449
         KnowledgeBase kbase = loadKnowledgeBase( "test_LogicalInsertionsAccumulatorPattern.drl" );
@@ -939,16 +938,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession,
                 true);
-        assertEquals( "There should be only 1 CheeseEqual in Working Memory, 1 stated (the justified should have been retracted). Check TruthMaintenanceSystem justifiedMap",
-                      1,
+        assertEquals( 0,
                       ksession.getObjects( new ClassObjectFilter( CheeseEqual.class ) ).size() );
-        assertEquals( 1,
+        assertEquals( 0,
                       ksession.getObjects( new ClassObjectFilter( Short.class ) ).size() );
-        assertEquals( 2,
-                      ksession.getObjects().size() );
-
-        //clean-up
-        ksession.fireAllRules();
         assertEquals( 0,
                       ksession.getObjects().size() );
     }
