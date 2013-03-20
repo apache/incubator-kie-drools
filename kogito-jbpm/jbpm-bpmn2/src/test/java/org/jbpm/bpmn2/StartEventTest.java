@@ -14,7 +14,6 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,6 +151,7 @@ public class StartEventTest extends JbpmTestCase {
             }
         });
         ksession.signalEvent("MySignal", "NewValue");
+        Thread.sleep(500);
         assertEquals(1, list.size());
 
     }
@@ -169,6 +169,7 @@ public class StartEventTest extends JbpmTestCase {
             }
         });
         ksession.signalEvent("MySignal", "NewValue");
+        Thread.sleep(500);
         assertEquals(1, list.size());
 
     }
