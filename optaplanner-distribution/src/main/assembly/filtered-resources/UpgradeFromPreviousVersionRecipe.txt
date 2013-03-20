@@ -2874,3 +2874,9 @@ Before:
   https://github.com/droolsjbpm/drools-planner
 After:
   https://github.com/droolsjbpm/optaplanner
+
+[MINOR] The package org.optaplanner.benchmark.core has been renamed to org.optaplanner.benchmark.impl
+Before in *.java, *.drl:
+    import org.optaplanner.benchmark.core...
+After in *.java, *.drl:
+    import org.optaplanner.benchmark.impl...
