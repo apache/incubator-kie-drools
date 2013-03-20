@@ -2847,6 +2847,20 @@ After in pom.xml:
 And resync your IDE (IntelliJ, Eclipse, NetBeans) from the pom.xml files.
 If you're still using ANT, replace drools-planner-*.jar with optaplanner-*.jar
 and adjust your ANT script and your IDE's classpath accordingly.
+Note: because of package name changes (see below), you 'll get a lot of compile errors at this point.
+
+[MAJOR] The logging category org.drools.planner has been renamed to org.optaplanner
+Before in logback*.xml:
+  <logger name="org.drools.planner" level="debug"/>
+After in logback*.xml:
+  <logger name="org.optaplanner" level="debug"/>
+Similar for log4j files.
+
+[MINOR] The github repository has been renamed.
+Before:
+  https://github.com/droolsjbpm/drools-planner
+After:
+  https://github.com/droolsjbpm/optaplanner
 
 [MAJOR] The package org.drools.planner has been renamed to org.optaplanner
 Before in *.java, *.drl:
@@ -2861,19 +2875,12 @@ Before in *.xml:
     <...>org.drools.planner...</...>
 After in *.xml:
     <...>org.optaplanner...</...>
+Note: because of other package name changes (see below), you 'll get a lot of compile errors after these changes.
 
-[MAJOR] The logging category org.drools.planner has been renamed to org.optaplanner
-Before in logback*.xml:
-  <logger name="org.drools.planner" level="debug"/>
-After in logback*.xml:
-  <logger name="org.optaplanner" level="debug"/>
-Similar for log4j files.
-
-[MINOR] The github repository has been renamed.
-Before:
-  https://github.com/droolsjbpm/drools-planner
-After:
-  https://github.com/droolsjbpm/optaplanner
+[README] The packages now make a clear distinction between api, config and implementation classes.
+The api classes will be backwards compatible starting from 6.1.
+Also, each artifact now has a unique package namespace.
+For example: all classes in optaplanner-core are now under org.optaplanner.core
 
 [MINOR] The package org.optaplanner.benchmark.core has been renamed to org.optaplanner.benchmark.impl
 Before in *.java, *.drl:
