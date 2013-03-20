@@ -16,7 +16,7 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
-import org.optaplanner.core.event.BestSolutionChangedEvent;
+import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.score.Score;
 
 public class BestScoreSingleStatisticPoint {

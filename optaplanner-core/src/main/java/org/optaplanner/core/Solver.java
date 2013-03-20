@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 
-import org.optaplanner.core.event.SolverEventListener;
+import org.optaplanner.core.impl.event.SolverEventListener;
 import org.optaplanner.core.score.Score;
 import org.optaplanner.core.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.solution.Solution;

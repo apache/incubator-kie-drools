@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.core.Solver;
-import org.optaplanner.core.event.BestSolutionChangedEvent;
-import org.optaplanner.core.event.SolverEventListener;
+import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
+import org.optaplanner.core.impl.event.SolverEventListener;
 
 public class BestScoreSingleStatistic extends AbstractSingleStatistic {
 

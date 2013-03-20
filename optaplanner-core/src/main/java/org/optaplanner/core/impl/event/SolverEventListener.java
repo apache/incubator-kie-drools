@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.event;
+package org.optaplanner.core.impl.event;
 
 import java.util.EventListener;
 
