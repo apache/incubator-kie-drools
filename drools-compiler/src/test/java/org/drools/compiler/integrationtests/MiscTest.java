@@ -4454,7 +4454,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testRuleReplacement() throws Exception {
         // test rule replacement
-        Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_RuleNameClashes1.drl",
+        Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_RuleNameClashes3.drl",
                                                                     "test_RuleNameClashes3.drl" );
         assertEquals( 1,
                       kpkgs.iterator().next().getRules().size() );
