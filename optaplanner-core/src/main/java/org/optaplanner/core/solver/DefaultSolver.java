@@ -23,7 +23,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.optaplanner.core.Solver;
-import org.optaplanner.core.bestsolution.BestSolutionRecaller;
+import org.optaplanner.core.impl.bestsolution.BestSolutionRecaller;
 import org.optaplanner.core.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.event.SolverEventListener;
 import org.optaplanner.core.event.SolverEventSupport;

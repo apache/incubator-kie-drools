@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.phase;
 
-import org.optaplanner.core.bestsolution.BestSolutionRecaller;
+import org.optaplanner.core.impl.bestsolution.BestSolutionRecaller;
 import org.optaplanner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.optaplanner.core.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.phase.event.SolverPhaseLifecycleSupport;

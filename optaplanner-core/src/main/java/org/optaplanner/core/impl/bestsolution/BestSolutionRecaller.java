@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.bestsolution;
+package org.optaplanner.core.impl.bestsolution;
 
 import org.optaplanner.core.Solver;
 import org.optaplanner.core.event.SolverEventSupport;
