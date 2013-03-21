@@ -18,72 +18,33 @@ package org.jbpm.bpmn2.handler;
 
 import java.util.*;
 
-import junit.framework.Assert;
-
-import org.drools.core.SessionConfiguration;
-import org.drools.core.impl.EnvironmentFactory;
+import org.jbpm.bpmn2.JbpmTestCase;
 import org.jbpm.bpmn2.handler.LoggingTaskHandlerWrapper.InputParameter;
-import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
-import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-public class LoggingTaskHandlerWrapperTest extends Assert {
+public class LoggingTaskHandlerWrapperTest extends JbpmTestCase {
+    
+    private StatefulKnowledgeSession ksession;
+    
+    public LoggingTaskHandlerWrapperTest() {
+        super(false);
+    }
 
-    /**
-     * Helper methods
-     */
     @After
-    public void tearDown() {
-        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(null);
-    }
-
-    protected KieBase createKnowledgeBase(String... processFile) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for (String p : processFile) {
-            kbuilder.add(ResourceFactory.newClassPathResource(p), ResourceType.BPMN2);
+    public void dispose() {
+        if (ksession != null) {
+            ksession.dispose();
+            ksession = null;
         }
-        return kbuilder.newKnowledgeBase();
     }
-
-    protected KieSession createKnowledgeSession(KieBase kbase) {
-        Properties defaultProps = new Properties();
-        defaultProps.setProperty("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
-        defaultProps.setProperty("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
-        SessionConfiguration sessionConfig = new SessionConfiguration(defaultProps);
-
-        KieSession result = kbase.newKieSession(sessionConfig, EnvironmentFactory.newEnvironment());
-        return result;
-    }
-
-    public void assertProcessInstanceCompleted(long processInstanceId, KieSession ksession) {
-        assertNull(ksession.getProcessInstance(processInstanceId));
-    }
-    
-    public void assertProcessInstanceAborted(long processInstanceId, KieSession ksession) {
-        assertNull(ksession.getProcessInstance(processInstanceId));
-    }
-    
-    public void assertProcessInstanceActive(long processInstanceId, KieSession ksession) {
-        assertNotNull(ksession.getProcessInstance(processInstanceId));
-    }
-    
-    
-    /**
-     * Tests
-     */
 
     @Test
     public void testLimitExceptionInfoList() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ExceptionThrowingServiceProcess.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         
         LoggingTaskHandlerWrapper loggingTaskHandlerWrapper = new LoggingTaskHandlerWrapper(ServiceTaskHandler.class, 2);
         loggingTaskHandlerWrapper.setPrintStackTrace(false);
@@ -102,7 +63,7 @@ public class LoggingTaskHandlerWrapperTest extends Assert {
     @Test
     public void testFormatLoggingError() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ExceptionThrowingServiceProcess.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         
         LoggingTaskHandlerWrapper loggingTaskHandlerWrapper = new LoggingTaskHandlerWrapper(ServiceTaskHandler.class, 2);
         loggingTaskHandlerWrapper.setLoggedMessageFormat("{0} - {1} - {2} - {3}");
