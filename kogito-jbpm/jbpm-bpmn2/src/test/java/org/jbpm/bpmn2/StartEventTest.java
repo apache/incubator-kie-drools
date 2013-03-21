@@ -170,44 +170,10 @@ public class StartEventTest extends JbpmTestCase {
     }
 
     @Test
-    public void testSignalStart() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
-        ksession = createKnowledgeSession(kbase);
-        final List<Long> list = new ArrayList<Long>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
-            public void afterProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
-            }
-        });
-        ksession.signalEvent("MySignal", "NewValue");
-        Thread.sleep(500);
-        assertEquals(1, list.size());
-
-    }
-
-    @Test
-    public void testSignalStartDynamic() throws Exception {
-        KieBase kbase = createKnowledgeBase();
-        ksession = createKnowledgeSession(kbase);
-        KieBase kbase2 = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
-        kbase.getKiePackages().addAll(kbase2.getKiePackages());
-        final List<Long> list = new ArrayList<Long>();
-        ksession.addEventListener(new DefaultProcessEventListener() {
-            public void afterProcessStarted(ProcessStartedEvent event) {
-                list.add(event.getProcessInstance().getId());
-            }
-        });
-        ksession.signalEvent("MySignal", "NewValue");
-        Thread.sleep(500);
-        assertEquals(1, list.size());
-
-    }
-
-    @Test
     public void testSignalToStartProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2",
                 "BPMN2-IntermediateThrowEventSignal.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 handler);
@@ -224,6 +190,42 @@ public class StartEventTest extends JbpmTestCase {
                 .startProcess("SignalIntermediateEvent");
         assertProcessInstanceFinished(processInstance, ksession);
         assertEquals(2, startedProcesses.size());
+    }
+
+    @Test
+    public void testSignalStart() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+        ksession.signalEvent("MySignal", "NewValue");
+        Thread.sleep(500);
+        assertEquals(1, list.size());
+
+    }
+
+    @Test
+    @RequirePersistence(false)
+    public void testSignalStartDynamic() throws Exception {
+        KieBase kbase = createKnowledgeBase();
+        ksession = createKnowledgeSession(kbase);
+        KieBase kbase2 = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
+        kbase.getKiePackages().addAll(kbase2.getKiePackages());
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                System.out.println(event.getProcessInstance().getId());
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+        ksession.signalEvent("MySignal", "NewValue");
+        Thread.sleep(500);
+        assertEquals(1, list.size());
+
     }
 
     @Test
@@ -254,6 +256,7 @@ public class StartEventTest extends JbpmTestCase {
     }
 
     @Test
+    @RequirePersistence
     public void testMultipleStartEventsStartOnTimer() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
