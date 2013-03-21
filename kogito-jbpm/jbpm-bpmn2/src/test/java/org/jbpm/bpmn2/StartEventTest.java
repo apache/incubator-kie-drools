@@ -16,6 +16,8 @@ limitations under the License.*/
 package org.jbpm.bpmn2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
@@ -24,6 +26,9 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -33,17 +38,26 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class StartEventTest extends JbpmTestCase {
+
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false }, { true } };
+        return Arrays.asList(data);
+    };
 
     private Logger logger = LoggerFactory.getLogger(StartEventTest.class);
 
     private StatefulKnowledgeSession ksession;
+    
+    public StartEventTest(boolean persistence) {
+        super(persistence);
+    }
 
     @BeforeClass
     public static void setup() throws Exception {
-        if (PERSISTENCE) {
-            setUpDataSource();
-        }
+        setUpDataSource();
     }
 
     @After

@@ -16,12 +16,19 @@ limitations under the License.*/
 package org.jbpm.bpmn2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
+import org.jbpm.bpmn2.handler.ServiceTaskHandler;
+import org.jbpm.bpmn2.handler.SignallingTaskHandlerWrapper;
+import org.jbpm.bpmn2.objects.ExceptionService;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
@@ -30,6 +37,9 @@ import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
@@ -39,22 +49,32 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.Context;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class IntermediateEventTest extends JbpmTestCase {
+
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false }, { true } };
+        return Arrays.asList(data);
+    };
 
     private Logger logger = LoggerFactory
             .getLogger(IntermediateEventTest.class);
 
     private StatefulKnowledgeSession ksession;
+    
+    public IntermediateEventTest(boolean persistence) {
+        super(persistence);
+    }
 
     @BeforeClass
     public static void setup() throws Exception {
-        if (PERSISTENCE) {
-            setUpDataSource();
-        }
+        setUpDataSource();
     }
 
     @After
@@ -802,6 +822,7 @@ public class IntermediateEventTest extends JbpmTestCase {
     }
 
     @Test
+    @RequirePersistence
     public void testEventSubprocessTimerCycle() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessTimerCycle.bpmn2");
         final List<Long> executednodes = new ArrayList<Long>();
@@ -1216,6 +1237,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         // now signal process instance
         ksession.signalEvent("MyMessage", "SomeValue", processInstance.getId());
         assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "UserTask", "EndProcess", "event");
 
     }
 
@@ -1425,6 +1447,7 @@ public class IntermediateEventTest extends JbpmTestCase {
     }
 
     @Test
+    @RequirePersistence(false)
     public void testIntermediateCatchEventTimerCycleWithError()
             throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycleWithError.bpmn2");
@@ -1453,6 +1476,50 @@ public class IntermediateEventTest extends JbpmTestCase {
         ksession.abortProcessInstance(processInstance.getId());
         assertProcessInstanceFinished(processInstance, ksession);
 
+    }
+    
+    @Test
+    @RequirePersistence
+    public void testIntermediateCatchEventTimerCycleWithErrorWithPersistence() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycleWithError.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession
+                .startProcess("IntermediateCatchEvent");
+        assertProcessInstanceActive(processInstance);
+        // now wait for 1 second for timer to trigger
+        Thread.sleep(1000);
+        assertProcessInstanceActive(processInstance);
+
+        final long piId = processInstance.getId();
+        ksession.execute(new GenericCommand<Void>() {
+
+            public Void execute(Context context) {
+                StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
+                WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.getProcessInstance(piId);
+                processInstance.setVariable("x", 0);
+                return null;
+            }
+        });
+        
+        Thread.sleep(1000);
+        assertProcessInstanceActive(processInstance);
+        Thread.sleep(1000);
+        assertProcessInstanceActive(processInstance);
+        
+        Integer xValue = ksession.execute(new GenericCommand<Integer>() {
+
+            public Integer execute(Context context) {
+                StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
+                WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.getProcessInstance(piId);
+                return (Integer) processInstance.getVariable("x");
+                
+            }
+        });
+        assertEquals(new Integer(2), xValue);
+        ksession.abortProcessInstance(processInstance.getId());
+        assertProcessInstanceFinished(processInstance, ksession);
     }
 
     @Test
@@ -1576,6 +1643,85 @@ public class IntermediateEventTest extends JbpmTestCase {
                 "StartSubProcess", "Task", "BoundaryEvent", "Goodbye",
                 "EndProcess");
 
+    }
+
+    @Test
+    public void testErrorSignallingExceptionServiceTask() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ExceptionServiceProcess-ErrorSignalling.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+
+        // Setup
+        String eventType = "Error-code";
+        SignallingTaskHandlerWrapper signallingTaskWrapper = new SignallingTaskHandlerWrapper(
+                ServiceTaskHandler.class, eventType, ksession);
+        signallingTaskWrapper
+                .setWorkItemExceptionParameterName(ExceptionService.exceptionParameterName);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+                signallingTaskWrapper);
+
+        Object[] caughtEventObjectHolder = new Object[1];
+        caughtEventObjectHolder[0] = null;
+        ExceptionService.setCaughtEventObjectHolder(caughtEventObjectHolder);
+
+        // Start process
+        Map<String, Object> params = new HashMap<String, Object>();
+        String input = "this is my service input";
+        params.put("serviceInputItem", input);
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession
+                .startProcess("ServiceProcess", params);
+
+        // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
+        assertTrue("Event was not passed to Event Subprocess",
+                caughtEventObjectHolder[0] != null
+                        && caughtEventObjectHolder[0] instanceof WorkItem);
+        WorkItem workItem = (WorkItem) caughtEventObjectHolder[0];
+        Object throwObj = workItem
+                .getParameter(ExceptionService.exceptionParameterName);
+        assertTrue("WorkItem doesn't contain Throwable",
+                throwObj instanceof Throwable);
+        assertTrue("Exception message does not match service input.",
+                ((Throwable) throwObj).getMessage().endsWith(input));
+
+        // Complete process
+        assertProcessInstanceAborted(processInstance);
+    }
+
+    @Test
+    public void testSignallingExceptionServiceTask() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ExceptionServiceProcess-Signalling.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+
+        // Setup
+        String eventType = "exception-signal";
+        SignallingTaskHandlerWrapper signallingTaskWrapper = new SignallingTaskHandlerWrapper(ServiceTaskHandler.class, eventType, ksession);
+        signallingTaskWrapper.setWorkItemExceptionParameterName(ExceptionService.exceptionParameterName);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", signallingTaskWrapper);
+       
+        Object [] caughtEventObjectHolder = new Object[1];
+        caughtEventObjectHolder[0] = null;
+        ExceptionService.setCaughtEventObjectHolder(caughtEventObjectHolder);
+        
+        // Start process
+        Map<String, Object> params = new HashMap<String, Object>();
+        String input = "this is my service input";
+        params.put("serviceInputItem", input );
+        ProcessInstance processInstance = ksession.startProcess("ServiceProcess", params);
+
+        // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
+        assertTrue( "Event was not passed to Event Subprocess", caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof WorkItem );
+        WorkItem workItem = (WorkItem) caughtEventObjectHolder[0];
+        Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
+        assertTrue( "WorkItem doesn't contain Throwable", throwObj instanceof Throwable );
+        assertTrue("Exception message does not match service input.", ((Throwable) throwObj).getMessage().endsWith(input) );
+
+        // Complete process
+        assertEquals( "Process instance is not active.", ProcessInstance.STATE_ACTIVE, processInstance.getState() );
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        processInstance = ksession.getProcessInstance(processInstance.getId());
+        if( processInstance != null ) { 
+            assertEquals( "Process instance is not completed.", ProcessInstance.STATE_COMPLETED, processInstance.getState() );
+        } // otherwise, persistence use => processInstance == null => process is completed
     }
 
 }

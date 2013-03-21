@@ -17,6 +17,7 @@ package org.jbpm.bpmn2;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +36,9 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -49,17 +53,26 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+@RunWith(Parameterized.class)
 public class FlowTest extends JbpmTestCase {
+
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false }, { true } };
+        return Arrays.asList(data);
+    };
 
     private Logger logger = LoggerFactory.getLogger(FlowTest.class);
 
     private StatefulKnowledgeSession ksession;
 
+    public FlowTest(boolean persistence) {
+        super(persistence);
+    }
+    
     @BeforeClass
     public static void setup() throws Exception {
-        if (PERSISTENCE) {
-            setUpDataSource();
-        }
+        setUpDataSource();
     }
 
     @After

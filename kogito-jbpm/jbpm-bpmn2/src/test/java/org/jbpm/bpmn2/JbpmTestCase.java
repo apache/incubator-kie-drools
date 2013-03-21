@@ -111,8 +111,13 @@ public abstract class JbpmTestCase extends Assert {
             System.out.println(" >>> " + description.getMethodName() + " <<< ");
 
             try {
+                String method = description.getMethodName();
+                int i = method.indexOf("[");
+                if (i > 0) {
+                    method = method.substring(0, i);
+                }
                 testReqPersistence = description.getTestClass()
-                        .getMethod(description.getMethodName())
+                        .getMethod(method)
                         .getAnnotation(RequirePersistence.class);
             } catch (Exception ex) {
                 // ignore
@@ -328,9 +333,24 @@ public abstract class JbpmTestCase extends Assert {
         KieBase kbase = createKnowledgeBase(process);
         return createKnowledgeSession(kbase);
     }
-
-    protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean useCache) {
-        return ksession;
+    
+    protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean noCache) {
+        if (sessionPersistence) {
+            int id = ksession.getId();
+            KieBase kbase = ksession.getKieBase();
+            Environment env = null;
+            if (noCache) {
+                env = createEnvironment(emf);
+            } else {
+                env = ksession.getEnvironment();
+            }
+            KieSessionConfiguration config = ksession.getSessionConfiguration();
+            StatefulKnowledgeSession result = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
+            AuditLoggerFactory.newInstance(Type.JPA, result, null);
+            return result;
+        } else {
+            return ksession;
+        }
     }
 
     protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession) {
@@ -346,21 +366,21 @@ public abstract class JbpmTestCase extends Assert {
     }
 
     public void assertProcessInstanceCompleted(ProcessInstance processInstance) {
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertTrue("Process instance has not been completed.", processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
 
     public void assertProcessInstanceAborted(ProcessInstance processInstance) {
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ABORTED);
+        assertTrue("Process instance has not been aborted.", processInstance.getState() == ProcessInstance.STATE_ABORTED);
     }
 
     public void assertProcessInstanceActive(ProcessInstance processInstance) {
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE
+        assertTrue("Process instance is not active.", processInstance.getState() == ProcessInstance.STATE_ACTIVE
                 || processInstance.getState() == ProcessInstance.STATE_PENDING);
     }
 
     public void assertProcessInstanceFinished(ProcessInstance processInstance,
             KieSession ksession) {
-        assertNull(ksession.getProcessInstance(processInstance.getId()));
+        assertNull("Process instance has not been finished.", ksession.getProcessInstance(processInstance.getId()));
     }
 
     public void assertNodeActive(long processInstanceId, KieSession ksession,

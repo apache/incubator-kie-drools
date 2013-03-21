@@ -16,6 +16,8 @@ limitations under the License.*/
 package org.jbpm.bpmn2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,24 +27,36 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class EndEventTest extends JbpmTestCase {
+
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false }, { true } };
+        return Arrays.asList(data);
+    };
 
     private Logger logger = LoggerFactory
             .getLogger(EndEventTest.class);
 
     private StatefulKnowledgeSession ksession;
+    
+    public EndEventTest(boolean persistence) {
+        super(persistence);
+    }
 
     @BeforeClass
     public static void setup() throws Exception {
-        if (PERSISTENCE) {
-            setUpDataSource();
-        }
+        setUpDataSource();
     }
 
     @After

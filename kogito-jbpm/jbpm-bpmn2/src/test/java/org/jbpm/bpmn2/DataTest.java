@@ -16,6 +16,8 @@ limitations under the License.*/
 package org.jbpm.bpmn2;
 
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,9 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
@@ -43,17 +48,26 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+@RunWith(Parameterized.class)
 public class DataTest extends JbpmTestCase {
+
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false }, { true } };
+        return Arrays.asList(data);
+    };
 
     private Logger logger = LoggerFactory.getLogger(DataTest.class);
 
     private StatefulKnowledgeSession ksession;
+    
+    public DataTest(boolean persistence) {
+        super(persistence);
+    }
 
     @BeforeClass
     public static void setup() throws Exception {
-        if (PERSISTENCE) {
-            setUpDataSource();
-        }
+        setUpDataSource();
     }
 
     @After

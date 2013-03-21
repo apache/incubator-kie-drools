@@ -1,13 +1,9 @@
 package org.jbpm.bpmn2.persistence;
 
-import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
-
-import java.util.HashMap;
-
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.jbpm.bpmn2.JbpmBpmn2TestCase;
+import org.jbpm.bpmn2.JbpmTestCase;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
@@ -16,11 +12,10 @@ import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.Context;
+import org.kie.api.KieBase;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
@@ -30,16 +25,19 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.Environment;
+import org.kie.api.io.Resource;
 
 /**
  * This is a sample file to launch a process.
  */
-public class DynamicProcessTest extends JbpmBpmn2TestCase {
+public class DynamicProcessTest extends JbpmTestCase {
 
-    private HashMap<String, Object> context;
-    private Environment env;
+    @BeforeClass
+    public static void setup() throws Exception {
+        if (PERSISTENCE) {
+            setUpDataSource();
+        }
+    }
 
     @Test
 	public void testDynamicProcess() throws Exception {		
@@ -57,10 +55,11 @@ public class DynamicProcessTest extends JbpmBpmn2TestCase {
 			.connection(1, 2)
 			.connection(2, 3);
 		final RuleFlowProcess process = factory.validate().getProcess();
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newByteArrayResource(
-			XmlRuleFlowProcessDumper.INSTANCE.dump(process).getBytes()), ResourceType.DRF);
-		KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+		Resource resource = ResourceFactory
+                .newByteArrayResource(XmlRuleFlowProcessDumper.INSTANCE.dump(
+                        process).getBytes());
+        resource.setSourcePath("/tmp/dynamicProcess.bpmn2"); // source path or target path must be set to be added into kbase
+        KieBase kbase = createKnowledgeBaseFromResources(resource);
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		TestWorkItemHandler testHandler = new TestWorkItemHandler();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", testHandler);
@@ -106,10 +105,14 @@ public class DynamicProcessTest extends JbpmBpmn2TestCase {
 				return null;
 			}
 		});
-		
+
+        assertProcessInstanceActive(processInstance);
 		ksession.getWorkItemManager().completeWorkItem(testHandler.getWorkItem().getId(), null);
-		
+		assertProcessInstanceActive(processInstance);
 		ksession.getWorkItemManager().completeWorkItem(testHandler.getWorkItem().getId(), null);
+		assertProcessInstanceFinished(processInstance, ksession);
+		
+		ksession.dispose();
 	}
 
 	private static void insertNodeInBetween(RuleFlowProcess process, long startNodeId, long endNodeId, NodeImpl node) {
