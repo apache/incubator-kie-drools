@@ -15,6 +15,8 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.sql.SQLException;
@@ -37,6 +39,7 @@ import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.util.DroolsStreamUtils;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.jbpm.process.audit.AuditLoggerFactory;
@@ -59,6 +62,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message.Level;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Node;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
@@ -279,6 +283,61 @@ public abstract class JbpmTestCase extends Assert {
 
         KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
         return kContainer.getKieBase();
+    }
+    
+    protected KieBase createKnowledgeBaseFromDisc(String process) throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        KieRepository kr = ks.getRepository();
+        KieFileSystem kfs = ks.newKieFileSystem();
+            
+        Resource res = ResourceFactory.newClassPathResource(process);
+        kfs.write(res);
+
+        KieBuilder kb = ks.newKieBuilder(kfs);
+
+        kb.buildAll(); // kieModule is automatically deployed to KieRepository
+                       // if successfully built.
+
+        if (kb.getResults().hasMessages(Level.ERROR)) {
+            throw new RuntimeException("Build Errors:\n"
+                    + kb.getResults().toString());
+        }
+
+        KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
+        KieBase kbase =  kContainer.getKieBase();
+        
+        File packageFile = null;
+        for (KiePackage pkg : kbase.getKiePackages() ) {
+            packageFile = new File(System.getProperty("java.io.tmpdir") + File.separator + pkg.getName()+".pkg");
+            packageFile.deleteOnExit();
+            FileOutputStream out = new FileOutputStream(packageFile);
+            try {
+                DroolsStreamUtils.streamOut(out, pkg);
+            } finally {
+                out.close();
+            }
+            
+            // store first package only
+            break;
+        }
+        
+        kfs.delete(res.getSourcePath());
+        kfs.write(ResourceFactory.newFileResource(packageFile));
+
+        kb = ks.newKieBuilder(kfs);
+        kb.buildAll(); // kieModule is automatically deployed to KieRepository
+                       // if successfully built.
+
+        if (kb.getResults().hasMessages(Level.ERROR)) {
+            throw new RuntimeException("Build Errors:\n"
+                    + kb.getResults().toString());
+        }
+        
+        kContainer = ks.newKieContainer(kr.getDefaultReleaseId());
+        kbase =  kContainer.getKieBase();
+        
+        return kbase;
+        
     }
 
     protected StatefulKnowledgeSession createKnowledgeSession(KieBase kbase)

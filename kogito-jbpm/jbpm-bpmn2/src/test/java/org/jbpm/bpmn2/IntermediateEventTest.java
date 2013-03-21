@@ -45,11 +45,13 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.Context;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1174,6 +1176,7 @@ public class IntermediateEventTest extends JbpmTestCase {
     }
 
     @Test
+    @RequirePersistence(false)
     public void testTimerBoundaryEventCycleISO() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventCycleISO.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -1188,6 +1191,52 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertProcessInstanceActive(processInstance);
         ksession.abortProcessInstance(processInstance.getId());
         Thread.sleep(1000);
+    }
+    
+    @Test
+    @RequirePersistence
+    public void testTimerBoundaryEventCycleISOWithPersistence() throws Exception {
+        // load up the knowledge base
+        KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventCycleISO.bpmn2");
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        final List<Long> list = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("TimerEvent")) {
+                    list.add(event.getProcessInstance().getId());
+                }
+            }
+
+        };
+        ksession.addEventListener(listener);
+        int sessionId = ksession.getId();
+        Environment env = ksession.getEnvironment();
+        ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
+                new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession
+                .startProcess("TimerBoundaryEvent");
+        assertProcessInstanceActive(processInstance);
+
+        Thread.sleep(1000);
+        assertProcessInstanceActive(processInstance);
+        System.out.println("dispose");
+        ksession.dispose();
+
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
+                kbase, null, env);
+        ksession.addEventListener(listener);
+        Thread.sleep(1000);
+        assertProcessInstanceActive(processInstance);
+        Thread.sleep(2000);
+        assertProcessInstanceActive(processInstance);
+        ksession.abortProcessInstance(processInstance.getId());
+        Thread.sleep(1000);
+        assertEquals(2, list.size());
+        assertProcessInstanceFinished(processInstance, ksession);
     }
 
     @Test
