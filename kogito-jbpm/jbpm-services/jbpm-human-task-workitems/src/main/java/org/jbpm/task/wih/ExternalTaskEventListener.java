@@ -141,7 +141,6 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         KieSession session = kruntimes.get(task.getTaskData().getProcessSessionId());
         if (session != null) {
             logger.log(Level.FINE, ">> I''ve recieved an event for a known session ({0})", task.getTaskData().getProcessSessionId());
-            //System.out.println(">> I've recieved an event for a known session (" + task.getTaskData().getProcessSessionId()+")");
             processTaskState(task);
         } else {
             logger.log(Level.SEVERE, "EE: I''ve recieved an event but the session is not known by this handler ( {0})", task.getTaskData().getProcessSessionId());
