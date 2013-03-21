@@ -323,7 +323,8 @@ public abstract class JbpmJUnitTestCase extends Assert {
         KnowledgeBase kbase = createKnowledgeBase(process);
 
         final KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        config.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+        // Do NOT use the Pseudo clock yet.. 
+        // config.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, createEnvironment(emf));
         KnowledgeSessionCleanup.knowledgeSessionSetLocal.get().add(ksession);
