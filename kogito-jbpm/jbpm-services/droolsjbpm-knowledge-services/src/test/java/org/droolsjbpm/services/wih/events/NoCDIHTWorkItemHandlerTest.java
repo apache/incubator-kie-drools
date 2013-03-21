@@ -90,7 +90,7 @@ public class NoCDIHTWorkItemHandlerTest extends HTWorkItemHandlerBaseTest {
 
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
-        
+        externalTaskEventListener.setLogger(logger);
         
         
         // Session Manager Start up

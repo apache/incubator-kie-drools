@@ -94,7 +94,7 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
 
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
-        
+        externalTaskEventListener.setLogger(logger);
         
         
         // Session Manager Start up

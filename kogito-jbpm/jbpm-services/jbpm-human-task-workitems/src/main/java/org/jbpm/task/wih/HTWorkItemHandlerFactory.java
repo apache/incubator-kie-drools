@@ -15,6 +15,7 @@
  */
 package org.jbpm.task.wih;
 
+import java.util.logging.LogManager;
 import org.jbpm.shared.services.api.ServicesSessionManager;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.task.api.TaskService;
@@ -29,7 +30,7 @@ public class HTWorkItemHandlerFactory {
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
         externalTaskEventListener.addSession(ksession);
-
+        externalTaskEventListener.setLogger(LogManager.getLogManager().getLogger(""));
         LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler();
         humanTaskHandler.addSession(ksession);
         humanTaskHandler.setTaskService(taskService);
@@ -40,7 +41,8 @@ public class HTWorkItemHandlerFactory {
     public static LocalHTWorkItemHandler newHandler(ServicesSessionManager sessionManager, TaskService taskService){
         ExternalTaskEventListener externalTaskEventListener = new ExternalTaskEventListener();
         externalTaskEventListener.setTaskService(taskService);
-
+        externalTaskEventListener.setLogger(LogManager.getLogManager().getLogger(""));
+        
         LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler();
         humanTaskHandler.setSessionManager(sessionManager);
         humanTaskHandler.setTaskService(taskService);

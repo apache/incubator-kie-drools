@@ -17,6 +17,8 @@ package org.jbpm.task.wih;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -48,6 +50,9 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
     @Inject
     private TaskService taskService;
     
+    @Inject
+    private Logger logger;
+    
     private Map<Integer, KieSession> kruntimes = new HashMap<Integer,KieSession>();
     private Map<Integer, ClassLoader> classLoaders = new HashMap<Integer,ClassLoader>();
     
@@ -63,6 +68,11 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
     }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
 
     public void addSession(KieSession session) {
         addSession(session, null);
@@ -130,10 +140,12 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
     public void afterTaskCompletedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskCompletedEvent Task task) {
         KieSession session = kruntimes.get(task.getTaskData().getProcessSessionId());
         if (session != null) {
-            System.out.println(">> I've recieved an event for a known session (" + task.getTaskData().getProcessSessionId()+")");
+            logger.log(Level.FINE, ">> I''ve recieved an event for a known session ({0})", task.getTaskData().getProcessSessionId());
+            //System.out.println(">> I've recieved an event for a known session (" + task.getTaskData().getProcessSessionId()+")");
             processTaskState(task);
         } else {
-            System.out.println("EE: I've recieved an event but the session is not known by this handler ( "+task.getTaskData().getProcessSessionId()+")");
+            logger.log(Level.SEVERE, "EE: I''ve recieved an event but the session is not known by this handler ( {0})", task.getTaskData().getProcessSessionId());
+            
         }
     }
 
