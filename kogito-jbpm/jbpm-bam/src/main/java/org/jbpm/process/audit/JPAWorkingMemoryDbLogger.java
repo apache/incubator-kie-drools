@@ -31,6 +31,7 @@ import javax.transaction.UserTransaction;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.runtime.process.InternalProcessRuntime;
+import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -107,7 +108,7 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
     public void beforeProcessStarted(ProcessStartedEvent event) {
         ProcessInstanceLog log = (ProcessInstanceLog) builder.buildEvent(event);
         persist(log);
-        
+        ((ProcessInstanceImpl) event.getProcessInstance()).getMetaData().put("ProcessInstanceLog", log);
     }
 
     @Override
@@ -115,15 +116,19 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
         long processInstanceId = event.getProcessInstance().getId();
         EntityManager em = getEntityManager();
         UserTransaction ut = joinTransaction(em);
-        List<ProcessInstanceLog> result = em.createQuery(
-        "from ProcessInstanceLog as log where log.processInstanceId = ? and log.end is null")
-            .setParameter(1, processInstanceId).getResultList();
         
-        if (result != null && result.size() != 0) {
-           ProcessInstanceLog log = result.get(result.size() - 1);
-           
-           log = (ProcessInstanceLog) builder.buildEvent(event, log);
-           em.merge(log);   
+        ProcessInstanceLog log = (ProcessInstanceLog) ((ProcessInstanceImpl) event.getProcessInstance()).getMetaData().get("ProcessInstanceLog");
+        if (log == null) {
+	        List<ProcessInstanceLog> result = em.createQuery(
+		        "from ProcessInstanceLog as log where log.processInstanceId = ? and log.end is null")
+		            .setParameter(1, processInstanceId).getResultList();
+	        if (result != null && result.size() != 0) {
+	           log = result.get(result.size() - 1);
+	        }
+        }
+        if (log != null) {
+            log = (ProcessInstanceLog) builder.buildEvent(event, log);
+            em.merge(log);   
         }
         if (!sharedEM) {
             flush(em, ut);
