@@ -822,6 +822,11 @@ public class DefaultAgenda
         return agendaGroup;
     }
 
+    @Override
+    public boolean isActive(Rule rule) {
+        return (( InternalAgendaGroup ) this.focusStack.peek()).peekNext() == rule;
+    }
+
     /*
      * (non-Javadoc)
      * 

@@ -21,6 +21,7 @@ import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ActivationGroup;
 import org.drools.core.spi.AgendaFilter;
@@ -181,4 +182,6 @@ public interface InternalAgenda
     public RuleNetworkEvaluatorActivation createRuleNetworkEvaluatorActivation(final int salience,
                                                                                final PathMemory rs,
                                                                                final TerminalNode rtn);
+
+    boolean isActive(Rule rule);
 }
