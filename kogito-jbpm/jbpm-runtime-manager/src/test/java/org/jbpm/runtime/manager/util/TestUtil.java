@@ -1,6 +1,7 @@
 package org.jbpm.runtime.manager.util;
 
 import java.io.File;
+import java.io.FilenameFilter;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -21,9 +22,21 @@ public class TestUtil {
     }
     
     public static void cleanupSingletonSessionId() {
-        File sessionIdSer = new File(System.getProperty("java.io.tmpdir") + File.separator + "jbpmSessionId.ser");
-        if (sessionIdSer.exists()) {
-            sessionIdSer.delete();
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        if (tempDir.exists()) {
+            
+            String[] jbpmSerFiles = tempDir.list(new FilenameFilter() {
+                
+                @Override
+                public boolean accept(File dir, String name) {
+                    
+                    return name.endsWith("-jbpmSessionId.ser");
+                }
+            });
+            for (String file : jbpmSerFiles) {
+                
+                new File(tempDir, file).delete();
+            }
         }
     }
 }

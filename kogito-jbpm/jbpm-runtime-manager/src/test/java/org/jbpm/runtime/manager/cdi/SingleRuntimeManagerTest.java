@@ -17,6 +17,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -93,6 +94,12 @@ public class SingleRuntimeManagerTest {
 
         pds.close();
     }
+    @After
+    public void close() {
+        singletonManager.close();
+        perRequestManager.close();
+        perProcessInstanceManager.close();
+    }
     /*
      * end of initialization code, tests start here
      */
@@ -117,7 +124,9 @@ public class SingleRuntimeManagerTest {
         assertNotNull(runtime);
         testProcessStartOnManager(runtime);
         
-        singletonManager.disposeRuntime(runtime);        
+        singletonManager.disposeRuntime(runtime);     
+        
+        singletonManager.close();
     }
     
     @Test

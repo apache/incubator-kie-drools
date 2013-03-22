@@ -116,6 +116,7 @@ public class MultipleRuntimeManagerTest {
         
         RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment);
         testProcessStartOnManager(manager, EmptyContext.get());
+        manager.close();
         
         environment = new DefaultRuntimeEnvironment(emf);
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
@@ -123,14 +124,15 @@ public class MultipleRuntimeManagerTest {
         
         manager = managerFactory.newPerRequestRuntimeManager(environment);
         testProcessStartOnManager(manager, EmptyContext.get());
-
+        manager.close();
+        
         environment = new DefaultRuntimeEnvironment(emf);
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2);
         
         manager = managerFactory.newPerProcessInstanceRuntimeManager(environment);
         testProcessStartOnManager(manager, ProcessInstanceIdContext.get());
-
+        manager.close();
     }    
     
     

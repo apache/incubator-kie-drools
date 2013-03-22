@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.PostConstruct;
 
@@ -18,25 +20,32 @@ import org.kie.internal.runtime.manager.TaskServiceFactory;
 
 public class SingletonRuntimeManager extends AbstractRuntimeManager {
     
+    protected static List<String> activeSingletons = new CopyOnWriteArrayList<String>();
+    
     private Runtime singleton;
     private SessionFactory factory;
     private TaskServiceFactory taskServiceFactory;
+    private String identifier;
     
     public SingletonRuntimeManager() {
         super(null);
         // no-op just for cdi, spring and other frameworks
     }
     
-    public SingletonRuntimeManager(RuntimeEnvironment environment, SessionFactory factory, TaskServiceFactory taskServiceFactory) {
+    public SingletonRuntimeManager(RuntimeEnvironment environment, SessionFactory factory, TaskServiceFactory taskServiceFactory, String identifier) {
         super(environment);
         this.factory = factory;
         this.taskServiceFactory = taskServiceFactory;
+        this.identifier = identifier;
     }
     @PostConstruct
     public void init() {
+        if (activeSingletons.contains(identifier)) {
+            throw new IllegalStateException("SingletonManager with id " + identifier + " is already active");
+        }
         // TODO should we proxy/wrap the ksession so we capture dispose.destroy method calls?
-        String location = System.getProperty("jbpm.conf.dir", System.getProperty("java.io.tmpdir"));
-        Integer knownSessionId = getPersistedSessionId(location);
+        String location = getLocation();
+        Integer knownSessionId = getPersistedSessionId(location, identifier);
         if (knownSessionId > 0) {
             try {
                 this.singleton = new SynchronizedRuntimeImpl(factory.findKieSessionById(knownSessionId), taskServiceFactory.newTaskService());
@@ -47,10 +56,11 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         
         if (this.singleton == null) {
             this.singleton = new SynchronizedRuntimeImpl(factory.newKieSession(), taskServiceFactory.newTaskService());
-            persistSessionId(location, singleton.getKieSession().getId());
+            persistSessionId(location, identifier, singleton.getKieSession().getId());
         }
         ((RuntimeImpl) singleton).setManager(this);
         registerItems(this.singleton);
+        activeSingletons.add(identifier);
     }
 
     @SuppressWarnings("rawtypes")
@@ -72,16 +82,18 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
             ((Disposable) this.singleton).dispose();
         }
         factory.close();
-        this.singleton = null;     
+        this.singleton = null;   
+        activeSingletons.remove(identifier);
     }
     
     /**
      * Retrieves session id from serialized file named jbpmSessionId.ser from given location.
      * @param location directory where jbpmSessionId.ser file should be
+     * @param identifier of the manager owning this ksessionId
      * @return sessionId if file was found otherwise 0
      */
-    protected int getPersistedSessionId(String location) {
-        File sessionIdStore = new File(location + File.separator + "jbpmSessionId.ser");
+    protected int getPersistedSessionId(String location, String identifier) {
+        File sessionIdStore = new File(location + File.separator + identifier+ "-jbpmSessionId.ser");
         if (sessionIdStore.exists()) {
             Integer knownSessionId = null; 
             FileInputStream fis = null;
@@ -97,18 +109,19 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
             } catch (Exception e) {
                 return 0;
             } finally {
-                if (fis != null) {
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                    }
-                }
                 if (in != null) {
                     try {
                         in.close();
                     } catch (IOException e) {
                     }
                 }
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                    }
+                }
+ 
             }
             
         } else {
@@ -119,16 +132,17 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     /**
      * Stores gives ksessionId in a serialized file in given location under jbpmSessionId.ser file name
      * @param location directory where serialized file should be stored
+     * @param identifier of the manager owning this ksessionId
      * @param ksessionId value of ksessionId to be stored
      */
-    protected void persistSessionId(String location, int ksessionId) {
+    protected void persistSessionId(String location, String identifier, int ksessionId) {
         if (location == null) {
             return;
         }
         FileOutputStream fos = null;
         ObjectOutputStream out = null;
         try {
-            fos = new FileOutputStream(location + File.separator + "jbpmSessionId.ser");
+            fos = new FileOutputStream(location + File.separator + identifier + "-jbpmSessionId.ser");
             out = new ObjectOutputStream(fos);
             out.writeObject(Integer.valueOf(ksessionId));
             out.close();
@@ -148,6 +162,14 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
                 }
             }
         }
+    }
+    
+    protected String getLocation() {
+        String location = System.getProperty("jbpm.data.dir", System.getProperty("jboss.server.data.dir"));
+        if (location == null) {
+            location = System.getProperty("java.io.tmpdir");
+        }
+        return location;
     }
 
     public SessionFactory getFactory() {

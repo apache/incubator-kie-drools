@@ -25,7 +25,16 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
         SessionFactory factory = getSessionFactory(environment);
         TaskServiceFactory taskServiceFactory = new LocalTaskServiceFactory(environment);
         
-        RuntimeManager manager = new SingletonRuntimeManager(environment, factory, taskServiceFactory);
+        RuntimeManager manager = new SingletonRuntimeManager(environment, factory, taskServiceFactory, "default");
+        ((SingletonRuntimeManager) manager).init();
+        return manager;
+    }
+    @Override
+    public RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment, String identifier) {
+        SessionFactory factory = getSessionFactory(environment);
+        TaskServiceFactory taskServiceFactory = new LocalTaskServiceFactory(environment);
+        
+        RuntimeManager manager = new SingletonRuntimeManager(environment, factory, taskServiceFactory, identifier);
         ((SingletonRuntimeManager) manager).init();
         return manager;
     }
