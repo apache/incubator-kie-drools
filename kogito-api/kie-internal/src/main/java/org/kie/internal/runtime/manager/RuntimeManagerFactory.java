@@ -20,6 +20,8 @@ public interface RuntimeManagerFactory {
 
     public RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment);
     
+    public RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment, String identifier);
+    
     public RuntimeManager newPerRequestRuntimeManager(RuntimeEnvironment environment);
     
     public RuntimeManager newPerProcessInstanceRuntimeManager(RuntimeEnvironment environment);
