@@ -1300,9 +1300,46 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		params.put("x", "oldValue");
 		ProcessInstance processInstance = ksession.startProcess(
 				"ParentProcess", params);
-		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		ksession.dispose();
+	}
+	
+	public void testCallActivity2() throws Exception {
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+				.newKnowledgeBuilder();
+		kbuilder.add(ResourceFactory
+				.newClassPathResource("BPMN2-CallActivity2.bpmn2"),
+				ResourceType.BPMN2);
+		kbuilder.add(ResourceFactory
+				.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"),
+				ResourceType.BPMN2);
+		if (!kbuilder.getErrors().isEmpty()) {
+			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+				logger.error(error.toString());
+			}
+			throw new IllegalArgumentException(
+					"Errors while parsing knowledge base");
+		}
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+				workItemHandler);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("x", "oldValue");
+		ProcessInstance processInstance = ksession.startProcess(
+				"ParentProcess", params);
+//		assertProcessInstanceActive(processInstance.getId(), ksession);
 		assertEquals("new value",
 				((WorkflowProcessInstance) processInstance).getVariable("y"));
+		
+		ksession = restoreSession(ksession, true);
+		WorkItem workItem = workItemHandler.getWorkItem();
+		assertNotNull(workItem);
+		assertEquals("krisv", workItem.getParameter("ActorId"));
+		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 		ksession.dispose();
 	}
 	
