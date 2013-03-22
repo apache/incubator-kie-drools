@@ -27,7 +27,7 @@ import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.kie.api.Service;
 import org.kie.internal.builder.KnowledgeBuilderFactoryService;
 import org.kie.internal.utils.ServiceRegistryImpl;
-import org.kie.api.osgi.api.Activator.BundleContextInstantiator;
+import org.kie.api.osgi.Activator.BundleContextInstantiator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
