@@ -122,15 +122,6 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        <executions>
-          <execution>
-            <id>manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <instructions>
             <Bundle-SymbolicName>org.jbpm.bpmn2;singleton:=true</Bundle-SymbolicName>
