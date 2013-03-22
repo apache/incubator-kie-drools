@@ -41,6 +41,7 @@ import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.rule.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.drools.core.util.index.LeftTupleList;
 
 public class RuleNetworkEvaluator {
 
@@ -62,7 +63,7 @@ public class RuleNetworkEvaluator {
 
     }
 
-    public int evaluateNetwork(PathMemory rmem, InternalWorkingMemory wm) {
+    public int evaluateNetwork(PathMemory rmem, InternalWorkingMemory wm, RuleNetworkEvaluatorActivation activation) {
         SegmentMemory[] smems = rmem.getSegmentMemories();
 
         int smemIndex = 0;
@@ -107,7 +108,7 @@ public class RuleNetworkEvaluator {
         }
 
         LinkedList<StackEntry> stack = new LinkedList<StackEntry>();
-        eval1(liaNode, rmem, (LeftTupleSink) node, nodeMem, smems, smemIndex, srcTuples, wm, stack, visitedRules, true);
+        eval1(liaNode, rmem, (LeftTupleSink) node, nodeMem, smems, smemIndex, srcTuples, wm, stack, visitedRules, true, activation);
 
         return 0;
     }
@@ -151,9 +152,10 @@ public class RuleNetworkEvaluator {
                       InternalWorkingMemory wm,
                       LinkedList<StackEntry> stack,
                       Set<String> visitedRules,
-                      boolean processRian) {
+                      boolean processRian,
+                      RuleNetworkEvaluatorActivation activation) {
         while (true) {
-            eval2(liaNode, rmem, node, nodeMem, smems, smemIndex, trgTuples, wm, stack, visitedRules, processRian);
+            eval2(liaNode, rmem, node, nodeMem, smems, smemIndex, trgTuples, wm, stack, visitedRules, processRian, activation);
 
             // eval
             if (!stack.isEmpty()) {
@@ -233,7 +235,8 @@ public class RuleNetworkEvaluator {
                       InternalWorkingMemory wm,
                       LinkedList<StackEntry> stack,
                       Set<String> visitedRules,
-                      boolean processRian) {
+                      boolean processRian,
+                      RuleNetworkEvaluatorActivation activation) {
         LeftTupleSets srcTuples;
         SegmentMemory smem = smems[smemIndex];
         while (true) {
@@ -253,7 +256,8 @@ public class RuleNetworkEvaluator {
                 } else {
                     pRtNode.doNode(rtn,
                                    wm,
-                                   srcTuples);
+                                   srcTuples,
+                                   activation);
                 }
                 return;
             } else if (NodeTypeEnums.RightInputAdaterNode == node.getType()) {
@@ -290,7 +294,7 @@ public class RuleNetworkEvaluator {
                     // if the subnetwork is nested in this segment, it will create srcTuples containing
                     // peer LeftTuples, suitable for the node in the main path.
                     doRiaNode( wm, liaNode, rmem, srcTuples,
-                              betaNode, sink, smems, smemIndex, nodeMem, bm, stack, visitedRules);
+                              betaNode, sink, smems, smemIndex, nodeMem, bm, stack, visitedRules, activation);
                     return; // return here is doRiaNode queues the evaluation on the stack, which is necessary to handled nested query nodes
                 }
 
@@ -460,7 +464,8 @@ public class RuleNetworkEvaluator {
                            Memory nodeMem,
                            BetaMemory bm,
                            LinkedList<StackEntry> stack,
-                           Set<String> visitedRules) {
+                           Set<String> visitedRules,
+                           RuleNetworkEvaluatorActivation activation) {
         RiaPathMemory pathMem = bm.getRiaRuleMemory();
         SegmentMemory[] subnetworkSmems = pathMem.getSegmentMemories();
         SegmentMemory subSmem = null;
@@ -500,7 +505,7 @@ public class RuleNetworkEvaluator {
         //LeftTupleSets riaStagedTuples =
         eval2( liaNode, pathMem, (LeftTupleSink) subSmem.getRootNode(), subSmem.getNodeMemories().getFirst(),
                subnetworkSmems, subSmem.getPos(),
-               subSmem.getStagedLeftTuples(), wm, stack, visitedRules, true);
+               subSmem.getStagedLeftTuples(), wm, stack, visitedRules, true, activation);
     }
 
     private void doRiaNode2(InternalWorkingMemory wm,
@@ -3869,17 +3874,17 @@ public class RuleNetworkEvaluator {
     public static class PhreakRuleTerminalNode {
         public void doNode(TerminalNode rtnNode,
                            InternalWorkingMemory wm,
-                           LeftTupleSets srcLeftTuples) {
+                           LeftTupleSets srcLeftTuples, RuleNetworkEvaluatorActivation activation) {
             if (srcLeftTuples.getDeleteFirst() != null) {
-                doLeftDeletes(rtnNode, wm, srcLeftTuples);
+                doLeftDeletes(rtnNode, wm, srcLeftTuples, activation);
             }
 
             if (srcLeftTuples.getUpdateFirst() != null) {
-                doLeftUpdates(rtnNode, wm, srcLeftTuples);
+                doLeftUpdates(rtnNode, wm, srcLeftTuples, activation);
             }
 
             if (srcLeftTuples.getInsertFirst() != null) {
-                doLeftInserts(rtnNode, wm, srcLeftTuples);
+                doLeftInserts(rtnNode, wm, srcLeftTuples, activation);
             }
 
             srcLeftTuples.resetAll();
@@ -3887,11 +3892,13 @@ public class RuleNetworkEvaluator {
 
         public void doLeftInserts(TerminalNode rtnNode,
                                   InternalWorkingMemory wm,
-                                  LeftTupleSets srcLeftTuples) {
+                                  LeftTupleSets srcLeftTuples, RuleNetworkEvaluatorActivation activation) {
 
+            LeftTupleList tupleList = activation.getLeftTupleList();
             for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();
-                rtnNode.assertLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);
+                tupleList.add(leftTuple);
+                //rtnNode.assertLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);
                 leftTuple.clearStaged();
                 leftTuple = next;
             }
@@ -3899,11 +3906,15 @@ public class RuleNetworkEvaluator {
 
         public void doLeftUpdates(TerminalNode rtnNode,
                                   InternalWorkingMemory wm,
-                                  LeftTupleSets srcLeftTuples) {
+                                  LeftTupleSets srcLeftTuples, RuleNetworkEvaluatorActivation activation) {
 
+            LeftTupleList tupleList = activation.getLeftTupleList();
             for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();
-                rtnNode.modifyLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);
+                if ( leftTuple.getMemory() == null ) {
+                    tupleList.add(leftTuple);
+                }
+                //rtnNode.modifyLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);
                 leftTuple.clearStaged();
                 leftTuple = next;
             }
@@ -3911,11 +3922,14 @@ public class RuleNetworkEvaluator {
 
         public void doLeftDeletes(TerminalNode rtnNode,
                                   InternalWorkingMemory wm,
-                                  LeftTupleSets srcLeftTuples) {
-
+                                  LeftTupleSets srcLeftTuples, RuleNetworkEvaluatorActivation activation) {
+            LeftTupleList tupleList = activation.getLeftTupleList();
             for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();
-                rtnNode.retractLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);
+                if ( leftTuple.getMemory() != null ) {
+                    tupleList.remove(leftTuple);
+                }
+                //rtnNode.retractLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);
                 leftTuple.clearStaged();
                 leftTuple = next;
             }

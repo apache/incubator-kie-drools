@@ -65,6 +65,10 @@ public class LeftTupleList
         this.hashCode = hashCode;
     }
 
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
     public LeftTuple getFirst(RightTuple rightTuple) {
         return this.first;
     }
@@ -158,7 +162,16 @@ public class LeftTupleList
         }        
         leftTuple.clear();
         this.size--;
-    } 
+    }
+
+    public LeftTuple removeFirst() {
+        LeftTuple leftTuple = this.first;
+        this.first = (LeftTuple) leftTuple.getNext();
+        leftTuple.setNext(null);
+        this.first.setPrevious(null);
+        this.size--;
+        return leftTuple;
+    }
 
     public boolean contains(final LeftTuple leftTuple) {
         return get( leftTuple ) != null;
