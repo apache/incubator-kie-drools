@@ -28,7 +28,7 @@
             <Import-Package>!org.kie.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
             <Export-Package>!org.kie.api.cdi.*,org.kie.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.kie.api.osgi.api.Activator</Bundle-Activator>
+            <Bundle-Activator>org.kie.api.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
