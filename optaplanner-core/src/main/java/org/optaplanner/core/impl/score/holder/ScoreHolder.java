@@ -22,12 +22,9 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**
- * A workaround class that wraps parts of a {@link Score}.
- * It injected as a global by {@link DroolsScoreDirector} in the {@link org.drools.core.WorkingMemory}
- * to avoid a performance problem in Drools Expert with using 2 or more accumulates in the same rule.
+ * This class is injected as a global by {@link DroolsScoreDirector} into the Drools DRL.
  * Other {@link ScoreDirector} implementations do not use this class.
- * <p/>
- * TODO JBRULES-2238 remove this class when the rule that sums the final score can be written as a single rule and it is dead
+ * @see AbstractScoreHolder
  */
 public interface ScoreHolder {
 
