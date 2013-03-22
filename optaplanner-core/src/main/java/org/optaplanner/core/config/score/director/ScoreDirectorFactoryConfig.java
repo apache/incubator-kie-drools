@@ -31,6 +31,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.kie.internal.builder.conf.PhreakOption;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
@@ -287,6 +288,7 @@ public class ScoreDirectorFactoryConfig {
                 }
             }
             RuleBaseConfiguration ruleBaseConfiguration = new RuleBaseConfiguration();
+            // ruleBaseConfiguration.setOption(PhreakOption.ENABLED);
             RuleBase ruleBase = RuleBaseFactory.newRuleBase(ruleBaseConfiguration);
             if (packageBuilder.hasErrors()) {
                 throw new IllegalStateException("There are errors in the scoreDrl's:\n"
