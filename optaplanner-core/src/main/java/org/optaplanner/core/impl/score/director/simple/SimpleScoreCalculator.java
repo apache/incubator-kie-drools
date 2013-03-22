@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.director.simple;
 
-import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**

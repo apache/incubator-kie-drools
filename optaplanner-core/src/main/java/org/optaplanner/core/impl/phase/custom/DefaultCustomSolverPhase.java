@@ -22,7 +22,7 @@ import java.util.List;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.impl.phase.custom.scope.CustomSolverPhaseScope;
 import org.optaplanner.core.impl.phase.custom.scope.CustomStepScope;
-import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 

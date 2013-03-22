@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.termination;
 
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class ScoreAttainedTermination extends AbstractTermination {

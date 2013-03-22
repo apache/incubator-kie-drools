@@ -17,7 +17,7 @@
 package org.optaplanner.examples.cloudbalancing.solver;
     dialect "java"
 
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;

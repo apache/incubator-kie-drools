@@ -25,7 +25,7 @@ import java.awt.image.ImageObserver;
 import java.text.NumberFormat;
 import javax.swing.ImageIcon;
 
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;

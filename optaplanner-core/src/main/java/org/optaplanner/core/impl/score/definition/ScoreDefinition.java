@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.score.definition;
 
-import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
-import org.optaplanner.core.impl.score.holder.ScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.termination.Termination;
 

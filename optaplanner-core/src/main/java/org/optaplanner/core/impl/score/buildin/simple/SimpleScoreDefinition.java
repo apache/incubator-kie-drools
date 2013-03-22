@@ -16,9 +16,11 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
-import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
-import org.optaplanner.core.impl.score.holder.ScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 
 public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> {
 

@@ -18,9 +18,9 @@ package org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator;
 
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.comparator.FlatteningHardSoftScoreComparator;
-import org.optaplanner.core.impl.score.comparator.NaturalScoreComparator;
+import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.junit.Test;
 

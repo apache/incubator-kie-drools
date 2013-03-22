@@ -16,9 +16,11 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoft;
 
-import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
-import org.optaplanner.core.impl.score.holder.ScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 
 public class HardSoftScoreDefinition extends AbstractScoreDefinition<HardSoftScore> {
 

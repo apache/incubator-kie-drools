@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftdouble;
 
+import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 

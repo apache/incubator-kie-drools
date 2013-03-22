@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.simplelong;
 
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 

@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.score.definition;
 
 import java.io.Serializable;
 
-import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 
 /**

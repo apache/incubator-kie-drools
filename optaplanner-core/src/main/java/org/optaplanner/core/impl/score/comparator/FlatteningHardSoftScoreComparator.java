@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.score.comparator;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.optaplanner.core.impl.score.Score;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 /**
  * Compares 2 {@link HardSoftScore}s based on the calculation of the hard multiplied by a weight, summed with the soft.

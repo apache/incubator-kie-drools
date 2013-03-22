@@ -2967,3 +2967,27 @@ Before in *.java:
     XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory("...BenchmarkConfig.xml");
 After in *.java:
     PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory("...BenchmarkConfig.xml");
+
+[MAJOR] The interfaces Score and ScoreHolder and their subclasses have been promoted from the impl to the api package.
+Before in *.java and *.drl:
+    import org.optaplanner.core.impl.score...Score;
+    import org.optaplanner.core.impl.score...SimpleScore;
+    import org.optaplanner.core.impl.score...HardAndSoftScore;
+    ...
+After in *.java and *.drl:
+    import org.optaplanner.core.api.score...Score;
+    import org.optaplanner.core.api.score...SimpleScore;
+    import org.optaplanner.core.api.score...HardAndSoftScore;
+    ...
+Before in *.java and *.drl:
+    import org.optaplanner.core.impl.score...ScoreHolder;
+    import org.optaplanner.core.impl.score...SimpleScoreHolder;
+    import org.optaplanner.core.impl.score...HardAndSoftScoreHolder;
+    ...
+After in *.java and *.drl:
+    import org.optaplanner.core.api.score...ScoreHolder;
+    import org.optaplanner.core.api.score...SimpleScoreHolder;
+    import org.optaplanner.core.api.score...HardAndSoftScoreHolder;
+    ...
+Note: ScoreDefinition has not been promoted (yet), even though you might use that in @XStreamConverter.
+Note: ConstraintOccurrence hasn't been promoted yet, even though you use it in the drl files.

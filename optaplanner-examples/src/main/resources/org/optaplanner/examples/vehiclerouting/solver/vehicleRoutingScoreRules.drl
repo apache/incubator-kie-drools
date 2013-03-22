@@ -17,7 +17,7 @@
 package org.optaplanner.examples.tsp.solver;
     dialect "java"
 
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
 import org.optaplanner.core.impl.score.constraint.ConstraintType;
 

@@ -26,11 +26,11 @@ import org.drools.core.FactHandle;
 import org.drools.core.RuleBase;
 import org.drools.core.StatefulSession;
 import org.drools.core.WorkingMemory;
-import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.constraint.ConstraintOccurrence;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.score.holder.ScoreHolder;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.solution.Solution;
 
 /**

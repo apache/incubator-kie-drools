@@ -17,7 +17,7 @@
 package org.optaplanner.examples.machinereassignment.solver;
     dialect "java"
 
-import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
 import org.optaplanner.core.impl.score.constraint.LongConstraintOccurrence;
 import org.optaplanner.core.impl.score.constraint.ConstraintType;
 

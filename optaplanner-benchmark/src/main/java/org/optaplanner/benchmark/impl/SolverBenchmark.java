@@ -25,7 +25,7 @@ import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.api.score.Score;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

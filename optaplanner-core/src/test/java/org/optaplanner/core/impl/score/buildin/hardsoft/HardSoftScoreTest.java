@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoft;
 
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 

@@ -24,8 +24,8 @@ import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.Constru
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.GreedyMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
-import org.optaplanner.core.impl.score.Score;
-import org.optaplanner.core.impl.score.comparator.NaturalScoreComparator;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

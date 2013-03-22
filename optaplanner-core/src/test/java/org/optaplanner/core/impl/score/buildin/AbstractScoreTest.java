@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin;
 
-import org.optaplanner.core.impl.score.FeasibilityScore;
-import org.optaplanner.core.impl.score.Score;
+import org.optaplanner.core.api.score.FeasibilityScore;
+import org.optaplanner.core.api.score.Score;
 
 import static org.junit.Assert.*;
 

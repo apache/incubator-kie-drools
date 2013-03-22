@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.simpledouble;
 
+import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 

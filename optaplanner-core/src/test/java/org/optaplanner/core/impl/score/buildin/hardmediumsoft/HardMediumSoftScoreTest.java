@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoft;
 
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
 import org.junit.Test;
 
