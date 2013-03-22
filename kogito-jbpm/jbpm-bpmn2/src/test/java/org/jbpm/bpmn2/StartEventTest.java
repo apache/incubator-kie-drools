@@ -313,6 +313,7 @@ public class StartEventTest extends JbpmTestCase {
     }
 
     @Test
+    @RequirePersistence
     public void testMultipleEventBasedStartEventsStartOnTimer()
             throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-MultipleEventBasedStartEventProcess.bpmn2");
