@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.api.osgi.api;
+package org.kie.api.osgi;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
