@@ -39,12 +39,13 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+                        <_nouses>true</_nouses>
+                        <_snapshot>${osgi-version-qualifier}</_snapshot>
                         <Bundle-SymbolicName>org.drools.templates;singleton:=true</Bundle-SymbolicName>
-                        <_removeheaders>Ignore-Package</_removeheaders>
-                        <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}"</Require-Bundle>
-                        <Import-Package>!org.drools.*,*</Import-Package>
-                        <Export-Package>org.drools.*</Export-Package>
-                        <DynamicImport-Package>org.drools.*</DynamicImport-Package>
+                        <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi-version-qualifier}</Bundle-Version>
+                        <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+                        <Export-Package>org.drools.template.*</Export-Package>
+                        <Private-Package></Private-Package>
                     </instructions>
                 </configuration>
             </plugin>

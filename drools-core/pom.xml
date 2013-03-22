@@ -173,12 +173,13 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
-            <Require-Bundle>org.kie.internalapi;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*,*,org.osgi.util.tracker</Import-Package>
-            <Export-Package>org.drools.*</Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
+            <_nouses>true</_nouses>
+            <_snapshot>${osgi-version-qualifier}</_snapshot>
+            <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi-version-qualifier}</Bundle-Version>
+            <Export-Package>org.drools.core.*</Export-Package>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+            <Private-Package></Private-Package>
             <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
