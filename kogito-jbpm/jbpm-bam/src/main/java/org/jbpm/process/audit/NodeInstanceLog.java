@@ -56,7 +56,7 @@ public class NodeInstanceLog implements Serializable, AuditEvent {
     private String nodeType;
     private Long workItemId;    
     private String connection;
-    private Integer sessionId;
+    private String domainId;
     
     NodeInstanceLog() {
     }
@@ -161,7 +161,7 @@ public class NodeInstanceLog implements Serializable, AuditEvent {
 		result = prime * result
                 + ((connection == null) ? 0 : connection.hashCode());
 		result = prime * result
-                + ((sessionId == null) ? 0 : sessionId.hashCode());
+                + ((domainId == null) ? 0 : domainId.hashCode());
 		return result;
 	}
 
@@ -219,10 +219,10 @@ public class NodeInstanceLog implements Serializable, AuditEvent {
         } else if (!connection.equals(other.connection))
             return false;
 		
-		if (sessionId == null) {
-            if (other.sessionId != null)
+		if (domainId == null) {
+            if (other.domainId != null)
                 return false;
-        } else if (!sessionId.equals(other.sessionId))
+        } else if (!domainId.equals(other.domainId))
             return false;
 		return true;
 	}
@@ -243,12 +243,12 @@ public class NodeInstanceLog implements Serializable, AuditEvent {
         this.connection = connection;
     }
 
-    public int getSessionId() {
-        return sessionId;
+    public String getDomainId() {
+        return domainId;
     }
 
-    public void setSessionId(int sessionId) {
-        this.sessionId = sessionId;
+    public void setDomainId(String domainId) {
+        this.domainId = domainId;
     }
 
     public String getNodeType() {

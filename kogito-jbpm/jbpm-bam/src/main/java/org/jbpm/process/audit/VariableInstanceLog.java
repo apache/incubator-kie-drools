@@ -49,7 +49,7 @@ public class VariableInstanceLog implements Serializable, AuditEvent {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "log_date")
     private Date date;
-    private Integer sessionId;
+    private String domainId;
     
     VariableInstanceLog() {
     }
@@ -135,12 +135,12 @@ public class VariableInstanceLog implements Serializable, AuditEvent {
 		this.date = date;
 	}
 	
-    public Integer getSessionId() {
-        return sessionId;
+    public String getDomainId() {
+        return domainId;
     }
 
-    public void setSessionId(Integer sessionId) {
-        this.sessionId = sessionId;
+    public void setDomainId(String domainId) {
+        this.domainId = domainId;
     }
 
     public String toString() {
@@ -160,7 +160,7 @@ public class VariableInstanceLog implements Serializable, AuditEvent {
 		result = prime * result + ((oldValue == null) ? 0 : oldValue.hashCode());
 		result = prime * result + ((variableId == null) ? 0 : variableId.hashCode());
 		result = prime * result + ((variableInstanceId == null) ? 0 : variableInstanceId.hashCode());
-		result = prime * result + ((sessionId == null) ? 0 : sessionId.hashCode());
+		result = prime * result + ((domainId == null) ? 0 : domainId.hashCode());
 		return result;
 	}
 
@@ -207,10 +207,10 @@ public class VariableInstanceLog implements Serializable, AuditEvent {
 				return false;
 		} else if (!variableInstanceId.equals(other.variableInstanceId))
 			return false;
-		if (sessionId == null) {
-            if (other.sessionId != null)
+		if (domainId == null) {
+            if (other.domainId != null)
                 return false;
-        } else if (!sessionId.equals(other.sessionId))
+        } else if (!domainId.equals(other.domainId))
             return false;
 		return true;
 	}
