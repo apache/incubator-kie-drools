@@ -57,8 +57,9 @@ public class PlanningValueSorter {
                 Comparable strengthWeight = strengthWeightFactory.createSorterWeight(solution, planningValue);
                 Object previous = planningValueMap.put(strengthWeight, planningValue);
                 if (previous != null) {
-                    throw new IllegalStateException("The planningValueList contains 2 times the same planningValue ("
-                            + previous + ") and (" + planningValue + ").");
+                    throw new IllegalStateException("The planningValueList has 2 planningValues ("
+                            + previous + ") and (" + planningValue
+                            + ") which result in the same strengthWeight (" + strengthWeight + ").");
                 }
             }
             planningValueList.clear();

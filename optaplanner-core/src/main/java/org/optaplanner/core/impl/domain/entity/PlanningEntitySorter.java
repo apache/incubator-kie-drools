@@ -57,8 +57,9 @@ public class PlanningEntitySorter {
                 Comparable difficultyWeight = difficultyWeightFactory.createSorterWeight(solution, planningEntity);
                 Object previous = planningEntityMap.put(difficultyWeight, planningEntity);
                 if (previous != null) {
-                    throw new IllegalStateException("The planningEntityList contains 2 times the same planningEntity ("
-                            + previous + ") and (" + planningEntity + ").");
+                    throw new IllegalStateException("The planningValueList has 2 planningEntities ("
+                            + previous + ") and (" + planningEntity
+                            + ") which result in the same difficultyWeight (" + difficultyWeight + ").");
                 }
             }
             planningEntityList.clear();
