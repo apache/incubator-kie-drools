@@ -128,7 +128,7 @@ public interface SessionEntryPoint {
      * 
      * @return
      */
-    Collection< Object > getObjects();
+    Collection<? extends Object> getObjects();
 
     /**
      * Returns all facts from the current session that are accepted by the given <code>ObjectFilter</code>.
@@ -137,7 +137,7 @@ public interface SessionEntryPoint {
      *  
      * @return
      */
-    Collection< Object > getObjects(ObjectFilter filter);
+    Collection<? extends Object> getObjects(ObjectFilter filter);
 
     /**
      * Returns all <code>FactHandle</code>s from the current session.
