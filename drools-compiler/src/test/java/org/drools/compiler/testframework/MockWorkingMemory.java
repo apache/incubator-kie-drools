@@ -496,12 +496,12 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public Collection< Object > getObjects() {
+    public Collection<? extends Object> getObjects() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public Collection< Object > getObjects(ObjectFilter filter) {
+    public Collection<? extends Object> getObjects(ObjectFilter filter) {
         // TODO Auto-generated method stub
         return null;
     }

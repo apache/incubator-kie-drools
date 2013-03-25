@@ -90,7 +90,7 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         Object [] expectedArr = {expected_1, expected_2};
         List<Object> expectedList = new ArrayList<Object>(Arrays.asList(expectedArr));
         
-        Collection<Object> factList = ksession.getObjects();
+        Collection<? extends Object> factList = ksession.getObjects();
         assertTrue("Expected " + expectedList.size() + " objects but retrieved " + factList.size(), factList.size() == expectedList.size() );
         for( Object fact : factList ) { 
            if( expectedList.contains(fact) ) { 
@@ -121,7 +121,7 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
     
         List<Object> expectedList = new ArrayList<Object>(Arrays.asList(expectedArr));
         
-        Collection<Object> factList = ksession.getObjects();
+        Collection<? extends Object> factList = ksession.getObjects();
         assertTrue("Expected " + expectedList.size() + " objects but retrieved " + factList.size(), factList.size() == expectedList.size() );
         for( Object fact : factList ) { 
            if( expectedList.contains(fact) ) { 
@@ -224,7 +224,7 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
         List<Object> objectList = (List) result.getValue("out_list");
         assertTrue("Retrieved object list is null or empty!", objectList != null && ! objectList.isEmpty());
         
-        Collection<Object> factList = ksession.getObjects();
+        Collection<? extends Object> factList = ksession.getObjects();
         Object [] expectedArr = {expected_1, expected_2};
         List<Object> expectedList = new ArrayList<Object>(Arrays.asList(expectedArr));
         assertTrue("Expected " + expectedList.size() + " objects but retrieved " + factList.size(), factList.size() == expectedList.size() );

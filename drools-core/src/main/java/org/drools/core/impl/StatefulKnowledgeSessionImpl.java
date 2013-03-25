@@ -405,13 +405,13 @@ public class StatefulKnowledgeSessionImpl
                                        ObjectStoreWrapper.FACT_HANDLE );
     }
 
-    public Collection<Object> getObjects() {
+    public Collection<? extends Object> getObjects() {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        null,
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public Collection<Object> getObjects(org.kie.api.runtime.ObjectFilter filter) {
+    public Collection<? extends Object> getObjects(org.kie.api.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.OBJECT );

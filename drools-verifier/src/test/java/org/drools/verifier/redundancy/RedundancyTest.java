@@ -49,8 +49,8 @@ public class RedundancyTest {
         boolean noProblems = verifier.fireAnalysis();
         assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
-        Collection<Object> redundancyList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Redundancy.class));
+        Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
+        Collection<? extends Object> redundancyList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Redundancy.class));
 
         assertEquals(2,
                      subsumptionList.size());
