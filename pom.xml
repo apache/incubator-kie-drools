@@ -53,15 +53,27 @@
     <module>drools-persistence-jpa</module>
     <module>drools-templates</module>
     <module>drools-decisiontables</module>
-    <module>drools-examples</module>
     <module>drools-scorecards</module>
     <module>drools-maven-plugin</module>
     <module>kie-ci</module>
-    <module>drools-examples-api</module>
-    <module>drools-examples-cdi</module>
   </modules>
 
   <profiles>
+    <profile>
+      <id>example</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <defaultGoal>clean package</defaultGoal>
+      </build>
+      <modules>
+        <module>drools-examples</module>
+        <module>drools-examples-api</module>
+        <module>drools-examples-cdi</module>
+      </modules>
+    </profile>
+  
     <profile>
       <id>fullProfile</id>
       <activation>
@@ -70,6 +82,9 @@
         </property>
       </activation>
       <modules>
+        <module>drools-examples</module>
+        <module>drools-examples-api</module>
+        <module>drools-examples-cdi</module>
         <module>drools-docs</module>
         <module>drools-distribution</module>
       </modules>
