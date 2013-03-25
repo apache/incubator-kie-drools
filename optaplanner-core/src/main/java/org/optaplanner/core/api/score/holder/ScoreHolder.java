@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.score.holder;
 
+import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
@@ -29,7 +30,7 @@ import org.optaplanner.core.impl.solution.Solution;
 public interface ScoreHolder {
 
     /**
-     * Extracts the {@link Score}, calculated by the {@link org.drools.core.WorkingMemory} for {@link DroolsScoreDirector}.
+     * Extracts the {@link Score}, calculated by the {@link KieSession} for {@link DroolsScoreDirector}.
      * </p>
      * Should not be called directly, use {@link ScoreDirector#calculateScore()} instead.
      * @return never null, the  {@link Score} of the working {@link Solution}

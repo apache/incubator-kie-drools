@@ -26,12 +26,17 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
+import org.kie.api.io.KieResources;
+import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
@@ -53,9 +58,13 @@ import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalc
 import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreDirectorFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @XStreamAlias("scoreDirectorFactory")
 public class ScoreDirectorFactoryConfig {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected Class<? extends ScoreDefinition> scoreDefinitionClass = null;
     protected ScoreDefinitionType scoreDefinitionType = null;
@@ -67,7 +76,7 @@ public class ScoreDirectorFactoryConfig {
     protected Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass = null;
 
     @XStreamOmitField
-    protected RuleBase ruleBase = null;
+    protected KieBase kieBase = null;
     @XStreamImplicit(itemFieldName = "scoreDrl")
     protected List<String> scoreDrlList = null;
 
@@ -122,12 +131,12 @@ public class ScoreDirectorFactoryConfig {
         this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
     }
 
-    public RuleBase getRuleBase() {
-        return ruleBase;
+    public KieBase getKieBase() {
+        return kieBase;
     }
 
-    public void setRuleBase(RuleBase ruleBase) {
-        this.ruleBase = ruleBase;
+    public void setKieBase(KieBase kieBase) {
+        this.kieBase = kieBase;
     }
 
     public List<String> getScoreDrlList() {
@@ -258,44 +267,48 @@ public class ScoreDirectorFactoryConfig {
 
     private AbstractScoreDirectorFactory buildDroolsScoreDirectorFactory() {
         DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
-        scoreDirectorFactory.setRuleBase(buildRuleBase());
+        scoreDirectorFactory.setKieBase(buildKieBase());
         return scoreDirectorFactory;
     }
 
-    private RuleBase buildRuleBase() {
-        if (ruleBase != null) {
+    private KieBase buildKieBase() {
+        if (kieBase != null) {
             if (!CollectionUtils.isEmpty(scoreDrlList)) {
-                throw new IllegalArgumentException("If ruleBase is not null, the scoreDrlList (" + scoreDrlList
+                throw new IllegalArgumentException("If kieBase is not null, the scoreDrlList (" + scoreDrlList
                         + ") must be empty.");
             }
-            return ruleBase;
+            return kieBase;
         } else {
-            PackageBuilder packageBuilder = new PackageBuilder();
+            KieServices kieServices = KieServices.Factory.get();
+            KieResources kieResources = kieServices.getResources();
+            KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
             for (String scoreDrl : scoreDrlList) {
                 InputStream scoreDrlIn = getClass().getResourceAsStream(scoreDrl);
                 if (scoreDrlIn == null) {
                     throw new IllegalArgumentException("The scoreDrl (" + scoreDrl
                             + ") does not exist as a classpath resource.");
                 }
-                try {
-                    packageBuilder.addPackageFromDrl(new InputStreamReader(scoreDrlIn, "UTF-8"));
-                } catch (DroolsParserException e) {
-                    throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") could not be loaded.", e);
-                } catch (IOException e) {
-                    throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") could not be loaded.", e);
-                } finally {
-                    IOUtils.closeQuietly(scoreDrlIn);
-                }
+                String path = "src/main/resources/optaplanner-kie-namespace/" + scoreDrl;
+                kieFileSystem.write(path, kieResources.newInputStreamResource(scoreDrlIn, "UTF-8"));
+                // TODO use getResource() and newClassPathResource() instead
+                // URL scoreDrlURL = getClass().getResource(scoreDrl);
+                // if (scoreDrlURL == null) ...
+                // kieFileSystem.write(kieResources.newClassPathResource(scoreDrl, "UTF-8"));
             }
-            RuleBaseConfiguration ruleBaseConfiguration = new RuleBaseConfiguration();
-            // ruleBaseConfiguration.setOption(PhreakOption.ENABLED);
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase(ruleBaseConfiguration);
-            if (packageBuilder.hasErrors()) {
+            KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
+            kieBuilder.buildAll();
+            Results results = kieBuilder.getResults();
+            if (results.hasMessages(Message.Level.ERROR)) {
                 throw new IllegalStateException("There are errors in the scoreDrl's:\n"
-                        + packageBuilder.getErrors().toString());
+                        + results.toString());
+            } else if (results.hasMessages(Message.Level.WARNING)) {
+                logger.warn("There are warning in the scoreDrl's:\n"
+                        + results.toString());
             }
-            ruleBase.addPackage(packageBuilder.getPackage());
-            return ruleBase;
+            KieContainer kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
+            KieBase kieBase = kieContainer.getKieBase();
+            // ruleBaseConfiguration.setOption(PhreakOption.ENABLED);
+            return kieBase;
         }
     }
 
@@ -313,8 +326,8 @@ public class ScoreDirectorFactoryConfig {
         if (incrementalScoreCalculatorClass == null) {
             incrementalScoreCalculatorClass = inheritedConfig.getIncrementalScoreCalculatorClass();
         }
-        if (ruleBase == null) {
-            ruleBase = inheritedConfig.getRuleBase();
+        if (kieBase == null) {
+            kieBase = inheritedConfig.getKieBase();
         }
         scoreDrlList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlList, inheritedConfig.getScoreDrlList());

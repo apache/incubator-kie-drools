@@ -17,15 +17,13 @@
 package org.optaplanner.core.impl.score.director.drools;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.drools.core.ClassObjectFilter;
-import org.drools.core.FactHandle;
-import org.drools.core.RuleBase;
-import org.drools.core.StatefulSession;
-import org.drools.core.WorkingMemory;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.constraint.ConstraintOccurrence;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
@@ -42,22 +40,19 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
 
     public static final String GLOBAL_SCORE_HOLDER_KEY = "scoreHolder";
 
-    protected StatefulSession workingMemory;
+    protected KieSession kieSession;
     protected ScoreHolder workingScoreHolder;
 
     public DroolsScoreDirector(DroolsScoreDirectorFactory scoreDirectorFactory) {
         super(scoreDirectorFactory);
     }
 
-    protected RuleBase getRuleBase() {
-        return scoreDirectorFactory.getRuleBase();
+    protected KieBase getKieBase() {
+        return scoreDirectorFactory.getKieBase();
     }
 
-    /**
-     * @return never null
-     */
-    public WorkingMemory getWorkingMemory() {
-        return workingMemory;
+    public KieSession getKieSession() {
+        return kieSession;
     }
 
     // ************************************************************************
@@ -67,20 +62,20 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     @Override
     public void setWorkingSolution(Solution workingSolution) {
         super.setWorkingSolution(workingSolution);
-        resetWorkingMemory();
+        resetKieSession();
     }
 
-    private void resetWorkingMemory() {
-        if (workingMemory != null) {
-            workingMemory.dispose();
+    private void resetKieSession() {
+        if (kieSession != null) {
+            kieSession.dispose();
         }
-        workingMemory = getRuleBase().newStatefulSession();
+        kieSession = getKieBase().newKieSession();
         workingScoreHolder = getScoreDefinition().buildScoreHolder();
-        workingMemory.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
+        kieSession.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
         // TODO Adjust when uninitialized entities from getWorkingFacts get added automatically too (and call afterEntityAdded)
         Collection<Object> workingFacts = getWorkingFacts();
         for (Object fact : workingFacts) {
-            workingMemory.insert(fact);
+            kieSession.insert(fact);
         }
     }
 
@@ -100,7 +95,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
             throw new IllegalArgumentException("The entity (" + entity + ") of class (" + entity.getClass()
                     + ") is not a configured @PlanningEntity.");
         }
-        workingMemory.insert(entity);
+        kieSession.insert(entity);
     }
 
     // public void beforeAllVariablesChanged(Object entity) // Do nothing
@@ -108,11 +103,11 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     @Override
     public void afterAllVariablesChanged(Object entity) {
         super.afterAllVariablesChanged(entity);
-        FactHandle factHandle = workingMemory.getFactHandle(entity);
+        FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity (" + entity + ") was never added to this ScoreDirector.");
         }
-        workingMemory.update(factHandle, entity);
+        kieSession.update(factHandle, entity);
     }
 
     // public void beforeVariableChanged(Object entity, String variableName) // Do nothing
@@ -120,11 +115,11 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     @Override
     public void afterVariableChanged(Object entity, String variableName) {
         super.afterVariableChanged(entity, variableName);
-        FactHandle factHandle = workingMemory.getFactHandle(entity);
+        FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity (" + entity + ") was never added to this ScoreDirector.");
         }
-        workingMemory.update(factHandle, entity);
+        kieSession.update(factHandle, entity);
     }
 
     // public void beforeEntityRemoved(Object entity) // Do nothing
@@ -132,11 +127,11 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     @Override
     public void afterEntityRemoved(Object entity) {
         super.afterEntityRemoved(entity);
-        FactHandle factHandle = workingMemory.getFactHandle(entity);
+        FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity (" + entity + ") was never added to this ScoreDirector.");
         }
-        workingMemory.retract(factHandle);
+        kieSession.retract(factHandle);
     }
 
     // public void beforeProblemFactAdded(Object problemFact) // Do nothing
@@ -144,7 +139,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     @Override
     public void afterProblemFactAdded(Object problemFact) {
         super.afterProblemFactAdded(problemFact);
-        workingMemory.insert(problemFact);
+        kieSession.insert(problemFact);
     }
 
     // public void beforeProblemFactChanged(Object problemFact) // Do nothing
@@ -152,12 +147,12 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     @Override
     public void afterProblemFactChanged(Object problemFact) {
         super.afterProblemFactChanged(problemFact);
-        FactHandle factHandle = workingMemory.getFactHandle(problemFact);
+        FactHandle factHandle = kieSession.getFactHandle(problemFact);
         if (factHandle == null) {
             throw new IllegalArgumentException("The problemFact (" + problemFact
                     + ") was never added to this ScoreDirector.");
         }
-        workingMemory.update(factHandle, problemFact);
+        kieSession.update(factHandle, problemFact);
     }
 
     // public void beforeProblemFactRemoved(Object problemFact) // Do nothing
@@ -165,16 +160,16 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     @Override
     public void afterProblemFactRemoved(Object problemFact) {
         super.afterProblemFactRemoved(problemFact);
-        FactHandle factHandle = workingMemory.getFactHandle(problemFact);
+        FactHandle factHandle = kieSession.getFactHandle(problemFact);
         if (factHandle == null) {
             throw new IllegalArgumentException("The problemFact (" + problemFact
                     + ") was never added to this ScoreDirector.");
         }
-        workingMemory.retract(factHandle);
+        kieSession.retract(factHandle);
     }
 
     public Score calculateScore() {
-        workingMemory.fireAllRules();
+        kieSession.fireAllRules();
         Score score = workingScoreHolder.extractScore();
         setCalculatedScore(score);
         return score;
@@ -182,7 +177,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
 
     @Override
     public AbstractScoreDirector clone() {
-        // TODO experiment with serializing the WorkingMemory to clone it and its entities but not its other facts.
+        // TODO experiment with serializing the KieSession to clone it and its entities but not its other facts.
         // See drools-compiler's test SerializationHelper.getSerialisedStatefulKnowledgeSession(...)
         // and use an identity FactFactory that:
         // - returns the reference for a non-@PlanningEntity fact
@@ -192,25 +187,19 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     }
 
     protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
+        Set<ConstraintOccurrence> workingConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>(
+                (Collection<ConstraintOccurrence>) kieSession.getObjects(
+                        new ClassObjectFilter(ConstraintOccurrence.class)));
         if (!(uncorruptedScoreDirector instanceof DroolsScoreDirector)) {
             return "Unable to analyze: the uncorruptedScoreDirector class (" + uncorruptedScoreDirector.getClass()
                     + ") is not an instance of the scoreDirector class (" + DroolsScoreDirector.class + ").";
         }
         DroolsScoreDirector uncorruptedDroolsScoreDirector = (DroolsScoreDirector) uncorruptedScoreDirector;
-        Set<ConstraintOccurrence> workingConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>();
-        Iterator<ConstraintOccurrence> workingIt = (Iterator<ConstraintOccurrence>)
-                workingMemory.iterateObjects(
-                new ClassObjectFilter(ConstraintOccurrence.class));
-        while (workingIt.hasNext()) {
-            workingConstraintOccurrenceSet.add(workingIt.next());
-        }
-        Set<ConstraintOccurrence> uncorruptedConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>();
-        Iterator<ConstraintOccurrence> uncorruptedIt = (Iterator<ConstraintOccurrence>)
-                uncorruptedDroolsScoreDirector.getWorkingMemory().iterateObjects(
-                        new ClassObjectFilter(ConstraintOccurrence.class));
-        while (uncorruptedIt.hasNext()) {
-            uncorruptedConstraintOccurrenceSet.add(uncorruptedIt.next());
-        };
+        KieSession uncorruptedKieSession = uncorruptedDroolsScoreDirector.getKieSession();
+        Set<ConstraintOccurrence> uncorruptedConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>(
+                (Collection<ConstraintOccurrence>) uncorruptedKieSession.getObjects(
+                        new ClassObjectFilter(ConstraintOccurrence.class)));
+
         Set<Object> excessSet = new LinkedHashSet<Object>(workingConstraintOccurrenceSet);
         excessSet.removeAll(uncorruptedConstraintOccurrenceSet);
         Set<Object> lackingSet = new LinkedHashSet<Object>(uncorruptedConstraintOccurrenceSet);
@@ -219,7 +208,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         int CONSTRAINT_OCCURRENCE_DISPLAY_LIMIT = 10;
         StringBuilder analysis = new StringBuilder();
         if (!excessSet.isEmpty()) {
-            analysis.append("  The workingMemory has ").append(excessSet.size())
+            analysis.append("  The kieSession has ").append(excessSet.size())
                     .append(" ConstraintOccurrence(s) in excess:\n");
             int count = 0;
             for (Object o : excessSet) {
@@ -233,7 +222,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
             }
         }
         if (!lackingSet.isEmpty()) {
-            analysis.append("  The workingMemory has ").append(lackingSet.size())
+            analysis.append("  The kieSession has ").append(lackingSet.size())
                     .append(" ConstraintOccurrence(s) lacking:\n");
             int count = 0;
             for (Object o : lackingSet) {
@@ -261,9 +250,9 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
 
     @Override
     public void dispose() {
-        if (workingMemory != null) {
-            workingMemory.dispose();
-            workingMemory = null;
+        if (kieSession != null) {
+            kieSession.dispose();
+            kieSession = null;
         }
     }
 

@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.solution;
 
 import java.util.Collection;
 
-import org.drools.core.WorkingMemory;
+import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
@@ -50,12 +50,12 @@ public interface Solution<S extends Score> {
 
     /**
      * Called by the {@link DroolsScoreDirector} when the {@link Solution} needs to be inserted
-     * into an empty {@link WorkingMemory}.
+     * into an empty {@link KieSession}.
      * These facts can be used by the score rules.
      * They don't change during planning (except through {@link ProblemFactChange} events).
      * <p/>
      * Do not include the planning entities as problem facts:
-     * they are automatically inserted into the {@link WorkingMemory} if and only if they are initialized.
+     * they are automatically inserted into the {@link KieSession} if and only if they are initialized.
      * When they are initialized later, they are also automatically inserted.
      * @return never null (although an empty collection is allowed),
      *         all the facts of this solution except for the planning entities

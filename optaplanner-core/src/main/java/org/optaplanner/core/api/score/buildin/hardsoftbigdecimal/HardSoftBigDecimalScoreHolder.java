@@ -53,7 +53,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     public void addHardConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         hardScore = hardScore.add(weight);
         registerUndoListener(kcontext, new ActivationUnMatchListener() {
-            public void unMatch(Session workingMemory, Match activation) {
+            public void unMatch(Session session, Match activation) {
                 hardScore = hardScore.subtract(weight);
             }
         });
@@ -62,7 +62,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     public void addSoftConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         softScore = softScore.add(weight);
         registerUndoListener(kcontext, new ActivationUnMatchListener() {
-            public void unMatch(Session workingMemory, Match activation) {
+            public void unMatch(Session session, Match activation) {
                 softScore = softScore.subtract(weight);
             }
         });

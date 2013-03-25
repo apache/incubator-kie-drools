@@ -2991,3 +2991,43 @@ After in *.java and *.drl:
     ...
 Note: ScoreDefinition has not been promoted (yet), even though you might use that in @XStreamConverter.
 Note: ConstraintOccurrence hasn't been promoted yet, even though you use it in the drl files.
+
+[README] Planner has upgraded from the drools 4 RuleBase API to the drools 6 KieBase API.
+It has skipped the Drools 5 KnowledgeBase API.
+
+[MAJOR] ScoreDirectorFactoryConfig's method setRuleBase() has been replaced by setKieBase()
+Before in *.java:
+    RuleBase ruleBase = ...;
+    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setRuleBase(ruleBase);
+After in *.java:
+    KieBase kieBase = ...;
+    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);
+
+[MINOR] If you used the hack from the examples to extract the ConstraintOccurrences from the guiScoreDirectory.
+Before in *.java:
+    import org.drools.core.ClassObjectFilter;
+    import org.drools.core.WorkingMemory;
+    ...
+            WorkingMemory workingMemory = ((DroolsScoreDirector) guiScoreDirector).getWorkingMemory();
+            if (workingMemory == null) {
+                return Collections.emptyList();
+            }
+            Iterator<ConstraintOccurrence> it = (Iterator<ConstraintOccurrence>) workingMemory.iterateObjects(
+                    new ClassObjectFilter(ConstraintOccurrence.class));
+            while (it.hasNext()) {
+                ConstraintOccurrence constraintOccurrence = it.next();
+                ...
+            }
+After in *.java:
+    import org.kie.api.runtime.ClassObjectFilter;
+    import org.kie.api.runtime.KieSession;
+    ...
+            KieSession kieSession = ((DroolsScoreDirector) guiScoreDirector).getKieSession();
+            if (kieSession == null) {
+                return Collections.emptyList();
+            }
+            Collection<ConstraintOccurrence> constraintOccurrences = (Collection<ConstraintOccurrence>)
+                    kieSession.getObjects(new ClassObjectFilter(ConstraintOccurrence.class));
+            for (ConstraintOccurrence constraintOccurrence : constraintOccurrences) {
+                ...
+            }

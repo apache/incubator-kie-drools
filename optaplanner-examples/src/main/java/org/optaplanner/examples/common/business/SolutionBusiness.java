@@ -20,15 +20,15 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.swing.SwingUtilities;
 
-import org.drools.core.ClassObjectFilter;
-import org.drools.core.WorkingMemory;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
@@ -213,14 +213,13 @@ public class SolutionBusiness {
             return null;
         }
         Map<String, ScoreDetail> scoreDetailMap = new HashMap<String, ScoreDetail>();
-        WorkingMemory workingMemory = ((DroolsScoreDirector) guiScoreDirector).getWorkingMemory();
-        if (workingMemory == null) {
+        KieSession kieSession = ((DroolsScoreDirector) guiScoreDirector).getKieSession();
+        if (kieSession == null) {
             return Collections.emptyList();
         }
-        Iterator<ConstraintOccurrence> it = (Iterator<ConstraintOccurrence>) workingMemory.iterateObjects(
-                new ClassObjectFilter(ConstraintOccurrence.class));
-        while (it.hasNext()) {
-            ConstraintOccurrence constraintOccurrence = it.next();
+        Collection<ConstraintOccurrence> constraintOccurrences = (Collection<ConstraintOccurrence>)
+                kieSession.getObjects(new ClassObjectFilter(ConstraintOccurrence.class));
+        for (ConstraintOccurrence constraintOccurrence : constraintOccurrences) {
             ScoreDetail scoreDetail = scoreDetailMap.get(constraintOccurrence.getRuleId());
             if (scoreDetail == null) {
                 scoreDetail = new ScoreDetail(constraintOccurrence.getRuleId(), constraintOccurrence.getConstraintType());

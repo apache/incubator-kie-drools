@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.score.director.drools;
 
-import org.drools.core.RuleBase;
+import org.kie.api.KieBase;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
@@ -27,14 +27,14 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
  */
 public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
 
-    protected RuleBase ruleBase;
+    protected KieBase kieBase;
 
-    public RuleBase getRuleBase() {
-        return ruleBase;
+    public KieBase getKieBase() {
+        return kieBase;
     }
 
-    public void setRuleBase(RuleBase ruleBase) {
-        this.ruleBase = ruleBase;
+    public void setKieBase(KieBase kieBase) {
+        this.kieBase = kieBase;
     }
 
     // ************************************************************************

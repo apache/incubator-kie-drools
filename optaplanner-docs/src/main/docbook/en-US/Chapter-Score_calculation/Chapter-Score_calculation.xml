@@ -786,13 +786,13 @@
         </section>
 
         <section>
-          <title>A RuleBase (possibly defined by Guvnor)</title>
+          <title>A KieBase (possibly defined by Guvnor)</title>
 
-          <para>If you prefer to build the <literal>RuleBase</literal> yourself or if you're combining Planner with
-          Guvnor, you can set the <literal>RuleBase</literal> on the <literal>SolverFactory</literal> before building
+          <para>If you prefer to build the <literal>KieBase</literal> yourself or if you're combining Planner with
+          Guvnor, you can set the <literal>KieBase</literal> on the <literal>SolverFactory</literal> before building
           the <literal>Solver</literal>:</para>
 
-          <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setRuleBase(ruleBase);</programlisting>
+          <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);</programlisting>
         </section>
       </section>
 
@@ -836,7 +836,7 @@ end</programlisting>
       <section>
         <title>Aggregating the score rules into the <literal>Score</literal></title>
 
-        <para>A <literal>ScoreHolder</literal> instance is asserted into the <literal>WorkingMemory</literal> as a
+        <para>A <literal>ScoreHolder</literal> instance is asserted into the <literal>KieSession</literal> as a
         global called <literal>scoreHolder</literal>. Your score rules need to (directly or indirectly) update that
         instance. Usually you'll make a single rule as an aggregation of the other rules to update the score:</para>
 

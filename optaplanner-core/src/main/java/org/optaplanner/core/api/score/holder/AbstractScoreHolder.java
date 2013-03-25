@@ -31,8 +31,8 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     protected void registerUndoListener(RuleContext kcontext, ActivationUnMatchListener undoListener) {
         AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         if (agendaItem.getActivationUnMatchListener() != null) {
-            Session workingMemory = null; // Should not be used by the undoListener anyway
-            agendaItem.getActivationUnMatchListener().unMatch(workingMemory, agendaItem);
+            Session session = null; // Should not be used by the undoListener anyway
+            agendaItem.getActivationUnMatchListener().unMatch(session, agendaItem);
         }
         agendaItem.setActivationUnMatchListener(undoListener);
     }

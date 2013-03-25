@@ -205,7 +205,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         }
         if (minimumCacheType == SelectionCacheType.SOLVER) {
             // TODO Solver cached entities are not compatible with DroolsScoreCalculator
-            // because between phases the entities get cloned and the WorkingMemory contains those clones afterwards
+            // because between phases the entities get cloned and the KieSession contains those clones afterwards
             // https://issues.jboss.org/browse/JBRULES-3557
             throw new IllegalArgumentException("The minimumCacheType (" + minimumCacheType
                     + ") is not yet supported. Please use " + SelectionCacheType.PHASE + " instead.");
