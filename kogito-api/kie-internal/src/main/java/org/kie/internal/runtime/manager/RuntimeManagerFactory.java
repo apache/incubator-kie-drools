@@ -24,7 +24,11 @@ public interface RuntimeManagerFactory {
     
     public RuntimeManager newPerRequestRuntimeManager(RuntimeEnvironment environment);
     
+    public RuntimeManager newPerRequestRuntimeManager(RuntimeEnvironment environment, String identifier);
+    
     public RuntimeManager newPerProcessInstanceRuntimeManager(RuntimeEnvironment environment);
+    
+    public RuntimeManager newPerProcessInstanceRuntimeManager(RuntimeEnvironment environment, String identifier);
     
     /**
      * A Factory for this RuntimeManagerFactory
