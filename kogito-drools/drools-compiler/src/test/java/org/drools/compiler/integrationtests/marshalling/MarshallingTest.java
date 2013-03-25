@@ -3079,7 +3079,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertEquals( new Integer( 4 ),
                       list.get( 0 ) );
 
-        Collection<Object> facts = ksession.getObjects();
+        Collection<? extends Object> facts = ksession.getObjects();
         System.out.println( new ArrayList( facts ) );
         assertEquals( 2,
                       facts.size() );

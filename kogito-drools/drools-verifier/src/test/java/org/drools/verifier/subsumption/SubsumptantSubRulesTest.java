@@ -54,7 +54,7 @@ public class SubsumptantSubRulesTest {
         boolean noProblems = verifier.fireAnalysis();
         assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
+        Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
         int count = 0;
         for (Object object : subsumptionList) {

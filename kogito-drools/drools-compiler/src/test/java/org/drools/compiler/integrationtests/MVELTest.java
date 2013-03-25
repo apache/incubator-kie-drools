@@ -311,7 +311,7 @@ public class MVELTest extends CommonTestMethodBase {
         int result = ksession.fireAllRules();
         
         assertEquals(1, result);
-        Collection<Object> insertedObjects = ksession.getObjects();
+        Collection<? extends Object> insertedObjects = ksession.getObjects();
         assertEquals(3, insertedObjects.size());
     }
     

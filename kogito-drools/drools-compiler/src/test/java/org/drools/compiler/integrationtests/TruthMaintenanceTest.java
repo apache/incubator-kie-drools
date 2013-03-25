@@ -1120,7 +1120,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         Father abraham = new Father("abraham");
         Father bart = new Father("bart");
-        Collection<Object> youngestFathers;
+        Collection<? extends Object> youngestFathers;
 
         bart.setFather(abraham);
         FactHandle abrahamHandle = kSession.insert(abraham);

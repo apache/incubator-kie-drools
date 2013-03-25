@@ -468,7 +468,7 @@ public class StreamsTest extends CommonTestMethodBase {
                times(2)).objectInserted(any(org.kie.api.event.rule.ObjectInsertedEvent.class));
         assertThat(ksession.getObjects().size(),
                    equalTo(2));
-        assertThat(ksession.getObjects(),
+        assertThat((Collection<Object>) ksession.getObjects(),
                    hasItems((Object) st1,
                             st2));
 
@@ -519,7 +519,7 @@ public class StreamsTest extends CommonTestMethodBase {
                times(2)).matchCreated(any(MatchCreatedEvent.class));
         assertThat(ksession.getObjects().size(),
                    equalTo(2));
-        assertThat(ksession.getObjects(),
+        assertThat((Collection<Object>) ksession.getObjects(),
                    hasItems((Object) st1,
                             st2));
 

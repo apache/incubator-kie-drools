@@ -50,7 +50,7 @@ public class OverlappingRestrictionsTest extends TestBaseOld {
         boolean noProblems = verifier.fireAnalysis();
         assertTrue(noProblems);
 
-        Collection<Object> overlaps = ((VerifierImpl) verifier)
+        Collection<? extends Object> overlaps = ((VerifierImpl) verifier)
                 .getKnowledgeSession().getObjects(
                         new ClassObjectFilter(Overlap.class));
 

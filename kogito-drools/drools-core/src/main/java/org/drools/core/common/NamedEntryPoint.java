@@ -748,14 +748,14 @@ public class NamedEntryPoint
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<Object> getObjects() {
+    public Collection<? extends Object> getObjects() {
         return new ObjectStoreWrapper( this.objectStore,
                                        null,
                                        ObjectStoreWrapper.OBJECT );
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<Object> getObjects(org.kie.api.runtime.ObjectFilter filter) {
+    public Collection<? extends Object> getObjects(org.kie.api.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( this.objectStore,
                                        filter,
                                        ObjectStoreWrapper.OBJECT );

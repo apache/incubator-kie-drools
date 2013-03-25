@@ -61,7 +61,7 @@ class VerifierDataKnowledgeSession
     }
 
     public Collection<ObjectType> getObjectTypesByRuleName(String ruleName) {
-        Collection<Object> list = kSession.getObjects( new ClassObjectFilter( Integer.class ) );
+        Collection<? extends Object> list = kSession.getObjects( new ClassObjectFilter( Integer.class ) );
         return new ArrayList( list );
     }
 
@@ -80,7 +80,7 @@ class VerifierDataKnowledgeSession
     }
 
     public Collection<VerifierComponent> getAll() {
-        Collection<Object> list = kSession.getObjects();
+        Collection<? extends Object> list = kSession.getObjects();
 
         return new ArrayList( list );
     }

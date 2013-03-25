@@ -52,7 +52,7 @@ public class SubsumptantRestrictionsTest {
         boolean noProblems = verifier.fireAnalysis();
         assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
+        Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
         assertEquals(9,
                      subsumptionList.size());
@@ -80,7 +80,7 @@ public class SubsumptantRestrictionsTest {
         boolean noProblems = verifier.fireAnalysis();
         assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
+        Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
         assertEquals(9,
                      subsumptionList.size());
@@ -108,7 +108,7 @@ public class SubsumptantRestrictionsTest {
         boolean noProblems = verifier.fireAnalysis();
         assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
+        Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
         assertEquals(6,
                      subsumptionList.size());
@@ -136,7 +136,7 @@ public class SubsumptantRestrictionsTest {
         boolean noProblems = verifier.fireAnalysis();
         assertTrue(noProblems);
 
-        Collection<Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
+        Collection<? extends Object> subsumptionList = ((VerifierImpl) verifier).getKnowledgeSession().getObjects(new ClassObjectFilter(Subsumption.class));
 
         //        for ( Object object : subsumptionList ) {
         //            System.out.println( object );

@@ -39,11 +39,11 @@ public class DisconnectedWorkingMemoryEntryPoint implements SessionEntryPoint, S
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 
-    public Collection<Object> getObjects() {
+    public Collection<? extends Object> getObjects() {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 
-    public Collection<Object> getObjects(ObjectFilter filter) {
+    public Collection<? extends Object> getObjects(ObjectFilter filter) {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 

@@ -268,7 +268,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         ks.fireAllRules();
 
-        Collection<Object> wm = ks.getObjects();
+        Collection<? extends Object> wm = ks.getObjects();
 
         ks.insert( "die" );
         ks.fireAllRules();
