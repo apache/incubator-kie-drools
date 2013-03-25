@@ -174,7 +174,7 @@ public class DomainManagerServiceImpl implements DomainManagerService {
 
                     loadedProcesses.removeAll(existingProcesses);
                     if (!loadedProcesses.isEmpty()) {  
-                        RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment);
+                        RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment, d.getName());
                         org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
 
                         if (domainsMap.get(d.getName()) == null) {

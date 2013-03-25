@@ -232,7 +232,7 @@ public class DomainServicesTest {
                 }
                 // Parse and get the Metadata for all the assets
 
-                RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment);
+                RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment, d.getName());
                 org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
                 assertNotNull(runtime);
                 if (domainsMap.get(d.getName()) == null) {

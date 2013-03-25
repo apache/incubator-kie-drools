@@ -99,6 +99,7 @@ public class PerProcessInstanceRuntimeManagerTest {
         runtime2 = manager.getRuntime(ProcessInstanceIdContext.get(pi2.getId()));
         ksession2 = runtime2.getKieSession();
         assertEquals(ksession2Id, ksession2.getId());
+        manager.close();
     }
 
     
@@ -162,6 +163,7 @@ public class PerProcessInstanceRuntimeManagerTest {
         } catch (RuntimeException e) {
             
         }
+        manager.close();
     }
     
     @Test
@@ -228,5 +230,6 @@ public class PerProcessInstanceRuntimeManagerTest {
         } catch (RuntimeException e) {
             
         }
+        manager.close();
     }
 }

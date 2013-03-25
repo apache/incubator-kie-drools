@@ -3,6 +3,7 @@ package org.jbpm.runtime.manager.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
@@ -17,10 +18,18 @@ import org.kie.internal.runtime.manager.RuntimeManager;
 
 public abstract class AbstractRuntimeManager implements RuntimeManager {
 
+    protected static List<String> activeSingletons = new CopyOnWriteArrayList<String>();
     protected RuntimeEnvironment environment;
     
-    public AbstractRuntimeManager(RuntimeEnvironment environment) {
+    protected String identifier;
+    
+    public AbstractRuntimeManager(RuntimeEnvironment environment, String identifier) {
         this.environment = environment;
+        this.identifier = identifier;
+        if (activeSingletons.contains(identifier)) {
+            throw new IllegalStateException("RuntimeManager with id " + identifier + " is already active");
+        }
+        activeSingletons.add(identifier);
     }
     
     protected void registerItems(Runtime runtime) {
@@ -62,6 +71,7 @@ public abstract class AbstractRuntimeManager implements RuntimeManager {
     @Override
     public void close() {
         environment.close();
+        activeSingletons.remove(identifier);
     }
 
     public RuntimeEnvironment getEnvironment() {
@@ -71,7 +81,15 @@ public abstract class AbstractRuntimeManager implements RuntimeManager {
     public void setEnvironment(RuntimeEnvironment environment) {
         this.environment = environment;
     }
-    
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
     
 
 }

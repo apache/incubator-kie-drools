@@ -2,8 +2,6 @@ package org.jbpm.runtime.manager.impl;
 
 import java.util.Properties;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
 import org.kie.api.KieBase;
@@ -94,13 +92,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment {
     
     @Override
     public void close() {
-        if (usePersistence()) {
-            EntityManagerFactory emf = (EntityManagerFactory) environment.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
-            if (emf != null && emf.isOpen()) {
-                emf.close();
-            }
-        }
-        
+
     }
 
     protected void addIfPresent(String name, Environment copy) {

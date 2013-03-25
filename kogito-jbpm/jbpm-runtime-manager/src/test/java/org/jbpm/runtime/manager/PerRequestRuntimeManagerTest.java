@@ -84,6 +84,7 @@ public class PerRequestRuntimeManagerTest {
         } catch (IllegalStateException e) {
             
         }
+        manager.close();
     }
     
     @Test
@@ -123,6 +124,7 @@ public class PerRequestRuntimeManagerTest {
         } catch (IllegalStateException e) {
             
         }
+        manager.close();
     }
     
     @Test
@@ -155,5 +157,6 @@ public class PerRequestRuntimeManagerTest {
         } catch (IllegalStateException e) {
             
         }
+        manager.close();
     }
 }

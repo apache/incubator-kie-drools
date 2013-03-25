@@ -28,21 +28,19 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     private String identifier;
     
     public SingletonRuntimeManager() {
-        super(null);
+        super(null, null);
         // no-op just for cdi, spring and other frameworks
     }
     
     public SingletonRuntimeManager(RuntimeEnvironment environment, SessionFactory factory, TaskServiceFactory taskServiceFactory, String identifier) {
-        super(environment);
+        super(environment, identifier);
         this.factory = factory;
         this.taskServiceFactory = taskServiceFactory;
         this.identifier = identifier;
     }
     @PostConstruct
     public void init() {
-        if (activeSingletons.contains(identifier)) {
-            throw new IllegalStateException("SingletonManager with id " + identifier + " is already active");
-        }
+
         // TODO should we proxy/wrap the ksession so we capture dispose.destroy method calls?
         String location = getLocation();
         Integer knownSessionId = getPersistedSessionId(location, identifier);
@@ -60,7 +58,6 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         }
         ((RuntimeImpl) singleton).setManager(this);
         registerItems(this.singleton);
-        activeSingletons.add(identifier);
     }
 
     @SuppressWarnings("rawtypes")
@@ -77,13 +74,13 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void close() {
+        super.close();
         // dispose singleton session only when manager is closing
         if (this.singleton instanceof Disposable) {
             ((Disposable) this.singleton).dispose();
         }
         factory.close();
         this.singleton = null;   
-        activeSingletons.remove(identifier);
     }
     
     /**

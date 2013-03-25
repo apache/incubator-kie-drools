@@ -22,12 +22,8 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     @Produces
     @Singleton
     public RuntimeManager newSingletonRuntimeManager(@Singleton RuntimeEnvironment environment) {
-        SessionFactory factory = getSessionFactory(environment);
-        TaskServiceFactory taskServiceFactory = new LocalTaskServiceFactory(environment);
         
-        RuntimeManager manager = new SingletonRuntimeManager(environment, factory, taskServiceFactory, "default");
-        ((SingletonRuntimeManager) manager).init();
-        return manager;
+        return newSingletonRuntimeManager(environment, "default-singleton");
     }
     @Override
     public RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment, String identifier) {
@@ -36,6 +32,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
         
         RuntimeManager manager = new SingletonRuntimeManager(environment, factory, taskServiceFactory, identifier);
         ((SingletonRuntimeManager) manager).init();
+
         return manager;
     }
 
@@ -43,10 +40,15 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     @Produces
     @PerRequest
     public RuntimeManager newPerRequestRuntimeManager(@PerRequest RuntimeEnvironment environment) {
+
+        return newPerRequestRuntimeManager(environment, "default-per-request");
+    }
+    
+    public RuntimeManager newPerRequestRuntimeManager(RuntimeEnvironment environment, String identifier) {
         SessionFactory factory = getSessionFactory(environment);
         TaskServiceFactory taskServiceFactory = new LocalTaskServiceFactory(environment);
 
-        RuntimeManager manager = new PerRequestRuntimeManager(environment, factory, taskServiceFactory);
+        RuntimeManager manager = new PerRequestRuntimeManager(environment, factory, taskServiceFactory, identifier);
         return manager;
     }
 
@@ -54,10 +56,15 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     @Produces
     @PerProcessInstance
     public RuntimeManager newPerProcessInstanceRuntimeManager(@PerProcessInstance RuntimeEnvironment environment) {
+
+        return newPerProcessInstanceRuntimeManager(environment, "default-per-pinstance");
+    }
+    
+    public RuntimeManager newPerProcessInstanceRuntimeManager(RuntimeEnvironment environment, String identifier) {
         SessionFactory factory = getSessionFactory(environment);
         TaskServiceFactory taskServiceFactory = new LocalTaskServiceFactory(environment);
 
-        RuntimeManager manager = new PerProcessInstanceRuntimeManager(environment, factory, taskServiceFactory);
+        RuntimeManager manager = new PerProcessInstanceRuntimeManager(environment, factory, taskServiceFactory, identifier);
         return manager;
     }
     

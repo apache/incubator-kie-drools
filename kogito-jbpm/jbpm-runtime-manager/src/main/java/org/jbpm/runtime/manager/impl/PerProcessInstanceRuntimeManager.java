@@ -26,8 +26,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     
     private Mapper mapper;
     
-    public PerProcessInstanceRuntimeManager(RuntimeEnvironment environment, SessionFactory factory, TaskServiceFactory taskServiceFactory) {
-        super(environment);
+    public PerProcessInstanceRuntimeManager(RuntimeEnvironment environment, SessionFactory factory, TaskServiceFactory taskServiceFactory, String identifier) {
+        super(environment, identifier);
         this.factory = factory;
         this.taskServiceFactory = taskServiceFactory;
         this.mapper = environment.getMapper();
@@ -74,6 +74,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void close() {
+        super.close();
         factory.close();
     }
 

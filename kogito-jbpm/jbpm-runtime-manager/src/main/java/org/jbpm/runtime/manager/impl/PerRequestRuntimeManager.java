@@ -14,8 +14,8 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     
     private static ThreadLocal<org.kie.internal.runtime.manager.Runtime> local = new ThreadLocal<org.kie.internal.runtime.manager.Runtime>();
     
-    public PerRequestRuntimeManager(RuntimeEnvironment environment, SessionFactory factory, TaskServiceFactory taskServiceFactory) {
-        super(environment);
+    public PerRequestRuntimeManager(RuntimeEnvironment environment, SessionFactory factory, TaskServiceFactory taskServiceFactory, String identifier) {
+        super(environment, identifier);
         this.factory = factory;
         this.taskServiceFactory = taskServiceFactory;
     }
@@ -48,6 +48,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void close() {
+        super.close();
         factory.close();
     }
 
