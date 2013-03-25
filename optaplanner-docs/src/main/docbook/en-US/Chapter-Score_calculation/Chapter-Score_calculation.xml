@@ -1074,8 +1074,8 @@ end</programlisting>
         </listitem>
 
         <listitem>
-          <para>For optimal performance, use at least java 1.6. We have seen performance increases of 30% by switching
-          from java 1.5 to 1.6.</para>
+          <para>For optimal performance, use the latest Java version. For example, in the past we have seen performance
+          increases of 30% by switching from java 1.5 to 1.6.</para>
         </listitem>
 
         <listitem>
