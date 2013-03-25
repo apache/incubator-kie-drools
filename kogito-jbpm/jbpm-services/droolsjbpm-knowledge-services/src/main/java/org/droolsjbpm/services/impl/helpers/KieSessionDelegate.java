@@ -314,12 +314,12 @@ public class KieSessionDelegate implements KieSession{
     }
 
     @Override
-    public Collection<Object> getObjects() {
+    public Collection<? extends Object> getObjects() {
         return ksession.getObjects();
     }
 
     @Override
-    public Collection<Object> getObjects(ObjectFilter of) {
+    public Collection<? extends Object> getObjects(ObjectFilter of) {
         return ksession.getObjects(of);
     }
 
