@@ -47,7 +47,7 @@ public interface KieBaseModel {
 
     /**
      * Returns the ordered list of all the package patterns used to define the set of resources that have
-     * to be included in the KieBase. If this list is empty, "*" is assumed by defualt, meaning that
+     * to be included in the KieBase. If this list is empty, "*" is assumed by default, meaning that
      * all the resources stored under a folder with the same name of this KieBaseModel will be
      * included in the compiled KieBase regardless of the package they belong to.
      *
@@ -111,7 +111,7 @@ public interface KieBaseModel {
     /**
      * Sets the KieBase generated from this KieBaseModel as the default one,
      * i.e. the one that can be loaded from the KieContainer without having to pass its name.
-     * Note that only one defualt KieBaseModel is allowed in a given KieContainer so if more than
+     * Note that only one default KieBaseModel is allowed in a given KieContainer so if more than
      * one is found (maybe because a given KieContainer includes many KieModules) a warning is emitted
      * and all the defaults are disabled so all the KieBases will be accessible only by name
      */
