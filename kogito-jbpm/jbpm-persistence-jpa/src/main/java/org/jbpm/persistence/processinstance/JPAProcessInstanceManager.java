@@ -12,7 +12,10 @@ import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.kie.api.definition.process.Process;
 import org.kie.internal.process.CorrelationKey;
+import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 
@@ -81,6 +84,10 @@ public class JPAProcessInstanceManager
     }
 
     public ProcessInstance getProcessInstance(long id, boolean readOnly) {
+        RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
+        if (manager != null) {
+            manager.validate((KieSession) kruntime, ProcessInstanceIdContext.get(id));
+        }
         org.jbpm.process.instance.ProcessInstance processInstance = null;
         processInstance = (org.jbpm.process.instance.ProcessInstance) this.processInstances.get(id);
         if (processInstance != null) {

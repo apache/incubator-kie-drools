@@ -18,6 +18,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.junit.AfterClass;
@@ -29,6 +30,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.Context;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -111,25 +113,31 @@ public class MultipleRuntimeManagerTest {
     public void testAllManagersManager() {
         assertNotNull(managerFactory);
         
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment(emf);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .entityManagerFactory(emf)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .get();
         
         RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment);
         testProcessStartOnManager(manager, EmptyContext.get());
         manager.close();
         
-        environment = new DefaultRuntimeEnvironment(emf);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2);
+        environment = RuntimeEnvironmentBuilder.getDefault()
+                .entityManagerFactory(emf)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .get();
         
         manager = managerFactory.newPerRequestRuntimeManager(environment);
         testProcessStartOnManager(manager, EmptyContext.get());
         manager.close();
         
-        environment = new DefaultRuntimeEnvironment(emf);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2);
+        environment = RuntimeEnvironmentBuilder.getDefault()
+                .entityManagerFactory(emf)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .get();
         
         manager = managerFactory.newPerProcessInstanceRuntimeManager(environment);
         testProcessStartOnManager(manager, ProcessInstanceIdContext.get());

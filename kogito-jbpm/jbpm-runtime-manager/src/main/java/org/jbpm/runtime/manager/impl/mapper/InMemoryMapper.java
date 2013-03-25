@@ -26,4 +26,16 @@ public class InMemoryMapper implements Mapper {
         this.mapping.remove(context.getContextId());
     }
 
+    @Override
+    public Object findContextId(Integer ksessionId) {
+        if (mapping.containsValue(ksessionId)) {
+            for (Map.Entry<Object, Integer> entry : mapping.entrySet()) {
+                if (entry.getValue() == ksessionId) {
+                    return entry.getKey();
+                }
+            }
+        }
+        return null;
+    }
+
 }

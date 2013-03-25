@@ -1,5 +1,6 @@
 package org.jbpm.runtime.manager.impl;
 
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.manager.Context;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.Runtime;
@@ -29,8 +30,18 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
         ((RuntimeImpl) runtime).setManager(this);
         registerDisposeCallback(runtime);
         registerItems(runtime);
+        attachManager(runtime);
         local.set(runtime);
         return runtime;
+    }
+    
+
+    @Override
+    public void validate(KieSession ksession, Context context) throws IllegalStateException {
+        Runtime runtimeInUse = local.get();
+        if (runtimeInUse == null || runtimeInUse.getKieSession().getId() != ksession.getId()) {
+            throw new IllegalStateException("Invalid session was used for this context " + context);
+        }
     }
 
     @Override
@@ -67,5 +78,6 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     public void setTaskServiceFactory(TaskServiceFactory taskServiceFactory) {
         this.taskServiceFactory = taskServiceFactory;
     }
+
 
 }

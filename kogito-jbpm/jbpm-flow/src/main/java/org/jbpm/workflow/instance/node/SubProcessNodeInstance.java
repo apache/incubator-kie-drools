@@ -16,6 +16,11 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.regex.Matcher;
+
 import org.drools.core.RuntimeDroolsException;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
@@ -31,12 +36,11 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.mvel2.MVEL;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.regex.Matcher;
 
 /**
  * Runtime counterpart of a SubFlow node.
@@ -133,12 +137,17 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
         	throw new RuntimeDroolsException("Could not find process " + processId);
         } else {
-	    	ProcessInstance processInstance = ( ProcessInstance )
-	    		((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
-	    			.createProcessInstance(processId, parameters);
+            KnowledgeRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
+            RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
+            if (manager != null) {
+                Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+                kruntime = (KnowledgeRuntime) runtime.getKieSession();
+            }
+	    	ProcessInstance processInstance = ( ProcessInstance ) kruntime.createProcessInstance(processId, parameters);
 	    	this.processInstanceId = processInstance.getId();
 	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentProcessInstanceId", getProcessInstance().getId());
-	    	((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().startProcessInstance(processInstance.getId());
+	    	((ProcessInstanceImpl) processInstance).setParentProcessInstanceId(getProcessInstance().getId());
+	    	kruntime.startProcessInstance(processInstance.getId());
 	    	if (!getSubProcessNode().isWaitForCompletion()) {
 	    		triggerCompleted();
 	    	} else if (processInstance.getState() == ProcessInstance.STATE_COMPLETED) {

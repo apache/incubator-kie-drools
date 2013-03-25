@@ -45,7 +45,7 @@ public class CDITestHelper {
         environment.setUserGroupCallback( new JBossUserGroupCallbackImpl(properties));
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
         environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2);
-        
+        environment.init();
         return environment;
     }
     

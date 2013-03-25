@@ -2,9 +2,13 @@ package org.jbpm.runtime.manager;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
 import java.util.Properties;
 
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
@@ -13,11 +17,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.UserGroupCallback;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -26,7 +33,7 @@ public class SingletonRuntimeManagerTest {
     
     private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;  
-    
+    private RuntimeManager manager;
     @Before
     public void setup() {
         TestUtil.cleanupSingletonSessionId();
@@ -39,16 +46,20 @@ public class SingletonRuntimeManagerTest {
     
     @After
     public void teardown() {
+        if (manager != null) {
+            manager.close();
+        }
         pds.close();
     }
 
     @Test
     public void testCreationOfSession() {
-        SimpleRuntimeEnvironment environment = new SimpleRuntimeEnvironment();
-        environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getEmpty()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .get();
         
-        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
         assertNotNull(manager);
         
         Runtime runtime = manager.getRuntime(EmptyContext.get());
@@ -76,11 +87,12 @@ public class SingletonRuntimeManagerTest {
     
     @Test
     public void testCreationOfSessionWithPersistence() {
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-        environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .get();
         
-        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
         assertNotNull(manager);
         
         Runtime runtime = manager.getRuntime(EmptyContext.get());
@@ -108,11 +120,12 @@ public class SingletonRuntimeManagerTest {
     
     @Test
     public void testReCreationOfSessionWithPersistence() {
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-        environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .get();
         
-        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
         assertNotNull(manager);
         
         Runtime runtime = manager.getRuntime(EmptyContext.get());
@@ -166,9 +179,10 @@ public class SingletonRuntimeManagerTest {
     
     @Test
     public void testCreationOfMultipleSingletonManagerWithPersistence() {
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-        environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .get();
         // create first manager
         //-----------------------------------------
         RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment, "manager1");        
@@ -280,11 +294,12 @@ public class SingletonRuntimeManagerTest {
     
     @Test
     public void testCreationOfDuplicatedManagers() {
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-        environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .get();
         
-        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
         assertNotNull(manager);
         try {
             RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
@@ -297,6 +312,49 @@ public class SingletonRuntimeManagerTest {
         // now it is possible to load the manager again
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
         assertNotNull(manager);
-        manager.close();
+    }
+    
+    @Test
+    public void testExecuteReusableSubprocess() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivity.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
+        assertNotNull(manager);
+        // since there is no process instance yet we need to get new session
+        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        assertNotNull(ksession);       
+        int ksession1Id = ksession.getId();
+        assertTrue(ksession1Id == 1);
+
+        ProcessInstance pi1 = ksession.startProcess("ParentProcess");
+        
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
+               
+        ksession.getWorkItemManager().completeWorkItem(1, null);
+        manager.disposeRuntime(runtime);
+        
+        JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
+        
+        List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findActiveProcessInstances("ParentProcess");
+        assertNotNull(logs);
+        assertEquals(0, logs.size());
+        
+        logs = JPAProcessInstanceDbLog.findActiveProcessInstances("SubProcess");
+        assertNotNull(logs);
+        assertEquals(0, logs.size());
+        
+        logs = JPAProcessInstanceDbLog.findProcessInstances("ParentProcess");
+        assertNotNull(logs);
+        assertEquals(1, logs.size());
+        
+        logs = JPAProcessInstanceDbLog.findProcessInstances("SubProcess");
+        assertNotNull(logs);
+        assertEquals(1, logs.size());
     }
 }

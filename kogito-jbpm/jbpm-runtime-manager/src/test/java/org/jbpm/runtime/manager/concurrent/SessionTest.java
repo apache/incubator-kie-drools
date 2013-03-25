@@ -16,6 +16,7 @@ import org.hibernate.StaleObjectStateException;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.exception.PermissionDeniedException;
@@ -29,6 +30,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -84,9 +86,10 @@ public class SessionTest {
 	@Ignore
 	public void testSingletonSessionMemory() throws Exception {
 		for (int i = 0; i < 1000; i++) {
-		    SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-		    environment.setUserGroupCallback(userGroupCallback);
-	        environment.addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2);
+		    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+	                .userGroupCallback(userGroupCallback)
+	                .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
+	                .get();
 	        
 	        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);  
 	        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
@@ -101,9 +104,11 @@ public class SessionTest {
 	
 	@Test
 	public void testSingletonSession() throws Exception {
-	    SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-	    environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2);
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
+                .get();
+	    
         long startTimeStamp = System.currentTimeMillis();
         long maxEndTime = startTimeStamp + maxWaitTime;
         
@@ -139,9 +144,11 @@ public class SessionTest {
 	
 	@Test
 	public void testNewSession() throws Exception {
-	    SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-	    environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2);
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
+                .get();
+
         long startTimeStamp = System.currentTimeMillis();
         long maxEndTime = startTimeStamp + maxWaitTime;
         
@@ -176,9 +183,11 @@ public class SessionTest {
 	
     @Test
     public void testSessionPerProcessInstance() throws Exception {
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-        environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
+                .get();
+        
         long startTimeStamp = System.currentTimeMillis();
         long maxEndTime = startTimeStamp + maxWaitTime;
         
@@ -213,9 +222,10 @@ public class SessionTest {
     
     @Test
     public void testNewSessionSuccess() throws Exception {
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-        environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
+                .get();
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
         org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
@@ -281,9 +291,10 @@ public class SessionTest {
 	
 	@Test
 	public void testNewSessionFail() throws Exception {
-	    SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-	    environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2);
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
+                .get();
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
         org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
@@ -349,9 +360,10 @@ public class SessionTest {
 	
 	@Test
 	public void testNewSessionFailBefore() throws Exception {
-		SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-		environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("sampleFailBefore.bpmn"), ResourceType.BPMN2);
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("sampleFailBefore.bpmn"), ResourceType.BPMN2)
+                .get();
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
         org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
@@ -378,9 +390,10 @@ public class SessionTest {
 	
 	@Test
 	public void testNewSessionFailAfter() throws Exception {
-	    SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-	    environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("sampleFailAfter.bpmn"), ResourceType.BPMN2);
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("sampleFailAfter.bpmn"), ResourceType.BPMN2)
+                .get();
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
         org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
@@ -425,9 +438,10 @@ public class SessionTest {
 	
 	@Test
 	public void testNewSessionFailAfter2() throws Exception {
-	    SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-	    environment.setUserGroupCallback(userGroupCallback);
-        environment.addAsset(ResourceFactory.newClassPathResource("sampleFailAfter.bpmn"), ResourceType.BPMN2);
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("sampleFailAfter.bpmn"), ResourceType.BPMN2)
+                .get();
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
         org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());

@@ -67,6 +67,10 @@ public abstract class AbstractRuntimeManager implements RuntimeManager {
             tm.registerTransactionSynchronization(new DisposeSessionTransactionSynchronization(this, runtime));
         }
     }
+    
+    protected void attachManager(Runtime runtime) {
+        runtime.getKieSession().getEnvironment().set("RuntimeManager", this);
+    }
 
     @Override
     public void close() {

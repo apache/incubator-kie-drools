@@ -45,4 +45,8 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
     void start();
     
     String getOutcome();
+    
+    long getParentProcessInstanceId();
+    
+    void setParentProcessInstanceId(long parentId);
 }

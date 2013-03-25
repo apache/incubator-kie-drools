@@ -101,4 +101,22 @@ public class JPAMapper implements Mapper {
         }
     }
 
+
+    @Override
+    public Object findContextId(Integer ksessionId) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Query findQuery = em.createNamedQuery("FindContextMapingByKSessionId").setParameter("ksessionId", ksessionId);
+            ContextMappingInfo contextMapping = (ContextMappingInfo) findQuery.getSingleResult();
+            
+            return contextMapping.getContextId();
+        } catch (NoResultException e) {
+            return null;
+        } catch (NonUniqueResultException e) {
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
 }

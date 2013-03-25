@@ -58,11 +58,34 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         ((RuntimeImpl) runtime).setManager(this);
         registerDisposeCallback(runtime);
         registerItems(runtime);
+        attachManager(runtime);
         
         saveLocalRuntime(contextId, runtime);
         
         ksession.addEventListener(new MaintainMappingListener(ksessionId, runtime));
         return runtime;
+    }
+    
+
+    @Override
+    public void validate(KieSession ksession, Context context) throws IllegalStateException {
+        if (context == null || context.getContextId() == null) {
+            return;
+        }
+        Integer ksessionId = mapper.findMapping(context);
+                
+        if (ksessionId == null) {
+            // make sure ksession is not use by any other context
+            Object contextId = mapper.findContextId(ksession.getId());
+            if (contextId != null) {
+                throw new IllegalStateException("KieSession with id " + ksession.getId() + " is already used by another context");
+            }
+            return;
+        }
+        if (ksession.getId() != ksessionId) {
+            throw new IllegalStateException("Invalid session was used for this context " + context);
+        }
+        
     }
 
     @Override
@@ -178,4 +201,5 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             map.remove(keyToRemove);
         }
     }
+
 }

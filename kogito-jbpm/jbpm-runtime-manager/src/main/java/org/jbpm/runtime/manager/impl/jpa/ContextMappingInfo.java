@@ -15,8 +15,10 @@ import javax.persistence.Version;
 @Entity
 @SequenceGenerator(name="contextMappingInfoIdSeq", sequenceName="CONTEXT_MAPPING_INFO_ID_SEQ")
 @NamedQueries(value=
-    @NamedQuery(name="FindContextMapingByContextId", 
-                query="from ContextMappingInfo where contextId = :contextId"))
+    {@NamedQuery(name="FindContextMapingByContextId", 
+                query="from ContextMappingInfo where contextId = :contextId"),
+                @NamedQuery(name="FindContextMapingByKSessionId", 
+                query="from ContextMappingInfo where ksessionId = :ksessionId")})
 public class ContextMappingInfo implements Serializable {
 
     private static final long serialVersionUID = 533985957655465840L;

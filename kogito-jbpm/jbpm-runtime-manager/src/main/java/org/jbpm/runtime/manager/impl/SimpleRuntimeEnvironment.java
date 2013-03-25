@@ -2,6 +2,8 @@ package org.jbpm.runtime.manager.impl;
 
 import java.util.Properties;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
@@ -21,6 +23,9 @@ import org.kie.internal.task.api.UserGroupCallback;
 
 public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerProvider {
     
+    protected boolean usePersistence;
+    protected EntityManagerFactory emf;
+    
     protected Environment environment;
     protected KieSessionConfiguration configuration;
     protected KieBase kbase;
@@ -33,15 +38,17 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     protected Properties sessionConfigProperties;
     
     public SimpleRuntimeEnvironment() {
-        this.environment = EnvironmentFactory.newEnvironment();
-        this.kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        this.registerableItemsFactory = new SimpleRegisterableItemsFactory();
-        this.mapper = new InMemoryMapper();
+        this(new SimpleRegisterableItemsFactory());        
     }
+    
     public SimpleRuntimeEnvironment(RegisterableItemsFactory registerableItemsFactory) {
         this.environment = EnvironmentFactory.newEnvironment();
         this.kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         this.registerableItemsFactory = registerableItemsFactory;
+
+    }
+    
+    public void init() {
         this.mapper = new InMemoryMapper();
     }
     
@@ -84,7 +91,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     @Override
     public boolean usePersistence() {
         
-        return environment.get(EnvironmentName.ENTITY_MANAGER_FACTORY) != null;
+        return this.usePersistence;
     }
     
     @Override
@@ -132,24 +139,42 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
         this.userGroupCallback = userGroupCallback;
     }
+
     public Properties getSessionConfigProperties() {
         return sessionConfigProperties;
     }
     public void setSessionConfigProperties(Properties sessionConfigProperties) {
         this.sessionConfigProperties = sessionConfigProperties;
     }
-    public void setRegisterableItemsFactory(
-            RegisterableItemsFactory registerableItemsFactory) {
-        this.registerableItemsFactory = registerableItemsFactory;
+
+    public void setUsePersistence(boolean usePersistence) {
+        this.usePersistence = usePersistence;
     }
+
+    public void setKieBase(KieBase kbase) {
+        this.kbase = kbase;
+    }
+    
     public void setMapper(Mapper mapper) {
         this.mapper = mapper;
     }
+    
     @Override
     public GlobalSchedulerService getSchedulerService() {
         return this.schedulerService;
     }
     public void setSchedulerService(GlobalSchedulerService schedulerService) {
         this.schedulerService = schedulerService;
+    }
+
+    public void setRegisterableItemsFactory(RegisterableItemsFactory registerableItemsFactory) {
+        this.registerableItemsFactory = registerableItemsFactory;
+    }
+    
+    public EntityManagerFactory getEmf() {
+        return emf;
+    }
+    public void setEmf(EntityManagerFactory emf) {
+        this.emf = emf;
     }
 }
