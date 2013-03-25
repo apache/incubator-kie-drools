@@ -86,7 +86,6 @@
     <module>jbpm-human-task</module>
     <module>jbpm-services</module>
     <module>jbpm-test</module>
-    <module>jbpm-examples</module>
     <module>jbpm-runtime-manager</module>
   </modules>
 
@@ -132,6 +131,19 @@
 
   <profiles>
     <profile>
+      <id>example</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <defaultGoal>clean package</defaultGoal>
+      </build>
+      <modules>
+        <module>jbpm-examples</module>
+      </modules>
+    </profile>
+
+    <profile>
       <id>fullProfile</id>
       <activation>
         <property>
@@ -139,6 +151,7 @@
         </property>
       </activation>
       <modules>
+        <module>jbpm-examples</module>
         <module>jbpm-docs</module>
         <module>jbpm-distribution</module>
       </modules>
