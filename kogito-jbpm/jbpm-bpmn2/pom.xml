@@ -123,12 +123,11 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.bpmn2;singleton:=true</Bundle-SymbolicName>
-            <_removeheaders>Ignore-Package</_removeheaders>
-            <Require-Bundle>org.jbpm.flow.builder;bundle-version="${jbpm.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.jbpm.*,!org.drools.*,*</Import-Package>
-            <Export-Package>org.jbpm.*</Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
+            <_nouses>true</_nouses>
+            <_snapshot>${osgi-version-qualifier}</_snapshot>
+            <Bundle-SymbolicName>org.jbpm.bpmn2</Bundle-SymbolicName>
+            <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi-version-qualifier}</Bundle-Version>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
             <Bundle-Activator>org.jbpm.osgi.bpmn2.Activator</Bundle-Activator>
           </instructions>
         </configuration>

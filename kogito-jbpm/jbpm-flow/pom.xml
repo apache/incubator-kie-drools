@@ -24,15 +24,15 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <_removeheaders>Ignore-Package</_removeheaders>
+            <_nouses>true</_nouses>
+            <_snapshot>${osgi-version-qualifier}</_snapshot>
             <Bundle-SymbolicName>org.jbpm.flow.core;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*,
-              <!-- java compilers are optional: only need one at most -->
-              org.codehaus.janino.*;resolution:=optional,org.eclipse.jdt.*;resolution:=optional,
-              *</Import-Package>
-            <Export-Package>org.jbpm.process.*,org.jbpm.workflow.*,org.jbpm.ruleflow.*,org.jbpm.marshalling.*,org.jbpm.*</Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
+            <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi-version-qualifier}</Bundle-Version>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+            <Import-Package>
+                javax.swing.*;resolution:=optional,
+                *
+            </Import-Package>
             <Bundle-Activator>org.jbpm.osgi.flow.core.Activator</Bundle-Activator>
           </instructions>
         </configuration>

@@ -24,12 +24,12 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <_nouses>true</_nouses>
+            <_snapshot>${osgi-version-qualifier}</_snapshot>
             <Bundle-SymbolicName>org.jbpm.bpmn2.emfextmodel;singleton:=true</Bundle-SymbolicName>
-            <_removeheaders>Ignore-Package</_removeheaders>
-            <Require-Bundle>org.jbpm.flow.builder;bundle-version="${jbpm.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.jbpm.*,!org.drools.*,*</Import-Package>
-            <Export-Package>org.jbpm.*</Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
+            <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi-version-qualifier}</Bundle-Version>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+            <Export-Package>org.jboss.drools.*</Export-Package>
           </instructions>
         </configuration>
       </plugin>

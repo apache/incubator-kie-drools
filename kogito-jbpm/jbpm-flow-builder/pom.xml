@@ -24,12 +24,11 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <_removeheaders>Ignore-Package</_removeheaders>
+            <_nouses>true</_nouses>
+            <_snapshot>${osgi-version-qualifier}</_snapshot>
             <Bundle-SymbolicName>org.jbpm.flow.builder;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>org.jbpm.flow.core;bundle-version="${jbpm.osgi.version}",org.drools.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*,!org.jbpm.*,*</Import-Package>
-            <Export-Package>org.jbpm.*</Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
+            <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi-version-qualifier}</Bundle-Version>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
             <Bundle-Activator>org.jbpm.osgi.flow.compiler.Activator</Bundle-Activator>
           </instructions>
         </configuration>
