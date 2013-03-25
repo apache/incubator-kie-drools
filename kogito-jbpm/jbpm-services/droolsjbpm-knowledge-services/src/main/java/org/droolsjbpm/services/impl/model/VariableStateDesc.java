@@ -18,10 +18,6 @@ package org.droolsjbpm.services.impl.model;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
 
 
 public class VariableStateDesc implements Serializable{
@@ -32,7 +28,7 @@ public class VariableStateDesc implements Serializable{
     private String oldValue;
     @Column(length = 5000)
     private String newValue;
-    private int sessionId;
+    private String domainId;
     private long processInstanceId;
     
     private Date dataTimeStamp;
@@ -43,12 +39,12 @@ public class VariableStateDesc implements Serializable{
     
     
 
-    public VariableStateDesc(String variableId, String variableInstanceId, String oldValue, String newValue, int sessionId, long processInstanceId, Date date) {
+    public VariableStateDesc(String variableId, String variableInstanceId, String oldValue, String newValue, String domainId, long processInstanceId, Date date) {
         this.variableId = variableId;
         this.variableInstanceId = variableInstanceId;
         this.oldValue = oldValue;
         this.newValue = newValue;
-        this.sessionId = sessionId;
+        this.domainId = domainId;
         this.processInstanceId = processInstanceId;
         this.dataTimeStamp = date;
     }
@@ -70,8 +66,8 @@ public class VariableStateDesc implements Serializable{
         return newValue;
     }
 
-    public int getSessionId() {
-        return sessionId;
+    public String getDomainId() {
+        return domainId;
     }
 
     public long getProcessInstanceId() {
@@ -84,7 +80,7 @@ public class VariableStateDesc implements Serializable{
 
     @Override
     public String toString() {
-        return "VariableStateDesc["+dataTimeStamp.toString()+"]{variableId=" + variableId + ", variableInstanceId=" + variableInstanceId + ", oldValue=" + oldValue + ", newValue=" + newValue + ", sessionId=" + sessionId + ", processInstanceId=" + processInstanceId + '}';
+        return "VariableStateDesc["+dataTimeStamp.toString()+"]{variableId=" + variableId + ", variableInstanceId=" + variableInstanceId + ", oldValue=" + oldValue + ", newValue=" + newValue + ", domainId=" + domainId + ", processInstanceId=" + processInstanceId + '}';
     }
     
     

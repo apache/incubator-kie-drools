@@ -26,7 +26,7 @@ public class ProcessInstanceDesc implements Serializable{
     private String processName;
     private String processVersion;
     private int state;
-    private int sessionId;    
+    private String domainId;    
     private String initiator;
     
     private Date dataTimeStamp;
@@ -36,13 +36,13 @@ public class ProcessInstanceDesc implements Serializable{
     }
 
     public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
-                                int state, int sessionId, String initiator) {
+                                int state, String domainId, String initiator) {
         this.id = id;
         this.processId = processId;
         this.processName = processName;
         this.processVersion = processVersion==null?"":processVersion;
         this.state = state;
-        this.sessionId = sessionId;
+        this.domainId = domainId;
         this.dataTimeStamp = new Date();
         this.initiator = initiator;
     }
@@ -63,8 +63,8 @@ public class ProcessInstanceDesc implements Serializable{
         return state;
     }
 
-    public int getSessionId() {
-        return sessionId;
+    public String getDomainId() {
+        return domainId;
     }
 
     public Date getDataTimeStamp() {
@@ -73,7 +73,7 @@ public class ProcessInstanceDesc implements Serializable{
 
     @Override
     public String toString() {
-        return "ProcessInstanceDesc["+dataTimeStamp.toString()+"]{id=" + id + ", processId=" + processId + ", processName=" + processName + ", state=" + state + ", sessionId=" + sessionId +"'}'";
+        return "ProcessInstanceDesc{" + "id=" + id + ", processId=" + processId + ", processName=" + processName + ", processVersion=" + processVersion + ", state=" + state + ", domainId=" + domainId + ", initiator=" + initiator + ", dataTimeStamp=" + dataTimeStamp + '}';
     }
 
     public String getProcessVersion() {
@@ -92,8 +92,8 @@ public class ProcessInstanceDesc implements Serializable{
         this.initiator = initiator;
     }
 
-    
-    
-  
+    public void setDomainId(String domainId) {
+        this.domainId = domainId;
+    }
 
 }

@@ -23,7 +23,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.droolsjbpm.services.api.KnowledgeDataService;
+import org.droolsjbpm.services.api.RuntimeDataService;
 import org.droolsjbpm.services.impl.model.NodeInstanceDesc;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
@@ -41,7 +41,7 @@ import org.jbpm.process.audit.NodeInstanceLog;
  */
 @ApplicationScoped
 @Transactional
-public class KnowledgeDataServiceImpl implements KnowledgeDataService {
+public class RuntimeDataServiceImpl implements RuntimeDataService {
 
     
     @Inject
@@ -63,6 +63,12 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
         return processes;
     }
 
+    public ProcessDesc getProcessById(String processId){
+       return ((List<ProcessDesc>) pm.queryWithParametersInTransaction("getProcessById", 
+                pm.addParametersToMap("processId", processId ))).get(0);
+    
+    }
+    
     public Collection<ProcessDesc> getProcesses() {
         List<ProcessDesc> processes = (List<ProcessDesc>) pm.queryInTransaction("getProcesses");
         return processes;
@@ -92,9 +98,9 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
         
     }
 
-    public Collection<ProcessInstanceDesc> getProcessInstancesBySessionId(String sessionId) {
-        List<ProcessInstanceDesc> processInstances = (List<ProcessInstanceDesc>)pm.queryStringWithParametersInTransaction("getProcessInstancesBySessionId",
-                pm.addParametersToMap("sessionId", sessionId));
+    public Collection<ProcessInstanceDesc> getProcessInstancesByDomainId(String domainId) {
+        List<ProcessInstanceDesc> processInstances = (List<ProcessInstanceDesc>)pm.queryStringWithParametersInTransaction("getProcessInstancesByDomainId",
+                pm.addParametersToMap("domainId", domainId));
 
         return processInstances;
     }
@@ -154,13 +160,13 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
         return processInstances;
     }    
 
-    public Collection<NodeInstanceDesc> getProcessInstanceHistory(int sessionId, long processId) {
-        return getProcessInstanceHistory(sessionId, processId, false);
+    public Collection<NodeInstanceDesc> getProcessInstanceHistory(String domainId, long processId) {
+        return getProcessInstanceHistory(domainId, processId, false);
     }
 
 
-    public Collection<NodeInstanceDesc> getProcessInstanceHistory(int sessionId, long processId, boolean completed) {
-        HashMap<String, Object> params = pm.addParametersToMap("processId", processId, "sessionId", sessionId);                
+    public Collection<NodeInstanceDesc> getProcessInstanceHistory(String domainId, long processId, boolean completed) {
+        HashMap<String, Object> params = pm.addParametersToMap("processId", processId, "domainId", domainId);                
         if (completed) {
             params.put("type", NodeInstanceLog.TYPE_EXIT);
         } else {
@@ -172,26 +178,25 @@ public class KnowledgeDataServiceImpl implements KnowledgeDataService {
         return nodeInstances;
     }
 
-    public Collection<NodeInstanceDesc> getProcessInstanceFullHistory(int sessionId, long processId) {
+    public Collection<NodeInstanceDesc> getProcessInstanceFullHistory(String domainId, long processId) {
         List<NodeInstanceDesc> nodeInstances = (List<NodeInstanceDesc>)pm.queryWithParametersInTransaction("getProcessInstanceFullHistory", 
-                pm.addParametersToMap("processId", processId, "sessionId", sessionId));
+                pm.addParametersToMap("processId", processId, "domainId", domainId));
 
         return nodeInstances;
     }
 
-    public Collection<NodeInstanceDesc> getProcessInstanceActiveNodes(int sessionId, long processId) {
+    public Collection<NodeInstanceDesc> getProcessInstanceActiveNodes(String domainId, long processId) {
         
         List<NodeInstanceDesc> activeNodeInstances = (List<NodeInstanceDesc>) pm.queryWithParametersInTransaction("getProcessInstanceActiveNodes", 
-                pm.addParametersToMap("processId", processId, "sessionId", sessionId));
+                pm.addParametersToMap("processId", processId, "domainId", domainId));
         
         return activeNodeInstances;
     }
     
 
-    @Override
-    public Collection<NodeInstanceDesc> getProcessInstanceCompletedNodes(int sessionId, long processId) {
+    public Collection<NodeInstanceDesc> getProcessInstanceCompletedNodes(String domainId, long processId) {
         List<NodeInstanceDesc> completedNodeInstances = (List<NodeInstanceDesc>) pm.queryWithParametersInTransaction("getProcessInstanceCompletedNodes", 
-                pm.addParametersToMap("processId", processId, "sessionId", sessionId));
+                pm.addParametersToMap("processId", processId, "domainId", domainId));
 
         return completedNodeInstances;
         

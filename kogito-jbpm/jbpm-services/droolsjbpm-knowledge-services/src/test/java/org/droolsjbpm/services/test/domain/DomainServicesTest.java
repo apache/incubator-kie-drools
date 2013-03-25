@@ -30,7 +30,6 @@ import org.droolsjbpm.services.api.DomainManagerService;
 import org.droolsjbpm.services.domain.entities.Domain;
 import org.droolsjbpm.services.domain.entities.Organization;
 import org.droolsjbpm.services.domain.entities.RuntimeId;
-import org.droolsjbpm.services.impl.KnowledgeDomainServiceImpl;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -179,10 +178,10 @@ public class DomainServicesTest {
         try {
             loadProcessFiles = fs.loadFilesByType(path, ".+bpmn[2]?$");
         } catch (FileException ex) {
-            Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DomainServicesTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (Path p : loadProcessFiles) {
-            environment.addAsset(ResourceFactory.newClassPathResource("repo/" + path + "/" + p.getFileName().toString()), ResourceType.BPMN2);
+            environment.addAsset(ResourceFactory.newClassPathResource( fs.getRepositoryRoot() + "/" + path + p.getFileName().toString()), ResourceType.BPMN2);
         }
 
         RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment);
@@ -225,10 +224,10 @@ public class DomainServicesTest {
                 try {
                     loadProcessFiles = fs.loadFilesByType(reference, ".+bpmn[2]?$");
                 } catch (FileException ex) {
-                    Logger.getLogger(KnowledgeDomainServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DomainServicesTest.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 for (Path p : loadProcessFiles) {
-                    environment.addAsset(ResourceFactory.newClassPathResource("repo/" + reference + "/" + p.getFileName().toString()), ResourceType.BPMN2);
+                    environment.addAsset(ResourceFactory.newClassPathResource(fs.getRepositoryRoot() + "/" + reference + p.getFileName().toString()), ResourceType.BPMN2);
                 }
                 // Parse and get the Metadata for all the assets
 

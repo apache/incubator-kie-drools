@@ -153,4 +153,9 @@ public class TestVFSFileServiceImpl implements FileService {
         return repositoryRoot;
     }
 
+    @Override
+    public Path getPath(String path) {
+        return ioService.get(path);
+    }
+
 }

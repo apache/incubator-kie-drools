@@ -29,7 +29,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.droolsjbpm.services.api.FormProviderService;
-import org.droolsjbpm.services.api.KnowledgeDomainService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jbpm.form.builder.services.model.InputData;
@@ -47,6 +46,7 @@ import org.kie.internal.task.api.model.Task;
 
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
+import org.droolsjbpm.services.api.RuntimeDataService;
 
 @ApplicationScoped
 public class FormProviderServiceImpl implements FormProviderService {
@@ -60,7 +60,7 @@ public class FormProviderServiceImpl implements FormProviderService {
     @Inject
     private BPMN2DataService bpmn2Service;
     @Inject
-    private KnowledgeDomainService domainService;
+    private RuntimeDataService dataService;
     @Inject
     private FileService fileService;
     private Map<String /*className*/, List<String>> effectsForItem = new HashMap<String, List<String>>();
@@ -76,7 +76,7 @@ public class FormProviderServiceImpl implements FormProviderService {
 
     @Override
     public String getFormDisplayProcess(String processId) {
-        String processAssetPath = domainService.getProcessAssetPath(processId);
+        String processAssetPath = dataService.getProcessById(processId).getOriginalPath();
         Iterable<Path> availableForms = null;
         try {
             if(fileService.exists(processAssetPath.substring(1, processAssetPath.lastIndexOf('/'))+"/forms/")){
@@ -108,7 +108,13 @@ public class FormProviderServiceImpl implements FormProviderService {
             Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        String processString = domainService.getAvailableProcesses().get(processId);
+        String processString = "";
+        try{
+            processString = new String(fileService.loadFile(processAssetPath));
+        }catch(Exception e){
+        
+        }
+                
         Map<String, String> processData = bpmn2Service.getProcessData(processId);
         if (processData == null) {
             processData = new HashMap<String, String>();
@@ -127,7 +133,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         Map<String, Object> renderContext = new HashMap<String, Object>();
         String processAssetPath = "";
         if(task.getTaskData().getProcessId() != null && !task.getTaskData().getProcessId().equals("") ){
-            processAssetPath = domainService.getProcessAssetPath(task.getTaskData().getProcessId());
+            processAssetPath = dataService.getProcessById(task.getTaskData().getProcessId()).getOriginalPath();
         }
         
         Object input = null;

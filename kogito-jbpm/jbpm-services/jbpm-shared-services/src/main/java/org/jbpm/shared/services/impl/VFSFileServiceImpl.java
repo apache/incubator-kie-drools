@@ -108,6 +108,10 @@ public class VFSFileServiceImpl implements FileService {
         } );
     
     }
+    
+    public Path getPath(String path){
+        return ioService.get(URI.create(REPO_PLAYGROUND + path));
+    }
 
     @Override
     public boolean exists(Path file){

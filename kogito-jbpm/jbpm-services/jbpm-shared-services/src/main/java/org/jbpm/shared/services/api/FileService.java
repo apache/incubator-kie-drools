@@ -55,4 +55,6 @@ public interface FileService {
     
     String getRepositoryRoot();
     
+    Path getPath(String path);
+    
 }

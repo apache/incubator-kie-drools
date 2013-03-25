@@ -27,7 +27,7 @@ import org.droolsjbpm.services.impl.model.VariableStateDesc;
  *
  * @author salaboy
  */
-public interface KnowledgeDataService {
+public interface RuntimeDataService {
     
     Collection<ProcessInstanceDesc> getProcessInstances();
     
@@ -37,9 +37,9 @@ public interface KnowledgeDataService {
     
     Collection<ProcessInstanceDesc> getProcessInstancesByProcessName(List<Integer> states, String processName, String initiator);
 
-    Collection<ProcessInstanceDesc> getProcessInstancesBySessionId(String sessionId);
+    Collection<ProcessInstanceDesc> getProcessInstancesByDomainId(String domainId);
 
-    Collection<ProcessDesc> getProcessesByDomainName(String sessionId);   
+    Collection<ProcessDesc> getProcessesByDomainName(String domainId);   
     
     Collection<ProcessDesc> getProcessesByFilter(String filter);
 
@@ -47,15 +47,15 @@ public interface KnowledgeDataService {
     
     ProcessInstanceDesc getProcessInstanceById(long processId);
     
-    Collection<NodeInstanceDesc> getProcessInstanceHistory(int sessionId, long processId);
+    Collection<NodeInstanceDesc> getProcessInstanceHistory(String domainId, long processId);
     
-    Collection<NodeInstanceDesc> getProcessInstanceHistory(int sessionId, long processId, boolean completed);
+    Collection<NodeInstanceDesc> getProcessInstanceHistory(String domainId, long processId, boolean completed);
     
-    Collection<NodeInstanceDesc> getProcessInstanceFullHistory(int sessionId, long processId);
+    Collection<NodeInstanceDesc> getProcessInstanceFullHistory(String domainId, long processId);
     
-    Collection<NodeInstanceDesc> getProcessInstanceActiveNodes(int sessionId, long processId);
+    Collection<NodeInstanceDesc> getProcessInstanceActiveNodes(String domainId, long processId);
     
-    Collection<NodeInstanceDesc> getProcessInstanceCompletedNodes(int sessionId, long processId);
+    Collection<NodeInstanceDesc> getProcessInstanceCompletedNodes(String domainId, long processId);
     
     Collection<VariableStateDesc> getVariablesCurrentState(long processInstanceId);
     
@@ -63,4 +63,5 @@ public interface KnowledgeDataService {
 
     Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId);
 
+    ProcessDesc getProcessById(String processId);
 }

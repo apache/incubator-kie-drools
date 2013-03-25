@@ -27,15 +27,11 @@ import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
-import org.apache.lucene.index.AtomicReader;
 import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.Fields;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexableField;
-import org.apache.lucene.index.SlowCompositeReaderWrapper;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -71,10 +67,10 @@ public class SearchServiceImpl {
         d.add(new StringField("processName", node.getName(), Field.Store.YES));
         d.add(new StringField("nodeId", String.valueOf(node.getNodeId()), Field.Store.YES));
         d.add(new StringField("processInstanceId", String.valueOf(node.getProcessInstanceId()), Field.Store.YES));
-        d.add(new StringField("sessionId", String.valueOf(node.getSessionId()), Field.Store.YES));
+        d.add(new StringField("sessionId", String.valueOf(node.getDomainId()), Field.Store.YES));
         //d.add(new TextField()); if I need to store large texts that requires tokenization
         // To support any value search
-        d.add(new StringField("all", String.valueOf(node.getSessionId()), Field.Store.NO));
+        d.add(new StringField("all", String.valueOf(node.getDomainId()), Field.Store.NO));
         d.add(new StringField("all", String.valueOf(node.getProcessInstanceId()), Field.Store.NO));
         d.add(new StringField("all", String.valueOf(node.getNodeId()), Field.Store.NO));
         d.add(new StringField("all", String.valueOf(node.getName()), Field.Store.NO));

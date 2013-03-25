@@ -20,6 +20,23 @@
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
+  
+  <named-query name="getProcessById">
+    <query>
+      select 
+        pd 
+      from 
+        ProcessDesc pd 
+      where 
+        pd.id=:processId
+      GROUP BY
+        pd.pki, 
+        pd.id 
+      ORDER BY 
+        pd.dataTimeStamp DESC
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
 
   <named-query name="getProcessesByFilter">
     <query>
@@ -58,7 +75,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.sessionId,
+      log.domainId,
       log.identity
       )
       from
@@ -78,7 +95,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.sessionId,
+      log.domainId,
       log.identity
       )
       from
@@ -98,7 +115,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.sessionId,
+      log.domainId,
       log.identity
       )
       from
@@ -118,13 +135,13 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.sessionId,
+      log.domainId,
       log.identity
       )
       from
         ProcessInstanceLog log
       where
-        log.sessionId=:sessionId
+        log.domainId=:domainId
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
@@ -138,7 +155,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.sessionId,
+      log.domainId,
       log.identity
       )
       from
@@ -158,7 +175,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.sessionId,
+      log.domainId,
       log.identity
       )
       from
@@ -179,7 +196,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.sessionId,
+      log.domainId,
       log.identity
       )
       from
@@ -199,7 +216,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.sessionId,
+      log.domainId,
       log.identity
       )
       from
@@ -219,7 +236,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.sessionId,
+      log.domainId,
       log.identity
       )
       from
@@ -239,7 +256,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.sessionId,
+      log.domainId,
       log.identity
       )
       from
@@ -259,7 +276,7 @@
       log.nodeId,
       log.nodeName,
       log.nodeType,
-      log.sessionId,
+      log.domainId,
       log.processInstanceId,
       log.date,
       log.connection,
@@ -268,7 +285,7 @@
       from
         NodeInstanceLog log
       where
-        log.processInstanceId=:processId AND log.sessionId=:sessionId AND log.type =:type 
+        log.processInstanceId=:processId AND log.domainId=:domainId AND log.type =:type 
       ORDER BY 
         log.date DESC
 
@@ -284,7 +301,7 @@
       log.nodeId,
       log.nodeName,
       log.nodeType,
-      log.sessionId,
+      log.domainId,
       log.processInstanceId,
       log.date,
       log.connection,
@@ -293,7 +310,7 @@
       from
         NodeInstanceLog log
       where
-        log.processInstanceId=:processId AND log.sessionId=:sessionId 
+        log.processInstanceId=:processId AND log.domainId=:domainId 
       ORDER BY 
         log.date DESC
     </query>
@@ -309,7 +326,7 @@
       log.nodeId,
       log.nodeName,
       log.nodeType,
-      log.sessionId,
+      log.domainId,
       log.processInstanceId,
       log.date,
       log.connection,
@@ -318,7 +335,7 @@
       from
         NodeInstanceLog log
       where
-        log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=:processId AND nil.sessionId=:sessionId
+        log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=:processId AND nil.domainId=:domainId
                     GROUP BY nil.nodeInstanceId
                     HAVING count(nil.nodeInstanceId) = 1)
         and log.type = 0            
@@ -336,7 +353,7 @@
       log.nodeId,
       log.nodeName,
       log.nodeType,
-      log.sessionId,
+      log.domainId,
       log.processInstanceId,
       log.date,
       log.connection,
@@ -345,7 +362,7 @@
       from
         NodeInstanceLog log
       where
-        log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.sessionId=:sessionId AND nid.type = 1) 
+        log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.domainId=:domainId AND nid.type = 1) 
       ORDER BY 
         log.nodeInstanceId, log.id ASC
     </query>
@@ -362,7 +379,7 @@
       log.variableInstanceId,
       log.oldValue,
       log.value,
-      log.sessionId,
+      log.domainId,
       log.processInstanceId,
       log.date
       )
@@ -382,7 +399,7 @@
       log.variableInstanceId,
       log.oldValue,
       log.value,
-      log.sessionId,
+      log.domainId,
       log.processInstanceId,
       log.date
       )

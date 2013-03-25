@@ -17,17 +17,13 @@ package org.droolsjbpm.services.impl.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
 
 public class NodeInstanceDesc implements Serializable{
     
     private long id;
     private String nodeId;
     private String name;
-    private int sessionId;
+    private String domainId;
     private long processInstanceId;
     private String nodeType;
     private String connection;
@@ -40,13 +36,13 @@ public class NodeInstanceDesc implements Serializable{
 
 
     public NodeInstanceDesc(String id, String nodeId, String name, String nodeType,
-                            int sessionId, long processInstanceId, Date date, 
+                            String domainId, long processInstanceId, Date date, 
                             String connection, int type) {
         this.id = Long.parseLong(id);
         this.name = name;
         this.nodeId = nodeId;
         this.nodeType = nodeType;
-        this.sessionId = sessionId;
+        this.domainId = domainId;
         this.processInstanceId = processInstanceId;
         this.dataTimeStamp = date;
         this.connection = connection;
@@ -61,8 +57,8 @@ public class NodeInstanceDesc implements Serializable{
         return name;
     }
 
-    public int getSessionId() {
-        return sessionId;
+    public String getDomainId() {
+        return domainId;
     }
 
     public long getProcessInstanceId() {
@@ -91,7 +87,7 @@ public class NodeInstanceDesc implements Serializable{
     
     @Override
     public String toString() {
-        return "NodeInstanceDesc{" + "id=" + id + ", nodeId=" + nodeId + ", nodeUniqueId=" + nodeId + ", name=" + name + ", sessionId=" + sessionId + ", processInstanceId="
+        return "NodeInstanceDesc{" + "id=" + id + ", nodeId=" + nodeId + ", nodeUniqueId=" + nodeId + ", name=" + name + ", domainId=" + domainId + ", processInstanceId="
                 + processInstanceId + ", type=" + nodeType + ", completed=" + isCompleted() + ", dataTimeStamp=" + dataTimeStamp + '}';
     }
 

@@ -42,6 +42,8 @@ public class RuntimeId implements Serializable{
     private String reference;
     @ManyToOne(cascade = CascadeType.ALL)
     private Domain domain;
+    
+    private String type;
 
     public RuntimeId() {
     }
@@ -77,6 +79,15 @@ public class RuntimeId implements Serializable{
     public void setDomain(Domain domain) {
         this.domain = domain;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+    
     
     
 }

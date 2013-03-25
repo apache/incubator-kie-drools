@@ -44,6 +44,7 @@ public class ProcessDesc implements Serializable {
     private String domainName;
     private int    sessionId;
     private String sessionName;
+    private String originalPath;
     
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dataTimeStamp;
@@ -161,42 +162,84 @@ public class ProcessDesc implements Serializable {
         this.packageName = packageName;
     }
 
-    // TODO is the hash code and equals enough - they are used to verify if anything changed in session manager
+    public String getOriginalPath() {
+        return originalPath;
+    }
+
+    public void setOriginalPath(String originalPath) {
+        this.originalPath = originalPath;
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((version == null) ? 0 : version.hashCode());
-        return result;
+        int hash = 3;
+        hash = 17 * hash + (int) (this.pki ^ (this.pki >>> 32));
+        hash = 17 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 17 * hash + (this.name != null ? this.name.hashCode() : 0);
+        hash = 17 * hash + (this.version != null ? this.version.hashCode() : 0);
+        hash = 17 * hash + (this.packageName != null ? this.packageName.hashCode() : 0);
+        hash = 17 * hash + (this.type != null ? this.type.hashCode() : 0);
+        hash = 17 * hash + (this.knowledgeType != null ? this.knowledgeType.hashCode() : 0);
+        hash = 17 * hash + (this.namespace != null ? this.namespace.hashCode() : 0);
+        hash = 17 * hash + (this.domainName != null ? this.domainName.hashCode() : 0);
+        hash = 17 * hash + this.sessionId;
+        hash = 17 * hash + (this.sessionName != null ? this.sessionName.hashCode() : 0);
+        hash = 17 * hash + (this.originalPath != null ? this.originalPath.hashCode() : 0);
+        hash = 17 * hash + (this.dataTimeStamp != null ? this.dataTimeStamp.hashCode() : 0);
+        return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
-        ProcessDesc other = (ProcessDesc) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
+        }
+        final ProcessDesc other = (ProcessDesc) obj;
+        if (this.pki != other.pki) {
             return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
+        }
+        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
             return false;
-        if (version == null) {
-            if (other.version != null)
-                return false;
-        } else if (!version.equals(other.version))
+        }
+        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
+        }
+        if ((this.version == null) ? (other.version != null) : !this.version.equals(other.version)) {
+            return false;
+        }
+        if ((this.packageName == null) ? (other.packageName != null) : !this.packageName.equals(other.packageName)) {
+            return false;
+        }
+        if ((this.type == null) ? (other.type != null) : !this.type.equals(other.type)) {
+            return false;
+        }
+        if ((this.knowledgeType == null) ? (other.knowledgeType != null) : !this.knowledgeType.equals(other.knowledgeType)) {
+            return false;
+        }
+        if ((this.namespace == null) ? (other.namespace != null) : !this.namespace.equals(other.namespace)) {
+            return false;
+        }
+        if ((this.domainName == null) ? (other.domainName != null) : !this.domainName.equals(other.domainName)) {
+            return false;
+        }
+        if (this.sessionId != other.sessionId) {
+            return false;
+        }
+        if ((this.sessionName == null) ? (other.sessionName != null) : !this.sessionName.equals(other.sessionName)) {
+            return false;
+        }
+        if ((this.originalPath == null) ? (other.originalPath != null) : !this.originalPath.equals(other.originalPath)) {
+            return false;
+        }
+        if (this.dataTimeStamp != other.dataTimeStamp && (this.dataTimeStamp == null || !this.dataTimeStamp.equals(other.dataTimeStamp))) {
+            return false;
+        }
         return true;
     }
+
+    
 
 }
