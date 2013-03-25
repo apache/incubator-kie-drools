@@ -24,11 +24,17 @@
         <configuration>
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
-            <Bundle-SymbolicName>org.kie.api;singleton:=true</Bundle-SymbolicName>
-            <Import-Package>!org.kie.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
-            <Export-Package>!org.kie.api.cdi.*,org.kie.*</Export-Package>
+            <Bundle-SymbolicName>org.kie.api</Bundle-SymbolicName>
+            <Import-Package>
+              !org.kie.*,
+              *;resolution:=optional,
+              com.sun.tools.xjc;resolution:=optional
+            </Import-Package>
+            <Export-Package>
+              org.kie.api*
+            </Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.kie.api.osgi.Activator</Bundle-Activator>
+            <!-- <Bundle-Activator>org.kie.api.osgi.Activator</Bundle-Activator> -->
           </instructions>
         </configuration>
       </plugin>
