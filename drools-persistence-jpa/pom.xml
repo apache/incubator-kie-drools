@@ -34,11 +34,20 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <_removeheaders>Ignore-Package</_removeheaders>
-            <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}", org.drools.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*,*</Import-Package>
-            <Export-Package>org.drools.*</Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
+            <_nouses>true</_nouses>
+            <_snapshot>${osgi-version-qualifier}</_snapshot>
+            <Bundle-SymbolicName>org.drools.persistence;singleton:=true</Bundle-SymbolicName>
+            <Import-Package>
+              javax.transaction;resolution:=optional,
+              javax.naming;resolution:=optional,
+              org.osgi.framework.*;resolution:=optional,
+              javax.naming;resolution:=optional,
+              *
+            </Import-Package>
+            <Private-Package></Private-Package>
+            <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi-version-qualifier}</Bundle-Version>
+            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+            <Export-Package>org.drools.persistence.*</Export-Package>
             <Bundle-Activator>org.drools.persistence.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
