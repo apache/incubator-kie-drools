@@ -9,7 +9,7 @@ import org.kie.api.io.Resource;
 public interface KieRepository {
 
     /**
-     * Returns the defualt ReleaseId used to identify a KieModule in this KieRepository
+     * Returns the default ReleaseId used to identify a KieModule in this KieRepository
      * if the user didn't explicitly provide one
      * @return The default ReleaseId
      */

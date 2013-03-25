@@ -26,8 +26,8 @@ public interface KieContainer {
     void updateToVersion(ReleaseId version);
 
     /**
-     * Returns the defualt KieBase in this KieContainer.
-     * @throws a RuntimeException if this KieContainer doesn't have any defualt KieBase
+     * Returns the default KieBase in this KieContainer.
+     * @throws a RuntimeException if this KieContainer doesn't have any default KieBase
      * @see org.kie.api.builder.model.KieBaseModel#setDefault(boolean)
      */
     KieBase getKieBase();
@@ -39,15 +39,15 @@ public interface KieContainer {
     KieBase getKieBase(String kBaseName);
 
     /**
-     * Creates the defualt KieSession for this KieContainer
-     * @throws a RuntimeException if this KieContainer doesn't have any defualt KieSession
+     * Creates the default KieSession for this KieContainer
+     * @throws a RuntimeException if this KieContainer doesn't have any default KieSession
      * @see org.kie.api.builder.model.KieSessionModel#setDefault(boolean)
      */
     KieSession newKieSession();
 
     /**
-     * Creates the defualt KieSession for this KieContainer using the given Environment
-     * @throws a RuntimeException if this KieContainer doesn't have any defualt KieSession
+     * Creates the default KieSession for this KieContainer using the given Environment
+     * @throws a RuntimeException if this KieContainer doesn't have any default KieSession
      * @see org.kie.api.builder.model.KieSessionModel#setDefault(boolean)
      */
     KieSession newKieSession(Environment environment);
@@ -65,8 +65,8 @@ public interface KieContainer {
     KieSession newKieSession(String kSessionName, Environment environment);
 
     /**
-     * Creates the defualt StatelessKieSession for this KieContainer using the given Environment
-     * @throws a RuntimeException if this KieContainer doesn't have any defualt StatelessKieSession
+     * Creates the default StatelessKieSession for this KieContainer using the given Environment
+     * @throws a RuntimeException if this KieContainer doesn't have any default StatelessKieSession
      * @see org.kie.api.builder.model.KieSessionModel#setDefault(boolean)
      */
     StatelessKieSession newStatelessKieSession();

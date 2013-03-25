@@ -76,7 +76,7 @@ public interface KieSessionModel {
     /**
      * Sets the KieSession generated from this KieSessionModel as the default one,
      * i.e. the one that can be loaded from the KieContainer without having to pass its name.
-     * Note that only one defualt KieSessionModel of type STATEFUL and one of type STATELESS
+     * Note that only one default KieSessionModel of type STATEFUL and one of type STATELESS
      * are allowed in a given KieContainer so if more than one is found
      * (maybe because a given KieContainer includes many KieModules) a warning is emitted
      * and all the defaults are disabled so all the KieSessions will be accessible only by name
