@@ -457,11 +457,11 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public Collection<Object> getObjects() {
+    public Collection<? extends Object> getObjects() {
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public Collection<Object> getObjects( ObjectFilter filter ) {
+    public Collection<? extends Object> getObjects( ObjectFilter filter ) {
         throw new IllegalStateException( ERRORMSG );
     }
 

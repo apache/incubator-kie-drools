@@ -355,11 +355,11 @@ public class CommandBasedStatefulKnowledgeSession
         return (Collection<T>) this.commandService.execute( new GetFactHandlesCommand( filter ) );
     }
 
-    public Collection<Object> getObjects() {
+    public Collection<? extends Object> getObjects() {
         return getObjects( null );
     }
 
-    public Collection<Object> getObjects(ObjectFilter filter) {
+    public Collection<? extends Object> getObjects(ObjectFilter filter) {
         Collection result = commandService.execute( new GetObjectsCommand( filter ) );
         return result;
     }

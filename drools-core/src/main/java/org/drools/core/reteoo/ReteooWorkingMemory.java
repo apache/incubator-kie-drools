@@ -1183,11 +1183,11 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         throw new UnsupportedOperationException( "this is implementedby StatefulKnowledgeImpl" );
     }
 
-    public Collection<Object> getObjects() {
+    public Collection<? extends Object> getObjects() {
         throw new UnsupportedOperationException( "this is implementedby StatefulKnowledgeImpl" );
     }
 
-    public Collection<Object> getObjects(ObjectFilter filter) {
+    public Collection<? extends Object> getObjects(ObjectFilter filter) {
         throw new UnsupportedOperationException( "this is implementedby StatefulKnowledgeImpl" );
     }
 
