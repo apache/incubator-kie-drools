@@ -44,10 +44,9 @@ public class Activator
     public void start(BundleContext bc) throws Exception {
         logger.info( "registering api services" );
 
-        // @TODO (mdp) commented t allow it to compile
-//        this.serviceRegistry = bc.registerService( ServiceRegistry.class.getName(),
-//                                                   ServiceRegistryImpl.getInstance(),
-//                                                   new Hashtable() );
+        //this.serviceRegistry = bc.registerService( ServiceRegistry.class.getName(),
+        //                                           ServiceRegistryImpl.getInstance(),
+        //                                           new Hashtable() );
 
         this.registryTracker = new ServiceTracker( bc,
                                                    Service.class.getName(),

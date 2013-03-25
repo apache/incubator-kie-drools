@@ -24,10 +24,14 @@
         <configuration>
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
-            <Bundle-SymbolicName>org.kie.internalapi;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>org.kie.api;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.kie.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
-            <Export-Package>org.kie.*</Export-Package>
+            <Bundle-SymbolicName>org.kie.internalapi</Bundle-SymbolicName>
+            <Import-Package>
+              !org.kie.*,
+              *;resolution:=optional,
+              com.sun.tools.xjc;resolution:=optional</Import-Package>
+            <Export-Package>
+              org.kie.internal*
+            </Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
