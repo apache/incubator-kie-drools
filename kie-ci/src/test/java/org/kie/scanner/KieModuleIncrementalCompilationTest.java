@@ -14,7 +14,6 @@ import static junit.framework.Assert.*;
 public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
 
     @Test
-    @Ignore("See DROOLS-90: Incremental Build fails if KieModule POM is invalid")
     public void testIncrementalCompilationFirstBuildHasErrors() throws Exception {
         KieServices ks = KieServices.Factory.get();
 
@@ -25,28 +24,28 @@ public class KieModuleIncrementalCompilationTest extends AbstractKieCiTest {
         kfs.writePomXML( getPom( releaseId ) );
 
         //Valid
-        String drl1 = "package org.drools.compiler\n" +
+        String drl1 =
                 "rule R1 when\n" +
-                "   $m : Message()\n" +
+                "   $s : String()\n" +
                 "then\n" +
                 "end\n";
 
-        //Field is unknown ("mesage" not "message")
-        String drl2 = "package org.drools.compiler\n" +
+        //Invalid
+        String drl2 =
                 "rule R2 when\n" +
-                "   $m : Message( mesage == \"Hello World\" )\n" +
+                "   $s : Strin( )\n" +
                 "then\n" +
                 "end\n";
 
         //Write Rule 1 - No DRL errors, but POM is in error
-        kfs.write( "src/main/resources/r1.drl", drl1 );
+        kfs.write( "src/main/resources/KBase1/r1.drl", drl1 );
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
         assertEquals( 1,
                       kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
 
         //Add file with error - expect 1 "added" error message
-        kfs.write( "src/main/resources/r2.drl", drl2 );
-        IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
+        kfs.write( "src/main/resources/KBase1/r2.drl", drl2 );
+        IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/KBase1/r2.drl" ).build();
 
         assertEquals( 1, addResults.getAddedMessages().size() );
         assertEquals( 0, addResults.getRemovedMessages().size() );
