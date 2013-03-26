@@ -64,9 +64,7 @@
                 <descriptor>src/main/assembly/installer.xml</descriptor>
                 <descriptor>src/main/assembly/examples.xml</descriptor>
                 <!-- war zips -->
-                <!--descriptor>src/main/assembly/gwt-console.xml</descriptor-->
                 <descriptor>src/main/assembly/human-task-war.xml</descriptor>
-                <!--descriptor>src/main/assembly/form-builder.xml</descriptor-->
               </descriptors>
             </configuration>
           </execution>
