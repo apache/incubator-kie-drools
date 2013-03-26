@@ -18,7 +18,6 @@ import javax.transaction.Transaction;
 
 import junit.framework.Assert;
 
-import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.LogEvent;
@@ -35,7 +34,6 @@ import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.task.HumanTaskServiceFactory;
-import org.jbpm.task.wih.HTWorkItemHandlerFactory;
 import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
@@ -47,7 +45,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -563,9 +560,9 @@ public abstract class JbpmJUnitTestCase extends Assert {
 
         }
         
-        LocalHTWorkItemHandler humanTaskHandler =  HTWorkItemHandlerFactory.newHandler(ksession, taskService);
-        
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
+//        LocalHTWorkItemHandler humanTaskHandler =  HTWorkItemHandlerFactory.newHandler(ksession, taskService);
+//        
+//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
         
         return taskService;
     }

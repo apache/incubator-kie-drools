@@ -15,8 +15,6 @@ import org.jbpm.task.HumanTaskServiceFactory;
 import org.jbpm.task.impl.model.GroupImpl;
 import org.jbpm.task.impl.model.UserImpl;
 import org.jbpm.task.wih.ExternalTaskEventListener;
-import org.jbpm.task.wih.HTWorkItemHandlerFactory;
-import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.After;
 import org.junit.Assert;
@@ -87,7 +85,7 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
         }
     }
 
-    @Test
+    @Test 
     public void groupTaskQueryTest() throws Exception {
 
     	Properties userGroups = new Properties();
@@ -98,10 +96,9 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
         StatefulKnowledgeSession ksession = createKnowledgeSession("Evaluation2.bpmn");
         KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
  
-        LocalHTWorkItemHandler htWorkItemHandler = HTWorkItemHandlerFactory.newHandler(ksession, taskService);
-        
-        
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htWorkItemHandler);
+//        LocalHTWorkItemHandler htWorkItemHandler = HTWorkItemHandlerFactory.newHandler(ksession, taskService);
+//  
+//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htWorkItemHandler);
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("employee", "salaboy");
