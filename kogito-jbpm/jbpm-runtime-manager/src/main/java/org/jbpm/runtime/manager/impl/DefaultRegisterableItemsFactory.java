@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
-import org.jbpm.task.wih.ManagedExternalTaskEventListener;
-import org.jbpm.task.wih.ManagedLocalHTWorkItemHandler;
+import org.jbpm.task.wih.ExternalTaskEventListener;
+import org.jbpm.task.wih.LocalHTWorkItemHandler;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
@@ -67,10 +67,10 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     @SuppressWarnings({ "unchecked", "rawtypes" })
     protected WorkItemHandler getHTWorkItemHandler(Runtime runtime) {
         
-        ManagedExternalTaskEventListener listener = new ManagedExternalTaskEventListener();
+        ExternalTaskEventListener listener = new ExternalTaskEventListener();
         listener.setRuntimeManager(((RuntimeImpl)runtime).getManager());
         
-        ManagedLocalHTWorkItemHandler humanTaskHandler = new ManagedLocalHTWorkItemHandler();
+        LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler();
         humanTaskHandler.setRuntimeManager(((RuntimeImpl)runtime).getManager());
         if (runtime.getTaskService() instanceof EventService) {
             ((EventService)runtime.getTaskService()).registerTaskLifecycleEventListener(listener);

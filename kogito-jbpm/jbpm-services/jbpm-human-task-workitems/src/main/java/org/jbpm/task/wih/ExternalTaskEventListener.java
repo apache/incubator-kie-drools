@@ -17,13 +17,11 @@ package org.jbpm.task.wih;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
-import javax.inject.Inject;
+import org.jboss.seam.transaction.Transactional;
 
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.jbpm.task.annotations.External;
@@ -33,11 +31,12 @@ import org.jbpm.task.events.AfterTaskSkippedEvent;
 import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.task.api.TaskService;
+import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.model.Content;
 import org.kie.internal.task.api.model.Status;
 import org.kie.internal.task.api.model.Task;
-
 
 /**
  *
@@ -45,59 +44,42 @@ import org.kie.internal.task.api.model.Task;
  */
 @ApplicationScoped
 @External
+@Transactional
 public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  implements TaskLifeCycleEventListener {
 
-    @Inject
-    private TaskService taskService;
-    
-    @Inject
-    private Logger logger;
-    
-    private Map<Integer, KieSession> kruntimes = new HashMap<Integer,KieSession>();
+    private RuntimeManager runtimeManager;
     private Map<Integer, ClassLoader> classLoaders = new HashMap<Integer,ClassLoader>();
-    
-
+ 
     public ExternalTaskEventListener() {
     }
     
-
-    public TaskService getTaskService() {
-        return taskService;
+    public void addClassLoader(Integer sessionId, ClassLoader cl) {
+        this.classLoaders.put(sessionId, cl);
     }
 
-    public void setTaskService(TaskService taskService) {
-        this.taskService = taskService;
+    public RuntimeManager getRuntimeManager() {
+        return runtimeManager;
     }
 
-    public void setLogger(Logger logger) {
-        this.logger = logger;
+    public void setRuntimeManager(RuntimeManager runtimeManager) {
+        this.runtimeManager = runtimeManager;
     }
-
-
-    public void addSession(KieSession session) {
-        addSession(session, null);
-    }
-     
-    public void addSession(KieSession session, ClassLoader classLoader) {
-        kruntimes.put(session.getId(), session);
-        classLoaders.put(session.getId(), classLoader);
-    }
-
 
     public void processTaskState(Task task) {
 
         long workItemId = task.getTaskData().getWorkItemId();
-        int processSessionId = task.getTaskData().getProcessSessionId();
-        KieSession session = kruntimes.get(processSessionId);
-        ClassLoader classLoader = classLoaders.get(processSessionId);
+        long processInstanceId = task.getTaskData().getProcessInstanceId();
+        Runtime runtime = runtimeManager.getRuntime(ProcessInstanceIdContext.get(processInstanceId));
+        KieSession session = runtime.getKieSession();
+        
         if (task.getTaskData().getStatus() == Status.Completed) {
             String userId = task.getTaskData().getActualOwner().getId();
             Map<String, Object> results = new HashMap<String, Object>();
             results.put("ActorId", userId);
             long contentId = task.getTaskData().getOutputContentId();
             if (contentId != -1) {
-                Content content = taskService.getContentById(contentId);
-                Object result = ContentMarshallerHelper.unmarshall(content.getContent(), session.getEnvironment(), classLoader);
+                Content content = runtime.getTaskService().getContentById(contentId);
+                Object result = ContentMarshallerHelper.unmarshall(content.getContent(), session.getEnvironment(), classLoaders.get(session.getId()));
                 results.put("Result", result);
                 if (result instanceof Map) {
                     Map<?, ?> map = (Map<?, ?>) result;
@@ -138,13 +120,14 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
     }
 
     public void afterTaskCompletedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskCompletedEvent Task task) {
-        KieSession session = kruntimes.get(task.getTaskData().getProcessSessionId());
+        long processInstanceId = task.getTaskData().getProcessInstanceId();
+        Runtime runtime = runtimeManager.getRuntime(ProcessInstanceIdContext.get(processInstanceId));
+        KieSession session = runtime.getKieSession();
         if (session != null) {
-            logger.log(Level.FINE, ">> I''ve recieved an event for a known session ({0})", task.getTaskData().getProcessSessionId());
+            System.out.println(">> I've recieved an event for a known session (" + task.getTaskData().getProcessSessionId()+")");
             processTaskState(task);
         } else {
-            logger.log(Level.SEVERE, "EE: I''ve recieved an event but the session is not known by this handler ( {0})", task.getTaskData().getProcessSessionId());
-            
+            System.out.println("EE: I've recieved an event but the session is not known by this handler ( "+task.getTaskData().getProcessSessionId()+")");
         }
     }
 
