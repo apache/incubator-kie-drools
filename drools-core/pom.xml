@@ -170,15 +170,17 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
         <configuration>
           <instructions>
-            <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
-            <Require-Bundle>org.kie.internalapi;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*,*,org.osgi.util.tracker</Import-Package>
-            <Export-Package>org.drools.*</Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
+            <Import-Package>
+              !org.drools.*,
+              org.osgi.util.tracker,
+              *
+            </Import-Package>
+            <Export-Package>
+              org.drools.core.*
+            </Export-Package>
             <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>

@@ -36,15 +36,12 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
         <configuration>
           <instructions>
             <Bundle-SymbolicName>org.drools.templates;singleton:=true</Bundle-SymbolicName>
-            <_removeheaders>Ignore-Package</_removeheaders>
-            <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*,*</Import-Package>
-            <Export-Package>org.drools.*</Export-Package>
-            <DynamicImport-Package>org.drools.*</DynamicImport-Package>
+            <Export-Package>
+              org.drools.template.*
+            </Export-Package>
           </instructions>
         </configuration>
       </plugin>
