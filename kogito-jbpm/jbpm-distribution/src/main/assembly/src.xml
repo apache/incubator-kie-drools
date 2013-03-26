@@ -24,6 +24,7 @@
         <include>jbpm-services/**</include>
         <include>jbpm-test/**</include>
         <include>jbpm-workitems/**</include>
+        <include>jbpm-runtime-manager/**</include>
         <include>*.xml</include>
         <include>*.txt</include>
       </includes>

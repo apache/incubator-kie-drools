@@ -25,6 +25,7 @@
         <include>org.jbpm:jbpm-human-task-workitems</include>
         <include>org.jbpm:jbpm-shared-services</include>
         <include>org.jbpm:jbpm-test</include>
+        <include>org.jbpm:jbpm-runtime-manager</include>
       </includes>
       <excludes>
         <exclude>*:sources</exclude>
@@ -50,6 +51,7 @@
         <exclude>org.jbpm:jbpm-human-task-workitems</exclude>
         <exclude>org.jbpm:jbpm-shared-services</exclude>
         <exclude>org.jbpm:jbpm-test</exclude>
+        <exclude>org.jbpm:jbpm-runtime-manager</exclude>
         <!-- Exclude docs -->
         <exclude>org.jbpm:jbpm-docs</exclude>
         <exclude>org.jbpm:jbpm-examples</exclude>
