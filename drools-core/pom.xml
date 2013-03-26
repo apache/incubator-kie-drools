@@ -173,11 +173,6 @@
         <configuration>
           <instructions>
             <Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
-            <Import-Package>
-              !org.drools.*,
-              org.osgi.util.tracker,
-              *
-            </Import-Package>
             <Export-Package>
               org.drools.core.*
             </Export-Package>
