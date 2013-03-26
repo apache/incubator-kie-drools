@@ -120,14 +120,9 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
         <configuration>
           <instructions>
-            <_nouses>true</_nouses>
-            <_snapshot>${osgi-version-qualifier}</_snapshot>
             <Bundle-SymbolicName>org.jbpm.bpmn2</Bundle-SymbolicName>
-            <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi-version-qualifier}</Bundle-Version>
-            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
             <Bundle-Activator>org.jbpm.osgi.bpmn2.Activator</Bundle-Activator>
           </instructions>
         </configuration>

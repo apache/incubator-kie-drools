@@ -116,16 +116,16 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
         <configuration>
           <instructions>
-            <_nouses>true</_nouses>
-            <_snapshot>${osgi-version-qualifier}</_snapshot>
             <Bundle-SymbolicName>org.jbpm.flow-persistence-jpa;singleton:=true</Bundle-SymbolicName>
-            <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi-version-qualifier}</Bundle-Version>
-            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
-            <Import-Package>javax.transaction.*;resolution:=optional,*</Import-Package>
-            <Export-Package>org.jbpm.persistence.*</Export-Package>
+            <Import-Package>
+              javax.transaction.*;resolution:=optional,
+              *
+            </Import-Package>
+            <Export-Package>
+              org.jbpm.persistence.*
+            </Export-Package>
           </instructions>
         </configuration>
       </plugin>
