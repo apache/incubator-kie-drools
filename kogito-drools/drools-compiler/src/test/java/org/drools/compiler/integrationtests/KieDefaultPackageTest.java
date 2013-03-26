@@ -70,7 +70,6 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("How do you access Type 'Smurf'? Test 2 - Attempting to use defaultPkg prefix")
     public void testModelInDefaultPackage2() throws Exception {
         //This Model will be in the "default package"
         String model_drl = ""
@@ -81,7 +80,7 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
         //This DRL is in a named package, but imports the model (trying with defaultPkg prefix)
         String drl = ""
                 + "package org.smurf\n"
-                + "import defaultPkg.Smurf\n"
+                + "import defaultpkg.Smurf\n"
                 + "rule \"test\"\n"
                 + "when\n"
                 + "Smurf()\n"
