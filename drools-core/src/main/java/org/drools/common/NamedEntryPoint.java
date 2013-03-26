@@ -37,6 +37,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
+import org.drools.definition.type.FactType;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeConf;
@@ -318,7 +319,7 @@ public class NamedEntryPoint
                        final Activation activation,
                        ObjectTypeConf typeConf) {
         this.ruleBase.executeQueuedActions();
-
+        
         this.wm.executeQueuedActions();
 
         if ( activation != null ) {

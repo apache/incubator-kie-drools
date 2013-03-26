@@ -34,6 +34,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
+import org.drools.base.ClassObjectType;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.DroolsObjectInput;
@@ -61,10 +62,10 @@ import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.WindowDeclaration;
 import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -306,6 +307,20 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                  context,
                                  workingMemory );
     }
+    
+    @Override
+    protected void updateOTNs(TypeDeclaration type) {
+        for( ObjectTypeNode otn : this.rete.getObjectTypeNodes() ) {
+            ObjectType ot = otn.getObjectType();
+            if( ot instanceof ClassObjectType ) {
+                ClassObjectType cot = (ClassObjectType) ot;
+                if( cot.getClassType().getName().equals( type.getTypeClassName() ) ) {
+                    cot.setClassType( type.getTypeClass() );
+                }
+            }
+        }
+    }
+    
 
     public StatefulSession newStatefulSession(boolean keepReference) {
         SessionConfiguration config = new SessionConfiguration();

@@ -67,6 +67,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
+import org.drools.definition.type.FactType;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AfterActivationFiredEvent;
@@ -81,6 +82,7 @@ import org.drools.rule.Package;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -307,6 +309,51 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             assertEquals( 0,
                           reteooRuleBase.getPackages().length );
         }
+    }
+
+    @Test
+    public void testDynamicRuleRemovalsTypeDeclarations() throws Exception {
+        String drl = "package org.test\n"+
+                     "declare Foo\n"+
+                     "    id : String\n" +
+                     "end\n" +
+                     "rule R1 when\n" +
+                     "    $f : Foo( id == \"a\")\n" +
+                     "then\n" +
+                     "    modify( $f) { setId(\"b\") }\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "    $f : Foo( id == \"b\" )\n" +
+                     "then\n" +
+                     "    modify( $f ) { setId(\"c\") }\n" +
+                     "end\n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        // first run
+        FactType factType = kbase.getFactType( "org.test", "Foo" );
+        Object foo = factType.newInstance();
+        factType.set( foo, "id", "a" );
+        
+        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+        ksession.execute( foo );
+        assertEquals( "c", factType.get( foo, "id" ) );
+        
+        // remove rule
+        kbase.removeRule( "org.test", "R2" );
+        
+        // second run
+        factType = kbase.getFactType( "org.test", "Foo" );
+        foo = factType.newInstance();
+        factType.set( foo, "id", "a" );
+        
+        ksession = kbase.newStatelessKnowledgeSession();
+        ksession.execute( foo );
+        assertEquals( "b", factType.get( foo, "id" ) );
     }
 
     @Test

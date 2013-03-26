@@ -49,6 +49,7 @@ import org.drools.definition.process.Process;
 import org.drools.definition.type.FactType;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
+import org.drools.factmodel.FieldDefinition;
 import org.drools.factmodel.traits.TripleStoreRegistry;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.management.DroolsManagementAgent;
@@ -101,7 +102,7 @@ abstract public class AbstractRuleBase
 
     private transient Map<String, Class<?>>               globals;
 
-    private final transient Queue<DialectRuntimeRegistry> reloadPackageCompilationData = new ConcurrentLinkedQueue<DialectRuntimeRegistry>();
+    private final transient Queue<Package>                reloadPackageCompilationData = new ConcurrentLinkedQueue<Package>();
 
     private RuleBaseEventSupport                          eventSupport                 = new RuleBaseEventSupport( this );
 
@@ -1086,7 +1087,7 @@ abstract public class AbstractRuleBase
             removeRule( pkg,
                         rule );
             pkg.removeRule( rule );
-            addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
+            addReloadDialectDatas( pkg );
         } finally {
             unlock();
         }
@@ -1146,7 +1147,7 @@ abstract public class AbstractRuleBase
                             functionName );
             pkg.removeFunction( functionName );
 
-            addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
+            addReloadDialectDatas( pkg );
         } finally {
             unlock();
         }
@@ -1265,12 +1266,31 @@ abstract public class AbstractRuleBase
     }
 
     public void executeQueuedActions() {
-        DialectRuntimeRegistry registry;
-        while (( registry = reloadPackageCompilationData.poll() ) != null) {
+        Package pkg = null;
+        while (( pkg = reloadPackageCompilationData.poll() ) != null) {
+            // first reload package compilation data
+            DialectRuntimeRegistry registry = pkg.getDialectRuntimeRegistry();
             registry.onBeforeExecute();
+            // then re-resolve type definitions
+            for( TypeDeclaration type : pkg.getTypeDeclarations().values() ) {
+                try {
+                    type.setTypeClass( this.rootClassLoader.loadClass( type.getTypeClassName() ) );
+                    pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( this.rootClassLoader ) );
+                    for( FieldDefinition fd : type.getTypeClassDef().getFieldsDefinitions() ) {
+                        fd.setReadWriteAccessor( pkg.getClassFieldAccessorStore().getAccessor( type.getTypeClassName(), fd.getName() ) );
+                    }
+                    
+                    // also re-wire OTNs for that type
+                    updateOTNs( type );
+                } catch ( ClassNotFoundException e ) {
+                    throw new RuntimeDroolsException( "Unable to re-resolve class '" + type.getTypeClassName() + "'" );
+                }
+            }
         }
     }
 
+    protected abstract void updateOTNs(TypeDeclaration type);
+    
     public RuleBasePartitionId createNewPartitionId() {
         RuleBasePartitionId p;
         synchronized (this.partitionIDs) {
@@ -1317,6 +1337,9 @@ abstract public class AbstractRuleBase
     public FactType getFactType( final String name ) {
         readLock();
         try {
+            // has to execute queued actions, as there might be pending
+            // compilation data reloads
+            this.executeQueuedActions();
             for (Package pkg : this.pkgs.values()) {
                 FactType type = pkg.getFactType( name );
                 if (type != null) {
@@ -1329,8 +1352,8 @@ abstract public class AbstractRuleBase
         }
     }
 
-    private void addReloadDialectDatas( DialectRuntimeRegistry registry ) {
-        this.reloadPackageCompilationData.offer( registry );
+    private void addReloadDialectDatas( Package pkg ) {
+        this.reloadPackageCompilationData.offer( pkg );
     }
 
     public static interface RuleBaseAction
