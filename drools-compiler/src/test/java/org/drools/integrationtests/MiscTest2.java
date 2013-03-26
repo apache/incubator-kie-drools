@@ -1338,4 +1338,28 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testAvoidUnwantedSemicolonWhenDelimitingExpression() {
+        // DROOLS-86
+        String str =
+                "global java.util.List l\n" +
+                "rule rule1 \n" +
+                " dialect \"mvel\" \n" +
+                "when \n" +
+                "then \n" +
+                " String s = \"http://onefineday.123\";\n" +
+                " l.add(s);\n" +
+                "end \n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> l = new ArrayList<String>();
+        ksession.setGlobal("l", l);
+
+        ksession.fireAllRules();
+
+        assertEquals("http://onefineday.123", l.get(0));
+    }
 }
