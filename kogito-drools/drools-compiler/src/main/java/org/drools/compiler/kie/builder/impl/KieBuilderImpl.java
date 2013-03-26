@@ -125,6 +125,9 @@ public class KieBuilderImpl
                     addDependency(depModule);
                 }
             }
+        } else {
+            // if the pomModel is null it means that the provided pom.xml is invalid so use the default releaseId
+            releaseId = KieServices.Factory.get().getRepository().getDefaultReleaseId();
         }
     }
 
@@ -136,8 +139,8 @@ public class KieBuilderImpl
     }
 
     public KieBuilder buildAll() {
-        // releaseId and kModule will be null if a provided pom.xml or kmodule.xml is invalid
-        if ( !isBuilt() && releaseId != null && kModuleModel != null ) {
+        // kModuleModel will be null if a provided pom.xml or kmodule.xml is invalid
+        if ( !isBuilt() && kModuleModel != null ) {
             trgMfs = new MemoryFileSystem();
             writePomAndKModule();
 
