@@ -139,7 +139,6 @@ public class TypeDeclaration
         this.timestampAttribute = null;
         this.typeTemplate = null;
         this.typesafe =  true;
-        
     }
 
     public void readExternal(ObjectInput in) throws IOException,
