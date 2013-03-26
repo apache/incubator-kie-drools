@@ -8,10 +8,9 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.persistence.objects.MockUserInfo;
-import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
-import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
-import org.jbpm.task.HumanTaskServiceFactory;
+import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.task.impl.model.GroupImpl;
 import org.jbpm.task.impl.model.UserImpl;
 import org.jbpm.task.wih.ExternalTaskEventListener;
@@ -20,9 +19,15 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.event.KnowledgeRuntimeEventManager;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.TaskService;
 import org.kie.internal.task.api.model.TaskSummary;
 import org.slf4j.Logger;
@@ -31,17 +36,17 @@ import org.slf4j.LoggerFactory;
 public class LocalTasksServiceTest extends JbpmJUnitTestCase {
 
     private static Logger logger = LoggerFactory.getLogger(LocalTasksServiceTest.class);
-    private HashMap<String, Object> context;
     
     private EntityManagerFactory emfTasks;
     protected Map<String, UserImpl> users;
     protected Map<String, GroupImpl> groups;
-    protected TaskService taskService;
+    
 
-    protected MockUserInfo userInfo;
     protected Properties conf;
     
     protected ExternalTaskEventListener externalTaskEventListener;
+    
+    protected RuntimeManager manager;
 
     public LocalTasksServiceTest() {
         super(true);
@@ -51,35 +56,13 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        
-
-        
-//        conf = new Properties();
-//        conf.setProperty("mail.smtp.host", "localhost");
-//        conf.setProperty("mail.smtp.port", "1125");
-//        conf.setProperty("from", "from@domain.com");
-//        conf.setProperty("replyTo", "replyTo@domain.com");
-//        conf.setProperty("defaultLanguage", "en-UK");
-//
-//        SendIcal.initInstance(conf);
-
-
-        emfTasks = Persistence.createEntityManagerFactory("org.jbpm.task");
-
-        userInfo = new MockUserInfo();
-        
-        
-        JbpmServicesTransactionManager txManager = new JbpmJTATransactionManager();
-        HumanTaskServiceFactory.setEntityManagerFactory(emfTasks);
-        HumanTaskServiceFactory.setJbpmServicesTransactionManager(txManager);
-        
-        taskService = HumanTaskServiceFactory.newTaskService();
-       
+        emfTasks = Persistence.createEntityManagerFactory("org.jbpm.task");       
     }
 
     @After
     public void tearDown() throws Exception {
         super.tearDown();
+        manager.close();
         if (emfTasks != null && emfTasks.isOpen()) {
             emfTasks.close();
         }
@@ -93,12 +76,18 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
         userGroups.setProperty("john", "PM");
         userGroups.setProperty("mary", "HR");
         
-        StatefulKnowledgeSession ksession = createKnowledgeSession("Evaluation2.bpmn");
-        KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
+        environment.setUserGroupCallback(new JBossUserGroupCallbackImpl(userGroups));
+        environment.addAsset(ResourceFactory.newClassPathResource("Evaluation2.bpmn"), ResourceType.BPMN2);
+       
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+        
+        KieSession ksession = runtime.getKieSession();
+        TaskService taskService = runtime.getTaskService();
+        KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
  
-//        LocalHTWorkItemHandler htWorkItemHandler = HTWorkItemHandlerFactory.newHandler(ksession, taskService);
-//  
-//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htWorkItemHandler);
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("employee", "salaboy");
@@ -109,20 +98,20 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
         Assert.assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
 
         //gets salaboy's tasks
-        List<TaskSummary> salaboysTasks = this.taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
+        List<TaskSummary> salaboysTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
         Assert.assertEquals(1, salaboysTasks.size());
 
 
-        this.taskService.start(salaboysTasks.get(0).getId(), "salaboy");
+        taskService.start(salaboysTasks.get(0).getId(), "salaboy");
 
-        this.taskService.complete(salaboysTasks.get(0).getId(), "salaboy", null);
+        taskService.complete(salaboysTasks.get(0).getId(), "salaboy", null);
 
-        List<TaskSummary> pmsTasks = this.taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        List<TaskSummary> pmsTasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
 
         Assert.assertEquals(1, pmsTasks.size());
 
 
-        List<TaskSummary> hrsTasks = this.taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
+        List<TaskSummary> hrsTasks = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
 
         Assert.assertEquals(1, hrsTasks.size());
 

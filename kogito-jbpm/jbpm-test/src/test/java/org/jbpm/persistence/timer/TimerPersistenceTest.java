@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
+import javax.transaction.SystemException;
 
 import org.drools.core.process.instance.WorkItemHandler;
 import org.jbpm.test.JBPMHelper;
@@ -19,6 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
@@ -58,9 +60,8 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
     public void boundaryEventTimerAndCompleteHumanTaskWithoutPersistence() throws InterruptedException {
         this.setPersistence(false);
         
-        // Setup session
-        KnowledgeBase kbase = createKnowledgeBase(PROCESS_FILE_NAME);
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        // Setup session        
+        KieSession ksession = createKnowledgeSession(PROCESS_FILE_NAME);
        
         // Do stuff
         HumanTaskMockHandler humanTaskMockHandler = new HumanTaskMockHandler();
@@ -80,8 +81,7 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
         /**
          * First we set up everything and start the process
          */
-        KnowledgeBase kbase = createKnowledgeBase(PROCESS_FILE_NAME);
-        StatefulKnowledgeSession ksession = newStatefulKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(PROCESS_FILE_NAME);
         int ksessionId = ksession.getId();
         assertTrue("session id not saved.", ksessionId > 0);
         
@@ -98,12 +98,11 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
 
     @Test
     @Ignore
-    public void timerEventOutsideOfKnowledgeSessionTest() throws InterruptedException {
+    public void timerEventOutsideOfKnowledgeSessionTest() throws Exception {
         /**
          * First we set up everything and start the process
          */
-        KnowledgeBase kbase = createKnowledgeBase(DELAY_TIMER_FILE);
-        StatefulKnowledgeSession ksession = JBPMHelper.newStatefulKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(PROCESS_FILE_NAME);
         int ksessionId = ksession.getId();
     
         // Start the process
@@ -122,8 +121,7 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
         emf = null;
     
         assertTrue("sesssion id has not been saved", ksessionId > 0);
-        assertTrue("process id has not been saved", processId > 0);
-        kbase = null;
+        assertTrue("process id has not been saved", processId > 0);        
         process = null;
     
         // The timer fires..
@@ -139,8 +137,7 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
          * Now we recreate a knowledge base and sesion and retrieve the process
          * to see what has happened
          */
-        kbase = createKnowledgeBase(DELAY_TIMER_FILE);
-        ksession = JBPMHelper.loadStatefulKnowledgeSession(kbase, ksessionId);
+        ksession = restoreSession(ksession, true);
         assertNotNull("Could not retrieve session " + ksessionId, ksession);
     
         process = ksession.getProcessInstance(processId);
@@ -149,12 +146,12 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
 
     @Test
     @Ignore
-    public void boundaryEventTimerFiresAndCompleteHumanTaskWithoutKSession() throws InterruptedException {
+    public void boundaryEventTimerFiresAndCompleteHumanTaskWithoutKSession() throws Exception {
         /**
          * First we set up everything and start the process
          */
-        KnowledgeBase kbase = createKnowledgeBase(PROCESS_FILE_NAME);
-        StatefulKnowledgeSession ksession = newStatefulKnowledgeSession(kbase);
+        
+        KieSession ksession = createKnowledgeSession(PROCESS_FILE_NAME);
         int ksessionId = ksession.getId();
         assertTrue("session id not saved.", ksessionId > 0);
         
@@ -174,8 +171,7 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
         
         sleepAndVerifyTimerRuns(processState);
     
-        kbase = createKnowledgeBase(PROCESS_FILE_NAME);
-        ksession = loadStatefulKnowledgeSession(kbase, ksessionId);
+        ksession = restoreSession(ksession, true);
         
         completeWork(ksession, humanTaskMockHandler);
         
@@ -184,7 +180,7 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
         assertNull("Expected process to have been completed and removed", process);
     }
 
-    private ProcessInstance registerHTHandlerAndStartProcess(StatefulKnowledgeSession ksession, HumanTaskMockHandler humanTaskMockHandler) { 
+    private ProcessInstance registerHTHandlerAndStartProcess(KieSession ksession, HumanTaskMockHandler humanTaskMockHandler) { 
         // Register Human Task Handler
         ksession.getWorkItemManager().registerWorkItemHandler(WORK_ITEM_HANLDER_TASK, humanTaskMockHandler);
     
@@ -202,7 +198,7 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
     
     }
 
-    private void completeWork(StatefulKnowledgeSession ksession, HumanTaskMockHandler humanTaskMockHandler) {
+    private void completeWork(KieSession ksession, HumanTaskMockHandler humanTaskMockHandler) {
         assertTrue("The work item task handler does not have a work item!", humanTaskMockHandler.workItem != null);
         long workItemId = humanTaskMockHandler.workItem.getId();
         assertTrue("work item id not saved", workItemId > 0);

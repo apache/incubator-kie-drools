@@ -7,6 +7,7 @@ import javax.transaction.UserTransaction;
 
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.task.api.TaskService;
@@ -28,8 +29,8 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
 
     @Test
     public void testProcess() throws Exception {
-        StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        KieSession ksession = createKnowledgeSession("humantask.bpmn");
+        TaskService taskService = getTaskService();
 
         ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 
@@ -38,7 +39,7 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
 
         // simulating a system restart
         ksession = restoreSession(ksession, true);
-        taskService = getTaskService(ksession);
+        taskService = getTaskService();
 
         // let john execute Task 1
         String taskGroup = "en-UK";
@@ -52,7 +53,7 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
 
         // simulating a system restart
         ksession = restoreSession(ksession, true);
-        taskService = getTaskService(ksession);
+        taskService = getTaskService();
 
         // let mary execute Task 2
         String taskUser = "mary";
@@ -69,8 +70,8 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
 
     @Test
     public void testTransactions() throws Exception {
-        StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        KieSession ksession = createKnowledgeSession("humantask.bpmn");
+        TaskService taskService = getTaskService();
 
         UserTransaction ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();

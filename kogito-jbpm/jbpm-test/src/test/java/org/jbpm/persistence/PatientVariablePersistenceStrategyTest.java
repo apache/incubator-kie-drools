@@ -19,9 +19,8 @@ import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.task.api.TaskService;
 import org.kie.internal.task.api.model.Content;
 import org.kie.internal.task.api.model.Task;
@@ -42,7 +41,7 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitTestCase {
     protected TaskService taskService ;
 
     
-    protected StatefulKnowledgeSession ksession;
+    protected KieSession ksession;
 
     public PatientVariablePersistenceStrategyTest() {
         super(true);
@@ -64,10 +63,9 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitTestCase {
         em.getTransaction().commit();
         
         
-        KnowledgeBase kbase = createKnowledgeBase("patient-appointment.bpmn");
-        ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession("patient-appointment.bpmn");
         
-        taskService = getTaskService(ksession);
+        taskService = getTaskService();
         
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();

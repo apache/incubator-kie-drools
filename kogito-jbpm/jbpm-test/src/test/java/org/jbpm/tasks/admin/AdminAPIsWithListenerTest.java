@@ -16,8 +16,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.KnowledgeBase;
+import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.task.api.TaskService;
@@ -63,14 +65,13 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
     public void automaticCleanUpTest() throws Exception {
 
 
-        KnowledgeBase kbase = createKnowledgeBase("patient-appointment.bpmn");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession("patient-appointment.bpmn");
 
-        TaskService taskService = getTaskService(ksession);
+        TaskService taskService = getTaskService();
 
         taskService.setUserInfo(userInfo);
 
-        KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+        KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
 
         ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));
 
@@ -141,11 +142,11 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
     public void automaticCleanUpTestAbortProcess() throws Exception {
 
 
-        StatefulKnowledgeSession ksession = createKnowledgeSession("patient-appointment.bpmn");
-        KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
+        KieSession ksession = createKnowledgeSession("patient-appointment.bpmn");
 
-        TaskService taskService = getTaskService(ksession);
+        TaskService taskService = getTaskService();
         taskService.setUserInfo(userInfo);
+        KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
 
         ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));
 

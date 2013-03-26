@@ -7,6 +7,7 @@ import java.util.Map;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.task.api.TaskService;
@@ -24,8 +25,8 @@ public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
 
 	@Test
 	public void testProcess() {
-		StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-                TaskService taskService = getTaskService(ksession);
+		KieSession ksession = createKnowledgeSession("humantask.bpmn");
+        TaskService taskService = getTaskService();
 		
 		ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 
@@ -54,8 +55,8 @@ public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
 	
     @Test @Ignore //-> task CreatedBy in summary is not filled ??
     public void testProcessWithCreatedBy() {
-        StatefulKnowledgeSession ksession = createKnowledgeSession("humantaskwithcreatedby.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        KieSession ksession = createKnowledgeSession("humantaskwithcreatedby.bpmn");
+        TaskService taskService = getTaskService();
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", "krisv");
         ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello.createdby", params);

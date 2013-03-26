@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.task.api.TaskService;
@@ -27,8 +28,8 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitTestCase {
 
     @Test 
     public void testProcess() throws Exception {
-        StatefulKnowledgeSession ksession = createKnowledgeSession("HumanTaskOnLane.bpmn2");
-        TaskService taskService = getTaskService(ksession);
+        KieSession ksession = createKnowledgeSession("HumanTaskOnLane.bpmn2");
+        TaskService taskService = getTaskService();
 
         ProcessInstance processInstance = ksession.startProcess("UserTask");
 
@@ -37,7 +38,7 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitTestCase {
 
         // simulating a system restart
         ksession = restoreSession(ksession, true);
-        taskService = getTaskService(ksession);
+        taskService = getTaskService();
 
         // let john execute Task 1
         String taskUser = "john";
@@ -54,7 +55,7 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitTestCase {
 
         // simulating a system restart
         ksession = restoreSession(ksession, true);
-        taskService = getTaskService(ksession);
+        taskService = getTaskService();
         List<Status> reservedOnly = new ArrayList<Status>();
         reservedOnly.add(Status.Reserved);
 

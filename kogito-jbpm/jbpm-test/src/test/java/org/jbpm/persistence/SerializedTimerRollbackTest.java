@@ -26,6 +26,7 @@ import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -67,10 +68,10 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
 
             TransactionManager tm = TransactionManagerServices.getTransactionManager();
 
-            StatefulKnowledgeSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
+            KieSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
             System.out.println("Created knowledge session");
 
-            TaskService taskService = getTaskService(sesion);
+            TaskService taskService = getTaskService();
             Map<String, User> users = new HashMap<String, User>();
             users.put("Administrator", new UserImpl("Administrator"));
             users.put("john", new UserImpl("john"));
@@ -129,14 +130,14 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
     }
 
     @Test
-    @Ignore
+//    @Ignore
     public void testSerizliableTestsWithEngineRollback() {
         try {
     
-            StatefulKnowledgeSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
+            KieSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
             System.out.println("Created knowledge session");
              
-            TaskService taskService = getTaskService(sesion);
+            TaskService taskService = getTaskService();
             System.out.println("Task service created");
             Map<String, User> users = new HashMap<String, User>();
             users.put("Administrator", new UserImpl("Administrator"));
@@ -159,7 +160,8 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
                 } else {
                     try {
                         Map<String, Object> params = new HashMap<String, Object>();
-                        params.put("test", "test");
+                        // set test variable to null so engine will rollback 
+                        params.put("test", null);
                         System.out.println("Creating process instance: " + i);
                         ProcessInstance pi = sesion.startProcess("PROCESS_1", params);
                     } catch (Exception e) {

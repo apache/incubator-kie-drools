@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
@@ -40,8 +41,8 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
     
     @Test
     public void testCreateAndStartProcessWithBusinessKey() {
-        StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        KieSession ksession = createKnowledgeSession("humantask.bpmn");
+        TaskService taskService = getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).createProcessInstance("com.sample.bpmn.hello", getCorrelationKey(), null);
         ksession.startProcessInstance(processInstance.getId());
@@ -75,8 +76,8 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
     
     @Test
     public void testProcessWithBusinessKey() {
-        StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        KieSession ksession = createKnowledgeSession("humantask.bpmn");
+        TaskService taskService = getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).startProcess("com.sample.bpmn.hello", getCorrelationKey(), null);
 
@@ -109,8 +110,8 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
 
     @Test
     public void testProcessWithBusinessKeyFailOnDuplicatedBusinessKey() {
-        StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        KieSession ksession = createKnowledgeSession("humantask.bpmn");
+        TaskService taskService = getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession)
                 .startProcess("com.sample.bpmn.hello", getCorrelationKey(), null);
@@ -151,8 +152,8 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
     
     @Test
     public void testProcessesWithSameBusinessKeyNotInParallel() {
-        StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        KieSession ksession = createKnowledgeSession("humantask.bpmn");
+        TaskService taskService = getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).
                 startProcess("com.sample.bpmn.hello", getCorrelationKey(), null);
@@ -215,8 +216,8 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
     
     @Test
     public void testProcessWithMultiValuedBusinessKey() {
-        StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        KieSession ksession = createKnowledgeSession("humantask.bpmn");
+        TaskService taskService = getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).startProcess("com.sample.bpmn.hello", getMultiValuedCorrelationKey(), null);
 
@@ -249,8 +250,8 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
     
     @Test
     public void testProcessWithInvalidBusinessKey() {
-        StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        KieSession ksession = createKnowledgeSession("humantask.bpmn");
+        TaskService taskService = getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).startProcess("com.sample.bpmn.hello", getMultiValuedCorrelationKey(), null);
 

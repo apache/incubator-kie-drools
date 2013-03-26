@@ -1,13 +1,13 @@
 package org.jbpm.test;
 
-import static org.jbpm.test.JBPMHelper.createEnvironment;
 import static org.jbpm.test.JBPMHelper.txStateName;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
@@ -18,33 +18,32 @@ import javax.transaction.Transaction;
 
 import junit.framework.Assert;
 
-import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
-import org.drools.core.impl.EnvironmentFactory;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
-import org.jbpm.process.audit.AuditLoggerFactory;
-import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
-import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
-import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
+import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
+import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
+import org.jbpm.runtime.manager.impl.factory.InMemorySessionFactory;
 import org.jbpm.task.HumanTaskServiceFactory;
-import org.jbpm.task.wih.LocalHTWorkItemHandler;
+import org.jbpm.task.identity.MvelUserGroupCallbackImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.kie.api.KieBase;
 import org.kie.api.definition.process.Node;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -53,13 +52,13 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,9 +83,11 @@ public abstract class JbpmJUnitTestCase extends Assert {
     private H2Server server = new H2Server();
     private TaskService taskService;
     private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-    private WorkingMemoryInMemoryLogger logger;
-    private JPAProcessInstanceDbLog log;
+    private WorkingMemoryInMemoryLogger logger;    
     private Logger testLogger = null;
+    
+    private RuntimeManager manager;
+    private SimpleRuntimeEnvironment environment;
 
 //    @Rule
 //    public KnowledgeSessionCleanup ksessionCleanupRule = new KnowledgeSessionCleanup();	
@@ -137,6 +138,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
             ds = setupPoolingDataSource();
             emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
         }
+        cleanupSingletonSessionId();        
     }
 
     @After
@@ -170,34 +172,52 @@ public abstract class JbpmJUnitTestCase extends Assert {
                 }
             }
         }
+        if (manager != null) {
+            manager.close();
+        }
     }
 
-    protected KnowledgeBase createKnowledgeBase(String... process) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    protected KieBase createKnowledgeBase(String... process) {
+        if (!setupDataSource){
+            environment = new SimpleRuntimeEnvironment();
+            environment.addToConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
+            environment.addToConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
+        } else if (sessionPersistence) {
+            environment = new DefaultRuntimeEnvironment(emf);
+        } else {
+            environment = new TestRuntimeEnvironment(false);
+            environment.addToEnvironment(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+            environment.addToConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
+            environment.addToConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());        
+        }
+        
         for (String p : process) {
-            kbuilder.add(ResourceFactory.newClassPathResource(p), ResourceType.BPMN2);
+            environment.addAsset(ResourceFactory.newClassPathResource(p), ResourceType.BPMN2);
         }
 
-        // Check for errors
-        if (kbuilder.hasErrors()) {
-            if (kbuilder.getErrors().size() > 0) {
-                boolean errors = false;
-                for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-                    testLogger.error(error.toString());
-                    errors = true;
-                }
-                assertFalse("Could not build knowldge base.", errors);
-            }
-        }
-        return kbuilder.newKnowledgeBase();
+        return environment.getKieBase();
     }
 
-    protected KnowledgeBase createKnowledgeBase(Map<String, ResourceType> resources) throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for (Map.Entry<String, ResourceType> entry : resources.entrySet()) {
-            kbuilder.add(ResourceFactory.newClassPathResource(entry.getKey()), entry.getValue());
+    protected KieBase createKnowledgeBase(Map<String, ResourceType> resources) throws Exception {
+        
+        if (!setupDataSource){
+            environment = new SimpleRuntimeEnvironment();
+            environment.addToConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
+            environment.addToConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
+        } else if (sessionPersistence) {
+            environment = new DefaultRuntimeEnvironment(emf);
+        } else {
+            environment = new TestRuntimeEnvironment(false);
+            environment.addToEnvironment(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+            environment.addToConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
+            environment.addToConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());        
         }
-        return kbuilder.newKnowledgeBase();
+        
+        for (Map.Entry<String, ResourceType> entry : resources.entrySet()) {
+            
+            environment.addAsset(ResourceFactory.newClassPathResource(entry.getKey()), entry.getValue());
+        }
+        return environment.getKieBase();
     }
 
     protected KnowledgeBase createKnowledgeBaseGuvnor(String... packages) throws Exception {
@@ -247,106 +267,70 @@ public abstract class JbpmJUnitTestCase extends Assert {
         return kbuilder.newKnowledgeBase();
     }
 
-    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
-        StatefulKnowledgeSession result;
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        // Do NOT use the Pseudo clock yet.. 
-        // conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
+    protected KieSession createKnowledgeSession() {
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+                
+        KieSession result = runtime.getKieSession();
         if (sessionPersistence) {
-            Environment env = createEnvironment(emf);
-            result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, conf, env);
-            AuditLoggerFactory.newInstance(Type.JPA, result, null);
-            if (log == null) {
-                log = new JPAProcessInstanceDbLog(result.getEnvironment());
-            }
+            
+            JPAProcessInstanceDbLog.setEnvironment(result.getEnvironment());                
+            
         } else {
-            Environment env = EnvironmentFactory.newEnvironment();
-            env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-
-            Properties defaultProps = new Properties();
-            defaultProps.setProperty("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
-            defaultProps.setProperty("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
-            conf = new SessionConfiguration(defaultProps);
-
-            result = kbase.newStatefulKnowledgeSession(conf, env);
-            logger = new WorkingMemoryInMemoryLogger(result);
+            
+            logger = new WorkingMemoryInMemoryLogger((StatefulKnowledgeSession) result);
         }
         //knowledgeSessionSetLocal.get().add(result);
         return result;
     }
 
-    protected StatefulKnowledgeSession createKnowledgeSession(String... process) {
-        KnowledgeBase kbase = createKnowledgeBase(process);
-        return createKnowledgeSession(kbase);
+    protected KieSession createKnowledgeSession(String... process) {
+        createKnowledgeBase(process);
+        return createKnowledgeSession();
     }
 
-    protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean noCache) throws SystemException {
+    protected KieSession restoreSession(KieSession ksession, boolean noCache) throws SystemException {
         if (sessionPersistence) {
-            int id = ksession.getId();
-            KnowledgeBase kbase = ksession.getKieBase();
-            Transaction tx = TransactionManagerServices.getTransactionManager().getCurrentTransaction();
-            if (tx != null) {
-                int txStatus = tx.getStatus();
-                assertTrue("Current transaction state is " + txStateName[txStatus], tx.getStatus() == Status.STATUS_NO_TRANSACTION);
-            }
-            Environment env = null;
-            if (noCache) {
-                emf.close();
-                env = EnvironmentFactory.newEnvironment();
-                emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
-                env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-                env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
-                JPAProcessInstanceDbLog.setEnvironment(env);
-                taskService = null;
-            } else {
-                env = ksession.getEnvironment();
-                taskService = null;
-            }
-            KieSessionConfiguration config = ksession.getSessionConfiguration();
-            ksession.dispose();
-
-            // reload knowledge session 
-            ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
-            KnowledgeSessionCleanup.knowledgeSessionSetLocal.get().add(ksession);
-            AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
-            return ksession;
+            manager.close();
+            
+            return createKnowledgeSession();
         } else {
             return ksession;
         }
     }
 
-    public StatefulKnowledgeSession loadSession(int id, String... process) {
-        KnowledgeBase kbase = createKnowledgeBase(process);
+//    public StatefulKnowledgeSession loadSession(int id, String... process) {
+//        KnowledgeBase kbase = createKnowledgeBase(process);
+//
+//        final KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+//        // Do NOT use the Pseudo clock yet.. 
+//        // config.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+//
+//        StatefulKnowledgeSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, createEnvironment(emf));
+//        KnowledgeSessionCleanup.knowledgeSessionSetLocal.get().add(ksession);
+//        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
+//
+//        return ksession;
+//    }
 
-        final KieSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        // Do NOT use the Pseudo clock yet.. 
-        // config.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
-
-        StatefulKnowledgeSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, createEnvironment(emf));
-        KnowledgeSessionCleanup.knowledgeSessionSetLocal.get().add(ksession);
-        AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
-
-        return ksession;
-    }
-
-    public Object getVariableValue(String name, long processInstanceId, StatefulKnowledgeSession ksession) {
+    public Object getVariableValue(String name, long processInstanceId, KieSession ksession) {
         return ((WorkflowProcessInstance) ksession.getProcessInstance(processInstanceId)).getVariable(name);
     }
 
-    public void assertProcessInstanceCompleted(long processInstanceId, StatefulKnowledgeSession ksession) {
+    public void assertProcessInstanceCompleted(long processInstanceId, KieSession ksession) {
         assertNull(ksession.getProcessInstance(processInstanceId));
     }
 
-    public void assertProcessInstanceAborted(long processInstanceId, StatefulKnowledgeSession ksession) {
+    public void assertProcessInstanceAborted(long processInstanceId, KieSession ksession) {
         assertNull(ksession.getProcessInstance(processInstanceId));
     }
 
-    public void assertProcessInstanceActive(long processInstanceId, StatefulKnowledgeSession ksession) {
+    public void assertProcessInstanceActive(long processInstanceId, KieSession ksession) {
         assertNotNull(ksession.getProcessInstance(processInstanceId));
     }
 
-    public void assertNodeActive(long processInstanceId, StatefulKnowledgeSession ksession, String... name) {
+    public void assertNodeActive(long processInstanceId, KieSession ksession, String... name) {
         List<String> names = new ArrayList<String>();
         for (String n : name) {
             names.add(n);
@@ -382,7 +366,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
             names.add(nodeName);
         }
         if (sessionPersistence) {
-            List<NodeInstanceLog> logs = log.findNodeInstances(processInstanceId);
+            List<NodeInstanceLog> logs = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
             if (logs != null) {
                 for (NodeInstanceLog l : logs) {
                     String nodeName = l.getNodeName();
@@ -412,10 +396,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 
     protected void clearHistory() {
         if (sessionPersistence) {
-            if (log == null) {
-                log = new JPAProcessInstanceDbLog();
-            }
-            log.clear();
+            JPAProcessInstanceDbLog.clear();
         } else {
             logger.clear();
         }
@@ -550,21 +531,12 @@ public abstract class JbpmJUnitTestCase extends Assert {
         }
     }
 
-    public TaskService getTaskService(StatefulKnowledgeSession ksession) {
+    public TaskService getTaskService() {
        
-        if (taskService == null) {
-            JbpmServicesTransactionManager txManager = new JbpmJTATransactionManager();
-            HumanTaskServiceFactory.setEntityManagerFactory(emf);
-            HumanTaskServiceFactory.setJbpmServicesTransactionManager(txManager);
-            taskService = HumanTaskServiceFactory.newTaskService();
-
-        }
         
-//        LocalHTWorkItemHandler humanTaskHandler =  HTWorkItemHandlerFactory.newHandler(ksession, taskService);
-//        
-//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
-        
-        return taskService;
+        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+                
+        return runtime.getTaskService();
     }
 
     public TaskService getService() {
@@ -609,5 +581,43 @@ public abstract class JbpmJUnitTestCase extends Assert {
         return emf;
     }
     
-    
+    private static class TestRuntimeEnvironment extends SimpleRuntimeEnvironment {
+        
+        private boolean usePersistence;
+        
+        public TestRuntimeEnvironment() {
+            this(false);
+        }
+        
+        public TestRuntimeEnvironment(boolean persistence) {
+            super(new DefaultRegisterableItemsFactory());
+            this.usePersistence = persistence;
+            setUserGroupCallback(new MvelUserGroupCallbackImpl());
+        }
+
+        @Override
+        public boolean usePersistence() {
+            return this.usePersistence;
+        }
+        
+    }
+
+    public static void cleanupSingletonSessionId() {
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        if (tempDir.exists()) {
+            
+            String[] jbpmSerFiles = tempDir.list(new FilenameFilter() {
+                
+                @Override
+                public boolean accept(File dir, String name) {
+                    
+                    return name.endsWith("-jbpmSessionId.ser");
+                }
+            });
+            for (String file : jbpmSerFiles) {
+                
+                new File(tempDir, file).delete();
+            }
+        }
+    }
 }

@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.task.api.TaskService;
 import org.kie.internal.task.api.model.TaskSummary;
 
@@ -40,8 +40,8 @@ public class SupportProcessTest extends JbpmJUnitTestCase{
   
     @Test
     public void simpleSupportProcessTest() {
-        StatefulKnowledgeSession ksession = createKnowledgeSession("support.bpmn");
-        TaskService taskService = getTaskService(ksession);
+        KieSession ksession = createKnowledgeSession("support.bpmn");
+        TaskService taskService = getTaskService();
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("customer", "salaboy");

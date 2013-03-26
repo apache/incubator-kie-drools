@@ -25,6 +25,11 @@
     <endEvent id="_16" name="End Event" />
     <startEvent id="_2" name="Start Event" />
     <userTask id="_4" name="User Task" >
+       <extensionElements>
+        <tns:onEntry-script>
+          <tns:script>test.toLowerCase();</tns:script>
+        </tns:onEntry-script>
+      </extensionElements>
       <ioSpecification>
         <dataInput id="_4_CommentInput" name="Comment" />
         <dataInput id="_4_SkippableInput" name="Skippable" />
