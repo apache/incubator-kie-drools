@@ -28,7 +28,7 @@ import org.kie.api.runtime.rule.Session;
  */
 public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
-    protected void registerUndoListener(RuleContext kcontext, ActivationUnMatchListener undoListener) {
+    protected void registerUndoListener(RuleContext kcontext, int scoreLevel, ActivationUnMatchListener undoListener) {
         AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         if (agendaItem.getActivationUnMatchListener() != null) {
             Session session = null; // Should not be used by the undoListener anyway

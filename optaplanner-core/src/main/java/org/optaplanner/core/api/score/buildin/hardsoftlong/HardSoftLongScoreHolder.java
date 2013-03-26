@@ -50,7 +50,7 @@ public class HardSoftLongScoreHolder extends AbstractScoreHolder {
 
     public void addHardConstraintMatch(RuleContext kcontext, final long weight) {
         hardScore += weight;
-        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+        registerUndoListener(kcontext, 0, new ActivationUnMatchListener() {
             public void unMatch(Session session, Match activation) {
                 hardScore -= weight;
             }
@@ -59,7 +59,7 @@ public class HardSoftLongScoreHolder extends AbstractScoreHolder {
 
     public void addSoftConstraintMatch(RuleContext kcontext, final long weight) {
         softScore += weight;
-        registerUndoListener(kcontext, new ActivationUnMatchListener() {
+        registerUndoListener(kcontext, 1, new ActivationUnMatchListener() {
             public void unMatch(Session session, Match activation) {
                 softScore -= weight;
             }
