@@ -31,7 +31,6 @@ import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.factmodel.traits.TraitRegistry;
 import org.drools.factmodel.FieldDefinition;
-import org.drools.factmodel.traits.TripleStoreRegistry;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.management.DroolsManagementAgent;
 import org.drools.rule.DialectRuntimeRegistry;
