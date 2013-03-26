@@ -23,16 +23,17 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.kie.internalapi</Bundle-SymbolicName>
             <Import-Package>
               !org.kie.*,
-              *;resolution:=optional,
-              com.sun.tools.xjc;resolution:=optional</Import-Package>
+              com.sun.tools.xjc;resolution:=optional,
+              javax.enterprise.*;resolution:=optional,
+              javax.inject.*;resolution:=optional,
+              *;resolution:=optional
+            </Import-Package>
             <Export-Package>
               org.kie.internal*
             </Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
           </instructions>
         </configuration>
       </plugin>

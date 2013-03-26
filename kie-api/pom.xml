@@ -20,10 +20,8 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
         <configuration>
           <instructions>
-            <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.kie.api</Bundle-SymbolicName>
             <Import-Package>
               !org.kie.*,
@@ -33,7 +31,6 @@
             <Export-Package>
               org.kie.api*
             </Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
             <!-- <Bundle-Activator>org.kie.api.osgi.Activator</Bundle-Activator> -->
           </instructions>
         </configuration>
