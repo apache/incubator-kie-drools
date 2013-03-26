@@ -24,12 +24,10 @@
           <instructions>
             <Bundle-SymbolicName>org.kie.api</Bundle-SymbolicName>
             <Import-Package>
-              !org.kie.*,
-              *;resolution:=optional,
-              com.sun.tools.xjc;resolution:=optional
+              *;resolution:=optional
             </Import-Package>
             <Export-Package>
-              org.kie.api*
+              org.kie.api.*
             </Export-Package>
             <!-- <Bundle-Activator>org.kie.api.osgi.Activator</Bundle-Activator> -->
           </instructions>
