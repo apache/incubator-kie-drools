@@ -170,7 +170,7 @@ public class JavaConsequenceBuilderTest {
             String fixed = fixBlockDescr(context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
 
             String expected = 
-                    " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 12L ); }\r\n" +
+                    " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 6L ); }\r\n" +
             		"  throw new java.lang.RuntimeException(\"xxx\");\r\n" + 
             		"  Cheese c1 = $cheese;\r\n" + 
             		" { org.drools.compiler.Cheese __obj__ = ( c1 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
@@ -298,7 +298,7 @@ public class JavaConsequenceBuilderTest {
                 "      Cheese c3 = $cheese;\r\n" + 
                 "     { org.drools.compiler.Cheese __obj__ = ( c3 ); org.drools.core.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, 9223372036854775807L ); }\r\n" +
                 " }\r\n" + 
-                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 12L ); }\r\n" +
+                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, 6L ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 
                 " \r\n" + 
                 "";

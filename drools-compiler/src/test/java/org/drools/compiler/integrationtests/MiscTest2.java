@@ -1523,4 +1523,64 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals("http://onefineday.123", l.get(0));
     }
+
+    @Test
+    public void testScrambleProperties() {
+        // DROOLS-91
+        String str =
+                "package org.drools.test\n" +
+                " global java.util.List list" +
+                "\n" +
+                " declare Parent\n" +
+                " @propertyReactive\n" +
+                " a : int\n" +
+                " k : int\n" +
+                " z : int\n" +
+                " end\n" +
+                "\n" +
+                " declare Child extends Parent\n" +
+                " @propertyReactive\n" +
+                " p : int\n" +
+                " end\n" +
+                "\n" +
+                "\n" +
+                " rule Init\n" +
+                " when\n" +
+                " then\n" +
+                " insert( new Child( 1, 3, 5, 7 ) );\n" +
+                " end\n" +
+                "\n" +
+                " rule Mod\n" +
+                " when\n" +
+                " $p : Parent()\n" +
+                " then\n" +
+                " modify( $p ) { setZ( 99 ); }\n" +
+                " end\n" +
+                "\n" +
+                " rule React2\n" +
+                " when\n" +
+                " Child( p == 7 )\n" +
+                " then\n" +
+                " list.add( \"React2\" );\n" +
+                " end\n" +
+                "\n" +
+                " rule React\n" +
+                " when\n" +
+                " Child( z == 99 )\n" +
+                " then\n" +
+                " list.add( \"React\" );\n" +
+                " end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.contains("React"));
+        assertTrue(list.contains("React2"));
+    }
 }
