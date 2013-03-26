@@ -253,14 +253,13 @@
           <instructions>
             <Bundle-SymbolicName>org.drools.compiler;singleton:=true</Bundle-SymbolicName>
             <Import-Package>
-              !org.drools.compiler.*,
-              !javax.enterprise.context.*,
-              !javax.enterprise.inject.*,
-              !javax.enterprise.event.*,
-              !javax.enterprise.util.*,
-              <!-- java compilers are optional: only need one at most -->
+              com.sun.tools.xjc.*;resolution:=optional,
+              com.sun.codemodel;resolution:=optional,
+              javax.enterprise.*;resolution:=optional,
+              org.antlr.*;resolution:=optional,
               org.codehaus.janino.*;resolution:=optional,
               org.eclipse.jdt.*;resolution:=optional,
+              org.osgi.*;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>
