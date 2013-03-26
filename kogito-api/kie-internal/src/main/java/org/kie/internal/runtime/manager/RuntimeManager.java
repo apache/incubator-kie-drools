@@ -19,6 +19,8 @@ package org.kie.internal.runtime.manager;
 public interface RuntimeManager {
 
     Runtime getRuntime(Context context);
+    
+    String getIdentifier();
    
     void disposeRuntime(Runtime runtime);
     
