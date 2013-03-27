@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
+import org.jbpm.process.workitem.wsht.hornetq.HornetQHTWorkItemHandler;
 import org.jbpm.task.Content;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
@@ -14,6 +14,7 @@ import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.jbpm.task.utils.ContentMarshallerHelper;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.SystemEventListenerFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -21,7 +22,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class HumanTaskExample {
