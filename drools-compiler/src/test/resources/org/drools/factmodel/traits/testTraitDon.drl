@@ -57,7 +57,7 @@ end
 //dialect "mvel"
 //when
 //    $core: Imp( "xx", "yy" ; )
-//    not String( this == "die" )
+//    not String( this == "go" )
 //then
 //    Student s = drools.don( $core, Student, true );
 //    Imp core = (Imp) s.getCore();
@@ -71,24 +71,22 @@ end
 
 rule "Trait"
 dialect "java"
+no-loop
 when
-    $core: Imp( "xx", "yy" ; )
-    not String( this == "die" )
+    $core: Imp( "xx" ; )
+    not String( this == "go" )
 then
     Student s = don( $core, Student.class, true );
     Imp core = (Imp) s.getCore();
 
-    s.setAge( 88 );
-    s.setSchool( "skl" );
-
-    update( s );
+    modify( s ) { setAge( 88 ), setSchool( "skl" ); };
 end
  
-rule "Check" 
-no-loop 
+rule "Check"
 when
     $z: Student( $s : school == "skl", fields[ "name" ] == "xx", $a : age == 88 )
 then
+    System.out.println( "DON" );
     list.add( "DON" );
 end 
  
@@ -98,6 +96,7 @@ rule "Check2"
 salience -100 
 when
     not Student( )
-then 
+then
+    System.out.println( "SHED" );
     list.add( "SHED" );
 end;

@@ -277,7 +277,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         Collection<Object> wm = ks.getObjects();
 
-        ks.insert( "die" );
+        ks.insert( "go" );
         ks.fireAllRules();
 
         Assert.assertTrue( info.contains( "DON" ) );
@@ -2614,10 +2614,10 @@ public class TraitTest extends CommonTestMethodBase {
         String s1 = "package test;\n" +
                 "import org.drools.factmodel.traits.*;\n" +
                 "" +
-                "declare trait Student @PropertyReactive name : String end\n" +
-                "declare trait Worker @PropertyReactive name : String end\n" +
-                "declare trait StudentWorker extends Student, Worker @PropertyReactive name : String end\n" +
-                "declare trait Assistant extends Student, Worker @PropertyReactive name : String end\n" +
+                "declare trait Student name : String end\n" +
+                "declare trait Worker name : String end\n" +
+                "declare trait StudentWorker extends Student, Worker name : String end\n" +
+                "declare trait Assistant extends Student, Worker name : String end\n" +
                 "declare Person @Traitable name : String end\n" +
                 "" +
                 "rule \"Init\" \n" +
@@ -2697,10 +2697,10 @@ public class TraitTest extends CommonTestMethodBase {
         String s1 = "package test;\n" +
                 "import org.drools.factmodel.traits.*;\n" +
                 "" +
-                "declare trait Student @PropertyReactive name : String end\n" +
-                "declare trait Worker @PropertyReactive name : String end\n" +
-                "declare trait StudentWorker extends Student, Worker @PropertyReactive name : String end\n" +
-                "declare trait Assistant extends Student, Worker @PropertyReactive name : String end\n" +
+                "declare trait Student name : String end\n" +
+                "declare trait Worker name : String end\n" +
+                "declare trait StudentWorker extends Student, Worker name : String end\n" +
+                "declare trait Assistant extends Student, Worker name : String end\n" +
                 "declare Person @Traitable name : String end\n" +
                 "" +
                 "rule \"Init\" \n" +
@@ -2743,6 +2743,12 @@ public class TraitTest extends CommonTestMethodBase {
                 "then \n" +
                 "  System.out.println( \"Assistant >> \" + $t ); \n" +
                 "end \n" +
+                "rule \"Log Px\" \n" +
+                "when \n" +
+                "  $p : Person() \n" +
+                "then \n" +
+                "  System.out.println( \"Poor Core Person >> \" + $p ); \n" +
+                "end \n" +
                 "" +
                 "rule \"Mod\" \n" +
                 "salience -10 \n" +
@@ -2768,12 +2774,12 @@ public class TraitTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         int k = ksession.fireAllRules();
 
-        assertEquals( k, 8 );
+        assertEquals( 9, k );
 
         ksession.insert( "go" );
         k = ksession.fireAllRules();
 
-        assertEquals( k, 5 );
+        assertEquals( 6, k );
 
     }
 
@@ -2846,6 +2852,8 @@ public class TraitTest extends CommonTestMethodBase {
                 "rule \"Log M\" when $x : M( id == 1 ) then System.out.println( \"M >> \" +  $x ); list.add( 13 ); end \n" +
                 "rule \"Log N\" when $x : N( id == 1 ) then System.out.println( \"N >> \" +  $x ); list.add( 14 ); end \n" +
                 "" +
+                "rule \"Log Core\" when $x : Core( $id : id ) then System.out.println( \"Core >>>>>> \" +  $x ); end \n" +
+                "" +
                 "rule \"Mod\" \n" +
                 "salience -10 \n" +
                 "when \n" +
@@ -2887,6 +2895,121 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
+
+
+
+    @Test
+    public void testTraitModifyCoreWithPropertyReactivity() {
+        String s1 = "package test;\n" +
+                "import org.drools.factmodel.traits.*;\n" +
+                "global java.util.List list;\n" +
+                "" +
+                "declare trait Student @propertyReactive " +
+                "   name : String " +
+                "   age : int " +
+                "   grades : double " +
+                "   school : String " +
+                "   aaa : boolean " +
+                "end\n" +
+                "declare trait Worker @propertyReactive " +
+                "   name : String " +
+                "   wage : double " +
+                "end\n" +
+                "declare trait StudentWorker extends Student, Worker @propertyReactive " +
+                "   hours : int " +
+                "end\n" +
+                "declare trait Assistant extends Student, Worker @propertyReactive " +
+                "   address : String " +
+                "end\n" +
+                "declare Person @propertyReactive @Traitable " +
+                "   wage : double " +
+                "   name : String " +
+                "   age : int  " +
+                "end\n" +
+                "" +
+                "rule \"Init\" \n" +
+                "when \n" +
+                "then \n" +
+                "  Person p = new Person( 109.99, \"john\", 18 ); \n" +
+                "  insert( p ); \n" +
+                "end \n" +
+                "" +
+                "rule \"Don\" \n" +
+                "when \n" +
+                "  $p : Person( name == \"john\" ) \n" +
+                "then \n" +
+                "  System.out.println( $p ); \n" +
+                "  don( $p, StudentWorker.class ); \n" +
+                "  don( $p, Assistant.class ); \n" +
+                "end \n" +
+                "" +
+                "rule \"Log S\" \n" +
+                "when \n" +
+                "  $t : Student( age == 44 ) \n" +
+                "then \n" +
+                "  list.add( 1 );\n " +
+                "  System.out.println( \"Student >> \" +  $t ); \n" +
+                "end \n" +
+                "rule \"Log W\" \n" +
+                "when \n" +
+                "  $t : Worker( name == \"alan\" ) \n" +
+                "then \n" +
+                "  list.add( 2 );\n " +
+                "  System.out.println( \"Worker >> \" + $t ); \n" +
+                "end \n" +
+                "rule \"Log SW\" \n" +
+                "when \n" +
+                "  $t : StudentWorker( age == 44 ) \n" +
+                "then \n" +
+                "  list.add( 3 );\n " +
+                "  System.out.println( \"StudentWorker >> \" + $t ); \n" +
+                "end \n" +
+                "rule \"Log Pers\" \n" +
+                "when \n" +
+                "  $t : Person( age == 44 ) \n" +
+                "then \n" +
+                "  list.add( 4 );\n " +
+                "  System.out.println( \"Person >> \" + $t ); \n" +
+                "end \n" +
+                "" +
+                "rule \"Mod\" \n" +
+                "salience -10 \n" +
+                "when \n" +
+                "  String( this == \"go\" ) \n" +
+                "  $p : Student( name == \"john\" ) \n" +
+                "then \n" +
+                "  System.out.println( \" ------------------------------------------------------------------------------ \" + $p ); \n" +
+                "  modify ( $p ) { setSchool( \"myschool\" ), setAge( 44 ), setName( \"alan\" ); } " +
+                "end \n" +
+                "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, kbase ); // not relevant
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        List<Integer> list = new ArrayList<Integer>();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list", list );
+        int k = ksession.fireAllRules();
+
+        ksession.insert( "go" );
+        k = ksession.fireAllRules();
+
+        assertEquals( 5, k );
+
+        assertEquals( 4, list.size() );
+        assertTrue( list.contains( 1 ) );
+        assertTrue( list.contains( 2 ) );
+        assertTrue( list.contains( 3 ) );
+        assertTrue( list.contains( 4 ) );
+
+    }
 
 
 

@@ -51,16 +51,12 @@ end
 
 
 rule "Compose"
+no-loop
 when
     $core : Bean()
 then
     ComplexTrait<Bean> complex = drools.<ComplexTrait,Bean>don( $core, ComplexTrait.class, true );
 
-    complex.setAges( new ArrayList() );
-    complex.getAges().add(22);
-    complex.getAges().add(18);
-
-    complex.getAddrex().add( "here" );
 
     Entity i1 = new Entity();
     SimpleTrait<Entity> st = drools.<SimpleTrait,Entity>don( i1, SimpleTrait.class, true );
@@ -71,11 +67,19 @@ then
     at.setField(new LinkedList());
     at.getField().add("aaa");
 
-    complex.setNested( st );
-    complex.setNest2( at );
+
+    modify ( complex ) {
+        setAges( new ArrayList() ),
+        getAges().add(22),
+        getAges().add(18),
+
+        getAddrex().add( "here" ),
+
+        setNested( st ),
+        setNest2( at );
+    }
 
     System.out.println( complex );
-    update( complex );
 end
 
 

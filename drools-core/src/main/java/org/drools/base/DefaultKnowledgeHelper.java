@@ -46,6 +46,7 @@ import org.drools.factmodel.traits.CoreWrapper;
 import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitProxy;
+import org.drools.factmodel.traits.TraitType;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.impl.KnowledgeBaseImpl;
@@ -341,6 +342,7 @@ public class DefaultKnowledgeHelper
 
     public void update( final FactHandle handle, long mask, Class<?> modifiedClass ) {
         InternalFactHandle h = (InternalFactHandle) handle;
+        System.out.println( "@@@ UPDATE " + h.getObject().getClass() + " with " + Long.toBinaryString( mask ) );
         ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
                                                                      ((InternalFactHandle)handle).getObject(),
                                                                      mask,
@@ -349,18 +351,26 @@ public class DefaultKnowledgeHelper
         if ( h.isTrait() ) {
             if ( ( (TraitFactHandle) h ).isTraitable() ) {
                 // this is a traitable core object, so its traits must be updated as well
-                updateTraitableCore( h.getObject(), mask, null, modifiedClass );
+                updateTraits( h.getObject(), mask, null, modifiedClass );
             } else {
                 Thing x = (Thing) h.getObject();
                 // in case this is a proxy
                 if ( x != x.getCore() ) {
-                    updateTraitableCore( x.getCore(), mask, x, modifiedClass );
+                    Object core = x.getCore();
+                    InternalFactHandle coreHandle = (InternalFactHandle) getFactHandle( core );
+                    ((InternalWorkingMemoryEntryPoint) coreHandle.getEntryPoint()).update(
+                            coreHandle,
+                            core,
+                            mask,
+                            modifiedClass,
+                            this.activation );
+                    updateTraits( core, mask, x, modifiedClass );
                 }
             }
         }
     }
 
-    private void updateTraitableCore( Object object, long mask, Thing originator, Class<?> modifiedClass ) {
+    private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass ) {
         TraitableBean txBean = (TraitableBean) object;
 
         Collection<Thing> px = txBean.getMostSpecificTraits();
@@ -368,7 +378,6 @@ public class DefaultKnowledgeHelper
         if ( originator != null ) {
             veto = (BitSet) ((TraitProxy) originator).getTypeCode().clone();
         }
-
 
         for ( Thing t : px ) {
             if ( t != originator ) {

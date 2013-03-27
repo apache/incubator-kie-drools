@@ -39,12 +39,13 @@ rule "Trait"
 when
     $core: Imp( "alan", 33, 3.47, "zkool" ; )
 then
-    Student s = don( $core, Student.class, true );
+    Student s = don( $core, Student.class );
 
-    s.setAge( 12 );
-    s.getFields().put( "school", "zkl" );
+    modify ( s ) {
+        setAge( 12 ),
+        getFields().put( "school", "zkl" );
+    }
 
-    update( s );
 end
 
 

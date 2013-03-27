@@ -36,7 +36,7 @@ end
 rule "Trait1"
 no-loop
 when
-    $core: Imp()
+    $core: Imp( this not isA Thing )
 then
     System.out.println( "Don student" );
     Student s = don( $core, Student.class );
