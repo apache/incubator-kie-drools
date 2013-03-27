@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service;
+package org.jbpm.task.service.hornetq;
 
 import org.jbpm.task.BaseTest;
-import org.jbpm.task.service.mina.MinaTaskServer;
-
-public class MinaTaskServerTest extends BaseTest {
+import org.jbpm.task.service.hornetq.HornetQTaskServer;
 
 
-	private MinaTaskServer minaTaskServer;
+public class HornetQTaskServerTest extends BaseTest {
+
+	private HornetQTaskServer hornetQServer;
+	
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
 	
-
-	
-	public void testMinaTaskServer() throws Exception {
-		minaTaskServer = new MinaTaskServer(taskService);
-		Thread t = new Thread(minaTaskServer);
+	public void testHorneQTaskServer() throws Exception {
+		hornetQServer = new HornetQTaskServer(taskService, 10101);
+		Thread t = new Thread(hornetQServer);
 		t.start();
 		Thread.sleep(5000);
-		minaTaskServer.stop();
+		hornetQServer.stop();
 	}
+	
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.task.service.persistence.variable;
+package org.jbpm.task.service.mina.persistence;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +43,7 @@ import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
 import org.jbpm.task.service.DefaultUserInfo;
 import org.jbpm.task.service.EscalatedDeadlineHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
+import org.jbpm.task.service.persistence.variable.MyEntity;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;

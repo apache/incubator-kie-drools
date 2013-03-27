@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service;
+package org.jbpm.task.service.mina;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,6 +47,8 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.TaskService;
+import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.mina.MinaTaskServer;
 import org.kie.internal.SystemEventListenerFactory;
 import org.mvel2.MVEL;

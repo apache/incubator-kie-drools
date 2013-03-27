@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task;
+package org.jbpm.task.service.mina;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -26,6 +26,9 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.jbpm.task.Group;
+import org.jbpm.task.MockUserInfo;
+import org.jbpm.task.User;
 import org.jbpm.task.service.SendIcal;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
