@@ -6,8 +6,8 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.jbpm.Person;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
+import org.jbpm.integrationtests.test.Person;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -36,7 +36,7 @@ public class ProcessWorkItemTest extends TestCase {
     		"        <value>John Doe</value>\n" +
     		"      </variable>\n" +
      		"      <variable name=\"Person\" >\n" +
-    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.test.Person\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"MyObject\" >\n" +
     		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
@@ -149,7 +149,7 @@ public class ProcessWorkItemTest extends TestCase {
     		"        <value>John Doe</value>\n" +
     		"      </variable>\n" +
      		"      <variable name=\"Person\" >\n" +
-    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\" />\n" +
+    		"        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.test.Person\" />\n" +
     		"      </variable>\n" +
     		"      <variable name=\"MyObject\" >\n" +
     		"        <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +

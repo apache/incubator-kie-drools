@@ -12,7 +12,7 @@ import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
-import org.jbpm.Person;
+import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -132,7 +132,7 @@ public class ProcessSubProcessTest extends TestCase {
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.Person\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.test.Person\" />\n" +
 			"    </imports>\n" +
 			"    <variables>\n" +
 			"      <variable name=\"y\" >\n" +
@@ -228,7 +228,7 @@ public class ProcessSubProcessTest extends TestCase {
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.Person\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.test.Person\" />\n" +
 			"    </imports>\n" +
 			"  </header>\n" +
 			"\n" +

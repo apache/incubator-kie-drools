@@ -8,7 +8,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.jbpm.Person;
+import org.jbpm.integrationtests.test.Person;
 import org.jbpm.workflow.instance.node.StateNodeInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -283,7 +283,7 @@ public class ProcessStateTest extends TestCase {
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.Person\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.test.Person\" />\n" +
 			"    </imports>\n" +
 			"    <globals>\n" +
 			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +
@@ -347,7 +347,7 @@ public class ProcessStateTest extends TestCase {
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.Person\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.test.Person\" />\n" +
 			"    </imports>\n" +
 			"    <globals>\n" +
 			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +
@@ -411,7 +411,7 @@ public class ProcessStateTest extends TestCase {
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.Person\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.test.Person\" />\n" +
 			"    </imports>\n" +
 			"    <globals>\n" +
 			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +
@@ -475,7 +475,7 @@ public class ProcessStateTest extends TestCase {
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.Person\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.test.Person\" />\n" +
 			"    </imports>\n" +
 			"    <globals>\n" +
 			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +

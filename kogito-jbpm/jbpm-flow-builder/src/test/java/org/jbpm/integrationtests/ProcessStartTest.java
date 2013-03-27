@@ -14,8 +14,8 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
-import org.jbpm.Message;
-import org.jbpm.Person;
+import org.jbpm.integrationtests.test.Message;
+import org.jbpm.integrationtests.test.Person;
 
 public class ProcessStartTest extends TestCase {
     
@@ -30,7 +30,7 @@ public class ProcessStartTest extends TestCase {
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.Person\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.test.Person\" />\n" +
 			"    </imports>\n" +
 			"    <globals>\n" +
 			"      <global identifier=\"myList\" type=\"java.util.List\" />\n" +

@@ -32,8 +32,8 @@ import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 import org.jbpm.runtime.manager.impl.factory.InMemorySessionFactory;
-import org.jbpm.task.HumanTaskServiceFactory;
-import org.jbpm.task.identity.MvelUserGroupCallbackImpl;
+import org.jbpm.services.task.HumanTaskServiceFactory;
+import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -102,7 +102,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 
     public JbpmJUnitTestCase(boolean setupDataSource) {
         System.setProperty("jbpm.user.group.mapping", "classpath:/usergroups.properties");
-        System.setProperty("jbpm.usergroup.callback", "org.jbpm.task.identity.DefaultUserGroupCallbackImpl");
+        System.setProperty("jbpm.usergroup.callback", "org.jbpm.services.task.identity.DefaultUserGroupCallbackImpl");
         this.setupDataSource = setupDataSource;
     }
 

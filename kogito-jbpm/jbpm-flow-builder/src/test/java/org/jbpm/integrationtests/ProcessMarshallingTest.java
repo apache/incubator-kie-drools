@@ -14,8 +14,8 @@ import org.drools.core.StatefulSession;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.Package;
-import org.jbpm.Person;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
+import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -35,7 +35,7 @@ public class ProcessMarshallingTest extends TestCase {
     @SuppressWarnings("unchecked")
 	public void test1() throws Exception {
         String rule = "package org.test;\n";
-        rule += "import org.jbpm.Person\n";
+        rule += "import org.jbpm.integrationtests.test.Person\n";
         rule += "global java.util.List list\n";
         rule += "rule \"Rule 1\"\n";
         rule += "  ruleflow-group \"hello\"\n";
@@ -174,7 +174,7 @@ public class ProcessMarshallingTest extends TestCase {
             "\n" +
             "  <header>\n" +
             "    <imports>\n" +
-            "      <import name=\"org.jbpm.Person\" />\n" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />\n" +
             "    </imports>\n" +
             "    <swimlanes>\n" +
             "      <swimlane name=\"swimlane\" />\n" +
@@ -293,7 +293,7 @@ public class ProcessMarshallingTest extends TestCase {
             "\n" +
             "  <header>\n" +
             "    <imports>\n" +
-            "      <import name=\"org.jbpm.Person\" />\n" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />\n" +
             "    </imports>\n" +
             "  </header>\n" +
             "\n" +
@@ -315,7 +315,7 @@ public class ProcessMarshallingTest extends TestCase {
         
         String rule = 
             "package com.sample\n" +
-            "import org.jbpm.Person;\n" +
+            "import org.jbpm.integrationtests.test.Person;\n" +
             "rule \"Hello\" ruleflow-group \"flowgroup\"\n" +
             "    when\n" +
             "    then\n" +
@@ -625,7 +625,7 @@ public class ProcessMarshallingTest extends TestCase {
             "        <value>OldValue</value>\n" +
             "      </variable>\n" +
             "      <variable name=\"myPerson\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\"/>\n" +
+            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.test.Person\"/>\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +

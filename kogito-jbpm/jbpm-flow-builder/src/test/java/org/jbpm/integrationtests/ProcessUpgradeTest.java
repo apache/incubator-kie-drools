@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ReaderResource;
-import org.jbpm.Person;
+import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstanceUpgrader;
 import org.kie.internal.KnowledgeBase;
@@ -24,7 +24,7 @@ public class ProcessUpgradeTest extends TestCase {
     
     public void testDefaultUpgrade() throws Exception {
         String rule = "package org.test;\n";
-        rule += "import org.jbpm.Person\n";
+        rule += "import org.jbpm.integrationtests.test.Person\n";
         rule += "global java.util.List list\n";
         rule += "rule \"Rule 1\"\n";
         rule += "  ruleflow-group \"hello\"\n";
@@ -115,7 +115,7 @@ public class ProcessUpgradeTest extends TestCase {
 
     public void testMappingUpgrade() throws Exception {
         String rule = "package org.test;\n";
-        rule += "import org.jbpm.Person\n";
+        rule += "import org.jbpm.integrationtests.test.Person\n";
         rule += "global java.util.List list\n";
         rule += "rule \"Rule 1\"\n";
         rule += "  ruleflow-group \"hello\"\n";
@@ -209,7 +209,7 @@ public class ProcessUpgradeTest extends TestCase {
     
     public void testCompositeMappingUpgrade() throws Exception {
         String rule = "package org.test;\n";
-        rule += "import org.jbpm.Person\n";
+        rule += "import org.jbpm.integrationtests.test.Person\n";
         rule += "global java.util.List list\n";
         rule += "rule \"Rule 1\"\n";
         rule += "  ruleflow-group \"hello\"\n";

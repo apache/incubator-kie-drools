@@ -13,7 +13,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
-import org.jbpm.Person;
+import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -32,7 +32,7 @@ public class ProcessMilestoneTest extends TestCase {
             "\n" +
             "  <header>\n" +
             "    <imports>\n" +
-            "      <import name=\"org.jbpm.Person\" />\n" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />\n" +
             "    </imports>\n" +
             "  </header>\n" +
             "\n" +
@@ -76,7 +76,7 @@ public class ProcessMilestoneTest extends TestCase {
             "\n" +
             "  <header>\n" +
             "    <imports>\n" +
-            "      <import name=\"org.jbpm.Person\" />\n" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />\n" +
             "      <import name=\"org.jbpm.integrationtests.ProcessMilestoneTest.ProcessUtils\" />\n" +
             "    </imports>\n" +
             "    <variables>\n" +

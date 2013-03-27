@@ -7,8 +7,8 @@ import java.util.*;
 import junit.framework.TestCase;
 
 import org.drools.core.io.impl.ReaderResource;
-import org.jbpm.Message;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
+import org.jbpm.integrationtests.test.Message;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -101,7 +101,7 @@ public class ProcessActionTest extends TestCase {
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.Message\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.test.Message\" />\n" +
 			"    </imports>\n" +
 			"    <globals>\n" +
 			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +
@@ -165,7 +165,7 @@ public class ProcessActionTest extends TestCase {
             "\n" +
             "  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.Message\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.test.Message\" />\n" +
 			"    </imports>\n" +
 			"    <globals>\n" +
 			"      <global identifier=\"list\" type=\"java.util.List\" />\n" +

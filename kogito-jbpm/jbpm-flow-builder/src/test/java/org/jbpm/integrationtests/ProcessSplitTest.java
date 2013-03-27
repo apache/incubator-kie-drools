@@ -15,7 +15,7 @@ import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
-import org.jbpm.Person;
+import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
@@ -42,7 +42,7 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <header>" +
             "    <imports>" +
-            "      <import name=\"org.jbpm.Person\" />" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />" +
             "      <import name=\"org.jbpm.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
             "    </imports>" +
             "    <globals>" +
@@ -127,7 +127,7 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <header>" +
             "    <imports>" +
-            "      <import name=\"org.jbpm.Person\" />" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />" +
             "      <import name=\"org.kie.api.runtime.process.WorkflowProcessInstance\" />" +
             "    </imports>" +
             "    <globals>" +
@@ -216,7 +216,7 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <header>" +
             "    <imports>" +
-            "      <import name=\"org.jbpm.Person\" />" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />" +
             "      <import name=\"org.jbpm.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
             "    </imports>" +
             "    <globals>" +
@@ -224,7 +224,7 @@ public class ProcessSplitTest extends TestCase {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"person\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\" />\n" +
+            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.test.Person\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -282,7 +282,7 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <header>" +
             "    <imports>" +
-            "      <import name=\"org.jbpm.Person\" />" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />" +
             "      <import name=\"org.jbpm.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
             "    </imports>" +
             "    <globals>" +
@@ -348,7 +348,7 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <header>" +
             "    <imports>" +
-            "      <import name=\"org.jbpm.Person\" />" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />" +
             "      <import name=\"org.jbpm.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
             "    </imports>" +
             "    <globals>" +
@@ -356,7 +356,7 @@ public class ProcessSplitTest extends TestCase {
             "    </globals>" +
             "    <variables>\n" +
             "      <variable name=\"person\" >\n" +
-            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.Person\" />\n" +
+            "        <type name=\"org.drools.core.process.core.datatype.impl.type.ObjectDataType\" className=\"org.jbpm.integrationtests.test.Person\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>" +
@@ -368,7 +368,7 @@ public class ProcessSplitTest extends TestCase {
             "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
             "      <constraints>" +
             "        <constraint toNodeId=\"8\" toType=\"DROOLS_DEFAULT\" priority=\"2\" type=\"code\" dialect=\"mvel\" >return true;</constraint>" +
-            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"mvel\" >return context.getVariable(\"person\") != null &amp;&amp; ((org.jbpm.Person) context.getVariable(\"person\")).name != null;</constraint>" +
+            "        <constraint toNodeId=\"6\" toType=\"DROOLS_DEFAULT\" priority=\"1\" type=\"code\" dialect=\"mvel\" >return context.getVariable(\"person\") != null &amp;&amp; ((org.jbpm.integrationtests.test.Person) context.getVariable(\"person\")).name != null;</constraint>" +
             "      </constraints>" +
             "    </split>" +
             "    <end id=\"8\" name=\"End\" />" +
@@ -414,7 +414,7 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <header>" +
             "    <imports>" +
-            "      <import name=\"org.jbpm.Person\" />" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />" +
             "      <import name=\"org.jbpm.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
             "    </imports>" +
             "    <globals>" +
@@ -480,7 +480,7 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <header>" +
             "    <imports>" +
-            "      <import name=\"org.jbpm.Person\" />" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />" +
             "      <import name=\"org.jbpm.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
             "    </imports>" +
             "    <globals>" +
@@ -546,7 +546,7 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <header>" +
             "    <imports>" +
-            "      <import name=\"org.jbpm.Person\" />" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />" +
             "      <import name=\"org.jbpm.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
             "    </imports>" +
             "    <globals>" +
@@ -612,7 +612,7 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <header>" +
             "    <imports>" +
-            "      <import name=\"org.jbpm.Person\" />" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />" +
             "      <import name=\"org.jbpm.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
             "    </imports>" +
             "    <globals>" +
@@ -678,7 +678,7 @@ public class ProcessSplitTest extends TestCase {
             "" +
             "  <header>" +
             "    <imports>" +
-            "      <import name=\"org.jbpm.Person\" />" +
+            "      <import name=\"org.jbpm.integrationtests.test.Person\" />" +
             "      <import name=\"org.jbpm.integrationtests.ProcessSplitTest.ProcessUtils\" />" +
             "    </imports>" +
             "    <globals>" +

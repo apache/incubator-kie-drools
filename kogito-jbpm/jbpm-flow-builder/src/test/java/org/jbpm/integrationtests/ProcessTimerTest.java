@@ -20,7 +20,7 @@ import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.drools.core.time.SessionPseudoClock;
-import org.jbpm.Message;
+import org.jbpm.integrationtests.test.Message;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
@@ -39,7 +39,7 @@ public class ProcessTimerTest extends TestCase {
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.Message\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.test.Message\" />\n" +
 			"    </imports>\n" +
 			"    <globals>\n" +
 			"      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
@@ -121,7 +121,7 @@ public class ProcessTimerTest extends TestCase {
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
-			"      <import name=\"org.jbpm.Message\" />\n" +
+			"      <import name=\"org.jbpm.integrationtests.test.Message\" />\n" +
 			"    </imports>\n" +
 			"    <globals>\n" +
 			"      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
@@ -623,7 +623,7 @@ public class ProcessTimerTest extends TestCase {
 			"          <action type=\"expression\" dialect=\"java\" >myList.add(\"Executing timer\");</action>\n" +
 			"        </timer>\n" +
 			"      </timers>\n" +
-			"      <constraint type=\"rule\" dialect=\"mvel\" >org.jbpm.Message( )</constraint>\n" +
+			"      <constraint type=\"rule\" dialect=\"mvel\" >org.jbpm.integrationtests.test.Message( )</constraint>\n" +
 			"    </milestone>\n" +
 			"    <end id=\"3\" name=\"End\" />\n" +
 			"  </nodes>\n" +

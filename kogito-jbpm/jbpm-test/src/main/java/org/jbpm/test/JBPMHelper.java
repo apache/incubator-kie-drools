@@ -9,7 +9,7 @@ import javax.persistence.Persistence;
 
 import org.drools.core.impl.EnvironmentFactory;
 import org.h2.tools.Server;
-import org.jbpm.task.HumanTaskServiceFactory;
+import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.KnowledgeBase;
@@ -86,10 +86,10 @@ public final class JBPMHelper {
         Map<String, String> map = new HashMap<String, String>();
         map.put("hibernate.dialect", dialect);
         EntityManagerFactory emf =
-                Persistence.createEntityManagerFactory(properties.getProperty("taskservice.datasource.name", "org.jbpm.task"), map);
+                Persistence.createEntityManagerFactory(properties.getProperty("taskservice.datasource.name", "org.jbpm.services.task"), map);
         System.setProperty("jbpm.user.group.mapping", properties.getProperty("taskservice.usergroupmapping", "classpath:/usergroups.properties"));
         System.setProperty("jbpm.usergroup.callback",
-                properties.getProperty("taskservice.usergroupcallback", "org.jbpm.task.identity.DefaultUserGroupCallbackImpl"));
+                properties.getProperty("taskservice.usergroupcallback", "org.jbpm.services.task.identity.DefaultUserGroupCallbackImpl"));
 //        TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
 //        String transport = properties.getProperty("taskservice.transport", "mina");
 //        if ("mina".equals(transport)) {
