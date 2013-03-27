@@ -41,7 +41,7 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
 
     public void addConstraintMatch(RuleContext kcontext, final double weight) {
         score += weight;
-        registerUndoListener(kcontext, 0, new ActivationUnMatchListener() {
+        registerUndoListener(kcontext, new ActivationUnMatchListener() {
             public void unMatch(Session session, Match activation) {
                 score -= weight;
             }
