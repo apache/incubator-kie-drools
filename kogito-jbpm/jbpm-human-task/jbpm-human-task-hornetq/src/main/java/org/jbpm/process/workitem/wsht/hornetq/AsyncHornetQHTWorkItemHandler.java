@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.process.workitem.wsht;
+package org.jbpm.process.workitem.wsht.hornetq;
 
+import org.jbpm.process.workitem.wsht.AsyncGenericHTWorkItemHandler;
 import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.jbpm.task.utils.OnErrorAction;

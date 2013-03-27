@@ -18,7 +18,7 @@ package org.jbpm.process.workitem.wsht.hornetq;
 import java.io.StringReader;
 import java.util.Map;
 
-import org.jbpm.process.workitem.wsht.AsyncHornetQHTWorkItemHandler;
+import org.jbpm.process.workitem.wsht.hornetq.AsyncHornetQHTWorkItemHandler;
 import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;

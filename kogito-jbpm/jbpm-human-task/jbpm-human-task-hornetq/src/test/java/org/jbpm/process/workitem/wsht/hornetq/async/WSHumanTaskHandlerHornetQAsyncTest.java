@@ -15,8 +15,8 @@
  */
 package org.jbpm.process.workitem.wsht.hornetq.async;
 
-import org.jbpm.process.workitem.wsht.AsyncHornetQHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.async.WSHumanTaskHandlerBaseAsyncTest;
+import org.jbpm.process.workitem.wsht.hornetq.AsyncHornetQHTWorkItemHandler;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;

@@ -1,24 +1,24 @@
-package org.jbpm.process.workitem.wsht;
+package org.jbpm.process.workitem.wsht.jms;
 
 import java.lang.reflect.Field;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.jbpm.process.workitem.wsht.mina.WSHumanTaskHandler;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.WSHumanTaskJMSProperties;
 import org.kie.internal.SystemEventListenerFactory;
-import org.kie.internal.runtime.KnowledgeRuntime;
 
 @Deprecated
-public class CommandBasedWSThroughJMSHumanTaskHandler extends CommandBasedWSHumanTaskHandler {
+public class WSThroughJMSHumanTaskHandler extends WSHumanTaskHandler {
 
-	public CommandBasedWSThroughJMSHumanTaskHandler(KnowledgeRuntime session) {
-		super(session);
+	public WSThroughJMSHumanTaskHandler() {
+		super();
 	}
-
+	
 	@Override
 	public void connect() {
 		try {
@@ -26,7 +26,7 @@ public class CommandBasedWSThroughJMSHumanTaskHandler extends CommandBasedWSHuma
 			TaskClient client = (TaskClient) field.get(this);
 			if (client == null) {
 				client = new TaskClient(new JMSTaskClientConnector(
-						"org.drools.core.process.workitem.wsht.WSThroughJMSHumanTaskHandler",
+						"org.jbpm.process.workitem.wsht.WSThroughJMSHumanTaskHandler",
 						new JMSTaskClientHandler(SystemEventListenerFactory
 								.getSystemEventListener()),
 						WSHumanTaskJMSProperties.getInstance().getProperties(),

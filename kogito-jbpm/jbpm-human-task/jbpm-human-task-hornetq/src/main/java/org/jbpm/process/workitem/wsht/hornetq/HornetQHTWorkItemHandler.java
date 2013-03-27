@@ -13,65 +13,71 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.process.workitem.wsht;
+package org.jbpm.process.workitem.wsht.hornetq;
 
+import org.jbpm.process.workitem.wsht.GenericHTWorkItemHandler;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
-import org.jbpm.task.service.mina.AsyncMinaTaskClient;
+import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.jbpm.task.utils.OnErrorAction;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
 /**
  *
- * This class provides the default configurations for a Mina WorkItem Handler
+ * This class provides the default configurations for a HornetQ WorkItem Handler
  */
-public class MinaHTWorkItemHandler extends GenericHTWorkItemHandler{
-    private String connectorName = "SyncMinaHTWorkItemHandler";
-    public MinaHTWorkItemHandler(KnowledgeRuntime session) {
+public class HornetQHTWorkItemHandler extends GenericHTWorkItemHandler{
+
+    private String connectorName = "SyncHornetQHTWorkItemHandler";
+    public HornetQHTWorkItemHandler(KnowledgeRuntime session) {
         super(session);
         init();
     }
     
-    public MinaHTWorkItemHandler(KnowledgeRuntime session, boolean owningSessionOnly) {
+    public HornetQHTWorkItemHandler(KnowledgeRuntime session, boolean owningSessionOnly) {
         super(session, owningSessionOnly);
         init();
     }
-
-    public MinaHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
+    
+    public HornetQHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
         init();
     }
     
-    public MinaHTWorkItemHandler(TaskService client, KnowledgeRuntime session) {
+    public HornetQHTWorkItemHandler(TaskService client, KnowledgeRuntime session) {
         super(client, session);
         init();
     }
     
-    public MinaHTWorkItemHandler(TaskService client, KnowledgeRuntime session, boolean owningSessionOnly) {
+    public HornetQHTWorkItemHandler(TaskService client, KnowledgeRuntime session, boolean owningSessionOnly) {
         super(client, session, owningSessionOnly);
         init();
     }
     
-    public MinaHTWorkItemHandler(String connectorName, TaskService client, KnowledgeRuntime session, OnErrorAction action) {
-        super(session, action);
-        this.connectorName = connectorName;
-        setClient(client);
+    public HornetQHTWorkItemHandler(TaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        super(client, session, action);
         init();
     }
     
-    public MinaHTWorkItemHandler(String connectorName, TaskService client, KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
-        super(client, session, action, classLoader);
-        this.connectorName = connectorName;
+    public HornetQHTWorkItemHandler(String connectorName, TaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        super(client, session, action);
         setClient(client);
+        this.connectorName = connectorName;
+        init();
+    }
+    public HornetQHTWorkItemHandler(String connectorName, TaskService client, KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
+        super(client, session, action, classLoader);
+        setClient(client);
+        this.connectorName = connectorName;
         init();
     }
 
     private void init(){
         if(getClient() == null){
-            setClient(new SyncTaskServiceWrapper(new AsyncMinaTaskClient(this.connectorName)));
+            setClient(new SyncTaskServiceWrapper(new AsyncHornetQTaskClient(this.connectorName)));
         }
         if(getPort() <= 0){
-            setPort(9123);
+            setPort(5153);
         }
         if(getIpAddress() == null || getIpAddress().equals("")){
             setIpAddress("127.0.0.1");
@@ -85,5 +91,8 @@ public class MinaHTWorkItemHandler extends GenericHTWorkItemHandler{
     public void setConnectorName(String connectorName) {
         this.connectorName = connectorName;
     }
-
+    
+    
+   
+    
 }

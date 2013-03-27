@@ -15,7 +15,7 @@
  */
 package org.jbpm.process.workitem.wsht.mina.sync;
 
-import org.jbpm.process.workitem.wsht.MinaHTWorkItemHandler;
+import org.jbpm.process.workitem.wsht.mina.MinaHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.sync.WSHumanTaskHandlerBaseSyncTest;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.mina.MinaTaskServer;

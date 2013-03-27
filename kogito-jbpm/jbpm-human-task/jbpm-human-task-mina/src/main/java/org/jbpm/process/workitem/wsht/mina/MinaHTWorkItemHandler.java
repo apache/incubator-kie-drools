@@ -13,60 +13,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.process.workitem.wsht;
+package org.jbpm.process.workitem.wsht.mina;
 
-import org.jbpm.task.AsyncTaskService;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
+import org.jbpm.process.workitem.wsht.GenericHTWorkItemHandler;
+import org.jbpm.task.TaskService;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
+import org.jbpm.task.service.mina.AsyncMinaTaskClient;
 import org.jbpm.task.utils.OnErrorAction;
-import org.kie.internal.SystemEventListenerFactory;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
 /**
  *
  * This class provides the default configurations for a Mina WorkItem Handler
  */
-public class AsyncMinaHTWorkItemHandler extends AsyncGenericHTWorkItemHandler{
-    private String connectorName = "AsyncMinaHTWorkItemHandler";
-    public AsyncMinaHTWorkItemHandler(KnowledgeRuntime session) {
+public class MinaHTWorkItemHandler extends GenericHTWorkItemHandler{
+    private String connectorName = "SyncMinaHTWorkItemHandler";
+    public MinaHTWorkItemHandler(KnowledgeRuntime session) {
         super(session);
         init();
     }
     
-    public AsyncMinaHTWorkItemHandler(KnowledgeRuntime session, boolean owningSessionOnly) {
+    public MinaHTWorkItemHandler(KnowledgeRuntime session, boolean owningSessionOnly) {
         super(session, owningSessionOnly);
-        init();
-    }
-    
-    public AsyncMinaHTWorkItemHandler(AsyncTaskService client, KnowledgeRuntime session, boolean owningSessionOnly) {
-        super(session, owningSessionOnly);
-        setClient(client);
         init();
     }
 
-    public AsyncMinaHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
+    public MinaHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
         init();
     }
     
-    public AsyncMinaHTWorkItemHandler(String connectorName, AsyncTaskService client, KnowledgeRuntime session, OnErrorAction action) {
-        super(session, action);
-        setClient(client);
-        this.connectorName = connectorName;
+    public MinaHTWorkItemHandler(TaskService client, KnowledgeRuntime session) {
+        super(client, session);
         init();
     }
-    public AsyncMinaHTWorkItemHandler(String connectorName, AsyncTaskService client, KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
-        super(session, action, classLoader);
-        setClient(client);
+    
+    public MinaHTWorkItemHandler(TaskService client, KnowledgeRuntime session, boolean owningSessionOnly) {
+        super(client, session, owningSessionOnly);
+        init();
+    }
+    
+    public MinaHTWorkItemHandler(String connectorName, TaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        super(session, action);
         this.connectorName = connectorName;
+        setClient(client);
+        init();
+    }
+    
+    public MinaHTWorkItemHandler(String connectorName, TaskService client, KnowledgeRuntime session, OnErrorAction action, ClassLoader classLoader) {
+        super(client, session, action, classLoader);
+        this.connectorName = connectorName;
+        setClient(client);
         init();
     }
 
     private void init(){
         if(getClient() == null){
-            setClient(new TaskClient(new MinaTaskClientConnector(this.connectorName,
-                    new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
+            setClient(new SyncTaskServiceWrapper(new AsyncMinaTaskClient(this.connectorName)));
         }
         if(getPort() <= 0){
             setPort(9123);
@@ -83,8 +86,5 @@ public class AsyncMinaHTWorkItemHandler extends AsyncGenericHTWorkItemHandler{
     public void setConnectorName(String connectorName) {
         this.connectorName = connectorName;
     }
-    
-    
-   
-    
+
 }

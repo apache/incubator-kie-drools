@@ -16,8 +16,8 @@
 
 package org.jbpm.process.workitem.wsht.hornetq;
 
-import org.jbpm.process.workitem.wsht.AsyncHornetQHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.WSHumanTaskHandlerBaseUserGroupCallbackTest;
+import org.jbpm.process.workitem.wsht.hornetq.AsyncHornetQHTWorkItemHandler;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 

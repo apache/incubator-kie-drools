@@ -15,7 +15,7 @@
  */
 package org.jbpm.process.workitem.wsht.hornetq.sync;
 
-import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
+import org.jbpm.process.workitem.wsht.hornetq.HornetQHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.sync.WSHumanTaskHandlerBaseSyncTest;
 import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskServer;
