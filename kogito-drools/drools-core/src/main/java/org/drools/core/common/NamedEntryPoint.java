@@ -251,7 +251,7 @@ public class NamedEntryPoint
                                 TruthMaintenanceSystemHelper.clearLogicalDependencies( justifiedHandle, propagationContext );
                                 
                                 // now update existing handle to new value
-                                return update( justifiedHandle, true, object, Long.MAX_VALUE, activation );                                                                                           
+                                return update( justifiedHandle, true, object, Long.MAX_VALUE, Object.class, activation );
                         } else   {  // STATED 
                             handle = createHandle( object,
                                                    typeConf ); // we know the handle is null                                                    
@@ -380,18 +380,21 @@ public class NamedEntryPoint
                 false,
                 object,
                 Long.MAX_VALUE,
+                Object.class,
                 null );
     }
     
     public void update(final org.kie.api.runtime.rule.FactHandle factHandle,
                        final Object object,
                        final long mask,
+                       final Class<?> modifiedClass,
                        final Activation activation) throws FactException {
         InternalFactHandle handle = (InternalFactHandle) factHandle;
         update( handle,
                 false,
                 object,
                 mask,
+                modifiedClass,
                 activation );
     }
 
@@ -399,6 +402,7 @@ public class NamedEntryPoint
                                      final boolean updateLogical,
                                      final Object object,
                                      final long mask,
+                                     final Class<?> modifiedClass,
                                      final Activation activation) throws FactException {
         try {
             this.lock.lock();
@@ -456,6 +460,7 @@ public class NamedEntryPoint
                                                                                       handle,
                                                                                       entryPoint,
                                                                                       mask,
+                                                                                      modifiedClass,
                                                                                       null );
             
             if ( typeConf.isTMSEnabled() ) {

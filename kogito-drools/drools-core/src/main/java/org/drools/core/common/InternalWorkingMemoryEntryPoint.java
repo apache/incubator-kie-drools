@@ -36,6 +36,7 @@ public interface InternalWorkingMemoryEntryPoint extends SessionEntryPoint {
     public void update(org.kie.api.runtime.rule.FactHandle handle,
                        Object object,
                        long mask,
+                       Class<?> modifiedClass,
                        Activation activation) throws FactException;
 
     public EntryPoint getEntryPoint();

@@ -1435,10 +1435,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     private TypeDeclaration createTypeDeclarationForBean( Class<?> cls ) {
-        String typeName = cls.getName();
-        int lastDot = typeName.lastIndexOf( '.' );
-        typeName = lastDot >= 0 ? typeName.substring( lastDot + 1 ) : typeName;
-        TypeDeclaration typeDeclaration = new TypeDeclaration( typeName );
+        TypeDeclaration typeDeclaration = new TypeDeclaration( cls.getSimpleName() );
         typeDeclaration.setTypeClass( cls );
 
         PropertySpecificOption propertySpecificOption = configuration.getOption(PropertySpecificOption.class);

@@ -872,17 +872,20 @@ public abstract class AbstractWorkingMemory
         update( (FactHandle) handle,
                 object,
                 Long.MAX_VALUE,
+                Object.class,
                 null );
     }
 
     public void update(final org.kie.api.runtime.rule.FactHandle factHandle,
                        final Object object,
                        final long mask,
+                       Class<?> modifiedClass,
                        final Activation activation) throws FactException {
 
         update( (FactHandle) factHandle,
                 object,
                 mask,
+                modifiedClass,
                 activation );
     }
 
@@ -895,10 +898,12 @@ public abstract class AbstractWorkingMemory
     public void update(FactHandle factHandle,
                        final Object object,
                        final long mask,
+                       Class<?> modifiedClass,
                        final Activation activation) throws FactException {
         this.defaultEntryPoint.update( factHandle,
                                        object,
                                        mask,
+                                       modifiedClass,
                                        activation );
     }
 

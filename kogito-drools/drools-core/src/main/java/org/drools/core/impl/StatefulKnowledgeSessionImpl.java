@@ -428,10 +428,12 @@ public class StatefulKnowledgeSessionImpl
     public void update(FactHandle factHandle,
                        Object object,
                        long mask,
+                       Class<?> modifiedClass,
                        Activation activation) throws FactException {
         this.session.update( (org.drools.core.FactHandle) factHandle,
                              object,
                              mask,
+                             modifiedClass,
                              activation );
     }
 
