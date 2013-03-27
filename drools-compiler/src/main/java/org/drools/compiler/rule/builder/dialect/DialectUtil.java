@@ -652,7 +652,7 @@ public final class DialectUtil {
 
         addLineBreaks(consequence, originalBlock.substring(end));
 
-        appendUpdateStatement(consequence, declr, obj, modificationMask);
+        appendUpdateStatement(consequence, declr, obj, modificationMask, typeClass);
     }
 
     private static void rewriteUpdateDescr(RuleBuildContext context,
@@ -686,17 +686,20 @@ public final class DialectUtil {
             }
         }
 
-        appendUpdateStatement(consequence, declr, obj, modificationMask);
+        appendUpdateStatement(consequence, declr, obj, modificationMask, typeClass);
     }
 
-    private static void appendUpdateStatement(StringBuilder consequence, Declaration declr, String obj, long modificationMask) {
+    private static void appendUpdateStatement(StringBuilder consequence, Declaration declr, String obj, long modificationMask, Class<?> typeClass) {
         boolean isInternalFact = declr == null || declr.isInternalFact();
         consequence
                 .append("drools.update( ")
                 .append(obj)
                 .append(isInternalFact ? "__Handle2__, " : "__Handle__, ")
                 .append(modificationMask)
-                .append("L ); }");
+                .append("L, ")
+                .append(typeClass != null ? typeClass.getCanonicalName() : "java.lang.Object")
+                .append(".class")
+                .append(" ); }");
     }
 
     private static long parseModifiedProperties(ConsequenceMetaData.Statement statement,
@@ -778,6 +781,11 @@ public final class DialectUtil {
     }
 
     private static Class<?> findDeclarationClass(RuleBuildContext context, JavaBlockDescr d, String statement) {
+        Class<?> inputClass = d.getInputs() == null ? null : d.getInputs().get(statement);
+        if (inputClass != null) {
+            return inputClass;
+        }
+
         List<JavaLocalDeclarationDescr> localDeclarationDescrs = d.getInScopeLocalVars();
         if (localDeclarationDescrs == null) {
             return null;

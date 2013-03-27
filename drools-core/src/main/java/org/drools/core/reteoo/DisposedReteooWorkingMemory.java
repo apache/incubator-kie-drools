@@ -77,7 +77,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
     
     private DisposedReteooWorkingMemory() {}
     
-    public void update( FactHandle handle, Object object, long mask, Activation activation ) throws FactException {
+    public void update( FactHandle handle, Object object, long mask, Class<?> modifiedClass, Activation activation ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -477,7 +477,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public void update( org.kie.api.runtime.rule.FactHandle handle, Object object, long mask, Activation activation ) throws FactException {
+    public void update( org.kie.api.runtime.rule.FactHandle handle, Object object, long mask, Class<?> modifiedClass, Activation activation ) throws FactException {
         throw new IllegalStateException( ERRORMSG );
     }
 

@@ -90,10 +90,10 @@ public interface KnowledgeHelper
     void update(FactHandle handle, Object newObject);
 
     void update(FactHandle newObject);
-    void update(FactHandle newObject, long mask);
+    void update(FactHandle newObject, long mask, Class<?> modifiedClass);
     
     void update(Object newObject);
-    void update(Object newObject, long mask);
+    void update(Object newObject, long mask, Class<?> modifiedClass);
 
     void modify( Object newObject ) ;
 

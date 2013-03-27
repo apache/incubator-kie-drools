@@ -260,7 +260,7 @@ public class TruthMaintenanceSystem {
             if ( update ) {
                 if ( !bs.isEmpty() ) {
                     // We need the isEmpty check, in case the BeliefSet was made empty (due to retract) after this was scheduled
-                    ((NamedEntryPoint) handle.getEntryPoint() ).update( handle, true, handle.getObject(), Long.MAX_VALUE, null );
+                    ((NamedEntryPoint) handle.getEntryPoint() ).update( handle, true, handle.getObject(), Long.MAX_VALUE, Object.class, null );
                 }
             } else  {
                 if ( fullyRetract ) {

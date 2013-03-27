@@ -332,6 +332,7 @@ public class DefaultKnowledgeHelper
         ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
                                                                       newObject,
                                                                       Long.MAX_VALUE,
+                                                                      Object.class,
                                                                       this.activation );
         if ( getIdentityMap() != null ) {
             this.getIdentityMap().put( newObject,
@@ -343,21 +344,22 @@ public class DefaultKnowledgeHelper
         update( handle, Long.MAX_VALUE );
     }
 
-    public void update(final FactHandle handle, long mask) {
+    public void update(final FactHandle handle, long mask, Class<?> modifiedClass) {
         InternalFactHandle h = (InternalFactHandle) handle;
         ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
                                                                       ((InternalFactHandle)handle).getObject(),
                                                                       mask,
+                                                                      modifiedClass,
                                                                       this.activation );
     }
 
     
     public void update( Object object ) {
-        update(object, Long.MAX_VALUE);
+        update(object, Long.MAX_VALUE, Object.class);
     }
 
-    public void update(Object object, long mask) {
-        update(getFactHandle(object), mask);
+    public void update(Object object, long mask, Class<?> modifiedClass) {
+        update(getFactHandle(object), mask, modifiedClass);
     }
     
     public void retract(Object object) {

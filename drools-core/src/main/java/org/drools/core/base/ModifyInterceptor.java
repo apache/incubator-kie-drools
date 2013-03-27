@@ -76,7 +76,7 @@ public class ModifyInterceptor
             calculateModificationMask(knowledgeHelper, (WithNode)node);
         }
 
-        knowledgeHelper.update(value, modificationMask);
+        knowledgeHelper.update(value, modificationMask, value.getClass());
         return 0;
     }
 
