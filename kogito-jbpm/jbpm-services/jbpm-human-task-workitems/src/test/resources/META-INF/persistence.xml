@@ -6,37 +6,37 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd 
                       http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
 
-  <persistence-unit name="org.jbpm.task" transaction-type="RESOURCE_LOCAL">
+  <persistence-unit name="org.jbpm.services.task" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     
     <mapping-file>META-INF/Taskorm.xml</mapping-file>
 
-    <class>org.jbpm.task.impl.model.AttachmentImpl</class>
-    <class>org.jbpm.task.impl.model.ContentImpl</class>
-    <class>org.jbpm.task.impl.model.BooleanExpressionImpl</class>
-    <class>org.jbpm.task.impl.model.CommentImpl</class>
-    <class>org.jbpm.task.impl.model.DeadlineImpl</class>
-    <class>org.jbpm.task.impl.model.CommentImpl</class>
-    <class>org.jbpm.task.impl.model.DeadlineImpl</class>
-    <class>org.jbpm.task.impl.model.DelegationImpl</class>
-    <class>org.jbpm.task.impl.model.EscalationImpl</class>
-    <class>org.jbpm.task.impl.model.GroupImpl</class>
-    <class>org.jbpm.task.impl.model.I18NTextImpl</class>
-    <class>org.jbpm.task.impl.model.NotificationImpl</class>
-    <class>org.jbpm.task.impl.model.EmailNotificationImpl</class>
-    <class>org.jbpm.task.impl.model.EmailNotificationHeaderImpl</class>
-    <class>org.jbpm.task.impl.model.PeopleAssignmentsImpl</class>
-    <class>org.jbpm.task.impl.model.ReassignmentImpl</class>
+    <class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
+    <class>org.jbpm.services.task.impl.model.ContentImpl</class>
+    <class>org.jbpm.services.task.impl.model.BooleanExpressionImpl</class>
+    <class>org.jbpm.services.task.impl.model.CommentImpl</class>
+    <class>org.jbpm.services.task.impl.model.DeadlineImpl</class>
+    <class>org.jbpm.services.task.impl.model.CommentImpl</class>
+    <class>org.jbpm.services.task.impl.model.DeadlineImpl</class>
+    <class>org.jbpm.services.task.impl.model.DelegationImpl</class>
+    <class>org.jbpm.services.task.impl.model.EscalationImpl</class>
+    <class>org.jbpm.services.task.impl.model.GroupImpl</class>
+    <class>org.jbpm.services.task.impl.model.I18NTextImpl</class>
+    <class>org.jbpm.services.task.impl.model.NotificationImpl</class>
+    <class>org.jbpm.services.task.impl.model.EmailNotificationImpl</class>
+    <class>org.jbpm.services.task.impl.model.EmailNotificationHeaderImpl</class>
+    <class>org.jbpm.services.task.impl.model.PeopleAssignmentsImpl</class>
+    <class>org.jbpm.services.task.impl.model.ReassignmentImpl</class>
     
-    <class>org.jbpm.task.impl.model.TaskImpl</class>
-    <class>org.jbpm.task.impl.model.TaskDataImpl</class>
-    <class>org.jbpm.task.impl.model.UserImpl</class>
+    <class>org.jbpm.services.task.impl.model.TaskImpl</class>
+    <class>org.jbpm.services.task.impl.model.TaskDataImpl</class>
+    <class>org.jbpm.services.task.impl.model.UserImpl</class>
     
     <!--BAM for task service -->
-    <class>org.jbpm.task.impl.model.BAMTaskSummaryImpl</class>
+    <class>org.jbpm.services.task.impl.model.BAMTaskSummaryImpl</class>
     
     <!-- Event Classes -->
-    <class>org.jbpm.task.impl.model.TaskEventImpl</class>
+    <class>org.jbpm.services.task.impl.model.TaskEventImpl</class>
    
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />

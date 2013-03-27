@@ -6,7 +6,7 @@
       <named-query name="TasksAssignedAsBusinessAdministrator">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -59,7 +59,7 @@ where
       <named-query name="TasksAssignedAsExcludedOwner">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -112,7 +112,7 @@ where
       <named-query name="TasksAssignedAsPotentialOwner">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -167,7 +167,7 @@ where
       <named-query name="TasksAssignedAsPotentialOwnerByStatus">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -222,7 +222,7 @@ where
             <named-query name="TasksAssignedAsPotentialOwnerByStatusByGroup">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -278,7 +278,7 @@ where
             <named-query name="TasksAssignedAsPotentialOwnerWithGroups">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -333,7 +333,7 @@ where
  <named-query name="TasksAssignedAsPotentialOwnerByStatusWithGroups">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -388,7 +388,7 @@ where
        <named-query name="TasksAssignedAsPotentialOwnerByGroup">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -531,7 +531,7 @@ where
       <named-query name="SubTasksAssignedAsPotentialOwner">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -588,7 +588,7 @@ where
 <named-query name="GetSubTasksByParentTaskId">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -643,7 +643,7 @@ where
       <named-query name="TasksAssignedAsRecipient">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -696,7 +696,7 @@ where
       <named-query name="TasksAssignedAsTaskInitiator">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -749,7 +749,7 @@ where
       <named-query name="TasksAssignedAsTaskStakeholder">
           <query>
 select
-     new org.jbpm.task.query.TaskSummaryImpl(
+     new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
      name.text,
@@ -802,7 +802,7 @@ where
       <named-query name="TasksOwned">
           <query>
 select
-    new org.jbpm.task.query.TaskSummaryImpl(
+    new org.jbpm.services.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
     name.text,
@@ -854,7 +854,7 @@ where
        <named-query name="TasksOwnedWithParticularStatusByExpirationDate">
           <query>
 select
-    new org.jbpm.task.query.TaskSummaryImpl(
+    new org.jbpm.services.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
     name.text,
@@ -906,7 +906,7 @@ where
         <named-query name="TasksOwnedWithParticularStatusByExpirationDateOptional">
           <query>
 select
-    new org.jbpm.task.query.TaskSummaryImpl(
+    new org.jbpm.services.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
     name.text,
@@ -961,7 +961,7 @@ where
     <named-query name="TasksByStatus">
         <query>
             select
-            new org.jbpm.task.query.TaskSummaryImpl(
+            new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
             name.text,
@@ -1013,7 +1013,7 @@ where
     <named-query name="TasksByStatusSince">
         <query>
             select
-            new org.jbpm.task.query.TaskSummaryImpl(
+            new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
             name.text,
@@ -1065,7 +1065,7 @@ where
     <named-query name="ArchivedTasks">
         <query>
             select
-            new org.jbpm.task.query.TaskSummaryImpl(
+            new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
             name.text,
@@ -1117,7 +1117,7 @@ where
       <named-query name="TasksOwnedWithParticularStatus">
           <query>
 select
-    new org.jbpm.task.query.TaskSummaryImpl(
+    new org.jbpm.services.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
     name.text,
@@ -1170,7 +1170,7 @@ where
           <named-query name="TaskSummariesByIds">
           <query>
 select
-    new org.jbpm.task.query.TaskSummaryImpl(
+    new org.jbpm.services.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
     name.text,
@@ -1246,7 +1246,7 @@ where
 	  <named-query name="UnescalatedEndDeadlines">
           <query>
 select
-     new org.jbpm.task.query.DeadlineSummaryImpl(
+     new org.jbpm.services.task.query.DeadlineSummaryImpl(
      t.id,
      d.id,
      d.date)
@@ -1266,7 +1266,7 @@ order by
           <named-query name="UnescalatedStartDeadlines">
           <query>
 select
-     new org.jbpm.task.query.DeadlineSummaryImpl(
+     new org.jbpm.services.task.query.DeadlineSummaryImpl(
      t.id,
      d.id,
      d.date)
@@ -1297,7 +1297,7 @@ where
       <named-query name="TasksByStatusByProcessId">
         <query>
             select
-            new org.jbpm.task.query.TaskSummaryImpl(
+            new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
             name.text,
@@ -1349,7 +1349,7 @@ where
     <named-query name="TasksByStatusByProcessIdByTaskName">
         <query>
             select
-            new org.jbpm.task.query.TaskSummaryImpl(
+            new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
             name.text,

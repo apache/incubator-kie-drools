@@ -30,7 +30,7 @@ import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
-import org.jbpm.task.impl.model.TaskDefImpl;
+import org.jbpm.services.task.impl.model.TaskDefImpl;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;

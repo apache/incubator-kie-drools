@@ -29,8 +29,8 @@
 //import org.drools.core.process.instance.impl.WorkItemImpl;
 //import org.droolsjbpm.services.impl.helpers.KieSessionDelegate;
 //import org.jbpm.shared.services.api.ServicesSessionManager;
-//import org.jbpm.task.exception.PermissionDeniedException;
-//import org.jbpm.task.utils.ContentMarshallerHelper;
+//import org.jbpm.services.task.exception.PermissionDeniedException;
+//import org.jbpm.services.task.utils.ContentMarshallerHelper;
 //import org.junit.Ignore;
 //import org.junit.Test;
 //import org.kie.api.runtime.process.WorkItemHandler;

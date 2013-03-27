@@ -6,7 +6,7 @@ import javax.persistence.Persistence;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
 import org.jbpm.runtime.manager.impl.mapper.JPAMapper;
-import org.jbpm.task.identity.MvelUserGroupCallbackImpl;
+import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
 import org.kie.api.runtime.EnvironmentName;
 
 public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {

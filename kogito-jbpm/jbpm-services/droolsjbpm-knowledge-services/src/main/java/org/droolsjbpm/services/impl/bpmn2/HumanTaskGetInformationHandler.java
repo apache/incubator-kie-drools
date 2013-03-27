@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jbpm.bpmn2.xml.UserTaskHandler;
-import org.jbpm.task.impl.model.TaskDefImpl;
+import org.jbpm.services.task.impl.model.TaskDefImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 
 import org.w3c.dom.Element;

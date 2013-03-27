@@ -24,12 +24,12 @@
        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd">
     
     <alternatives>
-        <class>org.jbpm.task.lifecycle.listeners.JPATaskLifeCycleEventListener</class>
-        <class>org.jbpm.task.impl.command.CommandBasedTaskInstanceServiceImpl</class>
+        <class>org.jbpm.services.task.lifecycle.listeners.JPATaskLifeCycleEventListener</class>
+        <class>org.jbpm.services.task.impl.command.CommandBasedTaskInstanceServiceImpl</class>
     </alternatives>
     <decorators>
-        <class>org.jbpm.task.identity.UserGroupTaskQueryServiceDecorator</class>
-        <class>org.jbpm.task.identity.UserGroupTaskCommandExecutorDecorator</class>
+        <class>org.jbpm.services.task.identity.UserGroupTaskQueryServiceDecorator</class>
+        <class>org.jbpm.services.task.identity.UserGroupTaskCommandExecutorDecorator</class>
     </decorators>
     <interceptors>
         <class>org.jboss.seam.transaction.TransactionInterceptor</class>

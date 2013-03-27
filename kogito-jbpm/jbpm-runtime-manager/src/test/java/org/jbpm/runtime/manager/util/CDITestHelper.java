@@ -14,7 +14,7 @@ import javax.persistence.Persistence;
 
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
-import org.jbpm.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.kie.api.io.ResourceType;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;

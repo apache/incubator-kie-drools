@@ -22,7 +22,7 @@
 //import org.jboss.shrinkwrap.api.ArchivePaths;
 //import org.jboss.shrinkwrap.api.ShrinkWrap;
 //import org.jboss.shrinkwrap.api.spec.JavaArchive;
-//import org.jbpm.task.wih.LocalHTWorkItemHandler;
+//import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 //import org.junit.After;
 //import org.junit.Before;
 //import org.junit.runner.RunWith;
@@ -37,24 +37,24 @@
 //                .addPackage("org.jboss.seam.transaction") //seam-persistence
 //                .addPackage("org.jbpm.shared.services.api")
 //                .addPackage("org.jbpm.shared.services.impl")
-//                .addPackage("org.jbpm.task")
-//                .addPackage("org.jbpm.task.wih") // work items
-//                .addPackage("org.jbpm.task.annotations")
-//                .addPackage("org.jbpm.task.api")
-//                .addPackage("org.jbpm.task.impl")
-//                .addPackage("org.jbpm.task.events")
-//                .addPackage("org.jbpm.task.exception")
-//                .addPackage("org.jbpm.task.identity")
-//                .addPackage("org.jbpm.task.factories")
-//                .addPackage("org.jbpm.task.internals")
-//                .addPackage("org.jbpm.task.internals.lifecycle")
-//                .addPackage("org.jbpm.task.lifecycle.listeners")
-//                .addPackage("org.jbpm.task.query")
-//                .addPackage("org.jbpm.task.util")
-//                .addPackage("org.jbpm.task.commands") // This should not be required here
-//                .addPackage("org.jbpm.task.deadlines") // deadlines
-//                .addPackage("org.jbpm.task.deadlines.notifications.impl")
-//                .addPackage("org.jbpm.task.subtask")
+//                .addPackage("org.jbpm.services.task")
+//                .addPackage("org.jbpm.services.task.wih") // work items
+//                .addPackage("org.jbpm.services.task.annotations")
+//                .addPackage("org.jbpm.services.task.api")
+//                .addPackage("org.jbpm.services.task.impl")
+//                .addPackage("org.jbpm.services.task.events")
+//                .addPackage("org.jbpm.services.task.exception")
+//                .addPackage("org.jbpm.services.task.identity")
+//                .addPackage("org.jbpm.services.task.factories")
+//                .addPackage("org.jbpm.services.task.internals")
+//                .addPackage("org.jbpm.services.task.internals.lifecycle")
+//                .addPackage("org.jbpm.services.task.lifecycle.listeners")
+//                .addPackage("org.jbpm.services.task.query")
+//                .addPackage("org.jbpm.services.task.util")
+//                .addPackage("org.jbpm.services.task.commands") // This should not be required here
+//                .addPackage("org.jbpm.services.task.deadlines") // deadlines
+//                .addPackage("org.jbpm.services.task.deadlines.notifications.impl")
+//                .addPackage("org.jbpm.services.task.subtask")
 //                .addPackage("org.droolsjbpm.services.api")
 //                .addPackage("org.droolsjbpm.services.api.bpmn2")
 //                .addPackage("org.droolsjbpm.services.impl")
@@ -68,7 +68,7 @@
 //                .addPackage("org.droolsjbpm.services.impl.example")
 //                .addPackage("org.droolsjbpm.services.impl.audit")
 //                .addPackage("org.droolsjbpm.services.impl.util")
-//                .addPackage("org.jbpm.task.wih")
+//                .addPackage("org.jbpm.services.task.wih")
 //                
 //                .addPackage("org.kie.internal.runtime")
 //                .addPackage("org.kie.internal.runtime.manager")

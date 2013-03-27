@@ -38,9 +38,9 @@
 //import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 //import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 //import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-//import org.jbpm.task.HumanTaskServiceFactory;
-//import org.jbpm.task.wih.ExternalTaskEventListener;
-//import org.jbpm.task.wih.LocalHTWorkItemHandler;
+//import org.jbpm.services.task.HumanTaskServiceFactory;
+//import org.jbpm.services.task.wih.ExternalTaskEventListener;
+//import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 //import org.junit.After;
 //import org.junit.Before;
 //

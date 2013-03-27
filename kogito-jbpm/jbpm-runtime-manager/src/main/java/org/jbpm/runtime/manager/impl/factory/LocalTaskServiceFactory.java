@@ -2,8 +2,8 @@ package org.jbpm.runtime.manager.impl.factory;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
-import org.jbpm.task.HumanTaskServiceFactory;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.TaskServiceFactory;

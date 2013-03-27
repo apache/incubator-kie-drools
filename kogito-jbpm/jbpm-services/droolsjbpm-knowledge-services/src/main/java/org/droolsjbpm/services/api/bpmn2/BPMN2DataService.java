@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.droolsjbpm.services.impl.model.ProcessDesc;
-import org.jbpm.task.impl.model.TaskDefImpl;
+import org.jbpm.services.task.impl.model.TaskDefImpl;
 
 /**
  *

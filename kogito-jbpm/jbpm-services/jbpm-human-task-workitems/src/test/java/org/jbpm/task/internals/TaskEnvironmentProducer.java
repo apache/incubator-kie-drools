@@ -47,14 +47,14 @@ public class TaskEnvironmentProducer {
     
 
     
-    @PersistenceUnit(unitName = "org.jbpm.task")
+    @PersistenceUnit(unitName = "org.jbpm.services.task")
     @ApplicationScoped
     @Produces
     public EntityManagerFactory getEntityManagerFactory() {
         if (this.emf == null) {
             // this needs to be here for non EE containers
 
-            this.emf = Persistence.createEntityManagerFactory("org.jbpm.task");
+            this.emf = Persistence.createEntityManagerFactory("org.jbpm.services.task");
 
         }
         return this.emf;

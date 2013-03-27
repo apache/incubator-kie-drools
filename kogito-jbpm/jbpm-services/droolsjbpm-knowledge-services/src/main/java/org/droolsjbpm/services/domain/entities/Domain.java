@@ -28,7 +28,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import org.jbpm.task.impl.model.I18NTextImpl;
+
+import org.jbpm.services.task.impl.model.I18NTextImpl;
 
 /**
  *

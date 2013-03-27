@@ -38,7 +38,7 @@
 //import org.jbpm.shared.services.api.ServicesSessionManager;
 //import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 //import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-//import org.jbpm.task.wih.LocalHTWorkItemHandler;
+//import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 //
 ///**
 // *

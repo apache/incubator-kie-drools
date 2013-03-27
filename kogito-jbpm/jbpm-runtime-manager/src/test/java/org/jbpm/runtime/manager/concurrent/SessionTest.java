@@ -1,9 +1,6 @@
 package org.jbpm.runtime.manager.concurrent;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +18,8 @@ import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
-import org.jbpm.task.exception.PermissionDeniedException;
-import org.jbpm.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.junit.After;
 import org.junit.Before;

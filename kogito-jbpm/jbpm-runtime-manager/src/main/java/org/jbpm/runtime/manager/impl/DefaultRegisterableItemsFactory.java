@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
-import org.jbpm.task.wih.ExternalTaskEventListener;
-import org.jbpm.task.wih.LocalHTWorkItemHandler;
+import org.jbpm.services.task.wih.ExternalTaskEventListener;
+import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;

@@ -140,7 +140,7 @@
             </component>
           </components>
           <componentProperties>
-            <persistenceUnit>org.jbpm.task</persistenceUnit>
+            <persistenceUnit>org.jbpm.services.task</persistenceUnit>
             <outputfilename>schema.ddl</outputfilename>
             <drop>false</drop>
             <create>true</create>

@@ -29,9 +29,9 @@
 //import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 //import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 //import org.jbpm.shared.services.impl.TestVFSFileServiceImpl;
-//import org.jbpm.task.HumanTaskServiceFactory;
-//import org.jbpm.task.wih.LocalHTWorkItemHandler;
-//import org.jbpm.task.wih.HTWorkItemHandlerFactory;
+//import org.jbpm.services.task.HumanTaskServiceFactory;
+//import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
+//import org.jbpm.services.task.wih.HTWorkItemHandlerFactory;
 //import org.junit.After;
 //import org.junit.Before;
 //import org.kie.commons.io.IOService;

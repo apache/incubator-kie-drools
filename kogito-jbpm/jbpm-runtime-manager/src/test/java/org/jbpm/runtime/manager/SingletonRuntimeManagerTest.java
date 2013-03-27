@@ -1,17 +1,13 @@
 package org.jbpm.runtime.manager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.Properties;
 
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
-import org.jbpm.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
