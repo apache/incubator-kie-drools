@@ -300,7 +300,7 @@ public class KieBuilderImpl
         return getKieModule(false);
     }
 
-    KieModule getKieModuleIgnoringErrors() {
+    public KieModule getKieModuleIgnoringErrors() {
         return getKieModule(true);
     }
 
