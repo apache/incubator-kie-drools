@@ -1,4 +1,4 @@
-package org.jbpm.task.test;
+package org.jbpm.services.task.test;
 
 import java.util.ArrayList;
 import java.util.Collection;

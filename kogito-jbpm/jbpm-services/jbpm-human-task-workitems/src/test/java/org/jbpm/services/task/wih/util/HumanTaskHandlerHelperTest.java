@@ -1,4 +1,4 @@
-package org.jbpm.task.wih.util;
+package org.jbpm.services.task.wih.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -9,7 +9,7 @@ import java.util.Collections;
 
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.jbpm.task.impl.model.LanguageImpl;
+import org.jbpm.services.task.impl.model.LanguageImpl;
 import org.junit.Test;
 import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.EmailNotification;

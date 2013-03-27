@@ -13,20 +13,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jbpm.task.wih;
+package org.jbpm.services.task.wih;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jbpm.task.impl.model.I18NTextImpl;
-import org.jbpm.task.impl.model.TaskDataImpl;
-import org.jbpm.task.impl.model.TaskImpl;
-import org.jbpm.task.impl.model.UserImpl;
-import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.jbpm.task.utils.OnErrorAction;
-import org.jbpm.task.wih.util.HumanTaskHandlerHelper;
-import org.jbpm.task.wih.util.PeopleAssignmentHelper;
+import org.jbpm.services.task.impl.model.I18NTextImpl;
+import org.jbpm.services.task.impl.model.TaskDataImpl;
+import org.jbpm.services.task.impl.model.TaskImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.jbpm.services.task.utils.OnErrorAction;
+import org.jbpm.services.task.wih.util.HumanTaskHandlerHelper;
+import org.jbpm.services.task.wih.util.PeopleAssignmentHelper;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;

@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.task.wih;
+package org.jbpm.services.task.wih;
 
 import java.util.Date;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.task.exception.PermissionDeniedException;
-import org.jbpm.task.impl.factories.TaskFactory;
-import org.jbpm.task.utils.OnErrorAction;
+import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.jbpm.services.task.impl.factories.TaskFactory;
+import org.jbpm.services.task.utils.OnErrorAction;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;

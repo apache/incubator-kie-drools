@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jbpm.task.wih.util;
+package org.jbpm.services.task.wih.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +22,10 @@ import junit.framework.TestCase;
 
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.jbpm.task.impl.model.GroupImpl;
-import org.jbpm.task.impl.model.TaskDataImpl;
-import org.jbpm.task.impl.model.TaskImpl;
-import org.jbpm.task.impl.model.UserImpl;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.TaskDataImpl;
+import org.jbpm.services.task.impl.model.TaskImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.Test;
 import org.kie.internal.task.api.model.OrganizationalEntity;
 import org.kie.internal.task.api.model.PeopleAssignments;

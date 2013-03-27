@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.task.wih;
+package org.jbpm.services.task.wih;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,13 +23,13 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import org.jboss.seam.transaction.Transactional;
 
+import org.jbpm.services.task.annotations.External;
+import org.jbpm.services.task.events.AfterTaskCompletedEvent;
+import org.jbpm.services.task.events.AfterTaskFailedEvent;
+import org.jbpm.services.task.events.AfterTaskSkippedEvent;
+import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
-import org.jbpm.task.annotations.External;
-import org.jbpm.task.events.AfterTaskCompletedEvent;
-import org.jbpm.task.events.AfterTaskFailedEvent;
-import org.jbpm.task.events.AfterTaskSkippedEvent;
-import org.jbpm.task.lifecycle.listeners.TaskLifeCycleEventListener;
-import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.manager.Runtime;
 import org.kie.internal.runtime.manager.RuntimeManager;

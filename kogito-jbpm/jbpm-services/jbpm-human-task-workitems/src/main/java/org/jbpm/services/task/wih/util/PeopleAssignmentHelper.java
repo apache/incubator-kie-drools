@@ -13,14 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jbpm.task.wih.util;
+package org.jbpm.services.task.wih.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.task.impl.model.GroupImpl;
-import org.jbpm.task.impl.model.PeopleAssignmentsImpl;
-import org.jbpm.task.impl.model.UserImpl;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.task.api.model.OrganizationalEntity;
 import org.kie.internal.task.api.model.PeopleAssignments;

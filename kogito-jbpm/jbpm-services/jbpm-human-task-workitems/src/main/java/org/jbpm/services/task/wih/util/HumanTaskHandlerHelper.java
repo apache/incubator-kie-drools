@@ -1,4 +1,4 @@
-package org.jbpm.task.wih.util;
+package org.jbpm.services.task.wih.util;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,16 +8,7 @@ import java.util.Map;
 
 import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendar;
-import org.jbpm.task.impl.model.DeadlineImpl;
-import org.jbpm.task.impl.model.DeadlinesImpl;
-import org.jbpm.task.impl.model.EmailNotificationHeaderImpl;
-import org.jbpm.task.impl.model.EmailNotificationImpl;
-import org.jbpm.task.impl.model.EscalationImpl;
-import org.jbpm.task.impl.model.GroupImpl;
-import org.jbpm.task.impl.model.I18NTextImpl;
-import org.jbpm.task.impl.model.LanguageImpl;
-import org.jbpm.task.impl.model.ReassignmentImpl;
-import org.jbpm.task.impl.model.UserImpl;
+import org.jbpm.services.task.impl.model.*;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.task.api.model.Deadline;

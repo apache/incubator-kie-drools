@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.task.wih;
+package org.jbpm.services.task.wih;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,12 +31,13 @@ import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.jbpm.task.events.AfterTaskAddedEvent;
-import org.jbpm.task.exception.PermissionDeniedException;
-import org.jbpm.task.test.MyObject;
-import org.jbpm.task.test.TestStatefulKnowledgeSession;
-import org.jbpm.task.utils.ContentMarshallerHelper;
-import org.jbpm.task.utils.OnErrorAction;
+import org.jbpm.services.task.events.AfterTaskAddedEvent;
+import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.jbpm.services.task.test.MyObject;
+import org.jbpm.services.task.test.TestStatefulKnowledgeSession;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.jbpm.services.task.utils.OnErrorAction;
+import org.jbpm.services.task.wih.AbstractHTWorkItemHandler;
 import org.junit.Test;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;

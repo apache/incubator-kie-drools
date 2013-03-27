@@ -1,3 +1,4 @@
+package org.jbpm.services.task.wih;
 ///**
 // * Copyright 2010 JBoss Inc
 // *
