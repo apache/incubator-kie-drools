@@ -904,7 +904,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                 .getActivation();
 
         // simulate a modify inside a consequence
-        wm.update( stiltonHandle, stilton, Long.MAX_VALUE, item );
+        wm.update( stiltonHandle, stilton, Long.MAX_VALUE, Object.class, item );
 
         // with true modify, no reactivations should be triggered
         assertEquals( 3, created.size() );

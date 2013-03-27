@@ -373,23 +373,27 @@ public class NamedEntryPoint
         update( handle,
                 object,
                 Long.MAX_VALUE,
+                Object.class,
                 null );
     }
     
     public void update(final org.drools.runtime.rule.FactHandle factHandle,
                        final Object object,
                        final long mask,
+                       final Class<?> modifiedClass,
                        final Activation activation) throws FactException {
 
         update( (org.drools.FactHandle) factHandle,
                 object,
                 mask,
+                modifiedClass,
                 activation );
     }
 
     public void update(org.drools.FactHandle factHandle,
                        final Object object,
                        final long mask,
+                       final Class<?> modifiedClass,
                        final Activation activation) throws FactException {
         try {
             this.lock.lock();
@@ -479,7 +483,9 @@ public class NamedEntryPoint
                                                                                       this.wm.agenda.getActiveActivations(),
                                                                                       this.wm.agenda.getDormantActivations(),
                                                                                       entryPoint,
-                                                                                      mask );
+                                                                                      mask,
+                                                                                      modifiedClass,
+                                                                                      null );
 
             this.entryPointNode.modifyObject( handle,
                                               propagationContext,

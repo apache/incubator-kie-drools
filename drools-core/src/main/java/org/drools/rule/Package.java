@@ -277,6 +277,23 @@ public class Package
         return this.typeDeclarations;
     }
 
+    public TypeDeclaration getTypeDeclaration( Class<?> clazz ) {
+        if (clazz == null) {
+            return null;
+        }
+        TypeDeclaration typeDeclaration = getTypeDeclaration(clazz.getSimpleName());
+        if (typeDeclaration == null) {
+            // check if clazz is resolved by any of the type declarations
+            for ( TypeDeclaration type : this.typeDeclarations.values() ) {
+                if ( type.matches( clazz ) ) {
+                    typeDeclaration = type;
+                    break;
+                }
+            }
+        }
+        return typeDeclaration;
+    }
+
     public TypeDeclaration getTypeDeclaration( String type ) {
         return this.typeDeclarations.get( type );
     }

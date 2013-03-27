@@ -17,13 +17,15 @@
 package org.drools.common;
 
 import org.drools.FactHandle;
+import org.drools.base.ClassObjectType;
+import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.WindowTupleList;
-import org.drools.rule.EntryPoint;
-import org.drools.rule.Rule;
+import org.drools.rule.*;
+import org.drools.rule.Package;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
@@ -31,6 +33,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.LinkedList;
+import java.util.List;
 
 public class PropagationContextImpl
     implements
@@ -66,11 +69,14 @@ public class PropagationContextImpl
     
     private LinkedList<WorkingMemoryAction> queue2; // for evaluations and fixers
 
-    private long modificationMask = Long.MAX_VALUE;
+    private long               modificationMask = Long.MAX_VALUE;
+    private long               originalMask = Long.MAX_VALUE;
 
-    private WindowTupleList windowTupleList;
+    private Class<?>           modifiedClass;
 
-    private ObjectType objectType;
+    private WindowTupleList    windowTupleList;
+
+    private ObjectType         objectType;
     
     // this field is only set for propagations happening during 
     // the deserialization of a session
@@ -94,6 +100,7 @@ public class PropagationContextImpl
              0, 
              EntryPoint.DEFAULT,
              Long.MAX_VALUE,
+             Object.class,
              null );
         this.originOffset = -1;
         this.shouldPropagateAll = true;
@@ -116,6 +123,7 @@ public class PropagationContextImpl
              dormantActivations, 
              entryPoint,
              Long.MAX_VALUE,
+             Object.class,
              null );
     }
 
@@ -137,6 +145,7 @@ public class PropagationContextImpl
              dormantActivations, 
              entryPoint,
              modificationMask,
+             Object.class,
              null );
     }
 
@@ -158,6 +167,7 @@ public class PropagationContextImpl
              dormantActivations, 
              entryPoint,
              Long.MAX_VALUE,
+             Object.class,
              readerContext );
     }
 
@@ -170,6 +180,7 @@ public class PropagationContextImpl
                                   final int dormantActivations,
                                   final EntryPoint entryPoint,
                                   final long modificationMask,
+                                  final Class<?> modifiedClass,
                                   final MarshallerReaderContext readerContext ) {
         this.type = type;
         this.rule = rule;
@@ -181,6 +192,8 @@ public class PropagationContextImpl
         this.entryPoint = entryPoint;
         this.originOffset = -1;
         this.modificationMask = modificationMask;
+        this.originalMask = modificationMask;
+        this.modifiedClass = modifiedClass;
         this.readerContext = readerContext;
     }
 
@@ -370,6 +383,40 @@ public class PropagationContextImpl
 
     public long getModificationMask() {
         return modificationMask;
+    }
+
+    public PropagationContext adaptModificationMaskForObjectType(ObjectType type, InternalWorkingMemory workingMemory) {
+        modificationMask = originalMask;
+        if (modificationMask == Long.MAX_VALUE || !(type instanceof ClassObjectType)) {
+            return this;
+        }
+        Class<?> classType = ((ClassObjectType)type).getClassType();
+        if (classType == modifiedClass || !(classType.isInterface() || modifiedClass.isInterface())) {
+            return this;
+        }
+
+        Long cachedMask = rule.getTransformedMask(modifiedClass, classType, originalMask);
+        if (cachedMask != null) {
+            modificationMask = cachedMask;
+            return this;
+        }
+
+        modificationMask = 0L;
+        Package pkg = workingMemory.getRuleBase().getPackage(rule.getPackage());
+        List<String> typeClassProps = pkg.getTypeDeclaration(classType).getSettableProperties();
+        List<String> modifiedClassProps = pkg.getTypeDeclaration(modifiedClass).getSettableProperties();
+
+        for (int i = 0; i < modifiedClassProps.size(); i++) {
+            if (BitMaskUtil.isPositionSet(originalMask, i)) {
+                int posInType = typeClassProps.indexOf(modifiedClassProps.get(i));
+                if (posInType >= 0) {
+                    modificationMask = BitMaskUtil.set(modificationMask, posInType);
+                }
+            }
+        }
+        rule.storeTransformedMask(modifiedClass, classType, originalMask, modificationMask);
+
+        return this;
     }
 
     public WindowTupleList getActiveWindowTupleList() {

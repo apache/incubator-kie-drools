@@ -19,4 +19,9 @@ public class BitMaskUtil {
     public static boolean isSet(long mask, long bit) {
         return (mask & bit) == bit;
     }
+
+
+    public static boolean isPositionSet(long mask, int pos) {
+        return isSet(mask, 1L << pos);
+    }
 }

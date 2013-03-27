@@ -38,6 +38,7 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
     public void update(org.drools.runtime.rule.FactHandle handle,
                        Object object,
                        long mask,
+                       Class<?> modifiedClass,
                        Activation activation) throws FactException;
 
     public EntryPoint getEntryPoint();

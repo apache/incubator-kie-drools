@@ -28,6 +28,7 @@ public interface InternalWorkingMemoryActions
     public void update(FactHandle handle,
                        Object object,
                        long mask,
+                       Class<?> modifiedClass,
                        Activation activation) throws FactException;
 
     public void retract(FactHandle handle,
