@@ -17,10 +17,16 @@ package org.jbpm.services.task.wih;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
+import javax.inject.Inject;
+import javax.persistence.EntityManagerFactory;
+
 import org.jboss.seam.transaction.Transactional;
 
 import org.jbpm.services.task.annotations.External;
@@ -49,6 +55,9 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
 
     private RuntimeManager runtimeManager;
     private Map<Integer, ClassLoader> classLoaders = new HashMap<Integer,ClassLoader>();
+    private Map<String, RuntimeManager> mappedManagers = new ConcurrentHashMap<String, RuntimeManager>();
+    
+    private RuntimeFinder finder;
  
     public ExternalTaskEventListener() {
     }
@@ -69,7 +78,7 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
 
         long workItemId = task.getTaskData().getWorkItemId();
         long processInstanceId = task.getTaskData().getProcessInstanceId();
-        Runtime runtime = runtimeManager.getRuntime(ProcessInstanceIdContext.get(processInstanceId));
+        Runtime runtime = getManager(task).getRuntime(ProcessInstanceIdContext.get(processInstanceId));
         KieSession session = runtime.getKieSession();
         
         if (task.getTaskData().getStatus() == Status.Completed) {
@@ -107,7 +116,7 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         // DO NOTHING
     }
 
-    public void afterTaskSkippedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskSkippedEvent Task task) {
+    public void afterTaskSkippedEvent(@Observes @AfterTaskSkippedEvent Task task) {
         processTaskState(task);
     }
 
@@ -119,9 +128,10 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         // DO NOTHING
     }
 
-    public void afterTaskCompletedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskCompletedEvent Task task) {
+    public void afterTaskCompletedEvent(@Observes @AfterTaskCompletedEvent Task task) {
+
         long processInstanceId = task.getTaskData().getProcessInstanceId();
-        Runtime runtime = runtimeManager.getRuntime(ProcessInstanceIdContext.get(processInstanceId));
+        Runtime runtime = getManager(task).getRuntime(ProcessInstanceIdContext.get(processInstanceId));
         KieSession session = runtime.getKieSession();
         if (session != null) {
             System.out.println(">> I've recieved an event for a known session (" + task.getTaskData().getProcessSessionId()+")");
@@ -131,7 +141,7 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         }
     }
 
-    public void afterTaskFailedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskFailedEvent Task task) {
+    public void afterTaskFailedEvent(@Observes @AfterTaskFailedEvent Task task) {
         processTaskState(task);
     }
 
@@ -142,5 +152,37 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
 
     public void afterTaskExitedEvent(Task ti) {
         // DO NOTHING
+    }
+    
+    public RuntimeManager getManager(Task task) {
+        if (runtimeManager != null) {
+            return runtimeManager;
+        } else if (mappedManagers.size() == 1) {
+            return mappedManagers.values().iterator().next();
+        }else {
+            // find it base on know values
+            String name = finder.findName(task.getTaskData().getProcessInstanceId());
+            return mappedManagers.get(name);
+        }
+    }
+
+    public Map<String, RuntimeManager> getMappedManagers() {
+        return mappedManagers;
+    }
+
+    public void setMappedManagers(Map<String, RuntimeManager> mappedManagers) {
+        this.mappedManagers = mappedManagers;
+    }
+    
+    public void addMappedManger(String name, RuntimeManager manager) {
+        this.mappedManagers.put(name, manager);
+    }
+
+    public RuntimeFinder getFinder() {
+        return finder;
+    }
+
+    public void setFinder(RuntimeFinder finder) {
+        this.finder = finder;
     }
 }

@@ -1,8 +1,5 @@
 package org.droolsjbpm.services.impl.audit;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.droolsjbpm.services.api.IdentityProvider;
 import org.droolsjbpm.services.domain.entities.Domain;
 import org.jbpm.process.audit.NodeInstanceLog;
@@ -16,10 +13,10 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 
-@ApplicationScoped
+
 public class ServicesAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl {
 
-    @Inject
+    
     private IdentityProvider identityProvider;
     
     private Domain domain;

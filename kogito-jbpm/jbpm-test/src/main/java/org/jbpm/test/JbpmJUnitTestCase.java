@@ -33,6 +33,7 @@ import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
 import org.jbpm.runtime.manager.impl.factory.InMemorySessionFactory;
 import org.jbpm.services.task.HumanTaskServiceFactory;
+import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
@@ -190,6 +191,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
             environment.addToConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
             environment.addToConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());        
         }
+        environment.setUserGroupCallback(new JBossUserGroupCallbackImpl("classpath:/usergroups.properties"));
         
         for (String p : process) {
             environment.addAsset(ResourceFactory.newClassPathResource(p), ResourceType.BPMN2);
@@ -212,7 +214,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
             environment.addToConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
             environment.addToConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());        
         }
-        
+        environment.setUserGroupCallback(new JBossUserGroupCallbackImpl("classpath:/usergroups.properties"));
         for (Map.Entry<String, ResourceType> entry : resources.entrySet()) {
             
             environment.addAsset(ResourceFactory.newClassPathResource(entry.getKey()), entry.getValue());

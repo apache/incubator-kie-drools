@@ -24,12 +24,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 import org.droolsjbpm.services.api.DomainManagerService;
+import org.droolsjbpm.services.api.IdentityProvider;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.domain.entities.Domain;
 import org.droolsjbpm.services.domain.entities.Organization;
@@ -40,12 +42,15 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.event.AuditEventBuilder;
+import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
+import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.commons.java.nio.file.Path;
@@ -63,6 +68,8 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 @ApplicationScoped
 public class DomainManagerServiceImpl implements DomainManagerService {
 
+    @Inject
+    private BeanManager beanManager;
     @Inject
     private JbpmServicesPersistenceManager pm;
     @Inject
@@ -82,7 +89,8 @@ public class DomainManagerServiceImpl implements DomainManagerService {
     private Map<String, List<String>> processDefinitionNamesByDomain = new HashMap<String, List<String>>();
     
     @Inject
-    private AuditEventBuilder auditEventBuilder;
+    private IdentityProvider identityProvider; 
+//    private AuditEventBuilder auditEventBuilder;
 
     public void setPm(JbpmServicesPersistenceManager pm) {
         this.pm = pm;
@@ -154,7 +162,7 @@ public class DomainManagerServiceImpl implements DomainManagerService {
 
     @Override
     public void initDomain(long domainId) {
-        Domain d = getDomainById(domainId);
+        final Domain d = getDomainById(domainId);
         fs.fetchChanges();
         if( d != null){
             if (domainsMap.get(d.getName()) == null) {
@@ -164,7 +172,13 @@ public class DomainManagerServiceImpl implements DomainManagerService {
                     String reference = r.getReference();
                     // Create Runtime Manager Based on the Reference
                     SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment(emf);
+                    AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance(emf);
+                    ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
+                    auditEventBuilder.setIdentityProvider(identityProvider);
+                    auditEventBuilder.setDomain(d);
+                    auditLogger.setBuilder(auditEventBuilder);
                     
+                    environment.setRegisterableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger));
                     Iterable<Path> loadProcessFiles = null;
 
                     try {
@@ -194,10 +208,7 @@ public class DomainManagerServiceImpl implements DomainManagerService {
                     if (!loadedProcesses.isEmpty()) {  
                         RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment, d.getName());
                         org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
-                        AbstractAuditLogger auditLogger = AuditLoggerFactory.newInstance(AuditLoggerFactory.Type.JPA, runtime.getKieSession(), null);
-                        auditLogger.setBuilder(auditEventBuilder);
-                        ((ServicesAwareAuditEventBuilder)auditEventBuilder).setDomain(d);
-                        auditLogger.setBuilder(auditEventBuilder);
+                        
                         if (domainsMap.get(d.getName()) == null) {
                             domainsMap.put(d.getName(), new ArrayList<Runtime>());
                         }

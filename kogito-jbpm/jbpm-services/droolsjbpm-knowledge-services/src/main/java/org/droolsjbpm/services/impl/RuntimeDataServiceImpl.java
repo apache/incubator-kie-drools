@@ -30,6 +30,7 @@ import org.droolsjbpm.services.impl.model.ProcessInstanceDesc;
 import org.droolsjbpm.services.impl.model.VariableStateDesc;
 import org.jboss.seam.transaction.Transactional;
 
+import org.jbpm.services.task.wih.RuntimeFinder;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
 import org.jbpm.process.audit.NodeInstanceLog;
@@ -41,7 +42,7 @@ import org.jbpm.process.audit.NodeInstanceLog;
  */
 @ApplicationScoped
 @Transactional
-public class RuntimeDataServiceImpl implements RuntimeDataService {
+public class RuntimeDataServiceImpl implements RuntimeDataService, RuntimeFinder {
 
     
     @Inject
@@ -213,6 +214,12 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
                 pm.addParametersToMap("processInstanceId", processInstanceId,"variableId", variableId));                
 
         return variablesState;
+    }
+
+    @Override
+    public String findName(long id) {
+        ProcessInstanceDesc piDesc = getProcessInstanceById(id);
+        return piDesc.getDomainId();
     }
 
 

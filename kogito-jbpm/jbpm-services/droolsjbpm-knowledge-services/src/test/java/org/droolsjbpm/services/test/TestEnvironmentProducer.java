@@ -43,6 +43,7 @@ import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
 /**
  *
  */
+@ApplicationScoped
 public class TestEnvironmentProducer {
 
     private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";

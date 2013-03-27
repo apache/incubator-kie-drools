@@ -14,7 +14,9 @@ import javax.persistence.Persistence;
 
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.kie.api.io.ResourceType;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
@@ -23,6 +25,7 @@ import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
 import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
+import org.kie.internal.task.api.TaskService;
 
 @ApplicationScoped
 public class CDITestHelper {
@@ -83,5 +86,18 @@ public class CDITestHelper {
     @Named("ioStrategy")
     public IOService createIOService(){
         return new IOServiceNio2WrapperImpl();
+    }
+    
+    @Produces
+    public TaskService newTaskService(@Singleton RuntimeEnvironment runtimeEnvironment) {
+
+        TaskService internalTaskService =   HumanTaskServiceFactory.newTaskServiceConfigurator()
+        .transactionManager(new JbpmJTATransactionManager())
+        .entityManagerFactory(emf)
+        .userGroupCallback(runtimeEnvironment.getUserGroupCallback())
+        .getTaskService();
+                    
+        return internalTaskService;
+
     }
 }

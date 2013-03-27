@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 
@@ -43,6 +44,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
@@ -104,6 +106,7 @@ public class DomainServicesTest {
                 
                 .addPackage("org.jbpm.runtime.manager")
                 .addPackage("org.jbpm.runtime.manager.impl")
+                .addPackage("org.jbpm.runtime.manager.impl.cdi")
                 .addPackage("org.jbpm.runtime.manager.impl.cdi.qualifier")
                 
                 .addPackage("org.jbpm.runtime.manager.impl.context")
@@ -171,12 +174,15 @@ public class DomainServicesTest {
     
     @Inject
     protected TaskService taskService;
+    @Inject
+    private BeanManager beanManager;
 
     @Test
     public void simpleExecutionTest() {
         assertNotNull(managerFactory);
         String path = "processes/support/";
         SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment(emf);
+        environment.setRegisterableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null));
         Iterable<Path> loadProcessFiles = null;
 
         try {

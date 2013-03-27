@@ -1,7 +1,9 @@
 package org.jbpm.runtime.manager.impl;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import org.drools.core.time.TimerService;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
@@ -22,6 +24,9 @@ import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
 @ApplicationScoped
 public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     
+    @Inject
+    private Instance<TaskServiceFactory> taskServiceFactoryInjected;
+    
     @Override
     @Produces
     @Singleton
@@ -32,7 +37,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     @Override
     public RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment, String identifier) {
         SessionFactory factory = getSessionFactory(environment);
-        TaskServiceFactory taskServiceFactory = new LocalTaskServiceFactory(environment);
+        TaskServiceFactory taskServiceFactory = getTaskServiceFactory(environment);
         
         RuntimeManager manager = new SingletonRuntimeManager(environment, factory, taskServiceFactory, identifier);
         initTimerService(environment, manager);
@@ -51,7 +56,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     
     public RuntimeManager newPerRequestRuntimeManager(RuntimeEnvironment environment, String identifier) {
         SessionFactory factory = getSessionFactory(environment);
-        TaskServiceFactory taskServiceFactory = new LocalTaskServiceFactory(environment);
+        TaskServiceFactory taskServiceFactory = getTaskServiceFactory(environment);
 
         RuntimeManager manager = new PerRequestRuntimeManager(environment, factory, taskServiceFactory, identifier);
         initTimerService(environment, manager);
@@ -68,7 +73,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     
     public RuntimeManager newPerProcessInstanceRuntimeManager(RuntimeEnvironment environment, String identifier) {
         SessionFactory factory = getSessionFactory(environment);
-        TaskServiceFactory taskServiceFactory = new LocalTaskServiceFactory(environment);
+        TaskServiceFactory taskServiceFactory = getTaskServiceFactory(environment);
 
         RuntimeManager manager = new PerProcessInstanceRuntimeManager(environment, factory, taskServiceFactory, identifier);
         initTimerService(environment, manager);
@@ -84,6 +89,17 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
         }
         
         return factory;
+    }
+
+    public TaskServiceFactory getTaskServiceFactory(RuntimeEnvironment environment) {
+        TaskServiceFactory taskServiceFactory = null;
+        try {
+            taskServiceFactory = taskServiceFactoryInjected.get();
+        } catch (Exception e) {
+            taskServiceFactory = new LocalTaskServiceFactory(environment);
+        }
+        
+        return taskServiceFactory;
     }
     
     protected void initTimerService(RuntimeEnvironment environment, RuntimeManager manager) {

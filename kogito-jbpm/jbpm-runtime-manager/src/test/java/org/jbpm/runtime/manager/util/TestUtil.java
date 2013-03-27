@@ -34,9 +34,13 @@ public class TestUtil {
                 }
             });
             for (String file : jbpmSerFiles) {
-                
+                System.out.println(tempDir + file);
                 new File(tempDir, file).delete();
             }
         }
+    }
+    
+    public static void main(String[] args) {
+        cleanupSingletonSessionId();
     }
 }
