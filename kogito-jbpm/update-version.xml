@@ -19,11 +19,6 @@
   	               byline="true">
   	  <fileset dir="." includes="pom.xml"/>
   	</replaceregexp>
-  	<replaceregexp match="&lt;jbpm.osgi.version&gt;${osgi.current}&lt;/jbpm.osgi.version&gt;"
-  	               replace="&lt;jbpm.osgi.version&gt;${osgi.new}&lt;/jbpm.osgi.version&gt;" 
-  	               byline="true">
-  	  <fileset dir="." includes="pom.xml"/>
-  	</replaceregexp>
     <replaceregexp match="jBPM.version=${current}"
                    replace="jBPM.version=${new}" 
                    byline="true">
