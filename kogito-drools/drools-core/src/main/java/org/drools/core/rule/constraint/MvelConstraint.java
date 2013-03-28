@@ -1,5 +1,6 @@
 package org.drools.core.rule.constraint;
 
+import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.mvel.MVELCompilationUnit;
@@ -120,6 +121,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         this.isUnification = isUnification;
     }
 
+    private String getAccessedClass() {
+        return extractor instanceof ClassFieldReader ? ((ClassFieldReader)extractor).getClassName() : null;
+    }
+
     public void setReadAccessor(InternalReadAccessor readAccessor) {
         this.extractor = readAccessor;
     }
@@ -214,9 +219,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             ParserConfiguration configuration = statement instanceof CompiledExpression ?
                     ((CompiledExpression)statement).getParserConfiguration() :
                     data.getParserConfiguration();
-            conditionEvaluator = new MvelConditionEvaluator(compilationUnit, configuration, statement, declarations);
+            conditionEvaluator = new MvelConditionEvaluator(compilationUnit, configuration, statement, declarations, getAccessedClass());
         } else {
-            conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression, declarations);
+            conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression, declarations, getAccessedClass());
         }
     }
 
@@ -280,7 +285,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, classLoader, leftTuple);
         } catch (Throwable t) {
             if (TEST_JITTING) {
-                throw new RuntimeException("Exception jitting: " + expression, t);
+                if (analyzedCondition == null) {
+                    logger.error("Unable to analize condition for expression: " + expression, t);
+                } else {
+                    throw new RuntimeException(t);
+                }
             } else {
                 logger.warn("Exception jitting: " + expression, t);
             }
