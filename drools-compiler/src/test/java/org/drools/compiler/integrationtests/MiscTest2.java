@@ -1583,4 +1583,20 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertTrue(list.contains("React"));
         assertTrue(list.contains("React2"));
     }
+
+    @Test
+    public void testJitCastOfPrimitiveType() {
+        // DROOLS-79
+        String str =
+                "rule R when\n" +
+                        " Number(longValue < (Long)7)\n" +
+                        "then\n" +
+                        "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Long(6));
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
