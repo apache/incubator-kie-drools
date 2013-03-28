@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.holder;
 import java.io.Serializable;
 
 import org.drools.core.common.AgendaItem;
+import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.Session;
@@ -28,13 +29,19 @@ import org.kie.api.runtime.rule.Session;
  */
 public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
-    protected void registerUndoListener(RuleContext kcontext, ActivationUnMatchListener undoListener) {
+    protected final boolean matchesEnabled = false;
+
+    protected void registerUndoListener(RuleContext kcontext, final Runnable undoListener) {
         AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         if (agendaItem.getActivationUnMatchListener() != null) {
-            Session session = null; // Should not be used by the undoListener anyway
-            agendaItem.getActivationUnMatchListener().unMatch(session, agendaItem);
+            // Both parameters null because they are not used by the ActivationUnMatchListener created below anyway
+            agendaItem.getActivationUnMatchListener().unMatch(null, null);
         }
-        agendaItem.setActivationUnMatchListener(undoListener);
+        agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
+            public void unMatch(Session wm, Match activation) {
+                undoListener.run();
+            }
+        });
     }
 
 }

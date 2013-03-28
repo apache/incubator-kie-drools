@@ -68,8 +68,8 @@ public class BendableScoreHolder extends AbstractScoreHolder {
 
     public void addHardConstraintMatch(RuleContext kcontext, final int hardLevel, final int weight) {
         hardScores[hardLevel] += weight;
-        registerUndoListener(kcontext, new ActivationUnMatchListener() {
-            public void unMatch(Session session, Match activation) {
+        registerUndoListener(kcontext, new Runnable() {
+            public void run() {
                 hardScores[hardLevel] -= weight;
             }
         });
@@ -77,8 +77,8 @@ public class BendableScoreHolder extends AbstractScoreHolder {
 
     public void addSoftConstraintMatch(RuleContext kcontext, final int softLevel, final int weight) {
         softScores[softLevel] += weight;
-        registerUndoListener(kcontext, new ActivationUnMatchListener() {
-            public void unMatch(Session session, Match activation) {
+        registerUndoListener(kcontext, new Runnable() {
+            public void run() {
                 softScores[softLevel] -= weight;
             }
         });
