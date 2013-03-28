@@ -115,6 +115,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
         addIfPresent(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, copy);
         addIfPresent(EnvironmentName.TRANSACTION_MANAGER, copy);
         addIfPresent(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY, copy);
+        addIfPresent(EnvironmentName.TRANSACTION, copy);
         
         return copy;
     }

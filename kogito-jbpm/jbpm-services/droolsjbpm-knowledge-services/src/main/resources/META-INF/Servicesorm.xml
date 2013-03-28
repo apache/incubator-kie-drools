@@ -338,7 +338,8 @@
         log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=:processId AND nil.domainId=:domainId
                     GROUP BY nil.nodeInstanceId
                     HAVING count(nil.nodeInstanceId) = 1)
-        and log.type = 0            
+        and log.type = 0  
+        and log.processInstanceId=:processId          
       order by
         log.id ASC
     </query>

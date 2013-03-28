@@ -172,6 +172,17 @@ public class DomainManagerServiceImpl implements DomainManagerService {
                     String reference = r.getReference();
                     // Create Runtime Manager Based on the Reference
                     SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment(emf);
+                    UserTransaction ut = null;
+                    try {
+                        ut = InitialContext.doLookup("java:comp/UserTransaction");
+                    } catch (Exception ex) {
+                        try {
+                            ut = InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
+                            environment.addToEnvironment(EnvironmentName.TRANSACTION, ut);
+                        } catch (Exception e1) {
+                            throw new RuntimeException("Cannot find UserTransaction", e1);
+                        }
+                    }
                     AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance(emf);
                     ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
                     auditEventBuilder.setIdentityProvider(identityProvider);
