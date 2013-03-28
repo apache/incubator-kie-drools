@@ -20,7 +20,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.InitialFact;
 import org.drools.core.reteoo.InitialFactImpl;
@@ -61,6 +63,8 @@ public class ClassObjectType
     protected ValueType       valueType;
 
     private boolean           isEvent;
+
+    private transient Map<String, Long> transformedMasks;
 
     // ------------------------------------------------------------
     // Constructors
@@ -224,4 +228,19 @@ public class ClassObjectType
         this.cls = klass;
     }
 
+    public Long getTransformedMask(Class<?> modifiedClass, long modificationMask) {
+        if (transformedMasks == null) {
+            return null;
+        }
+        String key = modifiedClass.getName() + ":" + modificationMask;
+        return transformedMasks.get(key);
+    }
+
+    public void storeTransformedMask(Class<?> modifiedClass, long modificationMask, long transforedMask) {
+        if (transformedMasks == null) {
+            transformedMasks = new ConcurrentHashMap<String, Long>();
+        }
+        String key = modifiedClass.getName() + ":" + modificationMask;
+        transformedMasks.put(key, transforedMask);
+    }
 }
