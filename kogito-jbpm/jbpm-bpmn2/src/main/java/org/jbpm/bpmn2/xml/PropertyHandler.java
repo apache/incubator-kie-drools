@@ -90,39 +90,7 @@ public class PropertyHandler extends BaseAbstractHandler implements Handler {
 			} else {
 			    variable.setName(id);
 			}
-			// retrieve type from item definition
-			DataType dataType = new ObjectDataType();
-			Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
-	            ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
-	        if (itemDefinitions != null) {
-	        	ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
-	        	if (itemDefinition != null) {
-	        	    
-	        	    String structureRef = itemDefinition.getStructureRef();
-	        	    
-	        	    if ("java.lang.Boolean".equals(structureRef) || "Boolean".equals(structureRef)) {
-	        	        dataType = new BooleanDataType();
-	        	        
-	        	    } else if ("java.lang.Integer".equals(structureRef) || "Integer".equals(structureRef)) {
-	        	        dataType = new IntegerDataType();
-                        
-	        	    } else if ("java.lang.Float".equals(structureRef) || "Float".equals(structureRef)) {
-	        	        dataType = new FloatDataType();
-                        
-                    } else if ("java.lang.String".equals(structureRef) || "String".equals(structureRef)) {
-                        dataType = new StringDataType();
-
-                    }
-                    else if ("java.lang.Object".equals(structureRef) || "Object".equals(structureRef)) {
-                        dataType = new ObjectDataType(structureRef);
-                        
-                    } else {
-                        dataType = new ObjectDataType(structureRef);
-                    }
-	        		
-	        	}
-	        }
-			variable.setType(dataType);
+			variable.setMetaData("ItemSubjectRef", itemSubjectRef);
 			variables.add(variable);
 			return variable;
 		}

@@ -18,13 +18,27 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.core.process.core.datatype.DataType;
+import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
+import org.drools.core.process.core.datatype.impl.type.FloatDataType;
+import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
+import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.core.process.core.datatype.impl.type.StringDataType;
+import org.drools.core.process.core.datatype.impl.type.UndefinedDataType;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.NodeContainer;
+import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
@@ -60,9 +74,12 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 		Definitions definitions = (Definitions) parser.getCurrent();
         String namespace = element.getAttribute("targetNamespace");
         List<Process> processes = ((ProcessBuildData) parser.getData()).getProcesses();
+		Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
+            ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
         for (Process process : processes) {
             RuleFlowProcess ruleFlowProcess = (RuleFlowProcess)process;
             ruleFlowProcess.setMetaData("TargetNamespace", namespace);
+            postProcessItemDefinitions(ruleFlowProcess, itemDefinitions);
         }
         definitions.setTargetNamespace(namespace);
         return definitions;
@@ -70,6 +87,62 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 
 	public Class<?> generateNodeFor() {
 		return Definitions.class;
+	}
+	
+	private void postProcessItemDefinitions(NodeContainer nodeContainer, Map<String, ItemDefinition> itemDefinitions) {
+		if (nodeContainer instanceof ContextContainer) {
+			setVariablesDataType((ContextContainer) nodeContainer, itemDefinitions);
+		}
+		for (Node node: nodeContainer.getNodes()) {
+			if (node instanceof NodeContainer) {
+				postProcessItemDefinitions((NodeContainer) node, itemDefinitions);
+			}
+			if (node instanceof ContextContainer) {
+				setVariablesDataType((ContextContainer) node, itemDefinitions);
+			}
+		}
+	}
+	
+	private void setVariablesDataType(ContextContainer container, Map<String, ItemDefinition> itemDefinitions) {
+		VariableScope variableScope = (VariableScope) container.getDefaultContext(VariableScope.VARIABLE_SCOPE);
+		if (variableScope != null) {
+			for (Variable variable: variableScope.getVariables()) {
+				setVariableDataType(variable, itemDefinitions);
+			}
+		}
+	}
+	
+	private void setVariableDataType(Variable variable, Map<String, ItemDefinition> itemDefinitions) {
+		// retrieve type from item definition
+		String itemSubjectRef = (String) variable.getMetaData("ItemSubjectRef");
+        if (UndefinedDataType.getInstance().equals(variable.getType()) && itemDefinitions != null && itemSubjectRef != null) {
+    		DataType dataType = new ObjectDataType();
+        	ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
+        	if (itemDefinition != null) {
+        	    String structureRef = itemDefinition.getStructureRef();
+        	    
+        	    if ("java.lang.Boolean".equals(structureRef) || "Boolean".equals(structureRef)) {
+        	        dataType = new BooleanDataType();
+        	        
+        	    } else if ("java.lang.Integer".equals(structureRef) || "Integer".equals(structureRef)) {
+        	        dataType = new IntegerDataType();
+                    
+        	    } else if ("java.lang.Float".equals(structureRef) || "Float".equals(structureRef)) {
+        	        dataType = new FloatDataType();
+                    
+                } else if ("java.lang.String".equals(structureRef) || "String".equals(structureRef)) {
+                    dataType = new StringDataType();
+                    
+                } else if ("java.lang.Object".equals(structureRef) || "Object".equals(structureRef)) {
+                    dataType = new ObjectDataType(structureRef);
+                    
+                } else {
+                    dataType = new ObjectDataType(structureRef);
+                }
+        		
+        	}
+    		variable.setType(dataType);
+        }
 	}
 	
 }

@@ -11,9 +11,6 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_xItem" structureRef="String" />
-  <itemDefinition id="_yItem" structureRef="String" />
-
   <process processType="Private" isExecutable="true" id="ParentProcess" name="Parent Process" >
 
     <!-- process variables -->
@@ -51,6 +48,9 @@
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
 
   </process>
+
+  <itemDefinition id="_xItem" structureRef="String" />
+  <itemDefinition id="_yItem" structureRef="String" />
 
   <bpmndi:BPMNDiagram>
     <bpmndi:BPMNPlane bpmnElement="ParentProcess" >
