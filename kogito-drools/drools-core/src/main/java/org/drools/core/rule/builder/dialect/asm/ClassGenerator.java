@@ -678,8 +678,9 @@ public class ClassGenerator {
                 if (to.isPrimitive()) {
                     castPrimitiveToPrimitive(from, to);
                 } else {
-                    castPrimitiveToPrimitive(from, convertToPrimitiveType(to));
-                    castFromPrimitive(from);
+                    Class toPrimitive = convertToPrimitiveType(to);
+                    castPrimitiveToPrimitive(convertToPrimitiveType(from), toPrimitive);
+                    castFromPrimitive(toPrimitive);
                 }
             } else {
                 if (to.isPrimitive()) {

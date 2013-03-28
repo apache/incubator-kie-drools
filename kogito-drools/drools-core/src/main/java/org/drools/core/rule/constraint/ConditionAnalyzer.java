@@ -184,8 +184,14 @@ public class ConditionAnalyzer {
         }
 
         if (node instanceof TypeCast) {
-            ExecutableAccessor accessor = (ExecutableAccessor) ((TypeCast)node).getStatement();
-            return new CastExpression(node.getEgressType(), analyzeNode(accessor.getNode()));
+            ExecutableStatement statement = ((TypeCast)node).getStatement();
+            if (statement instanceof ExecutableAccessor) {
+                ExecutableAccessor accessor = (ExecutableAccessor) statement;
+                return new CastExpression(node.getEgressType(), analyzeNode(accessor.getNode()));
+            } else {
+                ExecutableLiteral literal = (ExecutableLiteral) statement;
+                return new CastExpression(node.getEgressType(), new FixedExpression(literal.getLiteral()));
+            }
         }
 
         if (node instanceof Union) {
@@ -631,6 +637,10 @@ public class ConditionAnalyzer {
         private final Class<?> type;
         private final Object value;
 
+        FixedExpression(Object value) {
+            this(value.getClass(), value);
+        }
+
         FixedExpression(Class<?> type, Object value) {
             this.type = type == CharSequence.class ? String.class : type;
             this.value = value;
@@ -645,6 +655,18 @@ public class ConditionAnalyzer {
         }
 
         public Class<?> getType() {
+            return type;
+        }
+
+        public Class<?> getTypeAsPrimitive() {
+            if (type == Integer.class) return int.class;
+            if (type == Long.class) return long.class;
+            if (type == Float.class) return float.class;
+            if (type == Double.class) return double.class;
+            if (type == Short.class) return short.class;
+            if (type == Byte.class) return byte.class;
+            if (type == Character.class) return char.class;
+            if (type == Boolean.class) return boolean.class;
             return type;
         }
 

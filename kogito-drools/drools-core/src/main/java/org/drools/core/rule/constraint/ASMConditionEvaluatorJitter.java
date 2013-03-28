@@ -564,7 +564,7 @@ public class ASMConditionEvaluatorJitter {
 
         private Class<?> jitCastExpression(CastExpression exp) {
             jitExpression(exp.expression, Object.class);
-            cast(exp.getType());
+            cast(exp.expression instanceof FixedExpression ? ((FixedExpression)exp.expression).getTypeAsPrimitive() : exp.expression.getType(), exp.getType());
             return exp.getType();
         }
 
