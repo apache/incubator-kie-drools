@@ -65,9 +65,11 @@ public class ConditionAnalyzer {
     private ASTNode node;
     private ExecutableLiteral executableLiteral;
     private final Declaration[] declarations;
+    private final String conditionClass;
 
-    public ConditionAnalyzer(ExecutableStatement stmt, Declaration[] declarations) {
+    public ConditionAnalyzer(ExecutableStatement stmt, Declaration[] declarations, String conditionClass) {
         this.declarations = declarations;
+        this.conditionClass = conditionClass;
         if (stmt instanceof ExecutableLiteral) {
             executableLiteral = (ExecutableLiteral)stmt;
         } else if (stmt instanceof CompiledExpression) {
@@ -354,7 +356,7 @@ public class ConditionAnalyzer {
 
     private Invocation analyzeAccessor(AccessorNode accessorNode, Invocation formerInvocation) {
         if (accessorNode instanceof GetterAccessor) {
-            return new MethodInvocation(((GetterAccessor)accessorNode).getMethod());
+            return new MethodInvocation(((GetterAccessor)accessorNode).getMethod(), conditionClass);
         }
 
         if (accessorNode instanceof MethodAccessor) {
@@ -867,10 +869,14 @@ public class ConditionAnalyzer {
         private final Method method;
 
         public MethodInvocation(Method method) {
-            this.method = getMethodFromSuperclass(method);
+            this(method, null);
         }
 
-        private Method getMethodFromSuperclass(Method method) {
+        public MethodInvocation(Method method, String conditionClass) {
+            this.method = getMethodFromSuperclass(method, conditionClass);
+        }
+
+        private Method getMethodFromSuperclass(Method method, String conditionClass) {
             if (method == null) {
                 return method;
             }
@@ -878,15 +884,19 @@ public class ConditionAnalyzer {
             Class<?> declaringSuperclass = declaringClass.getSuperclass();
             if (declaringSuperclass != null) {
                 try {
-                    return getMethodFromSuperclass(declaringSuperclass.getMethod(method.getName(), method.getParameterTypes()));
+                    return getMethodFromSuperclass(declaringSuperclass.getMethod(method.getName(), method.getParameterTypes()), conditionClass);
                 } catch (Exception e) { }
             }
+            Method iMethod = null;
             for (Class<?> interfaze : declaringClass.getInterfaces()) {
                 try {
-                    return interfaze.getMethod(method.getName(), method.getParameterTypes());
+                    iMethod = interfaze.getMethod(method.getName(), method.getParameterTypes());
+                    if (conditionClass == null || iMethod.getDeclaringClass().getName().equals(conditionClass)) {
+                        return iMethod;
+                    }
                 } catch (Exception e) { }
             }
-            return method;
+            return iMethod == null ? method : iMethod;
         }
 
         public Method getMethod() {
