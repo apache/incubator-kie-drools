@@ -327,12 +327,13 @@ public class PropagationContextImpl
         if (modificationMask == Long.MAX_VALUE || !(type instanceof ClassObjectType)) {
             return this;
         }
-        Class<?> classType = ((ClassObjectType)type).getClassType();
+        ClassObjectType classObjectType = (ClassObjectType)type;
+        Class<?> classType = classObjectType.getClassType();
         if (classType == modifiedClass || !(classType.isInterface() || modifiedClass.isInterface())) {
             return this;
         }
 
-        Long cachedMask = rule.getTransformedMask(modifiedClass, classType, originalMask);
+        Long cachedMask = classObjectType.getTransformedMask(modifiedClass, originalMask);
         if (cachedMask != null) {
             modificationMask = cachedMask;
             return this;
@@ -351,7 +352,7 @@ public class PropagationContextImpl
                 }
             }
         }
-        rule.storeTransformedMask(modifiedClass, classType, originalMask, modificationMask);
+        classObjectType.storeTransformedMask(modifiedClass, originalMask, modificationMask);
 
         return this;
     }

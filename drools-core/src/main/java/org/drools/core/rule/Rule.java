@@ -133,8 +133,6 @@ public class Rule
 
     private ConsequenceMetaData      consequenceMetaData = new ConsequenceMetaData();
 
-    private transient Map<String, Long> transformedMasks;
-
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( pkg );
         out.writeObject( name );
@@ -831,21 +829,5 @@ public class Rule
 
     public ConsequenceMetaData getConsequenceMetaData() {
         return consequenceMetaData;
-    }
-
-    public Long getTransformedMask(Class<?> modifiedClass, Class<?> objectTypeClass, long modificationMask) {
-        if (transformedMasks == null) {
-            return null;
-        }
-        String key = modifiedClass.getName() + ":" + objectTypeClass.getName() + ":" + modificationMask;
-        return transformedMasks.get(key);
-    }
-
-    public void storeTransformedMask(Class<?> modifiedClass, Class<?> objectTypeClass, long modificationMask, long transforedMask) {
-        if (transformedMasks == null) {
-            transformedMasks = new HashMap<String, Long>();
-        }
-        String key = modifiedClass.getName() + ":" + objectTypeClass.getName() + ":" + modificationMask;
-        transformedMasks.put(key, transforedMask);
     }
 }
