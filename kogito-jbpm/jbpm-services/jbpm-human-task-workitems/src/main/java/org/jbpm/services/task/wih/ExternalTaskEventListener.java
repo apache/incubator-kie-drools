@@ -116,7 +116,11 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         // DO NOTHING
     }
 
-    public void afterTaskSkippedEvent(@Observes @AfterTaskSkippedEvent Task task) {
+    public void afterTaskSkippedEvent(@Observes(notifyObserver=Reception.IF_EXISTS) @AfterTaskSkippedEvent Task task) {
+        long processInstanceId = task.getTaskData().getProcessInstanceId();
+        if (processInstanceId <= 0) {
+            return;
+        }
         processTaskState(task);
     }
 
@@ -128,9 +132,12 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         // DO NOTHING
     }
 
-    public void afterTaskCompletedEvent(@Observes @AfterTaskCompletedEvent Task task) {
+    public void afterTaskCompletedEvent(@Observes(notifyObserver=Reception.IF_EXISTS) @AfterTaskCompletedEvent Task task) {
 
         long processInstanceId = task.getTaskData().getProcessInstanceId();
+        if (processInstanceId <= 0) {
+            return;
+        }
         Runtime runtime = getManager(task).getRuntime(ProcessInstanceIdContext.get(processInstanceId));
         KieSession session = runtime.getKieSession();
         if (session != null) {
@@ -141,7 +148,11 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         }
     }
 
-    public void afterTaskFailedEvent(@Observes @AfterTaskFailedEvent Task task) {
+    public void afterTaskFailedEvent(@Observes(notifyObserver=Reception.IF_EXISTS) @AfterTaskFailedEvent Task task) {
+        long processInstanceId = task.getTaskData().getProcessInstanceId();
+        if (processInstanceId <= 0) {
+            return;
+        }
         processTaskState(task);
     }
 
