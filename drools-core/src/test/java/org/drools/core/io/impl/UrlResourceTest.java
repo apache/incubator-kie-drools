@@ -29,6 +29,7 @@ import org.mockito.Mockito;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -40,9 +41,16 @@ public class UrlResourceTest {
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
 
-    private static final File TEMP_DIR = new File(System.getProperty("java.io.tmpdir"));
+    private static final File TEMP_DIR = new File("target/test-tmp/cache");
 
     private UrlResource urlResource;
+
+    @BeforeClass
+    public static void setup() {
+        if (!TEMP_DIR.exists()) {
+            TEMP_DIR.mkdirs();
+        }
+    }
 
     @After
     public void cleanup() {
