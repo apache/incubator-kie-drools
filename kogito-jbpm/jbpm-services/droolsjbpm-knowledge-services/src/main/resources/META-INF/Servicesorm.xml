@@ -76,6 +76,7 @@
       log.processVersion,
       log.status,
       log.domainId,
+      log.start,
       log.identity
       )
       from
@@ -96,6 +97,7 @@
       log.processVersion,
       log.status,
       log.domainId,
+      log.start,
       log.identity
       )
       from
@@ -116,6 +118,7 @@
       log.processVersion,
       log.status,
       log.domainId,
+      log.start,
       log.identity
       )
       from
@@ -136,6 +139,7 @@
       log.processVersion,
       log.status,
       log.domainId,
+      log.start,
       log.identity
       )
       from
@@ -156,6 +160,7 @@
       log.processVersion,
       log.status,
       log.domainId,
+      log.start,
       log.identity
       )
       from
@@ -176,6 +181,7 @@
       log.processVersion,
       log.status,
       log.domainId,
+      log.start,
       log.identity
       )
       from
@@ -197,6 +203,7 @@
       log.processVersion,
       log.status,
       log.domainId,
+      log.start,
       log.identity
       )
       from
@@ -217,6 +224,7 @@
       log.processVersion,
       log.status,
       log.domainId,
+      log.start,
       log.identity
       )
       from
@@ -237,6 +245,7 @@
       log.processVersion,
       log.status,
       log.domainId,
+      log.start,
       log.identity
       )
       from
@@ -257,6 +266,7 @@
       log.processVersion,
       log.status,
       log.domainId,
+      log.start,
       log.identity
       )
       from

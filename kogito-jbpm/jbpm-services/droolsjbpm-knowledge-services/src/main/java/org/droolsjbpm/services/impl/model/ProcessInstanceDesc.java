@@ -36,14 +36,14 @@ public class ProcessInstanceDesc implements Serializable{
     }
 
     public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
-                                int state, String domainId, String initiator) {
+                                int state, String domainId, Date dataTimeStamp, String initiator) {
         this.id = id;
         this.processId = processId;
         this.processName = processName;
         this.processVersion = processVersion==null?"":processVersion;
         this.state = state;
         this.domainId = domainId;
-        this.dataTimeStamp = new Date();
+        this.dataTimeStamp = dataTimeStamp;
         this.initiator = initiator;
     }
     
