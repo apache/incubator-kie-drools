@@ -291,20 +291,24 @@ public class StatelessKnowledgeSessionImpl
 
     public void execute(Object object) {
         StatefulKnowledgeSession ksession = newWorkingMemory();
-
-        ksession.insert( object );
-        ksession.fireAllRules( );
-        ksession.dispose();
+        try {
+            ksession.insert( object );
+            ksession.fireAllRules( );
+        } finally {
+            ksession.dispose();
+        }
     }
 
     public void execute(Iterable objects) {
         StatefulKnowledgeSession ksession = newWorkingMemory();
-
-        for ( Object object : objects ) {
-            ksession.insert( object );
+        try {
+            for ( Object object : objects ) {
+                ksession.insert( object );
+            }
+            ksession.fireAllRules( );
+        } finally {
+            ksession.dispose();
         }
-        ksession.fireAllRules( );
-        ksession.dispose();
     }
     
     public Environment getEnvironment() {
