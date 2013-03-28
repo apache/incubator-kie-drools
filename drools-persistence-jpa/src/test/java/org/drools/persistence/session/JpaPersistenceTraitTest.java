@@ -73,11 +73,13 @@ public class JpaPersistenceTraitTest {
                 "end \n " +
                 "" +
                 "declare trait Mask \n" +
+                "  @propertyReactive \n" +
                 "  fld : String \n" +
                 "  xyz : int  \n" +
                 "end \n" +
                 "\n " +
                 "declare trait Cloak \n" +
+                "  @propertyReactive \n" +
                 "  fld : String \n" +
                 "  ijk : String  \n" +
                 "end \n" +
@@ -173,11 +175,13 @@ public class JpaPersistenceTraitTest {
                 "end \n " +
                 "" +
                 "declare trait Mask2 \n" +
+                "  @propertyReactive \n" +
                 "  fld : String \n" +
                 "  xyz : int  \n" +
                 "end \n" +
                 "\n " +
                 "declare trait Cloak2 \n" +
+                "  @propertyReactive \n" +
                 "  fld : String \n" +
                 "  ijk : String  \n" +
                 "end \n" +
@@ -273,6 +277,7 @@ public class JpaPersistenceTraitTest {
                 "end \n " +
                 "" +
                 "declare trait Mask \n" +
+                "  @propertyReactive \n" +
                 "  fld : String \n" +
                 "  xyz : int  \n" +
                 "end \n" +
