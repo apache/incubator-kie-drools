@@ -22,20 +22,23 @@ import static org.drools.rule.constraint.EvaluatorHelper.valuesAsMap;
 public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionEvaluator {
 
     protected final Declaration[] declarations;
+    private final String conditionClass;
     private final ParserConfiguration parserConfiguration;
     protected ExecutableStatement executableStatement;
     protected MVELCompilationUnit compilationUnit;
 
     private boolean evaluated = false;
 
-    public MvelConditionEvaluator(ParserConfiguration configuration, String expression, Declaration[] declarations) {
+    public MvelConditionEvaluator(ParserConfiguration configuration, String expression, Declaration[] declarations, String conditionClass) {
         this.declarations = declarations;
+        this.conditionClass = conditionClass;
         this.parserConfiguration = configuration;
         executableStatement = (ExecutableStatement)MVEL.compileExpression(expression, new ParserContext(parserConfiguration));
     }
 
-    public MvelConditionEvaluator(MVELCompilationUnit compilationUnit, ParserConfiguration parserConfiguration, ExecutableStatement executableStatement, Declaration[] declarations) {
+    public MvelConditionEvaluator(MVELCompilationUnit compilationUnit, ParserConfiguration parserConfiguration, ExecutableStatement executableStatement, Declaration[] declarations, String conditionClass) {
         this.declarations = declarations;
+        this.conditionClass = conditionClass;
         this.compilationUnit = compilationUnit;
         this.parserConfiguration = parserConfiguration;
         this.executableStatement = executableStatement;
@@ -75,12 +78,12 @@ public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionE
     }
 
     ConditionAnalyzer.Condition getAnalyzedCondition() {
-        return new ConditionAnalyzer(executableStatement, declarations).analyzeCondition();
+        return new ConditionAnalyzer(executableStatement, declarations, conditionClass).analyzeCondition();
     }
 
     ConditionAnalyzer.Condition getAnalyzedCondition(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
         ensureCompleteEvaluation(object, workingMemory, leftTuple);
-        return new ConditionAnalyzer(executableStatement, declarations).analyzeCondition();
+        return new ConditionAnalyzer(executableStatement, declarations, conditionClass).analyzeCondition();
     }
 
     private void ensureCompleteEvaluation(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
