@@ -23,9 +23,13 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import org.junit.After;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -37,8 +41,24 @@ public class UrlResourceTest {
 
     private static final Charset CHARSET = Charset.forName("UTF-8");
 
-    private static final File TEMP_DIR = new File(System.getProperty("java.io.tmpdir"));
+    private static final File TEMP_DIR = new File("target/test-tmp/cache");
 
+    private UrlResource urlResource;
+
+    @BeforeClass
+    public static void setup() {
+        if (!TEMP_DIR.exists()) {
+            TEMP_DIR.mkdirs();
+        }
+    }
+
+    @After
+    public void cleanup() {
+        if (urlResource != null && urlResource.getCacheFile().exists()) {
+            urlResource.getCacheFile().delete();
+        }
+    }
+    
     /**
      * Tests reading a UrlResource contents over HTTP with local cache turned on.
      */
@@ -103,12 +123,17 @@ public class UrlResourceTest {
      * Executes single UrlResource test with given url which returns expectedResponse.
      */
     private void doTestGetInputStream(final URL url, final String expectedResponse) throws IOException {
-        final UrlResource urlResource = getTestableUrlResource(url, expectedResponse);
+        urlResource = getTestableUrlResource(url, expectedResponse);
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(urlResource.getInputStream(), CHARSET));
         final String actualResponse = reader.readLine();
         
-        assertEquals("Unexpected response", expectedResponse, actualResponse);        
+        assertEquals("Unexpected response", expectedResponse, actualResponse);
+        if (UrlResource.CACHE_DIR != null) {
+            assertTrue("Cache file should exist", urlResource.getCacheFile().exists());
+        } else {
+            assertFalse("Cache file should not exist", urlResource.getCacheFile().exists());
+        }        
     }
     
     /**
@@ -134,7 +159,7 @@ public class UrlResourceTest {
     private URLConnection mockURLConnection(final String response) {
         final URLConnection mockURLConnection = Mockito.mock(URLConnection.class);
         try {
-            Mockito.when(mockURLConnection.getLastModified()).thenReturn(1L);
+            Mockito.when(mockURLConnection.getLastModified()).thenReturn(System.currentTimeMillis());
             Mockito.when(mockURLConnection.getInputStream()).thenReturn(
                     new ByteArrayInputStream(response.getBytes(CHARSET)));
 

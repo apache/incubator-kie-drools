@@ -162,7 +162,7 @@ public class UrlResource extends BaseResource
        return new FileInputStream(fi);
     }
 
-    private File getCacheFile()  {
+    File getCacheFile()  {
         try {
             return new File(CACHE_DIR, URLEncoder.encode(this.url.toString(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
