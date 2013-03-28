@@ -23,6 +23,9 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.Session;
 
+/**
+ * @see HardMediumSoftScore
+ */
 public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
 
     protected int hardScore;

@@ -25,6 +25,9 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.Session;
 
+/**
+ * @see BendableScore
+ */
 public class BendableScoreHolder extends AbstractScoreHolder {
 
     private int[] hardScores;
