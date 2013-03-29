@@ -17,6 +17,11 @@
 package org.optaplanner.core.api.score.constraint;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.kie.api.runtime.rule.RuleContext;
 
 public abstract class ScoreConstraintMatchTotal implements Serializable {
 
@@ -45,6 +50,15 @@ public abstract class ScoreConstraintMatchTotal implements Serializable {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    protected List<Object> extractJustificationList(RuleContext kcontext) {
+        List<Object> droolsMatchObjects = kcontext.getMatch().getObjects();
+        // Drools always returns the rule matches in reverse order
+        // TODO performance leak: use a reversed view instead, for example guava's Lists.reverse(List)
+        List<Object> justificationList = new ArrayList<Object>(droolsMatchObjects);
+        Collections.reverse(justificationList);
+        return justificationList;
+    }
 
     @Override
     public String toString() {

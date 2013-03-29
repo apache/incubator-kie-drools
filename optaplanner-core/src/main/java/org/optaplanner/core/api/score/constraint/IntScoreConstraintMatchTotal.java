@@ -45,11 +45,7 @@ public class IntScoreConstraintMatchTotal extends ScoreConstraintMatchTotal {
 
     public IntScoreConstraintMatch addConstraintMatch(RuleContext kcontext, int weight) {
         weightTotal += weight;
-        List<Object> droolsMatchObjects = kcontext.getMatch().getObjects();
-        // Drools always returns the rule matches in reverse order
-        // TODO performance leak: use a reversed view instead, for example guava's Lists.reverse(List)
-        List<Object> justificationList = new ArrayList<Object>(droolsMatchObjects);
-        Collections.reverse(justificationList);
+        List<Object> justificationList = extractJustificationList(kcontext);
         IntScoreConstraintMatch constraintMatch = new IntScoreConstraintMatch(this, justificationList, weight);
         boolean added = constraintMatchSet.add(constraintMatch);
         if (!added) {
