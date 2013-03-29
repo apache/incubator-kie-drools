@@ -16,9 +16,10 @@
 
 package org.optaplanner.core.api.score.constraint;
 
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class ScoreConstraintMatch {
+public abstract class ScoreConstraintMatch implements Serializable {
 
     protected final List<Object> justificationList;
 

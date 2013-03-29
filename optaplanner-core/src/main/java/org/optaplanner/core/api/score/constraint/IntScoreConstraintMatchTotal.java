@@ -26,7 +26,7 @@ import org.kie.api.runtime.rule.RuleContext;
 
 public class IntScoreConstraintMatchTotal extends ScoreConstraintMatchTotal {
 
-    protected Set<IntScoreConstraintMatch> constraintMatchSet;
+    protected final Set<IntScoreConstraintMatch> constraintMatchSet;
     protected int weightTotal;
 
     public IntScoreConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {

@@ -16,11 +16,13 @@
 
 package org.optaplanner.core.api.score.constraint;
 
-public abstract class ScoreConstraintMatchTotal {
+import java.io.Serializable;
 
-    protected String constraintPackage;
-    protected String constraintName;
-    protected int scoreLevel;
+public abstract class ScoreConstraintMatchTotal implements Serializable {
+
+    protected final String constraintPackage;
+    protected final String constraintName;
+    protected final int scoreLevel;
 
     protected ScoreConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
         this.constraintPackage = constraintPackage;
