@@ -33,6 +33,7 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
     public static InternalReadAccessor bit_reader;
     public static WriteAccessor bit_writer;
 
+    private static final String traitType = IStudent.class.getName();
 
 
     public StudentProxy2(Imp2 obj, Map<String, Object> m) {
@@ -56,6 +57,10 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
 
     public Imp2 getCore() {
         return object;
+    }
+
+    public String getTraitName() {
+        return traitType;
     }
 
     public Object getObject() {

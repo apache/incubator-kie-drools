@@ -12,12 +12,13 @@ import java.util.PriorityQueue;
 import java.util.Set;
 
 
-public class TraitTypeMap<T extends String, K extends Thing>
-        extends TypeHierarchy<Thing>
-        implements Map<String, Thing>, Externalizable {
+public class TraitTypeMap<T extends String, K extends Thing<C>, C>
+        extends TypeHierarchy<Thing<C>>
+        implements Map<String, Thing<C>>, Externalizable {
 
-    private Map<String,Thing> innerMap;
+    private Map<String,Thing<C>> innerMap;
 
+    private BitSet currentTypeCode = new BitSet();
 
     public TraitTypeMap() {
     }
@@ -42,13 +43,15 @@ public class TraitTypeMap<T extends String, K extends Thing>
         return innerMap.containsValue( value );
     }
 
-    public Thing get( Object key ) {
+    public Thing<C> get( Object key ) {
         return innerMap.get( key );
     }
 
-    public Thing put( String key, Thing value ) {
-        addMember(value, ((TraitType) value).getTypeCode());
+    public Thing<C> put( String key, Thing<C> value ) {
+        BitSet code = ((TraitType) value).getTypeCode();
+        addMember( value, code );
         innerMap.put( key, value );
+        currentTypeCode.or( code );
         return value;
     }
 
@@ -60,21 +63,52 @@ public class TraitTypeMap<T extends String, K extends Thing>
     }
 
 
-    public Thing putSafe( String key, Thing value ) throws LogicalTypeInconsistencyException {
-        addMember(value, ((TraitType) value).getTypeCode());
-
+    public Thing<C> putSafe( String key, Thing<C> value ) throws LogicalTypeInconsistencyException {
+        BitSet code = ((TraitType) value).getTypeCode();
+        addMember( value, code );
+        currentTypeCode.or( code );
         innerMap.put( key, value );
         return value;
     }
 
-    public Thing remove( Object key ) {
-        removeMember(innerMap.get(key));
-        return innerMap.remove( key );
+    public Thing<C> remove( Object key ) {
+        removeMember( innerMap.get( key ) );
+        Thing<C> t = innerMap.remove( key );
+        resetCurrentCode();
+        return t;
     }
 
-    public void putAll( Map<? extends String, ? extends Thing> m ) {
+    public Collection<Thing<C>> removeCascade( String traitName ) {
+        if ( ! innerMap.containsKey( traitName ) ) {
+            return Collections.emptyList();
+        }
+        Thing<C> thing = innerMap.get( traitName );
+        return removeCascade( ( (TraitType) thing ).getTypeCode() );
+    }
+
+    public Collection<Thing<C>> removeCascade( BitSet code ) {
+        Collection<Thing<C>> subs = this.lowerDescendants( code );
+        for ( Thing<C> t : subs ) {
+            TraitType tt = (TraitType) t;
+            if ( ! tt.isVirtual() ) {
+                removeMember( tt.getTypeCode() );
+                innerMap.remove( tt.getTraitName() );
+            }
+        }
+        resetCurrentCode();
+        return subs;
+    }
+
+    private void resetCurrentCode() {
+        currentTypeCode = new BitSet();
+        for ( Thing x : this.values() ) {
+            currentTypeCode.or( ((TraitType) x).getTypeCode() );
+        }
+    }
+
+    public void putAll( Map<? extends String, ? extends Thing<C>> m ) {
         for ( String key : m.keySet() ) {
-            Thing proxy = m.get( key );
+            Thing<C> proxy = m.get( key );
             addMember(proxy, ((TraitProxy) proxy).getTypeCode());
         }
         innerMap.putAll( m );
@@ -88,11 +122,11 @@ public class TraitTypeMap<T extends String, K extends Thing>
         return innerMap.keySet();
     }
 
-    public Collection<Thing> values() {
+    public Collection<Thing<C>> values() {
         return innerMap.values();
     }
 
-    public Set<Entry<String, Thing>> entrySet() {
+    public Set<Entry<String, Thing<C>>> entrySet() {
         return innerMap.entrySet();
     }
 
@@ -102,18 +136,22 @@ public class TraitTypeMap<T extends String, K extends Thing>
                 "innerMap=" + innerMap + '}';
     }
 
-    public void writeExternal(ObjectOutput objectOutput) throws IOException {
+    public void writeExternal( ObjectOutput objectOutput ) throws IOException {
+        super.writeExternal( objectOutput );
         objectOutput.writeObject( innerMap );
+        objectOutput.writeObject( currentTypeCode );
     }
 
-    public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
-        innerMap = (Map<String, Thing>) objectInput.readObject();
+    public void readExternal( ObjectInput objectInput ) throws IOException, ClassNotFoundException {
+        super.readExternal( objectInput );
+        innerMap = (Map<String, Thing<C>>) objectInput.readObject();
+        currentTypeCode = (BitSet) objectInput.readObject();
     }
 
 
-    public Collection<Thing> getMostSpecificTraits() {
+    public Collection<Thing<C>> getMostSpecificTraits() {
         if ( hasKey( getBottomCode() ) ) {
-            Thing b = getMember( getBottomCode() );
+            Thing<C> b = getMember( getBottomCode() );
             if ( ((TraitType) b).isVirtual() ) {
                 return parents( getBottomCode() );
             } else {
@@ -124,4 +162,7 @@ public class TraitTypeMap<T extends String, K extends Thing>
         }
     }
 
+    public BitSet getCurrentTypeCode() {
+        return currentTypeCode;
+    }
 }

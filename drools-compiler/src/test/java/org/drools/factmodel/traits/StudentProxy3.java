@@ -29,6 +29,8 @@ import java.util.Map;
 
 public class StudentProxy3 extends TraitProxy implements IStudent {
 
+    private static final String traitType = IStudent.class.getName();
+
     private  TripleFactory tripleFactory = new TripleFactoryImpl();
 
     public final Imp2 object;
@@ -67,6 +69,11 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
 
     public Imp2 getCore() {
         return object;
+    }
+
+    @Override
+    public String getTraitName() {
+        return traitType;
     }
 
     public Object getObject() {
@@ -171,4 +178,7 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
         result = 31 * result + this.getFields().hashCode();
         return result;
     }
+
+
+
 }

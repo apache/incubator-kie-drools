@@ -18,6 +18,7 @@ package org.drools.factmodel.traits;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,12 +52,15 @@ import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
+import org.drools.io.impl.ClassPathResource;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.runtime.ClassObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.util.CodedHierarchyImpl;
+import org.drools.util.HierarchyEncoder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -1164,6 +1168,77 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
+
+    @Test
+    public void testIsAEvaluator( ) {
+        String source = "package org.test;\n" +
+                "\n" +
+                "import org.drools.factmodel.traits.Traitable;\n" +
+                "import org.drools.factmodel.traits.Entity;\n" +
+                "import org.drools.factmodel.traits.Thing;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "\n" +
+                "declare Imp\n" +
+                "    @Traitable\n" +
+                "    name    : String        @key\n" +
+                "end\n" +
+                "\n" +
+                "declare trait Person\n" +
+                "    name    : String \n" +
+                "    age     : int   \n" +
+                "end\n" +
+                "  \n" +
+                "declare trait Worker\n" +
+                "    job     : String\n" +
+                "end\n" +
+                " \n" +
+                "\n" +
+                " \n" +
+                " \n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "    Imp core = new Imp( \"joe\" );\n" +
+                "    insert( core );\n" +
+                "    don( core, Person.class );\n" +
+                "    don( core, Worker.class );\n" +
+                "\n" +
+                "    Imp core2 = new Imp( \"adam\" );\n" +
+                "    insert( core2 );\n" +
+                "    don( core2, Worker.class );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Mod\"\n" +
+                "when\n" +
+                "    $p : Person( name == \"joe\" )\n" +
+                "then\n" +
+                "    modify ($p) { setName( \"john\" ); }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Worker Students v6\"\n" +
+                "when\n" +
+                "    $x2 := Person( name == \"john\" )\n" +
+                "    $x1 := Worker( core != $x2.core, this isA $x2 )\n" +
+                "then\n" +
+                "    list.add( \"ok\" );\n" +
+                "end\n" +
+                "\n" +
+                "\n";
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES, ks.getKnowledgeBase() );
+
+        List info = new ArrayList();
+        ks.setGlobal( "list",
+                info );
+
+        ks.fireAllRules();
+
+        System.out.println( info );
+        assertTrue( info.contains( "ok" ) );
+    }
 
 
 
@@ -3010,6 +3085,82 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( list.contains( 4 ) );
 
     }
+
+
+
+
+
+
+
+
+
+
+    @Test
+    public void testTraitActualTypeCodeWithEntities() {
+        testTraitActualTypeCodeWithEntities( "ent", TraitFactory.VirtualPropertyMode.MAP );
+    }
+
+    @Test
+    public void testTraitActualTypeCodeWithCoreMap() {
+        testTraitActualTypeCodeWithEntities( "kor", TraitFactory.VirtualPropertyMode.MAP );
+    }
+
+    @Test
+    public void testTraitActualTypeCodeWithCoreTriples() {
+        testTraitActualTypeCodeWithEntities( "kor", TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+
+    void testTraitActualTypeCodeWithEntities( String trig, TraitFactory.VirtualPropertyMode mode ) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ClassPathResource( "org/drools/factmodel/traits/testComplexDonShed.drl" ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( mode, kbase ); // not relevant
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        HierarchyEncoder hier = ((ReteooRuleBase) ((KnowledgeBaseImpl) ksession.getKnowledgeBase()).getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+        System.out.println( hier );
+
+        ksession.insert( trig );
+        ksession.fireAllRules();
+
+        TraitableBean ent = (TraitableBean) ksession.getGlobal( "core" );
+
+        assertEquals( CodedHierarchyImpl.stringToBitSet( "1" ), ent.getCurrentTypeCode( ) );
+
+        ksession.insert( "b" );
+        ksession.fireAllRules();
+        assertEquals( CodedHierarchyImpl.stringToBitSet( "11" ), ent.getCurrentTypeCode( ) );
+
+        ksession.insert( "c" );
+        ksession.fireAllRules();
+        assertEquals( CodedHierarchyImpl.stringToBitSet( "1011" ), ent.getCurrentTypeCode( ) );
+
+        ksession.insert( "e" );
+        ksession.fireAllRules();
+        assertEquals( CodedHierarchyImpl.stringToBitSet( "11011" ), ent.getCurrentTypeCode( ) );
+
+        ksession.insert( "-c" );
+        ksession.fireAllRules();
+        assertEquals( CodedHierarchyImpl.stringToBitSet( "11" ), ent.getCurrentTypeCode( ) );
+
+        ksession.insert( "dg" );
+        ksession.fireAllRules();
+        assertEquals( CodedHierarchyImpl.stringToBitSet( "111111" ), ent.getCurrentTypeCode( ) );
+
+        ksession.insert( "-f" );
+        ksession.fireAllRules();
+        assertEquals( CodedHierarchyImpl.stringToBitSet( "111" ), ent.getCurrentTypeCode( ) );
+
+    }
+
+
 
 
 

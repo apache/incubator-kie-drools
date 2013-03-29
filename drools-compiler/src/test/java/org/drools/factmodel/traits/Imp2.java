@@ -62,8 +62,16 @@ public class Imp2 implements TraitableBean<Imp2,Imp2> {
         return _getTraitMap().containsKey(type);
     }
 
-    public Thing removeTrait(String type) {
-        return _getTraitMap().remove( type );
+    public BitSet getCurrentTypeCode() {
+        return ((TraitTypeMap) __$$dynamic_traits_map$$).getCurrentTypeCode();
+    }
+
+    public Collection<Thing<Imp2>> removeTrait(String type) {
+        return ((TraitTypeMap)_getTraitMap()).removeCascade( type );
+    }
+
+    public Collection<Thing<Imp2>> removeTrait( BitSet typeCode ) {
+        return ((TraitTypeMap)_getTraitMap()).removeCascade( typeCode );
     }
 
     public Collection<String> getTraits() {

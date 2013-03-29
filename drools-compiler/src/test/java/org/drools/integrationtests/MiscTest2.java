@@ -1438,4 +1438,5 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.insert(new Long(6));
         assertEquals(1, ksession.fireAllRules());
     }
+
 }

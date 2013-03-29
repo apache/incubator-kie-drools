@@ -33,6 +33,8 @@ public interface CodedHierarchy<T> {
 
     public void removeMember( T val );
 
+    public void removeMember( BitSet key );
+
 
 
     public BitSet getCode( T val );

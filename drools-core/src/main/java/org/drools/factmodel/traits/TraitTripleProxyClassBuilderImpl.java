@@ -139,6 +139,12 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                   new String[] { internalTrait, Type.getInternalName( Externalizable.class ) } );
 
         {
+            fv = cw.visitField( ACC_PRIVATE + ACC_FINAL + ACC_STATIC,
+                    TraitType.traitNameField, Type.getDescriptor( String.class ),
+                    null, null );
+            fv.visitEnd();
+        }
+        {
             fv = cw.visitField( ACC_PUBLIC, "object", descrCore, null, null );
             fv.visitEnd();
         }
@@ -159,6 +165,22 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                 fv.visitEnd();
             }
         }
+
+        {
+            mv = cw.visitMethod( ACC_STATIC, "<clinit>", "()V", null, null );
+            mv.visitCode();
+            mv.visitLdcInsn( Type.getType( Type.getDescriptor( trait.getDefinedClass() ) ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL,
+                    Type.getInternalName( Class.class ), "getName", "()" + Type.getDescriptor( String.class ) );
+            mv.visitFieldInsn( PUTSTATIC,
+                    internalProxy,
+                    TraitType.traitNameField,
+                    Type.getDescriptor( String.class ) );
+            mv.visitInsn( RETURN );
+            mv.visitMaxs( 0, 0 );
+            mv.visitEnd();
+        }
+
         {
             mv = cw.visitMethod( ACC_PUBLIC, "<init>", "()V", null, null );
             mv.visitCode();
@@ -185,6 +207,14 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
             mv.visitInsn( RETURN );
 //            mv.visitMaxs( 5 + size, 4 );
+            mv.visitMaxs( 0, 0 );
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod( ACC_PUBLIC, "getTraitName", "()" + Type.getDescriptor( String.class ), null, null);
+            mv.visitCode();
+            mv.visitFieldInsn( GETSTATIC, internalProxy, TraitType.traitNameField, Type.getDescriptor( String.class ) );
+            mv.visitInsn( ARETURN );
             mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
