@@ -3031,3 +3031,10 @@ After in *.java:
             for (ConstraintOccurrence constraintOccurrence : constraintOccurrences) {
                 ...
             }
+
+[MAJOR] TODO ConstraintMatch
+Note: ConstraintOccurrence will be removed in 6.1.0.Final, switch to ConstraintMatch now.
+If you keep using ConstraintOccurrence for now and a score corruption is detected,
+the error will not contain an analysis.
+The only reason why ConstraintOccurrence has not been removed already,
+is so you can easily verify that after migration to ConstraintMatch, it gives the exact same scores.

@@ -25,6 +25,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
 import org.optaplanner.core.impl.score.constraint.ConstraintOccurrence;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -175,6 +176,14 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         return score;
     }
 
+    public boolean isConstraintMatchEnabled() {
+        return workingScoreHolder.isConstraintMatchEnabled();
+    }
+
+    public Collection<ScoreConstraintMatchTotal> getConstraintMatchTotals() {
+        return workingScoreHolder.getConstraintMatchTotals();
+    }
+
     @Override
     public AbstractScoreDirector clone() {
         // TODO experiment with serializing the KieSession to clone it and its entities but not its other facts.
@@ -184,68 +193,6 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         // - returns a clone for a @PlanningEntity fact (Pitfall: chained planning entities)
         // Note: currently that will break incremental score calculation, but future drools versions might fix that
         return super.clone();
-    }
-
-    protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
-        Set<ConstraintOccurrence> workingConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>(
-                (Collection<ConstraintOccurrence>) kieSession.getObjects(
-                        new ClassObjectFilter(ConstraintOccurrence.class)));
-        if (!(uncorruptedScoreDirector instanceof DroolsScoreDirector)) {
-            return "Unable to analyze: the uncorruptedScoreDirector class (" + uncorruptedScoreDirector.getClass()
-                    + ") is not an instance of the scoreDirector class (" + DroolsScoreDirector.class + ").";
-        }
-        DroolsScoreDirector uncorruptedDroolsScoreDirector = (DroolsScoreDirector) uncorruptedScoreDirector;
-        KieSession uncorruptedKieSession = uncorruptedDroolsScoreDirector.getKieSession();
-        Set<ConstraintOccurrence> uncorruptedConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>(
-                (Collection<ConstraintOccurrence>) uncorruptedKieSession.getObjects(
-                        new ClassObjectFilter(ConstraintOccurrence.class)));
-
-        Set<Object> excessSet = new LinkedHashSet<Object>(workingConstraintOccurrenceSet);
-        excessSet.removeAll(uncorruptedConstraintOccurrenceSet);
-        Set<Object> lackingSet = new LinkedHashSet<Object>(uncorruptedConstraintOccurrenceSet);
-        lackingSet.removeAll(workingConstraintOccurrenceSet);
-
-        int CONSTRAINT_OCCURRENCE_DISPLAY_LIMIT = 10;
-        StringBuilder analysis = new StringBuilder();
-        if (!excessSet.isEmpty()) {
-            analysis.append("  The kieSession has ").append(excessSet.size())
-                    .append(" ConstraintOccurrence(s) in excess:\n");
-            int count = 0;
-            for (Object o : excessSet) {
-                if (count >= CONSTRAINT_OCCURRENCE_DISPLAY_LIMIT) {
-                    analysis.append("    ... ").append(excessSet.size() - CONSTRAINT_OCCURRENCE_DISPLAY_LIMIT)
-                            .append(" more\n");
-                    break;
-                }
-                analysis.append("    ").append(o.toString()).append("\n");
-                count++;
-            }
-        }
-        if (!lackingSet.isEmpty()) {
-            analysis.append("  The kieSession has ").append(lackingSet.size())
-                    .append(" ConstraintOccurrence(s) lacking:\n");
-            int count = 0;
-            for (Object o : lackingSet) {
-                if (count >= CONSTRAINT_OCCURRENCE_DISPLAY_LIMIT) {
-                    analysis.append("    ... ").append(lackingSet.size() - CONSTRAINT_OCCURRENCE_DISPLAY_LIMIT)
-                            .append(" more\n");
-                    break;
-                }
-                analysis.append("    ").append(o.toString()).append("\n");
-                count++;
-            }
-        }
-        if (excessSet.isEmpty() && lackingSet.isEmpty()) {
-            analysis.append("  Check the score rules. No ConstraintOccurrence(s) in excess or lacking." +
-                    "  Possibly some logically inserted score rules do not extend ConstraintOccurrence.\n" +
-                    "  Consider making them extend ConstraintOccurrence" +
-                    " or just reuse the build-in ConstraintOccurrence implementations.");
-
-        } else {
-            analysis.append("  Check the score rules who created those ConstraintOccurrences." +
-                    " Verify that each ConstraintOccurrence's causes and weight is correct.");
-        }
-        return analysis.toString();
     }
 
     @Override

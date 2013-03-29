@@ -20,10 +20,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatch;
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.api.score.Score;
@@ -237,6 +240,20 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         calculateCount++;
     }
 
+    public boolean isConstraintMatchEnabled() {
+        return false;
+    }
+
+    public Collection<ScoreConstraintMatchTotal> getConstraintMatchTotals() {
+        if (isConstraintMatchEnabled()) {
+            throw new IllegalStateException("Subclass (" + getClass()
+                    + ") which overwrote constraintMatchEnabled (" + isConstraintMatchEnabled()
+                    + ") should also overwrite this method.");
+        }
+        throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
+                + ") is disabled, this method should not be called.");
+    }
+
     public AbstractScoreDirector clone() {
         // Breaks incremental score calculation.
         // Subclasses should overwrite this method to avoid breaking it if possible.
@@ -285,16 +302,72 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             uncorruptedScoreDirector.dispose();
             throw new IllegalStateException(
                     "Score corruption: the workingScore (" + workingScore + ") is not the uncorruptedScore ("
-                            + uncorruptedScore + ")"
-                            + (scoreCorruptionAnalysis == null ? "." : ":\n" + scoreCorruptionAnalysis));
+                            + uncorruptedScore + "):\n" + scoreCorruptionAnalysis);
         } else {
             uncorruptedScoreDirector.dispose();
         }
     }
 
+    /**
+     * @param uncorruptedScoreDirector never null
+     * @return never null
+     */
     protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
-        // No analysis available
-        return null;
+        if (!isConstraintMatchEnabled() || !uncorruptedScoreDirector.isConstraintMatchEnabled()) {
+            return "  Score corruption analysis could not be generated because"
+                    + " either corrupted constraintMatchEnabled (" + isConstraintMatchEnabled()
+                    + " or uncorrupted constraintMatchEnabled (" + uncorruptedScoreDirector.isConstraintMatchEnabled()
+                    + ") is disabled.\n"
+                    + "  Check your score constraints.";
+        }
+        Collection<ScoreConstraintMatchTotal> workingConstraintMatchTotals = getConstraintMatchTotals();
+        Collection<ScoreConstraintMatchTotal> uncorruptedConstraintMatchTotals
+                = uncorruptedScoreDirector.getConstraintMatchTotals();
+
+        // TODO
+        Set<ScoreConstraintMatch> excessSet = new LinkedHashSet<ScoreConstraintMatch>();
+        Set<ScoreConstraintMatch> lackingSet = new LinkedHashSet<ScoreConstraintMatch>();
+//        Set<ScoreConstraintMatch> excessSet = new LinkedHashSet<ScoreConstraintMatch>(workingConstraintMatches);
+//        excessSet.removeAll(uncorruptedConstraintMatch);
+//        Set<ScoreConstraintMatch> lackingSet = new LinkedHashSet<ScoreConstraintMatch>(uncorruptedConstraintMatch);
+//        lackingSet.removeAll(workingConstraintMatches);
+
+        final int CONSTRAINT_MATCH_DISPLAY_LIMIT = 8;
+        StringBuilder analysis = new StringBuilder();
+        if (!excessSet.isEmpty()) {
+            analysis.append("  The corrupted scoreDirector has ").append(excessSet.size())
+                    .append(" ScoreConstraintMatch(s) in excess:\n");
+            int count = 0;
+            for (ScoreConstraintMatch o : excessSet) {
+                if (count >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
+                    analysis.append("    ... ").append(excessSet.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
+                            .append(" more\n");
+                    break;
+                }
+                analysis.append("    ").append(o.toString()).append("\n");
+                count++;
+            }
+        }
+        if (!lackingSet.isEmpty()) {
+            analysis.append("  The corrupted scoreDirector has ").append(lackingSet.size())
+                    .append(" ScoreConstraintMatch(s) lacking:\n");
+            int count = 0;
+            for (ScoreConstraintMatch o : lackingSet) {
+                if (count >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
+                    analysis.append("    ... ").append(lackingSet.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
+                            .append(" more\n");
+                    break;
+                }
+                analysis.append("    ").append(o.toString()).append("\n");
+                count++;
+            }
+        }
+        if (excessSet.isEmpty() && lackingSet.isEmpty()) {
+            analysis.append("  The corrupted scoreDirector has no ScoreConstraintMatch(s) in excess or lacking."
+                    + " That could be a bug in this class (").append(getClass()).append(").\n");
+        }
+        analysis.append("  Check your score constraints.");
+        return analysis.toString();
     }
 
     public void dispose() {

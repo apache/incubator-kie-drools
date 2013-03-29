@@ -16,8 +16,10 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.api.score.Score;
@@ -119,6 +121,17 @@ public interface ScoreDirector {
      * @return at least 0L
      */
     long getCalculateCount();
+
+    /**
+     * @return true if {@link #getConstraintMatchTotals()} can be called
+     */
+    boolean isConstraintMatchEnabled();
+
+    /**
+     * @return never null
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     */
+    Collection<ScoreConstraintMatchTotal> getConstraintMatchTotals();
 
     /**
      * Clones this {@link ScoreDirector} and its {@link Solution workingSolution}.

@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.constraint;
 
+@Deprecated
 public class UnweightedConstraintOccurrence extends ConstraintOccurrence {
 
     public UnweightedConstraintOccurrence(String ruleId, Object... causes) {

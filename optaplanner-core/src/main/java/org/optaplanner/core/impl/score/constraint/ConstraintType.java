@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.constraint;
 
+@Deprecated
 public enum ConstraintType {
     HARD,
     SOFT

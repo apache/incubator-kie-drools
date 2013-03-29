@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.constraint;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+@Deprecated
 public class LongConstraintOccurrence extends ConstraintOccurrence {
 
     protected long weight;
