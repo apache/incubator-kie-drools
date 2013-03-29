@@ -64,7 +64,7 @@ public abstract class ScoreConstraintMatchTotal implements Serializable {
     }
 
     public String getIdentificationString() {
-        return constraintPackage + "/" + constraintName + "/" + scoreLevel;
+        return constraintPackage + "/" + constraintName + "/level" + scoreLevel;
     }
 
     @Override

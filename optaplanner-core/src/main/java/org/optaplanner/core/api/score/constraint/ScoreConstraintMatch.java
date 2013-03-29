@@ -40,7 +40,7 @@ public abstract class ScoreConstraintMatch implements Serializable {
     // ************************************************************************
 
     private String getIdentificationString() {
-        return getScoreConstraintMatchTotal().getIdentificationString() + justificationList;
+        return getScoreConstraintMatchTotal().getIdentificationString() + "/" + justificationList;
     }
 
     public String toString() {

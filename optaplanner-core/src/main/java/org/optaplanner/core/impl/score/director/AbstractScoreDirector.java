@@ -320,7 +320,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                     + " either corrupted constraintMatchEnabled (" + isConstraintMatchEnabled()
                     + " or uncorrupted constraintMatchEnabled (" + uncorruptedScoreDirector.isConstraintMatchEnabled()
                     + ") is disabled.\n"
-                    + "  Check your score constraints.";
+                    + "  Check your score constraints manually.";
         }
         Collection<ScoreConstraintMatchTotal> corruptedConstraintMatchTotals = getConstraintMatchTotals();
         Collection<ScoreConstraintMatchTotal> uncorruptedConstraintMatchTotals
@@ -329,15 +329,15 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         Map<List<Object>, ScoreConstraintMatch> corruptedMap = createConstraintMatchMap(corruptedConstraintMatchTotals);
         Map<List<Object>, ScoreConstraintMatch> excessMap = new LinkedHashMap<List<Object>, ScoreConstraintMatch>(
                 corruptedMap);
-        Map<List<Object>, ScoreConstraintMatch> lackingMap = createConstraintMatchMap(uncorruptedConstraintMatchTotals);
-        excessMap.keySet().removeAll(lackingMap.keySet()); // lackingMap == uncorruptedMap
-        lackingMap.keySet().removeAll(corruptedMap.keySet());
+        Map<List<Object>, ScoreConstraintMatch> missingMap = createConstraintMatchMap(uncorruptedConstraintMatchTotals);
+        excessMap.keySet().removeAll(missingMap.keySet()); // missingMap == uncorruptedMap
+        missingMap.keySet().removeAll(corruptedMap.keySet());
 
         final int CONSTRAINT_MATCH_DISPLAY_LIMIT = 8;
         StringBuilder analysis = new StringBuilder();
         if (!excessMap.isEmpty()) {
             analysis.append("  The corrupted scoreDirector has ").append(excessMap.size())
-                    .append(" ScoreConstraintMatch(s) in excess (too many):\n");
+                    .append(" ScoreConstraintMatch(s) which are in excess (and should not be there):\n");
             int count = 0;
             for (ScoreConstraintMatch constraintMatch : excessMap.values()) {
                 if (count >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
@@ -349,13 +349,13 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                 count++;
             }
         }
-        if (!lackingMap.isEmpty()) {
-            analysis.append("  The corrupted scoreDirector has ").append(lackingMap.size())
-                    .append(" ScoreConstraintMatch(s) lacking (too little):\n");
+        if (!missingMap.isEmpty()) {
+            analysis.append("  The corrupted scoreDirector has ").append(missingMap.size())
+                    .append(" ScoreConstraintMatch(s) which are missing:\n");
             int count = 0;
-            for (ScoreConstraintMatch constraintMatch : lackingMap.values()) {
+            for (ScoreConstraintMatch constraintMatch : missingMap.values()) {
                 if (count >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
-                    analysis.append("    ... ").append(lackingMap.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
+                    analysis.append("    ... ").append(missingMap.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
                             .append(" more\n");
                     break;
                 }
@@ -363,8 +363,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                 count++;
             }
         }
-        if (excessMap.isEmpty() && lackingMap.isEmpty()) {
-            analysis.append("  The corrupted scoreDirector has no ScoreConstraintMatch(s) in excess or lacking."
+        if (excessMap.isEmpty() && missingMap.isEmpty()) {
+            analysis.append("  The corrupted scoreDirector has no ScoreConstraintMatch(s) in excess or missing."
                     + " That could be a bug in this class (").append(getClass()).append(").\n");
         }
         analysis.append("  Check your score constraints.");
