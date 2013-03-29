@@ -35,6 +35,7 @@ public class IntScoreConstraintMatchTotal extends ScoreConstraintMatchTotal {
         weightTotal = 0;
     }
 
+    @Override
     public Set<IntScoreConstraintMatch> getConstraintMatchSet() {
         return constraintMatchSet;
     }

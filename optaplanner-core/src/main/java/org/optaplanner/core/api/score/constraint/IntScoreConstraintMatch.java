@@ -31,12 +31,18 @@ public class IntScoreConstraintMatch extends ScoreConstraintMatch {
         this.weight = weight;
     }
 
+    @Override
     public IntScoreConstraintMatchTotal getScoreConstraintMatchTotal() {
         return scoreConstraintMatchTotal;
     }
 
     public int getWeight() {
         return weight;
+    }
+
+    @Override
+    public Number getWeightAsNumber() {
+        return getWeight();
     }
 
     // ************************************************************************

@@ -16,10 +16,12 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -320,54 +322,72 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                     + ") is disabled.\n"
                     + "  Check your score constraints.";
         }
-        Collection<ScoreConstraintMatchTotal> workingConstraintMatchTotals = getConstraintMatchTotals();
+        Collection<ScoreConstraintMatchTotal> corruptedConstraintMatchTotals = getConstraintMatchTotals();
         Collection<ScoreConstraintMatchTotal> uncorruptedConstraintMatchTotals
                 = uncorruptedScoreDirector.getConstraintMatchTotals();
 
-        // TODO
-        Set<ScoreConstraintMatch> excessSet = new LinkedHashSet<ScoreConstraintMatch>();
-        Set<ScoreConstraintMatch> lackingSet = new LinkedHashSet<ScoreConstraintMatch>();
-//        Set<ScoreConstraintMatch> excessSet = new LinkedHashSet<ScoreConstraintMatch>(workingConstraintMatches);
-//        excessSet.removeAll(uncorruptedConstraintMatch);
-//        Set<ScoreConstraintMatch> lackingSet = new LinkedHashSet<ScoreConstraintMatch>(uncorruptedConstraintMatch);
-//        lackingSet.removeAll(workingConstraintMatches);
+        Map<List<Object>, ScoreConstraintMatch> corruptedMap = createConstraintMatchMap(corruptedConstraintMatchTotals);
+        Map<List<Object>, ScoreConstraintMatch> excessMap = new LinkedHashMap<List<Object>, ScoreConstraintMatch>(
+                corruptedMap);
+        Map<List<Object>, ScoreConstraintMatch> lackingMap = createConstraintMatchMap(uncorruptedConstraintMatchTotals);
+        excessMap.keySet().removeAll(lackingMap.keySet()); // lackingMap == uncorruptedMap
+        lackingMap.keySet().removeAll(corruptedMap.keySet());
 
         final int CONSTRAINT_MATCH_DISPLAY_LIMIT = 8;
         StringBuilder analysis = new StringBuilder();
-        if (!excessSet.isEmpty()) {
-            analysis.append("  The corrupted scoreDirector has ").append(excessSet.size())
-                    .append(" ScoreConstraintMatch(s) in excess:\n");
+        if (!excessMap.isEmpty()) {
+            analysis.append("  The corrupted scoreDirector has ").append(excessMap.size())
+                    .append(" ScoreConstraintMatch(s) in excess (too many):\n");
             int count = 0;
-            for (ScoreConstraintMatch o : excessSet) {
+            for (ScoreConstraintMatch constraintMatch : excessMap.values()) {
                 if (count >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
-                    analysis.append("    ... ").append(excessSet.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
+                    analysis.append("    ... ").append(excessMap.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
                             .append(" more\n");
                     break;
                 }
-                analysis.append("    ").append(o.toString()).append("\n");
+                analysis.append("    ").append(constraintMatch).append("\n");
                 count++;
             }
         }
-        if (!lackingSet.isEmpty()) {
-            analysis.append("  The corrupted scoreDirector has ").append(lackingSet.size())
-                    .append(" ScoreConstraintMatch(s) lacking:\n");
+        if (!lackingMap.isEmpty()) {
+            analysis.append("  The corrupted scoreDirector has ").append(lackingMap.size())
+                    .append(" ScoreConstraintMatch(s) lacking (too little):\n");
             int count = 0;
-            for (ScoreConstraintMatch o : lackingSet) {
+            for (ScoreConstraintMatch constraintMatch : lackingMap.values()) {
                 if (count >= CONSTRAINT_MATCH_DISPLAY_LIMIT) {
-                    analysis.append("    ... ").append(lackingSet.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
+                    analysis.append("    ... ").append(lackingMap.size() - CONSTRAINT_MATCH_DISPLAY_LIMIT)
                             .append(" more\n");
                     break;
                 }
-                analysis.append("    ").append(o.toString()).append("\n");
+                analysis.append("    ").append(constraintMatch).append("\n");
                 count++;
             }
         }
-        if (excessSet.isEmpty() && lackingSet.isEmpty()) {
+        if (excessMap.isEmpty() && lackingMap.isEmpty()) {
             analysis.append("  The corrupted scoreDirector has no ScoreConstraintMatch(s) in excess or lacking."
                     + " That could be a bug in this class (").append(getClass()).append(").\n");
         }
         analysis.append("  Check your score constraints.");
         return analysis.toString();
+    }
+
+    private Map<List<Object>, ScoreConstraintMatch> createConstraintMatchMap(
+            Collection<ScoreConstraintMatchTotal> constraintMatchTotals) {
+        Map<List<Object>, ScoreConstraintMatch> constraintMatchMap
+                = new LinkedHashMap<List<Object>, ScoreConstraintMatch>(constraintMatchTotals.size() * 16);
+        for (ScoreConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
+            for (ScoreConstraintMatch scoreConstraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+                constraintMatchMap.put(
+                        Arrays.<Object>asList(
+                                constraintMatchTotal.getConstraintPackage(),
+                                constraintMatchTotal.getConstraintName(),
+                                constraintMatchTotal.getScoreLevel(),
+                                scoreConstraintMatch.getJustificationList(),
+                                scoreConstraintMatch.getWeightAsNumber()),
+                        scoreConstraintMatch);
+            }
+        }
+        return constraintMatchMap;
     }
 
     public void dispose() {

@@ -33,14 +33,18 @@ public abstract class ScoreConstraintMatch implements Serializable {
         return justificationList;
     }
 
+    public abstract Number getWeightAsNumber();
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
-    @Override
+    private String getIdentificationString() {
+        return getScoreConstraintMatchTotal().getIdentificationString() + justificationList;
+    }
+
     public String toString() {
-        ScoreConstraintMatchTotal constraintMatchTotal = getScoreConstraintMatchTotal();
-        return justificationList.toString();
+        return getIdentificationString();
     }
 
 }
