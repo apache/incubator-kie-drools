@@ -17,19 +17,42 @@
 package org.optaplanner.core.api.score.holder;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.drools.core.common.AgendaItem;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.Session;
+import org.optaplanner.core.api.score.constraint.IntScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
  */
 public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
-    protected final boolean matchesEnabled = false;
+    protected final boolean matchesEnabled;
+    protected final Map<List<Object>, ScoreConstraintMatchTotal> matchTotalMap;
+
+    protected AbstractScoreHolder() {
+        matchesEnabled = true;
+        // TODO Can we set the initial capacity of this map more accurately? For example: number of rules
+        matchTotalMap = matchesEnabled ? new LinkedHashMap<List<Object>, ScoreConstraintMatchTotal>() : null;
+    }
+
+    public Collection<ScoreConstraintMatchTotal> getScoreConstraintMatchTotals() {
+        return matchTotalMap.values();
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
 
     protected void registerUndoListener(RuleContext kcontext, final Runnable undoListener) {
         AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
@@ -42,6 +65,19 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
                 undoListener.run();
             }
         });
+    }
+
+    protected IntScoreConstraintMatchTotal findIntScoreConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
+        Rule rule = kcontext.getRule();
+        String constraintPackage = rule.getPackageName();
+        String constraintName = rule.getName();
+        List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
+        IntScoreConstraintMatchTotal matchTotal = (IntScoreConstraintMatchTotal) matchTotalMap.get(key);
+        if (matchTotal == null) {
+            matchTotal = new IntScoreConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            matchTotalMap.put(key, matchTotal);
+        }
+        return matchTotal;
     }
 
 }

@@ -18,6 +18,9 @@ package org.optaplanner.core.api.score.buildin.hardsoft;
 
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.IntScoreConstraintMatch;
+import org.optaplanner.core.api.score.constraint.IntScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatch;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.RuleContext;
@@ -53,20 +56,42 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
 
     public void addHardConstraintMatch(RuleContext kcontext, final int weight) {
         hardScore += weight;
-        registerUndoListener(kcontext, new Runnable() {
-            public void run() {
-                hardScore -= weight;
-            }
-        });
+        if (!matchesEnabled) {
+            registerUndoListener(kcontext, new Runnable() {
+                public void run() {
+                    hardScore -= weight;
+                }
+            });
+        } else {
+            final IntScoreConstraintMatchTotal constraintMatchTotal = findIntScoreConstraintMatchTotal(kcontext, 0);
+            final IntScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
+            registerUndoListener(kcontext, new Runnable() {
+                public void run() {
+                    hardScore -= weight;
+                    constraintMatchTotal.removeConstraintMatch(constraintMatch);
+                }
+            });
+        }
     }
 
     public void addSoftConstraintMatch(RuleContext kcontext, final int weight) {
         softScore += weight;
-        registerUndoListener(kcontext, new Runnable() {
-            public void run() {
-                softScore -= weight;
-            }
-        });
+        if (!matchesEnabled) {
+            registerUndoListener(kcontext, new Runnable() {
+                public void run() {
+                    softScore -= weight;
+                }
+            });
+        } else {
+            final IntScoreConstraintMatchTotal constraintMatchTotal = findIntScoreConstraintMatchTotal(kcontext, 1);
+            final IntScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
+            registerUndoListener(kcontext, new Runnable() {
+                public void run() {
+                    softScore -= weight;
+                    constraintMatchTotal.removeConstraintMatch(constraintMatch);
+                }
+            });
+        }
     }
 
     public Score extractScore() {
