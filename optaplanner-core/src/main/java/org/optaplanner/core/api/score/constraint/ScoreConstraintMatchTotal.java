@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.kie.api.runtime.rule.RuleContext;
 
@@ -46,6 +47,8 @@ public abstract class ScoreConstraintMatchTotal implements Serializable {
     public int getScoreLevel() {
         return scoreLevel;
     }
+
+    public abstract Set<? extends ScoreConstraintMatch> getConstraintMatchSet();
 
     // ************************************************************************
     // Worker methods

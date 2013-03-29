@@ -35,6 +35,10 @@ public class IntScoreConstraintMatchTotal extends ScoreConstraintMatchTotal {
         weightTotal = 0;
     }
 
+    public Set<IntScoreConstraintMatch> getConstraintMatchSet() {
+        return constraintMatchSet;
+    }
+
     public int getWeightTotal() {
         return weightTotal;
     }
