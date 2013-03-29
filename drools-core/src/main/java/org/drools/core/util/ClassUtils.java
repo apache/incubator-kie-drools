@@ -331,7 +331,7 @@ public final class ClassUtils {
         }
 
         for (Field f : clazz.getFields()) {
-            if ( Modifier.isPublic( f.getModifiers() ) && !Modifier.isFinal( f.getModifiers() ) && !Modifier.isStatic(f.getModifiers()) ) {
+            if ( !Modifier.isFinal( f.getModifiers() ) && !Modifier.isStatic(f.getModifiers()) ) {
                 props.add( new SetterInClass( f.getName(), f.getDeclaringClass() ) );
             }
         }

@@ -52,7 +52,7 @@ when
     $core: Imp()
     not Person( age == 30 )
 then
-    Person<Object> p = don( $core, Person.class );
+    Person p = don( $core, Person.class );
 
     System.out.println( " Person trait : " + p);
 

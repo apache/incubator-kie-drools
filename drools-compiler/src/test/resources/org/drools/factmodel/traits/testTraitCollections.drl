@@ -55,15 +55,15 @@ no-loop
 when
     $core : Bean()
 then
-    ComplexTrait<Bean> complex = drools.<ComplexTrait,Bean>don( $core, ComplexTrait.class, true );
+    ComplexTrait complex = drools.don( $core, ComplexTrait.class, true );
 
 
     Entity i1 = new Entity();
-    SimpleTrait<Entity> st = drools.<SimpleTrait,Entity>don( i1, SimpleTrait.class, true );
+    SimpleTrait st = drools.don( i1, SimpleTrait.class, true );
     st.setName("xyz");
 
     Entity i2 = new Entity();
-    AnotherTrait<Entity> at = drools.<AnotherTrait,Entity>don( i2, AnotherTrait.class, true );
+    AnotherTrait at = drools.don( i2, AnotherTrait.class, true );
     at.setField(new LinkedList());
     at.getField().add("aaa");
 
