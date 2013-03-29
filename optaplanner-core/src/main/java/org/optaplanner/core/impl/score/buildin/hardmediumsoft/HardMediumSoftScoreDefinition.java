@@ -137,8 +137,8 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
         return timeGradient;
     }
 
-    public ScoreHolder buildScoreHolder() {
-        return new HardMediumSoftScoreHolder();
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+        return new HardMediumSoftScoreHolder(constraintMatchEnabled);
     }
 
 }

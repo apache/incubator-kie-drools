@@ -145,8 +145,8 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
         return timeGradient;
     }
 
-    public ScoreHolder buildScoreHolder() {
-        return new BendableScoreHolder(hardLevelCount, softLevelCount);
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+        return new BendableScoreHolder(constraintMatchEnabled, hardLevelCount, softLevelCount);
     }
 
 }

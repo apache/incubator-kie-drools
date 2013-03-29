@@ -30,6 +30,10 @@ public class SimpleScoreHolder extends AbstractScoreHolder {
 
     protected int score;
 
+    public SimpleScoreHolder(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
+    }
+
     public int getScore() {
         return score;
     }

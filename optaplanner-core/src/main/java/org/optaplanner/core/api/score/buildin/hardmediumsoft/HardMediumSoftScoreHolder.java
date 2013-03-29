@@ -32,6 +32,10 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
     protected int mediumScore;
     protected int softScore;
 
+    public HardMediumSoftScoreHolder(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
+    }
+
     public int getHardScore() {
         return hardScore;
     }

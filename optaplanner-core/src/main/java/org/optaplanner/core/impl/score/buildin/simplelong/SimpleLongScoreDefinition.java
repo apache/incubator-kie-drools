@@ -68,8 +68,8 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
         return ((double) scoreDelta) / ((double) scoreTotal);
     }
 
-    public ScoreHolder buildScoreHolder() {
-        return new SimpleLongScoreHolder();
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+        return new SimpleLongScoreHolder(constraintMatchEnabled);
     }
 
 }

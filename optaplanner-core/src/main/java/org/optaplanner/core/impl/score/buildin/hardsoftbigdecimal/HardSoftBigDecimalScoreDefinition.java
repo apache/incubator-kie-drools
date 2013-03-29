@@ -109,8 +109,8 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractScoreDefinition<H
         return timeGradient;
     }
 
-    public ScoreHolder buildScoreHolder() {
-        return new HardSoftBigDecimalScoreHolder();
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+        return new HardSoftBigDecimalScoreHolder(constraintMatchEnabled);
     }
 
 }

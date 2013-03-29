@@ -32,6 +32,10 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
 
     protected BigDecimal score;
 
+    public SimpleBigDecimalScoreHolder(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
+    }
+
     public BigDecimal getScore() {
         return score;
     }

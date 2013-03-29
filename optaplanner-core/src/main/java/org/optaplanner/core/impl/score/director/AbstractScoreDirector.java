@@ -53,11 +53,13 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     protected final F scoreDirectorFactory;
 
-    protected Solution workingSolution;
+    protected boolean constraintMatchEnabledPreference = true;
     protected boolean hasChainedVariables;
     // TODO it's unproven that this caching system is actually faster:
     // it happens for every step for every move, but is only needed for every step (with correction for composite moves)
     protected Map<PlanningVariableDescriptor, Map<Object, Set<Object>>> chainedVariableToTrailingEntitiesMap;
+
+    protected Solution workingSolution;
 
     protected long calculateCount = 0L;
 
@@ -243,6 +245,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public boolean isConstraintMatchEnabled() {
+        // Doesn't return constraintMatchEnabledPreference because the implementation needs to implement it
         return false;
     }
 

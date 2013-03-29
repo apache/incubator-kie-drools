@@ -30,6 +30,10 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
     protected int hardScore;
     protected int softScore;
 
+    public HardSoftScoreHolder(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
+    }
+
     public int getHardScore() {
         return hardScore;
     }

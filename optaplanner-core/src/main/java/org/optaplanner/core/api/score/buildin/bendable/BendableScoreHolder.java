@@ -33,7 +33,8 @@ public class BendableScoreHolder extends AbstractScoreHolder {
     private int[] hardScores;
     private int[] softScores;
 
-    public BendableScoreHolder(int hardLevelCount, int softLevelCount) {
+    public BendableScoreHolder(boolean constraintMatchEnabled, int hardLevelCount, int softLevelCount) {
+        super(constraintMatchEnabled);
         hardScores = new int[hardLevelCount];
         softScores = new int[softLevelCount];
     }

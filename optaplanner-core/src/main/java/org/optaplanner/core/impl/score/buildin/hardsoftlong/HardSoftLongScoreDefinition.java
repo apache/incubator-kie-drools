@@ -107,8 +107,8 @@ public class HardSoftLongScoreDefinition extends AbstractScoreDefinition<HardSof
         return timeGradient;
     }
 
-    public ScoreHolder buildScoreHolder() {
-        return new HardSoftLongScoreHolder();
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+        return new HardSoftLongScoreHolder(constraintMatchEnabled);
     }
 
 }

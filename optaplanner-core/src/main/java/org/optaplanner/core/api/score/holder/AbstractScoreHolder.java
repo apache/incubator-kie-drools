@@ -40,8 +40,8 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     protected final boolean constraintMatchEnabled;
     protected final Map<List<Object>, ScoreConstraintMatchTotal> constraintMatchTotalMap;
 
-    protected AbstractScoreHolder() {
-        constraintMatchEnabled = true;
+    protected AbstractScoreHolder(boolean constraintMatchEnabled) {
+        this.constraintMatchEnabled = constraintMatchEnabled;
         // TODO Can we set the initial capacity of this map more accurately? For example: number of rules
         constraintMatchTotalMap = constraintMatchEnabled
                 ? new LinkedHashMap<List<Object>, ScoreConstraintMatchTotal>() : null;

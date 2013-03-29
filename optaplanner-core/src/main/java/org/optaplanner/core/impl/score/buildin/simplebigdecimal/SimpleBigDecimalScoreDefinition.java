@@ -70,8 +70,8 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
         return scoreDelta.divide(scoreTotal).doubleValue();
     }
 
-    public ScoreHolder buildScoreHolder() {
-        return new SimpleBigDecimalScoreHolder();
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+        return new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
     }
 
 }

@@ -82,9 +82,9 @@ public interface ScoreDefinition<S extends Score> {
     double calculateTimeGradient(S startScore, S endScore, S score);
 
     /**
-     * TODO JBRULES-2238 remove when the rule that sums the final score can be written as a single rule and {@link ScoreHolder} is dead
+     * @param constraintMatchEnabled true if {@link ScoreHolder#isConstraintMatchEnabled()} should be true
      * @return never null
      */
-    ScoreHolder buildScoreHolder();
+    ScoreHolder buildScoreHolder(boolean constraintMatchEnabled);
 
 }

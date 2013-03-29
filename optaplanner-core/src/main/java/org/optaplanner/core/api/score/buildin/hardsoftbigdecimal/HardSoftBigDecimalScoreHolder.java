@@ -33,6 +33,10 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     protected BigDecimal hardScore;
     protected BigDecimal softScore;
 
+    public HardSoftBigDecimalScoreHolder(boolean constraintMatchEnabled) {
+        super(constraintMatchEnabled);
+    }
+
     public BigDecimal getHardScore() {
         return hardScore;
     }

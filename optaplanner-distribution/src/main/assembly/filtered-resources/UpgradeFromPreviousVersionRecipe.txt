@@ -3038,3 +3038,14 @@ If you keep using ConstraintOccurrence for now and a score corruption is detecte
 the error will not contain an analysis.
 The only reason why ConstraintOccurrence has not been removed already,
 is so you can easily verify that after migration to ConstraintMatch, it gives the exact same scores.
+
+[MINOR] If you have a custom ScoreDefinition implementation: the method buildScoreHolder() has changed signature.
+Before in *ScoreDefinition.java:
+    public ScoreHolder buildScoreHolder() {
+        return new HardSoftScoreHolder();
+    }
+After in *ScoreDefinition.java:
+    public ScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
+        return new HardSoftScoreHolder(constraintMatchEnabled);
+    }
+6.0 supports a bunch more score types: it's easier (as well as recommended) to switch to a build-in one if you can.

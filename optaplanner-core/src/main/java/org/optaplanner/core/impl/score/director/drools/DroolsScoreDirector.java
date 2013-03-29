@@ -71,7 +71,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
             kieSession.dispose();
         }
         kieSession = getKieBase().newKieSession();
-        workingScoreHolder = getScoreDefinition().buildScoreHolder();
+        workingScoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabledPreference);
         kieSession.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
         // TODO Adjust when uninitialized entities from getWorkingFacts get added automatically too (and call afterEntityAdded)
         Collection<Object> workingFacts = getWorkingFacts();
