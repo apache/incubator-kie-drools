@@ -26,6 +26,8 @@ public abstract class ScoreConstraintMatch {
         this.justificationList = justificationList;
     }
 
+    public abstract ScoreConstraintMatchTotal getScoreConstraintMatchTotal();
+
     public List<Object> getJustificationList() {
         return justificationList;
     }
@@ -33,5 +35,11 @@ public abstract class ScoreConstraintMatch {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    @Override
+    public String toString() {
+        ScoreConstraintMatchTotal constraintMatchTotal = getScoreConstraintMatchTotal();
+        return justificationList.toString();
+    }
 
 }

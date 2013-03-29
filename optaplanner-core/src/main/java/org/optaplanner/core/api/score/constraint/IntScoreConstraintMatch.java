@@ -31,6 +31,10 @@ public class IntScoreConstraintMatch extends ScoreConstraintMatch {
         this.weight = weight;
     }
 
+    public IntScoreConstraintMatchTotal getScoreConstraintMatchTotal() {
+        return scoreConstraintMatchTotal;
+    }
+
     public int getWeight() {
         return weight;
     }
@@ -38,5 +42,10 @@ public class IntScoreConstraintMatch extends ScoreConstraintMatch {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    @Override
+    public String toString() {
+        return super.toString() + "=" + weight;
+    }
 
 }
