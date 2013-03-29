@@ -16,6 +16,7 @@
 package org.droolsjbpm.services.test.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.droolsjbpm.services.api.DomainManagerService;
+import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.droolsjbpm.services.domain.entities.Domain;
 import org.droolsjbpm.services.domain.entities.Organization;
 import org.droolsjbpm.services.domain.entities.RuntimeId;
@@ -32,6 +34,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -103,6 +106,14 @@ public class DomainEntitiesTest {
     }
     @Inject
     protected DomainManagerService domainService;
+    
+    @Inject
+    protected KnowledgeAdminDataService admin;
+    
+    @After
+    public void cleanup() {
+        admin.removeAllData();
+    }
 
     @Test
     public void simpleDomainTest() {
@@ -144,6 +155,25 @@ public class DomainEntitiesTest {
 
         assertEquals("JBoss", domainById.getOrganization().getName());
 
+
+    }
+    
+    @Test
+    public void discoveredDomainTest() {
+        Organization organization = new Organization();
+        organization.setName("JBoss");
+
+        long storedOrganization = domainService.storeOrganization(organization);
+        assertTrue(storedOrganization > 0);
+
+        List<Domain> allDomains = domainService.getAllDomains();
+        assertEquals(3, allDomains.size());
+        List<Organization> allOrganizations = domainService.getAllOrganizations();
+        assertEquals(1, allOrganizations.size());
+
+        List<Domain> allDomainsByOrganization = domainService.getAllDomainsByOrganization(storedOrganization);
+
+        assertEquals(3, allDomainsByOrganization.size());
 
     }
 

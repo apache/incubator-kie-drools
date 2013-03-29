@@ -63,6 +63,7 @@ import org.kie.internal.runtime.manager.Runtime;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.TaskService;
 import org.kie.internal.task.api.model.Status;
 import org.kie.internal.task.api.model.TaskSummary;
@@ -286,8 +287,8 @@ public class DomainServicesTest {
         domainService.storeOrganization(organization);
         
         domainService.initDomain(domain.getId());
-        List<Runtime> runtimesByDomain = domainService.getRuntimesByDomain(domain.getName());
-        Runtime runtime = runtimesByDomain.get(0);
+        RuntimeManager runtimesByDomain = domainService.getRuntimesByDomain(domain.getName());
+        Runtime runtime = runtimesByDomain.getRuntime(ProcessInstanceIdContext.get());
         runtime.getKieSession().startProcess("support.process");
         
         List<TaskSummary> tasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("salaboy", "en-UK");

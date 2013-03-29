@@ -69,6 +69,8 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     @Inject
     private EntityManagerFactory emf;
 
+    private EntityManager noScopeEm;
+    
     private boolean sharedEntityManager = false;
 
     public final static String FIRST_RESULT = "firstResult";
@@ -79,11 +81,13 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
 
     public EntityManager getEm() {
         try {
-            this.em.toString();          
+            this.em.toString();  
             return this.em;
         } catch (ContextNotActiveException e) {
-            this.em = this.emf.createEntityManager();
-            return this.em;
+            if (this.noScopeEm == null) {
+                this.noScopeEm = this.emf.createEntityManager();
+            }
+            return this.noScopeEm;
         }
 
     }
@@ -109,7 +113,9 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     public void setTransactionManager(JbpmServicesTransactionManager ttxm) {
         this.ttxm = ttxm;
     }
-    
+    public boolean hasTransactionManager() {
+        return this.ttxm != null;
+    }
     
     @Override
     public int executeUpdateString(String updateString) {
@@ -290,8 +296,8 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     
     public boolean beginTransaction() { 
         if(ttxm != null){
-            boolean txOwner = ttxm.begin(em);
-            this.ttxm.attachPersistenceContext(em);
+            boolean txOwner = ttxm.begin(getEm());
+            this.ttxm.attachPersistenceContext(getEm());
             return txOwner;
         }
         return false;
@@ -300,10 +306,10 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     public void endTransaction(boolean txOwner) { 
         if( ttxm != null){
             try { 
-                ttxm.commit(em, txOwner);
+                ttxm.commit(getEm(), txOwner);
             } catch(RuntimeException re) { 
                 logger.error("Unable to commit, rolling back transaction.", re);
-                this.ttxm.rollback(em, txOwner);
+                this.ttxm.rollback(getEm(), txOwner);
 
                 throw re;
             }
@@ -313,7 +319,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     public void rollBackTransaction(boolean txOwner) { 
         if(ttxm != null){
             try { 
-                this.ttxm.rollback(em, txOwner);
+                this.ttxm.rollback(getEm(), txOwner);
             } catch(RuntimeException re) { 
                 logger.error("Unable to rollback transaction (or to mark as 'to rollback')!", re);
             }
@@ -327,7 +333,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     }
     
     public void endPersistenceContext() { 
-        if( em == null ) { 
+        if( getEm() == null ) { 
             ttxm = null;
             return;
         }
@@ -362,6 +368,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         }
         
         this.em = null;
+        this.noScopeEm = null;
         this.ttxm = null;
     }
 

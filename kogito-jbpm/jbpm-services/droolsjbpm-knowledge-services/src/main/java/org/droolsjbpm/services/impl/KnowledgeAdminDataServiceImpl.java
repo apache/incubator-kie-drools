@@ -42,7 +42,9 @@ public class KnowledgeAdminDataServiceImpl implements KnowledgeAdminDataService{
         deleted += pm.executeUpdateString("delete from  ProcessDesc pd");
         deleted += pm.executeUpdateString("delete from  VariableInstanceLog vsd");
         deleted += pm.executeUpdateString("delete from  ProcessInputDesc pidesc");
-
+        deleted += pm.executeUpdateString("delete from  RuntimeId ri");
+        deleted += pm.executeUpdateString("delete from  Domain d");        
+        deleted += pm.executeUpdateString("delete from  Organization o");
         return deleted;
     }
     

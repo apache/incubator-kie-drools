@@ -44,6 +44,8 @@ import org.jbpm.services.task.query.DeadlineSummaryImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.cdi.Startup;
+import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
+import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.kie.api.runtime.Environment;
 import org.kie.internal.task.api.TaskDeadlinesService;
 import org.kie.internal.task.api.model.Deadline;
@@ -97,8 +99,10 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
     @PostConstruct
     public void init() {
-
-       // UserTransaction ut = setupEnvironment();
+        // make sure it has tx manager as it runs as background thread - no request scope available
+        if (!((JbpmServicesPersistenceManagerImpl) pm).hasTransactionManager()) {
+            ((JbpmServicesPersistenceManagerImpl) pm).setTransactionManager(new JbpmJTATransactionManager());
+        }
         
         long now = System.currentTimeMillis();
         List<DeadlineSummaryImpl> resultList = (List<DeadlineSummaryImpl>)pm.queryInTransaction("UnescalatedStartDeadlines");
@@ -113,12 +117,13 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             long delay = summary.getDate().getTime() - now;
             schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.END);
         }
-        //completeOperation(ut,((JbpmServicesPersistenceManagerImpl)pm).getEm());
     }
 
     private void executeEscalatedDeadline(long taskId, long deadlineId, DeadlineType type) {
-       // UserTransaction ut = setupEnvironment();
-       // EntityManager entityManager = getEntityManager();
+        // make sure it has tx manager as it runs as background thread - no request scope available
+        if (!((JbpmServicesPersistenceManagerImpl) pm).hasTransactionManager()) {
+            ((JbpmServicesPersistenceManagerImpl) pm).setTransactionManager(new JbpmJTATransactionManager());
+        }
         
         TaskImpl task = (TaskImpl) pm.find(TaskImpl.class, taskId);
         Deadline deadline = (DeadlineImpl) pm.find(DeadlineImpl.class, deadlineId);
@@ -178,7 +183,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                 }
             }
         }
-       // completeOperation(ut, entityManager);
+
         deadline.setEscalated(true);
     }
 
@@ -308,57 +313,4 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         }
     }
 
-    
-    /*
-     * following are supporting methods to allow execution on application startup
-     * as at that time RequestScoped entity manager cannot be used so instead
-     * use EntityMnagerFactory and manage transaction manually
-     */
-//    protected EntityManager getEntityManager() {
-//        try {
-//            ((JbpmServicesPersistenceManagerImpl)this.pm).getEm().toString();          
-//            return ((JbpmServicesPersistenceManagerImpl)this.pm).getEm();
-//        } catch (ContextNotActiveException e) {
-//            EntityManager em = ((JbpmServicesPersistenceManagerImpl)this.pm).getEm().getEntityManagerFactory().createEntityManager();
-//            return em;
-//        }
-//    }
-//    
-//    protected UserTransaction setupEnvironment() {
-//        UserTransaction ut = null;
-//        try {
-//            ((JbpmServicesPersistenceManagerImpl)this.pm).getEm().toString();
-//        } catch (ContextNotActiveException e) {
-//            try {
-//                ut = InitialContext.doLookup("java:comp/UserTransaction");
-//            } catch (Exception ex) {
-//                try {
-//                    ut = InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
-//                    
-//                } catch (Exception e1) {
-//                    throw new RuntimeException("Cannot find UserTransaction", e1);
-//                }
-//            }
-//            try {
-//                ut.begin();
-//            } catch (Exception ex) {
-//                
-//            }
-//        }
-//        
-//        return ut;
-//    }
-//    protected void completeOperation(UserTransaction ut, EntityManager entityManager) {
-//        if (ut != null) {
-//            try {
-//                ut.commit();
-//                if (entityManager != null) {
-//                    entityManager.clear();
-//                    entityManager.close();
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 }

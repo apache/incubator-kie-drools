@@ -22,14 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
+
 import org.droolsjbpm.services.api.DomainManagerService;
 import org.droolsjbpm.services.api.IdentityProvider;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
@@ -41,24 +41,18 @@ import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
-import org.jbpm.process.audit.event.AuditEventBuilder;
-import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.Runtime;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
-import org.kie.internal.runtime.manager.context.EmptyContext;
 
 /**
  *
@@ -83,14 +77,13 @@ public class DomainManagerServiceImpl implements DomainManagerService {
     @Inject
     private BPMN2DataService bpmn2Service;
     
-    private Map<String, List<Runtime>> domainsMap = new HashMap<String, List<Runtime>>();
+    private Map<String, RuntimeManager> domainsMap = new HashMap<String, RuntimeManager>();
     
     // Process Path / Process Id - String 
     private Map<String, List<String>> processDefinitionNamesByDomain = new HashMap<String, List<String>>();
     
     @Inject
     private IdentityProvider identityProvider; 
-//    private AuditEventBuilder auditEventBuilder;
 
     public void setPm(JbpmServicesPersistenceManager pm) {
         this.pm = pm;
@@ -132,6 +125,10 @@ public class DomainManagerServiceImpl implements DomainManagerService {
 
     @Override
     public long storeOrganization(Organization organization) {
+        if (organization.getDomains() == null || organization.getDomains().isEmpty()) {
+            Map<String, Domain> domains = discoverDomains(organization, "processes");
+            organization.setDomains(new ArrayList<Domain>(domains.values()));
+        }
         pm.persist(organization);
         return organization.getId();
     }
@@ -155,8 +152,17 @@ public class DomainManagerServiceImpl implements DomainManagerService {
     @Override
     public void initOrganization(long organizationId) {
         Organization org = getOrganizationById(organizationId);
+        Map<String, Domain> discovered = discoverDomains(org, "processes");
         for (Domain d : org.getDomains()) {
             initDomain(d.getId());
+            discovered.remove(d.getName());
+        }
+        if (!discovered.isEmpty()) {
+            List<Domain> domains = new ArrayList<Domain>(discovered.values());
+            for (Domain d : domains) {
+                pm.persist(d);
+                initDomain(d.getId());
+            }
         }
     }
 
@@ -165,68 +171,73 @@ public class DomainManagerServiceImpl implements DomainManagerService {
         final Domain d = getDomainById(domainId);
         fs.fetchChanges();
         if( d != null){
-            if (domainsMap.get(d.getName()) == null) {
-                Collection<ProcessDesc> existingProcesses = getProcessesByDomainName(d.getName());
-                Collection<ProcessDesc> loadedProcesses = new ArrayList<ProcessDesc>();
-                for (RuntimeId r : d.getRuntimes()) {
-                    String reference = r.getReference();
-                    // Create Runtime Manager Based on the Reference
-                    SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment(emf);
-                    UserTransaction ut = null;
+            Collection<ProcessDesc> loadedProcesses = new ArrayList<ProcessDesc>();
+            for (RuntimeId r : d.getRuntimes()) {
+                String reference = r.getReference();
+                // Create Runtime Manager Based on the Reference
+                SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment(emf);
+                UserTransaction ut = null;
+                try {
+                    ut = InitialContext.doLookup("java:comp/UserTransaction");
+                } catch (Exception ex) {
                     try {
-                        ut = InitialContext.doLookup("java:comp/UserTransaction");
-                    } catch (Exception ex) {
-                        try {
-                            ut = InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
-                            environment.addToEnvironment(EnvironmentName.TRANSACTION, ut);
-                        } catch (Exception e1) {
-                            throw new RuntimeException("Cannot find UserTransaction", e1);
-                        }
+                        ut = InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
+                        environment.addToEnvironment(EnvironmentName.TRANSACTION, ut);
+                    } catch (Exception e1) {
+                        throw new RuntimeException("Cannot find UserTransaction", e1);
                     }
-                    AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance(emf);
-                    ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
-                    auditEventBuilder.setIdentityProvider(identityProvider);
-                    auditEventBuilder.setDomain(d);
-                    auditLogger.setBuilder(auditEventBuilder);
-                    
-                    environment.setRegisterableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger));
-                    Iterable<Path> loadProcessFiles = null;
+                }
+                AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance(emf);
+                ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
+                auditEventBuilder.setIdentityProvider(identityProvider);
+                auditEventBuilder.setDomain(d);
+                auditLogger.setBuilder(auditEventBuilder);
+                
+                environment.setRegisterableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger));
+                Iterable<Path> loadProcessFiles = null;
 
+                try {
+                    loadProcessFiles = fs.loadFilesByType(reference, ".+bpmn[2]?$");
+                } catch (FileException ex) {
+                    Logger.getLogger(DomainManagerServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                for (Path p : loadProcessFiles) {
+                    String processString = "";
                     try {
-                        loadProcessFiles = fs.loadFilesByType(reference, ".+bpmn[2]?$");
-                    } catch (FileException ex) {
+                        processString = new String(fs.loadFile(p));
+                        environment.addAsset(ResourceFactory.newByteArrayResource(processString.getBytes()), ResourceType.BPMN2);
+                        ProcessDesc process = bpmn2Service.findProcessId(processString);
+                        if (process != null) {
+                            process.setDomainName(d.getName());
+                            process.setOriginalPath(p.toString());
+                            loadedProcesses.add(process);          
+                        }
+                        
+                    } catch (Exception ex) {
                         Logger.getLogger(DomainManagerServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    for (Path p : loadProcessFiles) {
-                        String processString = "";
-                        try {
-                            processString = new String(fs.loadFile(p));
-                            environment.addAsset(ResourceFactory.newByteArrayResource(processString.getBytes()), ResourceType.BPMN2);
-                            ProcessDesc process = bpmn2Service.findProcessId(processString);
-                            if (process != null) {
-                                process.setDomainName(d.getName());
-                                process.setOriginalPath(p.toString());
-                                loadedProcesses.add(process);
-                                pm.persist(process);
-                            }
-                            
-                        } catch (FileException ex) {
-                            Logger.getLogger(DomainManagerServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-
-                    loadedProcesses.removeAll(existingProcesses);
-                    if (!loadedProcesses.isEmpty()) {  
-                        RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment, d.getName());
-                        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
-                        
-                        if (domainsMap.get(d.getName()) == null) {
-                            domainsMap.put(d.getName(), new ArrayList<Runtime>());
-                        }
-                        domainsMap.get(d.getName()).add(runtime);
-                    }
-                    
                 }
+                
+                if (!loadedProcesses.isEmpty()) {  
+                    synchronized (domainsMap) {
+                    
+                        if (domainsMap.containsKey(d.getName())) {
+                            RuntimeManager manager = domainsMap.remove(d.getName()); 
+                            manager.close();
+                            Collection<ProcessDesc> existingProcesses = getProcessesByDomainName(d.getName());
+                            for (ProcessDesc toDelete : existingProcesses) {
+                                pm.remove(toDelete);
+                            }
+                        } 
+                        for (ProcessDesc process : loadedProcesses) {
+                            pm.persist(process);
+                        }
+                        RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment, d.getName());
+    
+                        domainsMap.put(d.getName(), manager);                    
+                    }
+                }
+                
             }
         }
     }
@@ -239,6 +250,30 @@ public class DomainManagerServiceImpl implements DomainManagerService {
         }
         processDefinitionNamesByDomain.get(domainName).add(processId);
     }
+
+    protected Map<String, Domain> discoverDomains(Organization organization, String location) {
+        Iterable<Path> domainDirs = fs.listDirectories(location);
+        Map<String, Domain> domains = new HashMap<String, Domain>();
+        for (Path domainDir : domainDirs) {
+            String dirName = domainDir.getFileName().toString();
+            Domain domain = new Domain();
+            domain.setName(dirName + " Domain");
+            List<RuntimeId> runtimesRelease = new ArrayList<RuntimeId>();
+            RuntimeId releaseRuntime = new RuntimeId();
+            releaseRuntime.setName(dirName + " Runtime");
+            releaseRuntime.setReference(location + "/" + dirName + "/");
+            releaseRuntime.setType("Folder/Runtime Manager(Singleton)");
+
+            runtimesRelease.add(releaseRuntime);
+
+            domain.setRuntimes(runtimesRelease);
+            domain.setOrganization(organization);
+
+            domains.put(domain.getName(), domain);
+        }
+        
+        return domains;
+    }
     
     public Collection<ProcessDesc> getProcessesByDomainName(String domainName) {
       List<ProcessDesc> processes = (List<ProcessDesc>)pm.queryStringWithParametersInTransaction("select pd from ProcessDesc pd where pd.domainName=:domainName GROUP BY pd.id ORDER BY pd.dataTimeStamp DESC",
@@ -246,11 +281,11 @@ public class DomainManagerServiceImpl implements DomainManagerService {
       return processes;
     }
     
-    public Map<String, List<Runtime>> getDomainsMap() {
+    public Map<String, RuntimeManager> getDomainsMap() {
         return domainsMap;
     }
 
-    public List<Runtime> getRuntimesByDomain(String domainName) {
+    public RuntimeManager getRuntimesByDomain(String domainName) {
         return domainsMap.get(domainName);
     }
 

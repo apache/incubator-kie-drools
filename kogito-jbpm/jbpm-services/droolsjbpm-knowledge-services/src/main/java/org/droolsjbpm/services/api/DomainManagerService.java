@@ -22,6 +22,7 @@ import org.droolsjbpm.services.domain.entities.Domain;
 import org.droolsjbpm.services.domain.entities.Organization;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeManager;
 /**
  *
  * @author salaboy
@@ -45,8 +46,8 @@ public interface DomainManagerService {
     void initOrganization(long organizationId);
     void initDomain(long domainId);
     
-    Map<String, List<Runtime>> getDomainsMap();
-    List<Runtime> getRuntimesByDomain(String domainName);
+    Map<String, RuntimeManager> getDomainsMap();
+    RuntimeManager getRuntimesByDomain(String domainName);
     
     Collection<ProcessDesc> getProcessesByDomainName(String domainName);
     
