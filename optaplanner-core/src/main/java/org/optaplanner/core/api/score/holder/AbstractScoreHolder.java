@@ -37,17 +37,22 @@ import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
  */
 public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
-    protected final boolean matchesEnabled;
-    protected final Map<List<Object>, ScoreConstraintMatchTotal> matchTotalMap;
+    protected final boolean constraintMatchEnabled;
+    protected final Map<List<Object>, ScoreConstraintMatchTotal> constraintMatchTotalMap;
 
     protected AbstractScoreHolder() {
-        matchesEnabled = true;
+        constraintMatchEnabled = true;
         // TODO Can we set the initial capacity of this map more accurately? For example: number of rules
-        matchTotalMap = matchesEnabled ? new LinkedHashMap<List<Object>, ScoreConstraintMatchTotal>() : null;
+        constraintMatchTotalMap = constraintMatchEnabled
+                ? new LinkedHashMap<List<Object>, ScoreConstraintMatchTotal>() : null;
     }
 
-    public Collection<ScoreConstraintMatchTotal> getScoreConstraintMatchTotals() {
-        return matchTotalMap.values();
+    public boolean isConstraintMatchEnabled() {
+        return constraintMatchEnabled;
+    }
+
+    public Collection<ScoreConstraintMatchTotal> getConstraintMatchTotals() {
+        return constraintMatchTotalMap.values();
     }
 
     // ************************************************************************
@@ -72,10 +77,10 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
         List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
-        IntScoreConstraintMatchTotal matchTotal = (IntScoreConstraintMatchTotal) matchTotalMap.get(key);
+        IntScoreConstraintMatchTotal matchTotal = (IntScoreConstraintMatchTotal) constraintMatchTotalMap.get(key);
         if (matchTotal == null) {
             matchTotal = new IntScoreConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
-            matchTotalMap.put(key, matchTotal);
+            constraintMatchTotalMap.put(key, matchTotal);
         }
         return matchTotal;
     }
