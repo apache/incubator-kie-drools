@@ -50,14 +50,18 @@ rule "conflictingLecturesDifferentCourseInSamePeriod"
         $leftLecture : Lecture(course == $leftCourse, $period : period, period != null)
         $rightLecture : Lecture(course == $rightCourse, period == $period, this != $leftLecture)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -1);
+        insertLogical(new IntConstraintOccurrence("conflictingLecturesDifferentCourseInSamePeriod", ConstraintType.HARD,
+                -1,
+                $leftLecture, $rightLecture));
 end
 rule "conflictingLecturesSameCourseInSamePeriod"
     when
         $leftLecture : Lecture($leftId : id, $leftCourse : course, $period : period, period != null)
         $rightLecture : Lecture(course == $leftCourse, period == $period, id > $leftId)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -1);
+        insertLogical(new IntConstraintOccurrence("conflictingLecturesSameCourseInSamePeriod", ConstraintType.HARD,
+                -1,
+                $leftLecture, $rightLecture));
 end
 
 // RoomOccupancy: Two lectures in the same room at the same period.
@@ -70,7 +74,9 @@ rule "roomOccupancy"
         // rightLecture has the same period
         $rightLecture : Lecture(period == $period, room == $room, id > $leftId, $rightId : id)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -1);
+        insertLogical(new IntConstraintOccurrence("roomOccupancy", ConstraintType.HARD,
+                -1,
+                $leftLecture, $rightLecture));
 end
 
 // Availabilities: Each lecture in a period unavailable for that course.
@@ -79,7 +85,9 @@ rule "unavailablePeriodPenalty"
         $unavailablePeriodPenalty : UnavailablePeriodPenalty($course : course, $period : period)
         $lecture : Lecture(course == $course, period == $period)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -1);
+        insertLogical(new IntConstraintOccurrence("unavailablePeriodPenalty", ConstraintType.HARD,
+                -1,
+                $lecture));
 end
 
 // ############################################################################
@@ -94,7 +102,9 @@ rule "roomCapacity"
         $room : Room($capacity : capacity)
         $lecture : Lecture(room == $room, studentSize > $capacity, $studentSize : studentSize)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, ($capacity - $studentSize));
+        insertLogical(new IntConstraintOccurrence("roomCapacity", ConstraintType.SOFT,
+                ($capacity - $studentSize),
+                $room, $lecture));
 end
 
 // MinimumWorkingDays: The lectures of each course should be spread into a minimum number of days.
@@ -110,7 +120,9 @@ rule "minimumWorkingDays"
         // An uninitialized schedule should have no constraints broken
         exists Lecture(course == $course, period != null)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, (($dayCount.intValue() - $minWorkingDaySize) * 5));
+        insertLogical(new IntConstraintOccurrence("minimumWorkingDays", ConstraintType.SOFT,
+                (($dayCount.intValue() - $minWorkingDaySize) * 5),
+                $course));
 end
 
 // CurriculumCompactness: Lectures belonging to a curriculum should be adjacent
@@ -132,7 +144,9 @@ rule "curriculumCompactness"
             day == $day, timeslotIndex == ($timeslotIndex + 1)
         )
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, -2);
+        insertLogical(new IntConstraintOccurrence("curriculumCompactness", ConstraintType.SOFT,
+                -2,
+                $lecture, $curriculum));
 end
 
 // RoomStability: All lectures of a course should be given in the same room.
@@ -146,5 +160,35 @@ rule "roomStability"
             count($room)
         )
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, -($roomCount.intValue() - 1));
+        insertLogical(new IntConstraintOccurrence("roomStability", ConstraintType.SOFT,
+                -($roomCount.intValue() - 1),
+                $course));
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+// Accumulate hard constraints
+rule "accumulateHardScore"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $hardTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        )
+    then
+        scoreHolder.setHardScore($hardTotal.intValue());
+end
+
+// Accumulate soft constraints
+rule "accumulateSoftScore"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $softTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        )
+    then
+        scoreHolder.setSoftScore($softTotal.intValue());
 end

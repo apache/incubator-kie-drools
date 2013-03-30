@@ -7,9 +7,8 @@
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
     <scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
-    <!--<scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseCompensationActionExperimentScoreRules.drl</scoreDrl>-->
     <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>-->
+      <!--<scoreDrl>/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRulesOld.drl</scoreDrl>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
