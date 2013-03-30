@@ -13,9 +13,8 @@
     <!--<simpleScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingMapBasedSimpleScoreCalculator</simpleScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
-    <!--<scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingCompensationActionExperimentScoreRules.drl</scoreDrl>-->
     <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
+      <!--<scoreDrl>/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRulesOld.drl</scoreDrl>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 

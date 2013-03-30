@@ -18,6 +18,8 @@ package org.optaplanner.examples.cloudbalancing.solver;
     dialect "java"
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
+import org.optaplanner.core.impl.score.constraint.ConstraintType;
 
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
@@ -39,7 +41,9 @@ rule "requiredCpuPowerTotal"
             sum($requiredCpuPower)
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $cpuPower - $requiredCpuPowerTotal.intValue());
+        insertLogical(new IntConstraintOccurrence("requiredCpuPowerTotal", ConstraintType.HARD,
+                $cpuPower - $requiredCpuPowerTotal.intValue(),
+                $computer));
 end
 
 rule "requiredMemoryTotal"
@@ -52,7 +56,9 @@ rule "requiredMemoryTotal"
             sum($requiredMemory)
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $memory - $requiredMemoryTotal.intValue());
+        insertLogical(new IntConstraintOccurrence("requiredMemoryTotal", ConstraintType.HARD,
+                $memory - $requiredMemoryTotal.intValue(),
+                $computer));
 end
 
 rule "requiredNetworkBandwidthTotal"
@@ -65,7 +71,9 @@ rule "requiredNetworkBandwidthTotal"
             sum($requiredNetworkBandwidth)
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $networkBandwidth - $requiredNetworkBandwidthTotal.intValue());
+        insertLogical(new IntConstraintOccurrence("requiredNetworkBandwidthTotal", ConstraintType.HARD,
+                $networkBandwidth - $requiredNetworkBandwidthTotal.intValue(),
+                $computer));
 end
 
 // ############################################################################
@@ -77,5 +85,35 @@ rule "computerCost"
         $computer : CloudComputer($cost : cost)
         exists CloudProcess(computer == $computer)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
+        insertLogical(new IntConstraintOccurrence("computerCost", ConstraintType.SOFT,
+                - $cost,
+                $computer));
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+// Accumulate hard constraints
+rule "accumulateHardScore"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $hardTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        )
+    then
+        scoreHolder.setHardScore($hardTotal.intValue());
+end
+
+// Accumulate soft constraints
+rule "accumulateSoftScore"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $softTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        )
+    then
+        scoreHolder.setSoftScore($softTotal.intValue());
 end
