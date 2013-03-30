@@ -18,8 +18,6 @@ package org.optaplanner.examples.tsp.solver;
     dialect "java"
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
-import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
-import org.optaplanner.core.impl.score.constraint.ConstraintType;
 
 import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
 import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
@@ -43,9 +41,7 @@ rule "vehicleCapacity"
             sum($demand)
         )
     then
-        insertLogical(new IntConstraintOccurrence("vehicleCapacity", ConstraintType.HARD,
-                $capacity - $demandTotal.intValue(),
-                $vehicle));
+        scoreHolder.addHardConstraintMatch(kcontext, $capacity - $demandTotal.intValue());
 end
 
 // ############################################################################
@@ -56,9 +52,7 @@ rule "distanceToPreviousAppearance"
     when
         $customer : VrpCustomer(previousAppearance != null, $distanceToPreviousAppearance : distanceToPreviousAppearance)
     then
-        insertLogical(new IntConstraintOccurrence("distanceToPreviousAppearance", ConstraintType.SOFT,
-                - $distanceToPreviousAppearance,
-                $customer));
+        scoreHolder.addSoftConstraintMatch(kcontext, - $distanceToPreviousAppearance);
 end
 
 rule "distanceFromLastCustomerToDepot"
@@ -67,35 +61,5 @@ rule "distanceFromLastCustomerToDepot"
         not VrpCustomer(previousAppearance == $customer)
     then
         VrpVehicle vehicle = $customer.getVehicle();
-        insertLogical(new IntConstraintOccurrence("distanceFromLastCustomerToDepot", ConstraintType.SOFT,
-                - $customer.getDistanceTo(vehicle),
-                $customer));
-end
-
-// ############################################################################
-// Calculate score
-// ############################################################################
-
-// Accumulate hard constraints
-rule "accumulateHardScore"
-        salience -1 // Do the other rules first (optional, for performance)
-    when
-        $hardTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
-            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-        )
-    then
-        scoreHolder.setHardScore($hardTotal.intValue());
-end
-
-// Accumulate soft constraints
-rule "accumulateSoftScore"
-        salience -1 // Do the other rules first (optional, for performance)
-    when
-        $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
-            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-        )
-    then
-        scoreHolder.setSoftScore($softTotal.intValue());
+        scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));
 end

@@ -7,9 +7,8 @@
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
     <scoreDrl>/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>
-    <!--<scoreDrl>/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingCompensationActionExperimentScoreRules.drl</scoreDrl>-->
     <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>-->
+      <!--<scoreDrl>/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingScoreRulesOld.drl</scoreDrl>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
