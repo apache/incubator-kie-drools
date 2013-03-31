@@ -3032,12 +3032,106 @@ After in *.java:
                 ...
             }
 
-[MAJOR] TODO ConstraintMatch
-Note: ConstraintOccurrence will be removed in 6.1.0.Final, switch to ConstraintMatch now.
+[README] In score DRL's, the insertLogical ConstraintOccurrence technique has been replaced with the ConstraintMatch technique.
+That new technique is much faster (see blog for details), easier to use and far less error-prone.
+Unlike ConstraintOccurrence, ConstraintMatch doesn't care about the equals/hashcode implementations of your classes.
+Also, the ConstraintMatch and ConstraintMatchTotal instances are designed to be reused outside Planner.
+
+[MAJOR] Change your scoreDrl's to use the ConstraintMatch technique.
+Instead of doing an insertLogical of a ConstraintOccurrence, they now call scoreHolder.add*ConstraintMatch()
+and no longer need to supply the infamous causes parameter.
+In the DRL, the LHS (= when parts) remain unchanged: only the RHS (= then parts) change
+and the accumulate*Score rules are removed.
+First, backup the old DRL, so you can easily verify that the new DRL works exactly the same as the old one:
+    cp cloudBalancingScoreRules.drl cloudBalancingScoreRulesOld.drl
+Before in *ScoreRules.drl, to delete:
+    import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
+    import org.optaplanner.core.impl.score.constraint.ConstraintType;
+    ...
+    rule "accumulateHardScore"
+            salience -1
+        when
+            $hardTotal : Number() from accumulate(
+                IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
+                sum($weight)
+            )
+        then
+            scoreHolder.setHardScore($hardTotal.intValue());
+    end
+    rule "accumulateSoftScore"
+        ...
+    end
+Before in *ScoreRules.drl (hard constraints):
+    rule "conflictingLecturesSameCourseInSamePeriod"
+        when
+            ...
+        then
+            insertLogical(new IntConstraintOccurrence("conflictingLecturesSameCourseInSamePeriod", ConstraintType.HARD,
+                    -1,
+                    $leftLecture, $rightLecture));
+    end
+After in *ScoreRules.drl:
+    rule "conflictingLecturesSameCourseInSamePeriod"
+        when
+            ...
+        then
+            scoreHolder.addHardConstraintMatch(kcontext, -1);
+    end
+Before in *ScoreRules.drl (soft constraints):
+    rule "computerCost"
+        when
+            ...
+        then
+            insertLogical(new IntConstraintOccurrence("computerCost", ConstraintType.SOFT,
+                    - $cost,
+                    $computer));
+    end
+After in *ScoreRules.drl:
+    rule "computerCost"
+        when
+            ...
+        then
+            scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
+    end
+Before in *ScoreRules.drl (SimpleScore):
+    rule "multipleQueensHorizontal"
+        when
+            ...
+        then
+            insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
+    end
+After in *ScoreRules.drl:
+    rule "multipleQueensHorizontal"
+        when
+            ...
+        then
+            scoreHolder.addConstraintMatch(kcontext, -1);
+    end
+Note: kcontext is a magic variable name automatically made available by Drools Expert in the RHS (= then part).
+Note: The causes array parameter (for example $leftLecture, $rightLecture, $computer) is gone,
+because it is automatically deduced from kcontext.
+WARNING: Because ConstraintMatch doesn't do an insertLogical, nor does it depends on the equals/hashcode of your objects,
+there is a small chance that the ConstraintOccurrence counted a lower score (often unintentional by the author).
+To detect this uncomment this code in *SolverConfig.xml to verify that the new DRL works exactly the same as the old one:
+    <!--<environmentMode>FULL_ASSERT</environmentMode>-->
+    ...
+    <scoreDirectorFactory>
+      ...
+      <scoreDrl>...ScoreRules.drl</scoreDrl>
+      <!--<assertionScoreDirectorFactory>-->
+        <!--<scoreDrl>...ScoreRulesOld.drl</scoreDrl>-->
+      <!--</assertionScoreDirectorFactory>-->
+    </scoreDirectorFactory>
+If it fails, it is because in the old way, 2 or more different fire events of a score rule inserted equal ConstraintOccurrences.
+In the new way, every fire event of a score rule adds a unique ConstraintMatch
+(there's a 1 to 1 relationship - which is expected by most users anyway).
+Note: The class ConstraintOccurrence will be removed in 6.1.0.Final, so switch to ConstraintMatch now.
 If you keep using ConstraintOccurrence for now and a score corruption is detected,
 the error will not contain an analysis.
 The only reason why ConstraintOccurrence has not been removed already,
-is so you can easily verify that after migration to ConstraintMatch, it gives the exact same scores.
+is so you can easily verify that after migration to ConstraintMatch, it gives the exact same scores, but faster.
+
+[MAJOR] TODO reuse ConstraintMatch(Total) in the gui
 
 [MINOR] If you have a custom ScoreDefinition implementation: the method buildScoreHolder() has changed signature.
 Before in *ScoreDefinition.java:
