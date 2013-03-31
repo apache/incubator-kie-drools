@@ -18,6 +18,8 @@ package org.optaplanner.examples.nqueens.solver;
     dialect "java"
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
+import org.optaplanner.core.impl.score.constraint.UnweightedConstraintOccurrence;
+import org.optaplanner.core.impl.score.constraint.ConstraintType;
 
 import org.optaplanner.examples.nqueens.domain.Queen;
 
@@ -32,7 +34,7 @@ rule "multipleQueensHorizontal"
         $q1 : Queen($id : id, $i : rowIndex)
         $q2 : Queen(id > $id, rowIndex == $i)
     then
-        scoreHolder.addConstraintMatch(kcontext, -1);
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
 end
 
 // multipleQueensVertical is build-in
@@ -42,7 +44,7 @@ rule "multipleQueensAscendingDiagonal"
         $q1 : Queen($id : id, $i : ascendingDiagonalIndex)
         $q2 : Queen(id > $id, ascendingDiagonalIndex == $i)
     then
-        scoreHolder.addConstraintMatch(kcontext, -1);
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensAscendingDiagonal", $q1, $q2));
 end
 
 rule "multipleQueensDescendingDiagonal"
@@ -50,5 +52,19 @@ rule "multipleQueensDescendingDiagonal"
         $q1 : Queen($id : id, $i : descendingDiagonalIndex)
         $q2 : Queen(id > $id, descendingDiagonalIndex == $i)
     then
-        scoreHolder.addConstraintMatch(kcontext, -1);
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+rule "accumulateScore"
+    when
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
+        )
+    then
+        scoreHolder.setScore(- $occurrenceCount.intValue());
 end
