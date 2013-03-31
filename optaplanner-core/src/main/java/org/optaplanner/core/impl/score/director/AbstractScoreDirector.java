@@ -338,7 +338,9 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
         final int CONSTRAINT_MATCH_DISPLAY_LIMIT = 8;
         StringBuilder analysis = new StringBuilder();
-        if (!excessMap.isEmpty()) {
+        if (excessMap.isEmpty()) {
+            analysis.append("  The corrupted scoreDirector has no ScoreConstraintMatch(s) which are in excess.\n");
+        } else {
             analysis.append("  The corrupted scoreDirector has ").append(excessMap.size())
                     .append(" ScoreConstraintMatch(s) which are in excess (and should not be there):\n");
             int count = 0;
@@ -353,6 +355,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             }
         }
         if (!missingMap.isEmpty()) {
+            analysis.append("  The corrupted scoreDirector has no ScoreConstraintMatch(s) which are missing.\n");
+        } else {
             analysis.append("  The corrupted scoreDirector has ").append(missingMap.size())
                     .append(" ScoreConstraintMatch(s) which are missing:\n");
             int count = 0;
