@@ -44,7 +44,7 @@ public abstract class ScoreConstraintMatch implements Serializable {
     }
 
     public String toString() {
-        return getIdentificationString();
+        return getIdentificationString()  + "=" + getWeightAsNumber();
     }
 
 }

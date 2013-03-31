@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.api.score.constraint;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +39,11 @@ public class IntScoreConstraintMatchTotal extends ScoreConstraintMatchTotal {
     }
 
     public int getWeightTotal() {
+        return weightTotal;
+    }
+
+    @Override
+    public Number getWeightTotalAsNumber() {
         return weightTotal;
     }
 
@@ -69,11 +72,6 @@ public class IntScoreConstraintMatchTotal extends ScoreConstraintMatchTotal {
                     + ") could not remove constraintMatch (" + constraintMatch
                     + ") from its constraintMatchSet (" + constraintMatchSet + ").");
         }
-    }
-
-    @Override
-    public String toString() {
-        return super.toString() + "=" + weightTotal;
     }
 
 }

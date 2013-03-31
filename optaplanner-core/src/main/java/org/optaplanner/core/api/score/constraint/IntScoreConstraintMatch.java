@@ -42,16 +42,11 @@ public class IntScoreConstraintMatch extends ScoreConstraintMatch {
 
     @Override
     public Number getWeightAsNumber() {
-        return getWeight();
+        return weight;
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public String toString() {
-        return super.toString() + "=" + weight;
-    }
 
 }

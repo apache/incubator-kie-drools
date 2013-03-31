@@ -50,6 +50,8 @@ public abstract class ScoreConstraintMatchTotal implements Serializable {
 
     public abstract Set<? extends ScoreConstraintMatch> getConstraintMatchSet();
 
+    public abstract Number getWeightTotalAsNumber();
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -69,7 +71,7 @@ public abstract class ScoreConstraintMatchTotal implements Serializable {
 
     @Override
     public String toString() {
-        return getIdentificationString();
+        return getIdentificationString() + "=" + getWeightTotalAsNumber();
     }
 
 }
