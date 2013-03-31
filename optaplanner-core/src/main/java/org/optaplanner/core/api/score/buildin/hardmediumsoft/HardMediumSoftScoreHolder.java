@@ -66,7 +66,7 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
 
     public void addHardConstraintMatch(RuleContext kcontext, final int weight) {
         hardScore += weight;
-        registerUndoListener(kcontext, new Runnable() {
+        registerIntConstraintMatch(kcontext, 0, weight, new Runnable() {
             public void run() {
                 hardScore -= weight;
             }
@@ -75,7 +75,7 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
 
     public void addMediumConstraintMatch(RuleContext kcontext, final int weight) {
         mediumScore += weight;
-        registerUndoListener(kcontext, new Runnable() {
+        registerIntConstraintMatch(kcontext, 1, weight, new Runnable() {
             public void run() {
                 mediumScore -= weight;
             }
@@ -84,7 +84,7 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
 
     public void addSoftConstraintMatch(RuleContext kcontext, final int weight) {
         softScore += weight;
-        registerUndoListener(kcontext, new Runnable() {
+        registerIntConstraintMatch(kcontext, 2, weight, new Runnable() {
             public void run() {
                 softScore -= weight;
             }

@@ -48,7 +48,7 @@ public class SimpleScoreHolder extends AbstractScoreHolder {
 
     public void addConstraintMatch(RuleContext kcontext, final int weight) {
         score += weight;
-        registerUndoListener(kcontext, new Runnable() {
+        registerIntConstraintMatch(kcontext, 0, weight, new Runnable() {
             public void run() {
                 score -= weight;
             }

@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score.holder;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -29,9 +30,15 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.Session;
+import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalScoreConstraintMatch;
+import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.primdouble.DoubleScoreConstraintMatch;
+import org.optaplanner.core.api.score.constraint.primdouble.DoubleScoreConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.primint.IntScoreConstraintMatch;
 import org.optaplanner.core.api.score.constraint.primint.IntScoreConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.primlong.LongScoreConstraintMatch;
+import org.optaplanner.core.api.score.constraint.primlong.LongScoreConstraintMatchTotal;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
@@ -60,15 +67,6 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     // Worker methods
     // ************************************************************************
 
-    protected void registerUndoListener(RuleContext kcontext, final Runnable undoListener) {
-        AgendaItem agendaItem = prepareAgendaItemForUnMatchListener(kcontext);
-        agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
-            public void unMatch(Session wm, Match activation) {
-                undoListener.run();
-            }
-        });
-    }
-
     protected void registerIntConstraintMatch(RuleContext kcontext, int scoreLevel, int weight,
             final Runnable undoListener) {
         AgendaItem agendaItem = prepareAgendaItemForUnMatchListener(kcontext);
@@ -92,7 +90,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         }
     }
 
-    protected IntScoreConstraintMatchTotal findIntConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
+    private IntScoreConstraintMatchTotal findIntConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
         Rule rule = kcontext.getRule();
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
@@ -105,7 +103,115 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         return matchTotal;
     }
 
-    protected AgendaItem prepareAgendaItemForUnMatchListener(RuleContext kcontext) {
+    protected void registerLongConstraintMatch(RuleContext kcontext, int scoreLevel, long weight,
+            final Runnable undoListener) {
+        AgendaItem agendaItem = prepareAgendaItemForUnMatchListener(kcontext);
+        if (!constraintMatchEnabled) {
+            // Fast code
+            agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
+                public void unMatch(Session wm, Match activation) {
+                    undoListener.run();
+                }
+            });
+        } else {
+            // Add and remove ConstraintMatch
+            final LongScoreConstraintMatchTotal constraintMatchTotal = findLongConstraintMatchTotal(kcontext, scoreLevel);
+            final LongScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
+            agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
+                public void unMatch(Session wm, Match activation) {
+                    undoListener.run();
+                    constraintMatchTotal.removeConstraintMatch(constraintMatch);
+                }
+            });
+        }
+    }
+
+    private LongScoreConstraintMatchTotal findLongConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
+        Rule rule = kcontext.getRule();
+        String constraintPackage = rule.getPackageName();
+        String constraintName = rule.getName();
+        List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
+        LongScoreConstraintMatchTotal matchTotal = (LongScoreConstraintMatchTotal) constraintMatchTotalMap.get(key);
+        if (matchTotal == null) {
+            matchTotal = new LongScoreConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            constraintMatchTotalMap.put(key, matchTotal);
+        }
+        return matchTotal;
+    }
+
+    protected void registerDoubleConstraintMatch(RuleContext kcontext, int scoreLevel, double weight,
+            final Runnable undoListener) {
+        AgendaItem agendaItem = prepareAgendaItemForUnMatchListener(kcontext);
+        if (!constraintMatchEnabled) {
+            // Fast code
+            agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
+                public void unMatch(Session wm, Match activation) {
+                    undoListener.run();
+                }
+            });
+        } else {
+            // Add and remove ConstraintMatch
+            final DoubleScoreConstraintMatchTotal constraintMatchTotal = findDoubleConstraintMatchTotal(kcontext, scoreLevel);
+            final DoubleScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
+            agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
+                public void unMatch(Session wm, Match activation) {
+                    undoListener.run();
+                    constraintMatchTotal.removeConstraintMatch(constraintMatch);
+                }
+            });
+        }
+    }
+
+    private DoubleScoreConstraintMatchTotal findDoubleConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
+        Rule rule = kcontext.getRule();
+        String constraintPackage = rule.getPackageName();
+        String constraintName = rule.getName();
+        List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
+        DoubleScoreConstraintMatchTotal matchTotal = (DoubleScoreConstraintMatchTotal) constraintMatchTotalMap.get(key);
+        if (matchTotal == null) {
+            matchTotal = new DoubleScoreConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            constraintMatchTotalMap.put(key, matchTotal);
+        }
+        return matchTotal;
+    }
+
+    protected void registerBigDecimalConstraintMatch(RuleContext kcontext, int scoreLevel, BigDecimal weight,
+            final Runnable undoListener) {
+        AgendaItem agendaItem = prepareAgendaItemForUnMatchListener(kcontext);
+        if (!constraintMatchEnabled) {
+            // Fast code
+            agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
+                public void unMatch(Session wm, Match activation) {
+                    undoListener.run();
+                }
+            });
+        } else {
+            // Add and remove ConstraintMatch
+            final BigDecimalScoreConstraintMatchTotal constraintMatchTotal = findBigDecimalConstraintMatchTotal(kcontext, scoreLevel);
+            final BigDecimalScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
+            agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
+                public void unMatch(Session wm, Match activation) {
+                    undoListener.run();
+                    constraintMatchTotal.removeConstraintMatch(constraintMatch);
+                }
+            });
+        }
+    }
+
+    private BigDecimalScoreConstraintMatchTotal findBigDecimalConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
+        Rule rule = kcontext.getRule();
+        String constraintPackage = rule.getPackageName();
+        String constraintName = rule.getName();
+        List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
+        BigDecimalScoreConstraintMatchTotal matchTotal = (BigDecimalScoreConstraintMatchTotal) constraintMatchTotalMap.get(key);
+        if (matchTotal == null) {
+            matchTotal = new BigDecimalScoreConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            constraintMatchTotalMap.put(key, matchTotal);
+        }
+        return matchTotal;
+    }
+
+    private AgendaItem prepareAgendaItemForUnMatchListener(RuleContext kcontext) {
         AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         if (agendaItem.getActivationUnMatchListener() != null) {
             // Both parameters null because they are not used by the ActivationUnMatchListener created below anyway
