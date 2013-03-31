@@ -22,9 +22,11 @@ import java.util.Arrays;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatch;
 
 /**
  * Will be removed in version 6.1.0.Beta1.
+ * @Deprecated in favor of {@link ScoreConstraintMatch}
  */
 @Deprecated
 public abstract class ConstraintOccurrence implements Comparable<ConstraintOccurrence>, Serializable {
