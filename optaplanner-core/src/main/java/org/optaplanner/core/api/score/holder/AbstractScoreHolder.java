@@ -29,6 +29,7 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.Session;
+import org.optaplanner.core.api.score.constraint.primint.IntScoreConstraintMatch;
 import org.optaplanner.core.api.score.constraint.primint.IntScoreConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
 
@@ -60,11 +61,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     // ************************************************************************
 
     protected void registerUndoListener(RuleContext kcontext, final Runnable undoListener) {
-        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
-        if (agendaItem.getActivationUnMatchListener() != null) {
-            // Both parameters null because they are not used by the ActivationUnMatchListener created below anyway
-            agendaItem.getActivationUnMatchListener().unMatch(null, null);
-        }
+        AgendaItem agendaItem = prepareAgendaItemForUnMatchListener(kcontext);
         agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
             public void unMatch(Session wm, Match activation) {
                 undoListener.run();
@@ -72,7 +69,30 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         });
     }
 
-    protected IntScoreConstraintMatchTotal findIntScoreConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
+    protected void registerIntConstraintMatch(RuleContext kcontext, int scoreLevel, int weight,
+            final Runnable undoListener) {
+        AgendaItem agendaItem = prepareAgendaItemForUnMatchListener(kcontext);
+        if (!constraintMatchEnabled) {
+            // Fast code
+            agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
+                public void unMatch(Session wm, Match activation) {
+                    undoListener.run();
+                }
+            });
+        } else {
+            // Add and remove ConstraintMatch
+            final IntScoreConstraintMatchTotal constraintMatchTotal = findIntConstraintMatchTotal(kcontext, scoreLevel);
+            final IntScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
+            agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
+                public void unMatch(Session wm, Match activation) {
+                    undoListener.run();
+                    constraintMatchTotal.removeConstraintMatch(constraintMatch);
+                }
+            });
+        }
+    }
+
+    protected IntScoreConstraintMatchTotal findIntConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
         Rule rule = kcontext.getRule();
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
@@ -83,6 +103,15 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             constraintMatchTotalMap.put(key, matchTotal);
         }
         return matchTotal;
+    }
+
+    protected AgendaItem prepareAgendaItemForUnMatchListener(RuleContext kcontext) {
+        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
+        if (agendaItem.getActivationUnMatchListener() != null) {
+            // Both parameters null because they are not used by the ActivationUnMatchListener created below anyway
+            agendaItem.getActivationUnMatchListener().unMatch(null, null);
+        }
+        return agendaItem;
     }
 
 }

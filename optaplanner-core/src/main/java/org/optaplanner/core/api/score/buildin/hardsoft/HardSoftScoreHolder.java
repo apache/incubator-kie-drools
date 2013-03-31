@@ -56,42 +56,20 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
 
     public void addHardConstraintMatch(RuleContext kcontext, final int weight) {
         hardScore += weight;
-        if (!constraintMatchEnabled) {
-            registerUndoListener(kcontext, new Runnable() {
-                public void run() {
-                    hardScore -= weight;
-                }
-            });
-        } else {
-            final IntScoreConstraintMatchTotal constraintMatchTotal = findIntScoreConstraintMatchTotal(kcontext, 0);
-            final IntScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
-            registerUndoListener(kcontext, new Runnable() {
-                public void run() {
-                    hardScore -= weight;
-                    constraintMatchTotal.removeConstraintMatch(constraintMatch);
-                }
-            });
-        }
+        registerIntConstraintMatch(kcontext, 0, weight, new Runnable() {
+            public void run() {
+                hardScore -= weight;
+            }
+        });
     }
 
     public void addSoftConstraintMatch(RuleContext kcontext, final int weight) {
         softScore += weight;
-        if (!constraintMatchEnabled) {
-            registerUndoListener(kcontext, new Runnable() {
-                public void run() {
-                    softScore -= weight;
-                }
-            });
-        } else {
-            final IntScoreConstraintMatchTotal constraintMatchTotal = findIntScoreConstraintMatchTotal(kcontext, 1);
-            final IntScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
-            registerUndoListener(kcontext, new Runnable() {
-                public void run() {
-                    softScore -= weight;
-                    constraintMatchTotal.removeConstraintMatch(constraintMatch);
-                }
-            });
-        }
+        registerIntConstraintMatch(kcontext, 1, weight, new Runnable() {
+            public void run() {
+                softScore -= weight;
+            }
+        });
     }
 
     public Score extractScore() {
