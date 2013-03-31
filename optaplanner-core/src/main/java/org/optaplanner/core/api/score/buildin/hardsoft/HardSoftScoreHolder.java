@@ -17,8 +17,8 @@
 package org.optaplanner.core.api.score.buildin.hardsoft;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.IntScoreConstraintMatch;
-import org.optaplanner.core.api.score.constraint.IntScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.primint.IntScoreConstraintMatch;
+import org.optaplanner.core.api.score.constraint.primint.IntScoreConstraintMatchTotal;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 import org.kie.api.runtime.rule.RuleContext;
 

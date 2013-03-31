@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.constraint;
+package org.optaplanner.core.api.score.constraint.primint;
 
 import java.util.List;
+
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatch;
 
 public class IntScoreConstraintMatch extends ScoreConstraintMatch {
 

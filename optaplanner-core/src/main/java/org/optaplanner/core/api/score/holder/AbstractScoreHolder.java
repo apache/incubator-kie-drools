@@ -29,7 +29,7 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.Session;
-import org.optaplanner.core.api.score.constraint.IntScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.primint.IntScoreConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
 
 /**
