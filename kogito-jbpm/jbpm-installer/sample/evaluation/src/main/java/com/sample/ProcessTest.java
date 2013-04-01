@@ -1,72 +1,77 @@
 package com.sample;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import org.jbpm.process.workitem.wsht.LocalHTWorkItemHandler;
-import org.jbpm.task.identity.DefaultUserGroupCallbackImpl;
-import org.jbpm.task.identity.UserGroupCallbackManager;
-import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.local.LocalTaskService;
-import org.jbpm.task.utils.OnErrorAction;
-import org.jbpm.test.JBPMHelper;
-import org.kie.KieBase;
-import org.kie.SystemEventListenerFactory;
-import org.kie.api.builder.KnowledgeBuilder;
-import org.kie.api.builder.KnowledgeBuilderFactory;
-import org.kie.api.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.api.logger.KnowledgeRuntimeLogger;
-import org.kie.api.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.api.runtime.StatefulKnowledgeSession;
+import org.jbpm.test.JbpmJUnitTestCase;
+import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.model.TaskSummary;
 
 /**
- * This is a sample file to launch a process.
+ * This is a sample test of the evaluation process.
  */
-public class ProcessTest {
+public class ProcessTest extends JbpmJUnitTestCase {
 
-	public static final void main(String[] args) {
-		try {
-			// load up the knowledge base
-			KieBase kbase = readKnowledgeBase();
-			StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, "test", 1000);
-			// start a new process instance
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("employee", "krisv");
-			params.put("reason", "Yearly performance evaluation");
+	@Test
+	public void testEvaluationProcess() {
+		KieSession ksession = createKnowledgeSession("Evaluation.bpmn");
+		KieRuntimeLogger log = KieServices.Factory.get().getLoggers().newThreadedFileLogger(ksession, "test", 1000);
+		TaskService taskService = getTaskService();
+		
+		// start a new process instance
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("employee", "krisv");
+		params.put("reason", "Yearly performance evaluation");
+		ProcessInstance processInstance = 
 			ksession.startProcess("com.sample.evaluation", params);
-			System.out.println("Process started ...");
-			logger.close();
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
+		System.out.println("Process started ...");
+		
+		// complete Self Evaluation
+		List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("krisv", "en-UK");
+		assertEquals(1, tasks.size());
+		TaskSummary task = tasks.get(0);
+		System.out.println("'krisv' completing task " + task.getName() + ": " + task.getDescription());
+		taskService.start(task.getId(), "krisv");
+		Map<String, Object> results = new HashMap<String, Object>();
+		results.put("performance", "exceeding");
+		taskService.complete(task.getId(), "krisv", results);
+		
+		// john from HR
+		tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+		assertEquals(1, tasks.size());
+		task = tasks.get(0);
+		System.out.println("'john' completing task " + task.getName() + ": " + task.getDescription());
+		taskService.claim(task.getId(), "john");
+		taskService.start(task.getId(), "john");
+		results = new HashMap<String, Object>();
+		results.put("performance", "acceptable");
+		taskService.complete(task.getId(), "john", results);
+		
+		// mary from PM
+		tasks = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
+		assertEquals(1, tasks.size());
+		task = tasks.get(0);
+		System.out.println("'mary' completing task " + task.getName() + ": " + task.getDescription());
+		taskService.claim(task.getId(), "mary");
+		taskService.start(task.getId(), "mary");
+		results = new HashMap<String, Object>();
+		results.put("performance", "outstanding");
+		taskService.complete(task.getId(), "mary", results);
+		
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		System.out.println("Process instance completed");
+		log.close();
 	}
 
-	private static KieBase readKnowledgeBase() throws Exception {
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("Evaluation.bpmn"), ResourceType.BPMN2);
-		return kbuilder.newKnowledgeBase();
+	public ProcessTest() {
+		super(true);
+		setPersistence(true);
 	}
-	
-	private static StatefulKnowledgeSession createKnowledgeSession(KieBase kbase) {
-		StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) kbase.newKieSession();
-		UserGroupCallbackManager.getInstance().setCallback(
-			new DefaultUserGroupCallbackImpl("classpath:/usergroups.properties"));
-		JBPMHelper.setupDataSource();
-		JBPMHelper.startH2Server();
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
-		TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
-		LocalTaskService localTaskService = new LocalTaskService(taskService);
-		LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler(
-			localTaskService, ksession, OnErrorAction.RETHROW);
-		humanTaskHandler.connect();
-		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
-		return ksession;
-	}
-
 	
 }

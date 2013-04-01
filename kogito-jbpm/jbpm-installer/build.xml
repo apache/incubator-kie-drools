@@ -229,19 +229,34 @@
     <get src="${designer.url}" dest="${install.home}/lib/jbpm-designer-${designer.version}.war" />
   </target>
 
+  <!-- Download Dashboard -->
+  <target name="download.dashboard.check">
+    <echo message="Checking Dashboard download ..." />
+    <condition property="dashboard.not.available">
+      <not>
+        <available file="${install.home}/lib/dashboard-jbpm-${dashboard.version}.war" />
+      </not>
+    </condition>
+  </target>  
+  <target name="download.dashboard" depends="download.dashboard.check" if="dashboard.not.available">
+    <echo message="Getting Dashboard ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${dashboard.url}" dest="${install.home}/lib/dashboard-jbpm-${dashboard.version}.war" />
+  </target>
+
   <!-- Download jBPM and Drools Eclipse plugins -->
   <target name="download.droolsjbpm.eclipse.check">
     <echo message="Checking jBPM and Drools Eclipse download ..." />
     <condition property="droolsjbpm.eclipse.not.available">
       <not>
-        <available file="${install.home}/lib/org.drools.updatesite-${droolsjbpm.eclipse.version}-assembly.zip" />
+        <available file="${install.home}/lib/org.drools.updatesite-${droolsjbpm.eclipse.version}.zip" />
       </not>
     </condition>
   </target>
   <target name="download.droolsjbpm.eclipse" depends="download.droolsjbpm.eclipse.check" if="droolsjbpm.eclipse.not.available">
     <echo message="Getting jBPM and Drools Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${droolsjbpm.eclipse.url}" dest="${install.home}/lib/org.drools.updatesite-${droolsjbpm.eclipse.version}-assembly.zip"  />
+    <get src="${droolsjbpm.eclipse.url}" dest="${install.home}/lib/org.drools.updatesite-${droolsjbpm.eclipse.version}.zip"  />
   </target>
   
   <!-- Download jBPM gwt-console -->
@@ -351,9 +366,9 @@
     </copy>
   </target>
 	
-  <!-- Install BAM -->
-  <target name="install.bam.into.jboss">
-    <copy file="${install.home}/lib/polymita-bam-app-jboss-as7.0.war"
+  <!-- Install Dashboard -->
+  <target name="install.dashboard.into.jboss" depends="download.dashboard">
+    <copy file="${install.home}/lib/dashboard-jbpm-${dashboard.version}.war"
           tofile="${jboss.server.deploy.dir}/bam-app.war"
           overwrite="true" />
   </target>
@@ -389,7 +404,7 @@
   <target name="install.droolsjbpm-eclipse.into.eclipse" depends="download.droolsjbpm.eclipse">
     <!-- install plugins -->
     <mkdir dir="${eclipse.home}/droolsjbpm-update-site"/>
-    <unzip src="${install.home}/lib/org.drools.updatesite-${droolsjbpm.eclipse.version}-assembly.zip" dest="${eclipse.home}/droolsjbpm-update-site" />
+    <unzip src="${install.home}/lib/org.drools.updatesite-${droolsjbpm.eclipse.version}.zip" dest="${eclipse.home}/droolsjbpm-update-site" />
     <copy todir="${eclipse.home}/features" overwrite="true">
       <fileset dir="${eclipse.home}/droolsjbpm-update-site/features"/>
     </copy>

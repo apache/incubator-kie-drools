@@ -129,7 +129,7 @@
       <artifactId>jbpm-bam</artifactId>
       <classifier>sources</classifier>
     </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-core</artifactId>
     </dependency>
@@ -164,7 +164,7 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-jms</artifactId>
       <classifier>sources</classifier>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-workitems</artifactId>
@@ -239,8 +239,12 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-war</artifactId>
-      <type>war</type>
+      <artifactId>jbpm-runtime-manager</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-runtime-manager</artifactId>
+      <classifier>sources</classifier>
     </dependency>
     
     <!-- The old assembly also included this optional dependency -->
@@ -259,6 +263,10 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
     </dependency>
 
     <!-- Javadocs and documentation -->
@@ -280,11 +288,6 @@
     <dependency><!-- Workaround, maybe for http://jira.codehaus.org/browse/MJAVADOC-340 -->
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency><!-- Workaround, maybe for http://jira.codehaus.org/browse/MJAVADOC-340 -->
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>
