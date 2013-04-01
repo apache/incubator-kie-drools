@@ -40,12 +40,16 @@ public interface TraitableBean<K, X extends TraitableBean> {
 
     public boolean hasTrait( String type );
 
-    public Thing<K> removeTrait( String type );
+    public Collection<Thing<K>> removeTrait( String type );
+
+    public Collection<Thing<K>> removeTrait( BitSet typeCode );
 
     public Collection<String> getTraits();
 
 
     public Collection<Thing> getMostSpecificTraits();
+
+    public BitSet getCurrentTypeCode();
 
     public void _setBottomTypeCode( BitSet code );
 

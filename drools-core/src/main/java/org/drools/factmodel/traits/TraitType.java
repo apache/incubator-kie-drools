@@ -25,4 +25,7 @@ public interface TraitType {
 
     public boolean isVirtual();
 
+    public static final String traitNameField = "__$$trait_Name";
+
+    public String getTraitName();
 }

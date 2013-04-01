@@ -218,57 +218,27 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
         ReteooComponentFactory rcf = ruleBase.getConfiguration().getComponentFactory();
 
-//        JavaDialectRuntimeData data = ruleBase.gett
-//
-//                ((JavaDialectRuntimeData) getPackage( tdef.getDefinedClass().getPackage().getName() ).getDialectRuntimeRegistry().
-//                getDialectData( "java" ));
-
-
 
         TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) rcf.getClassBuilderFactory().getPropertyWrapperBuilder();
-//        switch ( mode ) {
-//            case TRIPLES    : propWrapperBuilder = new TraitTriplePropertyWrapperClassBuilderImpl();
-//                break;
-//            case MAP        : propWrapperBuilder = new TraitMapPropertyWrapperClassBuilderImpl();
-//                break;
-//            default         : throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
-//        }
+
         propWrapperBuilder.init( tdef, ruleBase.getTraitRegistry() );
         try {
             byte[] propWrapper = propWrapperBuilder.buildClass( cdef );
             ruleBase.registerAndLoadTypeDefinition( wrapperName, propWrapper );
-
-//            String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( wrapperName );
-//            data.putClassDefinition( resourceName, propWrapper );
-//            data.write( resourceName, propWrapper );
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
         TraitProxyClassBuilder proxyBuilder = (TraitProxyClassBuilder) rcf.getClassBuilderFactory().getTraitProxyBuilder();
-//        switch ( mode ) {
-//            case TRIPLES    : proxyBuilder = new TraitTripleProxyClassBuilderImpl();
-//                break;
-//            case MAP        : proxyBuilder = new TraitMapProxyClassBuilderImpl();
-//                break;
-//            default         : throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
-//        }
+
         proxyBuilder.init( tdef, rcf.getBaseTraitProxyClass(), ruleBase.getTraitRegistry() );
         try {
             byte[] proxy = proxyBuilder.buildClass( cdef );
             ruleBase.registerAndLoadTypeDefinition( proxyName, proxy );
-
-//            String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( proxyName );
-//            data.putClassDefinition( resourceName, proxy );
-//            data.write( resourceName, proxy );
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//        data.onBeforeExecute();
 
         try {
             long mask = ruleBase.getTraitRegistry().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );

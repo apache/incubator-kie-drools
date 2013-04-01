@@ -50,6 +50,11 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
         _getTraitMap().put( type, proxy );
     }
 
+    public BitSet getCurrentTypeCode() {
+        return ((TraitTypeMap) __$$dynamic_traits_map$$).getCurrentTypeCode();
+    }
+
+
 
 
     public void _setTraitMap(Map map) {
@@ -64,8 +69,12 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
         return _getTraitMap().containsKey( type );
     }
 
-    public Thing<Imp> removeTrait(String type) {
-        return _getTraitMap().remove( type );
+    public Collection<Thing<Imp>> removeTrait(String type) {
+        return ((TraitTypeMap)_getTraitMap()).removeCascade( type );
+    }
+
+    public Collection<Thing<Imp>> removeTrait( BitSet typeCode ) {
+        return ((TraitTypeMap)_getTraitMap()).removeCascade( typeCode );
     }
 
     public Collection<String> getTraits() {

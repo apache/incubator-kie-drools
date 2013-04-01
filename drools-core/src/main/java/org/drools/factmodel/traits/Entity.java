@@ -85,12 +85,20 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
         return isTraitMapInitialized() && _getTraitMap().containsKey(type);
     }
 
-    public Thing removeTrait(String type) {
+    public Collection<Thing<Entity>> removeTrait( String type ) {
         if ( isTraitMapInitialized() ) {
-            return _getTraitMap().remove( type );
+            return ((TraitTypeMap)_getTraitMap()).removeCascade(type);
         } else {
             return null;
         }        
+    }
+
+    public Collection<Thing<Entity>> removeTrait( BitSet typeCode ) {
+        if ( isTraitMapInitialized() ) {
+            return ((TraitTypeMap)_getTraitMap()).removeCascade( typeCode );
+        } else {
+            return null;
+        }
     }
 
     public Collection<String> getTraits() {
@@ -103,6 +111,10 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
 
     public Collection<Thing> getMostSpecificTraits() {
         return ((TraitTypeMap) __$$dynamic_traits_map$$).getMostSpecificTraits();
+    }
+
+    public BitSet getCurrentTypeCode() {
+        return ((TraitTypeMap) __$$dynamic_traits_map$$).getCurrentTypeCode();
     }
 
     public boolean equals(Object o) {

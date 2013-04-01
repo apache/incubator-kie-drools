@@ -31,7 +31,7 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
     private int age;
 
 
-    private Map<String,Thing<StudentImpl>> traitMap = new HashMap<String, Thing<StudentImpl>>();
+    private Map<String,Thing<StudentImpl>> traitMap = new TraitTypeMap<String, Thing<StudentImpl>, StudentImpl>( new HashMap() );;
 
     public StudentImpl() {
     }
@@ -40,8 +40,9 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
         this.school = school;
         this.name = name;
         this.age = age;
-
     }
+
+
 
     public String getSchool() {
         return school;
@@ -116,8 +117,12 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
         return traitMap.containsKey( type );
     }
 
-    public Thing removeTrait(String type) {
-        return traitMap.remove( type );
+    public Collection<Thing<StudentImpl>> removeTrait(String type) {
+        return ((TraitTypeMap) _getTraitMap()).removeCascade( type );
+    }
+
+    public Collection<Thing<StudentImpl>> removeTrait(BitSet typeCode) {
+        return ((TraitTypeMap) _getTraitMap()).removeCascade(typeCode);
     }
 
     public Collection<String> getTraits() {
@@ -134,5 +139,21 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
 
     public BitSet getBottomTypeCode() {
         return new BitSet();
+    }
+
+    public BitSet getCurrentTypeCode() {
+        return new BitSet();
+    }
+
+    public BitSet getTypeCode() {
+        return new BitSet();
+    }
+
+    public boolean isVirtual() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getTraitName() {
+        return IStudent.class.getName();
     }
 }

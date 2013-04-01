@@ -52,6 +52,7 @@ import org.drools.factmodel.traits.TraitFactory;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
@@ -342,7 +343,6 @@ public class DefaultKnowledgeHelper
 
     public void update( final FactHandle handle, long mask, Class<?> modifiedClass ) {
         InternalFactHandle h = (InternalFactHandle) handle;
-        System.out.println( "@@@ UPDATE " + h.getObject().getClass() + " with " + Long.toBinaryString( mask ) );
         ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
                                                                      ((InternalFactHandle)handle).getObject(),
                                                                      mask,
@@ -684,7 +684,21 @@ public class DefaultKnowledgeHelper
             update( core );
             return (Thing<K>) core;
         } else {
-            retract( core.removeTrait( trait.getName() ) );
+            Collection<Thing<K>> removedTypes;
+            if ( core.hasTrait( trait.getName() ) ) {
+                removedTypes = core.removeTrait( trait.getName() );
+            } else {
+                HierarchyEncoder hier = ((ReteooRuleBase) this.workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                BitSet code = hier.getCode( trait.getName() );
+                removedTypes = core.removeTrait( code );
+            }
+
+            for ( Thing t : removedTypes ) {
+                if ( ! ((TraitType) t).isVirtual() ) {
+                    retract( t );
+                }
+            }
+
             Thing<K> thing = core.getTrait( Thing.class.getName() );
             update( thing );
             return thing;

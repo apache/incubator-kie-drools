@@ -49,6 +49,9 @@ public abstract class TraitProxy implements Externalizable, TraitType {
     protected void setFields( Map<String, Object> m ) {
         fields = m;
     }
+
+    public abstract String getTraitName();
+
     
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( fields );

@@ -198,7 +198,14 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
 
 
     public void removeMember( T val ) {
+        if ( val == null ) {
+            return;
+        }
         BitSet key = getCode( val );
+        removeMember( key );
+    }
+
+    public void removeMember( BitSet key ) {
         if ( ! hasKey( key ) ) {
             return;
         } else {
@@ -669,6 +676,13 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
     }
 
 
+    public static boolean supersetOrEqualset( BitSet n1, BitSet n2 ) {
+        BitSet x = new BitSet();
+        x.or( n1 );
+        x.and( n2 );
+        return x.equals( n2 );
+    }
+
     int superset( HierNode<T> n1, HierNode<T> n2 ) {
         return superset( n1.getBitMask(), n2.getBitMask() );
     }
@@ -677,14 +691,7 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
         if ( n1.equals( n2 ) ) {
             return 0;
         }
-        BitSet x = new BitSet();
-        x.or( n1 );
-        x.and( n2 );
-        if ( x.equals( n2 ) ) {
-            return 1;
-        } else {
-            return -1;
-        }
+        return supersetOrEqualset(n1, n2) ? 1 : -1;
     }
 
     int numBit( BitSet x ) {
@@ -875,6 +882,19 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
         public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
 
         }
+    }
+
+    public static BitSet stringToBitSet( String s ) {
+        BitSet b = new BitSet();
+        int n = s.length();
+        for( int j = 0; j < s.length(); j++ ) {
+            if ( s.charAt( j ) == '1' ) {
+                b.set( n - j - 1 );
+            } else if ( s.charAt( j ) != '0' ) {
+                throw new IllegalStateException( "The string " + s + " is not a valid bitset encoding" );
+            }
+        }
+        return b;
     }
 
 }

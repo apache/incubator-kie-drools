@@ -16,14 +16,21 @@
 
 package org.drools.factmodel.traits;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Map;
 
 
-public class NullTraitType implements TraitType, Thing {
+public class NullTraitType implements TraitType, Thing, Externalizable {
 
     private BitSet typeCode;
+
+    public NullTraitType() {
+    }
 
     public NullTraitType( BitSet code ) {
         typeCode = code;
@@ -37,6 +44,10 @@ public class NullTraitType implements TraitType, Thing {
         return true;
     }
 
+    public String getTraitName() {
+        return "";
+    }
+
     public void setTypeCode(BitSet typeCode) {
         this.typeCode = typeCode;
     }
@@ -47,5 +58,13 @@ public class NullTraitType implements TraitType, Thing {
 
     public Object getCore() {
         return null;
+    }
+
+    public void writeExternal(ObjectOutput objectOutput) throws IOException {
+        objectOutput.writeObject( typeCode );
+    }
+
+    public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
+        typeCode = (BitSet) objectInput.readObject();
     }
 }

@@ -246,18 +246,35 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
         if ( coreKlazz == null || needsMethod( coreKlazz, "removeTrait", String.class ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "removeTrait",
-                        "(" + Type.getDescriptor( String.class ) + ")" + Type.getDescriptor( Thing.class ),
-                        "(" + Type.getDescriptor( String.class ) + ")" + Type.getDescriptor( Thing.class ),
+                        Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( String.class ) } ),
+                        Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( String.class ) } ),
                         null );
                 mv.visitCode();
                 mv.visitVarInsn( ALOAD, 0 );
-                mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( wrapperName ), "_getTraitMap", "()" + Type.getDescriptor( Map.class ) );
-                mv.visitVarInsn( ALOAD, 1 );
-                mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "remove", "(" + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
-                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( Thing.class ) );
+                mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( wrapperName ), "_getTraitMap", Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
+                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+                mv.visitVarInsn(ALOAD, 1);
+                mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitTypeMap.class ), "removeCascade",
+                        Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( String.class )} ) );
                 mv.visitInsn( ARETURN );
                 mv.visitMaxs( 0, 0 );
                 mv.visitEnd();
+
+                mv = cw.visitMethod( ACC_PUBLIC, "removeTrait",
+                        Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( BitSet.class ) } ),
+                        Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( BitSet.class ) } ),
+                        null );
+                mv.visitCode();
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( wrapperName ), "_getTraitMap", Type.getMethodDescriptor( Type.getType( Map.class ), new Type[] {} ) );
+                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
+                mv.visitVarInsn(ALOAD, 1);
+                mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitTypeMap.class ), "removeCascade",
+                        Type.getMethodDescriptor( Type.getType( Collection.class ), new Type[] { Type.getType( BitSet.class )} ) );
+                mv.visitInsn( ARETURN );
+                mv.visitMaxs( 0, 0 );
+                mv.visitEnd();
+
             }
         }
         if ( coreKlazz == null || needsMethod( coreKlazz, "getTraits" ) ) {
@@ -283,6 +300,28 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitTypeMap.class ), "setBottomCode", "(" + Type.getDescriptor( BitSet.class ) + ")V");
                 mv.visitInsn( RETURN );
                 mv.visitMaxs( 0,0 );
+                mv.visitEnd();
+            }
+        }
+
+        if ( coreKlazz == null || needsMethod( coreKlazz, "getCurrentTypeCode" ) ) {
+
+            {
+                mv = cw.visitMethod( ACC_PUBLIC, "getCurrentTypeCode", "()" + Type.getDescriptor( BitSet.class ), null, null );
+                mv.visitCode();
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitFieldInsn( GETFIELD,
+                        BuildUtils.getInternalType( wrapperName ),
+                        TraitableBean.TRAITSET_FIELD_NAME,
+                        Type.getDescriptor( Map.class ) );
+                mv.visitTypeInsn( CHECKCAST,
+                        Type.getInternalName( TraitTypeMap.class ) );
+                mv.visitMethodInsn( INVOKEVIRTUAL,
+                        Type.getInternalName( TraitTypeMap.class ),
+                        "getCurrentTypeCode",
+                        "()" + Type.getDescriptor( BitSet.class ) );
+                mv.visitInsn( ARETURN );
+                mv.visitMaxs( 0, 0 );
                 mv.visitEnd();
             }
         }

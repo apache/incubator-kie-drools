@@ -28,12 +28,14 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.Modifies;
+import org.drools.definition.type.Position;
 import org.drools.definition.type.PropertyReactive;
 import org.drools.event.knowledgebase.DefaultKnowledgeBaseEventListener;
 import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ByteArrayResource;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -1438,4 +1440,132 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.insert(new Long(6));
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test
+    @Ignore
+    public void testMatchIntegers() {
+        // DROOLS-79
+        String str =
+                "global java.util.List list; \n" +
+                        "rule R when\n" +
+                        "    $i : Integer( this == 1 )\n" +
+                        "then\n" +
+                        "  list.add( $i );\n" +
+                        "end\n" +
+                        "rule S when\n" +
+                        "    $i : Integer( this == 2 )\n" +
+                        "then\n" +
+                        "  list.add( $i );\n" +
+                        "end\n" +
+                        "rule T when\n" +
+                        "    $i : Integer( this == 3 )\n" +
+                        "then\n" +
+                        "  list.add( $i );\n" +
+                        "end\n" +
+                        "";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new Integer( 1 ) );
+        ksession.fireAllRules();
+
+    }
+
+
+
+
+
+    public static class Foo2 {
+        @Position(0)
+        public int x;
+        public int getX() {
+            return x;
+        }
+        public void setX(int x) {
+            this.x = x;
+        }
+    }
+
+
+    @Test
+    @Ignore
+    public void testSelfChangingRuleSet() {
+        // DROOLS-92
+        String str =
+                "package org.drools.integrationtests;\n" +
+                        "" +
+                        "import org.drools.integrationtests.MiscTest2.Foo2; \n" +
+                        "" +
+                        "global java.util.List list; \n" +
+                        "\n" +
+                        "rule \"Prep\" \n" +
+                        "when \n" +
+                        "  $packs : java.util.Collection() \n" +
+                        "then \n" +
+                        "   drools.getKnowledgeRuntime().getKnowledgeBase().addKnowledgePackages( $packs );" +
+                        "end \n" +
+                        "" +
+                        "rule \"Self-change\"\n" +
+                        "when\n" +
+                        "  String( this == \"go\" )\n" +
+                        "then\n" +
+                        "   drools.getKnowledgeRuntime().getKnowledgeBase().removeRule( \"org.drools.integrationtests\", \"React\" ); \n" +
+                        "end\n" +
+                        "\n" +
+                        "\n" +
+                        "rule \"Insert\"\n" +
+                        "when\n" +
+                        "  $i : Integer()\n" +
+                        "then\n" +
+                        "  Foo2 foo = new Foo2();\n " +
+                        "  foo.setX( $i ); \n" +
+                        "  insert( foo );\n" +
+                        "end\n" +
+                        "" +
+                        "";
+
+        String str2 =
+                "package org.drools.integrationtests;\n" +
+                        "" +
+                        "import org.drools.integrationtests.MiscTest2.Foo2; \n" +
+                        "global java.util.List list;\n " +
+                        "rule \"React\"\n" +
+                        "when\n" +
+                        "  $b : Foo2( x < 10 )\n" +
+                        "then\n" +
+                        "  System.out.println( \" Foo2 is in \" + $b.getX() );" +
+                        "  list.add( $b ); \n" +
+                        "end\n";
+
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( new ByteArrayResource( str2.getBytes() ), ResourceType.DRL );
+
+        System.out.println(  knowledgeBuilder.getErrors() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.insert( knowledgeBuilder.getKnowledgePackages() );
+
+        ksession.insert( new Integer( 1 ) );
+        ksession.fireAllRules();
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        ksession.insert( new Integer( 2 ) );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+
+    }
+
+
+
 }
