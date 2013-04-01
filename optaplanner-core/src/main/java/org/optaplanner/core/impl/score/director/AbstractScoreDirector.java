@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -354,7 +353,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                 count++;
             }
         }
-        if (!missingMap.isEmpty()) {
+        if (missingMap.isEmpty()) {
             analysis.append("  The corrupted scoreDirector has no ScoreConstraintMatch(s) which are missing.\n");
         } else {
             analysis.append("  The corrupted scoreDirector has ").append(missingMap.size())
@@ -374,8 +373,15 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             analysis.append("  The corrupted scoreDirector has no ScoreConstraintMatch(s) in excess or missing."
                     + " That could be a bug in this class (").append(getClass()).append(").\n");
         }
+        appendLegacyConstraintOccurrences(analysis, this, uncorruptedScoreDirector);
         analysis.append("  Check your score constraints.");
         return analysis.toString();
+    }
+
+    @Deprecated // TODO remove in 6.1.0
+    protected void appendLegacyConstraintOccurrences(StringBuilder analysis,
+            ScoreDirector corruptedScoreDirector, ScoreDirector uncorruptedScoreDirector) {
+        // Do nothing unless overwritten
     }
 
     private Map<List<Object>, ScoreConstraintMatch> createConstraintMatchMap(

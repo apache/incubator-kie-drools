@@ -3122,14 +3122,13 @@ To detect this uncomment this code in *SolverConfig.xml to verify that the new D
         <!--<scoreDrl>...ScoreRulesOld.drl</scoreDrl>-->
       <!--</assertionScoreDirectorFactory>-->
     </scoreDirectorFactory>
+In 6.0 (not in 6.1), the score corruption analysis helps to identify the rule which behaves differently.
 If it fails, it is because in the old way, 2 or more different fire events of a score rule inserted equal ConstraintOccurrences.
 In the new way, every fire event of a score rule adds a unique ConstraintMatch
 (there's a 1 to 1 relationship - which is expected by most users anyway).
-Note: The class ConstraintOccurrence will be removed in 6.1.0.Final, so switch to ConstraintMatch now.
-If you keep using ConstraintOccurrence for now and a score corruption is detected,
-the error will not contain an analysis.
+IMPORTANT: The class ConstraintOccurrence will be removed in 6.1.0.Final, so switch to ConstraintMatch now.
 The only reason why ConstraintOccurrence has not been removed already,
-is so you can easily verify that after migration to ConstraintMatch, it gives the exact same scores, but faster.
+is to make the migration easier: so you can easily verify that after migration to ConstraintMatch, it gives the exact same scores, but faster.
 
 [MAJOR] TODO reuse ConstraintMatch(Total) in the gui
 
