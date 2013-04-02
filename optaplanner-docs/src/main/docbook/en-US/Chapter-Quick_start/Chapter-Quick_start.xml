@@ -71,8 +71,8 @@
       bigger processes first and assigns the smaller processes to the remaining space. As you can see, it's not optimal,
       because it does not leave enough room to assign the yellow process D.</para>
 
-      <para>OptaPlanner does find the more optimal solution fast, by using additional, smarter algorithms. And it
-      scales too: both in data (more processes, more computers) and constraints (more hardware requirements, other
+      <para>OptaPlanner does find the more optimal solution fast, by using additional, smarter algorithms. And it scales
+      too: both in data (more processes, more computers) and constraints (more hardware requirements, other
       constraints). So let's take a look how we can use Planner for this.</para>
     </section>
 
@@ -141,9 +141,8 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
       <title>Main method</title>
 
       <para>Try it yourself. <link linkend="downloadAndRunTheExamples">Download and configure the examples in your
-      favorite IDE.</link> Run
-      <literal>org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld</literal>. By default, it is
-      configured to run for 120 seconds. It will execute this code:</para>
+      favorite IDE.</link> Run <literal>org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld</literal>.
+      By default, it is configured to run for 120 seconds. It will execute this code:</para>
 
       <example>
         <title>CloudBalancingHelloWorld.java</title>
@@ -582,9 +581,7 @@ rule "requiredCpuPowerTotal"
             sum($requiredCpuPower)
         )
     then
-        insertLogical(new IntConstraintOccurrence("requiredCpuPowerTotal", ConstraintType.HARD,
-                $cpuPower - $requiredCpuPowerTotal.intValue(),
-                $computer));
+        scoreHolder.addHardConstraintMatch(kcontext, $cpuPower - $requiredCpuPowerTotal.intValue());
 end
 
 rule "requiredMemoryTotal"
@@ -593,22 +590,6 @@ end
 
 rule "requiredNetworkBandwidthTotal"
     ...
-end
-
-// ############################################################################
-// Calculate hard score
-// ############################################################################
-
-// Accumulate hard constraints
-rule "accumulateHardScore"
-        salience -1 // Do the other rules first (optional, for performance)
-    when
-        $hardTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
-            sum($weight)
-        )
-    then
-        scoreHolder.setHardScore($hardTotal.intValue());
 end</programlisting>
         </example>
 
@@ -627,25 +608,7 @@ rule "computerCost"
         $computer : CloudComputer($cost : cost)
         exists CloudProcess(computer == $computer)
     then
-        insertLogical(new IntConstraintOccurrence("computerCost", ConstraintType.SOFT,
-                - $cost,
-                $computer));
-end
-
-// ############################################################################
-// Calculate soft score
-// ############################################################################
-
-// Accumulate soft constraints
-rule "accumulateSoftScore"
-        salience -1 // Do the other rules first (optional, for performance)
-    when
-        $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
-            sum($weight)
-        )
-    then
-        scoreHolder.setSoftScore($softTotal.intValue());
+        scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
 end</programlisting>
         </example>
 

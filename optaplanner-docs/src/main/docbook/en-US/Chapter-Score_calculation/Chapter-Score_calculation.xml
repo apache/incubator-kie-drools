@@ -225,7 +225,7 @@
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-      <para>As for all calculations with a computer, choose the correct type. Don't use <literal>double</literal> for
+      <para>As for all calculations with a computer, choose the correct type. Don't use a <literal>double</literal> for
       financial data.</para>
 
       <mediaobject>
@@ -789,8 +789,8 @@
           <title>A KieBase (possibly defined by Guvnor)</title>
 
           <para>If you prefer to build the <literal>KieBase</literal> yourself or if you're combining Planner with
-          Guvnor, you can set the <literal>KieBase</literal> on the <literal>SolverFactory</literal> before building
-          the <literal>Solver</literal>:</para>
+          Guvnor, you can set the <literal>KieBase</literal> on the <literal>SolverFactory</literal> before building the
+          <literal>Solver</literal>:</para>
 
           <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);</programlisting>
         </section>
@@ -806,7 +806,7 @@
         $q1 : Queen($id : id, $y : y);
         $q2 : Queen(id &gt; $id, y == $y);
     then
-        insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
+        scoreHolder.addConstraintMatch(kcontext, -1);
 end</programlisting>
 
         <para>This score rule will fire once for every 2 queens with the same <literal>y</literal>. The <literal>(id
@@ -831,14 +831,20 @@ end</programlisting>
           <para>This is normal: it would be a waste of time to write a score rule that only relates to problem facts, as
           the consequence will never change during planning, no matter what the possible solution.</para>
         </note>
+
+        <note>
+          <para>The variable <literal>kcontext</literal> is a magic variable in Drools Expert. The scoreHolder's method
+          uses it to do incremental score calculation correctly and to create a <literal>ConstraintMatch</literal>
+          instance.</para>
+        </note>
       </section>
 
       <section>
-        <title>Aggregating the score rules into the <literal>Score</literal></title>
+        <title>Weighing score rules</title>
 
-        <para>A <literal>ScoreHolder</literal> instance is asserted into the <literal>KieSession</literal> as a
-        global called <literal>scoreHolder</literal>. Your score rules need to (directly or indirectly) update that
-        instance. Usually you'll make a single rule as an aggregation of the other rules to update the score:</para>
+        <para>A <literal>ScoreHolder</literal> instance is asserted into the <literal>KieSession</literal> as a global
+        called <literal>scoreHolder</literal>. Your score rules need to (directly or indirectly) update that
+        instance.</para>
 
         <programlisting>global SimpleScoreHolder scoreHolder;
 
@@ -847,7 +853,7 @@ rule "multipleQueensHorizontal"
         $q1 : Queen($id : id, $y : y);
         $q2 : Queen(id &gt; $id, y == $y);
     then
-        insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
+        scoreHolder.addConstraintMatch(kcontext, -1);
 end
 
 // multipleQueensVertical is obsolete because it is always 0
@@ -857,7 +863,7 @@ rule "multipleQueensAscendingDiagonal"
         $q1 : Queen($id : id, $ascendingD : ascendingD);
         $q2 : Queen(id &gt; $id, ascendingD == $ascendingD);
     then
-        insertLogical(new UnweightedConstraintOccurrence("multipleQueensAscendingDiagonal", $q1, $q2));
+        scoreHolder.addConstraintMatch(kcontext, -1);
 end
 
 rule "multipleQueensDescendingDiagonal"
@@ -865,36 +871,27 @@ rule "multipleQueensDescendingDiagonal"
         $q1 : Queen($id : id, $descendingD : descendingD);
         $q2 : Queen(id &gt; $id, descendingD == $descendingD);
     then
-        insertLogical(new UnweightedConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
-end
-
-rule "accumulateScore"
-    when
-        $occurrenceCount : Number() from accumulate(
-            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
-            count($unweightedConstraintOccurrence)
-        );
-    then
-        scoreHolder.setScore(- $occurrenceCount.intValue());
+        scoreHolder.addConstraintMatch(kcontext, -1);
 end</programlisting>
 
-        <para>Most use cases will also weigh their constraints differently, by multiplying the count of each score rule
-        with its weight.</para>
+        <para>Most use cases will also weigh their constraint types or even their matches differently, by using a
+        specific weight for each constraint match.</para>
 
         <para>Here's an example from CurriculumCourse, where assigning a <literal>Lecture</literal> to a
         <literal>Room</literal> which is missing 2 seats is weighted equally bad as having 1 isolated
         <literal>Lecture</literal> in a <literal>Curriculum</literal>:</para>
 
-        <programlisting>// RoomCapacity: For each lecture, the number of students that attend the course must be less or equal
+        <programlisting>global HardSoftScoreHolder scoreHolder;
+
+// RoomCapacity: For each lecture, the number of students that attend the course must be less or equal
 // than the number of seats of all the rooms that host its lectures.
 // Each student above the capacity counts as 1 point of penalty.
 rule "roomCapacity"
     when
-        ...
+        $room : Room($capacity : capacity)
+        $lecture : Lecture(room == $room, studentSize &gt; $capacity, $studentSize : studentSize)
     then
-        insertLogical(new IntConstraintOccurrence("roomCapacity", ConstraintType.SOFT,
-                ($capacity - $studentSize),
-                $room, $lecture));
+        scoreHolder.addSoftConstraintMatch(kcontext, ($capacity - $studentSize));
 end
 
 // CurriculumCompactness: Lectures belonging to a curriculum should be adjacent
@@ -906,22 +903,7 @@ rule "curriculumCompactness"
     when
         ...
     then
-        insertLogical(new IntConstraintOccurrence("curriculumCompactness", ConstraintType.SOFT,
-                -2,
-                $lecture, $curriculum));
-end
-
-
-// Accumulate soft constraints
-rule "accumulateSoftScore"
-        salience -1 // Do the other rules first (optional, for performance)
-    when
-        $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
-            sum($weight)
-        )
-    then
-        scoreHolder.setSoftScore($softTotal.intValue());
+        scoreHolder.addSoftConstraintMatch(kcontext, -2);
 end</programlisting>
       </section>
     </section>
@@ -931,14 +913,13 @@ end</programlisting>
 
       <para>Put the <literal>environmentMode</literal> in <literal>FULL_ASSERT</literal> (or
       <literal>FAST_ASSERT</literal>) to detect corruption in the <link
-      linkend="incrementalScoreCalculation">incremental score calculation</link>. For the difference between both modes,
-      <link linkend="environmentMode">see the section about <literal>environmentMode</literal></link>. However, that
-      will not detect if your score calculator implements your score constraints as your business actually
-      desires.</para>
+      linkend="incrementalScoreCalculation">incremental score calculation</link>. For more information, <link
+      linkend="environmentMode">see the section about <literal>environmentMode</literal></link>. However, that will not
+      verify that your score calculator implements your score constraints as your business actually desires.</para>
 
-      <para>A piece of incremental score calculator code can be difficult to write and to review. You can assert its
-      correctness by using a different implementation (for example a <literal>SimpleScoreCalculator</literal>) to do the
-      assertions triggered by the <literal>environmentMode</literal>. Just configure it as
+      <para>A piece of incremental score calculator code can be difficult to write and to review. Assert its correctness
+      by using a different implementation (for example a <literal>SimpleScoreCalculator</literal>) to do the assertions
+      triggered by the <literal>environmentMode</literal>. Just configure the different implementation as a
       <literal>assertionScoreDirectorFactory</literal>:</para>
 
       <programlisting language="xml">  &lt;environmentMode&gt;FAST_ASSERT&lt;/environmentMode&gt;
@@ -950,6 +931,9 @@ end</programlisting>
       &lt;simpleScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
     &lt;/assertionScoreDirectorFactory&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
+
+      <para>This way, the <literal>scoreDrl</literal> will be validated by the
+      <literal>SimpleScoreCalculator</literal>.</para>
     </section>
   </section>
 
@@ -1104,7 +1088,7 @@ end</programlisting>
         <listitem>
           <para>2 exams needs to be conducted at the same time, but you're only move 1 exam at a time. So the solver has
           a disincentive move one of those exams to another timeslot without moving the other in the same move. Add a
-          course-grained move that moves both exams at the same time. </para>
+          course-grained move that moves both exams at the same time.</para>
         </listitem>
       </itemizedlist>
 
@@ -1184,8 +1168,7 @@ ScoreDirector guiScoreDirector = scoreDirectorFactory.buildScoreDirector();</pro
     <programlisting language="java">guiScoreDirector.setWorkingSolution(solution);
 Score score = guiScoreDirector.calculateScore();</programlisting>
 
-    <para>Currently it's not officially supported to get the specific constraint occurrences, to explain in the GUI what
-    entities are causing which part of the <literal>Score</literal>. But if you're using the
-    <literal>DroolsScoreDirector</literal>, it's possible to extract it. See the examples.</para>
+    <para>Tto explain in the GUI what entities are causing which part of the <literal>Score</literal>, get the
+    <literal>ConstraintMatch</literal> objects from the <literal>ScoreDirector</literal>.</para>
   </section>
 </chapter>
