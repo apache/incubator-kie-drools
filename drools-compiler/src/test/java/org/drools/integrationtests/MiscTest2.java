@@ -1441,44 +1441,6 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
     }
 
-    @Test
-    @Ignore
-    public void testMatchIntegers() {
-        // DROOLS-79
-        String str =
-                "global java.util.List list; \n" +
-                        "rule R when\n" +
-                        "    $i : Integer( this == 1 )\n" +
-                        "then\n" +
-                        "  list.add( $i );\n" +
-                        "end\n" +
-                        "rule S when\n" +
-                        "    $i : Integer( this == 2 )\n" +
-                        "then\n" +
-                        "  list.add( $i );\n" +
-                        "end\n" +
-                        "rule T when\n" +
-                        "    $i : Integer( this == 3 )\n" +
-                        "then\n" +
-                        "  list.add( $i );\n" +
-                        "end\n" +
-                        "";
-
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-
-        ksession.insert( new Integer( 1 ) );
-        ksession.fireAllRules();
-
-    }
-
-
-
-
-
     public static class Foo2 {
         @Position(0)
         public int x;
@@ -1566,6 +1528,35 @@ public class MiscTest2 extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testMatchIntegers() {
+        // DROOLS-94
+        String str =
+                "global java.util.List list; \n" +
+                "rule R when\n" +
+                " $i : Integer( this == 1 )\n" +
+                "then\n" +
+                " list.add( $i );\n" +
+                "end\n" +
+                "rule S when\n" +
+                " $i : Integer( this == 2 )\n" +
+                "then\n" +
+                " list.add( $i );\n" +
+                "end\n" +
+                "rule T when\n" +
+                " $i : Integer( this == 3 )\n" +
+                "then\n" +
+                " list.add( $i );\n" +
+                "end\n";
 
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new Integer( 1 ) );
+        ksession.fireAllRules();
+    }
 
 }
