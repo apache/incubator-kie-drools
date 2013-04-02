@@ -3162,6 +3162,12 @@ After in *.java:
         Collections.sort(constraintMatchTotalList);
         return constraintMatchTotalList;
     }
+Before in *.java:
+    ... constraintOccurrence.getCauses()
+After in *.java:
+    ... constraintMatch.getJustificationList()
+Note: the justificationList might have more or different elements than the causes,
+but it should be possible to extract the same information.
 
 [MINOR] If you have a custom ScoreDefinition implementation: the method buildScoreHolder() has changed signature.
 Before in *ScoreDefinition.java:
