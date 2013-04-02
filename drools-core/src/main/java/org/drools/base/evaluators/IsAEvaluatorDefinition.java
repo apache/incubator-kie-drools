@@ -214,8 +214,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         public boolean evaluateCachedLeft( InternalWorkingMemory workingMemory,
                 VariableContextEntry context, InternalFactHandle right ) {
 
-            Object target = right.getObject();
-            Object source = ((VariableRestriction.ObjectVariableContextEntry) context).left;
+            Object target = ((VariableRestriction.ObjectVariableContextEntry) context).left;
+            Object source = right.getObject();
 
             return compare( source, target, workingMemory );
         }
@@ -257,9 +257,11 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             }
 
 
-            return ( targetTraits != null && sourceTraits != null && HierarchyEncoderImpl.supersetOrEqualset( sourceTraits, targetTraits ) )
-                   || ( sourceTraits == null && this.getOperator().isNegated() ) ;
+            if (sourceTraits == null || targetTraits == null) {
+                return getOperator().isNegated();
+            }
 
+            return HierarchyEncoderImpl.supersetOrEqualset(sourceTraits, targetTraits) ^ getOperator().isNegated();
         }
 
         @Override
