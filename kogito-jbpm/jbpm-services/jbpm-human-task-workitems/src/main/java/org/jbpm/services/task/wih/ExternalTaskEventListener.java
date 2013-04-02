@@ -19,13 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
-import javax.inject.Inject;
-import javax.persistence.EntityManagerFactory;
 
 import org.jboss.seam.transaction.Transactional;
 
@@ -43,6 +39,8 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.model.Content;
 import org.kie.internal.task.api.model.Status;
 import org.kie.internal.task.api.model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -58,6 +56,8 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
     private Map<String, RuntimeManager> mappedManagers = new ConcurrentHashMap<String, RuntimeManager>();
     
     private RuntimeFinder finder;
+    
+    private static final Logger logger = LoggerFactory.getLogger(ExternalTaskEventListener.class);
  
     public ExternalTaskEventListener() {
     }
@@ -141,10 +141,10 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         Runtime runtime = getManager(task).getRuntime(ProcessInstanceIdContext.get(processInstanceId));
         KieSession session = runtime.getKieSession();
         if (session != null) {
-            System.out.println(">> I've recieved an event for a known session (" + task.getTaskData().getProcessSessionId()+")");
+            logger.debug(">> I've recieved an event for a known session (" + task.getTaskData().getProcessSessionId()+")");
             processTaskState(task);
         } else {
-            System.out.println("EE: I've recieved an event but the session is not known by this handler ( "+task.getTaskData().getProcessSessionId()+")");
+            logger.error("EE: I've recieved an event but the session is not known by this handler ( "+task.getTaskData().getProcessSessionId()+")");
         }
     }
 
