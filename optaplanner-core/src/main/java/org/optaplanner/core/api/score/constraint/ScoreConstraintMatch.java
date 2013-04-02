@@ -19,7 +19,9 @@ package org.optaplanner.core.api.score.constraint;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class ScoreConstraintMatch implements Serializable {
+import org.apache.commons.lang.builder.CompareToBuilder;
+
+public abstract class ScoreConstraintMatch implements Serializable, Comparable<ScoreConstraintMatch> {
 
     protected final List<Object> justificationList;
 
@@ -41,6 +43,15 @@ public abstract class ScoreConstraintMatch implements Serializable {
 
     private String getIdentificationString() {
         return getScoreConstraintMatchTotal().getIdentificationString() + "/" + justificationList;
+    }
+
+    @Override
+    public int compareTo(ScoreConstraintMatch other) {
+        return new CompareToBuilder()
+                .append(getScoreConstraintMatchTotal(), other.getScoreConstraintMatchTotal())
+                .append(getJustificationList(), other.getJustificationList())
+                .append(getWeightAsNumber(), other.getWeightAsNumber())
+                .toComparison();
     }
 
     public String toString() {

@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
@@ -208,28 +209,15 @@ public class SolutionBusiness {
         });
     }
 
-    public List<ScoreDetail> getScoreDetailList() {
-        if (!(guiScoreDirector instanceof DroolsScoreDirector)) {
-            return null;
-        }
-        Map<String, ScoreDetail> scoreDetailMap = new HashMap<String, ScoreDetail>();
-        KieSession kieSession = ((DroolsScoreDirector) guiScoreDirector).getKieSession();
-        if (kieSession == null) {
-            return Collections.emptyList();
-        }
-        Collection<ConstraintOccurrence> constraintOccurrences = (Collection<ConstraintOccurrence>)
-                kieSession.getObjects(new ClassObjectFilter(ConstraintOccurrence.class));
-        for (ConstraintOccurrence constraintOccurrence : constraintOccurrences) {
-            ScoreDetail scoreDetail = scoreDetailMap.get(constraintOccurrence.getRuleId());
-            if (scoreDetail == null) {
-                scoreDetail = new ScoreDetail(constraintOccurrence.getRuleId(), constraintOccurrence.getConstraintType());
-                scoreDetailMap.put(constraintOccurrence.getRuleId(), scoreDetail);
-            }
-            scoreDetail.addConstraintOccurrence(constraintOccurrence);
-        }
-        List<ScoreDetail> scoreDetailList = new ArrayList<ScoreDetail>(scoreDetailMap.values());
-        Collections.sort(scoreDetailList);
-        return scoreDetailList;
+    public boolean isConstraintMatchEnabled() {
+        return guiScoreDirector.isConstraintMatchEnabled();
+    }
+
+    public List<ScoreConstraintMatchTotal> getConstraintMatchTotalList() {
+        List<ScoreConstraintMatchTotal> constraintMatchTotalList = new ArrayList<ScoreConstraintMatchTotal>(
+                guiScoreDirector.getConstraintMatchTotals());
+        Collections.sort(constraintMatchTotalList);
+        return constraintMatchTotalList;
     }
 
     public void importSolution(File file) {

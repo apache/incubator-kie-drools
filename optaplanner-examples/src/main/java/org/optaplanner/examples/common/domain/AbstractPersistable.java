@@ -19,6 +19,7 @@ package org.optaplanner.examples.common.domain;
 import java.io.Serializable;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatch;
 
 public abstract class AbstractPersistable implements Serializable, Comparable<AbstractPersistable> {
 
@@ -54,7 +55,12 @@ public abstract class AbstractPersistable implements Serializable, Comparable<Ab
 //        }
 //    }
 
-    // Used by the GUI to sort the ConstraintOccurrence list by causes
+    /**
+     * Used by the GUI to sort the {@link ScoreConstraintMatch} list
+     * by {@link ScoreConstraintMatch#getJustificationList()}.
+     * @param other never null
+     * @return comparison
+     */
     public int compareTo(AbstractPersistable other) {
         return new CompareToBuilder()
                 .append(getClass().getName(), other.getClass().getName())

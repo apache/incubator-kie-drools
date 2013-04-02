@@ -19,6 +19,7 @@ package org.optaplanner.examples.common.swingui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -31,19 +32,20 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import org.optaplanner.examples.common.business.ScoreDetail;
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatch;
+import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConstraintScoreMapDialog extends JDialog {
+public class ConstraintMatchesDialog extends JDialog {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected SolverAndPersistenceFrame solverAndPersistenceFrame;
     protected SolutionBusiness solutionBusiness;
 
-    public ConstraintScoreMapDialog(SolverAndPersistenceFrame solverAndPersistenceFrame) {
+    public ConstraintMatchesDialog(SolverAndPersistenceFrame solverAndPersistenceFrame) {
         super(solverAndPersistenceFrame, "Constraint scores", true);
         this.solverAndPersistenceFrame = solverAndPersistenceFrame;
     }
@@ -53,12 +55,13 @@ public class ConstraintScoreMapDialog extends JDialog {
     }
 
     public void resetContentPanel() {
-        final List<ScoreDetail> scoreDetailList = solutionBusiness.getScoreDetailList();
-        if (scoreDetailList == null) {
-            setContentPane(new JLabel("Score details not support with this ScoreDirector."));
+        if (!solutionBusiness.isConstraintMatchEnabled()) {
+            setContentPane(new JLabel("Constraint matches are not supported with this ScoreDirector."));
         } else {
+            final List<ScoreConstraintMatchTotal> constraintMatchTotalList
+                    = solutionBusiness.getConstraintMatchTotalList();
             JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-            final JTable table = new JTable(new ScoreDetailTableModel(scoreDetailList));
+            final JTable table = new JTable(new ConstraintMatchTotalTableModel(constraintMatchTotalList));
             JScrollPane tableScrollPane = new JScrollPane(table);
             tableScrollPane.setPreferredSize(new Dimension(700, 300));
             splitPane.setTopComponent(tableScrollPane);
@@ -72,8 +75,9 @@ public class ConstraintScoreMapDialog extends JDialog {
                             if (selectedRow < 0) {
                                 detailTextArea.setText("");
                             } else {
-                                ScoreDetail scoreDetail = scoreDetailList.get(selectedRow);
-                                detailTextArea.setText(scoreDetail.buildConstraintOccurrenceListText());
+                                ScoreConstraintMatchTotal constraintMatchTotal
+                                        = constraintMatchTotalList.get(selectedRow);
+                                detailTextArea.setText(buildConstraintMatchSetText(constraintMatchTotal));
                             }
                         }
                     }
@@ -85,32 +89,43 @@ public class ConstraintScoreMapDialog extends JDialog {
         setLocationRelativeTo(getParent());
     }
 
-    public static class ScoreDetailTableModel extends AbstractTableModel {
+    public String buildConstraintMatchSetText(ScoreConstraintMatchTotal constraintMatchTotal) {
+        Set<? extends ScoreConstraintMatch> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
+        StringBuilder text = new StringBuilder(constraintMatchSet.size() * 80);
+        for (ScoreConstraintMatch constraintMatch : constraintMatchSet) {
+            text.append(constraintMatch.toString()).append("\n");
+        }
+        return text.toString();
+    }
 
-        private List<ScoreDetail> scoreDetailList;
+    public static class ConstraintMatchTotalTableModel extends AbstractTableModel {
 
-        public ScoreDetailTableModel(List<ScoreDetail> scoreDetailList) {
-            this.scoreDetailList = scoreDetailList;
+        private List<ScoreConstraintMatchTotal> constraintMatchTotalList;
+
+        public ConstraintMatchTotalTableModel(List<ScoreConstraintMatchTotal> constraintMatchTotalList) {
+            this.constraintMatchTotalList = constraintMatchTotalList;
         }
 
         public int getRowCount() {
-            return scoreDetailList.size();
+            return constraintMatchTotalList.size();
         }
 
         public int getColumnCount() {
-            return 4;
+            return 5;
         }
 
         public String getColumnName(int columnIndex) {
             switch (columnIndex) {
                 case 0:
-                    return "Rule id";
+                    return "Constraint package";
                 case 1:
-                    return "Constraint type";
+                    return "Constraint name";
                 case 2:
-                    return "# occurrences";
+                    return "score level";
                 case 3:
-                    return "Score total";
+                    return "Match count";
+                case 4:
+                    return "Weight total";
                 default:
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
             }
@@ -121,27 +136,31 @@ public class ConstraintScoreMapDialog extends JDialog {
                 case 0:
                     return String.class;
                 case 1:
-                    return Enum.class;
+                    return String.class;
                 case 2:
                     return Integer.class;
                 case 3:
-                    return Double.class;
+                    return Integer.class;
+                case 4:
+                    return Number.class;
                 default:
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
             }
         }
 
         public Object getValueAt(int rowIndex, int columnIndex) {
-            ScoreDetail scoreDetail = scoreDetailList.get(rowIndex);
+            ScoreConstraintMatchTotal constraintMatchTotal = constraintMatchTotalList.get(rowIndex);
             switch (columnIndex) {
                 case 0:
-                    return scoreDetail.getRuleId();
+                    return constraintMatchTotal.getConstraintPackage();
                 case 1:
-                    return scoreDetail.getConstraintType();
+                    return constraintMatchTotal.getConstraintName();
                 case 2:
-                    return scoreDetail.getOccurrenceSize();
+                    return constraintMatchTotal.getScoreLevel();
                 case 3:
-                    return scoreDetail.getScoreTotal();
+                    return constraintMatchTotal.getConstraintMatchSet().size();
+                case 4:
+                    return constraintMatchTotal.getWeightTotalAsNumber();
                 default:
                     throw new IllegalStateException("The columnIndex (" + columnIndex + ") is invalid.");
             }

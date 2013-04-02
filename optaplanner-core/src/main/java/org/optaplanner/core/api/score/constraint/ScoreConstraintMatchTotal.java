@@ -22,9 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.kie.api.runtime.rule.RuleContext;
 
-public abstract class ScoreConstraintMatchTotal implements Serializable {
+public abstract class ScoreConstraintMatchTotal implements Serializable, Comparable<ScoreConstraintMatchTotal> {
 
     protected final String constraintPackage;
     protected final String constraintName;
@@ -67,6 +68,16 @@ public abstract class ScoreConstraintMatchTotal implements Serializable {
 
     public String getIdentificationString() {
         return constraintPackage + "/" + constraintName + "/level" + scoreLevel;
+    }
+
+    @Override
+    public int compareTo(ScoreConstraintMatchTotal other) {
+        return new CompareToBuilder()
+                .append(getConstraintPackage(), other.getConstraintPackage())
+                .append(getConstraintName(), other.getConstraintName())
+                .append(getScoreLevel(), other.getScoreLevel())
+                .append(getWeightTotalAsNumber(), other.getWeightTotalAsNumber())
+                .toComparison();
     }
 
     @Override
