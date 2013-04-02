@@ -204,34 +204,6 @@ public class SolverAndPersistenceFrame extends JFrame {
         return panel;
     }
 
-    private void setSolutionLoaded() {
-        solveAction.setEnabled(true);
-        saveAction.setEnabled(true);
-        exportAction.setEnabled(solutionBusiness.hasExporter());
-        resetScreen();
-    }
-
-    private void setSolvingState(boolean solving) {
-        for (Action action : loadUnsolvedActionList) {
-            action.setEnabled(!solving);
-        }
-        for (Action action : loadSolvedActionList) {
-            action.setEnabled(!solving);
-        }
-        solveAction.setEnabled(!solving);
-        terminateSolvingEarlyAction.setEnabled(solving);
-        openAction.setEnabled(!solving);
-        saveAction.setEnabled(!solving);
-        importAction.setEnabled(!solving && solutionBusiness.hasImporter());
-        exportAction.setEnabled(!solving && solutionBusiness.hasExporter());
-        solutionPanel.setEnabled(!solving);
-        progressBar.setIndeterminate(solving);
-        progressBar.setStringPainted(solving);
-        progressBar.setString(solving ? "Solving..." : null);
-        showConstraintMatchesDialogAction.setEnabled(!solving);
-        solutionPanel.setSolvingState(solving);
-    }
-
     private class SolveAction extends AbstractAction {
 
         // TODO This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
@@ -424,6 +396,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         resultLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         panel.add(resultLabel, BorderLayout.CENTER);
         showConstraintMatchesDialogAction = new ShowConstraintMatchesDialogAction();
+        showConstraintMatchesDialogAction.setEnabled(false);
         JButton constraintScoreMapButton = new JButton(showConstraintMatchesDialogAction);
         panel.add(constraintScoreMapButton, BorderLayout.EAST);
         return panel;
@@ -440,6 +413,35 @@ public class SolverAndPersistenceFrame extends JFrame {
             constraintMatchesDialog.setVisible(true);
         }
 
+    }
+
+    private void setSolutionLoaded() {
+        solveAction.setEnabled(true);
+        saveAction.setEnabled(true);
+        exportAction.setEnabled(solutionBusiness.hasExporter());
+        showConstraintMatchesDialogAction.setEnabled(true);
+        resetScreen();
+    }
+
+    private void setSolvingState(boolean solving) {
+        for (Action action : loadUnsolvedActionList) {
+            action.setEnabled(!solving);
+        }
+        for (Action action : loadSolvedActionList) {
+            action.setEnabled(!solving);
+        }
+        solveAction.setEnabled(!solving);
+        terminateSolvingEarlyAction.setEnabled(solving);
+        openAction.setEnabled(!solving);
+        saveAction.setEnabled(!solving);
+        importAction.setEnabled(!solving && solutionBusiness.hasImporter());
+        exportAction.setEnabled(!solving && solutionBusiness.hasExporter());
+        solutionPanel.setEnabled(!solving);
+        progressBar.setIndeterminate(solving);
+        progressBar.setStringPainted(solving);
+        progressBar.setString(solving ? "Solving..." : null);
+        showConstraintMatchesDialogAction.setEnabled(!solving);
+        solutionPanel.setSolvingState(solving);
     }
 
     public void resetScreen() {
