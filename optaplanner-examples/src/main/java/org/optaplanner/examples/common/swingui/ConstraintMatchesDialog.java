@@ -32,8 +32,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
-import org.optaplanner.core.api.score.constraint.ScoreConstraintMatch;
-import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +58,7 @@ public class ConstraintMatchesDialog extends JDialog {
         if (!solutionBusiness.isConstraintMatchEnabled()) {
             setContentPane(new JLabel("Constraint matches are not supported with this ScoreDirector."));
         } else {
-            final List<ScoreConstraintMatchTotal> constraintMatchTotalList
+            final List<ConstraintMatchTotal> constraintMatchTotalList
                     = solutionBusiness.getConstraintMatchTotalList();
             JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
             final JTable table = new JTable(new ConstraintMatchTotalTableModel(constraintMatchTotalList));
@@ -75,7 +75,7 @@ public class ConstraintMatchesDialog extends JDialog {
                             if (selectedRow < 0) {
                                 detailTextArea.setText("");
                             } else {
-                                ScoreConstraintMatchTotal constraintMatchTotal
+                                ConstraintMatchTotal constraintMatchTotal
                                         = constraintMatchTotalList.get(selectedRow);
                                 detailTextArea.setText(buildConstraintMatchSetText(constraintMatchTotal));
                             }
@@ -89,10 +89,10 @@ public class ConstraintMatchesDialog extends JDialog {
         setLocationRelativeTo(getParent());
     }
 
-    public String buildConstraintMatchSetText(ScoreConstraintMatchTotal constraintMatchTotal) {
-        Set<? extends ScoreConstraintMatch> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
+    public String buildConstraintMatchSetText(ConstraintMatchTotal constraintMatchTotal) {
+        Set<? extends ConstraintMatch> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
         StringBuilder text = new StringBuilder(constraintMatchSet.size() * 80);
-        for (ScoreConstraintMatch constraintMatch : constraintMatchSet) {
+        for (ConstraintMatch constraintMatch : constraintMatchSet) {
             text.append(constraintMatch.toString()).append("\n");
         }
         return text.toString();
@@ -100,9 +100,9 @@ public class ConstraintMatchesDialog extends JDialog {
 
     public static class ConstraintMatchTotalTableModel extends AbstractTableModel {
 
-        private List<ScoreConstraintMatchTotal> constraintMatchTotalList;
+        private List<ConstraintMatchTotal> constraintMatchTotalList;
 
-        public ConstraintMatchTotalTableModel(List<ScoreConstraintMatchTotal> constraintMatchTotalList) {
+        public ConstraintMatchTotalTableModel(List<ConstraintMatchTotal> constraintMatchTotalList) {
             this.constraintMatchTotalList = constraintMatchTotalList;
         }
 
@@ -149,7 +149,7 @@ public class ConstraintMatchesDialog extends JDialog {
         }
 
         public Object getValueAt(int rowIndex, int columnIndex) {
-            ScoreConstraintMatchTotal constraintMatchTotal = constraintMatchTotalList.get(rowIndex);
+            ConstraintMatchTotal constraintMatchTotal = constraintMatchTotalList.get(rowIndex);
             switch (columnIndex) {
                 case 0:
                     return constraintMatchTotal.getConstraintPackage();

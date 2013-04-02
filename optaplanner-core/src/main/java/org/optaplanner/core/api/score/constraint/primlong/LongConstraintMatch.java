@@ -18,25 +18,24 @@ package org.optaplanner.core.api.score.constraint.primlong;
 
 import java.util.List;
 
-import org.optaplanner.core.api.score.constraint.ScoreConstraintMatch;
-import org.optaplanner.core.api.score.constraint.primint.IntScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 
-public class LongScoreConstraintMatch extends ScoreConstraintMatch {
+public class LongConstraintMatch extends ConstraintMatch {
 
-    protected final LongScoreConstraintMatchTotal scoreConstraintMatchTotal;
+    protected final LongConstraintMatchTotal constraintMatchTotal;
 
     protected final long weight;
 
-    public LongScoreConstraintMatch(LongScoreConstraintMatchTotal scoreConstraintMatchTotal,
+    public LongConstraintMatch(LongConstraintMatchTotal constraintMatchTotal,
             List<Object> justificationList, long weight) {
         super(justificationList);
-        this.scoreConstraintMatchTotal = scoreConstraintMatchTotal;
+        this.constraintMatchTotal = constraintMatchTotal;
         this.weight = weight;
     }
 
     @Override
-    public LongScoreConstraintMatchTotal getScoreConstraintMatchTotal() {
-        return scoreConstraintMatchTotal;
+    public LongConstraintMatchTotal getConstraintMatchTotal() {
+        return constraintMatchTotal;
     }
 
     public long getWeight() {

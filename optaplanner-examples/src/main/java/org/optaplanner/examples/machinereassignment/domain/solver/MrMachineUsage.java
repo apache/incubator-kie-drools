@@ -21,7 +21,7 @@ import java.io.Serializable;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.optaplanner.core.api.score.constraint.ScoreConstraintMatch;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
@@ -66,8 +66,8 @@ public class MrMachineUsage implements Serializable, Comparable<MrMachineUsage> 
     }
 
     /**
-     * Used by the GUI to sort the {@link ScoreConstraintMatch} list
-     * by {@link ScoreConstraintMatch#getJustificationList()}.
+     * Used by the GUI to sort the {@link ConstraintMatch} list
+     * by {@link ConstraintMatch#getJustificationList()}.
      * @param other never null
      * @return comparison
      */

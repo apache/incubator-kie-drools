@@ -18,8 +18,6 @@ package org.optaplanner.core.impl.score.director.drools;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -31,7 +29,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.constraint.ConstraintOccurrence;
 import org.optaplanner.core.impl.score.constraint.DoubleConstraintOccurrence;
 import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
@@ -190,7 +188,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         return workingScoreHolder.isConstraintMatchEnabled();
     }
 
-    public Collection<ScoreConstraintMatchTotal> getConstraintMatchTotals() {
+    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         return workingScoreHolder.getConstraintMatchTotals();
     }
 
@@ -221,7 +219,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
                             .kieSession.getObjects(new ClassObjectFilter(ConstraintOccurrence.class)));
             if (corruptedConstraintOccurrenceSet.isEmpty()) {
                 analysis.append("  Migration analysis: Corrupted ConstraintMatchTotals:\n");
-                for (ScoreConstraintMatchTotal constraintMatchTotal : corruptedScoreDirector.getConstraintMatchTotals()) {
+                for (ConstraintMatchTotal constraintMatchTotal : corruptedScoreDirector.getConstraintMatchTotals()) {
                     analysis.append("    ").append(constraintMatchTotal).append("\n");
                 }
             } else {

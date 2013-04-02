@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.constraint.bigdecimal;
+package org.optaplanner.core.api.score.constraint.primdouble;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
-public class BigDecimalScoreConstraintMatchTotal extends ScoreConstraintMatchTotal {
+public class DoubleConstraintMatchTotal extends ConstraintMatchTotal {
 
-    protected final Set<BigDecimalScoreConstraintMatch> constraintMatchSet;
-    protected BigDecimal weightTotal;
+    protected final Set<DoubleConstraintMatch> constraintMatchSet;
+    protected double weightTotal;
 
-    public BigDecimalScoreConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
+    public DoubleConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
         super(constraintPackage, constraintName, scoreLevel);
-        constraintMatchSet = new HashSet<BigDecimalScoreConstraintMatch>();
-        weightTotal = BigDecimal.ZERO;
+        constraintMatchSet = new HashSet<DoubleConstraintMatch>();
+        weightTotal = 0;
     }
 
     @Override
-    public Set<BigDecimalScoreConstraintMatch> getConstraintMatchSet() {
+    public Set<DoubleConstraintMatch> getConstraintMatchSet() {
         return constraintMatchSet;
     }
 
-    public BigDecimal getWeightTotal() {
+    public double getWeightTotal() {
         return weightTotal;
     }
 
@@ -53,24 +52,24 @@ public class BigDecimalScoreConstraintMatchTotal extends ScoreConstraintMatchTot
     // Worker methods
     // ************************************************************************
 
-    public BigDecimalScoreConstraintMatch addConstraintMatch(RuleContext kcontext, BigDecimal weight) {
-        weightTotal = weightTotal.add(weight);
+    public DoubleConstraintMatch addConstraintMatch(RuleContext kcontext, double weight) {
+        weightTotal += weight;
         List<Object> justificationList = extractJustificationList(kcontext);
-        BigDecimalScoreConstraintMatch constraintMatch = new BigDecimalScoreConstraintMatch(this, justificationList, weight);
+        DoubleConstraintMatch constraintMatch = new DoubleConstraintMatch(this, justificationList, weight);
         boolean added = constraintMatchSet.add(constraintMatch);
         if (!added) {
-            throw new IllegalStateException("The scoreConstraintMatchTotal (" + this
+            throw new IllegalStateException("The constraintMatchTotal (" + this
                     + ") could not add constraintMatch (" + constraintMatch
                     + ") to its constraintMatchSet (" + constraintMatchSet + ").");
         }
         return constraintMatch;
     }
 
-    public void removeConstraintMatch(BigDecimalScoreConstraintMatch constraintMatch) {
-        weightTotal = weightTotal.subtract(constraintMatch.getWeight());
+    public void removeConstraintMatch(DoubleConstraintMatch constraintMatch) {
+        weightTotal -= constraintMatch.getWeight();
         boolean removed = constraintMatchSet.remove(constraintMatch);
         if (!removed) {
-            throw new IllegalStateException("The scoreConstraintMatchTotal (" + this
+            throw new IllegalStateException("The constraintMatchTotal (" + this
                     + ") could not remove constraintMatch (" + constraintMatch
                     + ") from its constraintMatchSet (" + constraintMatchSet + ").");
         }

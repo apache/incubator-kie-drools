@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
@@ -42,6 +42,6 @@ public interface ScoreHolder {
 
     boolean isConstraintMatchEnabled();
 
-    Collection<ScoreConstraintMatchTotal> getConstraintMatchTotals();
+    Collection<ConstraintMatchTotal> getConstraintMatchTotals();
 
 }

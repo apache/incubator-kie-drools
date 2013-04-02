@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.constraint.primdouble;
+package org.optaplanner.core.api.score.constraint.primlong;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
-public class DoubleScoreConstraintMatchTotal extends ScoreConstraintMatchTotal {
+public class LongConstraintMatchTotal extends ConstraintMatchTotal {
 
-    protected final Set<DoubleScoreConstraintMatch> constraintMatchSet;
-    protected double weightTotal;
+    protected final Set<LongConstraintMatch> constraintMatchSet;
+    protected long weightTotal;
 
-    public DoubleScoreConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
+    public LongConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
         super(constraintPackage, constraintName, scoreLevel);
-        constraintMatchSet = new HashSet<DoubleScoreConstraintMatch>();
+        constraintMatchSet = new HashSet<LongConstraintMatch>();
         weightTotal = 0;
     }
 
     @Override
-    public Set<DoubleScoreConstraintMatch> getConstraintMatchSet() {
+    public Set<LongConstraintMatch> getConstraintMatchSet() {
         return constraintMatchSet;
     }
 
-    public double getWeightTotal() {
+    public long getWeightTotal() {
         return weightTotal;
     }
 
@@ -52,24 +52,24 @@ public class DoubleScoreConstraintMatchTotal extends ScoreConstraintMatchTotal {
     // Worker methods
     // ************************************************************************
 
-    public DoubleScoreConstraintMatch addConstraintMatch(RuleContext kcontext, double weight) {
+    public LongConstraintMatch addConstraintMatch(RuleContext kcontext, long weight) {
         weightTotal += weight;
         List<Object> justificationList = extractJustificationList(kcontext);
-        DoubleScoreConstraintMatch constraintMatch = new DoubleScoreConstraintMatch(this, justificationList, weight);
+        LongConstraintMatch constraintMatch = new LongConstraintMatch(this, justificationList, weight);
         boolean added = constraintMatchSet.add(constraintMatch);
         if (!added) {
-            throw new IllegalStateException("The scoreConstraintMatchTotal (" + this
+            throw new IllegalStateException("The constraintMatchTotal (" + this
                     + ") could not add constraintMatch (" + constraintMatch
                     + ") to its constraintMatchSet (" + constraintMatchSet + ").");
         }
         return constraintMatch;
     }
 
-    public void removeConstraintMatch(DoubleScoreConstraintMatch constraintMatch) {
+    public void removeConstraintMatch(LongConstraintMatch constraintMatch) {
         weightTotal -= constraintMatch.getWeight();
         boolean removed = constraintMatchSet.remove(constraintMatch);
         if (!removed) {
-            throw new IllegalStateException("The scoreConstraintMatchTotal (" + this
+            throw new IllegalStateException("The constraintMatchTotal (" + this
                     + ") could not remove constraintMatch (" + constraintMatch
                     + ") from its constraintMatchSet (" + constraintMatchSet + ").");
         }

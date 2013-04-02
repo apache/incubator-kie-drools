@@ -3156,8 +3156,8 @@ Before in *.java:
         Collections.sort(scoreDetailList);
         return scoreDetailList;
 After in *.java:
-    public List<ScoreConstraintMatchTotal> getConstraintMatchTotalList() {
-        List<ScoreConstraintMatchTotal> constraintMatchTotalList = new ArrayList<ScoreConstraintMatchTotal>(
+    public List<ConstraintMatchTotal> getConstraintMatchTotalList() {
+        List<ConstraintMatchTotal> constraintMatchTotalList = new ArrayList<ConstraintMatchTotal>(
                 guiScoreDirector.getConstraintMatchTotals());
         Collections.sort(constraintMatchTotalList);
         return constraintMatchTotalList;

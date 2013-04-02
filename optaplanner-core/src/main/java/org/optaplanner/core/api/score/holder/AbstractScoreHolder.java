@@ -30,15 +30,15 @@ import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.Session;
-import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalScoreConstraintMatch;
-import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalScoreConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.primdouble.DoubleScoreConstraintMatch;
-import org.optaplanner.core.api.score.constraint.primdouble.DoubleScoreConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.primint.IntScoreConstraintMatch;
-import org.optaplanner.core.api.score.constraint.primint.IntScoreConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.primlong.LongScoreConstraintMatch;
-import org.optaplanner.core.api.score.constraint.primlong.LongScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalConstraintMatch;
+import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.primdouble.DoubleConstraintMatch;
+import org.optaplanner.core.api.score.constraint.primdouble.DoubleConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.primint.IntConstraintMatch;
+import org.optaplanner.core.api.score.constraint.primint.IntConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatch;
+import org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatchTotal;
 
 /**
  * Abstract superclass for {@link ScoreHolder}.
@@ -46,20 +46,20 @@ import org.optaplanner.core.api.score.constraint.primlong.LongScoreConstraintMat
 public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
     protected final boolean constraintMatchEnabled;
-    protected final Map<List<Object>, ScoreConstraintMatchTotal> constraintMatchTotalMap;
+    protected final Map<List<Object>, ConstraintMatchTotal> constraintMatchTotalMap;
 
     protected AbstractScoreHolder(boolean constraintMatchEnabled) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         // TODO Can we set the initial capacity of this map more accurately? For example: number of rules
         constraintMatchTotalMap = constraintMatchEnabled
-                ? new LinkedHashMap<List<Object>, ScoreConstraintMatchTotal>() : null;
+                ? new LinkedHashMap<List<Object>, ConstraintMatchTotal>() : null;
     }
 
     public boolean isConstraintMatchEnabled() {
         return constraintMatchEnabled;
     }
 
-    public Collection<ScoreConstraintMatchTotal> getConstraintMatchTotals() {
+    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         return constraintMatchTotalMap.values();
     }
 
@@ -79,8 +79,8 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             });
         } else {
             // Add and remove ConstraintMatch
-            final IntScoreConstraintMatchTotal constraintMatchTotal = findIntConstraintMatchTotal(kcontext, scoreLevel);
-            final IntScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
+            final IntConstraintMatchTotal constraintMatchTotal = findIntConstraintMatchTotal(kcontext, scoreLevel);
+            final IntConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
                 public void unMatch(Session wm, Match activation) {
                     undoListener.run();
@@ -90,14 +90,14 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         }
     }
 
-    private IntScoreConstraintMatchTotal findIntConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
+    private IntConstraintMatchTotal findIntConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
         Rule rule = kcontext.getRule();
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
         List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
-        IntScoreConstraintMatchTotal matchTotal = (IntScoreConstraintMatchTotal) constraintMatchTotalMap.get(key);
+        IntConstraintMatchTotal matchTotal = (IntConstraintMatchTotal) constraintMatchTotalMap.get(key);
         if (matchTotal == null) {
-            matchTotal = new IntScoreConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            matchTotal = new IntConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
             constraintMatchTotalMap.put(key, matchTotal);
         }
         return matchTotal;
@@ -115,8 +115,8 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             });
         } else {
             // Add and remove ConstraintMatch
-            final LongScoreConstraintMatchTotal constraintMatchTotal = findLongConstraintMatchTotal(kcontext, scoreLevel);
-            final LongScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
+            final LongConstraintMatchTotal constraintMatchTotal = findLongConstraintMatchTotal(kcontext, scoreLevel);
+            final LongConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
                 public void unMatch(Session wm, Match activation) {
                     undoListener.run();
@@ -126,14 +126,14 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         }
     }
 
-    private LongScoreConstraintMatchTotal findLongConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
+    private LongConstraintMatchTotal findLongConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
         Rule rule = kcontext.getRule();
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
         List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
-        LongScoreConstraintMatchTotal matchTotal = (LongScoreConstraintMatchTotal) constraintMatchTotalMap.get(key);
+        LongConstraintMatchTotal matchTotal = (LongConstraintMatchTotal) constraintMatchTotalMap.get(key);
         if (matchTotal == null) {
-            matchTotal = new LongScoreConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            matchTotal = new LongConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
             constraintMatchTotalMap.put(key, matchTotal);
         }
         return matchTotal;
@@ -151,8 +151,8 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             });
         } else {
             // Add and remove ConstraintMatch
-            final DoubleScoreConstraintMatchTotal constraintMatchTotal = findDoubleConstraintMatchTotal(kcontext, scoreLevel);
-            final DoubleScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
+            final DoubleConstraintMatchTotal constraintMatchTotal = findDoubleConstraintMatchTotal(kcontext, scoreLevel);
+            final DoubleConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
                 public void unMatch(Session wm, Match activation) {
                     undoListener.run();
@@ -162,14 +162,14 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         }
     }
 
-    private DoubleScoreConstraintMatchTotal findDoubleConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
+    private DoubleConstraintMatchTotal findDoubleConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
         Rule rule = kcontext.getRule();
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
         List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
-        DoubleScoreConstraintMatchTotal matchTotal = (DoubleScoreConstraintMatchTotal) constraintMatchTotalMap.get(key);
+        DoubleConstraintMatchTotal matchTotal = (DoubleConstraintMatchTotal) constraintMatchTotalMap.get(key);
         if (matchTotal == null) {
-            matchTotal = new DoubleScoreConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            matchTotal = new DoubleConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
             constraintMatchTotalMap.put(key, matchTotal);
         }
         return matchTotal;
@@ -187,8 +187,8 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             });
         } else {
             // Add and remove ConstraintMatch
-            final BigDecimalScoreConstraintMatchTotal constraintMatchTotal = findBigDecimalConstraintMatchTotal(kcontext, scoreLevel);
-            final BigDecimalScoreConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
+            final BigDecimalConstraintMatchTotal constraintMatchTotal = findBigDecimalConstraintMatchTotal(kcontext, scoreLevel);
+            final BigDecimalConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
                 public void unMatch(Session wm, Match activation) {
                     undoListener.run();
@@ -198,14 +198,14 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         }
     }
 
-    private BigDecimalScoreConstraintMatchTotal findBigDecimalConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
+    private BigDecimalConstraintMatchTotal findBigDecimalConstraintMatchTotal(RuleContext kcontext, int scoreLevel) {
         Rule rule = kcontext.getRule();
         String constraintPackage = rule.getPackageName();
         String constraintName = rule.getName();
         List<Object> key = Arrays.<Object>asList(constraintPackage, constraintName, scoreLevel);
-        BigDecimalScoreConstraintMatchTotal matchTotal = (BigDecimalScoreConstraintMatchTotal) constraintMatchTotalMap.get(key);
+        BigDecimalConstraintMatchTotal matchTotal = (BigDecimalConstraintMatchTotal) constraintMatchTotalMap.get(key);
         if (matchTotal == null) {
-            matchTotal = new BigDecimalScoreConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
+            matchTotal = new BigDecimalConstraintMatchTotal(constraintPackage, constraintName, scoreLevel);
             constraintMatchTotalMap.put(key, matchTotal);
         }
         return matchTotal;

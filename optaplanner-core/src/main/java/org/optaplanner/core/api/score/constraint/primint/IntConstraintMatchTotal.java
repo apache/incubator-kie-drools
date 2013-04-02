@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.constraint.primlong;
+package org.optaplanner.core.api.score.constraint.primint;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.constraint.ScoreConstraintMatchTotal;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 
-public class LongScoreConstraintMatchTotal extends ScoreConstraintMatchTotal {
+public class IntConstraintMatchTotal extends ConstraintMatchTotal {
 
-    protected final Set<LongScoreConstraintMatch> constraintMatchSet;
-    protected long weightTotal;
+    protected final Set<IntConstraintMatch> constraintMatchSet;
+    protected int weightTotal;
 
-    public LongScoreConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
+    public IntConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
         super(constraintPackage, constraintName, scoreLevel);
-        constraintMatchSet = new HashSet<LongScoreConstraintMatch>();
+        constraintMatchSet = new HashSet<IntConstraintMatch>();
         weightTotal = 0;
     }
 
     @Override
-    public Set<LongScoreConstraintMatch> getConstraintMatchSet() {
+    public Set<IntConstraintMatch> getConstraintMatchSet() {
         return constraintMatchSet;
     }
 
-    public long getWeightTotal() {
+    public int getWeightTotal() {
         return weightTotal;
     }
 
@@ -52,24 +52,24 @@ public class LongScoreConstraintMatchTotal extends ScoreConstraintMatchTotal {
     // Worker methods
     // ************************************************************************
 
-    public LongScoreConstraintMatch addConstraintMatch(RuleContext kcontext, long weight) {
+    public IntConstraintMatch addConstraintMatch(RuleContext kcontext, int weight) {
         weightTotal += weight;
         List<Object> justificationList = extractJustificationList(kcontext);
-        LongScoreConstraintMatch constraintMatch = new LongScoreConstraintMatch(this, justificationList, weight);
+        IntConstraintMatch constraintMatch = new IntConstraintMatch(this, justificationList, weight);
         boolean added = constraintMatchSet.add(constraintMatch);
         if (!added) {
-            throw new IllegalStateException("The scoreConstraintMatchTotal (" + this
+            throw new IllegalStateException("The constraintMatchTotal (" + this
                     + ") could not add constraintMatch (" + constraintMatch
                     + ") to its constraintMatchSet (" + constraintMatchSet + ").");
         }
         return constraintMatch;
     }
 
-    public void removeConstraintMatch(LongScoreConstraintMatch constraintMatch) {
+    public void removeConstraintMatch(IntConstraintMatch constraintMatch) {
         weightTotal -= constraintMatch.getWeight();
         boolean removed = constraintMatchSet.remove(constraintMatch);
         if (!removed) {
-            throw new IllegalStateException("The scoreConstraintMatchTotal (" + this
+            throw new IllegalStateException("The constraintMatchTotal (" + this
                     + ") could not remove constraintMatch (" + constraintMatch
                     + ") from its constraintMatchSet (" + constraintMatchSet + ").");
         }

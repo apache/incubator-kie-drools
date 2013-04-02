@@ -21,15 +21,15 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 
-public abstract class ScoreConstraintMatch implements Serializable, Comparable<ScoreConstraintMatch> {
+public abstract class ConstraintMatch implements Serializable, Comparable<ConstraintMatch> {
 
     protected final List<Object> justificationList;
 
-    protected ScoreConstraintMatch(List<Object> justificationList) {
+    protected ConstraintMatch(List<Object> justificationList) {
         this.justificationList = justificationList;
     }
 
-    public abstract ScoreConstraintMatchTotal getScoreConstraintMatchTotal();
+    public abstract ConstraintMatchTotal getConstraintMatchTotal();
 
     public List<Object> getJustificationList() {
         return justificationList;
@@ -42,13 +42,13 @@ public abstract class ScoreConstraintMatch implements Serializable, Comparable<S
     // ************************************************************************
 
     private String getIdentificationString() {
-        return getScoreConstraintMatchTotal().getIdentificationString() + "/" + justificationList;
+        return getConstraintMatchTotal().getIdentificationString() + "/" + justificationList;
     }
 
     @Override
-    public int compareTo(ScoreConstraintMatch other) {
+    public int compareTo(ConstraintMatch other) {
         return new CompareToBuilder()
-                .append(getScoreConstraintMatchTotal(), other.getScoreConstraintMatchTotal())
+                .append(getConstraintMatchTotal(), other.getConstraintMatchTotal())
                 .append(getJustificationList(), other.getJustificationList())
                 .append(getWeightAsNumber(), other.getWeightAsNumber())
                 .toComparison();

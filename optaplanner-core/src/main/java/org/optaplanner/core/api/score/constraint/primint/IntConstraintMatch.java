@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.score.constraint.primdouble;
+package org.optaplanner.core.api.score.constraint.primint;
 
 import java.util.List;
 
-import org.optaplanner.core.api.score.constraint.ScoreConstraintMatch;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 
-public class DoubleScoreConstraintMatch extends ScoreConstraintMatch {
+public class IntConstraintMatch extends ConstraintMatch {
 
-    protected final DoubleScoreConstraintMatchTotal scoreConstraintMatchTotal;
+    protected final IntConstraintMatchTotal constraintMatchTotal;
 
-    protected final double weight;
+    protected final int weight;
 
-    public DoubleScoreConstraintMatch(DoubleScoreConstraintMatchTotal scoreConstraintMatchTotal,
-            List<Object> justificationList, double weight) {
+    public IntConstraintMatch(IntConstraintMatchTotal constraintMatchTotal,
+            List<Object> justificationList, int weight) {
         super(justificationList);
-        this.scoreConstraintMatchTotal = scoreConstraintMatchTotal;
+        this.constraintMatchTotal = constraintMatchTotal;
         this.weight = weight;
     }
 
     @Override
-    public DoubleScoreConstraintMatchTotal getScoreConstraintMatchTotal() {
-        return scoreConstraintMatchTotal;
+    public IntConstraintMatchTotal getConstraintMatchTotal() {
+        return constraintMatchTotal;
     }
 
-    public double getWeight() {
+    public int getWeight() {
         return weight;
     }
 
