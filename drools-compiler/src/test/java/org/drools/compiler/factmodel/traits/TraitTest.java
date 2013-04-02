@@ -1178,7 +1178,7 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-    @Test @Ignore("this test seems wrong")
+    @Test
     public void testIsAEvaluator( ) {
         String source = "package org.test;\n" +
                 "\n" +
@@ -1229,7 +1229,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "rule \"Worker Students v6\"\n" +
                 "when\n" +
                 " $x2 := Person( name == \"john\" )\n" +
-                " $x1 := Worker( core != $x2.core, this isA $x2 )\n" +
+                " $x1 := Worker( core != $x2.core, this not isA $x2 )\n" +
                 "then\n" +
                 " list.add( \"ok\" );\n" +
                 "end\n" +

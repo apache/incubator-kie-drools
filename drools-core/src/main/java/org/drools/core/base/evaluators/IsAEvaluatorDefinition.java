@@ -256,9 +256,11 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 }
             }
 
+            if (sourceTraits == null || targetTraits == null) {
+                return getOperator().isNegated();
+            }
 
-            return ( targetTraits != null && sourceTraits != null && HierarchyEncoderImpl.supersetOrEqualset(sourceTraits, targetTraits) )
-                    || ( sourceTraits == null && this.getOperator().isNegated() ) ;
+            return HierarchyEncoderImpl.supersetOrEqualset(sourceTraits, targetTraits) ^ getOperator().isNegated();
 
         }
         @Override
