@@ -99,7 +99,7 @@ public abstract class BetaNode extends LeftTupleSource
     private List<String>      leftListenedProperties;
     private List<String>      rightListenedProperties;
 
-    private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFUALT_ID;
+    private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFAULT_ID;
     
     private boolean           rightInputIsRiaNode;
 

@@ -19,9 +19,10 @@ package org.drools.compiler.factmodel.traits;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.factmodel.traits.VetoableTypedMap;
 
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,62 +33,72 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
     private Map<String,Object> __$$dynamic_properties_map$$;
     private Map<String,Thing<Imp>> __$$dynamic_traits_map$$;
 
-    public Map<String, Object> getDynamicProperties() {
+    public Map<String, Object> _getDynamicProperties() {
         if ( __$$dynamic_properties_map$$ == null ) {
-             __$$dynamic_properties_map$$ = new VetoableTypedMap( new HashMap<String, Thing>() );
+            __$$dynamic_properties_map$$ = new TraitTypeMap( new HashMap<String, Thing>() );
         }
         return __$$dynamic_properties_map$$;
     }
 
-    public void setDynamicProperties(Map<String, Object> map) {
-        __$$dynamic_properties_map$$ = new VetoableTypedMap( map );
+    public void _setDynamicProperties(Map<String, Object> map) {
+        __$$dynamic_properties_map$$ = new TraitTypeMap( map );
     }
 
 
-    public Map<String,Thing<Imp>> getTraitMap() {
+    public Map<String,Thing<Imp>> _getTraitMap() {
         if ( __$$dynamic_traits_map$$ == null ) {
-            __$$dynamic_traits_map$$ = new VetoableTypedMap( new HashMap<String, Thing<Imp>>() );
+            __$$dynamic_traits_map$$ = new TraitTypeMap( new HashMap<String, Thing<Imp>>() );
         }
         return __$$dynamic_traits_map$$;
     }
 
     public void addTrait(String type, Thing<Imp> proxy) throws LogicalTypeInconsistencyException {
-        getTraitMap().put( type, proxy );
+        _getTraitMap().put( type, proxy );
     }
 
+    public BitSet getCurrentTypeCode() {
+        return ((TraitTypeMap) __$$dynamic_traits_map$$).getCurrentTypeCode();
+    }
 
-
-    public void setTraitMap(Map map) {
+    public void _setTraitMap(Map map) {
         this.__$$dynamic_traits_map$$ = map;
     }
 
     public Thing<Imp> getTrait(String type) {
-        return getTraitMap().get( type );
+        return _getTraitMap().get( type );
     }
 
     public boolean hasTrait(String type) {
-        return getTraitMap().containsKey( type );
+        return _getTraitMap().containsKey( type );
     }
 
-    public Thing<Imp> removeTrait(String type) {
-        return getTraitMap().remove( type );
+    public Collection <Thing<Imp>> removeTrait(String type) {
+        return ((TraitTypeMap)_getTraitMap()).removeCascade( type );
+    }
+
+    public Collection<Thing<Imp>> removeTrait( BitSet typeCode ) {
+        return ((TraitTypeMap)_getTraitMap()).removeCascade( typeCode );
     }
 
     public Collection<String> getTraits() {
-        return getTraitMap().keySet();
+        return _getTraitMap().keySet();
     }
 
-    public void denyTrait(Class trait) throws LogicalTypeInconsistencyException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public Collection<Thing> getMostSpecificTraits() {
+        return ((TraitTypeMap) _getTraitMap()).getMostSpecificTraits();
     }
 
-    public void allowTrait(Class trait) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void _setBottomTypeCode(BitSet code) {
+        ((TraitTypeMap) __$$dynamic_traits_map$$).setBottomCode( code );
     }
 
-//    public Map getTraits() {
-//        return __$$dynamic_traits_set$$;
-//    }
+    public BitSet getBottomTypeCode() {
+        return ((TraitTypeMap) __$$dynamic_traits_map$$).getBottomCode();
+    }
+
+// public Map getTraits() {
+// return __$$dynamic_traits_set$$;
+// }
 
 
 
@@ -99,7 +110,7 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
 
 
     public Map<String, Object> getFields() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null; //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Imp getCore() {

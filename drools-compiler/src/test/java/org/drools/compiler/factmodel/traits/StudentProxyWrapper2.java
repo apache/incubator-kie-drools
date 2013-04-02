@@ -45,7 +45,7 @@ public class StudentProxyWrapper2 implements Map<String, Object>, MapWrapper {
 
 //            System.out.println( map );
 //            System.out.println( object );
-            object.setDynamicProperties( map );
+            object._setDynamicProperties( map );
 
 //            map.put( "age", 0 );
 //            map.put( "xcsvf" , 0.0 );

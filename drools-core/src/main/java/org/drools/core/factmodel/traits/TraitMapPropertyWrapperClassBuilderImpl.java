@@ -132,7 +132,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitVarInsn( ALOAD, 2 );
-            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
 
             int stackSize = initSoftFields( mv, trait, mask, 2 );
 

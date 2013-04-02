@@ -19,10 +19,16 @@ package org.drools.core.factmodel.traits;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.util.HierarchyEncoder;
+import org.drools.core.util.HierarchyEncoderImpl;
 import org.kie.api.definition.type.FactField;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TraitRegistry implements Externalizable {
@@ -31,7 +37,11 @@ public class TraitRegistry implements Externalizable {
     private Map<String, ClassDefinition> traits;
     private Map<String, ClassDefinition> traitables;
 
+    private int codeSize = 0;
+
     private Map<String, Long> masks;
+
+    private HierarchyEncoder<String> hierarchy = new HierarchyEncoderImpl<String>();
 
 
     public TraitRegistry() {
@@ -73,6 +83,19 @@ public class TraitRegistry implements Externalizable {
         if ( other.masks != null ) {
             this.masks.putAll( other.masks );
         }
+
+        if ( hierarchy == null || hierarchy.size() <= 1 ) {
+            hierarchy = other.hierarchy;
+        } else {
+            if ( other.traits != null ) {
+                for ( String traitName : other.traits.keySet() ) {
+                    ClassDefinition trait = other.traits.get( traitName );
+                    hierarchy.encode( trait.getName(), Arrays.asList( trait.getInterfaces() ) );
+                }
+            }
+        }
+
+
     }
 
     public Map<String, ClassDefinition> getTraits() {
@@ -100,14 +123,27 @@ public class TraitRegistry implements Externalizable {
 
 
     public void addTrait( ClassDefinition trait ) {
-        addTrait( trait.getClassName(), trait );
+        addTrait(trait.getClassName(), trait);
+        hierarchy.encode( trait.getName(), Arrays.asList(trait.getInterfaces()) );
     }
+
 
     public void addTrait( String className, ClassDefinition trait ) {
         if ( traits == null ) {
             traits = new HashMap<String, ClassDefinition>();
         }
         this.traits.put( className, trait );
+        hierarchy.encode( className, getTraitInterfaces( trait ) );
+    }
+
+    private Collection<String> getTraitInterfaces( ClassDefinition trait ) {
+        List<String> intfs = new ArrayList<String>();
+        for ( String s : trait.getInterfaces() ) {
+            if ( traits.containsKey( s ) ) {
+                intfs.add( s );
+            }
+        }
+        return intfs;
     }
 
     public void addTraitable( ClassDefinition traitable ) {
@@ -154,7 +190,7 @@ public class TraitRegistry implements Externalizable {
             FieldDefinition fdef = (FieldDefinition) field;
             boolean isAliased = fdef.hasAlias();
             String alias = ((FieldDefinition) field).resolveAlias( traitableDef );
-            
+
             FieldDefinition concreteField = traitableDef.getField( alias );
             Class concreteType = concreteField != null ? concreteField.getType() : null;
             Class virtualType = field.getType();
@@ -174,11 +210,20 @@ public class TraitRegistry implements Externalizable {
         objectOutput.writeObject( traits );
         objectOutput.writeObject( traitables );
         objectOutput.writeObject( masks );
+        objectOutput.writeObject( hierarchy );
+        objectOutput.writeInt( codeSize );
     }
 
     public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
         traits = (Map<String, ClassDefinition>) objectInput.readObject();
         traitables = (Map<String, ClassDefinition>) objectInput.readObject();
         masks = (Map<String, Long>) objectInput.readObject();
+        hierarchy = (HierarchyEncoderImpl) objectInput.readObject();
+        codeSize = objectInput.readInt();
+    }
+
+
+    public HierarchyEncoder getHierarchy() {
+        return hierarchy;
     }
 }

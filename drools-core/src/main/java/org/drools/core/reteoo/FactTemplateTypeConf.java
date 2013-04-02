@@ -123,6 +123,10 @@ public class FactTemplateTypeConf
         return false;
     }
 
+    public boolean isTrait() {
+        return false;
+    }
+
     public TypeDeclaration getTypeDeclaration() {
         return null;
     }

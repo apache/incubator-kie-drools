@@ -16,6 +16,7 @@
 
 package org.drools.core.factmodel.traits;
 
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Map;
 
@@ -24,13 +25,13 @@ public interface TraitableBean<K, X extends TraitableBean> {
     public static final String MAP_FIELD_NAME = "__$$dynamic_properties_map$$";
     public String TRAITSET_FIELD_NAME = "__$$dynamic_traits_map$$";
 
-    public Map<String,Object> getDynamicProperties();
+    public Map<String,Object> _getDynamicProperties();
 
-    public void setDynamicProperties( Map<String,Object> map );
+    public void _setDynamicProperties( Map<String,Object> map );
 
-    public Map<String,Thing<K>> getTraitMap();
+    public Map<String,Thing<K>> _getTraitMap();
 
-    public void setTraitMap( Map<String,Thing<K>> map );
+    public void _setTraitMap( Map<String,Thing<K>> map );
 
 
     public void addTrait(String type, Thing<K> proxy) throws LogicalTypeInconsistencyException;
@@ -39,12 +40,17 @@ public interface TraitableBean<K, X extends TraitableBean> {
 
     public boolean hasTrait( String type );
 
-    public Thing<K> removeTrait( String type );
+    public Collection<Thing<K>> removeTrait( String type );
+
+    public Collection<Thing<K>> removeTrait( BitSet typeCode );
 
     public Collection<String> getTraits();
 
-    public void denyTrait( Class trait ) throws LogicalTypeInconsistencyException;
 
-    public void allowTrait( Class trait );
+    public Collection<Thing> getMostSpecificTraits();
+
+    public BitSet getCurrentTypeCode();
+
+    public void _setBottomTypeCode( BitSet code );
 
 }

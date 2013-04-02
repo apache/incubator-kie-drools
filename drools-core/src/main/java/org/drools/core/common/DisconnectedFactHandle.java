@@ -132,6 +132,10 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
+    public boolean isTrait() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
     public boolean isValid() {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }

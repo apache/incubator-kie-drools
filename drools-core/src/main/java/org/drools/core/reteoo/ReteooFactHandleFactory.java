@@ -23,6 +23,8 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.TraitFactHandle;
+import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.kie.api.runtime.rule.SessionEntryPoint;
@@ -70,6 +72,13 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
                                         timestamp,
                                         duration,
                                         wmEntryPoint );
+        } else if ( conf != null && conf.isTrait() ) {
+            return new TraitFactHandle( id,
+                    object,
+                    recency,
+                    wmEntryPoint,
+                    ( conf.getTypeDeclaration() != null && conf.getTypeDeclaration().getKind() == TypeDeclaration.Kind.TRAIT )
+                            || object instanceof TraitProxy);
         } else {
             return new DefaultFactHandle( id,
                                           object,

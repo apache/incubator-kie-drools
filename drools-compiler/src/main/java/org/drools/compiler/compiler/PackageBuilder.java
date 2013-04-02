@@ -32,6 +32,7 @@ import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.DeepCloneable;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.HierarchySorter;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
@@ -2713,8 +2714,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     // we already know the class exists
                 }
             } else {
-                if (def.getClassName().endsWith( "_Trait__Extension" )) {
-                    pkgRegistry.getTraitRegistry().addTrait( def.getClassName().replace( "_Trait__Extension",
+                if (def.getClassName().endsWith( TraitFactory.SUFFIX )) {
+                    pkgRegistry.getTraitRegistry().addTrait( def.getClassName().replace( TraitFactory.SUFFIX,
                                                                                       "" ),
                                                           def );
                 } else {
@@ -3348,127 +3349,49 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
      */
     public Collection<AbstractClassTypeDeclarationDescr> sortByHierarchy( List<AbstractClassTypeDeclarationDescr> typeDeclarations ) {
 
-        Node<AbstractClassTypeDeclarationDescr> root = new Node<AbstractClassTypeDeclarationDescr>( null );
-        Map<String, Node<AbstractClassTypeDeclarationDescr>> map = new HashMap<String, Node<AbstractClassTypeDeclarationDescr>>();
-        for ( AbstractClassTypeDeclarationDescr tdescr : typeDeclarations ) {
-            String typeName = tdescr.getType().getFullName();
+        HierarchySorter<QualifiedName> sorter = new HierarchySorter<QualifiedName>();
+        Map<QualifiedName, Collection<QualifiedName>> taxonomy = new HashMap<QualifiedName, Collection<QualifiedName>>();
+        Map<QualifiedName, AbstractClassTypeDeclarationDescr> cache = new HashMap<QualifiedName, AbstractClassTypeDeclarationDescr>();
 
-            Node<AbstractClassTypeDeclarationDescr> node = map.get( typeName );
-            if ( node == null ) {
-                node = new Node( typeName,
-                                 tdescr );
-                map.put( typeName,
-                         node );
-            } else if ( node.getData() == null ) {
-                node.setData( tdescr );
+        for ( AbstractClassTypeDeclarationDescr tdescr : typeDeclarations ) {
+            QualifiedName name = tdescr.getType();
+
+            cache.put( name, tdescr );
+
+            if ( taxonomy.get( name ) == null ) {
+                taxonomy.put( name, new ArrayList<QualifiedName>() );
             } else {
                 this.results.add( new TypeDeclarationError( tdescr,
-                                       "Found duplicate declaration for type " + tdescr.getTypeName() ) );
+                        "Found duplicate declaration for type " + tdescr.getTypeName() ) );
             }
 
-                if ( tdescr.getSuperTypes().isEmpty() ) {
-                    root.addChild( node );
-                } else {
-                    for ( QualifiedName qname : tdescr.getSuperTypes() ) {
-                        String superTypeName = qname.getFullName();
+            Collection<QualifiedName> supers = taxonomy.get( name );
 
-                        Node<AbstractClassTypeDeclarationDescr> superNode = map.get( superTypeName );
-                        if ( superNode == null ) {
-                            superNode = new Node<AbstractClassTypeDeclarationDescr>( superTypeName );
-                            map.put( superTypeName,
-                                    superNode );
-                        }
-                        superNode.addChild( node );
-                    }
-                }
+            supers.addAll( tdescr.getSuperTypes() );
+
             for ( TypeFieldDescr field : tdescr.getFields().values() ) {
-                String fieldTypeName = field.getPattern().getObjectType();
-
-                Node<AbstractClassTypeDeclarationDescr> superNode = map.get( fieldTypeName );
-                if ( superNode == null ) {
-                    superNode = new Node<AbstractClassTypeDeclarationDescr>( fieldTypeName );
-                    map.put( fieldTypeName,
-                             superNode );
+                QualifiedName typeName = new QualifiedName( field.getPattern().getObjectType() );
+                if ( ! typeName.equals( name ) && ! hasCircularDependency( name, typeName, taxonomy ) ) {
+                    supers.add( typeName );
                 }
-                superNode.addChild( node );
+
             }
 
         }
-
-
-        for ( Node<AbstractClassTypeDeclarationDescr> n : map.values() ) {
-            if ( n.getData() == null ) {
-                root.addChild(n);
-            }
+        List<QualifiedName> sorted = sorter.sort( taxonomy );
+        ArrayList list = new ArrayList( sorted.size() );
+        for ( QualifiedName name : sorted ) {
+            list.add( cache.get( name ) );
         }
 
-
-
-        List<AbstractClassTypeDeclarationDescr> sortedList = new LinkedList<AbstractClassTypeDeclarationDescr>();
-        root.accept( sortedList );
-
-        return sortedList;
+        return list;
     }
 
-    /**
-     * Utility class for the sorting algorithm
-     *
-     * @param <T>
-     */
-    private static class Node<T> {
-
-        private String        key;
-        private T             data;
-        private List<Node<T>> children;
-
-        public Node( String key ) {
-            this.key = key;
-            this.children = new LinkedList<Node<T>>();
+    private boolean hasCircularDependency( QualifiedName name, QualifiedName typeName, Map<QualifiedName, Collection<QualifiedName>> taxonomy) {
+        if ( taxonomy.containsKey( typeName ) ) {
+            return taxonomy.get( typeName ).contains( name );
         }
-
-        public Node( String key,
-                T content ) {
-            this( key );
-            this.data = content;
-        }
-
-        public void addChild( Node<T> child ) {
-            this.children.add( child );
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public T getData() {
-            return data;
-        }
-
-        public void setData( T content ) {
-            this.data = content;
-        }
-
-        public void accept( List<T> list ) {
-            accept( list, new Stack<T>() );
-        }
-
-        private void accept( List<T> list, Stack<T> stack ) {
-            if (this.data != null) {
-                list.remove( this.data );
-                list.add( this.data );
-                stack.push(this.data);
-            }
-
-            for (Node<T> child : children) {
-                if (!stack.contains(child.data)) {
-                    child.accept( list, stack );
-                }
-            }
-
-            if (this.data != null) {
-                stack.pop();
-            }
-        }
+        return false;
     }
 
     //Entity rules inherit package attributes
