@@ -146,11 +146,4 @@ public interface KnowledgeHelper
 
     <T, K, X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait );
 
-    <T, K> Thing<K> ward( Thing<K> core, Class<T> trait );
-
-    <T, K> Thing<K> ward( K core, Class<T> trait );
-
-    <T, K> Thing<K> grant( Thing<K> core, Class<T> trait );
-
-    <T, K> Thing<K> grant( K core, Class<T> trait );
 }

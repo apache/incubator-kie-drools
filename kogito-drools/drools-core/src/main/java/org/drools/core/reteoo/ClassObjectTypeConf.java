@@ -33,6 +33,8 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.ShadowProxy;
 import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.InternalRuleBase;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.PatternBuilder;
 import org.drools.core.rule.EntryPoint;
@@ -225,6 +227,14 @@ public class ClassObjectTypeConf
     public boolean isEvent() {
 //        return this.concreteObjectTypeNode.getObjectType().isEvent();
         return this.isEvent;
+    }
+
+    public boolean isTrait() {
+        return typeDecl != null && (
+            typeDecl.getKind() == TypeDeclaration.Kind.TRAIT
+            || typeDecl.getTypeClassDef().isTraitable()
+        ) || Thing.class.isAssignableFrom( cls )
+          || TraitableBean.class.isAssignableFrom( cls );
     }
 
     public TypeDeclaration getTypeDeclaration() {

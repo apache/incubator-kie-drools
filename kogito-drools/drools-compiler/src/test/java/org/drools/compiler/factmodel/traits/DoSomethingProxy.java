@@ -22,6 +22,8 @@ import java.util.Map;
 
 public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithBehaviour<K> {
 
+    private static final String traitType = ISomethingWithBehaviour.class.getName();
+
     private int age;
 
     private K core;
@@ -67,5 +69,10 @@ public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithB
     @Override
     public Object getObject() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public String getTraitName() {
+        return traitType;
     }
 }

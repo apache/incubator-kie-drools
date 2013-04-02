@@ -99,6 +99,10 @@ public class QueryElementFactHandle
         return false;
     }
 
+    public boolean isTrait() {
+        return false;
+    }
+
     public boolean isValid() {
         return true;
     }

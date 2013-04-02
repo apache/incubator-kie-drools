@@ -121,7 +121,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         this.isUnification = isUnification;
     }
 
-    private String getAccessedClass() {
+    protected String getAccessedClass() {
         return extractor instanceof ClassFieldReader ? ((ClassFieldReader)extractor).getClassName() : null;
     }
 

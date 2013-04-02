@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.factmodel.traits.VetoableTypedMap;
+import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
 
@@ -36,7 +36,7 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
     public static InternalReadAccessor bit_reader;
     public static WriteAccessor bit_writer;
 
-
+    private static final String traitType = IStudent.class.getName();
 
     public StudentProxy2(Imp2 obj, Map<String, Object> m) {
         if ( m == null ) {
@@ -48,12 +48,12 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
 
         fields = new StudentProxyWrapper2( obj, m );
 
-        if ( obj.getDynamicProperties() == null ) {
-            obj.setDynamicProperties( m );
+        if ( obj._getDynamicProperties() == null ) {
+            obj._setDynamicProperties(m);
         }
 
-        if ( obj.getTraitMap() == null ) {
-            obj.setTraitMap( new VetoableTypedMap( new HashMap() ) );
+        if ( obj._getTraitMap() == null ) {
+            obj._setTraitMap(new TraitTypeMap(new HashMap()));
         }
     }
 
@@ -65,7 +65,9 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
         return object;
     }
 
-
+    public String getTraitName() {
+        return traitType;
+    }
 
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -114,31 +116,23 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
     }
 
     public String getName() {
-//        return object.getName();
+// return object.getName();
         return (String) name_reader.getValue(object);
     }
 
     public void setName(String name) {
-//        object.setName( name );
+// object.setName( name );
         name_writer.setValue(object, name);
     }
 
     public int getAge() {
         Object tmp = map.get( "age" );
-        return  (Integer) (
+        return (Integer) (
                 tmp != null ?
-                tmp : 0 );
+                        tmp : 0 );
     }
 
     public void setAge(int age) {
         map.put( "age", Integer.valueOf( age ) );
     }
-
-
-
-
-
-
-
-
 }

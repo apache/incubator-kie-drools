@@ -42,18 +42,19 @@ then
 end
 
 rule "Trait"
-no-loop
 when
     // use only pure Objs
     $core: Imp()
+    not Person( age == 30 )
 then
-    Person<Object> p = don( $core, Person.class, true );
-    p.setName( "john" );
-    p.setAge( 30 );
+    Person p = don( $core, Person.class );
 
     System.out.println( " Person trait : " + p);
 
-    update(p);
+    modify( p ) {
+        setName( "john" ),
+        setAge( 30 );
+    }
 end
 
 
@@ -65,11 +66,12 @@ then
     System.out.println( "John the Person is here >>> " + $p );
     list.add("OK");
 
-    IRole role = don( $core, IRole.class, true );
-    role.setRoleName("myRole");
-    System.out.println( "John the Role is here >>> " + role.getRoleName() );
-    update( role );
+    IRole role = don( $core, IRole.class );
 
+    modify( role ) {
+        setRoleName("myRole");
+    }
+    System.out.println( "John the Role is here >>> " + role.getRoleName() );
 end
 
 

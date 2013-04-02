@@ -56,6 +56,8 @@ public interface InternalFactHandle
      * @return
      */
     boolean isEvent();
+
+    boolean isTrait();
     
     RightTuple getFirstRightTuple();
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.factmodel.traits;
+package org.drools.core.factmodel.traits;
 
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.factmodel.traits.TraitType;
-import org.drools.core.factmodel.traits.TraitableBean;
 
-@Trait
-public interface IStudent<K extends TraitableBean> extends IPerson<K>,Thing<K>, TraitType {
+import org.drools.core.util.CodedHierarchy;
 
-    public String getSchool();
-    public void setSchool( String school );
+import java.util.BitSet;
+
+public interface TypeLattice<T> extends CodedHierarchy<T> {
+
+    public BitSet getTopCode();
+
+    public void setTopCode( BitSet code );
+
+    public BitSet getBottomCode();
+
+    public void setBottomCode( BitSet code );
 }

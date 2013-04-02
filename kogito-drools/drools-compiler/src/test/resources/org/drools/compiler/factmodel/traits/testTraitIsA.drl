@@ -1,8 +1,8 @@
-package org.drools.compiler.test;
+package org.test;
 
-import org.drools.compiler.factmodel.traits.Traitable;
+import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.Entity;
-import org.drools.compiler.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Thing;
 
 global java.util.List list;
 
@@ -50,12 +50,12 @@ no-loop
 when
     $core: Imp( "adam", "skool" ;)
 then
-    Student<Imp> s = drools.<Student,Imp>don( $core, Student.class, true );
-    Thing<Imp> t = drools.<Thing,Imp>don( $core, Thing.class, true );
+    Student s = drools.don( $core, Student.class, true );
+    Thing t = drools.don( $core, Thing.class, true );
 
-    Worker<Imp> w = drools.<Worker,Imp>don( $core, Worker.class, true );
+    Worker w = drools.don( $core, Worker.class, true );
 
-    update( $core );
+    modify( $core ) { };
 end
 
 rule "Trait2"
@@ -63,7 +63,7 @@ no-loop
 when
     $core: Entity( )
 then
-    Student<Entity> s = drools.<Student,Entity>don( $core, Student.class, true );
+    Student s = drools.don( $core, Student.class, true );
     list.add( "0" );
 end
 
@@ -104,7 +104,7 @@ end
 
 rule "Worker Students v3"
 when
-    $x1 := Worker( this isA "org.drools.compiler.test.Student" )
+    $x1 := Worker( this isA "org.test.Student" )
 then
     list.add( "6" );
 end
@@ -112,14 +112,14 @@ end
 
 rule "Worker Students v4"
 when
-    $x1 := Worker( core isA "org.drools.compiler.test.Student" )
+    $x1 := Worker( core isA "org.test.Student" )
 then
     list.add( "7" );
 end
 
 rule "Worker Students v5"
 when
-    $x1 := Imp( this isA "org.drools.compiler.test.Student" )
+    $x1 := Imp( this isA "org.test.Student" )
 then
     list.add( "8" );
 end

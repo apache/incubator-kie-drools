@@ -16,6 +16,7 @@
 
 package org.drools.compiler.factmodel.traits;
 
+import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
@@ -24,7 +25,6 @@ import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TripleBasedBean;
 import org.drools.core.factmodel.traits.TripleBasedStruct;
 import org.drools.core.factmodel.traits.TripleBasedTypes;
-import org.drools.core.factmodel.traits.VetoableTypedMap;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
 import org.kie.api.runtime.rule.Variable;
@@ -34,7 +34,9 @@ import java.util.Map;
 
 public class StudentProxy3 extends TraitProxy implements IStudent {
 
-    private  TripleFactory tripleFactory = new TripleFactoryImpl();
+    private static final String traitType = IStudent.class.getName();
+
+    private TripleFactory tripleFactory = new TripleFactoryImpl();
 
     public final Imp2 object;
     private TripleStore map;
@@ -57,21 +59,26 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
         setTripleFactory( factory );
 
         fields = new StudentProxyWrapper3( obj, m );
-        ((TripleBasedStruct) fields).setTripleFactory( factory );
+        (( TripleBasedStruct ) fields).setTripleFactory( factory );
 
 
-        if ( obj.getDynamicProperties() == null ) {
-            obj.setDynamicProperties( new TripleBasedBean(obj,m,factory) );
+        if ( obj._getDynamicProperties() == null ) {
+            obj._setDynamicProperties(new TripleBasedBean(obj, m, factory));
         }
 
-        if ( obj.getTraitMap() == null ) {
-            obj.setTraitMap( new VetoableTypedMap( new TripleBasedTypes(obj,m,factory) ) );
+        if ( obj._getTraitMap() == null ) {
+            obj._setTraitMap(new TraitTypeMap(new TripleBasedTypes(obj, m, factory)));
         }
 
     }
 
     public Imp2 getCore() {
         return object;
+    }
+
+    @Override
+    public String getTraitName() {
+        return traitType;
     }
 
     public Object getObject() {
@@ -83,12 +90,12 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
         return "(@Student) : " + getFields().entrySet().toString();
     }
 
-     public boolean getX( String k ) {
-         if ( getMap() == null ) {
-             return false;
-         }
-         return getMap().containsKey( k );
-     }
+    public boolean getX( String k ) {
+        if ( getMap() == null ) {
+            return false;
+        }
+        return getMap().containsKey( k );
+    }
 
 
     public Map getMap() {
@@ -113,12 +120,12 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
     }
 
     public String getName() {
-//        return object.getName();
+// return object.getName();
         return (String) name_reader.getValue(object);
     }
 
     public void setName(String name) {
-//        object.setName( name );
+// object.setName( name );
         name_writer.setValue(object, name);
     }
 

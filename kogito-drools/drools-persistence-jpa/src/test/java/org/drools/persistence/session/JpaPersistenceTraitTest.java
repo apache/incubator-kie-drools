@@ -73,11 +73,13 @@ public class JpaPersistenceTraitTest {
                 "end \n " +
                 "" +
                 "declare trait Mask \n" +
+                "  @propertyReactive \n" +
                 "  fld : String \n" +
                 "  xyz : int  \n" +
                 "end \n" +
                 "\n " +
                 "declare trait Cloak \n" +
+                "  @propertyReactive \n" +
                 "  fld : String \n" +
                 "  ijk : String  \n" +
                 "end \n" +
@@ -153,7 +155,7 @@ public class JpaPersistenceTraitTest {
             }
         }
         assertNotNull( core );
-        assertEquals( 2, core.getDynamicProperties().size() );
+        assertEquals( 2, core._getDynamicProperties().size() );
         assertNotNull( core.getTrait( "org.drools.core.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Cloak" ) );
@@ -173,11 +175,13 @@ public class JpaPersistenceTraitTest {
                 "end \n " +
                 "" +
                 "declare trait Mask2 \n" +
+                "  @propertyReactive \n" +
                 "  fld : String \n" +
                 "  xyz : int  \n" +
                 "end \n" +
                 "\n " +
                 "declare trait Cloak2 \n" +
+                "  @propertyReactive \n" +
                 "  fld : String \n" +
                 "  ijk : String  \n" +
                 "end \n" +
@@ -254,7 +258,7 @@ public class JpaPersistenceTraitTest {
             }
         }
         assertNotNull( core );
-        assertEquals( 2, core.getDynamicProperties().size() );
+        assertEquals( 2, core._getDynamicProperties().size() );
         assertNotNull( core.getTrait( "org.drools.core.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask2" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Cloak2" ) );
@@ -273,6 +277,7 @@ public class JpaPersistenceTraitTest {
                 "end \n " +
                 "" +
                 "declare trait Mask \n" +
+                "  @propertyReactive \n" +
                 "  fld : String \n" +
                 "  xyz : int  \n" +
                 "end \n" +
@@ -349,7 +354,7 @@ public class JpaPersistenceTraitTest {
             }
         }
         assertNotNull( core );
-        assertEquals( 1, core.getDynamicProperties().size() );
+        assertEquals( 1, core._getDynamicProperties().size() );
         assertNotNull( core.getTrait( "org.drools.core.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
 

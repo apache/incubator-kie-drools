@@ -21,16 +21,26 @@ import org.drools.core.util.TripleFactory;
 import org.kie.api.runtime.rule.Variable;
 
 import java.io.*;
+import java.util.BitSet;
 import java.util.Map;
 
-public abstract class TraitProxy implements Externalizable {
+public abstract class TraitProxy implements Externalizable, TraitType {
 
     protected TripleFactory tripleFactory;
 
-    public TraitProxy() { }
+    private BitSet typeCode;
+
+    private BitSet typeFilter;
+
+    public TraitProxy() {
+
+    }
 
     protected Map<String, Object> fields;
 
+    public boolean isVirtual() {
+        return false;
+    }
 
     public Map<String, Object> getFields() {
         return fields;
@@ -39,16 +49,20 @@ public abstract class TraitProxy implements Externalizable {
     protected void setFields( Map<String, Object> m ) {
         fields = m;
     }
-    
+
+    public abstract String getTraitName();
+
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( fields );
         out.writeObject( tripleFactory );
+        out.writeObject( typeCode );
     }
 
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         fields = (Map<String,Object>) in.readObject();
         tripleFactory = (TripleFactory) in.readObject();
+        typeCode = (BitSet) in.readObject();
     }
 
 
@@ -115,6 +129,22 @@ public abstract class TraitProxy implements Externalizable {
 
     public void setTripleFactory( TripleFactory tripleFactory ) {
         this.tripleFactory = tripleFactory;
+    }
+
+    public BitSet getTypeCode() {
+        return typeCode;
+    }
+
+    public void setTypeCode(BitSet typeCode) {
+        this.typeCode = typeCode;
+    }
+
+    public BitSet getTypeFilter() {
+        return typeFilter;
+    }
+
+    public void setTypeFilter(BitSet typeFilter) {
+        this.typeFilter = typeFilter;
     }
 }
 

@@ -268,6 +268,10 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return false;
     }
 
+    public boolean isTrait() {
+        return false;
+    }
+
     public RightTuple getFirstRightTuple() {
         return this.firstRightTuple;
     }

@@ -5,13 +5,16 @@ import java.util.List;
 global List list;
 
 declare trait SeniorStudent
-    grad  : boolean
-    year  : int
+@propertyReactive
+    grad : boolean
+    year : int
 end
 
 declare Student
-    grad  : boolean    = false
-    year  : int        = 0
+@Traitable
+@propertyReactive
+    grad : boolean = false
+    year : int = 0
 end
 
 
@@ -21,28 +24,31 @@ then
     insert( new Student() );
 end
 
-rule "React" salience 100 // needed to ensure if fires before monkey_wonders
+rule "React"
 when
-    $x : SeniorStudent( $y : year )
+    $x : SeniorStudent( $y : year ) @watch( year )
 then
+    System.out.println( " SeniorStudent Updated " );
     list.add( $y );
 end
 
 
 rule "Don"
 salience 1
+no-loop
 when
-    $s : Student( grad == false )
+    $s : Student( grad == false ) @watch( year )
 then
+    System.out.println( " Don SeniorStudent " );
     SeniorStudent sen = don( $s, SeniorStudent.class );
 end
 
 
-rule "monkey_wanders"
+rule "Age with time"
+salience -5
 when
     $s : Student( grad == false, $y : year < 4 )
 then
-	modify( $s ) { setYear( $y + 1 ); }
+    System.out.println( " One year passes " + $y );
+modify( $s ) { setYear( $y + 1 ); }
 end
-
-

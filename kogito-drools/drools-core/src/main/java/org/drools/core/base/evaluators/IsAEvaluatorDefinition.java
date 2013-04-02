@@ -21,15 +21,18 @@ import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.factmodel.traits.*;
+import org.drools.core.rule.VariableRestriction;
 import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.HierarchyEncoderImpl;
 import org.kie.api.runtime.ObjectFilter;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -211,8 +214,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                 VariableContextEntry context, InternalFactHandle right) {
 
-            Object target = right.getObject();
-            Object source = context.getObject();
+            Object target = ((VariableRestriction.ObjectVariableContextEntry) context).left;
+            Object source = right.getObject();
 
             return compare( source, target, workingMemory );
         }
@@ -228,36 +231,36 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
 
 
 
-        private boolean compare(Object source, Object target, InternalWorkingMemory workingMemory ) {
-            Collection sourceTraits = null;
-            Collection targetTraits = null;
-            if ( source instanceof Thing) {
-                sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getTraits();
+        private boolean compare( Object source, Object target, InternalWorkingMemory workingMemory ) {
+            BitSet sourceTraits = null;
+            BitSet targetTraits = null;
+            if ( source instanceof Thing ) {
+                sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getCurrentTypeCode();
             } else if ( source instanceof TraitableBean ) {
-                sourceTraits = ((TraitableBean) source).getTraits();
+                sourceTraits = ((TraitableBean) source).getCurrentTypeCode();
             } else {
                 TraitableBean tbean = lookForWrapper( source, workingMemory);
                 if ( tbean != null ) {
-                    sourceTraits = tbean.getTraits();
+                    sourceTraits = tbean.getCurrentTypeCode();
                 }
             }
 
             if ( target instanceof Thing) {
-                targetTraits = ((TraitableBean) ((Thing) target).getCore()).getTraits();
+                targetTraits = ((TraitableBean) ((Thing) target).getCore()).getCurrentTypeCode();
             } else if ( target instanceof TraitableBean ) {
-                targetTraits = ((TraitableBean) target).getTraits();
+                targetTraits = ((TraitableBean) target).getCurrentTypeCode();
             } else {
                 TraitableBean tbean = lookForWrapper( target, workingMemory);
                 if ( tbean != null ) {
-                    targetTraits = tbean.getTraits();
+                    targetTraits = tbean.getCurrentTypeCode();
                 }
             }
 
-            return ( targetTraits != null && sourceTraits != null &&
-                    ( this.getOperator().isNegated() ^ sourceTraits.containsAll( targetTraits ) ) )
-                   || ( sourceTraits == null && this.getOperator().isNegated() ) ;
-        }
 
+            return ( targetTraits != null && sourceTraits != null && HierarchyEncoderImpl.supersetOrEqualset(sourceTraits, targetTraits) )
+                    || ( sourceTraits == null && this.getOperator().isNegated() ) ;
+
+        }
         @Override
         public String toString() {
             return "IsAEvaluatorDefinition isA";
