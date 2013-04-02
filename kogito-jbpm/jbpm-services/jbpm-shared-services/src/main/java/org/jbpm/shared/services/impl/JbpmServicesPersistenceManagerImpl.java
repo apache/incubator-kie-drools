@@ -79,19 +79,6 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     public JbpmServicesPersistenceManagerImpl() {
     }
 
-    public EntityManager getEm() {
-        try {
-            this.em.toString();  
-            return this.em;
-        } catch (ContextNotActiveException e) {
-            if (this.noScopeEm == null) {
-                this.noScopeEm = this.emf.createEntityManager();
-            }
-            return this.noScopeEm;
-        }
-
-    }
-
     public EntityManagerFactory getEmf() {
         return emf;
     }
@@ -126,7 +113,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         try {
             txOwner = beginTransaction();
             txStarted = true;
-            result = getEm().createQuery(updateString).executeUpdate();
+            result = em.createQuery(updateString).executeUpdate();
             operationSuccessful = true;
             
             endTransaction(txOwner);
@@ -153,7 +140,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         try {
             txOwner = beginTransaction();
             txStarted = true;
-            find = getEm().find(entityClass, primaryKey);
+            find = em.find(entityClass, primaryKey);
             operationSuccessful = true;
             
             endTransaction(txOwner);
@@ -180,7 +167,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         try {
             txOwner = beginTransaction();
             txStarted = true;
-            getEm().remove(entity);
+            em.remove(entity);
             operationSuccessful = true;
             
             endTransaction(txOwner);
@@ -206,7 +193,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         try {
             txOwner = beginTransaction();
             txStarted = true;
-            getEm().persist(entity);
+            em.persist(entity);
             operationSuccessful = true;
             
             endTransaction(txOwner);
@@ -234,7 +221,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
             txOwner = beginTransaction();
             txStarted = true;
             
-            mergedEntity = getEm().merge(entity);
+            mergedEntity = em.merge(entity);
             operationSuccessful = true;
             
             endTransaction(txOwner);
@@ -296,8 +283,8 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     
     public boolean beginTransaction() { 
         if(ttxm != null){
-            boolean txOwner = ttxm.begin(getEm());
-            this.ttxm.attachPersistenceContext(getEm());
+            boolean txOwner = ttxm.begin(em);
+            this.ttxm.attachPersistenceContext(em);
             return txOwner;
         }
         return false;
@@ -306,10 +293,10 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     public void endTransaction(boolean txOwner) { 
         if( ttxm != null){
             try { 
-                ttxm.commit(getEm(), txOwner);
+                ttxm.commit(em, txOwner);
             } catch(RuntimeException re) { 
                 logger.error("Unable to commit, rolling back transaction.", re);
-                this.ttxm.rollback(getEm(), txOwner);
+                this.ttxm.rollback(em, txOwner);
 
                 throw re;
             }
@@ -319,7 +306,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     public void rollBackTransaction(boolean txOwner) { 
         if(ttxm != null){
             try { 
-                this.ttxm.rollback(getEm(), txOwner);
+                this.ttxm.rollback(em, txOwner);
             } catch(RuntimeException re) { 
                 logger.error("Unable to rollback transaction (or to mark as 'to rollback')!", re);
             }
@@ -333,7 +320,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     }
     
     public void endPersistenceContext() { 
-        if( getEm() == null ) { 
+        if( em == null ) { 
             ttxm = null;
             return;
         }
@@ -350,17 +337,17 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
 */
         	return;
         }
-        boolean closeEm = getEm().isOpen();
+        boolean closeEm = em.isOpen();
         if ( closeEm  ) { 
             try { 
                 ttxm.dispose();
-                getEm().clear();
+                em.clear();
             }
             catch( Throwable t ) { 
                 // Don't worry about it, we're cleaning up. 
             }
             try { 
-            	getEm().close();
+            	em.close();
             }
             catch( Exception e ) { 
                 // Don't worry about it, we're cleaning up.
@@ -430,7 +417,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
      * @return The result of the query. 
      */
     private Object queryWithParameters(String queryName, Map<String, Object> params, boolean singleResult) { 
-        Query query = getEm().createNamedQuery(queryName);
+        Query query = em.createNamedQuery(queryName);
         if( params != null && ! params.isEmpty() ) { 
             for( String name : params.keySet() ) { 
                 if( FIRST_RESULT.equals(name) ) {
@@ -452,7 +439,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     
     
     private Object queryStringWithParameters(String string, Map<String, Object> params, boolean singleResult) { 
-        Query query = getEm().createQuery(string);
+        Query query = em.createQuery(string);
         if( params != null && ! params.isEmpty() ) { 
             for( String name : params.keySet() ) { 
                 if( FIRST_RESULT.equals(name) ) {

@@ -207,7 +207,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars, false);
+        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
         
         task.getTaskData().setSkipable(true);
         PeopleAssignments assignments = new PeopleAssignmentsImpl();
@@ -220,8 +220,6 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assignments.setPotentialOwners(po);
         
         task.setPeopleAssignments(assignments);
-        
-        TaskFactory.initializeTask(task);
         
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
@@ -270,7 +268,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars, false);
+        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
         
         task.getTaskData().setSkipable(true);
         PeopleAssignments assignments = new PeopleAssignmentsImpl();
@@ -284,7 +282,6 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         
         task.setPeopleAssignments(assignments);
         
-        TaskFactory.initializeTask(task);
         
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
@@ -489,7 +486,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
           vars.put("now", new Date());
 
           Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-          Task task = (TaskImpl) TaskFactory.evalTask(reader, vars, false);
+          Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
           
           task.getTaskData().setSkipable(true);
           PeopleAssignments assignments = new PeopleAssignmentsImpl();
@@ -502,8 +499,6 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
           assignments.setPotentialOwners(po);
           
           task.setPeopleAssignments(assignments);
-          
-          TaskFactory.initializeTask(task);
           
           taskService.addTask(task, new HashMap<String, Object>());
           long taskId = task.getId();

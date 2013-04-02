@@ -1630,7 +1630,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null, false);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null);
         // We need to add the Admin if we don't initialize the task
         if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
@@ -1686,7 +1686,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += " potentialOwners = [ new User('Darth Vader'), new User('Bobba Fet') ] } ),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null, false);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null);
         // We need to add the Admin if we don't initialize the task
         if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
@@ -1873,7 +1873,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null, false);
+        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null);
         // We need to add the Admin if we don't initialize the task
         if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();

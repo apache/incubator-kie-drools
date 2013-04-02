@@ -5,6 +5,7 @@
 package org.jbpm.services.task.impl;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
@@ -388,11 +391,50 @@ public class TaskServiceEntryPointImpl implements TaskService, EventService<Jbpm
     }
 
     public long addTask(Task task, Map<String, Object> params){
+        initializeTask(task);
         return this.taskInstanceService.addTask(task, params);
     }
     
     public long addTask(Task task, ContentData data){
+        initializeTask(task);
         return this.taskInstanceService.addTask(task, data);
+    }
+    
+    private void initializeTask(Task task){
+        Status assignedStatus = null;
+
+        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getPotentialOwners() != null && task.getPeopleAssignments().getPotentialOwners().size() == 1) {
+            // if there is a single potential owner, assign and set status to Reserved
+            OrganizationalEntity potentialOwner = task.getPeopleAssignments().getPotentialOwners().get(0);
+            // if there is a single potential user owner, assign and set status to Reserved
+            if (potentialOwner instanceof UserImpl) {
+                task.getTaskData().setActualOwner((UserImpl) potentialOwner);
+
+                assignedStatus = Status.Reserved;
+            }
+            //If there is a group set as potentialOwners, set the status to Ready ??
+            if (potentialOwner instanceof GroupImpl) {
+
+                assignedStatus = Status.Ready;
+            }
+        } else if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getPotentialOwners() != null && task.getPeopleAssignments().getPotentialOwners().size() > 1) {
+            // multiple potential owners, so set to Ready so one can claim.
+            assignedStatus = Status.Ready;
+        } else {
+            //@TODO: we have no potential owners
+        }
+
+        if (assignedStatus != null) {
+            task.getTaskData().setStatus(assignedStatus);
+        }
+
+        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
+            List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
+            businessAdmins.add(new UserImpl("Administrator"));
+            businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
+            task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
+        }
+        
     }
     
     public void setTaskDefService(TaskDefService taskDefService) {

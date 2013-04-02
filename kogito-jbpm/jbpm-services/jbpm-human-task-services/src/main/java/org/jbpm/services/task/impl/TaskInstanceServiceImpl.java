@@ -78,15 +78,15 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         this.pm = pm;
     }
 
-
+   
     public long addTask(Task task, Map<String, Object> params) {
-        if (params != null) {
+         if (params != null) {
             ContentDataImpl contentData = ContentMarshallerHelper.marshal(params, null);
             ContentImpl content = new ContentImpl(contentData.getContent());
             pm.persist(content);
             task.getTaskData().setDocument(content.getId(), contentData);
         }
-        
+         
         pm.persist(task);
         if(taskEvents != null){
             taskEvents.select(new AnnotationLiteral<AfterTaskAddedEvent>() {}).fire(task);

@@ -60,7 +60,6 @@ public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
         KieSession ksessionById = runtime.getKieSession();
         
         Task task = createTaskBasedOnWorkItemParams(ksessionById, workItem);
-        TaskFactory.initializeTask(task);
         ContentData content = createTaskContentBasedOnWorkItemParams(ksessionById, workItem);
         try {
             long taskId = runtime.getTaskService().addTask(task, content);

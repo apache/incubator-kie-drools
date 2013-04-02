@@ -150,9 +150,6 @@ public class NoCDILifeCycleLocalTest extends LifeCycleBaseTest {
         deadlinesDecorator.setQueryService(userGroupTaskQueryServiceDecorator);
         deadlinesDecorator.setInstanceService(subTaskDecorator);
         
-        
-        
-        
         ((TaskServiceEntryPointImpl)taskService).setTaskInstanceService(deadlinesDecorator);
 
         super.setUp();
