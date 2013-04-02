@@ -85,6 +85,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
         if( value instanceof Character ) {
             return ((Character) value).charValue();
+        } else if ( value instanceof Number ) {
+            return ((Number) value).doubleValue();
         }
         
         throw new RuntimeDroolsException( "Conversion to double not supported from " +  getExtractToClass().getName() );
@@ -97,6 +99,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
         if( value instanceof Character ) {
             return ((Character) value).charValue();
+        } else if ( value instanceof Number ) {
+            return ((Number) value).floatValue();
         }
         
         throw new RuntimeDroolsException( "Conversion to float not supported from " +  getExtractToClass().getName() );
@@ -109,6 +113,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
         if( value instanceof Character ) {
             return ((Character) value).charValue();
+        } else if ( value instanceof Number ) {
+            return ((Number) value).intValue();
         }
         
         throw new RuntimeDroolsException( "Conversion to int not supported from " +  getExtractToClass().getName() );
@@ -121,6 +127,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
         if( value instanceof Character ) {
             return ((Character) value).charValue();
+        } else if ( value instanceof Number ) {
+            return ((Number) value).longValue();
         }
         
         throw new RuntimeDroolsException( "Conversion to long not supported from " +  getExtractToClass().getName() );
@@ -133,8 +141,10 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
         if( value instanceof Character ) {
             return (short) ((Character) value).charValue();
+        } else if ( value instanceof Number ) {
+            return ((Number) value).shortValue();
         }
-        
+
         throw new RuntimeDroolsException( "Conversion to short not supported from " +  getExtractToClass().getName() );
     }
 
