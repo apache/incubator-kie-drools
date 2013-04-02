@@ -78,6 +78,7 @@ public class ConstraintMatchesDialog extends JDialog {
                                 ConstraintMatchTotal constraintMatchTotal
                                         = constraintMatchTotalList.get(selectedRow);
                                 detailTextArea.setText(buildConstraintMatchSetText(constraintMatchTotal));
+                                detailTextArea.setCaretPosition(0);
                             }
                         }
                     }
