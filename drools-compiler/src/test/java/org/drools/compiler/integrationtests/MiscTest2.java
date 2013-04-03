@@ -20,6 +20,7 @@ import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.FileManager;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.LeftTuple;
@@ -27,6 +28,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.definition.type.Position;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -1598,6 +1600,92 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         ksession.insert(new Long(6));
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    public static class Foo2 {
+        @Position(0)
+        public int x;
+        public int getX() {
+            return x;
+        }
+        public void setX(int x) {
+            this.x = x;
+        }
+    }
+
+
+    @Test
+    public void testSelfChangingRuleSet() {
+        // DROOLS-92
+        String str =
+                "package org.drools.compiler.integrationtests;\n" +
+                "" +
+                "import org.drools.compiler.integrationtests.MiscTest2.Foo2; \n" +
+                "" +
+                "global java.util.List list; \n" +
+                "\n" +
+                "rule \"Prep\" \n" +
+                "when \n" +
+                "  $packs : java.util.Collection() \n" +
+                "then \n" +
+                "   ((org.drools.core.impl.InternalKnowledgeBase)drools.getKieRuntime().getKieBase()).addKnowledgePackages( $packs );" +
+                "end \n" +
+                "" +
+                "rule \"Self-change\"\n" +
+                "when\n" +
+                "  String( this == \"go\" )\n" +
+                "then\n" +
+                "   ((org.drools.core.impl.InternalKnowledgeBase)drools.getKieRuntime().getKieBase()).removeRule( \"org.drools.compiler.integrationtests\", \"React\" ); \n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"Insert\"\n" +
+                "when\n" +
+                "  $i : Integer()\n" +
+                "then\n" +
+                "  Foo2 foo = new Foo2();\n " +
+                "  foo.setX( $i ); \n" +
+                "  insert( foo );\n" +
+                "end\n" +
+                "" +
+                "";
+
+        String str2 =
+                "package org.drools.compiler.integrationtests;\n" +
+                "" +
+                "import org.drools.compiler.integrationtests.MiscTest2.Foo2; \n" +
+                "global java.util.List list;\n " +
+                "rule \"React\"\n" +
+                "when\n" +
+                "  $b : Foo2( x < 10 )\n" +
+                "then\n" +
+                "  System.out.println( \" Foo2 is in \" + $b.getX() );" +
+                "  list.add( $b ); \n" +
+                "end\n";
+
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( new ByteArrayResource( str2.getBytes() ), ResourceType.DRL );
+
+        System.out.println(  knowledgeBuilder.getErrors() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.insert( knowledgeBuilder.getKnowledgePackages() );
+
+        ksession.insert( new Integer( 1 ) );
+        ksession.fireAllRules();
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        ksession.insert( new Integer( 2 ) );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+
     }
 
     @Test
