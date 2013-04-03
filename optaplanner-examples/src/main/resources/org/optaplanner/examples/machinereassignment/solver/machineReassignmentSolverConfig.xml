@@ -8,10 +8,6 @@
     <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
     <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <!--<scoreDrl>/org/optaplanner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
-    <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>-->
-      <!--<scoreDrl>/org/optaplanner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
-    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
   <termination>
     <maximumMinutesSpend>5</maximumMinutesSpend>
