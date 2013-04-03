@@ -18,6 +18,8 @@ package org.optaplanner.examples.tsp.solver;
     dialect "java"
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
+import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
+import org.optaplanner.core.impl.score.constraint.ConstraintType;
 
 import org.optaplanner.examples.tsp.domain.City;
 import org.optaplanner.examples.tsp.domain.Domicile;
@@ -34,7 +36,9 @@ rule "distanceToPreviousAppearance"
     when
         $visit : Visit(previousAppearance != null, $distanceToPreviousAppearance : distanceToPreviousAppearance)
     then
-        scoreHolder.addConstraintMatch(kcontext, - $distanceToPreviousAppearance);
+        insertLogical(new IntConstraintOccurrence("distanceToPreviousAppearance", ConstraintType.SOFT,
+                - $distanceToPreviousAppearance,
+                $visit));
 end
 
 rule "distanceFromLastVisitToDomicile"
@@ -43,5 +47,21 @@ rule "distanceFromLastVisitToDomicile"
         not Visit(previousAppearance == $visit)
         $domicile : Domicile()
     then
-        scoreHolder.addConstraintMatch(kcontext, - $visit.getDistanceTo($domicile));
+        insertLogical(new IntConstraintOccurrence("distanceFromLastVisitToDomicile", ConstraintType.SOFT,
+                - $visit.getDistanceTo($domicile),
+                $visit, $domicile));
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+rule "accumulateScore"
+    when
+        $softTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        )
+    then
+        scoreHolder.setScore($softTotal.intValue());
 end

@@ -8,9 +8,6 @@
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.solver.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>/org/optaplanner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
-    <!--<assertionScoreDirectorFactory>-->
-      <!--<scoreDrl>/org/optaplanner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>-->
-    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
   <termination>
