@@ -279,6 +279,9 @@ public class ScoreDirectorFactoryConfig {
             }
             return kieBase;
         } else {
+            if (CollectionUtils.isEmpty(scoreDrlList)) {
+                throw new IllegalArgumentException("The scoreDrlList (" + scoreDrlList + ") cannot be empty.");
+            }
             KieServices kieServices = KieServices.Factory.get();
             KieResources kieResources = kieServices.getResources();
             KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
