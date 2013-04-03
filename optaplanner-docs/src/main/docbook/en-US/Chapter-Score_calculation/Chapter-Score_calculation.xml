@@ -72,7 +72,7 @@
       </note>
 
       <para>When a constraint activates (because the negative constraint is broken or the positive constraint is
-      fulfilled) on a certain planning entity set, it is called a <emphasis>constraint occurrence</emphasis>.</para>
+      fulfilled) on a certain planning entity set, it is called a <emphasis>constraint match</emphasis>.</para>
     </section>
 
     <section>
@@ -80,8 +80,8 @@
 
       <para>Not all score constraints are equally important. If breaking one constraint is equally bad as breaking
       another constraint x times, then those 2 constraints have a different weight (but they are in the same score
-      level). For example in vehicle routing, you can make 2 "unhappy driver" constraint occurrences count as much as 1
-      "fuel tank usage" constraint occurrence:</para>
+      level). For example in vehicle routing, you can make 2 "unhappy driver" constraint matches count as much as 1
+      "fuel tank usage" constraint match:</para>
 
       <mediaobject>
         <imageobject>
@@ -94,8 +94,8 @@
       profit. Alternatively, score weighting is also often used to create social fairness. For example: nurses that
       request a free day on New Year's eve pay a higher weight than on a normal day.</para>
 
-      <para>The weight of a constraint occurrence can be dynamically based on the planning entities involved. For
-      example in cloud balance: the weight of the soft constraint occurrence for an active <literal>Computer</literal>
+      <para>The weight of a constraint match can be dynamically based on the planning entities involved. For
+      example in cloud balance: the weight of the soft constraint match for an active <literal>Computer</literal>
       is the <literal>cost</literal> of that <literal>Computer</literal>.</para>
     </section>
 
@@ -1073,8 +1073,8 @@ end</programlisting>
       <title>Score trap</title>
 
       <para>Make sure that none of your score constraints cause a score trap. A trapped score constraint uses the same
-      weight for different constraint occurrences, when it could just as easily use a different weight. It effectively
-      lumps its constraint occurrences together, which creates a flatlined score function for that constraint. This can
+      weight for different constraint matches, when it could just as easily use a different weight. It effectively
+      lumps its constraint matches together, which creates a flatlined score function for that constraint. This can
       cause a solution state in which several moves need to be done to resolve or lower the weight of that single
       constraint. Some examples of score traps:</para>
 
