@@ -26,7 +26,11 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
@@ -47,6 +51,7 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.internal.command.Context;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -596,6 +601,51 @@ public class FlowTest extends JbpmTestCase {
         assertProcessInstanceCompleted(processInstance);
 
     }
+    
+    @Test
+    public void testMultiInstanceLoopCharacteristicsProcess2() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceProcessWithOutputOnTask.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> myList = new ArrayList<String>();
+        List<String> myOutList = null;
+        myList.add("John");
+        myList.add("Mary");
+        params.put("miinput", myList);
+        
+        ProcessInstance processInstance = ksession.startProcess("miprocess", params);
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(2, workItems.size());
+        
+        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getId(), "mioutput"));
+        assertNull(myOutList);
+        
+        
+        Map<String, Object> results = new HashMap<String, Object>();
+        results.put("reply", "Hello John");
+        ksession.getWorkItemManager().completeWorkItem(workItems.get(0).getId(), results);
+        
+        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getId(), "mioutput"));
+        assertNull(myOutList);
+        
+        results = new HashMap<String, Object>();
+        results.put("reply", "Hello Mary");
+        ksession.getWorkItemManager().completeWorkItem(workItems.get(1).getId(), results);
+
+        myOutList = (List<String>) ksession.execute(new GetProcessVariableCommand(processInstance.getId(), "mioutput"));
+        assertNotNull(myOutList);
+        assertEquals(2, myOutList.size());
+        assertTrue(myOutList.contains("Hello John"));
+        assertTrue(myOutList.contains("Hello Mary"));
+        
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        
+        assertProcessInstanceFinished(processInstance, ksession);
+
+    }
 
     @Test
     public void testMultiInstanceLoopCharacteristicsProcessWithOutput()
@@ -751,4 +801,32 @@ public class FlowTest extends JbpmTestCase {
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
+    private static class GetProcessVariableCommand implements GenericCommand<Object> {
+
+        private long processInstanceId;
+        private String variableName;
+        
+        
+        public GetProcessVariableCommand(long processInstanceId, String variableName) {
+            this.processInstanceId = processInstanceId;
+            this.variableName = variableName;
+        }
+
+
+        @Override
+        public Object execute(Context context) {
+            KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+
+            org.jbpm.process.instance.ProcessInstance processInstance = 
+                    (org.jbpm.process.instance.ProcessInstance) ksession.getProcessInstance(processInstanceId);
+
+            VariableScopeInstance variableScope = 
+                    (VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+
+            Object variable = variableScope.getVariable(variableName);
+
+            return variable;
+        }
+        
+    }
 }

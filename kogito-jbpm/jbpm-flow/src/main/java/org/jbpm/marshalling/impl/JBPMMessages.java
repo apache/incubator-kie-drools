@@ -10379,6 +10379,31 @@ public final class JBPMMessages {
          */
         org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstanceOrBuilder getNodeInstanceOrBuilder(
             int index);
+
+        // repeated .org.jbpm.marshalling.Variable variable = 2;
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+         */
+        java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> 
+            getVariableList();
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+         */
+        org.jbpm.marshalling.impl.JBPMMessages.Variable getVariable(int index);
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+         */
+        int getVariableCount();
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+         */
+        java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+            getVariableOrBuilderList();
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+         */
+        org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getVariableOrBuilder(
+            int index);
       }
       /**
        * Protobuf type {@code org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode}
@@ -10439,6 +10464,14 @@ public final class JBPMMessages {
                   nodeInstance_.add(input.readMessage(org.jbpm.marshalling.impl.JBPMMessages.ProcessInstance.NodeInstance.PARSER, extensionRegistry));
                   break;
                 }
+                case 18: {
+                  if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                    variable_ = new java.util.ArrayList<org.jbpm.marshalling.impl.JBPMMessages.Variable>();
+                    mutable_bitField0_ |= 0x00000002;
+                  }
+                  variable_.add(input.readMessage(org.jbpm.marshalling.impl.JBPMMessages.Variable.PARSER, extensionRegistry));
+                  break;
+                }
               }
             }
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -10449,6 +10482,9 @@ public final class JBPMMessages {
           } finally {
             if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
               nodeInstance_ = java.util.Collections.unmodifiableList(nodeInstance_);
+            }
+            if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+              variable_ = java.util.Collections.unmodifiableList(variable_);
             }
             this.unknownFields = unknownFields.build();
             makeExtensionsImmutable();
@@ -10517,8 +10553,45 @@ public final class JBPMMessages {
           return nodeInstance_.get(index);
         }
 
+        // repeated .org.jbpm.marshalling.Variable variable = 2;
+        public static final int VARIABLE_FIELD_NUMBER = 2;
+        private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_;
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+         */
+        public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> getVariableList() {
+          return variable_;
+        }
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+         */
+        public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+            getVariableOrBuilderList() {
+          return variable_;
+        }
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+         */
+        public int getVariableCount() {
+          return variable_.size();
+        }
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+         */
+        public org.jbpm.marshalling.impl.JBPMMessages.Variable getVariable(int index) {
+          return variable_.get(index);
+        }
+        /**
+         * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+         */
+        public org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getVariableOrBuilder(
+            int index) {
+          return variable_.get(index);
+        }
+
         private void initFields() {
           nodeInstance_ = java.util.Collections.emptyList();
+          variable_ = java.util.Collections.emptyList();
         }
         private byte memoizedIsInitialized = -1;
         public final boolean isInitialized() {
@@ -10535,6 +10608,9 @@ public final class JBPMMessages {
           for (int i = 0; i < nodeInstance_.size(); i++) {
             output.writeMessage(1, nodeInstance_.get(i));
           }
+          for (int i = 0; i < variable_.size(); i++) {
+            output.writeMessage(2, variable_.get(i));
+          }
           getUnknownFields().writeTo(output);
         }
 
@@ -10547,6 +10623,10 @@ public final class JBPMMessages {
           for (int i = 0; i < nodeInstance_.size(); i++) {
             size += com.google.protobuf.CodedOutputStream
               .computeMessageSize(1, nodeInstance_.get(i));
+          }
+          for (int i = 0; i < variable_.size(); i++) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeMessageSize(2, variable_.get(i));
           }
           size += getUnknownFields().getSerializedSize();
           memoizedSerializedSize = size;
@@ -10657,6 +10737,7 @@ public final class JBPMMessages {
           private void maybeForceBuilderInitialization() {
             if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
               getNodeInstanceFieldBuilder();
+              getVariableFieldBuilder();
             }
           }
           private static Builder create() {
@@ -10670,6 +10751,12 @@ public final class JBPMMessages {
               bitField0_ = (bitField0_ & ~0x00000001);
             } else {
               nodeInstanceBuilder_.clear();
+            }
+            if (variableBuilder_ == null) {
+              variable_ = java.util.Collections.emptyList();
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              variableBuilder_.clear();
             }
             return this;
           }
@@ -10706,6 +10793,15 @@ public final class JBPMMessages {
               result.nodeInstance_ = nodeInstance_;
             } else {
               result.nodeInstance_ = nodeInstanceBuilder_.build();
+            }
+            if (variableBuilder_ == null) {
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                variable_ = java.util.Collections.unmodifiableList(variable_);
+                bitField0_ = (bitField0_ & ~0x00000002);
+              }
+              result.variable_ = variable_;
+            } else {
+              result.variable_ = variableBuilder_.build();
             }
             onBuilt();
             return result;
@@ -10745,6 +10841,32 @@ public final class JBPMMessages {
                        getNodeInstanceFieldBuilder() : null;
                 } else {
                   nodeInstanceBuilder_.addAllMessages(other.nodeInstance_);
+                }
+              }
+            }
+            if (variableBuilder_ == null) {
+              if (!other.variable_.isEmpty()) {
+                if (variable_.isEmpty()) {
+                  variable_ = other.variable_;
+                  bitField0_ = (bitField0_ & ~0x00000002);
+                } else {
+                  ensureVariableIsMutable();
+                  variable_.addAll(other.variable_);
+                }
+                onChanged();
+              }
+            } else {
+              if (!other.variable_.isEmpty()) {
+                if (variableBuilder_.isEmpty()) {
+                  variableBuilder_.dispose();
+                  variableBuilder_ = null;
+                  variable_ = other.variable_;
+                  bitField0_ = (bitField0_ & ~0x00000002);
+                  variableBuilder_ = 
+                    com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                       getVariableFieldBuilder() : null;
+                } else {
+                  variableBuilder_.addAllMessages(other.variable_);
                 }
               }
             }
@@ -11013,6 +11135,246 @@ public final class JBPMMessages {
               nodeInstance_ = null;
             }
             return nodeInstanceBuilder_;
+          }
+
+          // repeated .org.jbpm.marshalling.Variable variable = 2;
+          private java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> variable_ =
+            java.util.Collections.emptyList();
+          private void ensureVariableIsMutable() {
+            if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+              variable_ = new java.util.ArrayList<org.jbpm.marshalling.impl.JBPMMessages.Variable>(variable_);
+              bitField0_ |= 0x00000002;
+             }
+          }
+
+          private com.google.protobuf.RepeatedFieldBuilder<
+              org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> variableBuilder_;
+
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable> getVariableList() {
+            if (variableBuilder_ == null) {
+              return java.util.Collections.unmodifiableList(variable_);
+            } else {
+              return variableBuilder_.getMessageList();
+            }
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public int getVariableCount() {
+            if (variableBuilder_ == null) {
+              return variable_.size();
+            } else {
+              return variableBuilder_.getCount();
+            }
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public org.jbpm.marshalling.impl.JBPMMessages.Variable getVariable(int index) {
+            if (variableBuilder_ == null) {
+              return variable_.get(index);
+            } else {
+              return variableBuilder_.getMessage(index);
+            }
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public Builder setVariable(
+              int index, org.jbpm.marshalling.impl.JBPMMessages.Variable value) {
+            if (variableBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureVariableIsMutable();
+              variable_.set(index, value);
+              onChanged();
+            } else {
+              variableBuilder_.setMessage(index, value);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public Builder setVariable(
+              int index, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder builderForValue) {
+            if (variableBuilder_ == null) {
+              ensureVariableIsMutable();
+              variable_.set(index, builderForValue.build());
+              onChanged();
+            } else {
+              variableBuilder_.setMessage(index, builderForValue.build());
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public Builder addVariable(org.jbpm.marshalling.impl.JBPMMessages.Variable value) {
+            if (variableBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureVariableIsMutable();
+              variable_.add(value);
+              onChanged();
+            } else {
+              variableBuilder_.addMessage(value);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public Builder addVariable(
+              int index, org.jbpm.marshalling.impl.JBPMMessages.Variable value) {
+            if (variableBuilder_ == null) {
+              if (value == null) {
+                throw new NullPointerException();
+              }
+              ensureVariableIsMutable();
+              variable_.add(index, value);
+              onChanged();
+            } else {
+              variableBuilder_.addMessage(index, value);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public Builder addVariable(
+              org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder builderForValue) {
+            if (variableBuilder_ == null) {
+              ensureVariableIsMutable();
+              variable_.add(builderForValue.build());
+              onChanged();
+            } else {
+              variableBuilder_.addMessage(builderForValue.build());
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public Builder addVariable(
+              int index, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder builderForValue) {
+            if (variableBuilder_ == null) {
+              ensureVariableIsMutable();
+              variable_.add(index, builderForValue.build());
+              onChanged();
+            } else {
+              variableBuilder_.addMessage(index, builderForValue.build());
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public Builder addAllVariable(
+              java.lang.Iterable<? extends org.jbpm.marshalling.impl.JBPMMessages.Variable> values) {
+            if (variableBuilder_ == null) {
+              ensureVariableIsMutable();
+              super.addAll(values, variable_);
+              onChanged();
+            } else {
+              variableBuilder_.addAllMessages(values);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public Builder clearVariable() {
+            if (variableBuilder_ == null) {
+              variable_ = java.util.Collections.emptyList();
+              bitField0_ = (bitField0_ & ~0x00000002);
+              onChanged();
+            } else {
+              variableBuilder_.clear();
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public Builder removeVariable(int index) {
+            if (variableBuilder_ == null) {
+              ensureVariableIsMutable();
+              variable_.remove(index);
+              onChanged();
+            } else {
+              variableBuilder_.remove(index);
+            }
+            return this;
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder getVariableBuilder(
+              int index) {
+            return getVariableFieldBuilder().getBuilder(index);
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getVariableOrBuilder(
+              int index) {
+            if (variableBuilder_ == null) {
+              return variable_.get(index);  } else {
+              return variableBuilder_.getMessageOrBuilder(index);
+            }
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public java.util.List<? extends org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+               getVariableOrBuilderList() {
+            if (variableBuilder_ != null) {
+              return variableBuilder_.getMessageOrBuilderList();
+            } else {
+              return java.util.Collections.unmodifiableList(variable_);
+            }
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder() {
+            return getVariableFieldBuilder().addBuilder(
+                org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder addVariableBuilder(
+              int index) {
+            return getVariableFieldBuilder().addBuilder(
+                index, org.jbpm.marshalling.impl.JBPMMessages.Variable.getDefaultInstance());
+          }
+          /**
+           * <code>repeated .org.jbpm.marshalling.Variable variable = 2;</code>
+           */
+          public java.util.List<org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder> 
+               getVariableBuilderList() {
+            return getVariableFieldBuilder().getBuilderList();
+          }
+          private com.google.protobuf.RepeatedFieldBuilder<
+              org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder> 
+              getVariableFieldBuilder() {
+            if (variableBuilder_ == null) {
+              variableBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+                  org.jbpm.marshalling.impl.JBPMMessages.Variable, org.jbpm.marshalling.impl.JBPMMessages.Variable.Builder, org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder>(
+                      variable_,
+                      ((bitField0_ & 0x00000002) == 0x00000002),
+                      getParentForChildren(),
+                      isClean());
+              variable_ = null;
+            }
+            return variableBuilder_;
           }
 
           // @@protoc_insertion_point(builder_scope:org.jbpm.marshalling.ProcessInstance.NodeInstanceContent.ForEachNode)
@@ -18912,7 +19274,7 @@ public final class JBPMMessages {
     java.lang.String[] descriptorData = {
       "\n\'org/jbpm/marshalling/jbpmmessages.prot" +
       "o\022\024org.jbpm.marshalling\0320org/drools/core" +
-      "/marshalling/droolsmessages.proto\"\273\030\n\017Pr" +
+      "/marshalling/droolsmessages.proto\"\356\030\n\017Pr" +
       "ocessInstance\022\024\n\014process_type\030\001 \001(\t\022\n\n\002i" +
       "d\030\002 \001(\003\022\022\n\nprocess_id\030\003 \001(\t\022\r\n\005state\030\004 \001" +
       "(\005\022\035\n\025node_instance_counter\030\005 \001(\003\022\023\n\013pro" +
@@ -18930,7 +19292,7 @@ public final class JBPMMessages {
       "(\003\022\017\n\007node_id\030\002 \001(\003\022J\n\007content\030\004 \001(\01329.o" +
       "rg.jbpm.marshalling.ProcessInstance.Node" +
       "InstanceContent\0328\n\026ExclusiveGroupInstanc",
-      "e\022\036\n\026group_node_instance_id\030\001 \003(\003\032\326\020\n\023No" +
+      "e\022\036\n\026group_node_instance_id\030\001 \003(\003\032\211\021\n\023No" +
       "deInstanceContent\022D\n\004type\030\001 \001(\01626.org.jb" +
       "pm.marshalling.ProcessInstance.NodeInsta" +
       "nceType\022W\n\010rule_set\030\002 \001(\0132E.org.jbpm.mar" +
@@ -18982,41 +19344,42 @@ public final class JBPMMessages {
       "ling.ProcessInstance.NodeInstance\022U\n\017exc",
       "lusive_group\030\005 \003(\0132<.org.jbpm.marshallin" +
       "g.ProcessInstance.ExclusiveGroupInstance" +
-      "\032X\n\013ForEachNode\022I\n\rnode_instance\030\001 \003(\01322" +
-      ".org.jbpm.marshalling.ProcessInstance.No" +
-      "deInstance\"\222\002\n\020NodeInstanceType\022\021\n\rRULE_" +
-      "SET_NODE\020\000\022\023\n\017HUMAN_TASK_NODE\020\001\022\022\n\016WORK_" +
-      "ITEM_NODE\020\002\022\023\n\017SUBPROCESS_NODE\020\003\022\022\n\016MILE" +
-      "STONE_NODE\020\004\022\016\n\nEVENT_NODE\020\005\022\016\n\nTIMER_NO" +
-      "DE\020\006\022\r\n\tJOIN_NODE\020\007\022\016\n\nSTATE_NODE\020\010\022\032\n\026C" +
-      "OMPOSITE_CONTEXT_NODE\020\t\022\021\n\rFOR_EACH_NODE",
-      "\020\n\022\020\n\014DYNAMIC_NODE\020\013\022\031\n\025EVENT_SUBPROCESS" +
-      "_NODE\020\014\"?\n\010Variable\022\014\n\004name\030\001 \001(\t\022\026\n\016str" +
-      "ategy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\203\001\n\010Wor" +
-      "kItem\022\n\n\002id\030\001 \001(\003\022\034\n\024process_instances_i" +
-      "d\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220\n\010" +
-      "variable\030\005 \003(\0132\036.org.jbpm.marshalling.Va" +
-      "riable\"\265\002\n\014ProcessTimer\022?\n\005timer\030\001 \001(\01320" +
-      ".org.jbpm.marshalling.ProcessTimer.Timer" +
-      "Instance\0225\n\007trigger\030\002 \001(\0132$.org.drools.c" +
-      "ore.marshalling.Trigger\032\254\001\n\rTimerInstanc",
-      "e\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005delay" +
-      "\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023process_instan" +
-      "ce_id\030\005 \001(\003\022\026\n\016activated_time\030\006 \001(\003\022\026\n\016l" +
-      "ast_triggered\030\007 \001(\003\022\021\n\tsessionId\030\010 \001(\005:i" +
-      "\n\020process_instance\022(.org.drools.core.mar" +
-      "shalling.ProcessData\030\n \003(\0132%.org.jbpm.ma" +
-      "rshalling.ProcessInstance:[\n\twork_item\022(" +
-      ".org.drools.core.marshalling.ProcessData" +
-      "\030\013 \003(\0132\036.org.jbpm.marshalling.WorkItem::" +
-      "\n\010timer_id\022(.org.drools.core.marshalling",
-      ".ProcessData\030\r \001(\003:c\n\rprocess_timer\022(.or" +
-      "g.drools.core.marshalling.ProcessData\030\014 " +
-      "\003(\0132\".org.jbpm.marshalling.ProcessTimer:" +
-      "a\n\nproc_timer\022).org.drools.core.marshall" +
-      "ing.Timers.Timer\030d \001(\0132\".org.jbpm.marsha" +
-      "lling.ProcessTimerB)\n\031org.jbpm.marshalli" +
-      "ng.implB\014JBPMMessages"
+      "\032\212\001\n\013ForEachNode\022I\n\rnode_instance\030\001 \003(\0132" +
+      "2.org.jbpm.marshalling.ProcessInstance.N" +
+      "odeInstance\0220\n\010variable\030\002 \003(\0132\036.org.jbpm" +
+      ".marshalling.Variable\"\222\002\n\020NodeInstanceTy" +
+      "pe\022\021\n\rRULE_SET_NODE\020\000\022\023\n\017HUMAN_TASK_NODE" +
+      "\020\001\022\022\n\016WORK_ITEM_NODE\020\002\022\023\n\017SUBPROCESS_NOD" +
+      "E\020\003\022\022\n\016MILESTONE_NODE\020\004\022\016\n\nEVENT_NODE\020\005\022" +
+      "\016\n\nTIMER_NODE\020\006\022\r\n\tJOIN_NODE\020\007\022\016\n\nSTATE_",
+      "NODE\020\010\022\032\n\026COMPOSITE_CONTEXT_NODE\020\t\022\021\n\rFO" +
+      "R_EACH_NODE\020\n\022\020\n\014DYNAMIC_NODE\020\013\022\031\n\025EVENT" +
+      "_SUBPROCESS_NODE\020\014\"?\n\010Variable\022\014\n\004name\030\001" +
+      " \001(\t\022\026\n\016strategy_index\030\002 \001(\005\022\r\n\005value\030\003 " +
+      "\001(\014\"\203\001\n\010WorkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024process_" +
+      "instances_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005stat" +
+      "e\030\004 \001(\005\0220\n\010variable\030\005 \003(\0132\036.org.jbpm.mar" +
+      "shalling.Variable\"\265\002\n\014ProcessTimer\022?\n\005ti" +
+      "mer\030\001 \001(\01320.org.jbpm.marshalling.Process" +
+      "Timer.TimerInstance\0225\n\007trigger\030\002 \001(\0132$.o",
+      "rg.drools.core.marshalling.Trigger\032\254\001\n\rT" +
+      "imerInstance\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001" +
+      "(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023pro" +
+      "cess_instance_id\030\005 \001(\003\022\026\n\016activated_time" +
+      "\030\006 \001(\003\022\026\n\016last_triggered\030\007 \001(\003\022\021\n\tsessio" +
+      "nId\030\010 \001(\005:i\n\020process_instance\022(.org.droo" +
+      "ls.core.marshalling.ProcessData\030\n \003(\0132%." +
+      "org.jbpm.marshalling.ProcessInstance:[\n\t" +
+      "work_item\022(.org.drools.core.marshalling." +
+      "ProcessData\030\013 \003(\0132\036.org.jbpm.marshalling",
+      ".WorkItem::\n\010timer_id\022(.org.drools.core." +
+      "marshalling.ProcessData\030\r \001(\003:c\n\rprocess" +
+      "_timer\022(.org.drools.core.marshalling.Pro" +
+      "cessData\030\014 \003(\0132\".org.jbpm.marshalling.Pr" +
+      "ocessTimer:a\n\nproc_timer\022).org.drools.co" +
+      "re.marshalling.Timers.Timer\030d \001(\0132\".org." +
+      "jbpm.marshalling.ProcessTimerB)\n\031org.jbp" +
+      "m.marshalling.implB\014JBPMMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -19130,7 +19493,7 @@ public final class JBPMMessages {
           internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_jbpm_marshalling_ProcessInstance_NodeInstanceContent_ForEachNode_descriptor,
-              new java.lang.String[] { "NodeInstance", });
+              new java.lang.String[] { "NodeInstance", "Variable", });
           internal_static_org_jbpm_marshalling_Variable_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_org_jbpm_marshalling_Variable_fieldAccessorTable = new

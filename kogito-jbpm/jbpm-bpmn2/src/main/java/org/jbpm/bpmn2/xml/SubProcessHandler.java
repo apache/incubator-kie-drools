@@ -121,7 +121,9 @@ public class SubProcessHandler extends AbstractNodeHandler {
             if ("ioSpecification".equals(nodeName)) {
                 readIoSpecification(xmlNode, dataInputs, dataOutputs);
             } else if ("dataInputAssociation".equals(nodeName)) {
-                readDataInputAssociation(xmlNode, forEachNode);
+                readDataInputAssociation(xmlNode, inputAssociation);
+            } else if ("dataOutputAssociation".equals(nodeName)) {
+                readDataOutputAssociation(xmlNode, outputAssociation);
             } else if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
             	readMultiInstanceLoopCharacteristics(xmlNode, forEachNode, parser);
             }
@@ -131,73 +133,8 @@ public class SubProcessHandler extends AbstractNodeHandler {
 			forEachNode.getMetaData(ProcessHandler.CONNECTIONS);
     	ProcessHandler.linkConnections(forEachNode, connections);
     	ProcessHandler.linkBoundaryEvents(forEachNode);
-    }
-    
-    protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, ForEachNode forEachNode) {
-        // sourceRef
-        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        String inputVariable = subNode.getTextContent();
-        if (inputVariable != null && inputVariable.trim().length() > 0) {
-        	forEachNode.setCollectionExpression(inputVariable);
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-	protected void readMultiInstanceLoopCharacteristics(org.w3c.dom.Node xmlNode, ForEachNode forEachNode, ExtensibleXmlParser parser) {
-        // sourceRef
-        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        while (subNode != null) {
-            String nodeName = subNode.getNodeName();
-            if ("inputDataItem".equals(nodeName)) {
-            	String variableName = ((Element) subNode).getAttribute("id");
-            	String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
-            	DataType dataType = null;
-            	Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
-	            	((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
-		        if (itemDefinitions != null) {
-		        	ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
-		        	if (itemDefinition != null) {
-		        		dataType = new ObjectDataType(itemDefinition.getStructureRef());
-		        	}
-		        }
-		        if (dataType == null) {
-		        	dataType = new ObjectDataType("java.lang.Object");
-		        }
-                if (variableName != null && variableName.trim().length() > 0) {
-                	forEachNode.setVariable(variableName, dataType);
-                }
-            } else if ("outputDataItem".equals(nodeName)) {
-                String variableName = ((Element) subNode).getAttribute("id");
-                String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
-                DataType dataType = null;
-                Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
-                    ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
-                if (itemDefinitions != null) {
-                    ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
-                    if (itemDefinition != null) {
-                        dataType = new ObjectDataType(itemDefinition.getStructureRef());
-                    }
-                }
-                if (dataType == null) {
-                    dataType = new ObjectDataType("java.lang.Object");
-                }
-                if (variableName != null && variableName.trim().length() > 0) {
-                    forEachNode.setOutputVariable(variableName, dataType);
-                }
-            } else if ("loopDataOutputRef".equals(nodeName)) {
-                
-                String outputDataRef = ((Element) subNode).getTextContent();
-                
-                String outputDataName = dataOutputs.get(outputDataRef);
-                if (outputDataName != null && outputDataName.trim().length() > 0) {
-                    forEachNode.setOutputCollectionExpression(outputDataName);
-                }
-                
-            }
-            subNode = subNode.getNextSibling();
-        }
-    }
-    
+    }    
+
 
     
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {

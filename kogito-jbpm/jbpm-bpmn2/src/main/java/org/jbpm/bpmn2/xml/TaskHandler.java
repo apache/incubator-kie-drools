@@ -16,13 +16,13 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.process.core.impl.WorkImpl;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.ItemDefinition;
@@ -186,24 +186,18 @@ public class TaskHandler extends AbstractNodeHandler {
 		nodeContainer.addNode(node);
 		return node;
 	}
-
-    protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, ForEachNode forEachNode) {
-        // sourceRef
-        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        String inputVariable = subNode.getTextContent();
-        if (inputVariable != null && inputVariable.trim().length() > 0) {
-        	forEachNode.setCollectionExpression(inputVariable);
-        }
-    }
     
 	protected void handleForEachNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	ForEachNode forEachNode = (ForEachNode) node;
     	org.w3c.dom.Node xmlNode = element.getFirstChild();
+    	
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("dataInputAssociation".equals(nodeName)) {
-                readDataInputAssociation(xmlNode, forEachNode);
+                readDataInputAssociation(xmlNode, inputAssociation);
+            } else if ("dataOutputAssociation".equals(nodeName)) {
+                readDataOutputAssociation(xmlNode, outputAssociation);
             } else if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
             	readMultiInstanceLoopCharacteristics(xmlNode, forEachNode, parser);
             }
@@ -211,60 +205,6 @@ public class TaskHandler extends AbstractNodeHandler {
         }
     }
 
-	@SuppressWarnings("unchecked")
-	protected void readMultiInstanceLoopCharacteristics(org.w3c.dom.Node xmlNode, ForEachNode forEachNode, ExtensibleXmlParser parser) {
-	    
-	    // sourceRef
-        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-        while (subNode != null) {
-            String nodeName = subNode.getNodeName();
-            if ("inputDataItem".equals(nodeName)) {
-            	String variableName = ((Element) subNode).getAttribute("id");
-            	String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
-            	DataType dataType = null;
-            	Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
-	            	((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
-		        if (itemDefinitions != null) {
-		        	ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
-		        	if (itemDefinition != null) {
-		        		dataType = new ObjectDataType(itemDefinition.getStructureRef());
-		        	}
-		        }
-		        if (dataType == null) {
-		        	dataType = new ObjectDataType("java.lang.Object");
-		        }
-                if (variableName != null && variableName.trim().length() > 0) {
-                	forEachNode.setVariable(variableName, dataType);
-                }
-            } else if ("outputDataItem".equals(nodeName)) {
-                String variableName = ((Element) subNode).getAttribute("id");
-                String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
-                DataType dataType = null;
-                Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
-                    ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
-                if (itemDefinitions != null) {
-                    ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
-                    if (itemDefinition != null) {
-                        dataType = new ObjectDataType(itemDefinition.getStructureRef());
-                    }
-                }
-                if (dataType == null) {
-                    dataType = new ObjectDataType("java.lang.Object");
-                }
-                if (variableName != null && variableName.trim().length() > 0) {
-                    forEachNode.setOutputVariable(variableName, dataType);
-                }
-            } else if ("loopDataOutputRef".equals(nodeName)) {
-                
-                String outputDataRef = ((Element) subNode).getTextContent();
-                
-                String outputDataName = dataOutputs.get(outputDataRef);
-                if (outputDataName != null && outputDataName.trim().length() > 0) {
-                    forEachNode.setOutputCollectionExpression(outputDataName);
-                }
-                
-            }
-            subNode = subNode.getNextSibling();
-        }
-    }
+
+
 }
