@@ -1452,9 +1452,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         }
     }
 
-
     @Test
-    @Ignore
     public void testSelfChangingRuleSet() {
         // DROOLS-92
         String str =
@@ -1559,4 +1557,45 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.fireAllRules();
     }
 
-}
+    public static class SimpleEvent {
+        private long duration;
+
+        public long getDuration() {
+            return duration;
+        }
+
+        public void setDuration(long duration) {
+            this.duration = duration;
+        }
+    }
+
+    @Test
+    public void testDurationAnnotation() {
+        // DROOLS-94
+        String str =
+                "package org.drools.integrationtests;\n" +
+                "import org.drools.integrationtests.MiscTest2.SimpleEvent\n" +
+                "declare SimpleEvent\n" +
+                " @role(event)\n" +
+                " @duration(duration)\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+    }
+
+    @Test
+    public void testDurationAnnotationWithError() {
+        // DROOLS-94
+        String str =
+                "package org.drools.integrationtests;\n" +
+                "import org.drools.integrationtests.MiscTest2.SimpleEvent\n" +
+                "declare SimpleEvent\n" +
+                " @role(event)\n" +
+                " @duration(duratio)\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        assertTrue(kbuilder.hasErrors());
+    }}
