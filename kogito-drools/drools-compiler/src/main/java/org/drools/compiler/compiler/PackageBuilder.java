@@ -2203,17 +2203,23 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                                                               Collections.EMPTY_MAP,
                                                                                               Collections.EMPTY_MAP,
                                                                                               type.getTypeClass() ) );            
-            
-            InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
-                                                                                          type.getTypeClass().getName(),
-                                                                                          duration,
-                                                                                          type.isTypesafe(),
-                                                                                          results.getReturnType()  );
-            
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
-            data.addCompileable( (MVELCompileable) reader );
-            ( (MVELCompileable) reader ).compile( data );
-            type.setDurationExtractor( reader );
+
+            if (results != null) {
+                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
+                                                                                              type.getTypeClass().getName(),
+                                                                                              duration,
+                                                                                              type.isTypesafe(),
+                                                                                              results.getReturnType()  );
+
+                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+                data.addCompileable( (MVELCompileable) reader );
+                ( (MVELCompileable) reader ).compile( data );
+                type.setDurationExtractor( reader );
+            } else {
+                this.results.add( new TypeDeclarationError(typeDescr,
+                        "Error processing @duration for TypeDeclaration '" + type.getTypeName() +
+                        "': cannot access the field '" + duration + "'") );
+            }
         }
 
         annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE );
