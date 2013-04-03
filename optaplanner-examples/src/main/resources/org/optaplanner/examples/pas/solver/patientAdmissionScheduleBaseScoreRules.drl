@@ -18,8 +18,6 @@ package org.optaplanner.examples.pas.solver;
     dialect "java"
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
-import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
-import org.optaplanner.core.impl.score.constraint.ConstraintType;
 
 import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
@@ -62,9 +60,7 @@ rule "femaleInMaleRoom"
         $bedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.MALE_ONLY,
                 patientGender == Gender.FEMALE)
     then
-        insertLogical(new IntConstraintOccurrence("femaleInMaleRoom", ConstraintType.SOFT,
-                - 50 * $bedDesignation.getAdmissionPartNightCount(),
-                $bedDesignation));
+        scoreHolder.addSoftConstraintMatch(kcontext, - 50 * $bedDesignation.getAdmissionPartNightCount());
 end
 // Gender limitation: Male in a female only room
 rule "maleInFemaleRoom"
@@ -72,9 +68,7 @@ rule "maleInFemaleRoom"
         $bedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.FEMALE_ONLY,
                 patientGender == Gender.MALE)
     then
-        insertLogical(new IntConstraintOccurrence("maleInFemaleRoom", ConstraintType.SOFT,
-                - 50 * $bedDesignation.getAdmissionPartNightCount(),
-                $bedDesignation));
+        scoreHolder.addSoftConstraintMatch(kcontext, - 50 * $bedDesignation.getAdmissionPartNightCount());
 end
 // Gender limitation: Different genders in the same room when the room doesn't allow it
 // TODO the official spec gives lower scores in big rooms (capacity >= 6) with minimum 3 males and 3 females
@@ -87,9 +81,7 @@ rule "differentGenderInSameGenderRoomInSameNight"
                 admissionPart == $leftAdmissionPart, $room : room)
         $rightBedDesignation : BedDesignation(room == $room, admissionPart == $rightAdmissionPart)
     then
-        insertLogical(new IntConstraintOccurrence("differentGenderInSameGenderRoomInSameNight", ConstraintType.SOFT,
-                - 50 * $admissionPartConflict.getNightSize(),
-                $leftBedDesignation, $rightBedDesignation));
+        scoreHolder.addSoftConstraintMatch(kcontext, - 50 * $admissionPartConflict.getNightSize());
 end
 
 // Department's minimumAge constraint
@@ -98,9 +90,7 @@ rule "departmentMinimumAge"
         $department : Department(minimumAge != null, $minimumAge : minimumAge)
         $bedDesignation : BedDesignation(department == $department, patientAge < $minimumAge)
     then
-        insertLogical(new IntConstraintOccurrence("departmentMinimumAge", ConstraintType.SOFT,
-                - 100 * $bedDesignation.getAdmissionPartNightCount(),
-                $bedDesignation));
+        scoreHolder.addSoftConstraintMatch(kcontext, - 100 * $bedDesignation.getAdmissionPartNightCount());
 end
 // Department's maximumAge constraint
 rule "departmentMaximumAge"
@@ -108,9 +98,7 @@ rule "departmentMaximumAge"
         $department : Department(maximumAge != null, $maximumAge : maximumAge)
         $bedDesignation : BedDesignation(department == $department, patientAge > $maximumAge)
     then
-        insertLogical(new IntConstraintOccurrence("departmentMaximumAge", ConstraintType.SOFT,
-                - 100 * $bedDesignation.getAdmissionPartNightCount(),
-                $bedDesignation));
+        scoreHolder.addSoftConstraintMatch(kcontext, - 100 * $bedDesignation.getAdmissionPartNightCount());
 end
 
 // Not yet applicable: Patient's requiredMaximumRoomCapacity constraint
@@ -121,12 +109,10 @@ rule "preferredMaximumRoomCapacity"
         $bedDesignation : BedDesignation(patientPreferredMaximumRoomCapacity != null,
                 patientPreferredMaximumRoomCapacity < roomCapacity, bed != null)
     then
-        insertLogical(new IntConstraintOccurrence("preferredMaximumRoomCapacity", ConstraintType.SOFT,
-                // TODO this would be better for the problem, though the official spec does not do it
-                // 8 * ($bedDesignation.getPatientPreferredMaximumRoomCapacity() - $bedDesignation.getRoomCapacity())
-                // * $bedDesignation.getAdmissionPartNightCount(),
-                - 8 * $bedDesignation.getAdmissionPartNightCount(),
-                $bedDesignation));
+        // TODO this would be better for the problem, though the official spec does not do it
+        // 8 * ($bedDesignation.getPatientPreferredMaximumRoomCapacity() - $bedDesignation.getRoomCapacity())
+        // * $bedDesignation.getAdmissionPartNightCount(),
+        scoreHolder.addSoftConstraintMatch(kcontext, - 8 * $bedDesignation.getAdmissionPartNightCount());
 end
 
 // DepartmentSpecialism constraint
@@ -135,9 +121,7 @@ rule "departmentSpecialism"
         $bedDesignation : BedDesignation($specialism : admissionPartSpecialism, $department : department, bed != null)
         not DepartmentSpecialism(department == $department, specialism == $specialism)
     then
-        insertLogical(new IntConstraintOccurrence("departmentSpecialism", ConstraintType.SOFT,
-                - 10 * $bedDesignation.getAdmissionPartNightCount(),
-                $bedDesignation));
+        scoreHolder.addSoftConstraintMatch(kcontext, - 10 * $bedDesignation.getAdmissionPartNightCount());
 end
 
 // RoomSpecialism constraint
@@ -147,9 +131,7 @@ rule "roomSpecialismNotExists"
             $room : room, bed != null)
         not RoomSpecialism(room == $room, specialism == $specialism)
     then
-        insertLogical(new IntConstraintOccurrence("roomSpecialismNotExists", ConstraintType.SOFT,
-                - 20 * $bedDesignation.getAdmissionPartNightCount(),
-                $bedDesignation));
+        scoreHolder.addSoftConstraintMatch(kcontext, - 20 * $bedDesignation.getAdmissionPartNightCount());
 end
 rule "roomSpecialismNotFirstPriority"
     when
@@ -157,9 +139,8 @@ rule "roomSpecialismNotFirstPriority"
             $room : room, bed != null)
         RoomSpecialism(priority > 1, room == $room, specialism == $specialism, $priority : priority)
     then
-        insertLogical(new IntConstraintOccurrence("roomSpecialismNotFirstPriority", ConstraintType.SOFT,
-                - 10 * ($priority - 1) * $bedDesignation.getAdmissionPartNightCount(),
-                $bedDesignation));
+        scoreHolder.addSoftConstraintMatch(kcontext,
+                - 10 * ($priority - 1) * $bedDesignation.getAdmissionPartNightCount());
 end
 
 // RequiredPatientEquipment constraint
@@ -169,9 +150,7 @@ rule "requiredPatientEquipment"
         $bedDesignation : BedDesignation(patient == $patient, $room : room, bed != null)
         not RoomEquipment(room == $room, equipment == $equipment)
     then
-        insertLogical(new IntConstraintOccurrence("requiredPatientEquipment", ConstraintType.SOFT,
-                - 50 * $bedDesignation.getAdmissionPartNightCount(),
-                $bedDesignation, $requiredPatientEquipment));
+        scoreHolder.addSoftConstraintMatch(kcontext, - 50 * $bedDesignation.getAdmissionPartNightCount());
 end
 
 // PreferredPatientEquipment constraint
@@ -181,37 +160,7 @@ rule "preferredPatientEquipment"
         $bedDesignation : BedDesignation(patient == $patient, $room : room, bed != null)
         not RoomEquipment(room == $room, equipment == $equipment)
     then
-        insertLogical(new IntConstraintOccurrence("preferredPatientEquipment", ConstraintType.SOFT,
-                - 20 * $bedDesignation.getAdmissionPartNightCount(),
-                $bedDesignation, $preferredPatientEquipment));
+        scoreHolder.addSoftConstraintMatch(kcontext, - 20 * $bedDesignation.getAdmissionPartNightCount());
 end
 
 // Do not change bed in an AdmissionPart on different Nights constraint is build-in
-
-// ############################################################################
-// Calculate score
-// ############################################################################
-
-// Accumulate hard constraints
-rule "accumulateHardScore"
-        salience -1 // Do the other rules first (optional, for performance)
-    when
-        $hardTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.HARD, $weight : weight),
-            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-        )
-    then
-        scoreHolder.setHardScore($hardTotal.intValue());
-end
-
-// Accumulate soft constraints
-rule "accumulateSoftScore"
-        salience -1 // Do the other rules first (optional, for performance)
-    when
-        $softTotal : Number() from accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.SOFT, $weight : weight),
-            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
-        )
-    then
-        scoreHolder.setSoftScore($softTotal.intValue());
-end

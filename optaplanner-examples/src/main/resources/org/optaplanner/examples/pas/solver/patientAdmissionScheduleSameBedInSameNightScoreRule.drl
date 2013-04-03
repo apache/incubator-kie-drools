@@ -18,8 +18,6 @@ package org.optaplanner.examples.pas.solver;
     dialect "java"
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
-import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
-import org.optaplanner.core.impl.score.constraint.ConstraintType;
 
 import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
@@ -49,7 +47,5 @@ rule "sameBedInSameNight"
         $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, $bed : bed, bed != null)
         $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, bed == $bed)
     then
-        insertLogical(new IntConstraintOccurrence("sameBedInSameNight", ConstraintType.HARD,
-                - 1000 * $admissionPartConflict.getNightSize(),
-                $leftBedDesignation, $rightBedDesignation));
+        scoreHolder.addHardConstraintMatch(kcontext, - 1000 * $admissionPartConflict.getNightSize());
 end
