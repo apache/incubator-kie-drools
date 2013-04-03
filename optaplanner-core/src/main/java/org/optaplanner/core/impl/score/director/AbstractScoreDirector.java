@@ -320,7 +320,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         if (!isConstraintMatchEnabled() || !uncorruptedScoreDirector.isConstraintMatchEnabled()) {
             return "  Score corruption analysis could not be generated because"
                     + " either corrupted constraintMatchEnabled (" + isConstraintMatchEnabled()
-                    + " or uncorrupted constraintMatchEnabled (" + uncorruptedScoreDirector.isConstraintMatchEnabled()
+                    + ") or uncorrupted constraintMatchEnabled (" + uncorruptedScoreDirector.isConstraintMatchEnabled()
                     + ") is disabled.\n"
                     + "  Check your score constraints manually.";
         }
