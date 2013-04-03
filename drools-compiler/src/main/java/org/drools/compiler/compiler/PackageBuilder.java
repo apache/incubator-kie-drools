@@ -1647,7 +1647,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     private String typeName2ClassName( String type ) {
-        Class cls = null;
+        Class<?> cls = getClassForType( type );
+        return cls != null ? cls.getName() : type;
+    }
+
+    private Class<?> getClassForType( String type ) {
+        Class<?> cls = null;
         String superType = type;
         while (true) {
             try {
@@ -1661,7 +1666,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
             superType = superType.substring(0, separator) +  "$" + superType.substring(separator + 1);
         }
-        return cls != null ? cls.getName() : type;
+        return cls;
     }
 
     private void fillFieldTypes( AbstractClassTypeDeclarationDescr typeDescr,
@@ -1930,23 +1935,26 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     List<TypeDefinition> processTypeDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
 
-            if ( isEmpty( typeDescr.getNamespace() ) ) {
+            String qName = typeDescr.getType().getFullName();
+            Class typeClass = getClassForType(qName);
+            if (typeClass == null) {
+                typeClass = getClassForType(typeDescr.getTypeName());
+            }
+            if (typeClass == null) {
                 for ( ImportDescr id : packageDescr.getImports() ) {
                     String imp = id.getTarget();
                     int separator = imp.lastIndexOf( '.' );
                     String tail = imp.substring( separator + 1 );
                     if (tail.equals( typeDescr.getTypeName() )) {
-                        typeDescr.setNamespace( imp.substring( 0,
-                                                               separator ) );
+                        typeDescr.setNamespace( imp.substring( 0, separator ) );
+                        typeClass = getClassForType(typeDescr.getType().getFullName());
+                        break;
                     }
                 }
             }
-
-            String qName = typeDescr.getType().getFullName();
-            int dotPos = qName.lastIndexOf( '.' );
+            String className = typeClass != null ? typeClass.getName() : qName;
+            int dotPos = className.lastIndexOf( '.' );
             if (dotPos >= 0) {
-                String className = typeName2ClassName(qName);
-                dotPos = className.lastIndexOf( '.' );
                 typeDescr.setNamespace( className.substring( 0, dotPos ) );
                 typeDescr.setTypeName( className.substring( dotPos + 1 ) );
             }
@@ -2217,7 +2225,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 type.setDurationExtractor( reader );
             } else {
                 this.results.add( new TypeDeclarationError(typeDescr,
-                        "Error processing @duration for TypeDeclaration '" + type.getTypeName() +
+                        "Error processing @duration for TypeDeclaration '" + type.getFullName() +
                         "': cannot access the field '" + duration + "'") );
             }
         }

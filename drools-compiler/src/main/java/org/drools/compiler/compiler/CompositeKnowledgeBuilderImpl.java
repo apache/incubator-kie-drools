@@ -237,6 +237,9 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private void buildTypeDeclarations(Collection<CompositePackageDescr> packages) {
         for (PackageDescr packageDescr : packages) {
             for (TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations()) {
+                if (pkgBuilder.isEmpty( typeDeclarationDescr.getNamespace() )) {
+                    typeDeclarationDescr.setNamespace( packageDescr.getNamespace() ); // set the default namespace
+                }
                 pkgBuilder.registerGeneratedType(typeDeclarationDescr);
             }
         }
