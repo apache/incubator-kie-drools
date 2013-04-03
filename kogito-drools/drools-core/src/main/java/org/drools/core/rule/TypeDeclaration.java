@@ -580,6 +580,10 @@ public class TypeDeclaration
         return this.typeClass != null ? this.typeClass.getPackage().getName() : "";
     }
 
+    public String getFullName() {
+        return getNamespace() + "." + getTypeName();
+    }
+
     public String getId() {
         return getTypeName();
     }
