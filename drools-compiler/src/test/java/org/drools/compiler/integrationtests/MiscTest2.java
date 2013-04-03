@@ -28,7 +28,10 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.definition.type.Position;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -1717,5 +1720,67 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         ksession.insert( new Integer( 1 ) );
         ksession.fireAllRules();
+    }
+
+    public static class SimpleEvent {
+        private long duration;
+
+        public long getDuration() {
+            return duration;
+        }
+
+        public void setDuration(long duration) {
+            this.duration = duration;
+        }
+    }
+
+    @Test
+    public void testDurationAnnotation() {
+        // DROOLS-94
+        String str =
+                "package org.drools.compiler.integrationtests;\n" +
+                "import org.drools.compiler.integrationtests.MiscTest2.SimpleEvent\n" +
+                "declare SimpleEvent\n" +
+                "    @role(event)\n" +
+                "    @duration(duration)\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+    }
+
+    @Test
+    public void testDurationAnnotationOnKie() {
+        // DROOLS-94
+        String str =
+                "package org.drools.compiler.integrationtests;\n" +
+                "import org.drools.compiler.integrationtests.MiscTest2.SimpleEvent\n" +
+                "declare SimpleEvent\n" +
+                "    @role(event)\n" +
+                "    @duration(duration)\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", str);
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+    }
+
+    @Test
+    public void testDurationAnnotationWithError() {
+        // DROOLS-94
+        String str =
+                "package org.drools.compiler.integrationtests;\n" +
+                "import org.drools.compiler.integrationtests.MiscTest2.SimpleEvent\n" +
+                "declare SimpleEvent\n" +
+                "    @role(event)\n" +
+                "    @duration(duratio)\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        assertTrue(kbuilder.hasErrors());
     }
 }
