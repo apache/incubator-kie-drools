@@ -18,6 +18,8 @@ package org.optaplanner.examples.manners2009.solver;
     dialect "java"
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
+import org.optaplanner.core.impl.score.constraint.UnweightedConstraintOccurrence;
+import org.optaplanner.core.impl.score.constraint.ConstraintType;
 
 import org.optaplanner.examples.manners2009.domain.Gender;
 import org.optaplanner.examples.manners2009.domain.Guest;
@@ -54,7 +56,8 @@ rule "twoSameJobTypePerTable"
             and (eval($jobType == JobType.SOCIALITE) or eval($jobType == JobType.TEACHER) or eval($firstJob != $secondJob))
         )
     then
-        scoreHolder.addConstraintMatch(kcontext, - 1);
+        insertLogical(new UnweightedConstraintOccurrence("twoSameJobTypePerTable",
+                $jobType, $table));
 end
 
 // This is to avoid score traps. The score function should for example give an incentive
@@ -66,7 +69,8 @@ rule "atLeastOneJobTypePerTableScoreGuider"
         $jobType : JobType()
         not SeatDesignation(guestJobType == $jobType, seatTable == $table)
     then
-        scoreHolder.addConstraintMatch(kcontext, - 1);
+        insertLogical(new UnweightedConstraintOccurrence("tableWithoutJobTypeShouldBePunishedExtra",
+                $jobType, $table));
 end
 
 
@@ -83,5 +87,20 @@ rule "leftHasHobbyInCommon"
             and HobbyPractician(guest == $rightGuest, hobby == $leftHobby)
         )
     then
-        scoreHolder.addConstraintMatch(kcontext, - 1);
+        insertLogical(new UnweightedConstraintOccurrence("leftHasHobbyInCommon",
+                $leftDesignation, $rightDesignation));
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+rule "accumulateScore"
+    when
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
+        )
+    then
+        scoreHolder.setScore(- $occurrenceCount.intValue());
 end
