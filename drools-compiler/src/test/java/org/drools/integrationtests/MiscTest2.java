@@ -1459,49 +1459,49 @@ public class MiscTest2 extends CommonTestMethodBase {
         // DROOLS-92
         String str =
                 "package org.drools.integrationtests;\n" +
-                        "" +
-                        "import org.drools.integrationtests.MiscTest2.Foo2; \n" +
-                        "" +
-                        "global java.util.List list; \n" +
-                        "\n" +
-                        "rule \"Prep\" \n" +
-                        "when \n" +
-                        "  $packs : java.util.Collection() \n" +
-                        "then \n" +
-                        "   drools.getKnowledgeRuntime().getKnowledgeBase().addKnowledgePackages( $packs );" +
-                        "end \n" +
-                        "" +
-                        "rule \"Self-change\"\n" +
-                        "when\n" +
-                        "  String( this == \"go\" )\n" +
-                        "then\n" +
-                        "   drools.getKnowledgeRuntime().getKnowledgeBase().removeRule( \"org.drools.integrationtests\", \"React\" ); \n" +
-                        "end\n" +
-                        "\n" +
-                        "\n" +
-                        "rule \"Insert\"\n" +
-                        "when\n" +
-                        "  $i : Integer()\n" +
-                        "then\n" +
-                        "  Foo2 foo = new Foo2();\n " +
-                        "  foo.setX( $i ); \n" +
-                        "  insert( foo );\n" +
-                        "end\n" +
-                        "" +
-                        "";
+                "" +
+                "import org.drools.integrationtests.MiscTest2.Foo2; \n" +
+                "" +
+                "global java.util.List list; \n" +
+                "\n" +
+                "rule \"Prep\" \n" +
+                "when \n" +
+                "  $packs : java.util.Collection() \n" +
+                "then \n" +
+                "   drools.getKnowledgeRuntime().getKnowledgeBase().addKnowledgePackages( $packs );" +
+                "end \n" +
+                "" +
+                "rule \"Self-change\"\n" +
+                "when\n" +
+                "  String( this == \"go\" )\n" +
+                "then\n" +
+                "   drools.getKnowledgeRuntime().getKnowledgeBase().removeRule( \"org.drools.integrationtests\", \"React\" ); \n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"Insert\"\n" +
+                "when\n" +
+                "  $i : Integer()\n" +
+                "then\n" +
+                "  Foo2 foo = new Foo2();\n " +
+                "  foo.setX( $i ); \n" +
+                "  insert( foo );\n" +
+                "end\n" +
+                "" +
+                "";
 
         String str2 =
                 "package org.drools.integrationtests;\n" +
-                        "" +
-                        "import org.drools.integrationtests.MiscTest2.Foo2; \n" +
-                        "global java.util.List list;\n " +
-                        "rule \"React\"\n" +
-                        "when\n" +
-                        "  $b : Foo2( x < 10 )\n" +
-                        "then\n" +
-                        "  System.out.println( \" Foo2 is in \" + $b.getX() );" +
-                        "  list.add( $b ); \n" +
-                        "end\n";
+                "" +
+                "import org.drools.integrationtests.MiscTest2.Foo2; \n" +
+                "global java.util.List list;\n " +
+                "rule \"React\"\n" +
+                "when\n" +
+                "  $b : Foo2( x < 10 )\n" +
+                "then\n" +
+                "  System.out.println( \" Foo2 is in \" + $b.getX() );" +
+                "  list.add( $b ); \n" +
+                "end\n";
 
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( new ByteArrayResource( str2.getBytes() ), ResourceType.DRL );

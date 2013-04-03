@@ -456,31 +456,10 @@ public class ClassFieldAccessorStore
     }
 
     public void wire(ClassFieldWriter writer) {
-        writer.setWriteAccessor( cache.getWriteAcessor( writer ) );
+        if (writer != null) {
+            writer.setWriteAccessor( cache.getWriteAcessor( writer ) );
+        }
     }
-
-    //    public void wire(PatternExtractor reader) {
-    //        ObjectType objectType = reader.getObjectType();
-    //
-    //        if ( objectType instanceof ClassObjectType ) {
-    //            ClassObjectType cot = (ClassObjectType) objectType;
-    //            try {
-    //                Class cls = this.cache.getClassLoader().loadClass( cot.getClassName() );
-    //                cot.setClassType( cls );
-    //            } catch ( ClassNotFoundException e ) {
-    //                throw new RuntimeDroolsException( "Unable to load ClassObjectType class '" + cot.getClassName() + "'" );
-    //            }
-    //        }
-    //    }
-
-//    public void wire(ClassObjectType objectType) {
-//        try {
-//            Class cls = this.cache.getClassLoader().loadClass( objectType.getClassName() );
-//            objectType.setClassType( cls );
-//        } catch ( ClassNotFoundException e ) {
-//            throw new RuntimeDroolsException( "Unable to load ClassObjectType class '" + objectType.getClassName() + "'" );
-//        }
-//    }
 
     public void wire( ClassWireable wireable ) {
         try {
