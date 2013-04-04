@@ -22,5 +22,7 @@ public interface Mapper {
     
     Integer findMapping(Context context);
     
+    Object findContextId(Integer ksessionId);
+    
     void removeMapping(Context context);
 }

@@ -15,8 +15,12 @@
  */
 package org.kie.internal.runtime.manager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public interface RuntimeManagerFactory {
+   
 
     public RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment);
     
@@ -35,12 +39,13 @@ public interface RuntimeManagerFactory {
      */
     public static class Factory {
         private static RuntimeManagerFactory INSTANCE;
-
+        private static Logger logger = LoggerFactory.getLogger(Factory.class);
+        
         static {
             try {                
                 INSTANCE = ( RuntimeManagerFactory ) Class.forName( "org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl" ).newInstance();
             } catch (Exception e) {
-                throw new RuntimeException("Unable to instance RuntimeManagerFactory", e);
+                logger.error("Unable to instance RuntimeManagerFactory due to " + e.getMessage());
             }
         }
 
@@ -48,6 +53,9 @@ public interface RuntimeManagerFactory {
          * Returns a reference to the RuntimeManagerFactory singleton
          */
         public static RuntimeManagerFactory get() {
+            if (INSTANCE == null) {
+                throw new RuntimeException("RuntimeManagerFactory was not initialized, see previous errors");
+            }
             return INSTANCE;
         }
     }
