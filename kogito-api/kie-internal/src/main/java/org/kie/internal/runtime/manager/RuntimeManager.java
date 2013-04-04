@@ -15,6 +15,8 @@
  */
 package org.kie.internal.runtime.manager;
 
+import org.kie.api.runtime.KieSession;
+
 
 public interface RuntimeManager {
 
@@ -23,6 +25,8 @@ public interface RuntimeManager {
     String getIdentifier();
    
     void disposeRuntime(Runtime runtime);
+    
+    void validate(KieSession ksession, Context context) throws IllegalStateException;
     
     void close();
 }
