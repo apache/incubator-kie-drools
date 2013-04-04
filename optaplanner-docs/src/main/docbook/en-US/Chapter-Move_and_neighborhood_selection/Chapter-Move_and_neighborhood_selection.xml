@@ -693,7 +693,7 @@
       ... &lt;!-- Normal selector properties --&gt;
       &lt;pillarSelector&gt;
         &lt;entitySelector&gt;
-        &lt;entityClass&gt;...Lecture&lt;/entityClass&gt;
+          &lt;entityClass&gt;...Lecture&lt;/entityClass&gt;
           ...
         &lt;/entitySelector&gt;
       &lt;/pillarSelector&gt;
@@ -715,13 +715,79 @@
     <section xml:id="subChainChangeMoveSelector">
       <title>subChainChangeMoveSelector</title>
 
-      <para>TODO</para>
+      <para>A <emphasis>subChain</emphasis> is a set of planning entities with a chained planning variable which form
+      part of a chain. The <literal>subChainChangeMove</literal> selects a subChain and moves it to another place in a
+      different or the same anchor chain.</para>
+
+      <para>Simplest configuration:</para>
+
+      <programlisting language="xml">    &lt;subChainChangeMoveSelector/&gt;</programlisting>
+
+      <para>Advanced configuration:</para>
+
+      <programlisting language="xml">    &lt;subChainChangeMoveSelector&gt;
+      ... &lt;!-- Normal selector properties --&gt;
+      &lt;subChainSelector&gt;
+        &lt;entitySelector&gt;
+          &lt;entityClass&gt;...VrpCustomer&lt;/entityClass&gt;
+          ...
+        &lt;/entitySelector&gt;
+        &lt;minimumSubChainSize&gt;2&lt;/minimumSubChainSize&gt;
+        &lt;maximumSubChainSize&gt;40&lt;/maximumSubChainSize&gt;
+      &lt;/subChainSelector&gt;
+      &lt;valueSelector&gt;
+        &lt;variableName&gt;previousAppearance&lt;/variableName&gt;
+        ...
+      &lt;/valueSelector&gt;
+      &lt;selectReversingMoveToo&gt;true&lt;/selectReversingMoveToo&gt;
+    &lt;/subChainChangeMoveSelector&gt;</programlisting>
+
+      <para>The <literal>subChainSelector</literal> selects a number of entities, no less than
+      <literal>minimumSubChainSize</literal> (defaults to 2) and no more than <literal>maximumSubChainSize</literal>
+      (defaults to infinity).</para>
+
+      <para>The property <literal>selectReversingMoveToo</literal> (defaults to true) enabled selecting the reverse of
+      every subchain too.</para>
     </section>
 
     <section xml:id="subChainSwapMoveSelector">
       <title>subChainSwapMoveSelector</title>
 
-      <para>TODO</para>
+      <para>The <literal>subChainSwapMove</literal> selects 2 different subChains and moves it to another place in a
+      different or the same anchor chain.</para>
+
+      <para>Simplest configuration:</para>
+
+      <programlisting language="xml">    &lt;subChainSwapMoveSelector/&gt;</programlisting>
+
+      <para>Advanced configuration:</para>
+
+      <programlisting language="xml">    &lt;subChainSwapMoveSelector&gt;
+      ... &lt;!-- Normal selector properties --&gt;
+      &lt;subChainSelector&gt;
+        &lt;entitySelector&gt;
+          &lt;entityClass&gt;...VrpCustomer&lt;/entityClass&gt;
+          ...
+        &lt;/entitySelector&gt;
+        &lt;minimumSubChainSize&gt;2&lt;/minimumSubChainSize&gt;
+        &lt;maximumSubChainSize&gt;40&lt;/maximumSubChainSize&gt;
+      &lt;/subChainSelector&gt;
+      &lt;secondarySubChainSelector&gt;
+        &lt;entitySelector&gt;
+          &lt;entityClass&gt;...VrpCustomer&lt;/entityClass&gt;
+          ...
+        &lt;/entitySelector&gt;
+        &lt;minimumSubChainSize&gt;2&lt;/minimumSubChainSize&gt;
+        &lt;maximumSubChainSize&gt;40&lt;/maximumSubChainSize&gt;
+      &lt;/secondarySubChainSelector&gt;
+      &lt;selectReversingMoveToo&gt;true&lt;/selectReversingMoveToo&gt;
+    &lt;/subChainSwapMoveSelector&gt;</programlisting>
+
+      <para>The <literal>secondarySubChainSelector</literal> is rarely needed: if it is not specified, entities from the
+      same <literal>subChainSelector</literal> are swapped.</para>
+
+      <para>The other properties are explained in <link
+      linkend="subChainChangeMoveSelector">subChainChangeMoveSelector</link>.</para>
     </section>
   </section>
 
