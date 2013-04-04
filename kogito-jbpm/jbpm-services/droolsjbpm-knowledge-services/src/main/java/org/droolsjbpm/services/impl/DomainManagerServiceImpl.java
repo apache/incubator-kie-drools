@@ -42,6 +42,7 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.shared.services.api.FileException;
@@ -51,6 +52,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 
@@ -175,14 +177,16 @@ public class DomainManagerServiceImpl implements DomainManagerService {
             for (RuntimeId r : d.getRuntimes()) {
                 String reference = r.getReference();
                 // Create Runtime Manager Based on the Reference
-                SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment(emf);
+                RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
+                        .entityManagerFactory(emf);
+                
                 UserTransaction ut = null;
                 try {
                     ut = InitialContext.doLookup("java:comp/UserTransaction");
                 } catch (Exception ex) {
                     try {
                         ut = InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
-                        environment.addToEnvironment(EnvironmentName.TRANSACTION, ut);
+                        builder.addEnvironmentEntry(EnvironmentName.TRANSACTION, ut);
                     } catch (Exception e1) {
                         throw new RuntimeException("Cannot find UserTransaction", e1);
                     }
@@ -193,7 +197,7 @@ public class DomainManagerServiceImpl implements DomainManagerService {
                 auditEventBuilder.setDomain(d);
                 auditLogger.setBuilder(auditEventBuilder);
                 
-                environment.setRegisterableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger));
+                builder.registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger));
                 Iterable<Path> loadProcessFiles = null;
 
                 try {
@@ -205,7 +209,7 @@ public class DomainManagerServiceImpl implements DomainManagerService {
                     String processString = "";
                     try {
                         processString = new String(fs.loadFile(p));
-                        environment.addAsset(ResourceFactory.newByteArrayResource(processString.getBytes()), ResourceType.BPMN2);
+                        builder.addAsset(ResourceFactory.newByteArrayResource(processString.getBytes()), ResourceType.BPMN2);
                         ProcessDesc process = bpmn2Service.findProcessId(processString);
                         if (process != null) {
                             process.setDomainName(d.getName());
@@ -232,7 +236,7 @@ public class DomainManagerServiceImpl implements DomainManagerService {
                         for (ProcessDesc process : loadedProcesses) {
                             pm.persist(process);
                         }
-                        RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment, d.getName());
+                        RuntimeManager manager = managerFactory.newSingletonRuntimeManager(builder.get(), d.getName());
     
                         domainsMap.put(d.getName(), manager);                    
                     }

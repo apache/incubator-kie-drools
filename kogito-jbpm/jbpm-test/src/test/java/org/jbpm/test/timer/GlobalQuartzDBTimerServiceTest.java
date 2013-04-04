@@ -18,6 +18,7 @@ import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.junit.After;
 import org.junit.Before;
@@ -113,10 +114,11 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
     @Test 
     @Ignore
     public void testAbortGlobalTestService() throws Exception {
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle3.bpmn2"), ResourceType.BPMN2)
+                .addConfiguration("drools.timerService", "org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate")
+                .get();
         
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle3.bpmn2"), ResourceType.BPMN2);
-        environment.addToConfiguration("drools.timerService", "org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate");
         RuntimeManager manger = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
         
         // build GlobalTimerService instance
@@ -160,10 +162,11 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
     @Test
     @Ignore
     public void testContinueGlobalTestService() throws Exception {
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-        
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle2.bpmn2"), ResourceType.BPMN2);
-        environment.addToConfiguration("drools.timerService", "org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate");
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle2.bpmn2"), ResourceType.BPMN2)
+                .addConfiguration("drools.timerService", "org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate")
+                .get();
+       
         RuntimeManager manger = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
         
         // build GlobalTimerService instance

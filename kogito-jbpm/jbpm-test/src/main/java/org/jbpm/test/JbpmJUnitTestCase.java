@@ -6,9 +6,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -27,23 +27,15 @@ import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
-import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
-import org.jbpm.runtime.manager.impl.SingletonRuntimeManager;
-import org.jbpm.runtime.manager.impl.factory.InMemorySessionFactory;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.rules.TestName;
 import org.kie.api.KieBase;
 import org.kie.api.definition.process.Node;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
@@ -57,6 +49,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -88,7 +81,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
     private Logger testLogger = null;
     
     private RuntimeManager manager;
-    private SimpleRuntimeEnvironment environment;
+    private RuntimeEnvironment environment;
 
 //    @Rule
 //    public KnowledgeSessionCleanup ksessionCleanupRule = new KnowledgeSessionCleanup();	
@@ -179,46 +172,30 @@ public abstract class JbpmJUnitTestCase extends Assert {
     }
 
     protected KieBase createKnowledgeBase(String... process) {
-        if (!setupDataSource){
-            environment = new SimpleRuntimeEnvironment();
-            environment.addToConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
-            environment.addToConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
-        } else if (sessionPersistence) {
-            environment = new DefaultRuntimeEnvironment(emf);
-        } else {
-            environment = new TestRuntimeEnvironment(false);
-            environment.addToEnvironment(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-            environment.addToConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
-            environment.addToConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());        
-        }
-        environment.setUserGroupCallback(new JBossUserGroupCallbackImpl("classpath:/usergroups.properties"));
-        
+        Map<String, ResourceType> resources = new HashMap<String, ResourceType>();
         for (String p : process) {
-            environment.addAsset(ResourceFactory.newClassPathResource(p), ResourceType.BPMN2);
+            resources.put(p, ResourceType.BPMN2);
         }
-
-        return environment.getKieBase();
+        return createKnowledgeBase(resources);
     }
 
-    protected KieBase createKnowledgeBase(Map<String, ResourceType> resources) throws Exception {
-        
+    protected KieBase createKnowledgeBase(Map<String, ResourceType> resources) {
+        RuntimeEnvironmentBuilder builder = null;
         if (!setupDataSource){
-            environment = new SimpleRuntimeEnvironment();
-            environment.addToConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
-            environment.addToConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
+            builder = RuntimeEnvironmentBuilder.getEmpty()
+            .addConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName())
+            .addConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
         } else if (sessionPersistence) {
-            environment = new DefaultRuntimeEnvironment(emf);
+            builder = RuntimeEnvironmentBuilder.getDefault();
         } else {
-            environment = new TestRuntimeEnvironment(false);
-            environment.addToEnvironment(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-            environment.addToConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName());
-            environment.addToConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());        
+            builder = RuntimeEnvironmentBuilder.getDefaultInMemory();       
         }
-        environment.setUserGroupCallback(new JBossUserGroupCallbackImpl("classpath:/usergroups.properties"));
+        builder.userGroupCallback(new JBossUserGroupCallbackImpl("classpath:/usergroups.properties"));
         for (Map.Entry<String, ResourceType> entry : resources.entrySet()) {
             
-            environment.addAsset(ResourceFactory.newClassPathResource(entry.getKey()), entry.getValue());
+            builder.addAsset(ResourceFactory.newClassPathResource(entry.getKey()), entry.getValue());
         }
+        environment = builder.get();
         return environment.getKieBase();
     }
 
@@ -583,26 +560,6 @@ public abstract class JbpmJUnitTestCase extends Assert {
         return emf;
     }
     
-    private static class TestRuntimeEnvironment extends SimpleRuntimeEnvironment {
-        
-        private boolean usePersistence;
-        
-        public TestRuntimeEnvironment() {
-            this(false);
-        }
-        
-        public TestRuntimeEnvironment(boolean persistence) {
-            super(new DefaultRegisterableItemsFactory());
-            this.usePersistence = persistence;
-            setUserGroupCallback(new MvelUserGroupCallbackImpl());
-        }
-
-        @Override
-        public boolean usePersistence() {
-            return this.usePersistence;
-        }
-        
-    }
 
     public static void cleanupSingletonSessionId() {
         File tempDir = new File(System.getProperty("java.io.tmpdir"));

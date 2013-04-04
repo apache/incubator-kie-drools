@@ -8,8 +8,7 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
@@ -25,6 +24,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -76,10 +76,10 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
         userGroups.setProperty("john", "PM");
         userGroups.setProperty("mary", "HR");
         
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-        environment.setUserGroupCallback(new JBossUserGroupCallbackImpl(userGroups));
-        environment.addAsset(ResourceFactory.newClassPathResource("Evaluation2.bpmn"), ResourceType.BPMN2);
-       
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(new JBossUserGroupCallbackImpl(userGroups))
+                .addAsset(ResourceFactory.newClassPathResource("Evaluation2.bpmn"), ResourceType.BPMN2)
+                .get();
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
         org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());

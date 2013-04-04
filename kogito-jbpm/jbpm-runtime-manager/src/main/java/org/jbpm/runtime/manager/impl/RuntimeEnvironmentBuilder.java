@@ -2,6 +2,9 @@ package org.jbpm.runtime.manager.impl;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.jbpm.process.core.timer.GlobalSchedulerService;
+import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
+import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -32,7 +35,12 @@ public class RuntimeEnvironmentBuilder {
     }
     
     public static RuntimeEnvironmentBuilder getDefaultInMemory() {
-        return new RuntimeEnvironmentBuilder(new DefaultRuntimeEnvironment(null, false));
+        RuntimeEnvironmentBuilder builder = new RuntimeEnvironmentBuilder(new DefaultRuntimeEnvironment(null, false));
+        builder
+        .addConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName())
+        .addConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
+        
+        return builder;
     }
     
     public RuntimeEnvironmentBuilder persistence(boolean persistenceEnabled) {
@@ -91,5 +99,11 @@ public class RuntimeEnvironmentBuilder {
     public RuntimeEnvironment get() {
         this.runtimeEnvironment.init();
         return this.runtimeEnvironment;
+    }
+
+    public RuntimeEnvironmentBuilder schedulerService(GlobalSchedulerService globalScheduler) {
+        
+        this.runtimeEnvironment.setSchedulerService(globalScheduler);
+        return this;
     }
 }

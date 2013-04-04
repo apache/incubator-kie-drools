@@ -43,9 +43,11 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.junit.After;
@@ -60,6 +62,7 @@ import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.Context;
 import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -182,8 +185,9 @@ public class DomainServicesTest {
     public void simpleExecutionTest() {
         assertNotNull(managerFactory);
         String path = "processes/support/";
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment(emf);
-        environment.setRegisterableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null));
+        RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
+                .entityManagerFactory(emf)
+                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null));
         Iterable<Path> loadProcessFiles = null;
 
         try {
@@ -192,10 +196,10 @@ public class DomainServicesTest {
             Logger.getLogger(DomainServicesTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         for (Path p : loadProcessFiles) {
-            environment.addAsset(ResourceFactory.newClassPathResource( fs.getRepositoryRoot() + "/" + path + p.getFileName().toString()), ResourceType.BPMN2);
+            builder.addAsset(ResourceFactory.newClassPathResource( fs.getRepositoryRoot() + "/" + path + p.getFileName().toString()), ResourceType.BPMN2);
         }
 
-        RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment);
+        RuntimeManager manager = managerFactory.newSingletonRuntimeManager(builder.get());
         testProcessStartOnManager(manager, EmptyContext.get());
 
         manager.close();
@@ -229,7 +233,8 @@ public class DomainServicesTest {
             for (RuntimeId r : d.getRuntimes()) {
                 String reference = r.getReference();
                 // Create Runtime Manager Based on the Reference
-                SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment(emf);
+                RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
+                        .entityManagerFactory(emf);
                 Iterable<Path> loadProcessFiles = null;
 
                 try {
@@ -238,11 +243,11 @@ public class DomainServicesTest {
                     Logger.getLogger(DomainServicesTest.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 for (Path p : loadProcessFiles) {
-                    environment.addAsset(ResourceFactory.newClassPathResource(fs.getRepositoryRoot() + "/" + reference + p.getFileName().toString()), ResourceType.BPMN2);
+                    builder.addAsset(ResourceFactory.newClassPathResource(fs.getRepositoryRoot() + "/" + reference + p.getFileName().toString()), ResourceType.BPMN2);
                 }
                 // Parse and get the Metadata for all the assets
 
-                RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment, d.getName());
+                RuntimeManager manager = managerFactory.newSingletonRuntimeManager(builder.get(), d.getName());
                 org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
                 assertNotNull(runtime);
                 if (domainsMap.get(d.getName()) == null) {

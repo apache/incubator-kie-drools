@@ -12,8 +12,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
@@ -38,14 +37,15 @@ public class CDITestHelper {
     @PerRequest
     @PerProcessInstance
     public RuntimeEnvironment produceEnvironment(EntityManagerFactory emf) {
-        SimpleRuntimeEnvironment environment = new DefaultRuntimeEnvironment(emf);
         Properties properties= new Properties();
         properties.setProperty("mary", "HR");
         properties.setProperty("john", "HR");
-        environment.setUserGroupCallback( new JBossUserGroupCallbackImpl(properties));
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2);
-        environment.addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2);
-        environment.init();
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .entityManagerFactory(emf)
+                .userGroupCallback(new JBossUserGroupCallbackImpl(properties))
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .get();
         return environment;
     }
     

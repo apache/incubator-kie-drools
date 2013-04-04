@@ -49,7 +49,9 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     }
     
     public void init() {
-        this.mapper = new InMemoryMapper();
+        if (this.mapper == null) {
+            this.mapper = new InMemoryMapper();
+        }
     }
     
     public void addAsset(Resource resource, ResourceType type) {
