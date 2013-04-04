@@ -137,77 +137,77 @@
     <Queen id="37">
       <id>0</id>
       <column reference="3"/>
-      <row reference="34"/>
+      <row reference="29"/>
     </Queen>
     <Queen id="38">
       <id>1</id>
       <column reference="4"/>
-      <row reference="28"/>
+      <row reference="33"/>
     </Queen>
     <Queen id="39">
       <id>2</id>
       <column reference="5"/>
-      <row reference="24"/>
+      <row reference="30"/>
     </Queen>
     <Queen id="40">
       <id>3</id>
       <column reference="6"/>
-      <row reference="20"/>
+      <row reference="21"/>
     </Queen>
     <Queen id="41">
       <id>4</id>
       <column reference="7"/>
-      <row reference="29"/>
+      <row reference="24"/>
     </Queen>
     <Queen id="42">
       <id>5</id>
       <column reference="8"/>
-      <row reference="31"/>
+      <row reference="28"/>
     </Queen>
     <Queen id="43">
       <id>6</id>
       <column reference="9"/>
-      <row reference="22"/>
+      <row reference="32"/>
     </Queen>
     <Queen id="44">
       <id>7</id>
       <column reference="10"/>
-      <row reference="25"/>
+      <row reference="34"/>
     </Queen>
     <Queen id="45">
       <id>8</id>
       <column reference="11"/>
-      <row reference="23"/>
+      <row reference="22"/>
     </Queen>
     <Queen id="46">
       <id>9</id>
       <column reference="12"/>
-      <row reference="32"/>
+      <row reference="26"/>
     </Queen>
     <Queen id="47">
       <id>10</id>
       <column reference="13"/>
-      <row reference="30"/>
+      <row reference="35"/>
     </Queen>
     <Queen id="48">
       <id>11</id>
       <column reference="14"/>
-      <row reference="35"/>
+      <row reference="20"/>
     </Queen>
     <Queen id="49">
       <id>12</id>
       <column reference="15"/>
-      <row reference="33"/>
+      <row reference="31"/>
     </Queen>
     <Queen id="50">
       <id>13</id>
       <column reference="16"/>
-      <row reference="26"/>
+      <row reference="23"/>
     </Queen>
     <Queen id="51">
       <id>14</id>
       <column reference="17"/>
-      <row reference="21"/>
+      <row reference="25"/>
     </Queen>
     <Queen id="52">
       <id>15</id>
@@ -215,7 +215,5 @@
       <row reference="27"/>
     </Queen>
   </queenList>
-  <score id="53">
-    <score>0</score>
-  </score>
+  <score id="53">0</score>
 </NQueens>

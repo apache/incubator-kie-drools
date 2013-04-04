@@ -521,325 +521,323 @@
     <Queen id="133">
       <id>0</id>
       <column reference="3"/>
-      <row reference="113"/>
+      <row reference="116"/>
     </Queen>
     <Queen id="134">
       <id>1</id>
       <column reference="4"/>
-      <row reference="71"/>
+      <row reference="128"/>
     </Queen>
     <Queen id="135">
       <id>2</id>
       <column reference="5"/>
-      <row reference="107"/>
+      <row reference="84"/>
     </Queen>
     <Queen id="136">
       <id>3</id>
       <column reference="6"/>
-      <row reference="75"/>
+      <row reference="115"/>
     </Queen>
     <Queen id="137">
       <id>4</id>
       <column reference="7"/>
-      <row reference="77"/>
+      <row reference="99"/>
     </Queen>
     <Queen id="138">
       <id>5</id>
       <column reference="8"/>
-      <row reference="114"/>
+      <row reference="112"/>
     </Queen>
     <Queen id="139">
       <id>6</id>
       <column reference="9"/>
-      <row reference="81"/>
+      <row reference="70"/>
     </Queen>
     <Queen id="140">
       <id>7</id>
       <column reference="10"/>
-      <row reference="83"/>
+      <row reference="76"/>
     </Queen>
     <Queen id="141">
       <id>8</id>
       <column reference="11"/>
-      <row reference="104"/>
+      <row reference="126"/>
     </Queen>
     <Queen id="142">
       <id>9</id>
       <column reference="12"/>
-      <row reference="87"/>
+      <row reference="93"/>
     </Queen>
     <Queen id="143">
       <id>10</id>
       <column reference="13"/>
-      <row reference="89"/>
+      <row reference="85"/>
     </Queen>
     <Queen id="144">
       <id>11</id>
       <column reference="14"/>
-      <row reference="111"/>
+      <row reference="71"/>
     </Queen>
     <Queen id="145">
       <id>12</id>
       <column reference="15"/>
-      <row reference="93"/>
+      <row reference="92"/>
     </Queen>
     <Queen id="146">
       <id>13</id>
       <column reference="16"/>
-      <row reference="95"/>
+      <row reference="107"/>
     </Queen>
     <Queen id="147">
       <id>14</id>
       <column reference="17"/>
-      <row reference="118"/>
+      <row reference="73"/>
     </Queen>
     <Queen id="148">
       <id>15</id>
       <column reference="18"/>
-      <row reference="99"/>
+      <row reference="108"/>
     </Queen>
     <Queen id="149">
       <id>16</id>
       <column reference="19"/>
-      <row reference="101"/>
+      <row reference="130"/>
     </Queen>
     <Queen id="150">
       <id>17</id>
       <column reference="20"/>
-      <row reference="103"/>
+      <row reference="119"/>
     </Queen>
     <Queen id="151">
       <id>18</id>
       <column reference="21"/>
-      <row reference="105"/>
+      <row reference="96"/>
     </Queen>
     <Queen id="152">
       <id>19</id>
       <column reference="22"/>
-      <row reference="125"/>
+      <row reference="82"/>
     </Queen>
     <Queen id="153">
       <id>20</id>
       <column reference="23"/>
-      <row reference="109"/>
+      <row reference="110"/>
     </Queen>
     <Queen id="154">
       <id>21</id>
       <column reference="24"/>
-      <row reference="70"/>
+      <row reference="88"/>
     </Queen>
     <Queen id="155">
       <id>22</id>
       <column reference="25"/>
-      <row reference="73"/>
+      <row reference="72"/>
     </Queen>
     <Queen id="156">
       <id>23</id>
       <column reference="26"/>
-      <row reference="130"/>
+      <row reference="89"/>
     </Queen>
     <Queen id="157">
       <id>24</id>
       <column reference="27"/>
-      <row reference="82"/>
+      <row reference="101"/>
     </Queen>
     <Queen id="158">
       <id>25</id>
       <column reference="28"/>
-      <row reference="85"/>
+      <row reference="81"/>
     </Queen>
     <Queen id="159">
       <id>26</id>
       <column reference="29"/>
-      <row reference="128"/>
+      <row reference="117"/>
     </Queen>
     <Queen id="160">
       <id>27</id>
       <column reference="30"/>
-      <row reference="94"/>
+      <row reference="114"/>
     </Queen>
     <Queen id="161">
       <id>28</id>
       <column reference="31"/>
-      <row reference="121"/>
+      <row reference="79"/>
     </Queen>
     <Queen id="162">
       <id>29</id>
       <column reference="32"/>
-      <row reference="98"/>
+      <row reference="118"/>
     </Queen>
     <Queen id="163">
       <id>30</id>
       <column reference="33"/>
-      <row reference="74"/>
+      <row reference="83"/>
     </Queen>
     <Queen id="164">
       <id>31</id>
       <column reference="34"/>
-      <row reference="126"/>
+      <row reference="129"/>
     </Queen>
     <Queen id="165">
       <id>32</id>
       <column reference="35"/>
-      <row reference="69"/>
+      <row reference="124"/>
     </Queen>
     <Queen id="166">
       <id>33</id>
       <column reference="36"/>
-      <row reference="97"/>
+      <row reference="77"/>
     </Queen>
     <Queen id="167">
       <id>34</id>
       <column reference="37"/>
-      <row reference="122"/>
+      <row reference="106"/>
     </Queen>
     <Queen id="168">
       <id>35</id>
       <column reference="38"/>
-      <row reference="127"/>
+      <row reference="131"/>
     </Queen>
     <Queen id="169">
       <id>36</id>
       <column reference="39"/>
-      <row reference="88"/>
+      <row reference="109"/>
     </Queen>
     <Queen id="170">
       <id>37</id>
       <column reference="40"/>
-      <row reference="91"/>
+      <row reference="120"/>
     </Queen>
     <Queen id="171">
       <id>38</id>
       <column reference="41"/>
-      <row reference="129"/>
+      <row reference="95"/>
     </Queen>
     <Queen id="172">
       <id>39</id>
       <column reference="42"/>
-      <row reference="79"/>
+      <row reference="113"/>
     </Queen>
     <Queen id="173">
       <id>40</id>
       <column reference="43"/>
-      <row reference="120"/>
+      <row reference="68"/>
     </Queen>
     <Queen id="174">
       <id>41</id>
       <column reference="44"/>
-      <row reference="131"/>
+      <row reference="74"/>
     </Queen>
     <Queen id="175">
       <id>42</id>
       <column reference="45"/>
-      <row reference="110"/>
+      <row reference="121"/>
     </Queen>
     <Queen id="176">
       <id>43</id>
       <column reference="46"/>
-      <row reference="108"/>
+      <row reference="105"/>
     </Queen>
     <Queen id="177">
       <id>44</id>
       <column reference="47"/>
-      <row reference="106"/>
+      <row reference="80"/>
     </Queen>
     <Queen id="178">
       <id>45</id>
       <column reference="48"/>
-      <row reference="116"/>
+      <row reference="87"/>
     </Queen>
     <Queen id="179">
       <id>46</id>
       <column reference="49"/>
-      <row reference="102"/>
+      <row reference="98"/>
     </Queen>
     <Queen id="180">
       <id>47</id>
       <column reference="50"/>
-      <row reference="100"/>
+      <row reference="123"/>
     </Queen>
     <Queen id="181">
       <id>48</id>
       <column reference="51"/>
-      <row reference="78"/>
+      <row reference="102"/>
     </Queen>
     <Queen id="182">
       <id>49</id>
       <column reference="52"/>
-      <row reference="96"/>
+      <row reference="86"/>
     </Queen>
     <Queen id="183">
       <id>50</id>
       <column reference="53"/>
-      <row reference="124"/>
+      <row reference="69"/>
     </Queen>
     <Queen id="184">
       <id>51</id>
       <column reference="54"/>
-      <row reference="92"/>
+      <row reference="91"/>
     </Queen>
     <Queen id="185">
       <id>52</id>
       <column reference="55"/>
-      <row reference="90"/>
+      <row reference="122"/>
     </Queen>
     <Queen id="186">
       <id>53</id>
       <column reference="56"/>
-      <row reference="112"/>
+      <row reference="100"/>
     </Queen>
     <Queen id="187">
       <id>54</id>
       <column reference="57"/>
-      <row reference="86"/>
+      <row reference="97"/>
     </Queen>
     <Queen id="188">
       <id>55</id>
       <column reference="58"/>
-      <row reference="84"/>
+      <row reference="103"/>
     </Queen>
     <Queen id="189">
       <id>56</id>
       <column reference="59"/>
-      <row reference="117"/>
+      <row reference="111"/>
     </Queen>
     <Queen id="190">
       <id>57</id>
       <column reference="60"/>
-      <row reference="123"/>
+      <row reference="125"/>
     </Queen>
     <Queen id="191">
       <id>58</id>
       <column reference="61"/>
-      <row reference="80"/>
+      <row reference="104"/>
     </Queen>
     <Queen id="192">
       <id>59</id>
       <column reference="62"/>
-      <row reference="76"/>
+      <row reference="90"/>
     </Queen>
     <Queen id="193">
       <id>60</id>
       <column reference="63"/>
-      <row reference="115"/>
+      <row reference="94"/>
     </Queen>
     <Queen id="194">
       <id>61</id>
       <column reference="64"/>
-      <row reference="72"/>
+      <row reference="78"/>
     </Queen>
     <Queen id="195">
       <id>62</id>
       <column reference="65"/>
-      <row reference="119"/>
+      <row reference="127"/>
     </Queen>
     <Queen id="196">
       <id>63</id>
       <column reference="66"/>
-      <row reference="68"/>
+      <row reference="75"/>
     </Queen>
   </queenList>
-  <score id="197">
-    <score>0</score>
-  </score>
+  <score id="197">0</score>
 </NQueens>

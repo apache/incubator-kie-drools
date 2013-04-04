@@ -41,25 +41,23 @@
     <Queen id="13">
       <id>0</id>
       <column reference="3"/>
-      <row reference="9"/>
+      <row reference="10"/>
     </Queen>
     <Queen id="14">
       <id>1</id>
       <column reference="4"/>
-      <row reference="11"/>
+      <row reference="8"/>
     </Queen>
     <Queen id="15">
       <id>2</id>
       <column reference="5"/>
-      <row reference="8"/>
+      <row reference="11"/>
     </Queen>
     <Queen id="16">
       <id>3</id>
       <column reference="6"/>
-      <row reference="10"/>
+      <row reference="9"/>
     </Queen>
   </queenList>
-  <score id="17">
-    <score>0</score>
-  </score>
+  <score id="17">0</score>
 </NQueens>

@@ -73,45 +73,43 @@
     <Queen id="21">
       <id>0</id>
       <column reference="3"/>
-      <row reference="13"/>
+      <row reference="18"/>
     </Queen>
     <Queen id="22">
       <id>1</id>
       <column reference="4"/>
-      <row reference="18"/>
+      <row reference="13"/>
     </Queen>
     <Queen id="23">
       <id>2</id>
       <column reference="5"/>
-      <row reference="14"/>
+      <row reference="17"/>
     </Queen>
     <Queen id="24">
       <id>3</id>
       <column reference="6"/>
-      <row reference="17"/>
+      <row reference="14"/>
     </Queen>
     <Queen id="25">
       <id>4</id>
       <column reference="7"/>
-      <row reference="19"/>
+      <row reference="12"/>
     </Queen>
     <Queen id="26">
       <id>5</id>
       <column reference="8"/>
-      <row reference="16"/>
+      <row reference="15"/>
     </Queen>
     <Queen id="27">
       <id>6</id>
       <column reference="9"/>
-      <row reference="12"/>
+      <row reference="19"/>
     </Queen>
     <Queen id="28">
       <id>7</id>
       <column reference="10"/>
-      <row reference="15"/>
+      <row reference="16"/>
     </Queen>
   </queenList>
-  <score id="29">
-    <score>0</score>
-  </score>
+  <score id="29">0</score>
 </NQueens>
