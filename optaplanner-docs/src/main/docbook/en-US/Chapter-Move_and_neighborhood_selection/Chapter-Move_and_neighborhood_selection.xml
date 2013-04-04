@@ -627,7 +627,7 @@
         include a changeMoveSelector or a custom implementation. This guarantees that every possible
         <literal>Solution</literal> can be reached through applying a number of moves in sequence (not taking <link
         linkend="scoreTrap">score traps</link> into account). Of course, normally it is unioned with other, more course
-        grained moves.</para>
+        grained move selectors.</para>
       </important>
     </section>
 
@@ -636,6 +636,12 @@
 
       <para>The <literal>SwapMove</literal> selects 2 different planning entities and swaps the planning values of all
       their planning variables.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/swapMove.png"/>
+        </imageobject>
+      </mediaobject>
 
       <para>Although a <literal>SwapMove</literal> on a single variable is essentially just 2
       <literal>ChangeMove</literal>s, it's often the winning step where the first of the 2
