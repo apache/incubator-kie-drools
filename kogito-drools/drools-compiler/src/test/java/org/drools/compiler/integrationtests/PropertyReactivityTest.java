@@ -12,6 +12,66 @@ import java.util.List;
 
 public class PropertyReactivityTest extends CommonTestMethodBase {
 
+    @Test
+    public void testScrambleProperties() {
+        // DROOLS-91
+        String str =
+                "package org.drools.test\n" +
+                " global java.util.List list" +
+                "\n" +
+                " declare Parent\n" +
+                " @propertyReactive\n" +
+                " a : int\n" +
+                " k : int\n" +
+                " z : int\n" +
+                " end\n" +
+                "\n" +
+                " declare Child extends Parent\n" +
+                " @propertyReactive\n" +
+                " p : int\n" +
+                " end\n" +
+                "\n" +
+                "\n" +
+                " rule Init\n" +
+                " when\n" +
+                " then\n" +
+                " insert( new Child( 1, 3, 5, 7 ) );\n" +
+                " end\n" +
+                "\n" +
+                " rule Mod\n" +
+                " when\n" +
+                " $p : Parent()\n" +
+                " then\n" +
+                " modify( $p ) { setZ( 99 ); }\n" +
+                " end\n" +
+                "\n" +
+                " rule React2\n" +
+                " when\n" +
+                " Child( p == 7 )\n" +
+                " then\n" +
+                " list.add( \"React2\" );\n" +
+                " end\n" +
+                "\n" +
+                " rule React\n" +
+                " when\n" +
+                " Child( z == 99 )\n" +
+                " then\n" +
+                " list.add( \"React\" );\n" +
+                " end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.contains("React"));
+        assertTrue(list.contains("React2"));
+    }
+
     @PropertyReactive
     public static interface Intf1 {
         public int getC();
@@ -195,5 +255,96 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertTrue( list.containsAll( Arrays.asList( "k1@K1", "k1@I1", "k1@I2" ) ) );
         assertTrue( list.containsAll( Arrays.asList( "k2@K2", "k2@I2" ) ) );
         assertEquals( 5, list.size() );
+    }
+
+    @Test
+    public void testScrambleWithInterfacesAndObject() {
+        // DROOLS-91
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.compiler.integrationtests.PropertyReactivityTest.Intf2;\n" +
+                "import org.drools.compiler.integrationtests.PropertyReactivityTest.Klass2;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Klass2( 2, 3, 4, 5 ) );\n" +
+                "end\n" +
+                "rule \"Mod\"\n" +
+                "when\n" +
+                "  $x : Intf2( )\n" +
+                "then\n" +
+                "  modify ( $x ) { setD( 200 ) }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Log\"\n" +
+                "when\n" +
+                "  Klass2( d == 200, $id : id ) \n" +
+                "then\n" +
+                "  list.add( \"Klass2\" );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"LogObject\" salience -1\n" +
+                "when\n" +
+                "  Object( ) \n" +
+                "then\n" +
+                "  list.add( \"Object\" );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.containsAll( Arrays.asList( "Klass2", "Object" ) ) );
+    }
+
+    @Test
+    public void testWithBeanAndTraitInDifferentPackages() {
+        // DROOLS-91
+        String str1 =
+                "package org.pkg1;\n" +
+                "declare trait Trait " +
+                "    @propertyReactive\n" +
+                "    a : int\n" +
+                "end";
+
+        String str2 =
+                "package org.pkg2;\n" +
+                "declare Bean " +
+                "    @propertyReactive\n" +
+                "    @Traitable\n" +
+                "    a : int\n" +
+                "    b : int\n" +
+                "end";
+
+        String str3 =
+                "package org.pkg3;\n" +
+                "import org.pkg1.Trait;\n" +
+                "import org.pkg2.Bean;\n" +
+                "rule Init\n" +
+                "when\n" +
+                "then\n" +
+                "    insert(new Bean(1, 2));\n" +
+                "end\n" +
+                "rule R\n" +
+                "when\n" +
+                "   $b : Bean( b == 2)" +
+                "then\n" +
+                "   Trait t = don( $b, Trait.class, true );\n" +
+                "   modify(t) { setA(2) };\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str1, str2, str3);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.fireAllRules();
     }
 }
