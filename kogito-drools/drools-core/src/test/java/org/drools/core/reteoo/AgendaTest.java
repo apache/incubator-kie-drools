@@ -259,7 +259,7 @@ public class AgendaTest extends DroolsTestCase {
    
         
         agenda.unstageActivations();
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 100, cheese.getPrice() );
         
         final PropagationContext context0 = new PropagationContextImpl( 0,
@@ -356,7 +356,7 @@ public class AgendaTest extends DroolsTestCase {
         // check there is an item to fire
         assertEquals( 1,
                       agenda.getFocus().size() );
-        agenda.fireNextItem( filterTrue );
+        agenda.fireNextItem( filterTrue, 0, -1 );
 
         // check focus is empty
         assertEquals( 0,
@@ -390,7 +390,7 @@ public class AgendaTest extends DroolsTestCase {
         // check we have an item to fire
         assertEquals( 1,
                       agenda.getFocus().size() );
-        agenda.fireNextItem( filterFalse );
+        agenda.fireNextItem( filterFalse, 0, -1 );
 
         // make sure the focus is empty
         assertEquals( 0,
@@ -599,7 +599,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // ok now lets check that stacks work with fireNextItem
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         // agendaGroup3 should still be the current agendaGroup
         assertEquals( agenda.getFocus(),
@@ -612,7 +612,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // now repeat the process
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         // focus is still agendaGroup3, but now its empty
         assertEquals( agenda.getFocus(),
@@ -623,7 +623,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // repeat fire again
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         // agendaGroup3 is empty so it should be popped from the stack making````````````````````
         // agendaGroup2
@@ -637,7 +637,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // repeat fire again
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         assertEquals( agenda.getFocus(),
                       agendaGroup2 );
@@ -649,7 +649,7 @@ public class AgendaTest extends DroolsTestCase {
         // this last fire is more interesting as it demonstrates that
         // agendaGroup1 on
         // the stack before agendaGroup2 gets skipped as it has no activations
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         assertEquals( agenda.getFocus(),
                       main );
@@ -731,7 +731,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // fire next item, agendaGroup should not fire as its not on the focus stack
         // and thus should retain its sinle activation
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 1,
                       agendaGroup.size() );
 
@@ -752,7 +752,7 @@ public class AgendaTest extends DroolsTestCase {
 
         assertEquals( 1,
                       agendaGroup.size() );
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       agendaGroup.size() );
     }
@@ -961,7 +961,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.focusStackSize() );
 
         // The first tuple should fire, adding itself to the List and clearing and cancelling the other Activations in the activation-group-0
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         // Make sure the activation-group-0 is clear
         assertEquals( 0,
@@ -1014,14 +1014,14 @@ public class AgendaTest extends DroolsTestCase {
                       activationGroup3.size() );
 
         // Activation for activation-group-0 should be next - the activation in no activation/agenda group should remain on the agenda
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 1,
                       agenda.agendaSize() );
         assertEquals( 0,
                       activationGroup0.size() );
 
         // Fire  the  last activation and  make sure the Agenda Empties
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       agenda.agendaSize() );
 
@@ -1169,14 +1169,14 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // As we fire each rule they are removed from both the Agenda and the RuleFlowGroup
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 1,
                       ruleFlowGroup0.size() );
         assertEquals( 1,
                       agenda.agendaSize() );
 
         // After firing all activations of RuleFlowGroup 0, the agenda is empty
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       ruleFlowGroup0.size() );
         assertEquals( 0,
@@ -1194,7 +1194,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // we set the salience higher on rule2, so it sould fire first and empty ruleFlowGroup2
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 1,
                       ruleFlowGroup1.size() );
         assertEquals( 0,
@@ -1203,7 +1203,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // this is the last activation, so everything should be empty after this
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       ruleFlowGroup0.size() );
         assertEquals( 0,
@@ -1335,14 +1335,14 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // As we fire the rule, an new activation is created for rule1, and it should be added to group AND the agenda.
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 1,
                       ruleFlowGroup0.size() );
         assertEquals( 1,
                       agenda.agendaSize() );
 
         // After firing all activations of RuleFlowGroup 0, the agenda is empty
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       ruleFlowGroup0.size() );
         assertEquals( 0,
@@ -1476,7 +1476,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // As we fire the rule, rule0 should execute first, as it has higher salience.
         // Rule0 should deactivate rule1 as well, so the everything should be empty
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       ruleFlowGroup0.size() );
         assertEquals( 0,
@@ -1679,7 +1679,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // Execute activation
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       ruleFlowGroup0.size() );
         assertEquals( 0,
@@ -1708,7 +1708,7 @@ public class AgendaTest extends DroolsTestCase {
         assertTrue( ruleFlowGroup0.isActive() );
 
         // Execute the activation, the RuleFlowGroup should automatically deactivate
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       ruleFlowGroup0.size() );
         assertEquals( 0,
@@ -2057,7 +2057,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // ok now lets check that stacks work with fireNextItem
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         // agendaGroup2 should still be the current agendaGroup
         assertEquals( agendaGroup2,
@@ -2070,7 +2070,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // now repeat the process
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         // focus is still agendaGroup2, but now its empty
         assertEquals( agendaGroup2,
@@ -2081,7 +2081,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // repeat fire again
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         // agendaGroup2 is empty so it should be popped from the stack making agendaGroup1 the current agendaGroup
         assertEquals( agendaGroup1,
@@ -2093,7 +2093,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.agendaSize() );
 
         // repeat fire again
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         assertEquals( agendaGroup1,
                       agenda.getFocus() );
@@ -2105,7 +2105,7 @@ public class AgendaTest extends DroolsTestCase {
         // this last fire is more interesting as it demonstrates that
         // agendaGroup1 on
         // the stack before agendaGroup2 gets skipped as it has no activations
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         assertEquals( agenda.getFocus(),
                       main );

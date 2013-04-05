@@ -126,22 +126,19 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         if ( fullFastIterator == null ) {
             fullFastIterator = new FullFastIterator( this.table );
         } else {
-            fullFastIterator.reset();
+            fullFastIterator.reset(this.table);
         }
         return fullFastIterator;
     }
-    
-    public FastIterator fullFastIterator(LeftTuple leftTuple) {
-        final int hashCode = this.index.hashCodeOf( leftTuple );
 
-        final int row = indexOf( hashCode,
-                                   this.table.length );
-        return new FullFastIterator( this.table, row );
-    }    
+    public FastIterator fullFastIterator(LeftTuple leftTuple) {
+        fullFastIterator.resume(leftTuple.getMemory(), this.table);
+        return fullFastIterator;
+    }
 
     public static class FullFastIterator implements FastIterator {
-        private final Entry[]     table;
-        private int               row;
+        private Entry[]     table;
+        private int         row;
         
         public FullFastIterator(Entry[] table, int row) {
             this.table = table;
@@ -151,6 +148,13 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         public FullFastIterator(Entry[] table) {
             this.table = table;
             this.row = 0;
+        }
+
+        public void resume(Entry target, Entry[] table) {
+            this.table = table;
+            row = indexOf( target.hashCode(),
+                           this.table.length );
+            row++; // row always points to the row after the current list
         }
 
         public Entry next(Entry object) {
@@ -201,8 +205,9 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         public boolean isFullIterator() {
             return true;
         }
-        
-        public void reset() {
+
+        public void reset(Entry[] table) {
+            this.table = table;
             this.row = 0;
         }
 

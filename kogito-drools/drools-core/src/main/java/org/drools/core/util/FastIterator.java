@@ -1,5 +1,7 @@
 package org.drools.core.util;
 
+import org.drools.core.util.index.RightTupleList;
+
 public interface FastIterator {
     Entry next(Entry object);
     
@@ -11,6 +13,10 @@ public interface FastIterator {
         }
         public boolean isFullIterator() {
             return false;
+        }
+
+        public void resume(Entry target) {
+
         }
     };
 

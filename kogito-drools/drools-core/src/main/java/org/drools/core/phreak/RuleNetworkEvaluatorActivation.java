@@ -1,8 +1,6 @@
 package org.drools.core.phreak;
 
-import org.drools.core.common.AgendaItem;
-import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.*;
 import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.rule.Rule;
@@ -21,6 +19,10 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
     private LeftTupleList tupleList;
 
+    private LeftTupleList stagingTupleList;
+
+    private boolean dirty;
+
     public RuleNetworkEvaluatorActivation() {
 
     }
@@ -34,21 +36,37 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
         super(activationNumber, tuple, salience, context, rtn);
         this.rmem = rmem;
         tupleList = new LeftTupleList();
+        stagingTupleList = new LeftTupleList();
     }
 
-    public int evaluateNetwork(InternalWorkingMemory wm) {
-        this.networkEvaluator.evaluateNetwork(rmem, wm, this);
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(final boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    public int evaluateNetwork(InternalWorkingMemory wm, int fireCount, int fireLimit) {
+        this.networkEvaluator.evaluateNetwork(rmem, wm, this);
+        setDirty( false );
+
+        //int fireCount = 0;
+        int localFireCount = 0;
         if ( !tupleList.isEmpty() ) {
             RuleTerminalNode rtn =  ( RuleTerminalNode ) rmem.getRuleTerminalNode();
             Rule rule = rtn.getRule();
-            InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
 
-            int salience = rule.getSalience().getValue(null, null, null);
+            InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
+            int salience = rule.getSalience().getValue(null, null, null); // currently all branches have the same salience for the same rule
 
             start:
             while (!tupleList.isEmpty() ) {
                 LeftTuple leftTuple = tupleList.removeFirst();
+
+                rtn =  ( RuleTerminalNode ) leftTuple.getSink(); // branches result in multiple RTN's for a given rule, so unwrap per LeftTuple
+                rule = rtn.getRule();
 
                 PropagationContext pctx = leftTuple.getPropagationContext();
                 pctx = RuleTerminalNode.findMostRecentPropagationContext( leftTuple,
@@ -56,34 +74,102 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
                 //check if the rule is not effective or
                 // if the current Rule is no-loop and the origin rule is the same then return
-                if ( (!rule.isEffective( leftTuple,
-                                         rtn,
-                                         wm )) ||
-                     (rule.isNoLoop() && rule.equals( pctx.getRuleOrigin() )) ) {
-                    leftTuple.setObject( Boolean.TRUE );
+                if (isNotEffective(wm, rtn, rule, leftTuple, pctx)) {
                     continue start;
                 }
 
-                if ( rule.getCalendars() != null ) {
-                    long timestamp = wm.getSessionClock().getCurrentTime();
-                    for ( String cal : rule.getCalendars() ) {
-                        if ( !wm.getCalendars().get( cal ).isTimeIncluded( timestamp ) ) {
-                            continue start;
-                        }
-                    }
+                long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
+                InternalAgendaGroup agendaGroup = (InternalAgendaGroup) agenda.getAgendaGroup(rule.getAgendaGroup());
+                if (blockedByLockOnActive(rule, agenda, pctx, handleRecency, agendaGroup)) {
+                    continue start;
                 }
 
-                AgendaItem item = agenda.createAgendaItem(leftTuple, salience, pctx, rtn);
-                agenda.fireActivation(item);
 
-                if ( !agenda.isActive( rule ) ) {
+                AgendaItem item = ( AgendaItem ) leftTuple.getObject();
+                if ( item == null ) {
+                    item = agenda.createAgendaItem(leftTuple, salience, pctx, rtn);
+                    leftTuple.setObject(item);
+                } else {
+                    item.setPropagationContext(pctx);
+                }
+                agenda.fireActivation(item);
+                localFireCount++;
+
+
+                RuleNetworkEvaluatorActivation nextRule = agenda.peekNextRule();
+                if (haltRuleFiring(nextRule, fireCount, fireLimit, localFireCount, agenda, salience)) {
                     break; // another rule has high priority and is on the agenda, so evaluate it first
                 }
+                if (  isDirty() ) {
+                    dequeue();
+                    setDirty( false );
+                    this.networkEvaluator.evaluateNetwork(rmem, wm, this);
+
+                }
+            }
+        }
+
+        return localFireCount;
+    }
+
+    private boolean isNotEffective(InternalWorkingMemory wm, RuleTerminalNode rtn, Rule rule, LeftTuple leftTuple, PropagationContext pctx) {
+        if ( (!rule.isEffective( leftTuple,
+                                 rtn,
+                                 wm )) ||
+             (rule.isNoLoop() && rule.equals( pctx.getRuleOrigin() )) ) {
+            leftTuple.setObject( Boolean.TRUE );
+            return true;
+        }
+
+        if ( rule.getCalendars() != null ) {
+            long timestamp = wm.getSessionClock().getCurrentTime();
+            for ( String cal : rule.getCalendars() ) {
+                if ( !wm.getCalendars().get( cal ).isTimeIncluded( timestamp ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean blockedByLockOnActive(Rule rule, InternalAgenda agenda, PropagationContext pctx, long handleRecency, InternalAgendaGroup agendaGroup) {
+        if ( rule.isLockOnActive() ) {
+            boolean isActive = false;
+            long activatedForRecency = 0;
+            long clearedForRecency = 0;
+
+            if ( rule.getRuleFlowGroup() == null ) {
+                isActive = agendaGroup.isActive();
+                activatedForRecency = agendaGroup.getActivatedForRecency();
+                clearedForRecency =  agendaGroup.getClearedForRecency();
+            }   else {
+                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) agenda.getRuleFlowGroup( rule.getRuleFlowGroup() );
+                isActive = rfg.isActive();
+                activatedForRecency = rfg.getActivatedForRecency();
+                clearedForRecency = rfg.getClearedForRecency();
+            }
+
+            if ( isActive && activatedForRecency < handleRecency &&
+                 agendaGroup.getAutoFocusActivator() != pctx) {
+                return true;
+            } else if ( clearedForRecency != -1  && clearedForRecency >= handleRecency ) {
+                return true;
             }
 
         }
+        return false;
+    }
 
-        return 0;
+    private boolean haltRuleFiring(RuleNetworkEvaluatorActivation nextRule, int fireCount, int fireLimit, int localFireCount, InternalAgenda agenda, int salience) {
+        if ( !agenda.continueFiring(0) || !isHighestSalience(nextRule, salience) || ( fireLimit >=0 && (localFireCount + fireCount >= fireLimit )) ) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isHighestSalience(RuleNetworkEvaluatorActivation nextRule,
+                                     int currentSalience) {
+        return ( nextRule == null ) || nextRule.getRule().getSalience().getValue(null, null, null) <= currentSalience;
     }
 
     public boolean isRuleNetworkEvaluatorActivation() {

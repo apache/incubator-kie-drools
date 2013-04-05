@@ -258,8 +258,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test
+    @Test //(timeout = 10000)
     public void testTraitShedTriple() {
         traitShed( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
@@ -268,14 +267,6 @@ public class TraitTest extends CommonTestMethodBase {
     public void testTraitShedMap() {
         traitShed( TraitFactory.VirtualPropertyMode.MAP );
     }
-
-
-
-
-
-
-
-
 
     public void traitDon( TraitFactory.VirtualPropertyMode mode ) {
         String source = "org/drools/compiler/factmodel/traits/testTraitDon.drl";
@@ -1674,8 +1665,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-
-    @Test
+    @Test (timeout = 10000)
     public void testManyTriple() {
         traitManyTimes( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
@@ -1684,11 +1674,6 @@ public class TraitTest extends CommonTestMethodBase {
     public void testManyMap() {
         traitManyTimes( TraitFactory.VirtualPropertyMode.MAP );
     }
-
-
-
-
-
 
     // BZ #748752
     public void traitsInBatchExecution( TraitFactory.VirtualPropertyMode mode ) {

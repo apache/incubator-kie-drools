@@ -43,6 +43,7 @@ import org.kie.internal.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
@@ -936,6 +937,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         ksession.retract( h );
         ksession.fireAllRules();
 
+        for ( Object o : ksession.getObjects() ) {
+            System.out.println( o );
+        }
+
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession,
                 true);
         assertEquals( 0,
@@ -1096,11 +1101,13 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         //System.err.println(reportWMObjects(kSession));
     }
 
-    @Test @Ignore("Should work with phreak, but actually still has error")
+    @Test
     public void testTMSWithLateUpdate() {
-        // This is not actually fixable, as noted here, JBRULES-3416
-        // facts must be updated, before changing other facts, as they act as HEAD in buckets.
-        // leaving test here as @ignore here for future reference.
+        //  JBRULES-3416
+        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+            return;  // Feature can never work in Rete mode.
+        }
+
         String str =""+
                 "package org.drools.compiler.test;\n" +
                 "\n" +
@@ -1143,10 +1150,11 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kSession.update(homerHandle, homer);
         kSession.update(bartHandle, bart);
         kSession.fireAllRules();
-        
+
         youngestFathers = kSession.getObjects( new ClassObjectFilter(YoungestFather.class) );
-        assertEquals(bart, ((YoungestFather) youngestFathers.iterator().next()).getMan());
         assertEquals(1, youngestFathers.size());
+        assertEquals(bart, ((YoungestFather) youngestFathers.iterator().next()).getMan());
+
 
         //System.err.println(reportWMObjects(kSession));
     }

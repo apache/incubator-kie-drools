@@ -42,7 +42,7 @@ public interface InternalAgenda
     
     public org.drools.core.util.LinkedList<ScheduledAgendaItem> getScheduledActivationsLinkedList();
 
-    public int fireNextItem(AgendaFilter filter) throws ConsequenceException;
+    public int fireNextItem(AgendaFilter filter, int fireCount, int fireLimit) throws ConsequenceException;
 
     public void scheduleItem(final ScheduledAgendaItem item, InternalWorkingMemory workingMemory);
 
@@ -125,14 +125,16 @@ public interface InternalAgenda
      * Fires all activations currently in agenda that match the given agendaFilter
      * until the fireLimit is reached or no more activations exist.
      * 
+     *
      * @param agendaFilter the filter on which activations may fire.
      * @param fireLimit the maximum number of activations that may fire. If -1, then it will
      *                  fire until no more activations exist.
-     *                  
-     * @return the number of rules that were actually fired                 
+     *
+     * @param limit
+     * @return the number of rules that were actually fired
      */
     public int fireAllRules(AgendaFilter agendaFilter,
-                             int fireLimit);
+                            int fireLimit);
 
     /**
      * Stop agenda from firing any other rule. It will finish the current rule
@@ -183,5 +185,7 @@ public interface InternalAgenda
                                                                                final PathMemory rs,
                                                                                final TerminalNode rtn);
 
-    boolean isActive(Rule rule);
+    public RuleNetworkEvaluatorActivation peekNextRule();
+
+    boolean continueFiring(int fireLimit);
 }

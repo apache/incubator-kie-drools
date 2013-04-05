@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
@@ -502,8 +503,12 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
 
         List<String> results = executeTestWithDRL(str);
 
-        System.out.println( results );
-        assertEquals( 1, results.size() );
+        if ( CommonTestMethodBase.preak == PhreakOption.ENABLED) {
+            assertEquals( 2, results.size() );
+        } else {
+            assertEquals( 1, results.size() );
+        }
+
         assertTrue( results.contains( "STILTON" ) );
     }
 

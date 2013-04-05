@@ -186,7 +186,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         new RightTuple( logicalHandle,
                         sink );
 
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, -1 );
 
         node.retractLeftTuple( tuple1,
                                context1,
