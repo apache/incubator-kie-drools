@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.PackageIntegrationException;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleIntegrationException;
@@ -52,11 +53,11 @@ import static org.junit.Assert.*;
 /**
  * This is a sample file to launch a rule package from a rule source file.
  */
-public abstract class Waltz {
+public abstract class Waltz extends CommonTestMethodBase {
 
     protected abstract RuleBase getRuleBase() throws Exception;
 
-    @Test
+    @Test(timeout = 20000 )
     public void testWaltz() {
         try {
             //load up the rulebase
@@ -127,18 +128,7 @@ public abstract class Waltz {
     }
     
     public KieBase readKnowledegBase() {
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add( ResourceFactory.newClassPathResource( "waltz.drl", Waltz.class ), ResourceType.DRL );
-        
-        if ( kBuilder.hasErrors() ) {
-            fail( kBuilder.getErrors().toString() );
-            
-        }
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        
-        kbase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBase( "waltz.drl");
         return ( KieBase ) kbase;
     }
 

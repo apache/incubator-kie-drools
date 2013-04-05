@@ -320,26 +320,27 @@ public class DefaultAgenda
         return stagedActivations;
     }
 
-    
+    public void addActivation2(final AgendaItem activation) {
+        if (  activationObjectTypeConf == null ) {
+            EntryPoint ep = workingMemory.getEntryPoint();
+            activationObjectTypeConf =  ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep,
+                                                                                                                                                                                                     activation );
+        }
+
+        InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, workingMemory, workingMemory );
+        workingMemory.getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), workingMemory );
+        activation.setFactHandle( factHandle );
+
+        if ( !activation.isCanceled() && ( activation.getBlockers() == null || activation.getBlockers().isEmpty() ) ) {
+            // All activations started off staged, they are unstaged if they are blocked or
+            // allowed to move onto the actual agenda for firing.
+            getStageActivationsGroup().addActivation( activation );
+        }
+    }
     
     public boolean addActivation(final AgendaItem activation) { 
         if ( declarativeAgenda && !activation.isRuleNetworkEvaluatorActivation() ) {
-            if (  activationObjectTypeConf == null ) {
-                EntryPoint ep = workingMemory.getEntryPoint();
-                activationObjectTypeConf =  ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep,
-                                                                                                                                                                                                             activation );
-            }
-            
-            InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, workingMemory, workingMemory );
-            workingMemory.getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), workingMemory );
-            activation.setFactHandle( factHandle );
-            
-            if ( !activation.isCanceled() && ( activation.getBlockers() == null || activation.getBlockers().isEmpty() ) ) {
-                // All activations started off staged, they are unstaged if they are blocked or 
-                // allowed to move onto the actual agenda for firing.
-                getStageActivationsGroup().addActivation( activation );
-            }
-               
+            addActivation(activation);
             return true;
         } else {
             addActivation( activation, true );
@@ -711,7 +712,9 @@ public class DefaultAgenda
             // on fact expiration, we don't remove the activation, but let it fire
             if ( context.getType() == PropagationContext.EXPIRATION && context.getFactHandleOrigin() != null ) {
             } else {
-                activation.remove();
+                if ( !unlinkingEnabled ) {
+                    activation.remove(); // phreak no longer adds rule instance matches to the agenda groups
+                }
 
                 if ( activation.getActivationGroupNode() != null ) {
                     activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
@@ -822,9 +825,8 @@ public class DefaultAgenda
         return agendaGroup;
     }
 
-    @Override
-    public boolean isActive(Rule rule) {
-        return (( InternalAgendaGroup ) this.focusStack.peek()).peekNext() == rule;
+    public RuleNetworkEvaluatorActivation peekNextRule() {
+        return  ( RuleNetworkEvaluatorActivation ) (( InternalAgendaGroup ) this.focusStack.peek()).peekNext();
     }
 
     /*
@@ -1296,9 +1298,9 @@ public class DefaultAgenda
      * @throws ConsequenceException
      *             If an error occurs while firing an agenda item.
      */
-    public int fireNextItem(final AgendaFilter filter) throws ConsequenceException {
+    public int fireNextItem(final AgendaFilter filter, int fireCount, int fireLimit) throws ConsequenceException {
         boolean tryagain;
-        int result = -1;
+        int localFireCount = 0;
         try {
             do {
                 this.workingMemory.prepareToFireActivation();
@@ -1322,16 +1324,17 @@ public class DefaultAgenda
                         // if that item is allowed to fire
                         if ( filter == null || filter.accept( item ) ) {                            
                             if (  this.unlinkingEnabled && item.isRuleNetworkEvaluatorActivation() ) {
-                                item.setActivated( false );                             
-                                int count = ((RuleNetworkEvaluatorActivation)item).evaluateNetwork( this.workingMemory );
-                                //if ( count > 0 ) {
-                                //    addActivation( item, true );
-                                //}
-                                result = 0;
+                                item.setActivated( false );
+                                localFireCount = ((RuleNetworkEvaluatorActivation)item).evaluateNetwork( this.workingMemory, fireCount, fireLimit );
+                                if ( localFireCount == 0 ) {
+                                    // nothing matched
+                                    tryagain = true; // will force the next Activation of the agenda, without going to outer loop which checks halt
+                                    this.workingMemory.executeQueuedActions(); // There may actions to process, which create new rule matches
+                                }
                             } else {
                                 // fire it
                                 fireActivation( item );
-                                result = 1;
+                                localFireCount++;
                             }                            
                         } else {
                             // otherwise cancel it and try the next
@@ -1362,7 +1365,7 @@ public class DefaultAgenda
         } finally {
             this.workingMemory.activationFired();
         }
-        return result;
+        return localFireCount;
     }
 
     /**
@@ -1524,7 +1527,7 @@ public class DefaultAgenda
         unstageActivations();
         this.halt.set( false );
         while ( continueFiring( -1 ) ) {
-            boolean fired = fireNextItem( agendaFilter ) >= 0 || 
+            boolean fired = fireNextItem( agendaFilter, 0, -1 ) >= 0 ||
                                 !((AbstractWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
             this.workingMemory.executeQueuedActions();
             if ( !fired ) {
@@ -1546,16 +1549,12 @@ public class DefaultAgenda
         unstageActivations();
         this.halt.set( false );
         int fireCount = 0;
-        int fireResult = 1;
-        while ( continueFiring( fireLimit ) && fireResult >= 0) {
-            fireResult  = fireNextItem( agendaFilter );
-            if ( fireResult == 1 ) {
-                // lazy activations are 0, and we don't increase fireCount for those
-                fireCount++;
-                fireLimit = updateFireLimit( fireLimit );                
-            }
+        int returnedFireCount = 0;
+        do {
+            returnedFireCount = fireNextItem( agendaFilter, fireCount, fireLimit );
+            fireCount += returnedFireCount;
             this.workingMemory.executeQueuedActions();
-        }
+        }  while ( continueFiring(0) && returnedFireCount != 0 &&  ( fireLimit == -1 || (fireCount < fireLimit )) );
         if ( this.focusStack.size() == 1 && getMainAgendaGroup().isEmpty() ) {
             // the root MAIN agenda group is empty, reset active to false, so it can receive more activations.
             getMainAgendaGroup().setActive( false );
@@ -1563,12 +1562,9 @@ public class DefaultAgenda
         return fireCount;
     }
 
-    private boolean continueFiring(final int fireLimit) {
-        return (!halt.get()) && (fireLimit != 0);
-    }
-
-    private int updateFireLimit(final int fireLimit) {
-        return fireLimit > 0 ? fireLimit - 1 : fireLimit;
+    @Override
+    public boolean continueFiring(final int fireLimit) {
+        return !halt.get();
     }
 
     public void notifyHalt() {

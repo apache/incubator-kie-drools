@@ -160,17 +160,14 @@ public class RightTupleIndexHashTable extends AbstractHashTable
             fullFastIterator = new FullFastIterator( this.table );
             
         } else {
-            fullFastIterator.reset();
+            fullFastIterator.reset(this.table );
         }
         return fullFastIterator;
     }
     
     public FastIterator fullFastIterator(RightTuple rightTuple) {
-        final int hashCode = this.index.hashCodeOf( rightTuple.getFactHandle().getObject() );
-
-        final int row = indexOf( hashCode,
-                                   this.table.length );        
-        return new FullFastIterator( this.table, row );
+        fullFastIterator.resume(rightTuple.getMemory(), this.table);
+        return fullFastIterator;
     }    
 
     public static class FullFastIterator implements FastIterator {
@@ -186,6 +183,13 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         public FullFastIterator(Entry[] table) {
             this.table = table;
             this.row = 0;
+        }
+
+        public void resume(Entry target, Entry[] table) {
+            this.table = table;
+            row = indexOf( target.hashCode(),
+                           this.table.length );
+            row++; // row always points to the row after the current list
         }
 
         public Entry next(Entry object) {
@@ -237,7 +241,8 @@ public class RightTupleIndexHashTable extends AbstractHashTable
             return true;
         }  
         
-        public void reset() {
+        public void reset(Entry[] table) {
+            this.table = table;
             this.row = 0;
         }
     }
@@ -391,8 +396,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
             }
             this.size--;
         }
-        rightTuple.setNext( null );
-        rightTuple.setPrevious( null );
+        rightTuple.clear();
     }
 
     public boolean contains(final RightTuple rightTuple) {

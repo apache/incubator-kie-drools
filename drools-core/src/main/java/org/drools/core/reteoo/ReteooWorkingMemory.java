@@ -285,7 +285,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                 PathMemory rm = rmems.get( i );
 
                 RuleNetworkEvaluatorActivation evaluator = agenda.createRuleNetworkEvaluatorActivation( Integer.MAX_VALUE, rm, rm.getRuleTerminalNode() );
-                evaluator.evaluateNetwork(this);
+                evaluator.evaluateNetwork(this, 0, -1);
             }
         } else {
             // no need to call retract, as no leftmemory used.
@@ -325,7 +325,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                     PathMemory rm = rmems.get( i );
 
                     RuleNetworkEvaluatorActivation evaluator = agenda.createRuleNetworkEvaluatorActivation( Integer.MAX_VALUE, rm, rm.getRuleTerminalNode() );
-                    evaluator.evaluateNetwork(this);
+                    evaluator.evaluateNetwork(this, 0, -1);
                 }
             } else {
                 getEntryPointNode().retractQuery( factHandle,

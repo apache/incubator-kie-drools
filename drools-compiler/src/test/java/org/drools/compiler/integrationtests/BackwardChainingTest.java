@@ -60,7 +60,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     
     private static Logger logger = LoggerFactory.getLogger(BackwardChainingTest.class);
 
-    @Test (timeout = 10000)
+    @Test //(timeout = 10000)
     public void testQueryPositional() throws Exception {
         String str = "" +
                      "package org.drools.compiler.test  \n" +

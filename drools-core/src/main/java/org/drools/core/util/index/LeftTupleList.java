@@ -109,6 +109,7 @@ public class LeftTupleList
         }
         leftTuple.setMemory( this );
         this.size++;
+
     }
 
     public void insertAfter(LeftTuple leftTuple, LeftTuple previous) {
@@ -166,9 +167,16 @@ public class LeftTupleList
 
     public LeftTuple removeFirst() {
         LeftTuple leftTuple = this.first;
-        this.first = (LeftTuple) leftTuple.getNext();
-        leftTuple.setNext(null);
-        this.first.setPrevious(null);
+        if ( this.last == leftTuple ) {
+            this.last = null;
+            this.first = null;
+        }  else {
+            this.first = (LeftTuple) leftTuple.getNext();
+            if ( this.first != null ) {
+                this.first.setPrevious(null);
+            }
+        }
+        leftTuple.clear();
         this.size--;
         return leftTuple;
     }
