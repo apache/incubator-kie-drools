@@ -221,7 +221,6 @@ public class ExistsNode extends BetaNode {
             return;
         }
 
-
         RightTupleMemory rtm = memory.getRightTupleMemory();
         if ( rightTuple.getBlocked() != null ) {
             updateLeftTupleToNewBlocker(rightTuple, context, workingMemory, memory, memory.getLeftTupleMemory(), rightTuple.getBlocked(), rtm, false);

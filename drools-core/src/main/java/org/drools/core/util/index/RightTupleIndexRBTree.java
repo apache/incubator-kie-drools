@@ -63,7 +63,7 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
     public void remove(RightTuple tuple) {
         RightTupleList list = tuple.getMemory();
         list.remove(tuple);
-        if (list.size() == 0) {
+        if (list.getFirst() == null) {
             tree.delete(((RightTupleRBTree.Node<Comparable<Comparable>>)list).key);
         }
         size--;
@@ -150,8 +150,7 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
         Node<Comparable<Comparable>> firstNode;
         switch (constraintType) {
             case LESS_THAN:
-                //firstNode = tree.findNearestNode(key, false, Boundary.UPPER);
-                firstNode = tree.findNearestNode(key, false, first ? Boundary.UPPER : Boundary.LOWER);
+                firstNode = tree.findNearestNode(key, false, Boundary.UPPER);
                 break;
             case LESS_OR_EQUAL:
                 firstNode = tree.findNearestNode(key, first, Boundary.UPPER);
