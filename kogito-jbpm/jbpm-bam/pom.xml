@@ -49,7 +49,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-flow-builder</artifactId>
+      <artifactId>jbpm-flow</artifactId>
     </dependency> 
     <dependency>
       <groupId>org.drools</groupId>
@@ -59,12 +59,7 @@
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
-    <!-- Only for the classes which use Hibernate, and we need to deprecate/delete these.. -->
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <optional>true</optional>
-    </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -89,6 +84,11 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
