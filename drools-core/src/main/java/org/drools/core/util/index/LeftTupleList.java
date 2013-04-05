@@ -37,8 +37,8 @@ public class LeftTupleList
     public LeftTuple               first;
     public LeftTuple               last;
 
-    private final int              hashCode;
-    private final Index            index;
+    private int                    hashCode;
+    private Index                  index;
 
     private TupleHashTableIterator iterator;
 
@@ -258,4 +258,13 @@ public class LeftTupleList
         return builder.toString();
     }
 
+    protected void copyStateInto(LeftTupleList other) {
+        other.next = next;
+        other.first = first;
+        other.last = last;
+        other.hashCode = hashCode;
+        other.index = index;
+        other.iterator = iterator;
+        other.size = size;
+    }
 }

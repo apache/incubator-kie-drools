@@ -63,7 +63,7 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
     public void remove(RightTuple tuple) {
         RightTupleList list = tuple.getMemory();
         list.remove(tuple);
-        if (list.size() == 0) {
+        if (list.getFirst() == null) {
             tree.delete(((RightTupleRBTree.Node<Comparable<Comparable>>)list).key);
         }
         size--;
