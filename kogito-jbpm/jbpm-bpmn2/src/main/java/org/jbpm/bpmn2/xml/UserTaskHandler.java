@@ -75,6 +75,7 @@ public class UserTaskHandler extends TaskHandler {
         	}
         	humanTaskNode.getWork().setParameter("ActorId", owner);        	
         }
+        humanTaskNode.getWork().setParameter("NodeName", humanTaskNode.getName() ); 
     }
     
     protected String readPotentialOwner(org.w3c.dom.Node xmlNode, HumanTaskNode humanTaskNode) {
