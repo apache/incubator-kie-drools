@@ -378,7 +378,7 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
         if ( n.left != null && n.right != null ) {
             // Copy key/value from predecessor and then delete it instead
             Node<K> pred = maximumNode( n.left );
-            n.key = pred.key;
+            pred.copyStateInto(n);
             n = pred;
         }
 
@@ -551,6 +551,11 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
 
         public int compareTo(Node<K> other) {
             return key.compareTo(other.key);
+        }
+
+        protected void copyStateInto(Node<K> other) {
+            super.copyStateInto(other);
+            other.key = key;
         }
     }
 }
