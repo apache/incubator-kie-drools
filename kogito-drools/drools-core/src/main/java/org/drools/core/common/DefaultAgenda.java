@@ -340,7 +340,7 @@ public class DefaultAgenda
     
     public boolean addActivation(final AgendaItem activation) { 
         if ( declarativeAgenda && !activation.isRuleNetworkEvaluatorActivation() ) {
-            addActivation(activation);
+            addActivation2(activation);
             return true;
         } else {
             addActivation( activation, true );
