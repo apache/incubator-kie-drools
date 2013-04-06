@@ -19,9 +19,9 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
     private LeftTupleList tupleList;
 
-    private LeftTupleList stagingTupleList;
-
     private boolean dirty;
+
+    private boolean declarativeAgendaEnabled;
 
     public RuleNetworkEvaluatorActivation() {
 
@@ -32,11 +32,12 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                                           final int salience,
                                           final PropagationContext context,
                                           final PathMemory rmem,
-                                          final TerminalNode rtn) {
-        super(activationNumber, tuple, salience, context, rtn);
+                                          final TerminalNode rtn,
+                                          boolean declarativeAgendaEnabled) {
+        super(activationNumber, tuple, salience, context, rtn, null);
         this.rmem = rmem;
         tupleList = new LeftTupleList();
-        stagingTupleList = new LeftTupleList();
+        this.declarativeAgendaEnabled = declarativeAgendaEnabled;
     }
 
 
@@ -46,6 +47,10 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
     public void setDirty(final boolean dirty) {
         this.dirty = dirty;
+    }
+
+    public boolean isDeclarativeAgendaEnabled() {
+        return this.declarativeAgendaEnabled;
     }
 
     public int evaluateNetwork(InternalWorkingMemory wm, int fireCount, int fireLimit) {
@@ -60,6 +65,16 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
             InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
             int salience = rule.getSalience().getValue(null, null, null); // currently all branches have the same salience for the same rule
+
+            if ( isDeclarativeAgendaEnabled() ) {
+                // Network Evaluation can notify meta rules, which should be given a chance to fire first
+                RuleNetworkEvaluatorActivation nextRule = agenda.peekNextRule();
+                if ( !isHighestSalience(nextRule, salience) ) {
+                    // add it back onto the agenda, as the list still needs to be check after the meta rules have evalutated the matches
+                    ((InternalAgenda) wm.getAgenda()).addActivation( this );
+                    return localFireCount;
+                }
+            }
 
             start:
             while (!tupleList.isEmpty() ) {
@@ -87,7 +102,8 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
 
                 AgendaItem item = ( AgendaItem ) leftTuple.getObject();
                 if ( item == null ) {
-                    item = agenda.createAgendaItem(leftTuple, salience, pctx, rtn);
+                    item = agenda.createAgendaItem(leftTuple, salience, pctx, rtn, this);
+                    item.setActivated(true);
                     leftTuple.setObject(item);
                 } else {
                     item.setPropagationContext(pctx);
@@ -113,11 +129,11 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
     }
 
     private boolean isNotEffective(InternalWorkingMemory wm, RuleTerminalNode rtn, Rule rule, LeftTuple leftTuple, PropagationContext pctx) {
+        // NB. stopped setting the LT.object to Boolean.TRUE, that Reteoo did.
         if ( (!rule.isEffective( leftTuple,
                                  rtn,
                                  wm )) ||
              (rule.isNoLoop() && rule.equals( pctx.getRuleOrigin() )) ) {
-            leftTuple.setObject( Boolean.TRUE );
             return true;
         }
 

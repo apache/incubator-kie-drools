@@ -17,6 +17,7 @@
 package org.drools.core.common;
 
 import org.drools.core.FactHandle;
+import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.Queueable;
@@ -52,50 +53,52 @@ public class AgendaItem
     // Instance members
     // ------------------------------------------------------------
 
-    private static final long         serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
     /** The tuple. */
-    private LeftTuple                 tuple;
+    private LeftTuple tuple;
 
     /** The salience */
-    private int                       salience;
+    private int salience;
 
     /** Used for sequential mode */
-    private int                       sequenence;
+    private int sequenence;
 
     /** Rule terminal node, gives access to SubRule **/
-    private TerminalNode              rtn;
+    private TerminalNode rtn;
 
     /** The propagation context */
-    private PropagationContext        context;
+    private PropagationContext context;
 
     /** The activation number */
-    private long                      activationNumber;
+    private long activationNumber;
 
-    private int                       index;
+    private int index;
 
-    private LinkedList<LogicalDependency>                   justified;
+    private LinkedList<LogicalDependency> justified;
 
-    private LinkedList<LogicalDependency>                   blocked;
+    private LinkedList<LogicalDependency> blocked;
 
-    private LinkedList<LinkedListEntry<LogicalDependency>>  blockers;
+    private LinkedList<LinkedListEntry<LogicalDependency>> blockers;
 
-    private boolean                   activated;
+    private boolean activated;
 
-    private InternalAgendaGroup       agendaGroup;
+    private InternalAgendaGroup agendaGroup;
 
-    private ActivationGroupNode       activationGroupNode;
+    private ActivationGroupNode activationGroupNode;
 
-    private ActivationNode            activationNode;
+    private ActivationNode activationNode;
 
-    private InternalFactHandle        factHandle;
+    private InternalFactHandle factHandle;
 
-    private transient boolean         canceled;
+    private transient boolean canceled;
 
-    private boolean                   matched;
+    private boolean matched;
 
     private ActivationUnMatchListener activationUnMatchListener;
-    
+
+    private RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -109,14 +112,14 @@ public class AgendaItem
      *
      * @param tuple
      *            The tuple.
-     * @param rule
-     *            The rule.
+     * @param ruleNetworkEvaluatorActivation
      */
     public AgendaItem(final long activationNumber,
                       final LeftTuple tuple,
                       final int salience,
                       final PropagationContext context,
-                      final TerminalNode rtn) {
+                      final TerminalNode rtn,
+                      RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation) {
         this.tuple = tuple;
         this.context = context;
         this.salience = salience;
@@ -124,13 +127,14 @@ public class AgendaItem
         this.activationNumber = activationNumber;
         this.index = -1;
         this.matched = true;
+        this.ruleNetworkEvaluatorActivation  = ruleNetworkEvaluatorActivation;
     }
 
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -139,7 +143,7 @@ public class AgendaItem
     public PropagationContext getPropagationContext() {
         return this.context;
     }
-    
+
     public void setPropagationContext(PropagationContext context) {
         this.context = context;
     }
@@ -154,7 +158,7 @@ public class AgendaItem
     }
 
     public Consequence getConsequence() {
-        String consequenceName = ((RuleTerminalNode)rtn).getConsequenceName();
+        String consequenceName = ((RuleTerminalNode) rtn).getConsequenceName();
         return consequenceName.equals(Rule.DEFAULT_CONSEQUENCE_NAME) ? rtn.getRule().getConsequence() : rtn.getRule().getNamedConsequence(consequenceName);
     }
 
@@ -191,11 +195,15 @@ public class AgendaItem
         this.factHandle = factHandle;
     }
 
+    public RuleNetworkEvaluatorActivation getRuleNetworkEvaluatorActivation() {
+        return ruleNetworkEvaluatorActivation;
+    }
+
     /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.spi.Activation#getActivationNumber()
-     */
+         * (non-Javadoc)
+         *
+         * @see org.kie.spi.Activation#getActivationNumber()
+         */
     public long getActivationNumber() {
         return this.activationNumber;
     }
@@ -235,8 +243,16 @@ public class AgendaItem
                 removeBlocked( dep );
                 AgendaItem justified = ( AgendaItem ) dep.getJustified();
                 if (justified.getBlockers().isEmpty() ) {
-                    // the match is no longer blocked, so stage it
-                    agenda.getStageActivationsGroup().addActivation( justified );
+                    if ( ruleNetworkEvaluatorActivation == null ) {
+                        // the match is no longer blocked, so stage it
+                        agenda.getStageActivationsGroup().addActivation( justified );
+                    } else {
+                        if ( !ruleNetworkEvaluatorActivation.isActivated() ) {
+                            // Make sure the rule evaluator is on the agenda, to be evaluated
+                            agenda.addActivation( ruleNetworkEvaluatorActivation );
+                        }
+                        ruleNetworkEvaluatorActivation.getLeftTupleList().add( justified.getTuple() );
+                    }
                 }                
                 dep = tmp;
             }

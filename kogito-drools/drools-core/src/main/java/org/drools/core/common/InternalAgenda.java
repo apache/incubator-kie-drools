@@ -49,7 +49,8 @@ public interface InternalAgenda
     public AgendaItem createAgendaItem(final LeftTuple tuple,
                                        final int salience,
                                        final PropagationContext context,
-                                       final TerminalNode rtn);
+                                       final TerminalNode rtn,
+                                       RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation);
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
@@ -188,4 +189,6 @@ public interface InternalAgenda
     public RuleNetworkEvaluatorActivation peekNextRule();
 
     boolean continueFiring(int fireLimit);
+
+    void insertAndStageActivation(AgendaItem activation);
 }
