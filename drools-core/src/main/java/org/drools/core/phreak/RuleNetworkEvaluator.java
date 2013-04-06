@@ -10,13 +10,7 @@ import java.util.Set;
 
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.Memory;
-import org.drools.core.common.NetworkNode;
-import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.*;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
@@ -3934,14 +3928,27 @@ public class RuleNetworkEvaluator {
 
         public void doLeftInserts(TerminalNode rtnNode,
                                   InternalWorkingMemory wm,
-                                  LeftTupleSets srcLeftTuples, RuleNetworkEvaluatorActivation activation) {
+                                  LeftTupleSets srcLeftTuples, RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation) {
+            boolean declarativeAgendaEnabled = ruleNetworkEvaluatorActivation.isDeclarativeAgendaEnabled();
+            InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
+            int salience = 0;
+            if( declarativeAgendaEnabled && rtnNode.getType() == NodeTypeEnums.RuleTerminalNode ) {
+                salience = rtnNode.getRule().getSalience().getValue(null, null, null); // currently all branches have the same salience for the same rule
+            }
 
-            LeftTupleList tupleList = activation.getLeftTupleList();
+            LeftTupleList tupleList = ruleNetworkEvaluatorActivation.getLeftTupleList();
             for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();
                 tupleList.add(leftTuple);
                 leftTuple.increaseActivationCountForEvents(); // increased here, decreased in Agenda's cancelActivation and fireActivation
-                //rtnNode.assertLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);
+                if( declarativeAgendaEnabled ) {
+                    PropagationContext pctx = leftTuple.getPropagationContext();
+                    AgendaItem item = agenda.createAgendaItem(leftTuple, salience, pctx,
+                                                              rtnNode, ruleNetworkEvaluatorActivation );
+                    item.setActivated(true);
+                    leftTuple.setObject(item);
+                    agenda.insertAndStageActivation(item);
+                }
                 leftTuple.clearStaged();
                 leftTuple = next;
             }
@@ -3949,15 +3956,28 @@ public class RuleNetworkEvaluator {
 
         public void doLeftUpdates(TerminalNode rtnNode,
                                   InternalWorkingMemory wm,
-                                  LeftTupleSets srcLeftTuples, RuleNetworkEvaluatorActivation activation) {
+                                  LeftTupleSets srcLeftTuples, RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation) {
+            boolean declarativeAgendaEnabled = ruleNetworkEvaluatorActivation.isDeclarativeAgendaEnabled();
+            InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
 
-            LeftTupleList tupleList = activation.getLeftTupleList();
+            LeftTupleList tupleList = ruleNetworkEvaluatorActivation.getLeftTupleList();
             for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();
-                if ( leftTuple.getMemory() == null ) {
+                boolean reAdd = true;
+                AgendaItem item = null;
+                if( declarativeAgendaEnabled && leftTuple.getObject() != null ) {
+                   item = ( AgendaItem )leftTuple.getObject();
+                   if ( item.getBlockers() != null && !item.getBlockers().isEmpty() ) {
+                       reAdd = false; // declarativeAgenda still blocking LeftTuple, so don't add back ot list
+                   }
+                }
+                if ( reAdd && leftTuple.getMemory() == null ) {
                     tupleList.add(leftTuple);
                 }
-                //rtnNode.modifyLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);
+
+                if( declarativeAgendaEnabled) {
+                    agenda.modifyActivation(item, item.isActive());
+                }
                 leftTuple.clearStaged();
                 leftTuple = next;
             }

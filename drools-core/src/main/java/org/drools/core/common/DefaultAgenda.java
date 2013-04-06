@@ -190,7 +190,7 @@ public class DefaultAgenda
                                                                                final PathMemory rs,
                                                                                final TerminalNode rtn) {
         InternalAgendaGroup agendaGroup = (InternalAgendaGroup) getAgendaGroup( rtn.getRule().getAgendaGroup() );
-        RuleNetworkEvaluatorActivation lazyAgendaItem =  new RuleNetworkEvaluatorActivation(activationCounter++, null, salience, null, rs, rtn);
+        RuleNetworkEvaluatorActivation lazyAgendaItem =  new RuleNetworkEvaluatorActivation(activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda());
         lazyAgendaItem.setActivated( true );
         lazyAgendaItem.setAgendaGroup( agendaGroup );        
         addActivation( lazyAgendaItem, true );        
@@ -200,12 +200,14 @@ public class DefaultAgenda
     public AgendaItem createAgendaItem(final LeftTuple tuple,
                                        final int salience,
                                        final PropagationContext context,
-                                       final TerminalNode rtn) {
+                                       final TerminalNode rtn,
+                                       RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation) {
         return new AgendaItem( activationCounter++,
                                tuple,
                                salience,
                                context,
-                               rtn );
+                               rtn,
+                               ruleNetworkEvaluatorActivation);
     }
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
@@ -320,7 +322,8 @@ public class DefaultAgenda
         return stagedActivations;
     }
 
-    public void addActivation2(final AgendaItem activation) {
+    @Override
+    public void insertAndStageActivation(final AgendaItem activation) {
         if (  activationObjectTypeConf == null ) {
             EntryPoint ep = workingMemory.getEntryPoint();
             activationObjectTypeConf =  ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep,
@@ -331,7 +334,7 @@ public class DefaultAgenda
         workingMemory.getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), workingMemory );
         activation.setFactHandle( factHandle );
 
-        if ( !activation.isCanceled() && ( activation.getBlockers() == null || activation.getBlockers().isEmpty() ) ) {
+        if ( !unlinkingEnabled && !activation.isCanceled() && ( activation.getBlockers() == null || activation.getBlockers().isEmpty() ) ) {
             // All activations started off staged, they are unstaged if they are blocked or
             // allowed to move onto the actual agenda for firing.
             getStageActivationsGroup().addActivation( activation );
@@ -340,7 +343,7 @@ public class DefaultAgenda
     
     public boolean addActivation(final AgendaItem activation) { 
         if ( declarativeAgenda && !activation.isRuleNetworkEvaluatorActivation() ) {
-            addActivation2(activation);
+            insertAndStageActivation(activation);
             return true;
         } else {
             addActivation( activation, true );
@@ -379,16 +382,18 @@ public class DefaultAgenda
                 // it's blocked so do nothing
                 return;
             }
-            
-            // All activations started off staged, they are unstaged if they are blocked or 
-            // allowed to move onto the actual agenda for firing.
-            ActivationGroup activationGroup = getStageActivationsGroup();  
-            if ( activation.getActivationGroupNode() != null && activation.getActivationGroupNode().getActivationGroup() == activationGroup ) {
-                // already staged, so return
-                return;
-            }
-          
-            activationGroup.addActivation( activation );
+
+            if ( !unlinkingEnabled ) {
+                // All activations started off staged, they are unstaged if they are blocked or
+                // allowed to move onto the actual agenda for firing.
+                ActivationGroup activationGroup = getStageActivationsGroup();
+                if ( activation.getActivationGroupNode() != null && activation.getActivationGroupNode().getActivationGroup() == activationGroup ) {
+                    // already staged, so return
+                    return;
+                }
+
+                activationGroup.addActivation( activation );
+            } // else, not needed for phreak
         } else {
             if ( !previouslyActive ) {
                 addActivation( activation, true );
@@ -517,7 +522,7 @@ public class DefaultAgenda
                 item = createAgendaItem( tuple,
                                          0,
                                          context,
-                                         rtn);
+                                         rtn, null);
             }
             tuple.setObject( item );            
             if( activationsFilter != null && !activationsFilter.accept( item, 
@@ -600,7 +605,8 @@ public class DefaultAgenda
                 item = createAgendaItem( tuple,
                                          0,
                                          context,
-                                         rtn);
+                                         rtn,
+                                         null );
                 item.setSalience( rule.getSalience().getValue( new DefaultKnowledgeHelper( item, workingMemory ),
                                                                rule,
                                                                workingMemory ) );
@@ -667,7 +673,8 @@ public class DefaultAgenda
         item = createAgendaItem( tuple,
                                  0,
                                  context,
-                                 rtn);
+                                 rtn,
+                                 null );
         item.setSalience( rule.getSalience().getValue( new DefaultKnowledgeHelper( item, workingMemory ),
                                                        rule,
                                                        workingMemory ) );
