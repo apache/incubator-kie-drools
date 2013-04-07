@@ -32,6 +32,7 @@ import org.drools.spi.PropagationContext;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -403,9 +404,9 @@ public class PropagationContextImpl
         }
 
         modificationMask = 0L;
-        Package pkg = workingMemory.getRuleBase().getPackage(rule.getPackage());
-        List<String> typeClassProps = pkg.getTypeDeclaration(classType).getSettableProperties();
-        List<String> modifiedClassProps = pkg.getTypeDeclaration(modifiedClass).getSettableProperties();
+        Package rulePkg = workingMemory.getRuleBase().getPackage(rule.getPackage());
+        List<String> typeClassProps = getSettableProperties( workingMemory, classType, rulePkg );
+        List<String> modifiedClassProps = getSettableProperties( workingMemory, modifiedClass, rulePkg );
 
         for (int i = 0; i < modifiedClassProps.size(); i++) {
             if (BitMaskUtil.isPositionSet(originalMask, i)) {
@@ -418,6 +419,13 @@ public class PropagationContextImpl
         classObjectType.storeTransformedMask(modifiedClass, originalMask, modificationMask);
 
         return this;
+    }
+
+    private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType, Package rulePkg) {
+        Package pkg = workingMemory.getRuleBase().getPackage(classType.getPackage().getName());
+        return pkg != null ?
+                pkg.getTypeDeclaration(classType).getSettableProperties() :
+                rulePkg.getTypeDeclaration(classType).getSettableProperties();
     }
 
     public WindowTupleList getActiveWindowTupleList() {
