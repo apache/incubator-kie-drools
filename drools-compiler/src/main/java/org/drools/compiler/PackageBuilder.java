@@ -956,6 +956,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
         }
 
+        // ensure that rules are ordered by dependency, so that dependent rules are built later
+        sortRulesByDependency( packageDescr );
+
         // iterate and compile
         for (RuleDescr ruleDescr : packageDescr.getRules()) {
             if (isEmpty(ruleDescr.getNamespace())) {
@@ -973,6 +976,32 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
             addRule(ruleDescr);
         }
+    }
+
+    // right now we only have dependencies by "extends", but others may be introduced later
+    // this method will then be expanded as needed
+    private void sortRulesByDependency( PackageDescr packageDescr ) {
+        HierarchySorter<RuleDescr> sorter = new HierarchySorter<RuleDescr>();
+        Map<RuleDescr,Collection<RuleDescr>> deps = new HashMap<RuleDescr, Collection<RuleDescr>>();
+
+        List<RuleDescr> sorted = new LinkedList<RuleDescr>( packageDescr.getRules() );
+
+        //TODO Maybe the packageDescr should store rules in a name/value map rather than a plain list?
+        for ( RuleDescr rd : packageDescr.getRules() ) {
+            if ( rd.getParentName() != null ) {
+                for ( RuleDescr candidate : packageDescr.getRules() ) {
+                    if ( candidate.getName().equals( rd.getParentName() ) ) {
+                        deps.put( rd, Collections.singleton( candidate ) );
+                        sorted.remove( rd );
+                        break;
+                    }
+                }
+            }
+        }
+
+        sorted.addAll( sorter.sort( deps ) );
+        packageDescr.getRules().clear();
+        packageDescr.getRules().addAll( sorted );
     }
 
     private void initPackage(PackageDescr packageDescr) {

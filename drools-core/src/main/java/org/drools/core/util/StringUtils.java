@@ -1367,4 +1367,39 @@ public class StringUtils {
         }
         return count;
     }
+
+
+    // To be extended in the future with more comparison strategies
+    public static enum SIMILARITY_STRATS { DICE };
+
+    public static double stringSimilarity( String s1, String s2, SIMILARITY_STRATS method ) {
+        switch ( method ) {
+            case DICE:
+            default: return stringSimilarityDice( s1, s2 );
+        }
+    }
+
+    private static double stringSimilarityDice( String s1, String s2 ) {
+        int n1 = s1.length() - 1;
+        int n2 = s2.length() - 1;
+
+        int n;
+
+        if ( s1.length() < s2.length() ) {
+            n = commonBigrams( s1, s2 );
+        } else {
+            n = commonBigrams( s2, s1 );
+        }
+
+        return (2.0 * n) / ( n1 + n2 );
+    }
+
+    private static int commonBigrams( String s1, String s2 ) {
+        int acc = 0;
+        for ( int j = 0; j < s1.length() - 1; j++ ) {
+            String bigram = s1.substring( j, j +1 );
+            acc += s2.indexOf( bigram ) >= 0 ? 1 : 0;
+        }
+        return acc;
+    }
 }

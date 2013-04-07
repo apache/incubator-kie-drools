@@ -21,10 +21,12 @@ import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
+import org.drools.builder.CompositeKnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.DefaultFactHandle;
+import org.drools.compiler.CompositeKnowledgeBuilderImpl;
 import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.Modifies;
@@ -1538,4 +1540,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
         assertTrue(kbuilder.hasErrors());
-    }}
+    }
+
+
+}
