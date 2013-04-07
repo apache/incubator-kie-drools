@@ -153,8 +153,8 @@ public class ScannerChangeSetTest {
         ResourceFactory.getResourceChangeNotifierService().start();
         ResourceFactory.getResourceChangeScannerService().start();
         
-        assertEquals(kbase.getKnowledgePackages().size(), 1);
-        assertEquals(kbase.getKnowledgePackages().iterator().next().getRules().size(), 3);
+        assertEquals( 2, kbase.getKnowledgePackages().size() );
+        assertEquals( 3, kbase.getKnowledgePackage( "com.sample" ).getRules().size() );
         
         // sleeping and modifying content
         Thread.sleep(1500);
@@ -163,13 +163,13 @@ public class ScannerChangeSetTest {
         copy(getClass().getResourceAsStream("sample2.xls"), new FileOutputStream(ruleFile));
 
         Thread.sleep(1000);
-        assertEquals(kbase.getKnowledgePackages().size(), 1);
-        assertEquals(kbase.getKnowledgePackages().iterator().next().getRules().size(), 3);
+        assertEquals(kbase.getKnowledgePackages().size(), 2);
+        assertEquals( 3, kbase.getKnowledgePackage( "com.sample" ).getRules().size() );
         // there should be just 2 rules now, but scanner didn't notice the change
         kbase = kagent.getKnowledgeBase();
         
-        assertEquals(kbase.getKnowledgePackages().size(), 1);
-        assertEquals(kbase.getKnowledgePackages().iterator().next().getRules().size(), 2);
+        assertEquals(kbase.getKnowledgePackages().size(), 2);
+        assertEquals( 2, kbase.getKnowledgePackage( "com.sample" ).getRules().size() );
         
         // stop scanning service
         ResourceFactory.getResourceChangeNotifierService().stop();

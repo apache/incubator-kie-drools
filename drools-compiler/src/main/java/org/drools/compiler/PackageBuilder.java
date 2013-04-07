@@ -219,11 +219,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     private final Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<String, Map<String, AttributeDescr>>();
 
     //PackageDescrs' list of ImportDescrs are kept identical as subsequent PackageDescrs are added.
-    private final Map<String, List<PackageDescr>>    packages          = new HashMap<String, List<PackageDescr>>();
+    private final Map<String, List<PackageDescr>>    packages           = new HashMap<String, List<PackageDescr>>();
 
-    private final Set<String>                        generatedTypes    = new HashSet<String>();
+    private final Set<String>                        generatedTypes     = new HashSet<String>();
 
-    private final Stack<List<Resource>>              buildResources    = new Stack<List<Resource>>();
+    private final Stack<List<Resource>>              buildResources     = new Stack<List<Resource>>();
+
+    private int                                      currentRulePackage = 0  ;
 
     /**
      * Use this when package is starting from scratch.
@@ -360,6 +362,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             clone.packages.put(entry.getKey(), new ArrayList<PackageDescr>(entry.getValue()));
         }
         clone.packages.putAll(packages);
+        clone.currentRulePackage = currentRulePackage;
 
         return clone;
     }
@@ -864,6 +867,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             return;
         }
 
+        currentRulePackage = pkgRegistryMap.size() -1;
+
         // merge into existing package
         mergePackage(pkgRegistry, packageDescr);
 
@@ -1280,8 +1285,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         // need to reinsert this to ensure that the package is the first/last one in the ordered map
         // this feature is exploited by the knowledgeAgent
+        Package current = getPackage();
         this.pkgRegistryMap.remove( packageDescr.getName() );
         this.pkgRegistryMap.put( packageDescr.getName(), pkgRegistry );
+        if ( ! current.getName().equals( packageDescr.getName() ) ) {
+            currentRulePackage = pkgRegistryMap.size() - 1;
+        }
+
     }
 
     private void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
@@ -1357,6 +1367,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             PackageRegistry packageRegistry = pkgRegistryMap.get( packageName );
             if (packageRegistry != null) {
                 packageRegistry.getPackage().addTypeDeclaration( typeDeclaration );
+            } else {
+                newPackage( new PackageDescr( packageName, "" ) );
+                pkgRegistryMap.get( packageName ).getPackage().addTypeDeclaration( typeDeclaration );
             }
         }
     }
@@ -2984,7 +2997,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     public Package getPackage() {
         PackageRegistry pkgRegistry = null;
         if (!this.pkgRegistryMap.isEmpty()) {
-            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[this.pkgRegistryMap.size() - 1];
+            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[ currentRulePackage ];
         }
         Package pkg = null;
         if (pkgRegistry != null) {
@@ -3607,6 +3620,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             while (i.hasNext()) {
                 if (resource.equals(i.next().getResource())) {
                     i.remove();
+                }
+            }
+            if ( results.size() == 0 ) {
+                // TODO Error attribution might be bugged
+                for (PackageRegistry packageRegistry : pkgRegistryMap.values()) {
+                    packageRegistry.getPackage().resetErrors();
                 }
             }
         }

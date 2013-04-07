@@ -136,7 +136,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                                                           true );        
 
         // check the packages are correctly populated
-        assertEquals( 2, kbase.getKnowledgePackages().size() );
+        assertEquals( 3, kbase.getKnowledgePackages().size() );
         KnowledgePackage test = null, test2 = null;
         // different JVMs return the package list in different order
         for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {

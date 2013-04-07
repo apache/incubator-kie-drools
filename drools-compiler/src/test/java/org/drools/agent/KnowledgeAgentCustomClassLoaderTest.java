@@ -124,7 +124,7 @@ public class KnowledgeAgentCustomClassLoaderTest extends BaseKnowledgeAgentTest 
         this.applyChangeSet(kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
         //One package should be created
-        assertEquals(1, kagent.getKnowledgeBase().getKnowledgePackages().size());
+        assertEquals(2, kagent.getKnowledgeBase().getKnowledgePackages().size());
 
         //We create a session to test if the rule runs ok
         StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());

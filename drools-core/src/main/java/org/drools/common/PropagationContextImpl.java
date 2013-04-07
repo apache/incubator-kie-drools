@@ -422,6 +422,10 @@ public class PropagationContextImpl
     }
 
     private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType, Package rulePkg) {
+        if ( classType.getPackage().equals( Object.class.getPackage() ) ) {
+            return Collections.EMPTY_LIST;
+        }
+
         Package pkg = workingMemory.getRuleBase().getPackage(classType.getPackage().getName());
         return pkg != null ?
                 pkg.getTypeDeclaration(classType).getSettableProperties() :

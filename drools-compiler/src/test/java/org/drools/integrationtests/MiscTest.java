@@ -5311,7 +5311,7 @@ public class MiscTest extends CommonTestMethodBase {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes1.drl" ) ) );
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes2.drl" ) ) );
-            assertEquals( 2,
+            assertEquals( 3,
                           builder.getPackages().length );
             Package pkg1 = builder.getPackageRegistry( "org.drools.package1" ).getPackage();
             assertEquals( "rule 1",
