@@ -38,6 +38,7 @@ public class SimpleLongScoreHolder extends AbstractScoreHolder {
         return score;
     }
 
+    @Deprecated
     public void setScore(long score) {
         this.score = score;
     }

@@ -38,6 +38,7 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
         return score;
     }
 
+    @Deprecated
     public void setScore(double score) {
         this.score = score;
     }

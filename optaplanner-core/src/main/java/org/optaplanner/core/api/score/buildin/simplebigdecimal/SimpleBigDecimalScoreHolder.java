@@ -40,6 +40,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
         return score;
     }
 
+    @Deprecated
     public void setScore(BigDecimal score) {
         this.score = score;
     }

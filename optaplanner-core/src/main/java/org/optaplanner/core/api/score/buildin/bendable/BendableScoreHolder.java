@@ -47,6 +47,7 @@ public class BendableScoreHolder extends AbstractScoreHolder {
         return hardScores[hardLevel];
     }
 
+    @Deprecated
     public void setHardScore(int hardLevel, int hardScore) {
         hardScores[hardLevel] = hardScore;
     }
@@ -59,6 +60,7 @@ public class BendableScoreHolder extends AbstractScoreHolder {
         return softScores[softLevel];
     }
 
+    @Deprecated
     public void setSoftScore(int softLevel, int softScore) {
         softScores[softLevel] = softScore;
     }

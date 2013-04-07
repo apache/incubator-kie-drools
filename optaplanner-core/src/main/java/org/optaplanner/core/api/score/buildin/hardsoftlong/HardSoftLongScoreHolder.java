@@ -39,6 +39,7 @@ public class HardSoftLongScoreHolder extends AbstractScoreHolder {
         return hardScore;
     }
 
+    @Deprecated
     public void setHardScore(long hardScore) {
         this.hardScore = hardScore;
     }
@@ -47,6 +48,7 @@ public class HardSoftLongScoreHolder extends AbstractScoreHolder {
         return softScore;
     }
 
+    @Deprecated
     public void setSoftScore(long softScore) {
         this.softScore = softScore;
     }

@@ -41,6 +41,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
         return hardScore;
     }
 
+    @Deprecated
     public void setHardScore(BigDecimal hardScore) {
         this.hardScore = hardScore;
     }
@@ -49,6 +50,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
         return softScore;
     }
 
+    @Deprecated
     public void setSoftScore(BigDecimal softScore) {
         this.softScore = softScore;
     }
