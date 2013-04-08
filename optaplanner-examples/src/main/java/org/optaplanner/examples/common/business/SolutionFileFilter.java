@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.persistence;
+package org.optaplanner.examples.common.business;
 
 import java.io.File;
+import java.io.FileFilter;
 
-import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.examples.common.persistence.SolutionDao;
 
-/**
- * Data Access Object for the examples.
- */
-public interface SolutionDao {
+public class SolutionFileFilter implements FileFilter {
 
-    String getDirName();
+    private final SolutionDao solutionDao;
 
-    File getDataDir();
+    public SolutionFileFilter(SolutionDao solutionDao) {
 
-    String getFileSuffix();
+        this.solutionDao = solutionDao;
+    }
 
-    Solution readSolution(File inputSolutionFile);
-
-    void writeSolution(Solution solution, File outputSolutionFile);
+    public boolean accept(File file) {
+        if (file.isDirectory() || file.isHidden()) {
+            return false;
+        }
+        return file.getName().endsWith(solutionDao.getFileSuffix());
+    }
 
 }

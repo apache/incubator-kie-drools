@@ -17,7 +17,6 @@
 package org.optaplanner.examples.common.business;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -153,13 +152,13 @@ public class SolutionBusiness {
     }
 
     public List<File> getUnsolvedFileList() {
-        List<File> unsolvedFileList = Arrays.asList(unsolvedDataDir.listFiles(new SolverExampleFileFilter()));
+        List<File> unsolvedFileList = Arrays.asList(unsolvedDataDir.listFiles(new SolutionFileFilter(solutionDao)));
         Collections.sort(unsolvedFileList);
         return unsolvedFileList;
     }
 
     public List<File> getSolvedFileList() {
-        List<File> solvedFileList = Arrays.asList(solvedDataDir.listFiles(new SolverExampleFileFilter()));
+        List<File> solvedFileList = Arrays.asList(solvedDataDir.listFiles(new SolutionFileFilter(solutionDao)));
         Collections.sort(solvedFileList);
         return solvedFileList;
     }
@@ -269,17 +268,6 @@ public class SolutionBusiness {
 
     public void terminateSolvingEarly() {
         solver.terminateEarly();
-    }
-
-    public static class SolverExampleFileFilter implements FileFilter {
-
-        public boolean accept(File file) {
-            if (file.isDirectory() || file.isHidden()) {
-                return false;
-            }
-            return file.getName().endsWith(".xml");
-        }
-
     }
 
 }

@@ -45,6 +45,10 @@ public abstract class XStreamSolutionDao implements SolutionDao {
         return dataDir;
     }
 
+    public String getFileSuffix() {
+        return ".xml";
+    }
+
     public Solution readSolution(File inputSolutionFile) {
         Solution solution = xStreamProblemIO.read(inputSolutionFile);
         postRead(solution);
