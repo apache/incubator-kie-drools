@@ -23,7 +23,7 @@ import org.optaplanner.persistence.xstream.XStreamProblemIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class XStreamSolutionDaoImpl implements SolutionDao {
+public abstract class XStreamSolutionDao implements SolutionDao {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -31,7 +31,7 @@ public abstract class XStreamSolutionDaoImpl implements SolutionDao {
     private String dirName;
     private File dataDir;
 
-    public XStreamSolutionDaoImpl(String dirName, Class... xstreamAnnotations) {
+    public XStreamSolutionDao(String dirName, Class... xstreamAnnotations) {
         this.dirName = dirName;
         dataDir = new File("data/" + dirName);
         xStreamProblemIO = new XStreamProblemIO(xstreamAnnotations);

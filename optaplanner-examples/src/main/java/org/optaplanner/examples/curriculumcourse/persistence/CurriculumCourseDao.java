@@ -16,12 +16,12 @@
 
 package org.optaplanner.examples.curriculumcourse.persistence;
 
-import org.optaplanner.examples.common.persistence.XStreamSolutionDaoImpl;
+import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 
-public class CurriculumCourseDaoImpl extends XStreamSolutionDaoImpl {
+public class CurriculumCourseDao extends XStreamSolutionDao {
 
-    public CurriculumCourseDaoImpl() {
+    public CurriculumCourseDao() {
         super("curriculumcourse", CourseSchedule.class);
     }
 

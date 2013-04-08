@@ -23,7 +23,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentDaoImpl;
+import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentDao;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentSolutionExporter;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentSolutionImporter;
 import org.optaplanner.examples.machinereassignment.swingui.MachineReassignmentPanel;
@@ -52,7 +52,7 @@ public class MachineReassignmentApp extends CommonApp {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new MachineReassignmentDaoImpl();
+        return new MachineReassignmentDao();
     }
 
     @Override

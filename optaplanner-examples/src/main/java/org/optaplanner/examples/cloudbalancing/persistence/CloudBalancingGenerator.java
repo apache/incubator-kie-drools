@@ -98,7 +98,7 @@ public class CloudBalancingGenerator extends LoggingMain {
 
     public CloudBalancingGenerator() {
         checkConfiguration();
-        solutionDao = new CloudBalancingDaoImpl();
+        solutionDao = new CloudBalancingDao();
     }
 
     public void generate() {

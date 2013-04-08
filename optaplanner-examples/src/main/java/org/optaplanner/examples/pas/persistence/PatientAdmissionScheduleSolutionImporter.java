@@ -54,7 +54,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
     }
 
     public PatientAdmissionScheduleSolutionImporter() {
-        super(new PatientAdmissionScheduleDaoImpl());
+        super(new PatientAdmissionScheduleDao());
     }
 
     public TxtInputBuilder createTxtInputBuilder() {

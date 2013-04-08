@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.pas.persistence;
+package org.optaplanner.examples.manners2009.persistence;
 
-import org.optaplanner.examples.common.persistence.XStreamSolutionDaoImpl;
-import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
+import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
+import org.optaplanner.examples.manners2009.domain.Manners2009;
 
-public class PatientAdmissionScheduleDaoImpl extends XStreamSolutionDaoImpl {
+public class Manners2009Dao extends XStreamSolutionDao {
 
-    public PatientAdmissionScheduleDaoImpl() {
-        super("pas", PatientAdmissionSchedule.class);
+    public Manners2009Dao() {
+        super("manners2009", Manners2009.class);
     }
 
 }

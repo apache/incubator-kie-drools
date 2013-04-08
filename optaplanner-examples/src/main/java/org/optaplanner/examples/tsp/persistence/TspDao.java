@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.persistence;
+package org.optaplanner.examples.tsp.persistence;
 
-import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
-import org.optaplanner.examples.common.persistence.XStreamSolutionDaoImpl;
+import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
+import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 
-public class CloudBalancingDaoImpl extends XStreamSolutionDaoImpl {
+public class TspDao extends XStreamSolutionDao {
 
-    public CloudBalancingDaoImpl() {
-        super("cloudbalancing", CloudBalance.class);
+    public TspDao() {
+        super("tsp", TravelingSalesmanTour.class);
     }
 
 }

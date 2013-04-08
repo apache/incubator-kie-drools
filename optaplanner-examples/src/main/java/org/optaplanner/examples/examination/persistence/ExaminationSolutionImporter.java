@@ -59,7 +59,7 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
     }
 
     public ExaminationSolutionImporter() {
-        super(new ExaminationDaoImpl());
+        super(new ExaminationDao());
     }
 
     @Override

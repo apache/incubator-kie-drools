@@ -51,7 +51,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
     }
 
     public MachineReassignmentSolutionImporter() {
-        super(new MachineReassignmentDaoImpl());
+        super(new MachineReassignmentDao());
     }
 
     @Override

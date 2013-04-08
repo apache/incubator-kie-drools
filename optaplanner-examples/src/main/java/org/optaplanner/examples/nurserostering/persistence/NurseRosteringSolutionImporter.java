@@ -71,7 +71,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
     }
 
     public NurseRosteringSolutionImporter() {
-        super(new NurseRosteringDaoImpl());
+        super(new NurseRosteringDao());
     }
 
     public XmlInputBuilder createXmlInputBuilder() {

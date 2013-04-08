@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.vehiclerouting.persistence;
+package org.optaplanner.examples.travelingtournament.persistence;
 
-import org.optaplanner.examples.common.persistence.XStreamSolutionDaoImpl;
-import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
+import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
+import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class VehicleRoutingDaoImpl extends XStreamSolutionDaoImpl {
+public class TravelingTournamentDao extends XStreamSolutionDao {
 
-    public VehicleRoutingDaoImpl() {
-        super("vehiclerouting", VrpSchedule.class);
+    public TravelingTournamentDao() {
+        super("travelingtournament", TravelingTournament.class);
     }
 
 }

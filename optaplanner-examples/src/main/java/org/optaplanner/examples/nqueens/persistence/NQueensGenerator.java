@@ -39,7 +39,7 @@ public class NQueensGenerator extends LoggingMain {
     }
 
     public void generate() {
-        solutionDao = new NQueensDaoImpl();
+        solutionDao = new NQueensDao();
         writeNQueens(4);
         writeNQueens(8);
         writeNQueens(16);

@@ -21,7 +21,7 @@ import java.io.File;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentDaoImpl;
+import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentDao;
 import org.junit.Test;
 
 public class MachineReassignmentPerformanceTest extends SolverPerformanceTest {
@@ -33,7 +33,7 @@ public class MachineReassignmentPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new MachineReassignmentDaoImpl();
+        return new MachineReassignmentDao();
     }
 
     // ************************************************************************

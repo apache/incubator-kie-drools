@@ -34,7 +34,7 @@ public class ExaminationSolutionExporter extends AbstractTxtSolutionExporter {
     }
 
     public ExaminationSolutionExporter() {
-        super(new ExaminationDaoImpl());
+        super(new ExaminationDao());
     }
 
     @Override

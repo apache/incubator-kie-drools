@@ -23,7 +23,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleDaoImpl;
+import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleDao;
 import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleSolutionExporter;
 import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleSolutionImporter;
 import org.optaplanner.examples.pas.swingui.PatientAdmissionSchedulePanel;
@@ -52,7 +52,7 @@ public class PatientAdmissionScheduleApp extends CommonApp {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new PatientAdmissionScheduleDaoImpl();
+        return new PatientAdmissionScheduleDao();
     }
 
     @Override

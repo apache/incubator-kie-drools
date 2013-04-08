@@ -22,7 +22,7 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.tsp.persistence.TspDaoImpl;
+import org.optaplanner.examples.tsp.persistence.TspDao;
 import org.optaplanner.examples.tsp.persistence.TspSolutionImporter;
 import org.optaplanner.examples.tsp.swingui.TspPanel;
 
@@ -50,7 +50,7 @@ public class TspApp extends CommonApp {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new TspDaoImpl();
+        return new TspDao();
     }
 
     @Override

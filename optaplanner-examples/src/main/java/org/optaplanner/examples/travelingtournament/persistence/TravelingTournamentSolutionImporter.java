@@ -37,7 +37,7 @@ public class TravelingTournamentSolutionImporter extends AbstractTxtSolutionImpo
     }
 
     public TravelingTournamentSolutionImporter() {
-        super(new TravelingTournamentDaoImpl());
+        super(new TravelingTournamentDao());
     }
 
     public TxtInputBuilder createTxtInputBuilder() {

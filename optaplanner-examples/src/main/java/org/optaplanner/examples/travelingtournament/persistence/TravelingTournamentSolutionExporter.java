@@ -34,7 +34,7 @@ public class TravelingTournamentSolutionExporter extends AbstractTxtSolutionExpo
     }
 
     public TravelingTournamentSolutionExporter() {
-        super(new TravelingTournamentDaoImpl());
+        super(new TravelingTournamentDao());
     }
 
     @Override

@@ -23,7 +23,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDaoImpl;
+import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseSolutionExporter;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseSolutionImporter;
 import org.optaplanner.examples.curriculumcourse.swingui.CurriculumCoursePanel;
@@ -52,7 +52,7 @@ public class CurriculumCourseApp extends CommonApp {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new CurriculumCourseDaoImpl();
+        return new CurriculumCourseDao();
     }
 
     @Override

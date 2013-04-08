@@ -21,7 +21,7 @@ import java.io.File;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.nurserostering.persistence.NurseRosteringDaoImpl;
+import org.optaplanner.examples.nurserostering.persistence.NurseRosteringDao;
 import org.junit.Test;
 
 public class NurseRosteringPerformanceTest extends SolverPerformanceTest {
@@ -33,7 +33,7 @@ public class NurseRosteringPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new NurseRosteringDaoImpl();
+        return new NurseRosteringDao();
     }
 
     // ************************************************************************

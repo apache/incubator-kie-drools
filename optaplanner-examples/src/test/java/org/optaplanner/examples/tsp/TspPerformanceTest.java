@@ -21,7 +21,7 @@ import java.io.File;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.tsp.persistence.TspDaoImpl;
+import org.optaplanner.examples.tsp.persistence.TspDao;
 import org.junit.Test;
 
 public class TspPerformanceTest extends SolverPerformanceTest {
@@ -33,7 +33,7 @@ public class TspPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new TspDaoImpl();
+        return new TspDao();
     }
 
     // ************************************************************************

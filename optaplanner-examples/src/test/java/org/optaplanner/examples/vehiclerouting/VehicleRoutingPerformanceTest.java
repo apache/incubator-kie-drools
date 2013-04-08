@@ -21,7 +21,7 @@ import java.io.File;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDaoImpl;
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
 import org.junit.Test;
 
 public class VehicleRoutingPerformanceTest extends SolverPerformanceTest {
@@ -33,7 +33,7 @@ public class VehicleRoutingPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new VehicleRoutingDaoImpl();
+        return new VehicleRoutingDao();
     }
 
     // ************************************************************************

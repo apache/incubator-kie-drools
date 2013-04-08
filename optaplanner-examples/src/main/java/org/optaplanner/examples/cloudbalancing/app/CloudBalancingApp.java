@@ -18,7 +18,7 @@ package org.optaplanner.examples.cloudbalancing.app;
 
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDaoImpl;
+import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
 import org.optaplanner.examples.cloudbalancing.swingui.CloudBalancingPanel;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.SolutionDao;
@@ -48,7 +48,7 @@ public class CloudBalancingApp extends CommonApp {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new CloudBalancingDaoImpl();
+        return new CloudBalancingDao();
     }
 
 }

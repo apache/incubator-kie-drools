@@ -47,7 +47,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
     }
 
     public CurriculumCourseSolutionImporter() {
-        super(new CurriculumCourseDaoImpl());
+        super(new CurriculumCourseDao());
     }
 
     @Override

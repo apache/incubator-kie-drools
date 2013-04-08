@@ -40,7 +40,7 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
     }
 
     public VehicleRoutingSolutionImporter() {
-        super(new VehicleRoutingDaoImpl());
+        super(new VehicleRoutingDao());
     }
 
     @Override

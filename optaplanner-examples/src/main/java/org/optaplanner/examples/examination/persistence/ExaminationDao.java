@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.travelingtournament.persistence;
+package org.optaplanner.examples.examination.persistence;
 
-import org.optaplanner.examples.common.persistence.XStreamSolutionDaoImpl;
-import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
+import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
+import org.optaplanner.examples.examination.domain.Examination;
 
-public class TravelingTournamentDaoImpl extends XStreamSolutionDaoImpl {
+public class ExaminationDao extends XStreamSolutionDao {
 
-    public TravelingTournamentDaoImpl() {
-        super("travelingtournament", TravelingTournament.class);
+    public ExaminationDao() {
+        super("examination", Examination.class);
     }
 
 }

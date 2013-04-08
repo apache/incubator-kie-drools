@@ -32,7 +32,7 @@ public class NurseRosteringSolutionExporter extends AbstractXmlSolutionExporter 
     }
 
     public NurseRosteringSolutionExporter() {
-        super(new NurseRosteringDaoImpl());
+        super(new NurseRosteringDao());
     }
 
     public XmlOutputBuilder createXmlOutputBuilder() {

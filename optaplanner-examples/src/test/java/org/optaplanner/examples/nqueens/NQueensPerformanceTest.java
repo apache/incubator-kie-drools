@@ -21,7 +21,7 @@ import java.io.File;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.nqueens.persistence.NQueensDaoImpl;
+import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 import org.junit.Test;
 
 public class NQueensPerformanceTest extends SolverPerformanceTest {
@@ -33,7 +33,7 @@ public class NQueensPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new NQueensDaoImpl();
+        return new NQueensDao();
     }
 
     // ************************************************************************

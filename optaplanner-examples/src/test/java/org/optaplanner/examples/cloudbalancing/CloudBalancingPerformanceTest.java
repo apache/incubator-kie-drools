@@ -19,7 +19,7 @@ package org.optaplanner.examples.cloudbalancing;
 import java.io.File;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDaoImpl;
+import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class CloudBalancingPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new CloudBalancingDaoImpl();
+        return new CloudBalancingDao();
     }
 
     // ************************************************************************

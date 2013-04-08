@@ -3179,3 +3179,15 @@ After in *ScoreDefinition.java:
         return new HardSoftScoreHolder(constraintMatchEnabled);
     }
 6.0 supports a bunch more score types: it's easier (as well as recommended) to switch to a build-in one if you can.
+
+
+From 6.0.0.Beta1 to 6.0.0.CR1
+-----------------------------
+
+[MINOR] optaplanner-examples: The class XStreamSolutionDaoImpl has been renamed to XStreamSolutionDao.
+This should not affect you because you should not be depending on optaplanner-examples.
+Before in *.java:
+    public class ...DaoImpl extends XStreamSolutionDaoImpl {...}
+After in *.java:
+    public class ...Dao extends XStreamSolutionDao {...}
+

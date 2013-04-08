@@ -21,7 +21,7 @@ import java.io.File;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDaoImpl;
+import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
 import org.junit.Test;
 
 public class CurriculumCoursePerformanceTest extends SolverPerformanceTest {
@@ -33,7 +33,7 @@ public class CurriculumCoursePerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new CurriculumCourseDaoImpl();
+        return new CurriculumCourseDao();
     }
 
     // ************************************************************************

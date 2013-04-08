@@ -23,7 +23,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentDaoImpl;
+import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentDao;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentSolutionExporter;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentSolutionImporter;
 import org.optaplanner.examples.travelingtournament.swingui.TravelingTournamentPanel;
@@ -52,7 +52,7 @@ public class TravelingTournamentApp extends CommonApp {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new TravelingTournamentDaoImpl();
+        return new TravelingTournamentDao();
     }
 
     @Override

@@ -23,7 +23,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.nurserostering.persistence.NurseRosteringDaoImpl;
+import org.optaplanner.examples.nurserostering.persistence.NurseRosteringDao;
 import org.optaplanner.examples.nurserostering.persistence.NurseRosteringSolutionExporter;
 import org.optaplanner.examples.nurserostering.persistence.NurseRosteringSolutionImporter;
 import org.optaplanner.examples.nurserostering.swingui.NurseRosteringPanel;
@@ -52,7 +52,7 @@ public class NurseRosteringApp extends CommonApp {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new NurseRosteringDaoImpl();
+        return new NurseRosteringDao();
     }
 
     @Override

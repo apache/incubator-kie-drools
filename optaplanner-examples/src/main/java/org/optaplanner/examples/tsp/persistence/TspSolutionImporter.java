@@ -39,7 +39,7 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
     }
 
     public TspSolutionImporter() {
-        super(new TspDaoImpl());
+        super(new TspDao());
     }
 
     @Override

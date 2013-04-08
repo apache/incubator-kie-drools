@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.manners2009.persistence;
+package org.optaplanner.examples.nurserostering.persistence;
 
-import org.optaplanner.examples.common.persistence.XStreamSolutionDaoImpl;
-import org.optaplanner.examples.manners2009.domain.Manners2009;
+import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
+import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
-public class Manners2009DaoImpl extends XStreamSolutionDaoImpl {
+public class NurseRosteringDao extends XStreamSolutionDao {
 
-    public Manners2009DaoImpl() {
-        super("manners2009", Manners2009.class);
+    public NurseRosteringDao() {
+        super("nurserostering", NurseRoster.class);
     }
 
 }

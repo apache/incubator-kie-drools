@@ -32,7 +32,7 @@ public class CurriculumCourseSolutionExporter extends AbstractTxtSolutionExporte
     }
 
     public CurriculumCourseSolutionExporter() {
-        super(new CurriculumCourseDaoImpl());
+        super(new CurriculumCourseDao());
     }
 
     @Override

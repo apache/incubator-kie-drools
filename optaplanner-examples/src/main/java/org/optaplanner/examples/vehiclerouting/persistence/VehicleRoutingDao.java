@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.persistence;
+package org.optaplanner.examples.vehiclerouting.persistence;
 
-import org.optaplanner.examples.common.persistence.XStreamSolutionDaoImpl;
-import org.optaplanner.examples.nurserostering.domain.NurseRoster;
+import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
+import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
 
-public class NurseRosteringDaoImpl extends XStreamSolutionDaoImpl {
+public class VehicleRoutingDao extends XStreamSolutionDao {
 
-    public NurseRosteringDaoImpl() {
-        super("nurserostering", NurseRoster.class);
+    public VehicleRoutingDao() {
+        super("vehiclerouting", VrpSchedule.class);
     }
 
 }

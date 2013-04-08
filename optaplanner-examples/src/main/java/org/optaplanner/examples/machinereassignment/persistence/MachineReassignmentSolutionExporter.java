@@ -32,7 +32,7 @@ public class MachineReassignmentSolutionExporter extends AbstractTxtSolutionExpo
     }
 
     public MachineReassignmentSolutionExporter() {
-        super(new MachineReassignmentDaoImpl());
+        super(new MachineReassignmentDao());
     }
 
     public TxtOutputBuilder createTxtOutputBuilder() {

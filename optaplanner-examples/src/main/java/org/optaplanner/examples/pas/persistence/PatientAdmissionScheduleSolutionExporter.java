@@ -34,7 +34,7 @@ public class PatientAdmissionScheduleSolutionExporter extends AbstractTxtSolutio
     }
 
     public PatientAdmissionScheduleSolutionExporter() {
-        super(new PatientAdmissionScheduleDaoImpl());
+        super(new PatientAdmissionScheduleDao());
     }
 
     public TxtOutputBuilder createTxtOutputBuilder() {

@@ -39,7 +39,7 @@ import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
-import org.optaplanner.examples.nqueens.persistence.NQueensDaoImpl;
+import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 import org.optaplanner.examples.nqueens.swingui.NQueensPanel;
 
 public class NQueensApp extends CommonApp {
@@ -116,7 +116,7 @@ public class NQueensApp extends CommonApp {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new NQueensDaoImpl();
+        return new NQueensDao();
     }
 
 }

@@ -24,7 +24,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
-import org.optaplanner.examples.examination.persistence.ExaminationDaoImpl;
+import org.optaplanner.examples.examination.persistence.ExaminationDao;
 import org.optaplanner.examples.examination.persistence.ExaminationSolutionExporter;
 import org.optaplanner.examples.examination.persistence.ExaminationSolutionImporter;
 import org.optaplanner.examples.examination.swingui.ExaminationPanel;
@@ -57,7 +57,7 @@ public class ExaminationApp extends CommonApp {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new ExaminationDaoImpl();
+        return new ExaminationDao();
     }
 
     @Override

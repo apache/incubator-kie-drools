@@ -43,7 +43,7 @@ public class Manners2009SolutionImporter extends AbstractTxtSolutionImporter {
     }
 
     public Manners2009SolutionImporter() {
-        super(new Manners2009DaoImpl());
+        super(new Manners2009Dao());
     }
 
     public TxtInputBuilder createTxtInputBuilder() {

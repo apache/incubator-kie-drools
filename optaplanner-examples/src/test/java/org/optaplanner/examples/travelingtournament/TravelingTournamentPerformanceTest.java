@@ -21,7 +21,7 @@ import java.io.File;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentDaoImpl;
+import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentDao;
 import org.junit.Test;
 
 public class TravelingTournamentPerformanceTest extends SolverPerformanceTest {
@@ -33,7 +33,7 @@ public class TravelingTournamentPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new TravelingTournamentDaoImpl();
+        return new TravelingTournamentDao();
     }
 
     // ************************************************************************
