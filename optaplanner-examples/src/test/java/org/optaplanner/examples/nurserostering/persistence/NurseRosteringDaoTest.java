@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.curriculumcourse.persistence;
+package org.optaplanner.examples.nurserostering.persistence;
 
 import java.io.File;
 import java.util.Collection;
@@ -23,19 +23,19 @@ import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.persistence.SolutionDaoTest;
 
-public class CurriculumCourseDaoTest extends SolutionDaoTest {
+public class NurseRosteringDaoTest extends SolutionDaoTest {
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new CurriculumCourseDao();
+        return new NurseRosteringDao();
     }
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getSolutionFilesAsParameters(new CurriculumCourseDao());
+        return getSolutionFilesAsParameters(new NurseRosteringDao());
     }
 
-    public CurriculumCourseDaoTest(File solutionFile) {
+    public NurseRosteringDaoTest(File solutionFile) {
         super(solutionFile);
     }
 
