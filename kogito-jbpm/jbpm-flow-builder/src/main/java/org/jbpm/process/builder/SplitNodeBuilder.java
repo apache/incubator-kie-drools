@@ -47,7 +47,9 @@ public class SplitNodeBuilder implements ProcessNodeBuilder {
             if (outgoingConnection == null) {
                 throw new IllegalArgumentException("Could not find outgoing connection");
             }
-            if ( "rule".equals( constraint.getType() )) {
+            if (constraint == null && splitNode.isDefault(outgoingConnection)) {
+                // do nothing since conditions are ignored for default sequence flow
+            } else if ( "rule".equals( constraint.getType() )) {
                 RuleConstraintEvaluator ruleConstraint = new RuleConstraintEvaluator();
                 ruleConstraint.setDialect( constraint.getDialect() );
                 ruleConstraint.setName( constraint.getName() );

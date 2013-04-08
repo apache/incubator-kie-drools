@@ -346,7 +346,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                 if ( split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR ) {
                     for ( Connection connection : split.getDefaultOutgoingConnections() ) {
                         Constraint constraint = split.getConstraint( connection );
-                        if ( "rule".equals( constraint.getType() ) ) {
+                        if ( constraint != null && "rule".equals( constraint.getType() ) ) {
                             builder.append( createSplitRule( process,
                                                              connection,
                                                              split.getConstraint( connection ).getConstraint() ) );

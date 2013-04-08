@@ -19,10 +19,10 @@ package org.jbpm.workflow.core.node;
 import java.util.Collections;
 import java.util.Map;
 
-import org.kie.api.definition.process.Connection;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.NodeImpl;
+import org.kie.api.definition.process.Connection;
 
 /**
  * Default implementation of a split node.
@@ -76,6 +76,28 @@ public class Split extends NodeImpl implements Constrainable {
 
     public int getType() {
         return this.type;
+    }
+    
+    public boolean isDefault(final Connection connection) {
+        if ( connection == null ) {
+            throw new IllegalArgumentException( "connection is null" );
+        }
+
+        if ( this.type == TYPE_OR || this.type == TYPE_XOR ) {
+            ConnectionRef ref = new ConnectionRef(connection.getTo().getId(), connection.getToType());
+            Constraint constraint = this.constraints.get(ref);
+            String defaultConnection = (String) getMetaData().get("Default");
+            String connectionId = (String) connection.getMetaData().get("UniqueId");
+            if (constraint != null) {
+                return constraint.isDefault();
+            } else if (constraint == null && connectionId.equals(defaultConnection)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        throw new UnsupportedOperationException( "Constraints are " + 
+            "only supported with XOR or OR split types, not with: " + getType() );
     }
 
     public Constraint getConstraint(final Connection connection) {

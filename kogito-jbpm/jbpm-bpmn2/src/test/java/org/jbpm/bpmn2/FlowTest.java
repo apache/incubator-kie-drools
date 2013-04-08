@@ -42,6 +42,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
@@ -739,6 +740,14 @@ public class FlowTest extends JbpmTestCase {
         assertNotNull(workItem);
         assertEquals("mary", workItem.getParameter("ActorId"));
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
+    
+    @Test
+    public void testExclusiveSplitDefaultNoCondition() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefaultNoCondition.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test");
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
