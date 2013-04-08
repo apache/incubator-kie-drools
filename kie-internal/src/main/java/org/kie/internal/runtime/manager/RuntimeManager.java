@@ -20,13 +20,13 @@ import org.kie.api.runtime.KieSession;
 
 public interface RuntimeManager {
 
-    Runtime getRuntime(Context context);
+    RuntimeEngine getRuntimeEngine(Context<?> context);
     
     String getIdentifier();
    
-    void disposeRuntime(Runtime runtime);
+    void disposeRuntimeEngine(RuntimeEngine runtime);
     
-    void validate(KieSession ksession, Context context) throws IllegalStateException;
+    void validate(KieSession ksession, Context<?> context) throws IllegalStateException;
     
     void close();
 }

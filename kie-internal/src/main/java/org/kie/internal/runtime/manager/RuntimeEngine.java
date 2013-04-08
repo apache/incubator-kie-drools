@@ -18,7 +18,7 @@ package org.kie.internal.runtime.manager;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.task.api.TaskService;
 
-public interface Runtime {
+public interface RuntimeEngine {
 
     KieSession getKieSession();
     
