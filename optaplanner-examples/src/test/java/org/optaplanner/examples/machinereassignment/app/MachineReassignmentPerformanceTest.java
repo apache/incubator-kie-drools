@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.machinereassignment;
+package org.optaplanner.examples.machinereassignment.app;
 
 import java.io.File;
 
