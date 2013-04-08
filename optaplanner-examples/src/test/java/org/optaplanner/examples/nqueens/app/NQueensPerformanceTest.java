@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering;
+package org.optaplanner.examples.nqueens.app;
 
 import java.io.File;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.nurserostering.persistence.NurseRosteringDao;
+import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 import org.junit.Test;
 
-public class NurseRosteringPerformanceTest extends SolverPerformanceTest {
+public class NQueensPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/nurserostering/solver/nurseRosteringSolverConfig.xml";
+        return "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new NurseRosteringDao();
+        return new NQueensDao();
     }
 
     // ************************************************************************
@@ -41,15 +41,13 @@ public class NurseRosteringPerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 600000)
-    public void solveMedium_late01_initialized() {
-        File unsolvedDataFile = new File("data/nurserostering/unsolved/medium_late01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "-45hard/-3335soft");
+    public void solve4QueensFastAssert() {
+        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"), "0", EnvironmentMode.FAST_ASSERT);
     }
 
     @Test(timeout = 600000)
-    public void solveMedium_late01_initializedFastAssert() {
-        File unsolvedDataFile = new File("data/nurserostering/unsolved/medium_late01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "-57hard/-3387soft", EnvironmentMode.FAST_ASSERT);
+    public void solve8QueensFastAssert() {
+        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens08.xml"), "0", EnvironmentMode.FAST_ASSERT);
     }
 
 }

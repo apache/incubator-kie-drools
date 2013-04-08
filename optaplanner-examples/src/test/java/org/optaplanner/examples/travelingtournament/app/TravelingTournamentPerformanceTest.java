@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens;
+package org.optaplanner.examples.travelingtournament.app;
 
 import java.io.File;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.nqueens.persistence.NQueensDao;
+import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentDao;
 import org.junit.Test;
 
-public class NQueensPerformanceTest extends SolverPerformanceTest {
+public class TravelingTournamentPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
+        return "/org/optaplanner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new NQueensDao();
+        return new TravelingTournamentDao();
     }
 
     // ************************************************************************
@@ -41,13 +41,15 @@ public class NQueensPerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 600000)
-    public void solve4QueensFastAssert() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"), "0", EnvironmentMode.FAST_ASSERT);
+    public void solveComp01_initialized() {
+        File unsolvedDataFile = new File("data/travelingtournament/unsolved/1-nl10.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-75968soft");
     }
 
     @Test(timeout = 600000)
-    public void solve8QueensFastAssert() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens08.xml"), "0", EnvironmentMode.FAST_ASSERT);
+    public void solveTestdata01_initializedFastAssert() {
+        File unsolvedDataFile = new File("data/travelingtournament/unsolved/1-nl10.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-77619soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }

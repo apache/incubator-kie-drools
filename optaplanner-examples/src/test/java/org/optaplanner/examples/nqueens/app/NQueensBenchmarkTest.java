@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nqueens;
+package org.optaplanner.examples.nqueens.app;
 
 import java.io.File;
 

@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.examination;
+package org.optaplanner.examples.vehiclerouting.app;
 
 import java.io.File;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.examination.persistence.ExaminationDao;
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
 import org.junit.Test;
 
-public class ExaminationPerformanceTest extends SolverPerformanceTest {
+public class VehicleRoutingPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/examination/solver/examinationSolverConfig.xml";
+        return "/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml";
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new ExaminationDao();
+        return new VehicleRoutingDao();
     }
 
     // ************************************************************************
@@ -41,15 +41,15 @@ public class ExaminationPerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 600000)
-    public void solveComp_set5() {
-        File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set5.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-4393soft");
+    public void solveModel_a2_1() {
+        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/A-n33-k6.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-750soft");
     }
 
     @Test(timeout = 600000)
-    public void solveComp_set5FastAssert() {
-        File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set5.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-4407soft", EnvironmentMode.FAST_ASSERT);
+    public void solveModel_a2_1FastAssert() {
+        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/A-n33-k6.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-770soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }

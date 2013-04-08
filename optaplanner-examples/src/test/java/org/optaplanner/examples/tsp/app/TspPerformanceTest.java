@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.travelingtournament;
+package org.optaplanner.examples.tsp.app;
 
 import java.io.File;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentDao;
+import org.optaplanner.examples.tsp.persistence.TspDao;
 import org.junit.Test;
 
-public class TravelingTournamentPerformanceTest extends SolverPerformanceTest {
+public class TspPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
+        return "/org/optaplanner/examples/tsp/solver/tspSolverConfig.xml";
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new TravelingTournamentDao();
+        return new TspDao();
     }
 
     // ************************************************************************
@@ -41,15 +41,15 @@ public class TravelingTournamentPerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 600000)
-    public void solveComp01_initialized() {
-        File unsolvedDataFile = new File("data/travelingtournament/unsolved/1-nl10.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-75968soft");
+    public void solveModel_a2_1() {
+        File unsolvedDataFile = new File("data/tsp/unsolved/europe40.xml");
+        runSpeedTest(unsolvedDataFile, "-217957");
     }
 
     @Test(timeout = 600000)
-    public void solveTestdata01_initializedFastAssert() {
-        File unsolvedDataFile = new File("data/travelingtournament/unsolved/1-nl10.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-77619soft", EnvironmentMode.FAST_ASSERT);
+    public void solveModel_a2_1FastAssert() {
+        File unsolvedDataFile = new File("data/tsp/unsolved/europe40.xml");
+        runSpeedTest(unsolvedDataFile, "-219637", EnvironmentMode.FAST_ASSERT);
     }
 
 }

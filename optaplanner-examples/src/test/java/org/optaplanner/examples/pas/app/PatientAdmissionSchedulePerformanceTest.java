@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.pas;
+package org.optaplanner.examples.pas.app;
 
 import java.io.File;
 

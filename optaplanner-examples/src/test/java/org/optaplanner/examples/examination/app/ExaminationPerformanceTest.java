@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.curriculumcourse;
+package org.optaplanner.examples.examination.app;
 
 import java.io.File;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
+import org.optaplanner.examples.examination.persistence.ExaminationDao;
 import org.junit.Test;
 
-public class CurriculumCoursePerformanceTest extends SolverPerformanceTest {
+public class ExaminationPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/optaplanner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
+        return "/org/optaplanner/examples/examination/solver/examinationSolverConfig.xml";
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new CurriculumCourseDao();
+        return new ExaminationDao();
     }
 
     // ************************************************************************
@@ -41,15 +41,15 @@ public class CurriculumCoursePerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 600000)
-    public void solveComp01_initialized() {
-        File unsolvedDataFile = new File("data/curriculumcourse/unsolved/comp01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-99soft");
+    public void solveComp_set5() {
+        File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set5.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-4393soft");
     }
 
     @Test(timeout = 600000)
-    public void solveComp01_initializedFastAssert() {
-        File unsolvedDataFile = new File("data/curriculumcourse/unsolved/comp01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-140soft", EnvironmentMode.FAST_ASSERT);
+    public void solveComp_set5FastAssert() {
+        File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set5.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-4407soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }
