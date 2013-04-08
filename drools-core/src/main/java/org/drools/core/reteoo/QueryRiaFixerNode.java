@@ -310,4 +310,12 @@ public class QueryRiaFixerNode extends LeftTupleSource
     public LeftTuple createPeer(LeftTuple original) {
         return null;
     }
+
+    @Override
+    protected void removeTupleSink(LeftTupleSink tupleSink) {
+        if (tupleSink != betaNode) {
+            throw new IllegalArgumentException( tupleSink + " is not a sink for this node" );
+        }
+        betaNode = null;
+    }
 }
