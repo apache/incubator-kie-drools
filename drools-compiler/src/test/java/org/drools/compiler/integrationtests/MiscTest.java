@@ -68,6 +68,7 @@ import org.drools.compiler.StockTick;
 import org.drools.compiler.TestParam;
 import org.drools.compiler.Triangle;
 import org.drools.compiler.Win;
+import org.drools.core.WorkingMemory;
 import org.drools.core.audit.WorkingMemoryConsoleLogger;
 import org.drools.core.base.RuleNameEndsWithAgendaFilter;
 import org.drools.core.base.RuleNameEqualsAgendaFilter;
@@ -83,6 +84,7 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.ParserError;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.AttributeDescr;
@@ -91,9 +93,10 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.rule.MapBackedClassLoader;
+import org.drools.core.rule.*;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
+import org.drools.core.rule.Package;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -4205,11 +4208,13 @@ public class MiscTest extends CommonTestMethodBase {
         try {
             Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_RuleNameClashes1.drl",
                                                                         "test_RuleNameClashes2.drl" );
-            assertEquals( 2,
+            assertEquals( 3,
                           kpkgs.size() );
             for ( KnowledgePackage kpkg : kpkgs ) {
-                assertEquals( "rule 1",
-                              kpkg.getRules().iterator().next().getName() );
+                if (kpkg.getName().equals("org.drools.package1")) {
+                    assertEquals( "rule 1",
+                                  kpkg.getRules().iterator().next().getName() );
+                }
             }
         } catch ( PackageMergeException e ) {
             fail( "unexpected exception: " + e.getMessage() );
@@ -4456,8 +4461,13 @@ public class MiscTest extends CommonTestMethodBase {
         // test rule replacement
         Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_RuleNameClashes3.drl",
                                                                     "test_RuleNameClashes3.drl" );
-        assertEquals( 1,
-                      kpkgs.iterator().next().getRules().size() );
+
+        for (KnowledgePackage kpkg : kpkgs) {
+            if (kpkg.getName().equals("org.drools.package1")) {
+                assertEquals( 1, kpkg.getRules().size() );
+                break;
+            }
+        }
 
         KnowledgeBase kbase = loadKnowledgeBase();
         kbase.addKnowledgePackages( kpkgs );

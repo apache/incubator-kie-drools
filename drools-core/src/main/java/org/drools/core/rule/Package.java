@@ -456,6 +456,12 @@ public class Package
         this.valid = false;
     }
 
+    /** Once this is called, the package will be marked as invalid */
+    public void resetErrors() {
+        this.errorSummary = "";
+        this.valid = true;
+    }
+
     /**
      * @return true (default) if there are no build/structural problems.
      */

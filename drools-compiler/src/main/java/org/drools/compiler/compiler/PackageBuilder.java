@@ -225,6 +225,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     private final Stack<List<Resource>>              buildResources    = new Stack<List<Resource>>();
 
+    private int                                      currentRulePackage = 0;
+
     /**
      * Use this when package is starting from scratch.
      */
@@ -366,6 +368,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
         clone.packages.putAll(packages);
 
+        clone.currentRulePackage = currentRulePackage;
         return clone;
     }
 
@@ -835,6 +838,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             return;
         }
 
+        currentRulePackage = pkgRegistryMap.size() -1;
+
         // merge into existing package
         mergePackage(pkgRegistry, packageDescr);
 
@@ -1264,8 +1269,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         // need to reinsert this to ensure that the package is the first/last one in the ordered map
         // this feature is exploited by the knowledgeAgent
+        Package current = getPackage();
         this.pkgRegistryMap.remove( packageDescr.getName() );
         this.pkgRegistryMap.put( packageDescr.getName(), pkgRegistry );
+        if ( ! current.getName().equals( packageDescr.getName() ) ) {
+            currentRulePackage = pkgRegistryMap.size() - 1;
+        }
     }
 
     private void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
@@ -1317,8 +1326,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String packageName ) {
-        if (cls.isPrimitive() || cls.isArray())
+        if (cls.isPrimitive() || cls.isArray()) {
             return null;
+        }
         TypeDeclaration typeDeclaration = getCachedTypeDeclaration( cls );
         if (typeDeclaration != null) {
             registerTypeDeclaration( packageName, typeDeclaration );
@@ -1341,6 +1351,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             PackageRegistry packageRegistry = pkgRegistryMap.get( packageName );
             if (packageRegistry != null) {
                 packageRegistry.getPackage().addTypeDeclaration( typeDeclaration );
+            } else {
+                newPackage( new PackageDescr( packageName, "" ) );
+                pkgRegistryMap.get( packageName ).getPackage().addTypeDeclaration( typeDeclaration );
             }
         }
     }
@@ -2969,7 +2982,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     public Package getPackage() {
         PackageRegistry pkgRegistry = null;
         if (!this.pkgRegistryMap.isEmpty()) {
-            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[this.pkgRegistryMap.size() - 1];
+            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[ currentRulePackage ];
         }
         Package pkg = null;
         if (pkgRegistry != null) {
@@ -2983,7 +2996,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     public Package[] getPackages() {
         Package[] pkgs = new Package[this.pkgRegistryMap.size()];
-//        int i = pkgs.length;
         String errors = null;
         if (!getErrors().isEmpty()) {
             errors = getErrors().toString();
@@ -2995,7 +3007,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             if (errors != null) {
                 pkg.setError( errors );
             }
-//            pkgs[--i] = pkg;
             pkgs[i++] = pkg;
         }
 
@@ -3594,6 +3605,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 if (resource.equals(i.next().getResource())) {
                     i.remove();
                 }
+            }
+        }
+
+        if ( results.size() == 0 ) {
+            // TODO Error attribution might be bugged
+            for (PackageRegistry packageRegistry : pkgRegistryMap.values()) {
+                packageRegistry.getPackage().resetErrors();
             }
         }
 
