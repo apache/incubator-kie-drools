@@ -18,11 +18,11 @@ package org.kie.internal.runtime.manager;
 
 public interface Mapper {
 
-    void saveMapping(Context context, Integer ksessionId);
+    void saveMapping(Context<?> context, Integer ksessionId);
     
-    Integer findMapping(Context context);
+    Integer findMapping(Context<?> context);
     
     Object findContextId(Integer ksessionId);
     
-    void removeMapping(Context context);
+    void removeMapping(Context<?> context);
 }

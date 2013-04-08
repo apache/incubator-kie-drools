@@ -25,11 +25,11 @@ import org.kie.api.runtime.process.WorkItemHandler;
 
 public interface RegisterableItemsFactory {
 
-    Map<String, WorkItemHandler> getWorkItemHandlers(Runtime runtime);
+    Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime);
     
-    List<ProcessEventListener> getProcessEventListeners(Runtime runtime);
+    List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime);
     
-    List<AgendaEventListener> getAgendaEventListeners(Runtime runtime);
+    List<AgendaEventListener> getAgendaEventListeners(RuntimeEngine runtime);
     
-    List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(Runtime runtime);
+    List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(RuntimeEngine runtime);
 }
