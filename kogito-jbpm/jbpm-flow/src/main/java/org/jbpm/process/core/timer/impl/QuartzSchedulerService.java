@@ -39,8 +39,11 @@ import org.quartz.JobExecutionException;
 import org.quartz.JobPersistenceException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SchedulerMetaData;
 import org.quartz.SimpleTrigger;
+import org.quartz.impl.StdScheduler;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.jdbcjobstore.JobStoreCMT;
 
 /**
  * Quartz based <code>GlobalSchedulerService</code> that is configured according
@@ -108,8 +111,20 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
             
             boolean removed =  this.scheduler.deleteJob(quartzJobHandle.getJobName(), quartzJobHandle.getJobGroup());            
             return removed;
-        } catch (SchedulerException e) {            
+        } catch (SchedulerException e) {     
+            
             throw new RuntimeException("Exception while removing job", e);
+        } catch (RuntimeException e) {
+            SchedulerMetaData metadata;
+            try {
+                metadata = this.scheduler.getMetaData();
+                if (metadata.getJobStoreClass().isAssignableFrom(JobStoreCMT.class)) {
+                    return true;
+                }
+            } catch (SchedulerException e1) {
+                
+            }
+            throw e;
         }
     }
 
@@ -155,7 +170,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
         this.globalTimerService = timerService;
         
         try {
-            this.scheduler = StdSchedulerFactory.getDefaultScheduler();
+            this.scheduler = StdSchedulerFactory.getDefaultScheduler();            
             this.scheduler.start();
         } catch (SchedulerException e) {
             throw new RuntimeException("Exception when initializing QuartzSchedulerService", e);

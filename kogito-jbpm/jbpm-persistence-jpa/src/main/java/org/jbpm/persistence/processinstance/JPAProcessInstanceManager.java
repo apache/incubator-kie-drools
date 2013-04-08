@@ -9,6 +9,7 @@ import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
+import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.kie.api.definition.process.Process;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.api.runtime.EnvironmentName;
@@ -144,24 +145,33 @@ public class JPAProcessInstanceManager
     }
 
     public void clearProcessInstancesState() {
-        // at this point only timers are considered as state that needs to be cleared
-        TimerManager timerManager = ((InternalProcessRuntime)kruntime.getProcessRuntime()).getTimerManager();
-        
-        for (ProcessInstance processInstance: new ArrayList<ProcessInstance>(processInstances.values())) {
-            WorkflowProcessInstance pi = ((WorkflowProcessInstance) processInstance);
-
+        try {
+            // at this point only timers are considered as state that needs to be cleared
+            TimerManager timerManager = ((InternalProcessRuntime)kruntime.getProcessRuntime()).getTimerManager();
             
-            for (org.kie.api.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {
-                if (nodeInstance instanceof StateBasedNodeInstance) {
-                    List<Long> timerIds = ((StateBasedNodeInstance) nodeInstance).getTimerInstances();
-                    if (timerIds != null) {
-                        for (Long id: timerIds) {
-                            timerManager.cancelTimer(id);
+            for (ProcessInstance processInstance: new ArrayList<ProcessInstance>(processInstances.values())) {
+                WorkflowProcessInstance pi = ((WorkflowProcessInstance) processInstance);
+    
+                
+                for (org.kie.api.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {
+                    if (nodeInstance instanceof TimerNodeInstance){
+                        if (((TimerNodeInstance)nodeInstance).getTimerInstance() != null) {
+                            timerManager.cancelTimer(((TimerNodeInstance)nodeInstance).getTimerInstance().getId());
+                        }
+                    } else if (nodeInstance instanceof StateBasedNodeInstance) {
+                        List<Long> timerIds = ((StateBasedNodeInstance) nodeInstance).getTimerInstances();
+                        if (timerIds != null) {
+                            for (Long id: timerIds) {
+                                timerManager.cancelTimer(id);
+                            }
                         }
                     }
                 }
+                
             }
-            
+        } catch (Exception e) {
+            // catch everything here to make sure it will not break any following 
+            // logic to allow complete clean up 
         }
     }
 

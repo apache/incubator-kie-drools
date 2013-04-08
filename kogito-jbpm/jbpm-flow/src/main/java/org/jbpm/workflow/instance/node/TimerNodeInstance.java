@@ -21,8 +21,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.NodeInstance;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.Timer;
@@ -33,6 +31,8 @@ import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.kie.api.runtime.process.EventListener;
+import org.kie.api.runtime.process.NodeInstance;
 import org.mvel2.MVEL;
 
 public class TimerNodeInstance extends StateBasedNodeInstance implements EventListener {
@@ -40,6 +40,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     private static final long serialVersionUID = 510l;
     
     private long timerId;
+    private TimerInstance timerInstance;
     
     public TimerNode getTimerNode() {
         return (TimerNode) getNode();
@@ -59,13 +60,13 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
                 "A TimerNode only accepts default incoming connections!");
         }
         InternalKnowledgeRuntime kruntime =  getProcessInstance().getKnowledgeRuntime();
-        TimerInstance timer = createTimerInstance(kruntime);
+        timerInstance = createTimerInstance(kruntime);
         if (getTimerInstances() == null) {
         	addTimerListener();
         }
         ((InternalProcessRuntime)kruntime.getProcessRuntime())
-        	.getTimerManager().registerTimer(timer, (ProcessInstance) getProcessInstance());
-        timerId = timer.getId();
+        	.getTimerManager().registerTimer(timerInstance, (ProcessInstance) getProcessInstance());
+        timerId = timerInstance.getId();
     }
     
     protected TimerInstance createTimerInstance(InternalKnowledgeRuntime kruntime) {
@@ -155,6 +156,10 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     public void removeEventListeners() {
         super.removeEventListeners();
         ((WorkflowProcessInstance) getProcessInstance()).removeEventListener("timerTriggered", this, false);
+    }
+
+    public TimerInstance getTimerInstance() {
+        return timerInstance;
     }
 
 }
