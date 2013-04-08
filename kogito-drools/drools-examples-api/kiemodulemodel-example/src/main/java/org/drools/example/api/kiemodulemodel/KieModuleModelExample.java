@@ -22,7 +22,7 @@ public class KieModuleModelExample {
         Resource ex1Res = ks.getResources().newFileSystemResource(getFile("named-kiesession"));
         Resource ex2Res = ks.getResources().newFileSystemResource(getFile("kiebase-inclusion"));
 
-        ReleaseId rid = ks.newReleaseId("org.drools", "kiemodulemodel-example", "6.0.0-SNAPSHOT");
+        ReleaseId rid = ks.newReleaseId("org.drools", "kiemodulemodel-example", "6.0.0.Beta1");
         kfs.generateAndWritePomXML(rid);
 
         KieModuleModel kModuleModel = ks.newKieModuleModel();
