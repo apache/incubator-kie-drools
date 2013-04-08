@@ -285,15 +285,11 @@ public class PatternBuilder
 
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
             Class< ? > cls = ((ClassObjectType) pattern.getObjectType()).getClassType();
-            if ( ! ( cls.getPackage() == null ) && ! cls.getPackage().getName().equals( "java.lang" ) ) {
-                TypeDeclaration typeDeclr = context.getPackageBuilder().getAndRegisterTypeDeclaration(
-                        cls,
-                        cls.getPackage().getName() );
-                if ( typeDeclr != null ) {
-                    context.setTypesafe( typeDeclr.isTypesafe() );
-                } else {
-                    context.setTypesafe( true );
-                }
+            if ( cls.getPackage() != null && !cls.getPackage().getName().equals( "java.lang" ) ) {
+                // register the class in its own package unless it is primitive or belongs to java.lang
+                TypeDeclaration typeDeclr = context.getPackageBuilder().getAndRegisterTypeDeclaration( cls,
+                                                                                                       cls.getPackage().getName() );
+                context.setTypesafe( typeDeclr == null || typeDeclr.isTypesafe() );
             } else {
                 context.setTypesafe( true );
             }

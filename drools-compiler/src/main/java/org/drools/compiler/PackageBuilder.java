@@ -1343,8 +1343,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String packageName ) {
-        if (cls.isPrimitive() || cls.isArray())
+        if (cls.isPrimitive() || cls.isArray()) {
             return null;
+        }
         TypeDeclaration typeDeclaration = getCachedTypeDeclaration( cls );
         if (typeDeclaration != null) {
             registerTypeDeclaration( packageName, typeDeclaration );
@@ -3011,7 +3012,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     public Package[] getPackages() {
         Package[] pkgs = new Package[this.pkgRegistryMap.size()];
-//        int i = pkgs.length;
         String errors = null;
         if (!getErrors().isEmpty()) {
             errors = getErrors().toString();
@@ -3023,7 +3023,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             if (errors != null) {
                 pkg.setError( errors );
             }
-//            pkgs[--i] = pkg;
             pkgs[i++] = pkg;
         }
 

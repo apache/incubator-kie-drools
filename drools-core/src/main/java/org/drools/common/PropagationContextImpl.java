@@ -25,7 +25,6 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.WindowTupleList;
 import org.drools.rule.*;
-import org.drools.rule.Package;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
@@ -404,9 +403,8 @@ public class PropagationContextImpl
         }
 
         modificationMask = 0L;
-        Package rulePkg = workingMemory.getRuleBase().getPackage(rule.getPackage());
-        List<String> typeClassProps = getSettableProperties( workingMemory, classType, rulePkg );
-        List<String> modifiedClassProps = getSettableProperties( workingMemory, modifiedClass, rulePkg );
+        List<String> typeClassProps = getSettableProperties( workingMemory, classType );
+        List<String> modifiedClassProps = getSettableProperties( workingMemory, modifiedClass );
 
         for (int i = 0; i < modifiedClassProps.size(); i++) {
             if (BitMaskUtil.isPositionSet(originalMask, i)) {
@@ -421,15 +419,11 @@ public class PropagationContextImpl
         return this;
     }
 
-    private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType, Package rulePkg) {
-        if ( classType.getPackage().equals( Object.class.getPackage() ) ) {
-            return Collections.EMPTY_LIST;
-        }
-
-        Package pkg = workingMemory.getRuleBase().getPackage(classType.getPackage().getName());
-        return pkg != null ?
-                pkg.getTypeDeclaration(classType).getSettableProperties() :
-                rulePkg.getTypeDeclaration(classType).getSettableProperties();
+    private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType) {
+        String pkgName = classType.getPackage().getName();
+        return "java.lang".equals(pkgName) ?
+                Collections.EMPTY_LIST :
+                workingMemory.getRuleBase().getPackage(pkgName).getTypeDeclaration(classType).getSettableProperties();
     }
 
     public WindowTupleList getActiveWindowTupleList() {
