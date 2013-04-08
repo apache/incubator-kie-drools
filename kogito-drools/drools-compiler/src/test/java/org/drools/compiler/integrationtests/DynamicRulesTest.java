@@ -52,6 +52,8 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.impl.EnvironmentFactory;
@@ -237,7 +239,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSession workingMemory = createKnowledgeSession( kbase );
 
-        assertEquals( 1,
+        assertEquals( 2,
                       kbase.getKnowledgePackages().size() );
         assertEquals( 5,
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
@@ -253,7 +255,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       kbase.getKnowledgePackages().iterator().next().getRules().size() );
 
         kbase.removeKnowledgePackage( "org.drools.compiler.test" );
-        assertEquals( 0,
+        assertEquals( 1,
                       kbase.getKnowledgePackages().size() );
     }
 
@@ -760,27 +762,24 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test
     public void testDynamicRuleRemovalsUnusedWorkingMemorySubNetwork() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( "test_DynamicRulesWithSubnetwork1.drl",
-                                                 "test_DynamicRulesWithSubnetwork2.drl",
-                                                 "test_DynamicRulesWithSubnetwork.drl" );
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBase( "test_DynamicRulesWithSubnetwork1.drl",
+                                                                                 "test_DynamicRulesWithSubnetwork2.drl",
+                                                                                 "test_DynamicRulesWithSubnetwork.drl" );
 
-        assertEquals( 1,
-                      kbase.getKnowledgePackages().size() );
+        assertEquals( 2, kbase.getKnowledgePackages().size() );
         assertEquals( 4,
-                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
+                      ((InternalRuleBase)kbase.getRuleBase()).getPackagesMap().get("org.drools.compiler").getRules().length );
 
-        kbase.removeRule( "org.drools.compiler",
-                "Apply Discount on all books" );
+        kbase.removeRule( "org.drools.compiler", "Apply Discount on all books" );
         assertEquals( 3,
-                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
+                      ((InternalRuleBase)kbase.getRuleBase()).getPackagesMap().get("org.drools.compiler").getRules().length );
 
-        kbase.removeRule( "org.drools.compiler",
-                "like book" );
+        kbase.removeRule( "org.drools.compiler", "like book" );
         assertEquals( 2,
-                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
+                      ((InternalRuleBase)kbase.getRuleBase()).getPackagesMap().get("org.drools.compiler").getRules().length );
 
         kbase.removeKnowledgePackage( "org.drools.compiler" );
-        assertEquals( 0,
+        assertEquals( 1,
                       kbase.getKnowledgePackages().size() );
     }
 

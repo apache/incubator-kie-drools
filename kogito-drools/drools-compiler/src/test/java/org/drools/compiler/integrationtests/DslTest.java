@@ -73,7 +73,7 @@ public class DslTest extends CommonTestMethodBase {
 
         // the compiled package
         final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 1, pkgs.size() );
+        assertEquals( 2, pkgs.size() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );
@@ -113,7 +113,7 @@ public class DslTest extends CommonTestMethodBase {
         
         // the compiled package
         final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 1, pkgs.size() );
+        assertEquals( 2, pkgs.size() );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );

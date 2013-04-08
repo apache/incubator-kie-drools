@@ -379,7 +379,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testWithBeanAndTraitInDifferentPackages() {
         // DROOLS-91
         String str1 =
