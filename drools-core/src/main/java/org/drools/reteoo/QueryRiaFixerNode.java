@@ -310,4 +310,12 @@ public class QueryRiaFixerNode extends LeftTupleSource
     protected ObjectTypeNode getObjectTypeNode() {
         return tupleSource.getObjectTypeNode();
     }
+
+    @Override
+    protected void removeTupleSink(LeftTupleSink tupleSink) {
+        if (tupleSink != betaNode) {
+            throw new IllegalArgumentException( tupleSink + " is not a sink for this node" );
+        }
+        betaNode = null;
+    }
 }
