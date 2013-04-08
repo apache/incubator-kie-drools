@@ -8,7 +8,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
@@ -21,9 +24,12 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.common.DoubleNonIndexSkipBetaConstraints;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleNonIndexSkipBetaConstraints;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleIndexHashTable;
@@ -37,11 +43,16 @@ import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.CompositeObjectSinkAdapter;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
+import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSinkNodeList;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
+import org.drools.reteoo.RightTuple;
 import org.drools.rule.IndexableConstraint;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.Row;
+import org.drools.runtime.rule.Variable;
+import org.drools.runtime.rule.ViewChangedEventListener;
 import org.junit.Test;
 
 
@@ -59,20 +70,9 @@ public class IndexingTest extends CommonTestMethodBase {
         drl += "then\n";
         drl += "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
-                ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        assertFalse( kbuilder.hasErrors() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
 
         ObjectTypeNode otn = getObjectTypeNode(kbase, Person.class );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
         CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter)alphaNode1.getSinkPropagator();
@@ -110,18 +110,8 @@ public class IndexingTest extends CommonTestMethodBase {
         drl += "then\n";
         drl += "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
-                      ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        assertFalse( kbuilder.hasErrors() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
         ObjectTypeNode node = getObjectTypeNode(kbase, Person.class );
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
         
@@ -217,19 +207,9 @@ public class IndexingTest extends CommonTestMethodBase {
         str += "query peeps( String $name, String $likes, String $street) \n";
         str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
         str += "end\n";
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                          ResourceType.DRL );
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        
         List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
         for ( ObjectTypeNode n : nodes ) {
@@ -429,5 +409,206 @@ public class IndexingTest extends CommonTestMethodBase {
         ksession.insert( c );
 
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testIndexingOnQueryUnificationWithNot() throws Exception {
+        String str = "";
+        str += "package org.drools.test \n";
+        str += "import org.drools.Person \n";
+        str += "query peeps( String $name, int $age ) \n";
+        str += " not $p2 : Person( $name := name, age > $age ) \n";
+        str += "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+
+        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        ObjectTypeNode node = null;
+        for ( ObjectTypeNode n : nodes ) {
+            if ( ((ClassObjectType)n.getObjectType()).getClassType() == DroolsQuery.class ) {
+                node = n;
+                break;
+            }
+        }
+
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];
+
+        NotNode n = (NotNode) liaNode.getSinkPropagator().getSinks()[0];
+
+        DoubleNonIndexSkipBetaConstraints c = (DoubleNonIndexSkipBetaConstraints) n.getRawConstraints();
+        //assertEquals( "$name", ((VariableConstraint)c.getConstraint()).getRequiredDeclarations()[0].getIdentifier() );
+        assertTrue( c.isIndexed() );
+        BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( n );
+        System.out.println( bm.getLeftTupleMemory().getClass() );
+        System.out.println( bm.getRightTupleMemory().getClass() );
+        assertTrue(bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable);
+        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
+
+
+        final Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("inserted", new Integer(0));
+        map.put("deleted", new Integer(0));
+        map.put("updated", new Integer(0));
+        wm.openLiveQuery("peeps", new Object[] {Variable.v, 99 }, new ViewChangedEventListener() {
+            public void rowAdded(Row row) {
+                System.out.println( "inserted" );
+                Integer integer = map.get("inserted");
+                map.put("inserted", integer.intValue() + 1 );
+            }
+
+            public void rowRemoved(Row row) {
+                System.out.println( "deleted" );
+                Integer integer = map.get("deleted");
+                map.put("deleted", integer.intValue() + 1 );
+            }
+
+            public void rowUpdated(Row row) {
+                System.out.println( "updated" );
+                Integer integer = map.get("updated");
+                map.put("updated", integer.intValue() + 1 );
+            }
+        });
+
+        System.out.println( "inserted: " + map.get("inserted"));
+        System.out.println( "deleted: " + map.get("deleted"));
+        System.out.println( "inserted: " + map.get("updated"));
+
+        Map<String, InternalFactHandle> peeps = new HashMap<String, InternalFactHandle>();
+
+        Person p = null;
+        InternalFactHandle fh = null;
+
+        // x0 is the blocker
+        for ( int i = 0; i < 100; i++ ) {
+            p = new Person( "x" + i, 100);
+            fh = ( InternalFactHandle ) wm.insert( p );
+            wm.fireAllRules();
+            peeps.put(p.getName(), fh);
+        }
+
+        // each x is blocker in turn up to x99
+        for ( int i = 0; i < 99; i++ ) {
+            fh = peeps.get("x" + i);
+            p = (Person) fh.getObject();
+            p.setAge( 90 );
+            wm.update( fh, p );
+            assertEquals( "i=" + i, 1, map.get("inserted").intValue() );
+        }
+
+        // x99 is still the blocker, everything else is just added
+        for ( int i = 0; i < 99; i++ ) {
+            fh = peeps.get("x" + i);
+            p = (Person) fh.getObject();
+            p.setAge( 102 );
+            wm.update( fh, p );
+            wm.fireAllRules();
+            assertEquals( "i=" + i, 1, map.get("inserted").intValue() );
+        }
+
+        // x99 is still the blocker
+        for ( int i = 98; i >= 0; i-- ) {
+            fh = peeps.get("x" + i);
+            p = (Person) fh.getObject();
+            p.setAge( 90 );
+            wm.update( fh, p );
+            wm.fireAllRules();
+            assertEquals( "i=" + i, 1, map.get("inserted").intValue() );
+        }
+
+        // move x99, should no longer be a blocker
+        fh = peeps.get("x99");
+        p = (Person) fh.getObject();
+        p.setAge( 90 );
+        wm.update( fh, p );
+        wm.fireAllRules();
+        assertEquals( 2, map.get("inserted").intValue() );
+    }
+
+    @Test
+    public void testFullFastIteratorResume() throws Exception {
+        String str = "";
+        str += "package org.drools.test \n";
+        str += "import org.drools.Person \n";
+        str += "query peeps( String $name, int $age ) \n";
+        str += " not $p2 : Person( $name := name, age > $age ) \n";
+        str += "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+
+        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        ObjectTypeNode node = null;
+        for ( ObjectTypeNode n : nodes ) {
+            if ( ((ClassObjectType)n.getObjectType()).getClassType() == DroolsQuery.class ) {
+                node = n;
+                break;
+            }
+        }
+
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];
+
+        NotNode n = (NotNode) liaNode.getSinkPropagator().getSinks()[0];
+
+        DoubleNonIndexSkipBetaConstraints c = (DoubleNonIndexSkipBetaConstraints) n.getRawConstraints();
+        //assertEquals( "$name", ((VariableConstraint)c.getConstraint()).getRequiredDeclarations()[0].getIdentifier() );
+        assertTrue( c.isIndexed() );
+        BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( n );
+        System.out.println( bm.getLeftTupleMemory().getClass() );
+        System.out.println( bm.getRightTupleMemory().getClass() );
+        assertTrue(bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable);
+        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
+
+
+        final Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("inserted", new Integer(0));
+        map.put("deleted", new Integer(0));
+        map.put("updated", new Integer(0));
+        wm.openLiveQuery("peeps", new Object[] {Variable.v, 99 }, new ViewChangedEventListener() {
+            public void rowAdded(Row row) {
+            }
+
+            public void rowRemoved(Row row) {
+            }
+
+            public void rowUpdated(Row row) {
+            }
+        });
+
+        Map<String, InternalFactHandle> peeps = new HashMap<String, InternalFactHandle>();
+
+        Person p = new Person( "x0", 100);
+        InternalFactHandle fh = ( InternalFactHandle ) wm.insert( p );
+
+        peeps.put(p.getName(), fh);
+
+        for ( int i = 1; i < 100; i++ ) {
+            p = new Person( "x" + i, 101);
+            fh = ( InternalFactHandle ) wm.insert( p );
+            wm.fireAllRules();
+            peeps.put(p.getName(), fh);
+        }
+
+        List<RightTuple> list = new ArrayList<RightTuple>(100);
+        FastIterator it = n.getRightIterator( bm.getRightTupleMemory() );
+        for ( RightTuple rt =n.getFirstRightTuple(null, bm.getRightTupleMemory(), null, it); rt != null; rt = (RightTuple)it.next(rt) ) {
+            list.add(rt);
+        }
+        assertEquals( 100, list.size() );
+
+        // check we can resume from each entry in the list above.
+        for ( int i = 0; i < 100; i++ ) {
+            RightTuple rightTuple = list.get(i);
+            it = n.getRightIterator( bm.getRightTupleMemory(), rightTuple ); // resumes from the current rightTuple
+            int j = i + 1;
+            for ( RightTuple rt = ( RightTuple ) it.next(rightTuple); rt != null; rt = (RightTuple)it.next(rt) ) {
+                assertSame( list.get(j), rt);
+                j++;
+            }
+        }
     }
 }

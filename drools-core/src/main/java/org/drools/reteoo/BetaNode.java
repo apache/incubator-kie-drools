@@ -285,6 +285,14 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
+    public FastIterator getRightIterator(RightTupleMemory memory, RightTuple rightTuple) {
+        if ( !this.indexedUnificationJoin ) {
+            return memory.fastIterator();
+        } else {
+            return memory.fullFastIterator(rightTuple);
+        }
+    }
+
     public FastIterator getLeftIterator(LeftTupleMemory memory) {
         if ( !this.indexedUnificationJoin ) {
             return memory.fastIterator();
