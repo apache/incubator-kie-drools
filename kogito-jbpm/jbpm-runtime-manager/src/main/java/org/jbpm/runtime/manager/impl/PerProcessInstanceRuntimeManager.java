@@ -10,7 +10,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.manager.Context;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.Mapper;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
@@ -22,7 +22,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     private SessionFactory factory;
     private TaskServiceFactory taskServiceFactory;
     
-    private static ThreadLocal<Map<Object, org.kie.internal.runtime.manager.Runtime>> local = new ThreadLocal<Map<Object, org.kie.internal.runtime.manager.Runtime>>();
+    private static ThreadLocal<Map<Object, org.kie.internal.runtime.manager.RuntimeEngine>> local = new ThreadLocal<Map<Object, org.kie.internal.runtime.manager.RuntimeEngine>>();
     
     private Mapper mapper;
     
@@ -34,7 +34,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     }
     
     @Override
-    public org.kie.internal.runtime.manager.Runtime getRuntime(Context context) {
+    public org.kie.internal.runtime.manager.RuntimeEngine getRuntimeEngine(Context<?> context) {
   
         Object contextId = context.getContextId();
         KieSession ksession = null;
@@ -43,7 +43,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             ksession = factory.newKieSession();
             ksessionId = ksession.getId();                 
         } else {
-            Runtime localRuntime = findLocalRuntime(contextId);
+            RuntimeEngine localRuntime = findLocalRuntime(contextId);
             if (localRuntime != null) {
                 return localRuntime;
             }
@@ -54,8 +54,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             ksession = factory.findKieSessionById(ksessionId);
         }
         
-        org.kie.internal.runtime.manager.Runtime runtime = new RuntimeImpl(ksession, taskServiceFactory.newTaskService());
-        ((RuntimeImpl) runtime).setManager(this);
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = new RuntimeEngineImpl(ksession, taskServiceFactory.newTaskService());
+        ((RuntimeEngineImpl) runtime).setManager(this);
         registerDisposeCallback(runtime);
         registerItems(runtime);
         attachManager(runtime);
@@ -68,7 +68,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     
 
     @Override
-    public void validate(KieSession ksession, Context context) throws IllegalStateException {
+    public void validate(KieSession ksession, Context<?> context) throws IllegalStateException {
         if (context == null || context.getContextId() == null) {
             return;
         }
@@ -89,7 +89,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     }
 
     @Override
-    public void disposeRuntime(org.kie.internal.runtime.manager.Runtime runtime) {
+    public void disposeRuntimeEngine(org.kie.internal.runtime.manager.RuntimeEngine runtime) {
         removeLocalRuntime(runtime);
         if (runtime instanceof Disposable) {
             ((Disposable) runtime).dispose();
@@ -116,9 +116,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     private class MaintainMappingListener extends DefaultProcessEventListener {
 
         private Integer ksessionId;
-        private Runtime runtime;
+        private RuntimeEngine runtime;
         
-        MaintainMappingListener(Integer ksessionId, Runtime runtime) {
+        MaintainMappingListener(Integer ksessionId, RuntimeEngine runtime) {
             this.ksessionId = ksessionId;
             this.runtime = runtime;
         }
@@ -161,11 +161,11 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         this.mapper = mapper;
     }
     
-    protected org.kie.internal.runtime.manager.Runtime findLocalRuntime(Object processInstanceId) {
+    protected org.kie.internal.runtime.manager.RuntimeEngine findLocalRuntime(Object processInstanceId) {
         if (processInstanceId == null) {
             return null;
         }
-        Map<Object, org.kie.internal.runtime.manager.Runtime> map = local.get();
+        Map<Object, org.kie.internal.runtime.manager.RuntimeEngine> map = local.get();
         if (map == null) {
             return null;
         } else {
@@ -173,13 +173,13 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         }
     }
     
-    protected void saveLocalRuntime(Object processInstanceId, Runtime runtime) {
+    protected void saveLocalRuntime(Object processInstanceId, RuntimeEngine runtime) {
         if (processInstanceId == null) {
             return;
         }
-        Map<Object, org.kie.internal.runtime.manager.Runtime> map = local.get();
+        Map<Object, org.kie.internal.runtime.manager.RuntimeEngine> map = local.get();
         if (map == null) {
-            map = new HashMap<Object, Runtime>();
+            map = new HashMap<Object, RuntimeEngine>();
             local.set(map);
         } 
         
@@ -187,11 +187,11 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         
     }
     
-    protected void removeLocalRuntime(Runtime runtime) {
-        Map<Object, org.kie.internal.runtime.manager.Runtime> map = local.get();
+    protected void removeLocalRuntime(RuntimeEngine runtime) {
+        Map<Object, org.kie.internal.runtime.manager.RuntimeEngine> map = local.get();
         Object keyToRemove = -1l;
         if (map != null) {
-            for (Map.Entry<Object, Runtime> entry : map.entrySet()) {
+            for (Map.Entry<Object, RuntimeEngine> entry : map.entrySet()) {
                 if (runtime.equals(entry.getValue())) {
                     keyToRemove = entry.getKey();
                     break;

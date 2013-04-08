@@ -12,7 +12,7 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 
@@ -32,7 +32,7 @@ public abstract class AbstractRuntimeManager implements RuntimeManager {
         activeSingletons.add(identifier);
     }
     
-    protected void registerItems(Runtime runtime) {
+    protected void registerItems(RuntimeEngine runtime) {
         RegisterableItemsFactory factory = environment.getRegisterableItemsFactory();
         // process handlers
         Map<String, WorkItemHandler> handlers = factory.getWorkItemHandlers(runtime);
@@ -57,7 +57,7 @@ public abstract class AbstractRuntimeManager implements RuntimeManager {
         }
     }
     
-    protected void registerDisposeCallback(Runtime runtime) {
+    protected void registerDisposeCallback(RuntimeEngine runtime) {
         // register it if there is an active transaction as we assume then to be running in a managed environment e.g CMT
         // TODO is there better way to register transaction synchronization?
         JtaTransactionManager tm = new JtaTransactionManager(null, null, null);
@@ -68,7 +68,7 @@ public abstract class AbstractRuntimeManager implements RuntimeManager {
         }
     }
     
-    protected void attachManager(Runtime runtime) {
+    protected void attachManager(RuntimeEngine runtime) {
         runtime.getKieSession().getEnvironment().set("RuntimeManager", this);
     }
 

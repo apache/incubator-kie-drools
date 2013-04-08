@@ -15,7 +15,7 @@ import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 
 public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory {
 
@@ -25,7 +25,7 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
     private List<Class<? extends WorkingMemoryEventListener>> workingMemoryListeners = new CopyOnWriteArrayList<Class<? extends WorkingMemoryEventListener>>();
     
     @Override
-    public Map<String, WorkItemHandler> getWorkItemHandlers(Runtime runtime) {
+    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
         Map<String, WorkItemHandler> handlers = new HashMap<String, WorkItemHandler>();
         for (Entry<String, Class<? extends WorkItemHandler>> entry : workItemHandlersClasses.entrySet()) {
             WorkItemHandler handler = createInstance(entry.getValue(), runtime.getKieSession());
@@ -38,7 +38,7 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
     }
 
     @Override
-    public List<ProcessEventListener> getProcessEventListeners(Runtime runtime) {
+    public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
         List<ProcessEventListener> listeners = new ArrayList<ProcessEventListener>();
         for (Class<? extends ProcessEventListener> clazz : processListeners) {
             ProcessEventListener pListener = createInstance(clazz, runtime.getKieSession());
@@ -50,7 +50,7 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
     }
 
     @Override
-    public List<AgendaEventListener> getAgendaEventListeners(Runtime runtime) {
+    public List<AgendaEventListener> getAgendaEventListeners(RuntimeEngine runtime) {
         List<AgendaEventListener> listeners = new ArrayList<AgendaEventListener>();
         for (Class<? extends AgendaEventListener> clazz : agendListeners) {
             AgendaEventListener aListener = createInstance(clazz, runtime.getKieSession());
@@ -62,7 +62,7 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
     }
 
     @Override
-    public List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(Runtime runtime) {
+    public List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(RuntimeEngine runtime) {
         List<WorkingMemoryEventListener> listeners = new ArrayList<WorkingMemoryEventListener>();
         for (Class<? extends WorkingMemoryEventListener> clazz : workingMemoryListeners) {
             WorkingMemoryEventListener wmListener = createInstance(clazz, runtime.getKieSession());

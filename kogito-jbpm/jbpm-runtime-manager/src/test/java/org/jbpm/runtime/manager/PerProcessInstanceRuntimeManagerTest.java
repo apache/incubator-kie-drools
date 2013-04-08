@@ -1,15 +1,16 @@
 package org.jbpm.runtime.manager;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Properties;
 
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.junit.After;
@@ -23,7 +24,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
@@ -66,7 +67,7 @@ public class PerProcessInstanceRuntimeManagerTest {
        
         // ksession for process instance #1
         // since there is no process instance yet we need to get new session
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
@@ -78,7 +79,7 @@ public class PerProcessInstanceRuntimeManagerTest {
         
         // ksession for process instance #2
         // since there is no process instance yet we need to get new session
-        Runtime runtime2 = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
@@ -92,11 +93,11 @@ public class PerProcessInstanceRuntimeManagerTest {
         // both processes started 
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
         assertEquals(ProcessInstance.STATE_ACTIVE, pi2.getState());
-        runtime = manager.getRuntime(ProcessInstanceIdContext.get(pi1.getId()));
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
         ksession = runtime.getKieSession();
         assertEquals(ksession1Id, ksession.getId());
         
-        runtime2 = manager.getRuntime(ProcessInstanceIdContext.get(pi2.getId()));
+        runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
         ksession2 = runtime2.getKieSession();
         assertEquals(ksession2Id, ksession2.getId());
         manager.close();
@@ -115,7 +116,7 @@ public class PerProcessInstanceRuntimeManagerTest {
         assertNotNull(manager);
         // ksession for process instance #1
         // since there is no process instance yet we need to get new session
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
@@ -124,7 +125,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         // ksession for process instance #2
         // since there is no process instance yet we need to get new session
-        Runtime runtime2 = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
@@ -139,27 +140,27 @@ public class PerProcessInstanceRuntimeManagerTest {
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
         assertEquals(ProcessInstance.STATE_ACTIVE, pi2.getState());
         
-        runtime = manager.getRuntime(ProcessInstanceIdContext.get(pi1.getId()));
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
         ksession = runtime.getKieSession();
         assertEquals(ksession1Id, ksession.getId());
         
         ksession.getWorkItemManager().completeWorkItem(1, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntime(ProcessInstanceIdContext.get(pi1.getId()));
+            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
             fail("Session for this (" + pi1.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
         }
         
-        runtime2 = manager.getRuntime(ProcessInstanceIdContext.get(pi2.getId()));;
+        runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));;
         ksession2 = runtime2.getKieSession();
         assertEquals(ksession2Id, ksession2.getId());
         
         ksession2.getWorkItemManager().completeWorkItem(2, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntime(ProcessInstanceIdContext.get(pi2.getId()));
+            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
             fail("Session for this (" + pi2.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
@@ -182,7 +183,7 @@ public class PerProcessInstanceRuntimeManagerTest {
         // ksession for process instance #1
         // since there is no process instance yet we need to get new session
         CorrelationKey key = keyFactory.newCorrelationKey("first");
-        Runtime runtime = manager.getRuntime(CorrelationKeyContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(CorrelationKeyContext.get());
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
@@ -192,7 +193,7 @@ public class PerProcessInstanceRuntimeManagerTest {
         // ksession for process instance #2
         // since there is no process instance yet we need to get new session
         CorrelationKey key2 = keyFactory.newCorrelationKey("second");
-        Runtime runtime2 = manager.getRuntime(CorrelationKeyContext.get());
+        RuntimeEngine runtime2 = manager.getRuntimeEngine(CorrelationKeyContext.get());
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
@@ -207,27 +208,27 @@ public class PerProcessInstanceRuntimeManagerTest {
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
         assertEquals(ProcessInstance.STATE_ACTIVE, pi2.getState());
         
-        runtime = manager.getRuntime(CorrelationKeyContext.get(key));
+        runtime = manager.getRuntimeEngine(CorrelationKeyContext.get(key));
         ksession = runtime.getKieSession();
         assertEquals(ksession1Id, ksession.getId());
         
         ksession.getWorkItemManager().completeWorkItem(1, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntime(CorrelationKeyContext.get(key));
+            manager.getRuntimeEngine(CorrelationKeyContext.get(key));
             fail("Session for this (" + pi1.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
         }
         
-        runtime2 = manager.getRuntime(CorrelationKeyContext.get(key2));
+        runtime2 = manager.getRuntimeEngine(CorrelationKeyContext.get(key2));
         ksession2 = runtime2.getKieSession();
         assertEquals(ksession2Id, ksession2.getId());
         
         ksession2.getWorkItemManager().completeWorkItem(2, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntime(CorrelationKeyContext.get(key2));
+            manager.getRuntimeEngine(CorrelationKeyContext.get(key2));
             fail("Session for this (" + pi2.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
@@ -247,7 +248,7 @@ public class PerProcessInstanceRuntimeManagerTest {
         assertNotNull(manager);
         // ksession for process instance #1
         // since there is no process instance yet we need to get new session
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
@@ -256,7 +257,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         // ksession for process instance #2
         // since there is no process instance yet we need to get new session
-        Runtime runtime2 = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession2 = runtime2.getKieSession();
 
         assertNotNull(ksession2);       
@@ -271,14 +272,14 @@ public class PerProcessInstanceRuntimeManagerTest {
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
         assertEquals(ProcessInstance.STATE_ACTIVE, pi2.getState());
         
-        runtime = manager.getRuntime(ProcessInstanceIdContext.get(pi1.getId()));
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
         ksession = runtime.getKieSession();
         assertEquals(ksession1Id, ksession.getId());
         
         ksession.getWorkItemManager().completeWorkItem(1, null);
         // since process is completed now session should not be there any more
         try {
-            manager.getRuntime(ProcessInstanceIdContext.get(pi1.getId()));
+            manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
             fail("Session for this (" + pi1.getId() + ") process instance is no more accessible");
         } catch (RuntimeException e) {
             
@@ -304,7 +305,7 @@ public class PerProcessInstanceRuntimeManagerTest {
         manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);        
         assertNotNull(manager);
         // since there is no process instance yet we need to get new session
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
@@ -322,8 +323,8 @@ public class PerProcessInstanceRuntimeManagerTest {
         } catch (RuntimeException e) {
             
         }
-        manager.disposeRuntime(runtime);
-        runtime = manager.getRuntime(ProcessInstanceIdContext.get(2l));
+        manager.disposeRuntimeEngine(runtime);
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(2l));
         ksession = runtime.getKieSession();
         ksession.getWorkItemManager().completeWorkItem(1, null);
         manager.close();
@@ -358,7 +359,7 @@ public class PerProcessInstanceRuntimeManagerTest {
         manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);        
         assertNotNull(manager);
         // since there is no process instance yet we need to get new session
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       

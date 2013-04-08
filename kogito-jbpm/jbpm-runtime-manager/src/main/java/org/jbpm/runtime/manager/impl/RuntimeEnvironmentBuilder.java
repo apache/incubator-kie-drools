@@ -8,7 +8,6 @@ import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;

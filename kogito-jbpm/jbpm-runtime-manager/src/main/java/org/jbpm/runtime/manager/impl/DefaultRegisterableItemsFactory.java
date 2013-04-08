@@ -16,13 +16,13 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.task.api.EventService;
 
 public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFactory {
 
     @Override
-    public Map<String, WorkItemHandler> getWorkItemHandlers(Runtime runtime) {
+    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
         Map<String, WorkItemHandler> defaultHandlers = new HashMap<String, WorkItemHandler>();
         //HT handler 
         WorkItemHandler handler = getHTWorkItemHandler(runtime);
@@ -35,7 +35,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
 
 
     @Override
-    public List<ProcessEventListener> getProcessEventListeners(Runtime runtime) {
+    public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
         List<ProcessEventListener> defaultListeners = new ArrayList<ProcessEventListener>();
         
         // add any custom listeners
@@ -44,7 +44,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     }
 
     @Override
-    public List<AgendaEventListener> getAgendaEventListeners(Runtime runtime) {
+    public List<AgendaEventListener> getAgendaEventListeners(RuntimeEngine runtime) {
         List<AgendaEventListener> defaultListeners = new ArrayList<AgendaEventListener>();
         
         // add any custom listeners
@@ -53,7 +53,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     }
 
     @Override
-    public List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(Runtime runtime) {
+    public List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(RuntimeEngine runtime) {
         // register JPAWorkingMemoryDBLogger
         AuditLoggerFactory.newInstance(Type.JPA, (StatefulKnowledgeSession)runtime.getKieSession(), null);
         List<WorkingMemoryEventListener> defaultListeners = new ArrayList<WorkingMemoryEventListener>();
@@ -65,13 +65,13 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
 
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected WorkItemHandler getHTWorkItemHandler(Runtime runtime) {
+    protected WorkItemHandler getHTWorkItemHandler(RuntimeEngine runtime) {
         
         ExternalTaskEventListener listener = new ExternalTaskEventListener();
-        listener.setRuntimeManager(((RuntimeImpl)runtime).getManager());
+        listener.setRuntimeManager(((RuntimeEngineImpl)runtime).getManager());
         
         LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler();
-        humanTaskHandler.setRuntimeManager(((RuntimeImpl)runtime).getManager());
+        humanTaskHandler.setRuntimeManager(((RuntimeEngineImpl)runtime).getManager());
         if (runtime.getTaskService() instanceof EventService) {
             ((EventService)runtime.getTaskService()).registerTaskLifecycleEventListener(listener);
         }
@@ -80,7 +80,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
             ((Disposable)runtime).addDisposeListener(new DisposeListener() {
                 
                 @Override
-                public void onDispose(Runtime runtime) {
+                public void onDispose(RuntimeEngine runtime) {
                     if (runtime.getTaskService() instanceof EventService) {
                         ((EventService)runtime.getTaskService()).clearTaskLifecycleEventListeners();
                         ((EventService)runtime.getTaskService()).clearTasknotificationEventListeners();

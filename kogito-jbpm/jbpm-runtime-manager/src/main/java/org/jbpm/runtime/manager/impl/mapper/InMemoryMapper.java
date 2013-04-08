@@ -12,17 +12,17 @@ public class InMemoryMapper implements Mapper {
     
     
     @Override
-    public void saveMapping(Context context, Integer ksessionId) {
+    public void saveMapping(Context<?> context, Integer ksessionId) {
         this.mapping.put(context.getContextId(), ksessionId);
     }
 
     @Override
-    public Integer findMapping(Context context) {
+    public Integer findMapping(Context<?> context) {
         return this.mapping.get(context.getContextId());
     }
 
     @Override
-    public void removeMapping(Context context) {
+    public void removeMapping(Context<?> context) {
         this.mapping.remove(context.getContextId());
     }
 

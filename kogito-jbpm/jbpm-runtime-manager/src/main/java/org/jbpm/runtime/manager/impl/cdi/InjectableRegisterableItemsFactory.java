@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
-import org.jbpm.runtime.manager.impl.RuntimeImpl;
+import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
 import org.jbpm.services.task.annotations.External;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
@@ -22,7 +22,7 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeManager;
 
 public class InjectableRegisterableItemsFactory extends DefaultRegisterableItemsFactory {
@@ -36,9 +36,9 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     
     private AbstractAuditLogger auditlogger;
     
-    protected WorkItemHandler getHTWorkItemHandler(Runtime runtime) {
+    protected WorkItemHandler getHTWorkItemHandler(RuntimeEngine runtime) {
         
-        RuntimeManager manager = ((RuntimeImpl)runtime).getManager();
+        RuntimeManager manager = ((RuntimeEngineImpl)runtime).getManager();
         taskListener.setFinder(finder);
         taskListener.addMappedManger(manager.getIdentifier(), manager);
         
@@ -50,7 +50,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     
 
     @Override
-    public List<ProcessEventListener> getProcessEventListeners(Runtime runtime) {
+    public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
         
         List<ProcessEventListener> defaultListeners = new ArrayList<ProcessEventListener>();
         if(auditlogger != null) {
@@ -61,7 +61,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     }
     
     @Override
-    public List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(Runtime runtime) {
+    public List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(RuntimeEngine runtime) {
         List<WorkingMemoryEventListener> defaultListeners = new ArrayList<WorkingMemoryEventListener>();
         
         

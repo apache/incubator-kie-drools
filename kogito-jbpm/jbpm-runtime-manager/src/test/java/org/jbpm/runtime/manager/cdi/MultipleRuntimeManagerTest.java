@@ -17,9 +17,7 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -145,10 +143,10 @@ public class MultipleRuntimeManagerTest {
     }    
     
     
-    private void testProcessStartOnManager(RuntimeManager manager, Context context) {
+    private void testProcessStartOnManager(RuntimeManager manager, Context<?> context) {
         assertNotNull(manager);
         
-        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(context);
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(context);
         assertNotNull(runtime);
         
         KieSession ksession = runtime.getKieSession();

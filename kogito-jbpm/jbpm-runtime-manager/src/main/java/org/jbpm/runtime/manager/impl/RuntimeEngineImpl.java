@@ -6,11 +6,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.task.api.TaskService;
 
-public class RuntimeImpl implements Runtime, Disposable {
+public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 
     private KieSession ksession;
     private TaskService taskService;
@@ -21,7 +21,7 @@ public class RuntimeImpl implements Runtime, Disposable {
     
     private List<DisposeListener> listeners = new CopyOnWriteArrayList<DisposeListener>();
     
-    public RuntimeImpl(KieSession ksession, TaskService taskService) {
+    public RuntimeEngineImpl(KieSession ksession, TaskService taskService) {
         this.ksession = ksession;
         this.taskService = taskService;
     }

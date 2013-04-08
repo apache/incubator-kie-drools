@@ -1,6 +1,9 @@
 package org.jbpm.runtime.manager.concurrent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +18,7 @@ import org.drools.persistence.SingleSessionCommandService;
 import org.hibernate.StaleObjectStateException;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
@@ -92,8 +93,8 @@ public class SessionTest {
 	                .get();
 	        
 	        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);  
-	        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
-	        manager.disposeRuntime(runtime);
+	        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+	        manager.disposeRuntimeEngine(runtime);
 			manager.close();
 			System.gc();
 			Thread.sleep(100);
@@ -228,7 +229,7 @@ public class SessionTest {
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
-        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
         
@@ -242,7 +243,7 @@ public class SessionTest {
         List<Status> statusses = new ArrayList<Status>();
         statusses.add(Status.Reserved);
 
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         assertNotNull(runtime.getKieSession().getProcessInstance(processInstance.getId()));
         
         List<TaskSummary> tasks = runtime.getTaskService().getTasksOwned("mary", statusses, "en-UK");
@@ -258,9 +259,9 @@ public class SessionTest {
         assertNull(runtime.getKieSession().getProcessInstance(processInstance.getId()));
         tasks = runtime.getTaskService().getTasksOwned("mary", statusses, "en-UK");
         assertEquals(0, tasks.size());
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();        
         processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
@@ -285,7 +286,7 @@ public class SessionTest {
         assertNull(runtime.getKieSession().getProcessInstance(processInstance.getId()));
         tasks = runtime.getTaskService().getTasksOwned("mary", statusses, "en-UK");
         assertEquals(0, tasks.size());
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
     }
 	
@@ -297,7 +298,7 @@ public class SessionTest {
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
-        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
 		UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
 		ut.begin();		
 		ProcessInstance processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
@@ -313,7 +314,7 @@ public class SessionTest {
 		List<Status> statusses = new ArrayList<Status>();
 		statusses.add(Status.Reserved);
 
-		runtime = manager.getRuntime(EmptyContext.get());
+		runtime = manager.getRuntimeEngine(EmptyContext.get());
 		assertNull(runtime.getKieSession().getProcessInstance(processInstance.getId()));
 		List<TaskSummary> tasks = runtime.getTaskService().getTasksOwned("mary", statusses, "en-UK");
 		assertEquals(0, tasks.size());
@@ -337,9 +338,9 @@ public class SessionTest {
 		runtime.getTaskService().start(taskId, "mary");
 		runtime.getTaskService().complete(taskId, "mary", null);
 		ut.rollback();
-		manager.disposeRuntime(runtime);
+		manager.disposeRuntimeEngine(runtime);
 		
-		runtime = manager.getRuntime(EmptyContext.get());
+		runtime = manager.getRuntimeEngine(EmptyContext.get());
 		assertNotNull(runtime.getKieSession().getProcessInstance(processInstance.getId()));
 		tasks = runtime.getTaskService().getTasksOwned("mary", statusses, "en-UK");
 		assertEquals(1, tasks.size());
@@ -354,7 +355,7 @@ public class SessionTest {
 		assertNull(runtime.getKieSession().getProcessInstance(processInstance.getId()));
 		tasks = runtime.getTaskService().getTasksOwned("mary", statusses, "en-UK");
 		assertEquals(0, tasks.size());
-		manager.disposeRuntime(runtime);
+		manager.disposeRuntimeEngine(runtime);
 		
 	}
 	
@@ -366,7 +367,7 @@ public class SessionTest {
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
-        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
 		try{
 			ProcessInstance processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
 			fail("Started process instance " + processInstance.getId());
@@ -376,16 +377,16 @@ public class SessionTest {
 
 		// TODO: whenever transaction fails, do we need to dispose? can we?
 		// sessionManager.dispose();
-		manager.disposeRuntime(runtime);
+		manager.disposeRuntimeEngine(runtime);
 
 		List<Status> statusses = new ArrayList<Status>();
 		statusses.add(Status.Reserved);
 
-		runtime = manager.getRuntime(EmptyContext.get());
+		runtime = manager.getRuntimeEngine(EmptyContext.get());
 		List<TaskSummary> tasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("mary", "en-UK");
 		assertEquals(0, tasks.size());
 		
-		manager.disposeRuntime(runtime);
+		manager.disposeRuntimeEngine(runtime);
 	}
 	
 	@Test
@@ -396,7 +397,7 @@ public class SessionTest {
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
-        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
 
 		ProcessInstance processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
 		long workItemId = ((HumanTaskNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next()).getWorkItemId();
@@ -427,13 +428,13 @@ public class SessionTest {
 		}
 		// TODO: whenever transaction fails, do we need to dispose? can we?
 		// sessionManager.dispose();
-		manager.disposeRuntime(runtime);
+		manager.disposeRuntimeEngine(runtime);
 
-		runtime = manager.getRuntime(EmptyContext.get());
+		runtime = manager.getRuntimeEngine(EmptyContext.get());
 		tasks = runtime.getTaskService().getTasksOwned("mary", statusses, "en-UK");
 		assertEquals(1, tasks.size());
 		
-		manager.disposeRuntime(runtime);
+		manager.disposeRuntimeEngine(runtime);
 	}
 	
 	@Test
@@ -444,7 +445,7 @@ public class SessionTest {
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);
-        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
 
 		ProcessInstance processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
 		long workItemId = ((HumanTaskNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next()).getWorkItemId();
@@ -468,16 +469,16 @@ public class SessionTest {
 
 		// TODO: whenever transaction fails, do we need to dispose? can we?
 		// sessionManager.dispose();
-		manager.disposeRuntime(runtime);
+		manager.disposeRuntimeEngine(runtime);
 
-		runtime = manager.getRuntime(EmptyContext.get());
+		runtime = manager.getRuntimeEngine(EmptyContext.get());
 		tasks = runtime.getTaskService().getTasksOwned("mary", statusses, "en-UK");
 		assertEquals(1, tasks.size());
 		
-		manager.disposeRuntime(runtime);
+		manager.disposeRuntimeEngine(runtime);
 	}
 	
-	private void testStartProcess(org.kie.internal.runtime.manager.Runtime runtime) throws Exception {
+	private void testStartProcess(org.kie.internal.runtime.manager.RuntimeEngine runtime) throws Exception {
 		
 		long taskId; 
 		synchronized((SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) runtime.getKieSession()).getCommandService()) {
@@ -506,10 +507,10 @@ public class SessionTest {
 		public void run() {
 			try {
 				for (int i=0; i<nbInvocations; i++) {
-				    org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+				    org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
 //					System.out.println("Thread " + counter + " doing call " + i);
 					testStartProcess(runtime);
-					manager.disposeRuntime(runtime);
+					manager.disposeRuntimeEngine(runtime);
 				}
 //				System.out.println("Process thread " + counter + " completed");
 				completedStart++;
@@ -518,7 +519,7 @@ public class SessionTest {
 			}
 		}
 	}
-	private boolean testCompleteTask(org.kie.internal.runtime.manager.Runtime runtime) throws InterruptedException, Exception {
+	private boolean testCompleteTask(org.kie.internal.runtime.manager.RuntimeEngine runtime) throws InterruptedException, Exception {
 		boolean result = false;
 		List<Status> statusses = new ArrayList<Status>();
 		statusses.add(Status.Reserved);
@@ -563,7 +564,7 @@ public class SessionTest {
 		return result;
 	}
 	
-	private boolean testCompleteTaskByProcessInstance(org.kie.internal.runtime.manager.Runtime runtime, long piId) throws InterruptedException, Exception {
+	private boolean testCompleteTaskByProcessInstance(org.kie.internal.runtime.manager.RuntimeEngine runtime, long piId) throws InterruptedException, Exception {
         boolean result = false;
         List<Status> statusses = new ArrayList<Status>();
         statusses.add(Status.Reserved);
@@ -612,9 +613,9 @@ public class SessionTest {
 			try {
 				int i = 0;
 				while (i < nbInvocations) {
-				    org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+				    org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
 					boolean success = testCompleteTask(runtime);
-					manager.disposeRuntime(runtime);
+					manager.disposeRuntimeEngine(runtime);
 					if (success) {
 						i++;
 					}
@@ -637,10 +638,10 @@ public class SessionTest {
         public void run() {
             try {
                 for (int i=0; i<nbInvocations; i++) {
-                    org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+                    org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
 //                  System.out.println("Thread " + counter + " doing call " + i);
                     testStartProcess(runtime);
-                    manager.disposeRuntime(runtime);
+                    manager.disposeRuntimeEngine(runtime);
                 }
 //              System.out.println("Process thread " + counter + " completed");
                 completedStart++;
@@ -664,12 +665,12 @@ public class SessionTest {
 
                     long processInstanceId = (nbInvocations *counter)+1 + i;
 //                    System.out.println("pi id " + processInstanceId + " counter " + counter);
-                    org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get(processInstanceId));
+                    org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
                     boolean success = false;
                     
                     success = testCompleteTaskByProcessInstance(runtime, processInstanceId);
                     
-                    manager.disposeRuntime(runtime);
+                    manager.disposeRuntimeEngine(runtime);
                     if (success) {
                         i++;
                     }

@@ -40,7 +40,7 @@ import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
@@ -170,7 +170,7 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
             return jobFactoryManager.getCommandService(); 
         }
         
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get(ctx.getProcessInstanceId()));
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(ctx.getProcessInstanceId()));
         if (runtime.getKieSession() instanceof CommandBasedStatefulKnowledgeSession) {
             CommandBasedStatefulKnowledgeSession cmd = (CommandBasedStatefulKnowledgeSession) runtime.getKieSession();
             ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) ((KnowledgeCommandContext) cmd.getCommandService().getContext()).getKieSession());
@@ -226,10 +226,10 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
 
         private CommandService delegate;
         private RuntimeManager manager;
-        private Runtime runtime;
+        private RuntimeEngine runtime;
         
         
-        public DisposableCommandService(CommandService delegate, RuntimeManager manager, Runtime runtime) {
+        public DisposableCommandService(CommandService delegate, RuntimeManager manager, RuntimeEngine runtime) {
             this.delegate = delegate;
             this.manager = manager;
             this.runtime = runtime;
@@ -246,7 +246,7 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         }
         
         public void dispose() {
-            manager.disposeRuntime(runtime);
+            manager.disposeRuntimeEngine(runtime);
         }
         
     }

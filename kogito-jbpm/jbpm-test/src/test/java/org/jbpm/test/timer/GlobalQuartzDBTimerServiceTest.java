@@ -34,7 +34,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
@@ -140,7 +140,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
         };        
         long id = -1;
         Thread.sleep(5000);
-        Runtime runtime = manger.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manger.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         ksession.addEventListener(listener);
         

@@ -41,7 +41,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
@@ -93,7 +93,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
 
         manager = getManager(environment);
 
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         
         
@@ -102,10 +102,10 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         // now wait for 1 second for first timer to trigger
         Thread.sleep(1500);
         // dispose session to force session to be reloaded on timer expiration
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         Thread.sleep(2000);
         
-        runtime = manager.getRuntime(ProcessInstanceIdContext.get(processInstance.getId()));
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
         ksession = runtime.getKieSession();
         ksession.abortProcessInstance(processInstance.getId());
         processInstance = ksession.getProcessInstance(processInstance.getId());        
@@ -114,7 +114,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         Thread.sleep(3000);
    
         assertEquals(3, timerExporations.size());
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
     }
 
     @Test
@@ -139,7 +139,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .get();
         
         manager = getManager(environment);
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         
         
@@ -148,7 +148,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             Thread.sleep(1000);
         }
         Thread.sleep(200);
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         assertEquals(5, timerExporations.size());
 
     }
@@ -173,7 +173,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .get();
         
         manager = getManager(environment);
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         
         assertEquals(0, timerExporations.size());
         for (int i = 0; i < 5; i++) {
@@ -181,7 +181,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             Thread.sleep(1000);
         }
         
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         assertEquals(5, timerExporations.size());
     }
     
@@ -213,7 +213,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .get();
        
         manager = getManager(environment);
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         
         Map<String, Object> params = new HashMap<String, Object>();
@@ -222,13 +222,13 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         System.out.println("Disposed after start");
         // dispose session to force session to be reloaded on timer expiration
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         // now wait for 1 second for first timer to trigger
         Thread.sleep(1500);
         
         Thread.sleep(2000);
         
-        runtime = manager.getRuntime(ProcessInstanceIdContext.get(processInstance.getId()));
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
         ksession = runtime.getKieSession();
         
         // get tasks
@@ -250,7 +250,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         Thread.sleep(3000);
    
         
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
 
         assertEquals(3, timerExporations.size());
     }
@@ -282,7 +282,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .get();
                 
         manager = getManager(environment);
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         
         
@@ -303,13 +303,13 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             runtime.getTaskService().complete(task.getId(), "john", null);
         }
         // dispose session to force session to be reloaded on timer expiration
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         // now wait for 1 second for first timer to trigger
         Thread.sleep(1500);
         
         Thread.sleep(2000);
         
-        runtime = manager.getRuntime(ProcessInstanceIdContext.get(processInstance.getId()));
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
         ksession = runtime.getKieSession();
 
         
@@ -320,7 +320,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         Thread.sleep(3000);
    
    
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
 
         assertEquals(3, timerExporations.size());
     }
@@ -334,7 +334,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .get();
         manager = getManager(environment);
 
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         int ksessionId = ksession.getId();
         
@@ -343,11 +343,11 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
         // roll back
         ut.rollback();
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         try {
             // two types of checks as different managers will treat it differently
             // per process instance will fail on getting runtime
-            runtime = manager.getRuntime(ProcessInstanceIdContext.get(processInstance.getId()));
+            runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
             // where singleton and per request will return runtime but there should not be process instance
             processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
             assertNull(processInstance);
@@ -361,7 +361,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         assertEquals(0, timerInstances.size());
         
         if (runtime != null) {
-            manager.disposeRuntime(runtime);
+            manager.disposeRuntimeEngine(runtime);
         }
     }
     
@@ -380,7 +380,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .get();
         
         manager = getManager(environment);
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         
         
@@ -419,21 +419,25 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         // clean up
         ksession.abortProcessInstance(processInstance.getId());
         
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
 
     }
     
     @Test
     public void testInterediateBoundaryTimerWithGlobalTestServiceRollback() throws Exception {
-        
+        Properties properties= new Properties();
+        properties.setProperty("mary", "HR");
+        properties.setProperty("john", "HR");
+        UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
         environment = RuntimeEnvironmentBuilder.getDefault()
                 .addAsset(ResourceFactory.newClassPathResource("HumanTaskWithBoundaryTimer.bpmn"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
+                .userGroupCallback(userGroupCallback)
                 .get();
 
         manager = getManager(environment);
 
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         int ksessionId = ksession.getId();
         
@@ -444,11 +448,11 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         ProcessInstance processInstance = ksession.startProcess("PROCESS_1", params);
         // roll back
         ut.rollback();
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         try {
             // two types of checks as different managers will treat it differently
             // per process instance will fail on getting runtime
-            runtime = manager.getRuntime(ProcessInstanceIdContext.get(processInstance.getId()));
+            runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
             // where singleton and per request will return runtime but there should not be process instance
             processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
             assertNull(processInstance);
@@ -462,7 +466,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         assertEquals(0, timerInstances.size());
         
         if (runtime != null) {
-            manager.disposeRuntime(runtime);
+            manager.disposeRuntimeEngine(runtime);
         }
     }
     

@@ -4,7 +4,7 @@ import org.jbpm.runtime.manager.impl.task.SynchronizedTaskService;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.task.api.TaskService;
 
-public class SynchronizedRuntimeImpl extends RuntimeImpl {
+public class SynchronizedRuntimeImpl extends RuntimeEngineImpl {
 
     private TaskService synchronizedTaskService;
     

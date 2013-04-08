@@ -33,7 +33,7 @@ import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.model.Content;
@@ -78,7 +78,7 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
 
         long workItemId = task.getTaskData().getWorkItemId();
         long processInstanceId = task.getTaskData().getProcessInstanceId();
-        Runtime runtime = getManager(task).getRuntime(ProcessInstanceIdContext.get(processInstanceId));
+        RuntimeEngine runtime = getManager(task).getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         KieSession session = runtime.getKieSession();
         
         if (task.getTaskData().getStatus() == Status.Completed) {
@@ -138,7 +138,7 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         if (processInstanceId <= 0) {
             return;
         }
-        Runtime runtime = getManager(task).getRuntime(ProcessInstanceIdContext.get(processInstanceId));
+        RuntimeEngine runtime = getManager(task).getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         KieSession session = runtime.getKieSession();
         if (session != null) {
             logger.debug(">> I've recieved an event for a known session (" + task.getTaskData().getProcessSessionId()+")");

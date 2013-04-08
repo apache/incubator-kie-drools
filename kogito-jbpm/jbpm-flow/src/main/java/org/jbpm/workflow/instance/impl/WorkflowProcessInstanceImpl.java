@@ -53,7 +53,7 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
@@ -273,7 +273,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
             
             RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
             if (getParentProcessInstanceId() > 0 && manager != null) {
-                Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get(getParentProcessInstanceId()));
+                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(getParentProcessInstanceId()));
                 KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
                 managedkruntime.signalEvent("processInstanceCompleted:" + getId(), this);
             } else {

@@ -37,7 +37,7 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.mvel2.MVEL;
@@ -140,7 +140,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
             KnowledgeRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
             RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
             if (manager != null) {
-                Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
                 kruntime = (KnowledgeRuntime) runtime.getKieSession();
             }
 	    	ProcessInstance processInstance = ( ProcessInstance ) kruntime.createProcessInstance(processId, parameters);

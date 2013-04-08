@@ -7,7 +7,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -52,7 +52,7 @@ public abstract class TimerBaseTest {
 
         @Override
         public List<ProcessEventListener> getProcessEventListeners(
-                Runtime runtime) {
+                RuntimeEngine runtime) {
             
             List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
             if (plistener != null) {
@@ -63,7 +63,7 @@ public abstract class TimerBaseTest {
         }
         @Override
         public List<AgendaEventListener> getAgendaEventListeners(
-                Runtime runtime) {
+                RuntimeEngine runtime) {
             
             List<AgendaEventListener> listeners = super.getAgendaEventListeners(runtime);
             if (alistener != null) { 

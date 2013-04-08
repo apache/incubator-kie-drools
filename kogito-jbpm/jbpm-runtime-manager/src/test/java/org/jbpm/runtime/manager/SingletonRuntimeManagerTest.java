@@ -1,15 +1,17 @@
 package org.jbpm.runtime.manager;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Properties;
 
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.junit.After;
@@ -19,7 +21,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
@@ -62,26 +64,26 @@ public class SingletonRuntimeManagerTest {
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
         assertNotNull(manager);
         
-        Runtime runtime = manager.getRuntime(EmptyContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
         int sessionId = ksession.getId();
         assertTrue(sessionId == 0);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();       
         assertEquals(sessionId, ksession.getId());
         // dispose session that should not have affect on the session at all
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
-        ksession = manager.getRuntime(EmptyContext.get()).getKieSession();        
+        ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
         assertEquals(sessionId, ksession.getId());
         
         // close manager which will close session maintained by the manager
         manager.close();
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         assertNull(runtime);
     }
     
@@ -95,26 +97,26 @@ public class SingletonRuntimeManagerTest {
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
         assertNotNull(manager);
         
-        Runtime runtime = manager.getRuntime(EmptyContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
         int sessionId = ksession.getId();
         assertTrue(sessionId == 1);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
         assertEquals(sessionId, ksession.getId());
         // dispose session that should not have affect on the session at all
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
-        ksession = manager.getRuntime(EmptyContext.get()).getKieSession();        
+        ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
         assertEquals(sessionId, ksession.getId());
         
         // close manager which will close session maintained by the manager
         manager.close();
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         assertNull(runtime);
     }
     
@@ -128,52 +130,52 @@ public class SingletonRuntimeManagerTest {
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
         assertNotNull(manager);
         
-        Runtime runtime = manager.getRuntime(EmptyContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
         int sessionId = ksession.getId();
         assertTrue(sessionId == 1);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
         assertEquals(sessionId, ksession.getId());
         // dispose session that should not have affect on the session at all
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
-        ksession = manager.getRuntime(EmptyContext.get()).getKieSession();        
+        ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
         assertEquals(sessionId, ksession.getId());
         
         // close manager which will close session maintained by the manager
         manager.close();
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         assertNull(runtime);
         
         // recreate it once again to ensure it has right id
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
         assertNotNull(manager);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
         sessionId = ksession.getId();
         assertTrue(sessionId == 1);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
         assertEquals(sessionId, ksession.getId());
         // dispose session that should not have affect on the session at all
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
-        ksession = manager.getRuntime(EmptyContext.get()).getKieSession();        
+        ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
         assertEquals(sessionId, ksession.getId());
         
         // close manager which will close session maintained by the manager
         manager.close();
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         assertNull(runtime);
     }
     
@@ -188,26 +190,26 @@ public class SingletonRuntimeManagerTest {
         RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment, "manager1");        
         assertNotNull(manager);
         
-        Runtime runtime = manager.getRuntime(EmptyContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
         int sessionId = ksession.getId();
         assertTrue(sessionId == 1);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
         assertEquals(sessionId, ksession.getId());
         // dispose session that should not have affect on the session at all
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
-        ksession = manager.getRuntime(EmptyContext.get()).getKieSession();        
+        ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
         assertEquals(sessionId, ksession.getId());
         
         // close manager which will close session maintained by the manager
         manager.close();
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         assertNull(runtime);
         
         // create another manager
@@ -215,26 +217,26 @@ public class SingletonRuntimeManagerTest {
         RuntimeManager manager2 = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment, "manager2");        
         assertNotNull(manager2);
         
-        runtime = manager2.getRuntime(EmptyContext.get());
+        runtime = manager2.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
         sessionId = ksession.getId();
         assertTrue(sessionId == 2);
         
-        runtime = manager2.getRuntime(EmptyContext.get());
+        runtime = manager2.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
         assertEquals(sessionId, ksession.getId());
         // dispose session that should not have affect on the session at all
-        manager2.disposeRuntime(runtime);
+        manager2.disposeRuntimeEngine(runtime);
         
-        ksession = manager2.getRuntime(EmptyContext.get()).getKieSession();        
+        ksession = manager2.getRuntimeEngine(EmptyContext.get()).getKieSession();        
         assertEquals(sessionId, ksession.getId());
         
         // close manager which will close session maintained by the manager
         manager2.close();
         
-        runtime = manager2.getRuntime(EmptyContext.get());
+        runtime = manager2.getRuntimeEngine(EmptyContext.get());
         assertNull(runtime);
         
         // recreate first manager
@@ -242,26 +244,26 @@ public class SingletonRuntimeManagerTest {
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment, "manager1");        
         assertNotNull(manager);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
         sessionId = ksession.getId();
         assertTrue(sessionId == 1);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
         assertEquals(sessionId, ksession.getId());
         // dispose session that should not have affect on the session at all
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
-        ksession = manager.getRuntime(EmptyContext.get()).getKieSession();        
+        ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
         assertEquals(sessionId, ksession.getId());
         
         // close manager which will close session maintained by the manager
         manager.close();
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         assertNull(runtime);
         
         // create another manager
@@ -269,26 +271,26 @@ public class SingletonRuntimeManagerTest {
         manager2 = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment, "manager2");        
         assertNotNull(manager2);
         
-        runtime = manager2.getRuntime(EmptyContext.get());
+        runtime = manager2.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
         sessionId = ksession.getId();
         assertTrue(sessionId == 2);
         
-        runtime = manager2.getRuntime(EmptyContext.get());
+        runtime = manager2.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();        
         assertEquals(sessionId, ksession.getId());
         // dispose session that should not have affect on the session at all
-        manager2.disposeRuntime(runtime);
+        manager2.disposeRuntimeEngine(runtime);
         
-        ksession = manager2.getRuntime(EmptyContext.get()).getKieSession();        
+        ksession = manager2.getRuntimeEngine(EmptyContext.get()).getKieSession();        
         assertEquals(sessionId, ksession.getId());
         
         // close manager which will close session maintained by the manager
         manager2.close();
         
-        runtime = manager2.getRuntime(EmptyContext.get());
+        runtime = manager2.getRuntimeEngine(EmptyContext.get());
         assertNull(runtime);
     }
     
@@ -325,7 +327,7 @@ public class SingletonRuntimeManagerTest {
         manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
         assertNotNull(manager);
         // since there is no process instance yet we need to get new session
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
@@ -337,7 +339,7 @@ public class SingletonRuntimeManagerTest {
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
                
         ksession.getWorkItemManager().completeWorkItem(1, null);
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
         JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
         

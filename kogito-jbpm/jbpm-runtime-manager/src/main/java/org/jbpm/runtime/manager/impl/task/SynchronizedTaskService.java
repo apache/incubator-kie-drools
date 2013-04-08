@@ -812,45 +812,53 @@ public class SynchronizedTaskService
          }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void registerTaskLifecycleEventListener(JbpmServicesEventListener<Task> taskLifecycleEventListener) {
         synchronized (ksession) {
-            ((EventService)taskService).registerTaskLifecycleEventListener(taskLifecycleEventListener);
+            ((EventService<Task, JbpmServicesEventListener<Task>>)taskService)
+            .registerTaskLifecycleEventListener(taskLifecycleEventListener);
          }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void registerTaskNotificationEventListener(JbpmServicesEventListener<NotificationEvent> notificationEventListener) {
         synchronized (ksession) {
-            ((EventService)taskService).registerTaskNotificationEventListener(notificationEventListener);
+            ((EventService<JbpmServicesEventListener<NotificationEvent>, ?>)taskService)
+            .registerTaskNotificationEventListener(notificationEventListener);
          }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Event<Task> getTaskLifecycleEventListeners() {
         synchronized (ksession) {
-            return  ((EventService)taskService).getTaskLifecycleEventListeners();
+            return  ((EventService<Task, JbpmServicesEventListener<Task>>)taskService).getTaskLifecycleEventListeners();
          }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Event<NotificationEvent> getTaskNotificationEventListeners() {
         synchronized (ksession) {
-            return  ((EventService)taskService).getTaskNotificationEventListeners();
+            return  ((EventService<JbpmServicesEventListener<NotificationEvent>, ?>)taskService).getTaskNotificationEventListeners();
          }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void clearTaskLifecycleEventListeners() {
         synchronized (ksession) {
-            ((EventService)taskService).clearTaskLifecycleEventListeners();
+            ((EventService<Task, JbpmServicesEventListener<Task>>)taskService).clearTaskLifecycleEventListeners();
          }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void clearTasknotificationEventListeners() {
         synchronized (ksession) {
-            ((EventService)taskService).clearTasknotificationEventListeners();
+            ((EventService<JbpmServicesEventListener<NotificationEvent>, ?>)taskService).clearTasknotificationEventListeners();
          }
     }
 

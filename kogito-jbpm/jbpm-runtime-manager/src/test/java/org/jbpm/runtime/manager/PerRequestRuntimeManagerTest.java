@@ -1,6 +1,9 @@
 package org.jbpm.runtime.manager;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Properties;
@@ -10,9 +13,7 @@ import javax.transaction.UserTransaction;
 
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.junit.After;
@@ -22,7 +23,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
@@ -61,26 +62,26 @@ public class PerRequestRuntimeManagerTest {
         RuntimeManager manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
         assertNotNull(manager);
         
-        Runtime runtime = manager.getRuntime(EmptyContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
         int sessionId = ksession.getId();
         assertTrue(sessionId == 0);
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();    
         // session id should be 1+ previous session id
         assertEquals(sessionId+1, ksession.getId());
         sessionId = ksession.getId();
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();         
         // session id should be 1+ previous session id
         assertEquals(sessionId+1, ksession.getId());
-        manager.disposeRuntime(runtime);     
+        manager.disposeRuntimeEngine(runtime);     
         
         // when trying to access session after dispose 
         try {
@@ -102,26 +103,26 @@ public class PerRequestRuntimeManagerTest {
         RuntimeManager manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
         assertNotNull(manager);
         
-        Runtime runtime = manager.getRuntime(EmptyContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
         int sessionId = ksession.getId();
         assertTrue(sessionId == 1);
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();    
         // session id should be 1+ previous session id
         assertEquals(sessionId+1, ksession.getId());
         sessionId = ksession.getId();
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         
-        runtime = manager.getRuntime(EmptyContext.get());
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
         ksession = runtime.getKieSession();         
         // session id should be 1+ previous session id
         assertEquals(sessionId+1, ksession.getId());
-        manager.disposeRuntime(runtime);       
+        manager.disposeRuntimeEngine(runtime);       
         
         // when trying to access session after dispose 
         try {
@@ -147,7 +148,7 @@ public class PerRequestRuntimeManagerTest {
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
         
-        Runtime runtime = manager.getRuntime(EmptyContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);       
         
@@ -178,7 +179,7 @@ public class PerRequestRuntimeManagerTest {
         RuntimeManager manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
         assertNotNull(manager);
         // since there is no process instance yet we need to get new session
-        Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
 
         assertNotNull(ksession);       
@@ -190,7 +191,7 @@ public class PerRequestRuntimeManagerTest {
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
                
         ksession.getWorkItemManager().completeWorkItem(1, null);
-        manager.disposeRuntime(runtime);
+        manager.disposeRuntimeEngine(runtime);
         manager.close();
         
         JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());

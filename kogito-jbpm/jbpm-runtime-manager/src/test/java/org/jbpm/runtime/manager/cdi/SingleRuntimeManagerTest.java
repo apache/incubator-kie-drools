@@ -121,11 +121,11 @@ public class SingleRuntimeManagerTest {
     public void testSingleSingletonManager() {
         assertNotNull(singletonManager);
         
-        org.kie.internal.runtime.manager.Runtime runtime = singletonManager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = singletonManager.getRuntimeEngine(EmptyContext.get());
         assertNotNull(runtime);
         testProcessStartOnManager(runtime);
         
-        singletonManager.disposeRuntime(runtime);     
+        singletonManager.disposeRuntimeEngine(runtime);     
         
         singletonManager.close();
     }
@@ -134,24 +134,24 @@ public class SingleRuntimeManagerTest {
     public void testSinglePerRequestManager() {
         assertNotNull(perRequestManager);
         
-        org.kie.internal.runtime.manager.Runtime runtime = perRequestManager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = perRequestManager.getRuntimeEngine(EmptyContext.get());
         assertNotNull(runtime);
         testProcessStartOnManager(runtime);   
-        perRequestManager.disposeRuntime(runtime);
+        perRequestManager.disposeRuntimeEngine(runtime);
     }
     
     @Test
     public void testSinglePerProcessInstanceManager() {
         assertNotNull(perProcessInstanceManager);
         
-        org.kie.internal.runtime.manager.Runtime runtime = perProcessInstanceManager.getRuntime(ProcessInstanceIdContext.get());
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = perProcessInstanceManager.getRuntimeEngine(ProcessInstanceIdContext.get());
         assertNotNull(runtime);
         testProcessStartOnManager(runtime);  
-        perProcessInstanceManager.disposeRuntime(runtime);
+        perProcessInstanceManager.disposeRuntimeEngine(runtime);
     }
     
     
-    private void testProcessStartOnManager(org.kie.internal.runtime.manager.Runtime runtime) {
+    private void testProcessStartOnManager(org.kie.internal.runtime.manager.RuntimeEngine runtime) {
         
         
         KieSession ksession = runtime.getKieSession();

@@ -249,7 +249,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
     protected KieSession createKnowledgeSession() {
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
-        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
                 
         KieSession result = runtime.getKieSession();
         if (sessionPersistence) {
@@ -513,7 +513,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
     public TaskService getTaskService() {
        
         
-        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
                 
         return runtime.getTaskService();
     }

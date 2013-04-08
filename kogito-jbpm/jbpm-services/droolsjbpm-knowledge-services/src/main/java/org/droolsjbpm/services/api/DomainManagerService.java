@@ -21,7 +21,7 @@ import java.util.Map;
 import org.droolsjbpm.services.domain.entities.Domain;
 import org.droolsjbpm.services.domain.entities.Organization;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeManager;
 /**
  *

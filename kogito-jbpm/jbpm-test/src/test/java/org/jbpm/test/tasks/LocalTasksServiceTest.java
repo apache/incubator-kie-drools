@@ -82,7 +82,7 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
-        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         
         KieSession ksession = runtime.getKieSession();
         TaskService taskService = runtime.getTaskService();

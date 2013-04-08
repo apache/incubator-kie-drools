@@ -118,7 +118,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
     }
     
 	
-	private void testStartProcess(org.kie.internal.runtime.manager.Runtime runtime) throws Exception {
+	private void testStartProcess(org.kie.internal.runtime.manager.RuntimeEngine runtime) throws Exception {
 		
 		synchronized((SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) runtime.getKieSession()).getCommandService()) {
 			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
@@ -138,7 +138,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
 	}
 
 	
-	private boolean testCompleteTaskByProcessInstance(org.kie.internal.runtime.manager.Runtime runtime, long piId) throws InterruptedException, Exception {
+	private boolean testCompleteTaskByProcessInstance(org.kie.internal.runtime.manager.RuntimeEngine runtime, long piId) throws InterruptedException, Exception {
         boolean result = false;
         List<Status> statusses = new ArrayList<Status>();
         statusses.add(Status.Reserved);
@@ -185,9 +185,9 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
         }
         public void run() {
             try {
-                org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get());
+                org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
                 testStartProcess(runtime);                    
-                manager.disposeRuntime(runtime);                    
+                manager.disposeRuntimeEngine(runtime);                    
                 completedStart++;
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -207,12 +207,12 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
                 // wait for amount of time timer expires and plus 1s initially
                 Thread.sleep(wait * 1000 + 1000);
                 long processInstanceId = counter+1;
-                org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(ProcessInstanceIdContext.get(processInstanceId));
+                org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
 
                 for (int y = 0; y<wait; y++) {
                     testCompleteTaskByProcessInstance(runtime, processInstanceId);
                 }
-                manager.disposeRuntime(runtime);
+                manager.disposeRuntimeEngine(runtime);
 
                 
                 

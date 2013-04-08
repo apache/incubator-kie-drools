@@ -61,7 +61,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.Context;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
@@ -209,7 +209,7 @@ public class DomainServicesTest {
     @Test
     public void runtimeInDomainTest() {
 
-        Map<String, List<Runtime>> domainsMap = new HashMap<String, List<Runtime>>();
+        Map<String, List<RuntimeEngine>> domainsMap = new HashMap<String, List<RuntimeEngine>>();
 
         Organization organization = new Organization();
         organization.setName("JBoss");
@@ -248,10 +248,10 @@ public class DomainServicesTest {
                 // Parse and get the Metadata for all the assets
 
                 RuntimeManager manager = managerFactory.newSingletonRuntimeManager(builder.get(), d.getName());
-                org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(EmptyContext.get());
+                org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
                 assertNotNull(runtime);
                 if (domainsMap.get(d.getName()) == null) {
-                    domainsMap.put(d.getName(), new ArrayList<Runtime>());
+                    domainsMap.put(d.getName(), new ArrayList<RuntimeEngine>());
                 }
                 domainsMap.get(d.getName()).add(runtime);
             }
@@ -259,8 +259,8 @@ public class DomainServicesTest {
         }
         Domain domainByName = domainService.getDomainByName("My First Domain");
 
-        List<Runtime> domainRuntimes = domainsMap.get(domainByName.getName());
-        Runtime runtime = domainRuntimes.get(0);
+        List<RuntimeEngine> domainRuntimes = domainsMap.get(domainByName.getName());
+        RuntimeEngine runtime = domainRuntimes.get(0);
         List<TaskSummary> salaboysTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
         assertEquals(0, salaboysTasks.size());
 
@@ -293,7 +293,7 @@ public class DomainServicesTest {
         
         domainService.initDomain(domain.getId());
         RuntimeManager runtimesByDomain = domainService.getRuntimesByDomain(domain.getName());
-        Runtime runtime = runtimesByDomain.getRuntime(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = runtimesByDomain.getRuntimeEngine(ProcessInstanceIdContext.get());
         runtime.getKieSession().startProcess("support.process");
         
         List<TaskSummary> tasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
@@ -311,7 +311,7 @@ public class DomainServicesTest {
     private void testProcessStartOnManager(RuntimeManager manager, Context context) {
         assertNotNull(manager);
 
-        org.kie.internal.runtime.manager.Runtime runtime = manager.getRuntime(context);
+        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(context);
         assertNotNull(runtime);
 
         KieSession ksession = runtime.getKieSession();

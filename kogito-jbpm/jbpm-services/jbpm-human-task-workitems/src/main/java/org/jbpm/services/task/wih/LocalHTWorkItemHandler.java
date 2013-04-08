@@ -26,7 +26,7 @@ import org.jbpm.services.task.utils.OnErrorAction;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.runtime.manager.Runtime;
+import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.model.ContentData;
@@ -56,7 +56,7 @@ public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         
-        Runtime runtime = runtimeManager.getRuntime(ProcessInstanceIdContext.get(workItem.getProcessInstanceId()));
+        RuntimeEngine runtime = runtimeManager.getRuntimeEngine(ProcessInstanceIdContext.get(workItem.getProcessInstanceId()));
         KieSession ksessionById = runtime.getKieSession();
         
         Task task = createTaskBasedOnWorkItemParams(ksessionById, workItem);
@@ -86,7 +86,7 @@ public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
     @Override
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        Runtime runtime = runtimeManager.getRuntime(ProcessInstanceIdContext.get(workItem.getProcessInstanceId()));
+        RuntimeEngine runtime = runtimeManager.getRuntimeEngine(ProcessInstanceIdContext.get(workItem.getProcessInstanceId()));
         Task task = runtime.getTaskService().getTaskByWorkItemId(workItem.getId());
         if (task != null) {
             try {
