@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.persistence;
+package org.optaplanner.examples.common.app;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,22 +28,28 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.termination.TerminationConfig;
 import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.common.business.SolutionFileFilter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
+/**
+ * Turtle tests are not run by default. They are only run if <code>-DrunTurtleTests=true</code> because it takes days.
+ */
 @RunWith(Parameterized.class)
-public abstract class SolutionDaoTest extends LoggingTest {
+public abstract class SolveAllTurtleTest extends LoggingTest {
 
-    protected static Collection<Object[]> getSolutionFilesAsParameters(SolutionDao solutionDao) {
+    protected static void checkRunTurtleTests() {
+        assumeTrue(ObjectUtils.equals("true", System.getProperty("runTurtleTests")));
+    }
+
+    protected static Collection<Object[]> getUnsolvedDataFilesAsParameters(SolutionDao solutionDao) {
         List<Object[]> filesAsParameters = new ArrayList<Object[]>();
         File dataDir = solutionDao.getDataDir();
         File unsolvedDataDir = new File(dataDir, "unsolved");
@@ -57,23 +63,15 @@ public abstract class SolutionDaoTest extends LoggingTest {
                 filesAsParameters.add(new Object[]{unsolvedFile});
             }
         }
-        File solvedDataDir = new File(dataDir, "solved");
-        if (unsolvedDataDir.exists()) {
-            List<File> solvedFileList = Arrays.asList(solvedDataDir.listFiles(new SolutionFileFilter(solutionDao)));
-            Collections.sort(solvedFileList);
-            for (File solvedFile : solvedFileList) {
-                filesAsParameters.add(new Object[]{solvedFile});
-            }
-        }
         return filesAsParameters;
     }
 
     protected SolutionDao solutionDao;
 
-    protected File solutionFile;
+    protected File unsolvedDataFile;
 
-    protected SolutionDaoTest(File solutionFile) {
-        this.solutionFile = solutionFile;
+    protected SolveAllTurtleTest(File unsolvedDataFile) {
+        this.unsolvedDataFile = unsolvedDataFile;
     }
 
     @Before
@@ -89,11 +87,37 @@ public abstract class SolutionDaoTest extends LoggingTest {
         }
     }
 
+    protected abstract String createSolverConfigResource();
+
     protected abstract SolutionDao createSolutionDao();
 
     @Test
-    public void readSolution() {
-        solutionDao.readSolution(solutionFile);
+    public void runFastAndFullAssert() {
+        checkRunTurtleTests();
+        SolverFactory solverFactory = buildSolverFactory();
+        Solution planningProblem = solutionDao.readSolution(unsolvedDataFile);
+        Solution bestSolution = buildAndSolve(solverFactory, EnvironmentMode.FAST_ASSERT, planningProblem);
+        if (bestSolution == null) {
+            // Solver didn't make it past initialization // TODO remove me once getBestSolution() never returns null
+            bestSolution = planningProblem;
+        }
+        bestSolution = buildAndSolve(solverFactory, EnvironmentMode.FULL_ASSERT, bestSolution);
+    }
+
+    private Solution buildAndSolve(SolverFactory solverFactory, EnvironmentMode environmentMode, Solution solution) {
+        solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
+        Solver solver = solverFactory.buildSolver();
+        solver.setPlanningProblem(solution);
+        solver.solve();
+        return solver.getBestSolution();
+    }
+
+    protected SolverFactory buildSolverFactory() {
+        SolverFactory solverFactory = new XmlSolverFactory(createSolverConfigResource());
+        TerminationConfig terminationConfig = new TerminationConfig();
+        terminationConfig.setMaximumMinutesSpend(5L);
+        solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
+        return solverFactory;
     }
 
 }

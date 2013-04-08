@@ -18,6 +18,7 @@ package org.optaplanner.examples.common.app;
 
 import java.io.File;
 
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.termination.TerminationConfig;
@@ -66,14 +67,13 @@ public abstract class SolverPerformanceTest extends LoggingTest {
     }
 
     protected void runSpeedTest(File unsolvedDataFile, String scoreAttainedString, EnvironmentMode environmentMode) {
-        XmlSolverFactory solverFactory = buildSolverFactory(scoreAttainedString, environmentMode);
+        SolverFactory solverFactory = buildSolverFactory(scoreAttainedString, environmentMode);
         Solver solver = solve(solverFactory, unsolvedDataFile);
         assertBestSolution(solver, scoreAttainedString);
     }
 
-    private XmlSolverFactory buildSolverFactory(String scoreAttainedString, EnvironmentMode environmentMode) {
-        XmlSolverFactory solverFactory = new XmlSolverFactory();
-        solverFactory.configure(createSolverConfigResource());
+    protected SolverFactory buildSolverFactory(String scoreAttainedString, EnvironmentMode environmentMode) {
+        SolverFactory solverFactory = new XmlSolverFactory(createSolverConfigResource());
         solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setScoreAttained(scoreAttainedString);
@@ -81,7 +81,7 @@ public abstract class SolverPerformanceTest extends LoggingTest {
         return solverFactory;
     }
 
-    private Solver solve(XmlSolverFactory solverFactory, File unsolvedDataFile) {
+    private Solver solve(SolverFactory solverFactory, File unsolvedDataFile) {
         Solution planningProblem = solutionDao.readSolution(unsolvedDataFile);
         Solver solver = solverFactory.buildSolver();
         solver.setPlanningProblem(planningProblem);
