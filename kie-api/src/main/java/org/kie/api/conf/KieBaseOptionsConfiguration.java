@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.internal.conf;
+package org.kie.api.conf;
 
 import org.kie.api.conf.KieBaseOption;
+import org.kie.api.conf.MultiValueKieBaseOption;
 import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
  * A base interface for type safe configurations
  */
-public interface KnowledgeBaseOptionsConfiguration {
+public interface KieBaseOptionsConfiguration {
     
     /**
      * Sets an option
@@ -55,7 +56,7 @@ public interface KnowledgeBaseOptionsConfiguration {
      * @return the Option value for the given option + key. Returns null if option is 
      *         not configured.
      */
-    public <T extends MultiValueKnowledgeBaseOption> T getOption( Class<T> option, String key );
+    public <T extends MultiValueKieBaseOption> T getOption( Class<T> option, String key );
     
 
 }

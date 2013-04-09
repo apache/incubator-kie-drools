@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.internal.conf;
+package org.kie.api.conf;
 
 
 import org.kie.api.conf.KieBaseOption;
@@ -22,7 +22,7 @@ import org.kie.api.conf.KieBaseOption;
 /**
  * A markup interface for MultiValueKnowledgeBaseConfiguration options
  */
-public interface MultiValueKnowledgeBaseOption
+public interface MultiValueKieBaseOption
     extends
         KieBaseOption {
 
