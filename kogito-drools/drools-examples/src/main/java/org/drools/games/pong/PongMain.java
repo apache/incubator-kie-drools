@@ -1,6 +1,6 @@
 package org.drools.games.pong;
 
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
