@@ -16,6 +16,7 @@
 
 package org.kie.internal;
 
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
