@@ -40,6 +40,7 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
         return hardScore;
     }
 
+    @Deprecated
     public void setHardScore(int hardScore) {
         this.hardScore = hardScore;
     }
@@ -48,6 +49,7 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
         return mediumScore;
     }
 
+    @Deprecated
     public void setMediumScore(int mediumScore) {
         this.mediumScore = mediumScore;
     }
@@ -56,6 +58,7 @@ public class HardMediumSoftScoreHolder extends AbstractScoreHolder {
         return softScore;
     }
 
+    @Deprecated
     public void setSoftScore(int softScore) {
         this.softScore = softScore;
     }
