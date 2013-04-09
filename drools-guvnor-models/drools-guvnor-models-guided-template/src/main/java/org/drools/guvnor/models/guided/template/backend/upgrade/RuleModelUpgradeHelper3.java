@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.models.commons.backend.rule.util.upgrade;
+package org.drools.guvnor.models.guided.template.backend.upgrade;
 
 import org.drools.guvnor.models.commons.backend.IUpgradeHelper;
 import org.drools.guvnor.models.commons.shared.rule.CompositeFactPattern;
