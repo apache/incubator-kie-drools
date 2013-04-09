@@ -69,7 +69,7 @@
 			<xs:element name="VendorExtension" type="bpsim:VendorExtension" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:ID"/>
-		<xs:attribute name="elementRef" type="xs:QName"/>
+		<xs:attribute name="elementRef" type="xs:ID"/>
 	</xs:complexType>
 	<xs:complexType name="TimeParameters">
 		<xs:sequence minOccurs="0">

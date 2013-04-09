@@ -128,7 +128,7 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Object ELEMENT_REF_EDEFAULT = null;
+	protected static final String ELEMENT_REF_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getElementRef() <em>Element Ref</em>}' attribute.
@@ -138,7 +138,7 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 	 * @generated
 	 * @ordered
 	 */
-	protected Object elementRef = ELEMENT_REF_EDEFAULT;
+	protected String elementRef = ELEMENT_REF_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getId() <em>Id</em>}' attribute.
@@ -454,7 +454,7 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Object getElementRef() {
+	public String getElementRef() {
 		return elementRef;
 	}
 
@@ -463,8 +463,8 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setElementRef(Object newElementRef) {
-		Object oldElementRef = elementRef;
+	public void setElementRef(String newElementRef) {
+		String oldElementRef = elementRef;
 		elementRef = newElementRef;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, BpsimPackage.ELEMENT_PARAMETERS__ELEMENT_REF, oldElementRef, elementRef));
@@ -579,7 +579,7 @@ public class ElementParametersImpl extends EObjectImpl implements ElementParamet
 				getVendorExtension().addAll((Collection<? extends VendorExtension>)newValue);
 				return;
 			case BpsimPackage.ELEMENT_PARAMETERS__ELEMENT_REF:
-				setElementRef(newValue);
+				setElementRef((String)newValue);
 				return;
 			case BpsimPackage.ELEMENT_PARAMETERS__ID:
 				setId((String)newValue);

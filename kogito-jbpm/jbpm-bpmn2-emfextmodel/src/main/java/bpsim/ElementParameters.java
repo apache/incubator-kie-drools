@@ -219,13 +219,13 @@ public interface ElementParameters extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Element Ref</em>' attribute.
-	 * @see #setElementRef(Object)
+	 * @see #setElementRef(String)
 	 * @see bpsim.BpsimPackage#getElementParameters_ElementRef()
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.QName"
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.ID"
 	 *        extendedMetaData="kind='attribute' name='elementRef'"
 	 * @generated
 	 */
-	Object getElementRef();
+	String getElementRef();
 
 	/**
 	 * Sets the value of the '{@link bpsim.ElementParameters#getElementRef <em>Element Ref</em>}' attribute.
@@ -235,7 +235,7 @@ public interface ElementParameters extends EObject {
 	 * @see #getElementRef()
 	 * @generated
 	 */
-	void setElementRef(Object value);
+	void setElementRef(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Id</b></em>' attribute.

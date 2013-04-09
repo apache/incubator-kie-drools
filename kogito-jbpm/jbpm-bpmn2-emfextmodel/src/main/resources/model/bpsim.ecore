@@ -538,7 +538,7 @@
         <details key="namespace" value="##targetNamespace"/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="elementRef" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//QName">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="elementRef" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//ID">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="attribute"/>
         <details key="name" value="elementRef"/>
