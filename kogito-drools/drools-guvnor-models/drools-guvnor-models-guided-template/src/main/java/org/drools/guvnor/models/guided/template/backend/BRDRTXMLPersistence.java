@@ -19,7 +19,6 @@ package org.drools.guvnor.models.guided.template.backend;
 import java.util.List;
 
 import org.drools.guvnor.models.commons.backend.rule.BRLPersistence;
-import org.drools.guvnor.models.commons.backend.rule.BRXMLPersistence;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.drools.guvnor.models.guided.template.backend.upgrade.TemplateModelUpgradeHelper1;
 import org.drools.guvnor.models.guided.template.shared.TemplateModel;

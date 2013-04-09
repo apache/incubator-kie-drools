@@ -52,7 +52,7 @@ public class ScheduledAgendaItem extends AgendaItem
                                final InternalAgenda agenda,
                                final PropagationContext context,
                                final TerminalNode rtn) {
-        super(activationNumber, tuple, 0, context, rtn );
+        super(activationNumber, tuple, 0, context, rtn, null);
         this.agenda = agenda;
         this.enqueued = false;
     }

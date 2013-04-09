@@ -35,7 +35,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.core.reteoo.ReteooComponentFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
 import org.kie.internal.builder.conf.DeclarativeAgendaOption;
 import org.kie.internal.builder.conf.PhreakOption;
@@ -50,7 +50,7 @@ import org.kie.internal.conf.IndexRightBetaMemoryOption;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.api.conf.MBeansOption;
 import org.kie.internal.conf.MaxThreadsOption;
-import org.kie.internal.conf.MultiValueKnowledgeBaseOption;
+import org.kie.api.conf.MultiValueKieBaseOption;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.conf.PermGenThresholdOption;
 import org.kie.api.conf.RemoveIdentitiesOption;
@@ -1241,7 +1241,7 @@ public class RuleBaseConfiguration
 
     }
 
-    public <T extends MultiValueKnowledgeBaseOption> T getOption(Class<T> option,
+    public <T extends MultiValueKieBaseOption> T getOption(Class<T> option,
                                                                  String key) {
         return null;
     }

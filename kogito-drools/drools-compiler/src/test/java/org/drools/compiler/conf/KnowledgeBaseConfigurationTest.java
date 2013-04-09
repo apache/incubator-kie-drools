@@ -21,7 +21,7 @@ import static org.junit.Assert.fail;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.api.conf.EqualityBehaviorOption;

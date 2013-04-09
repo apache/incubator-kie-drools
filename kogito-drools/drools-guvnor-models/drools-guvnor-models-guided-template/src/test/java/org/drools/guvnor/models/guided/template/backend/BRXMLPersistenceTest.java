@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.models.commons.backend.rule;
+package org.drools.guvnor.models.guided.template.backend;
 
 import org.drools.guvnor.models.commons.shared.rule.DSLSentence;
 import org.drools.guvnor.models.commons.shared.rule.DSLVariableValue;

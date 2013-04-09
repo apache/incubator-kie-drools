@@ -152,8 +152,8 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
-     */
+         * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
+         */
     public void setBlocker(RightTuple blocker) {
         this.blocker = blocker;
     }

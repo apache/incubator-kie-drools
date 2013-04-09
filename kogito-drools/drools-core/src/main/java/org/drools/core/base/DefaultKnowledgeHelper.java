@@ -30,20 +30,10 @@ import org.drools.core.FactException;
 import org.drools.core.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.common.AbstractRuleBase;
-import org.drools.core.common.AgendaItem;
-import org.drools.core.common.DefaultAgenda;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleFlowGroup;
-import org.drools.core.common.InternalWorkingMemoryActions;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.LogicalDependency;
-import org.drools.core.common.ObjectTypeConfigurationRegistry;
-import org.drools.core.common.SimpleLogicalDependency;
-import org.drools.core.common.TraitFactHandle;
-import org.drools.core.common.TruthMaintenanceSystemHelper;
+import org.drools.core.common.*;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitType;
+import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.LinkedList;
@@ -167,8 +157,12 @@ public class DefaultKnowledgeHelper
         this.activation.addBlocked(  dep );
         
         if ( targetMatch.getBlockers().size() == 1 && targetMatch.isActive()  ) {
-            // it wasn't blocked before, but is now, so we must remove it from all groups, so it cannot be executed.
-            targetMatch.remove();
+            if ( targetMatch.getRuleNetworkEvaluatorActivation() == null ) {
+                // it wasn't blocked before, but is now, so we must remove it from all groups, so it cannot be executed.
+                targetMatch.remove();
+            } else {
+                targetMatch.getRuleNetworkEvaluatorActivation().getLeftTupleList().remove(targetMatch.getTuple());
+            }
 
             if ( targetMatch.getActivationGroupNode() != null ) {
                 targetMatch.getActivationGroupNode().getActivationGroup().removeActivation( targetMatch );
@@ -193,8 +187,17 @@ public class DefaultKnowledgeHelper
         }
         
         if ( wasBlocked ) {
-            // the match is no longer blocked, so stage it
-            ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( targetMatch );
+            RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation = targetMatch.getRuleNetworkEvaluatorActivation();
+            if ( ruleNetworkEvaluatorActivation == null ) {
+                // the match is no longer blocked, so stage it
+                ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( targetMatch );
+            } else {
+                if ( !ruleNetworkEvaluatorActivation.isActivated() ) {
+                    // Make sure the rule evaluator is on the agenda, to be evaluated
+                    ((InternalAgenda) workingMemory.getAgenda()).addActivation( ruleNetworkEvaluatorActivation );
+                }
+                targetMatch.getRuleNetworkEvaluatorActivation().getLeftTupleList().add( targetMatch.getTuple() );
+            }
         }
     }
 
@@ -289,8 +292,17 @@ public class DefaultKnowledgeHelper
                 AgendaItem justified = ( AgendaItem ) dep.getJustified();
                 justified.getBlockers().remove( dep.getJustifierEntry() );
                 if (justified.getBlockers().isEmpty() ) {
-                    // the match is no longer blocked, so stage it
-                    ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( justified );
+                    RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation = justified.getRuleNetworkEvaluatorActivation();
+                    if ( ruleNetworkEvaluatorActivation == null ) {
+                        // the match is no longer blocked, so stage it
+                        ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( justified );
+                    } else {
+                        if ( !ruleNetworkEvaluatorActivation.isActivated() ) {
+                            // Make sure the rule evaluator is on the agenda, to be evaluated
+                            ((InternalAgenda) workingMemory.getAgenda()).addActivation( ruleNetworkEvaluatorActivation );
+                        }
+                        ruleNetworkEvaluatorActivation.getLeftTupleList().add( justified.getTuple() );
+                    }
                 }
                 dep = tmp;
             }
@@ -302,6 +314,12 @@ public class DefaultKnowledgeHelper
         match.cancel();
         if ( match.isActive() ) {
             LeftTuple leftTuple = match.getTuple();
+            if ( match.getRuleNetworkEvaluatorActivation() != null ) {
+                // phreak must also remove the LT from the rule network evaluator
+                if ( leftTuple.getMemory() != null ) {
+                    leftTuple.getMemory().remove( leftTuple );
+                }
+            }
             leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, (PropagationContext) act.getPropagationContext(), workingMemory );
         }
     }

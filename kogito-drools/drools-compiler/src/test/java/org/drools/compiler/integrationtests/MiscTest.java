@@ -91,14 +91,14 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.rule.MapBackedClassLoader;
+import org.drools.core.rule.*;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -2023,17 +2023,17 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 2,
                       ((List) ksession.getGlobal( "list1" )).size() );
         assertEquals( cheddar,
-                      ((List) ksession.getGlobal( "list1" )).get( 1 ) );
-        assertEquals( stilton,
                       ((List) ksession.getGlobal( "list1" )).get( 0 ) );
+        assertEquals( stilton,
+                      ((List) ksession.getGlobal( "list1" )).get( 1 ) );
 
         // from using a declaration
         assertEquals( 2,
                       ((List) ksession.getGlobal( "list2" )).size() );
         assertEquals( cheddar,
-                      ((List) ksession.getGlobal( "list2" )).get( 1 ) );
-        assertEquals( stilton,
                       ((List) ksession.getGlobal( "list2" )).get( 0 ) );
+        assertEquals( stilton,
+                      ((List) ksession.getGlobal( "list2" )).get( 1 ) );
 
         // from using a declaration
         assertEquals( 1,
@@ -2071,7 +2071,7 @@ public class MiscTest extends CommonTestMethodBase {
                       ((List) ksession.getGlobal( "list" )).size() );
 
         
-        final List array = (List) ((List) ksession.getGlobal( "list" )).get( 5 );
+        final List array = (List) ((List) ksession.getGlobal( "list" )).get( 0 );
         assertEquals( 3,
                       array.size() );
         final Person p = (Person) array.get( 0 );
@@ -2087,7 +2087,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( "y",
                       nested.get( 1 ) );
 
-        final Map map = (Map) ((List) ksession.getGlobal( "list" )).get( 4 );
+        final Map map = (Map) ((List) ksession.getGlobal( "list" )).get( 1 );
         assertEquals( 2,
                       map.keySet().size() );
 
@@ -2104,13 +2104,13 @@ public class MiscTest extends CommonTestMethodBase {
                       nestedMap.get( "key2" ) );
 
         assertEquals( new Integer( 42 ),
-                      ((List) ksession.getGlobal( "list" )).get( 3 ) );
-        assertEquals( "literal",
                       ((List) ksession.getGlobal( "list" )).get( 2 ) );
+        assertEquals( "literal",
+                      ((List) ksession.getGlobal( "list" )).get( 3 ) );
         assertEquals( bob,
-                      ((List) ksession.getGlobal( "list" )).get( 1 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 4 ) );
         assertEquals( globalObject,
-                      ((List) ksession.getGlobal( "list" )).get( 0 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 5 ) );
     }
 
     @Test
@@ -4205,11 +4205,13 @@ public class MiscTest extends CommonTestMethodBase {
         try {
             Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_RuleNameClashes1.drl",
                                                                         "test_RuleNameClashes2.drl" );
-            assertEquals( 2,
+            assertEquals( 3,
                           kpkgs.size() );
             for ( KnowledgePackage kpkg : kpkgs ) {
-                assertEquals( "rule 1",
-                              kpkg.getRules().iterator().next().getName() );
+                if (kpkg.getName().equals("org.drools.package1")) {
+                    assertEquals( "rule 1",
+                                  kpkg.getRules().iterator().next().getName() );
+                }
             }
         } catch ( PackageMergeException e ) {
             fail( "unexpected exception: " + e.getMessage() );
@@ -4456,8 +4458,13 @@ public class MiscTest extends CommonTestMethodBase {
         // test rule replacement
         Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_RuleNameClashes3.drl",
                                                                     "test_RuleNameClashes3.drl" );
-        assertEquals( 1,
-                      kpkgs.iterator().next().getRules().size() );
+
+        for (KnowledgePackage kpkg : kpkgs) {
+            if (kpkg.getName().equals("org.drools.package1")) {
+                assertEquals( 1, kpkg.getRules().size() );
+                break;
+            }
+        }
 
         KnowledgeBase kbase = loadKnowledgeBase();
         kbase.addKnowledgePackages( kpkgs );
@@ -5118,11 +5125,11 @@ public class MiscTest extends CommonTestMethodBase {
                       list.size() );
 
         assertEquals( "Message3",
-                      list.get( 2 ) );
+                      list.get( 0 ) );
         assertEquals( "Message2",
                       list.get( 1 ) );
         assertEquals( "Message1",
-                      list.get( 0 ) );
+                      list.get( 2 ) );
 
     }
 

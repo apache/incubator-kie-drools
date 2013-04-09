@@ -225,6 +225,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     private final Stack<List<Resource>>              buildResources    = new Stack<List<Resource>>();
 
+    private int                                      currentRulePackage = 0;
+
     /**
      * Use this when package is starting from scratch.
      */
@@ -366,6 +368,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
         clone.packages.putAll(packages);
 
+        clone.currentRulePackage = currentRulePackage;
         return clone;
     }
 
@@ -835,6 +838,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             return;
         }
 
+        currentRulePackage = pkgRegistryMap.size() -1;
+
         // merge into existing package
         mergePackage(pkgRegistry, packageDescr);
 
@@ -922,6 +927,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
         }
 
+        // ensure that rules are ordered by dependency, so that dependent rules are built later
+        sortRulesByDependency( packageDescr );
+
         // iterate and compile
         for (RuleDescr ruleDescr : packageDescr.getRules()) {
             if (isEmpty(ruleDescr.getNamespace())) {
@@ -939,6 +947,86 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
             addRule(ruleDescr);
         }
+    }
+
+    private void sortRulesByDependency( PackageDescr packageDescr ) {
+        // Using a topological sorting algorithm
+        // see http://en.wikipedia.org/wiki/Topological_sorting
+
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
+        Package pkg = pkgRegistry.getPackage();
+
+        List<RuleDescr> roots = new LinkedList<RuleDescr>();
+        Map<String, List<RuleDescr>> parents = new HashMap<String, List<RuleDescr>>();
+        List<RuleDescr> sorted = new ArrayList<RuleDescr>();
+
+        for ( RuleDescr ruleDescr : packageDescr.getRules() ) {
+            if ( !ruleDescr.hasParent() ) {
+                roots.add(ruleDescr);
+            } else if ( pkg.getRule( ruleDescr.getParentName() ) != null ) {
+                // The parent of this rule has been already compiled
+                sorted.add(ruleDescr);
+            } else {
+                List<RuleDescr> children = parents.get(ruleDescr.getParentName());
+                if (children == null) {
+                    children = new ArrayList<RuleDescr>();
+                    parents.put(ruleDescr.getParentName(), children);
+                }
+                children.add(ruleDescr);
+            }
+        }
+
+        if ( parents.isEmpty() ) { // Sorting not necessary
+            return;
+        }
+
+        while ( !roots.isEmpty() ) {
+            RuleDescr root = roots.remove(0);
+            sorted.add(root);
+            List<RuleDescr> children = parents.remove(root.getName());
+            if ( children != null) {
+                roots.addAll(children);
+            }
+        }
+
+        reportHierarchyErrors(parents, sorted);
+
+        packageDescr.getRules().clear();
+        packageDescr.getRules().addAll( sorted );
+    }
+
+    private void reportHierarchyErrors(Map<String, List<RuleDescr>> parents, List<RuleDescr> sorted) {
+        boolean circularDep = false;
+        for ( List<RuleDescr> rds : parents.values() ) {
+            for ( RuleDescr ruleDescr : rds ) {
+                if (parents.get(ruleDescr.getParentName()) != null) {
+                    circularDep = true;
+                    results.add(new RuleBuildError(new Rule(ruleDescr.getName()), ruleDescr, null,
+                            "Circular dependency in rules hierarchy"));
+                    break;
+                }
+                manageUnresolvedExtension(ruleDescr, sorted);
+            }
+            if ( circularDep ) {
+                break;
+            }
+        }
+    }
+
+
+    private void manageUnresolvedExtension(RuleDescr ruleDescr, Collection<RuleDescr> candidates) {
+        List<String> candidateRules = new LinkedList<String>();
+        for ( RuleDescr r : candidates ) {
+            if ( StringUtils.stringSimilarity( ruleDescr.getParentName(), r.getName(), StringUtils.SIMILARITY_STRATS.DICE ) >= 0.75 ) {
+                candidateRules.add( r.getName() );
+            }
+        }
+        String msg = "Unresolved parent name " + ruleDescr.getParentName();
+        if ( candidateRules.size() > 0 ) {
+            msg += " >> did you mean any of :" + candidateRules;
+        }
+        results.add(new RuleBuildError(new Rule(ruleDescr.getName()), ruleDescr, msg,
+                "Unable to resolve parent rule, please check that both rules are in the same package"));
     }
 
     private void initPackage(PackageDescr packageDescr) {
@@ -1264,8 +1352,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         // need to reinsert this to ensure that the package is the first/last one in the ordered map
         // this feature is exploited by the knowledgeAgent
+        Package current = getPackage();
         this.pkgRegistryMap.remove( packageDescr.getName() );
         this.pkgRegistryMap.put( packageDescr.getName(), pkgRegistry );
+        if ( ! current.getName().equals( packageDescr.getName() ) ) {
+            currentRulePackage = pkgRegistryMap.size() - 1;
+        }
     }
 
     private void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
@@ -1317,8 +1409,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String packageName ) {
-        if (cls.isPrimitive() || cls.isArray())
+        if (cls.isPrimitive() || cls.isArray()) {
             return null;
+        }
         TypeDeclaration typeDeclaration = getCachedTypeDeclaration( cls );
         if (typeDeclaration != null) {
             registerTypeDeclaration( packageName, typeDeclaration );
@@ -1341,6 +1434,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             PackageRegistry packageRegistry = pkgRegistryMap.get( packageName );
             if (packageRegistry != null) {
                 packageRegistry.getPackage().addTypeDeclaration( typeDeclaration );
+            } else {
+                newPackage( new PackageDescr( packageName, "" ) );
+                pkgRegistryMap.get( packageName ).getPackage().addTypeDeclaration( typeDeclaration );
             }
         }
     }
@@ -2969,7 +3065,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     public Package getPackage() {
         PackageRegistry pkgRegistry = null;
         if (!this.pkgRegistryMap.isEmpty()) {
-            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[this.pkgRegistryMap.size() - 1];
+            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[ currentRulePackage ];
         }
         Package pkg = null;
         if (pkgRegistry != null) {
@@ -2983,7 +3079,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     public Package[] getPackages() {
         Package[] pkgs = new Package[this.pkgRegistryMap.size()];
-//        int i = pkgs.length;
         String errors = null;
         if (!getErrors().isEmpty()) {
             errors = getErrors().toString();
@@ -2995,7 +3090,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             if (errors != null) {
                 pkg.setError( errors );
             }
-//            pkgs[--i] = pkg;
             pkgs[i++] = pkg;
         }
 
@@ -3594,6 +3688,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 if (resource.equals(i.next().getResource())) {
                     i.remove();
                 }
+            }
+        }
+
+        if ( results.size() == 0 ) {
+            // TODO Error attribution might be bugged
+            for (PackageRegistry packageRegistry : pkgRegistryMap.values()) {
+                packageRegistry.getPackage().resetErrors();
             }
         }
 

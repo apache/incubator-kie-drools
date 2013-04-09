@@ -12,7 +12,7 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.integrationtests.DynamicRulesTest;
 import org.drools.core.rule.Package;
 import org.junit.Test;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;

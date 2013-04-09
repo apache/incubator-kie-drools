@@ -471,7 +471,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
         agenda.setFocus( group1 );
         assertEquals( 3, group1.size() );
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, 0 );
         assertEquals( 2, group1.size() );
         wm.update( brieHandle, brie );
         assertEquals( 2, group1.size() );
@@ -483,7 +483,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( 3, rfg.size() );
 
         agenda.activateRuleFlowGroup( "ruleflow2" );
-        agenda.fireNextItem( null );
+        agenda.fireNextItem( null, 0, 0 );
         assertEquals( 2, rfg.size() );
         wm.update( brieHandle, brie );
         assertEquals( 2, group2.size() );

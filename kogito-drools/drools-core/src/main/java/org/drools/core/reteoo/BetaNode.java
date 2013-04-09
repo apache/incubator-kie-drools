@@ -90,7 +90,7 @@ public abstract class BetaNode extends LeftTupleSource
     protected boolean         concurrentRightTupleMemory = false;
 
 
-    private boolean           indexedUnificationJoin;
+    protected boolean         indexedUnificationJoin;
 
     private long              rightDeclaredMask;
     private long              rightInferredMask;
@@ -394,6 +394,14 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
+    public FastIterator getRightIterator(RightTupleMemory memory, RightTuple rightTuple) {
+        if ( !this.indexedUnificationJoin ) {
+            return memory.fastIterator();
+        } else {
+            return memory.fullFastIterator(rightTuple);
+        }
+    }
+
     public FastIterator getLeftIterator(LeftTupleMemory memory) {
         if ( !this.indexedUnificationJoin ) {
             return memory.fastIterator();
@@ -440,6 +448,10 @@ public abstract class BetaNode extends LeftTupleSource
         } else {
             return (LeftTuple) it.next( null );
         }
+    }
+
+    public boolean isIndexedUnificationJoin() {
+        return indexedUnificationJoin;
     }
 
     public BetaNodeFieldConstraint[] getConstraints() {

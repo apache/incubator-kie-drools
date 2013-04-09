@@ -61,7 +61,7 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
     public void remove(LeftTuple tuple) {
         LeftTupleList list = tuple.getMemory();
         list.remove(tuple);
-        if (list.size() == 0) {
+        if (list.getFirst() == null) {
             tree.delete(((Node<Comparable<Comparable>>)list).key);
         }
         size--;

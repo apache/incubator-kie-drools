@@ -1010,7 +1010,7 @@ public class InputMarshaller {
                                          leftTuple,
                                          salience,
                                          pc,
-                                         ruleTerminalNode );
+                                         ruleTerminalNode, null);
         }
         leftTuple.setObject( activation );
 

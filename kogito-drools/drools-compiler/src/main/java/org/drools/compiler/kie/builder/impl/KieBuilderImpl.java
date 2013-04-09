@@ -18,7 +18,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.InternalKieBuilder;

@@ -14,7 +14,7 @@ import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -1664,7 +1664,7 @@ public class LinkingTest {
         DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
         InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
         AgendaItem item = (AgendaItem) group.getNext();
-        int count = ((RuleNetworkEvaluatorActivation)item).evaluateNetwork( wm );
+        int count = ((RuleNetworkEvaluatorActivation)item).evaluateNetwork( wm, 0, -1);
         //assertEquals(3, count );
         
         wm.fireAllRules();

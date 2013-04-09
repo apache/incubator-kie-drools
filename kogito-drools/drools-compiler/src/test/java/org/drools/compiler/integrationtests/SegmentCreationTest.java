@@ -15,7 +15,7 @@ import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;

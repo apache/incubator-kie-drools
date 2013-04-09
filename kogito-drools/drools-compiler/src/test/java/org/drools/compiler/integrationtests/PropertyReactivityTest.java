@@ -1,6 +1,8 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.factmodel.traits.Traitable;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.internal.KnowledgeBase;
@@ -307,7 +309,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testWithBeanAndTraitInDifferentPackages() {
+    public void testWithDeclaredTypeAndTraitInDifferentPackages() {
         // DROOLS-91
         String str1 =
                 "package org.pkg1;\n" +
@@ -343,6 +345,68 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str1, str2, str3);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.fireAllRules();
+    }
+
+    @PropertyReactive @Traitable
+    public static class Bean {
+        private int a;
+        private int b;
+
+        public Bean() { }
+
+        public Bean(int a, int b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public int getA() {
+            return a;
+        }
+
+        public void setA(int a) {
+            this.a = a;
+        }
+
+        public int getB() {
+            return b;
+        }
+
+        public void setB(int b) {
+            this.b = b;
+        }
+    }
+
+    @Test
+    public void testWithBeanAndTraitInDifferentPackages() {
+        // DROOLS-91
+        String str1 =
+                "package org.drools.compiler.integrationtests;\n" +
+                "declare trait Trait " +
+                "    @propertyReactive\n" +
+                "    a : int\n" +
+                "end";
+
+        String str2 =
+                "package org.drools.test;\n" +
+                "import org.drools.compiler.integrationtests.Trait;\n" +
+                "import org.drools.compiler.integrationtests.PropertyReactivityTest.Bean;\n" +
+                "rule Init\n" +
+                "when\n" +
+                "then\n" +
+                "    insert(new Bean(1, 2));\n" +
+                "end\n" +
+                "rule R\n" +
+                "when\n" +
+                "   $b : Bean( b == 2)" +
+                "then\n" +
+                "   Trait t = don( $b, Trait.class, true );\n" +
+                "   modify(t) { setA(2) };\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str1, str2);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         ksession.fireAllRules();

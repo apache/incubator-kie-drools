@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;

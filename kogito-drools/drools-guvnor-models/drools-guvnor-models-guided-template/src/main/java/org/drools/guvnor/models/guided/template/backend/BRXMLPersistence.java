@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.models.commons.backend.rule;
+package org.drools.guvnor.models.guided.template.backend;
 
 import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.guvnor.models.commons.backend.rule.util.upgrade.RuleModelUpgradeHelper1;
-import org.drools.guvnor.models.commons.backend.rule.util.upgrade.RuleModelUpgradeHelper2;
-import org.drools.guvnor.models.commons.backend.rule.util.upgrade.RuleModelUpgradeHelper3;
+import org.drools.guvnor.models.commons.backend.rule.BRLPersistence;
+import org.drools.guvnor.models.commons.backend.rule.DSLVariableValuesConverter;
 import org.drools.guvnor.models.commons.shared.rule.ActionFieldValue;
 import org.drools.guvnor.models.commons.shared.rule.ActionGlobalCollectionAdd;
 import org.drools.guvnor.models.commons.shared.rule.ActionInsertFact;
@@ -51,6 +50,9 @@ import org.drools.guvnor.models.commons.shared.rule.RuleAttribute;
 import org.drools.guvnor.models.commons.shared.rule.RuleMetadata;
 import org.drools.guvnor.models.commons.shared.rule.RuleModel;
 import org.drools.guvnor.models.commons.shared.rule.SingleFieldConstraint;
+import org.drools.guvnor.models.guided.template.backend.upgrade.RuleModelUpgradeHelper1;
+import org.drools.guvnor.models.guided.template.backend.upgrade.RuleModelUpgradeHelper2;
+import org.drools.guvnor.models.guided.template.backend.upgrade.RuleModelUpgradeHelper3;
 
 /**
  * This class persists the rule model to XML and back. This is the 'brl' xml

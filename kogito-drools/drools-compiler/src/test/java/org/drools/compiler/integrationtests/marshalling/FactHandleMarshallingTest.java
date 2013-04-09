@@ -35,7 +35,7 @@ import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.EntryPoint;
 import org.junit.Assert;
 import org.junit.Test;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.conf.EventProcessingOption;

@@ -4,7 +4,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.kie.api.KieBase;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
@@ -78,7 +78,7 @@ public class KieContainerImpl
         KieBase kBase = kBases.get( kBaseName );
         if ( kBase == null ) {
             ResultsImpl msgs = new ResultsImpl();
-            kBase = createKieBase(kBaseName, kProject, msgs);
+            kBase = createKieBase(kBaseName, kProject, msgs, null);
             if ( kBase == null ) {
                 // build error, throw runtime exception
                 throw new RuntimeException( "Error while creating KieBase" + msgs.filterMessages( Level.ERROR  ) );
@@ -91,7 +91,25 @@ public class KieContainerImpl
         return kBase;
     }
 
-    private KieBase createKieBase(String kBaseName, KieProject kieProject, ResultsImpl messages) {
+    public KieBase newKieBase(KieBaseConfiguration conf) {
+        KieBaseModel defaultKieBaseModel = kProject.getDefaultKieBaseModel();
+        if (defaultKieBaseModel == null) {
+            throw new RuntimeException("Cannot find a defualt KieBase");
+        }
+        return newKieBase(defaultKieBaseModel.getName(), conf);
+    }
+
+    public KieBase newKieBase(String kBaseName, KieBaseConfiguration conf) {
+        ResultsImpl msgs = new ResultsImpl();
+        KieBase kBase = createKieBase(kBaseName, kProject, msgs, conf);
+        if ( kBase == null ) {
+            // build error, throw runtime exception
+            throw new RuntimeException( "Error while creating KieBase" + msgs.filterMessages( Level.ERROR  ) );
+        }
+        return kBase;
+    }
+
+    private KieBase createKieBase(String kBaseName, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
         KieBaseModelImpl kBaseModel = (KieBaseModelImpl) kProject.getKieBaseModel(kBaseName);
         CompositeClassLoader cl = kieProject.getClassLoader(); // the most clone the CL, as each builder and rbase populates it
 
@@ -110,7 +128,7 @@ public class KieContainerImpl
         // if we get to here, then we know the pkgs is now cached
         pkgs = kModule.getKnowledgePackagesForKieBase(kBaseModel.getName());
 
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( getKnowledgeBaseConfiguration(kBaseModel, cl) );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( conf != null ? conf : getKnowledgeBaseConfiguration(kBaseModel, cl) );
 
         kBase.addKnowledgePackages( pkgs );
         return kBase;
@@ -124,43 +142,51 @@ public class KieContainerImpl
     }
 
     public KieSession newKieSession() {
-        return newKieSession((Environment)null);
+        return newKieSession((Environment)null, (KieSessionConfiguration)null);
     }
 
     public KieSession getKieSession() {
-        KieSessionModel defaultKieSessionModel = kProject.getDefaultKieSession();
-        if (defaultKieSessionModel == null) {
-            throw new RuntimeException("Cannot find a defualt KieSession");
-        }
+        KieSessionModel defaultKieSessionModel = findKieSessionModel("Cannot find a defualt KieSession");
         return getKieSession(defaultKieSessionModel.getName());
     }
 
+    public KieSession newKieSession(KieSessionConfiguration conf) {
+        return newKieSession((Environment)null, conf);
+    }
+
     public KieSession newKieSession(Environment environment) {
+        return newKieSession(environment, (KieSessionConfiguration)null);
+    }
+
+    public KieSession newKieSession(Environment environment, KieSessionConfiguration conf) {
+        KieSessionModel defaultKieSessionModel = findKieSessionModel("Cannot find a defualt KieSession");
+        return newKieSession(defaultKieSessionModel.getName(), environment, conf);
+    }
+
+    private KieSessionModel findKieSessionModel(String errorMessage) {
         KieSessionModel defaultKieSessionModel = kProject.getDefaultKieSession();
         if (defaultKieSessionModel == null) {
             throw new RuntimeException("Cannot find a defualt KieSession");
         }
-        return newKieSession(defaultKieSessionModel.getName(), environment);
+        return defaultKieSessionModel;
     }
 
     public StatelessKieSession newStatelessKieSession() {
-        KieSessionModel defaultKieSessionModel = kProject.getDefaultStatelessKieSession();
-        if (defaultKieSessionModel == null) {
-            throw new RuntimeException("Cannot find a defualt StatelessKieSession");
-        }
-        return newStatelessKieSession(defaultKieSessionModel.getName());
+        return newStatelessKieSession((KieSessionConfiguration)null);
+    }
+
+    public StatelessKieSession newStatelessKieSession(KieSessionConfiguration conf) {
+        KieSessionModel defaultKieSessionModel = findKieSessionModel("Cannot find a defualt StatelessKieSession");
+        return newStatelessKieSession(defaultKieSessionModel.getName(), conf);
     }
 
     public StatelessKieSession getStatelessKieSession() {
-        KieSessionModel defaultKieSessionModel = kProject.getDefaultStatelessKieSession();
-        if (defaultKieSessionModel == null) {
-            throw new RuntimeException("Cannot find a defualt StatelessKieSession");
-        }
+        KieSessionModel defaultKieSessionModel = findKieSessionModel("Cannot find a defualt StatelessKieSession");
         return getStatelessKieSession(defaultKieSessionModel.getName());
     }
 
     public KieSession newKieSession(String kSessionName) {
-        return newKieSession(kSessionName, null);
+        return newKieSession(kSessionName, null, null);
     }
 
     public KieSession getKieSession(String kSessionName) {
@@ -169,6 +195,14 @@ public class KieContainerImpl
     }
 
     public KieSession newKieSession(String kSessionName, Environment environment) {
+        return newKieSession(kSessionName, environment, null);
+    }
+
+    public KieSession newKieSession(String kSessionName, KieSessionConfiguration conf) {
+        return newKieSession(kSessionName, null, conf);
+    }
+
+    public KieSession newKieSession(String kSessionName, Environment environment, KieSessionConfiguration conf) {
         KieSessionModelImpl kSessionModel = (KieSessionModelImpl) getKieSessionModel(kSessionName);
         if ( kSessionModel == null ) {
             log.error("Unknown KieSession name: " + kSessionName);
@@ -182,7 +216,7 @@ public class KieContainerImpl
             log.error("Unknown KieBase name: " + kSessionModel.getKieBaseModel().getName());
             return null;
         }
-        KieSession kSession = kBase.newKieSession(getKnowledgeSessionConfiguration(kSessionModel), environment);
+        KieSession kSession = kBase.newKieSession( conf != null ? conf : getKnowledgeSessionConfiguration(kSessionModel), environment );
         wireListnersAndWIHs(kSessionModel, kSession);
 
         KieSession oldSession = kSessions.remove(kSessionName);
@@ -195,6 +229,10 @@ public class KieContainerImpl
     }
 
     public StatelessKieSession newStatelessKieSession(String kSessionName) {
+        return newStatelessKieSession(kSessionName, null);
+    }
+
+    public StatelessKieSession newStatelessKieSession(String kSessionName, KieSessionConfiguration conf) {
         KieSessionModelImpl kSessionModel = (KieSessionModelImpl) kProject.getKieSessionModel( kSessionName );
         if ( kSessionName == null ) {
             log.error("Unknown KieSession name: " + kSessionName);
@@ -208,7 +246,7 @@ public class KieContainerImpl
             log.error("Unknown KieBase name: " + kSessionModel.getKieBaseModel().getName());
             return null;
         }
-        StatelessKieSession statelessKieSession = kBase.newStatelessKieSession(getKnowledgeSessionConfiguration(kSessionModel));
+        StatelessKieSession statelessKieSession = kBase.newStatelessKieSession( conf != null ? conf : getKnowledgeSessionConfiguration(kSessionModel) );
         statelessKSessions.put(kSessionName, statelessKieSession);
         return statelessKieSession;
     }
