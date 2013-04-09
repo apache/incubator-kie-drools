@@ -21,6 +21,7 @@ import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ActivationGroup;
 import org.drools.core.spi.AgendaFilter;
@@ -41,14 +42,15 @@ public interface InternalAgenda
     
     public org.drools.core.util.LinkedList<ScheduledAgendaItem> getScheduledActivationsLinkedList();
 
-    public int fireNextItem(AgendaFilter filter) throws ConsequenceException;
+    public int fireNextItem(AgendaFilter filter, int fireCount, int fireLimit) throws ConsequenceException;
 
     public void scheduleItem(final ScheduledAgendaItem item, InternalWorkingMemory workingMemory);
 
     public AgendaItem createAgendaItem(final LeftTuple tuple,
                                        final int salience,
                                        final PropagationContext context,
-                                       final TerminalNode rtn);
+                                       final TerminalNode rtn,
+                                       RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation);
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
@@ -124,14 +126,16 @@ public interface InternalAgenda
      * Fires all activations currently in agenda that match the given agendaFilter
      * until the fireLimit is reached or no more activations exist.
      * 
+     *
      * @param agendaFilter the filter on which activations may fire.
      * @param fireLimit the maximum number of activations that may fire. If -1, then it will
      *                  fire until no more activations exist.
-     *                  
-     * @return the number of rules that were actually fired                 
+     *
+     * @param limit
+     * @return the number of rules that were actually fired
      */
     public int fireAllRules(AgendaFilter agendaFilter,
-                             int fireLimit);
+                            int fireLimit);
 
     /**
      * Stop agenda from firing any other rule. It will finish the current rule
@@ -181,4 +185,10 @@ public interface InternalAgenda
     public RuleNetworkEvaluatorActivation createRuleNetworkEvaluatorActivation(final int salience,
                                                                                final PathMemory rs,
                                                                                final TerminalNode rtn);
+
+    public RuleNetworkEvaluatorActivation peekNextRule();
+
+    boolean continueFiring(int fireLimit);
+
+    void insertAndStageActivation(AgendaItem activation);
 }

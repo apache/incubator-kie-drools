@@ -221,56 +221,15 @@ public class ExistsNode extends BetaNode {
             return;
         }
 
-        RightTupleMemory rightTupleMemory = memory.getRightTupleMemory();
-        boolean useComparisonIndex = rightTupleMemory.getIndexType().isComparison();
-        FastIterator rightIt = rightTupleMemory.fastIterator();
-        RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) rightIt.next(rightTuple);
-
-        rightTupleMemory.remove( rightTuple );
-        rightTuple.setMemory( null );
-               
-        if ( rightTuple.getBlocked() == null ) {
-            return;
+        RightTupleMemory rtm = memory.getRightTupleMemory();
+        if ( rightTuple.getBlocked() != null ) {
+            updateLeftTupleToNewBlocker(rightTuple, context, workingMemory, memory, memory.getLeftTupleMemory(), rightTuple.getBlocked(), rtm, false);
+            rightTuple.nullBlocked();
+        } else {
+            // it's also removed in the updateLeftTupleToNewBlocker
+            rtm.remove(rightTuple);
         }
 
-        for ( LeftTuple leftTuple = (LeftTuple) rightTuple.getBlocked(); leftTuple != null; ) {
-            LeftTuple temp = leftTuple.getBlockedNext();
-
-            leftTuple.setBlocker( null );
-            leftTuple.setBlockedPrevious( null );
-            leftTuple.setBlockedNext( null );
-
-            this.constraints.updateFromTuple( memory.getContext(),
-                                              workingMemory,
-                                              leftTuple );
-
-            if (useComparisonIndex) {
-                rootBlocker = getFirstRightTuple( leftTuple, rightTupleMemory, (InternalFactHandle) context.getFactHandle(), rightIt );
-            }
-
-            // we know that older tuples have been checked so continue previously
-            for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker ) ) {
-                if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
-                                                           newBlocker.getFactHandle() ) ) {
-                    leftTuple.setBlocker( newBlocker );
-                    newBlocker.addBlocked( leftTuple );
-
-                    break;
-                }
-            }
-
-            if ( leftTuple.getBlocker() == null ) {
-                // was previous blocked and not in memory, so add
-                memory.getLeftTupleMemory().add( leftTuple );
-
-                this.sink.propagateRetractLeftTuple( leftTuple,
-                                                     context,
-                                                     workingMemory );
-            }
-
-            leftTuple = temp;
-        }
-        rightTuple.nullBlocked();
         this.constraints.resetTuple( memory.getContext() );
     }
 
@@ -440,63 +399,9 @@ public class ExistsNode extends BetaNode {
 
         RightTupleMemory rightTupleMemory = memory.getRightTupleMemory();
         if ( firstBlocked != null ) {
-            boolean useComparisonIndex = rightTupleMemory.getIndexType().isComparison();
+            updateLeftTupleToNewBlocker(rightTuple, context, workingMemory, memory, leftMemory, firstBlocked, rightTupleMemory, true);
 
-            // now process existing blocks, we only process existing and not new from above loop
-            FastIterator rightIt = getRightIterator( rightTupleMemory );
-            RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) rightIt.next(rightTuple);
-          
-            RightTupleList list = rightTuple.getMemory();
-            
-            // we must do this after we have the next in memory
-            // We add to the end to give an opportunity to re-match if in same bucket
-            rightTupleMemory.removeAdd( rightTuple );
 
-            if ( !useComparisonIndex && rootBlocker == null && list == rightTuple.getMemory() ) {
-                // we are at the end of the list, but still in same bucket, so set to self, to give self a chance to rematch
-                rootBlocker = rightTuple;
-            }  
-            
-            // iterate all the existing previous blocked LeftTuples
-            for ( LeftTuple leftTuple = (LeftTuple) firstBlocked; leftTuple != null; ) {
-                LeftTuple temp = leftTuple.getBlockedNext();
-
-                leftTuple.setBlockedPrevious( null ); // must null these as we are re-adding them to the list
-                leftTuple.setBlockedNext( null );
-
-                leftTuple.setBlocker( null );
-
-                this.constraints.updateFromTuple( memory.getContext(),
-                                                  workingMemory,
-                                                  leftTuple );
-
-                if (useComparisonIndex) {
-                    rootBlocker = getFirstRightTuple( leftTuple, rightTupleMemory, (InternalFactHandle) context.getFactHandle(), rightIt );
-                }
-
-                // we know that older tuples have been checked so continue next
-                for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next( newBlocker ) ) {
-                    if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
-                                                               newBlocker.getFactHandle() ) ) {
-                        leftTuple.setBlocker( newBlocker );
-                        newBlocker.addBlocked( leftTuple );
-
-                        break;
-                    }
-                }
-
-                if ( leftTuple.getBlocker() == null ) {
-                    // was previous blocked and not in memory, so add
-                    memory.getLeftTupleMemory().add( leftTuple );
-
-                    // subclasses like ForallNotNode might override this propagation
-                    this.sink.propagateRetractLeftTuple( leftTuple,
-                                                         context,
-                                                         workingMemory );
-                }
-
-                leftTuple = temp;
-            }
         } else {
             // we had to do this at the end, rather than beginning as this 'if' block needs the next memory tuple
             rightTupleMemory.removeAdd( rightTuple );
@@ -505,6 +410,76 @@ public class ExistsNode extends BetaNode {
         this.constraints.resetFactHandle( memory.getContext() );
         this.constraints.resetTuple( memory.getContext() );
 
+    }
+
+    private void updateLeftTupleToNewBlocker(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory, BetaMemory memory, LeftTupleMemory leftMemory, LeftTuple firstBlocked, RightTupleMemory rightTupleMemory, boolean removeAdd) {// will attempt to resume from the last blocker, if it's not a comparison or unification index.
+        boolean resumeFromCurrent =  !(indexedUnificationJoin || rightTupleMemory.getIndexType().isComparison());
+
+        FastIterator rightIt = null;
+        RightTuple rootBlocker = null;
+        if ( resumeFromCurrent ) {
+            RightTupleList currentRtm = rightTuple.getMemory();
+            rightIt = currentRtm.fastIterator(); // only needs to iterate the current bucket, works for equality indexed and non indexed.
+            rootBlocker = (RightTuple) rightTuple.getNext();
+
+            if ( removeAdd ) {
+                // we must do this after we have the next in memory
+                // We add to the end to give an opportunity to re-match if in same bucket
+                rightTupleMemory.removeAdd( rightTuple );
+            } else {
+                rightTupleMemory.remove( rightTuple );
+            }
+
+            if ( rootBlocker == null && rightTuple.getMemory() == currentRtm) {
+                // there was no next root blocker, but the current was re-added to same list, so set for re-match attempt.
+                rootBlocker = rightTuple;
+            }
+        } else {
+            rightIt = getRightIterator( rightTupleMemory );
+            if ( removeAdd ) {
+                rightTupleMemory.removeAdd( rightTuple );
+            }  else {
+                rightTupleMemory.remove( rightTuple );
+            }
+        }
+
+        // iterate all the existing previous blocked LeftTuples
+        for ( LeftTuple leftTuple = (LeftTuple) firstBlocked; leftTuple != null; ) {
+            LeftTuple temp = leftTuple.getBlockedNext();
+
+            leftTuple.clearBlocker();
+
+            this.constraints.updateFromTuple( memory.getContext(),
+                                              workingMemory,
+                                              leftTuple );
+
+            if (!resumeFromCurrent) {
+                rootBlocker = getFirstRightTuple( leftTuple, rightTupleMemory, (InternalFactHandle) context.getFactHandle(), rightIt );
+            }
+
+            // we know that older tuples have been checked so continue next
+            for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next( newBlocker ) ) {
+                if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+                                                           newBlocker.getFactHandle() ) ) {
+                    leftTuple.setBlocker( newBlocker );
+                    newBlocker.addBlocked( leftTuple );
+
+                    break;
+                }
+            }
+
+            if ( leftTuple.getBlocker() == null ) {
+                // was previous blocked and not in memory, so add
+                leftMemory.add( leftTuple );
+
+                // subclasses like ForallNotNode might override this propagation
+                this.sink.propagateRetractLeftTuple( leftTuple,
+                                                     context,
+                                                     workingMemory );
+            }
+
+            leftTuple = temp;
+        }
     }
 
     /**

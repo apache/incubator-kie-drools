@@ -37,8 +37,8 @@ public class LeftTupleList
     public LeftTuple               first;
     public LeftTuple               last;
 
-    private final int              hashCode;
-    private final Index            index;
+    private int                    hashCode;
+    private Index                  index;
 
     private TupleHashTableIterator iterator;
 
@@ -63,6 +63,10 @@ public class LeftTupleList
                          final int hashCode) {
         this.index = index;
         this.hashCode = hashCode;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
     }
 
     public LeftTuple getFirst(RightTuple rightTuple) {
@@ -105,6 +109,7 @@ public class LeftTupleList
         }
         leftTuple.setMemory( this );
         this.size++;
+
     }
 
     public void insertAfter(LeftTuple leftTuple, LeftTuple previous) {
@@ -158,7 +163,23 @@ public class LeftTupleList
         }        
         leftTuple.clear();
         this.size--;
-    } 
+    }
+
+    public LeftTuple removeFirst() {
+        LeftTuple leftTuple = this.first;
+        if ( this.last == leftTuple ) {
+            this.last = null;
+            this.first = null;
+        }  else {
+            this.first = (LeftTuple) leftTuple.getNext();
+            if ( this.first != null ) {
+                this.first.setPrevious(null);
+            }
+        }
+        leftTuple.clear();
+        this.size--;
+        return leftTuple;
+    }
 
     public boolean contains(final LeftTuple leftTuple) {
         return get( leftTuple ) != null;
@@ -279,4 +300,13 @@ public class LeftTupleList
         return builder.toString();
     }
 
+    protected void copyStateInto(LeftTupleList other) {
+        other.next = next;
+        other.first = first;
+        other.last = last;
+        other.hashCode = hashCode;
+        other.index = index;
+        other.iterator = iterator;
+        other.size = size;
+    }
 }

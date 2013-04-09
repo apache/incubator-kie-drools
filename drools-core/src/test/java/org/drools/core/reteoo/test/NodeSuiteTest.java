@@ -44,6 +44,7 @@ public class NodeSuiteTest
             public boolean accept(File arg0,
                                   String arg1) {
                 return arg1.endsWith( NodeTestCase.SUFFIX );
+                //return arg1.endsWith("NotNodeAssertRetractTest.nodeTestCase");
             }
         } ) ) {
             InputStream is = new FileInputStream( file );

@@ -38,8 +38,8 @@ public class RightTupleList
     public RightTuple              first;
     public RightTuple              last;
 
-    private final int              hashCode;
-    private final Index            index;
+    private int                    hashCode;
+    private Index                  index;
 
     private TupleHashTableIterator iterator;
     
@@ -84,7 +84,7 @@ public class RightTupleList
     public RightTuple getLast() {
         return this.last;
     }
-    
+
     public void removeAdd(final RightTuple rightTuple) {
         remove(rightTuple);
         add(rightTuple);
@@ -323,4 +323,14 @@ public class RightTupleList
         return IndexType.NONE;
     }
 
+    protected void copyStateInto(RightTupleList other) {
+        other.previous = previous;
+        other.next = next;
+        other.first = first;
+        other.last = last;
+        other.hashCode = hashCode;
+        other.index = index;
+        other.iterator = iterator;
+        other.size = size;
+    }
 }

@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -340,9 +341,8 @@ public class PropagationContextImpl
         }
 
         modificationMask = 0L;
-        Package rulePkg = workingMemory.getRuleBase().getPackage(rule.getPackage());
-        List<String> typeClassProps = getSettableProperties(workingMemory, classType, rulePkg);
-        List<String> modifiedClassProps = getSettableProperties(workingMemory, modifiedClass, rulePkg);
+        List<String> typeClassProps = getSettableProperties(workingMemory, classType);
+        List<String> modifiedClassProps = getSettableProperties( workingMemory, modifiedClass );
 
         for (int i = 0; i < modifiedClassProps.size(); i++) {
             if (BitMaskUtil.isPositionSet(originalMask, i)) {
@@ -357,11 +357,11 @@ public class PropagationContextImpl
         return this;
     }
 
-    private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType, Package rulePkg) {
-        Package pkg = workingMemory.getRuleBase().getPackage(classType.getPackage().getName());
-        return pkg != null ?
-                pkg.getTypeDeclaration(classType).getSettableProperties() :
-                rulePkg.getTypeDeclaration(classType).getSettableProperties();
+    private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType) {
+        String pkgName = classType.getPackage().getName();
+        return "java.lang".equals(pkgName) ?
+                Collections.EMPTY_LIST :
+                workingMemory.getRuleBase().getPackage(pkgName).getTypeDeclaration(classType).getSettableProperties();
     }
 
     public WindowTupleList getActiveWindowTupleList() {

@@ -25,7 +25,7 @@ Setup
         new Person('dave', 35), new Person('bob', 36),
         new Person('obi', 36), new Person('han', 37);
 
-Test "assert retract test"	    
+Test "assert retract test"
     /**
      * check single left assertion and retraction
      */

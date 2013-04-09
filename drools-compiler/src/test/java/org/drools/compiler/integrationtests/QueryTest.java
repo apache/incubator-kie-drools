@@ -36,6 +36,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.definition.rule.Rule;
+import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.rule.LiveQuery;
@@ -604,8 +605,10 @@ public class QueryTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("Ingored for PhreakOption, as test is order sensitive")
     public void testOpenQuery() throws Exception {
+        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+            return;  //Disbaled due to phreak, as tests is order specific
+        }
         String str = "";
         str += "package org.drools.compiler.test  \n";
         str += "import org.drools.compiler.Cheese \n";

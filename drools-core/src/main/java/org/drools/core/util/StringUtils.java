@@ -405,7 +405,7 @@ public class StringUtils {
      * @param str  the String to parse, may be null
      * @param separatorChars  the characters used as the delimiters,
      *  <code>null</code> splits on whitespace
-     * @param min  the maximum number of elements to include in the
+     * @param max  the maximum number of elements to include in the
      *  array. A zero or negative value implies no limit
      * @return an array of parsed Strings, <code>null</code> if null String input
      */
@@ -612,7 +612,7 @@ public class StringUtils {
      * @param str  the String to parse, may be <code>null</code>
      * @param separatorChars  the characters used as the delimiters,
      *  <code>null</code> splits on whitespace
-     * @param min  the maximum number of elements to include in the
+     * @param max  the maximum number of elements to include in the
      *  array. A zero or negative value implies no limit
      * @return an array of parsed Strings, <code>null</code> if null String input
      * @since 2.1
@@ -633,7 +633,7 @@ public class StringUtils {
      *
      * @param str  the String to parse, may be <code>null</code>
      * @param separatorChars the separate character
-     * @param min  the maximum number of elements to include in the
+     * @param max  the maximum number of elements to include in the
      *  array. A zero or negative value implies no limit.
      * @param preserveAllTokens if <code>true</code>, adjacent separators are
      * treated as empty token separators; if <code>false</code>, adjacent
@@ -770,8 +770,6 @@ public class StringUtils {
         return new String( buf );
     }
 
-    /** @param filePath the name of the file to open. Not sure if it can accept URLs or just filenames. Path handling could be better, and buffer sizes are hardcoded
-     */
     public static String readFileAsString(Reader reader) {
         try {
             StringBuilder fileData = new StringBuilder( 1000 );
@@ -1131,8 +1129,7 @@ public class StringUtils {
      * @param delimiter the delimiter between elements (this is a single delimiter,
      * rather than a bunch individual delimiter characters)
      * @return an array of the tokens in the list
-     * @see #tokenizeToStringArray
-     * 
+     *
      * Borrowed from Spring, under the ASL2.0 license.
      */
     public static String[] delimitedListToStringArray(String str, String delimiter) {
@@ -1150,8 +1147,7 @@ public class StringUtils {
      * @param charsToDelete a set of characters to delete. Useful for deleting unwanted
      * line breaks: e.g. "\r\n\f" will delete all new lines and line feeds in a String.
      * @return an array of the tokens in the list
-     * @see #tokenizeToStringArray
-     * 
+     *
      * Borrowed from Spring, under the ASL2.0 license.
      */
     public static String[] delimitedListToStringArray(String str, String delimiter, String charsToDelete) {
@@ -1366,5 +1362,39 @@ public class StringUtils {
             }
         }
         return count;
+    }
+
+    // To be extended in the future with more comparison strategies
+    public static enum SIMILARITY_STRATS { DICE };
+
+    public static double stringSimilarity( String s1, String s2, SIMILARITY_STRATS method ) {
+        switch ( method ) {
+            case DICE:
+            default: return stringSimilarityDice( s1, s2 );
+        }
+    }
+
+    private static double stringSimilarityDice( String s1, String s2 ) {
+        int n1 = s1.length() - 1;
+        int n2 = s2.length() - 1;
+
+        int n;
+
+        if ( s1.length() < s2.length() ) {
+            n = commonBigrams( s1, s2 );
+        } else {
+            n = commonBigrams( s2, s1 );
+        }
+
+        return (2.0 * n) / ( n1 + n2 );
+    }
+
+    private static int commonBigrams( String s1, String s2 ) {
+        int acc = 0;
+        for ( int j = 0; j < s1.length() - 1; j++ ) {
+            String bigram = s1.substring( j, j +1 );
+            acc += s2.indexOf( bigram ) >= 0 ? 1 : 0;
+        }
+        return acc;
     }
 }
