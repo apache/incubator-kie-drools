@@ -32,7 +32,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.definition.type.Position;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;

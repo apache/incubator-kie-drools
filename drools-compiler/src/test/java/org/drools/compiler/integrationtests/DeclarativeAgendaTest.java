@@ -6,7 +6,7 @@ import java.util.List;
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.conf.DeclarativeAgendaOption;
 import org.kie.api.event.rule.MatchCancelledEvent;

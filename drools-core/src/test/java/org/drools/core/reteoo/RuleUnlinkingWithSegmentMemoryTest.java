@@ -18,7 +18,7 @@ import org.drools.core.rule.Rule;
 import org.drools.core.rule.GroupElement.Type;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.conf.PhreakOption;
 

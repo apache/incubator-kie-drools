@@ -32,7 +32,7 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
