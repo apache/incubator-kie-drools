@@ -1971,6 +1971,10 @@ public class RuleNetworkEvaluator {
 
                 LeftTuple firstLeftTuple = existsNode.getFirstLeftTuple(rightTuple, ltm, context, leftIt);
 
+                constraints.updateFromFactHandle( contextEntry,
+                                                  wm,
+                                                  rightTuple.getFactHandle() );
+
                 LeftTuple firstBlocked = rightTuple.getBlocked();
                 // we now have  reference to the first Blocked, so null it in the rightTuple itself, so we can rebuild
                 rightTuple.nullBlocked();
