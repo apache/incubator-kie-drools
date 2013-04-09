@@ -65,7 +65,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
 
     protected Task createTaskBasedOnWorkItemParams(KieSession session, WorkItem workItem) {
         Task task = new TaskImpl();
-        String taskName = (String) workItem.getParameter("TaskName");
+        String taskName = (String) workItem.getParameter("NodeName");
         if (taskName != null) {
             List<I18NText> names = new ArrayList<I18NText>();
             names.add(new I18NTextImpl("en-UK", taskName));
