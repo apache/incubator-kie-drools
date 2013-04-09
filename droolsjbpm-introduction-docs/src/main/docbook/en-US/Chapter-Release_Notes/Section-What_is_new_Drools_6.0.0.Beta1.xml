@@ -12,7 +12,14 @@
 
     <section>
       <title>TODO</title>
+
       <para>TODO</para>
+    </section>
+
+    <section>
+      <title>Better OSGi support</title>
+
+      <para>OSGi support is subtantionally improved. Also, the production jars no longer have any split packages.</para>
     </section>
   </section>
 
@@ -21,17 +28,22 @@
 
     <section>
       <title>New Maven groupId: org.kie.guvnor</title>
+
       <para>The Maven groupId has changed from org.drools.guvnor to org.kie.guvnor.</para>
+
       <para>Before</para>
+
       <programlisting language="xml">&lt;dependency&gt;
   &lt;groupId&gt;org.drools.guvnor&lt;/groupId&gt;
   ...
 &lt;/dependency&gt;</programlisting>
+
       <para>After</para>
+
       <programlisting language="xml">&lt;dependency&gt;
-        &lt;groupId&gt;org.kie.guvnor&lt;/groupId&gt;
-        ...
-        &lt;/dependency&gt;</programlisting>
+  &lt;groupId&gt;org.kie.guvnor&lt;/groupId&gt;
+  ...
+&lt;/dependency&gt;</programlisting>
     </section>
   </section>
 
@@ -40,7 +52,103 @@
 
     <section>
       <title>Drools Planner renamed to OptaPlanner</title>
-      <para>TODO</para>
+
+      <para>OptaPlanner is the new name for Drools Planner. OptaPlanner is now standalone, but can still be optionally
+      combined with the Drools rule engine for a powerful declarative approach to planning optimization.</para>
+
+      <para>OptaPlanner has a new website (<link
+      xlink:href="http://www.optaplanner.org">http://www.optaplanner.org</link>), a <link
+      xlink:href="http://www.optaplanner.org/download/download.html">new groupId/artifactId</link> and its own <link
+      xlink:href="http://www.optaplanner.org/community/chat.html">IRC channel</link>. It's a rename, not a fork. It's
+      still the same license (ASL), same team, ...</para>
+
+      <para>For more information, see <link
+      xlink:href="http://www.optaplanner.org/community/droolsPlannerRenamed.html">the full announcement</link>.</para>
+    </section>
+
+    <section>
+      <title>Faster and easier scoreDRL</title>
+
+      <para>The new ConstraintMatch system is:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Faster: the average calculate count per seconds increases between 7% and 40% on average per use
+          case.</para>
+        </listitem>
+
+        <listitem>
+          <para>Easier to read and write</para>
+        </listitem>
+
+        <listitem>
+          <para>Far less error-prone. It's much harder to cause score corruption in your DRL.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Before:</para>
+
+      <programlisting language="java">    rule "conflictingLecturesSameCourseInSamePeriod"
+        when
+            ...
+        then
+            insertLogical(new IntConstraintOccurrence("conflictingLecturesSameCourseInSamePeriod", ConstraintType.HARD,
+                    -1,
+                    $leftLecture, $rightLecture));
+    end</programlisting>
+
+      <para>After:</para>
+
+      <programlisting language="java">    rule "conflictingLecturesSameCourseInSamePeriod"
+        when
+            ...
+        then
+            scoreHolder.addHardConstraintMatch(kcontext, -1);
+    end</programlisting>
+
+      <para>Notice that you don't need to repeat the ruleName or the causes (the lectures) no more. OptaPlanner figures
+      out it itself through the kcontext variable. Drools automatically exposes the kcontext variable in the RHS, so you
+      don't need any extra code for it.</para>
+
+      <para>You also no longer need to hack the API's to get a list of all ConstraintOcurrence's: the ConstraintMatch
+      objects (and their totals per constraint) are available directly on the ScoreDirector API.</para>
+
+      <para>For more information, see <link
+      xlink:href="http://blog.athico.com/2013/04/score-drl-faster-and-easier-in.html">the blog post</link> and the
+      manual.</para>
+    </section>
+
+    <section>
+      <title>Automatic solution cloning</title>
+
+      <para>Implementing the <literal>Solution's</literal> planning <literal>clone</literal> method is now optional.
+      This means there's less boilerplate code to write and it's hard to cause score corruption in your code.</para>
+
+      <para>For more information, see <link
+      xlink:href="http://blog.athico.com/2013/02/automatic-solution-cloning-in-planner.html">the blog post</link> and
+      the manual.</para>
+    </section>
+
+    <section>
+      <title>TSP and VRP: Chained variables are more scalable</title>
+
+      <para>Several improvements have made use cases like TSP and VRP more scalable. The code has been optimized to run
+      significantly faster. Also ,<literal>&lt;subChainSelector&gt;</literal> now supports
+      <literal>&lt;maximumSubChainSize&gt;</literal> to scale out better.</para>
+    </section>
+
+    <section>
+      <title>New build-in scores</title>
+
+      <para>New build-in score definitions include: <literal>HardMediumSoftScore</literal> (3 score levels),
+      <literal>BendableScore</literal> (configurable number of score levels), <literal>HardSoftLongScore</literal>,
+      <literal>HardSoftDoubleScore</literal>, <literal>HardSoftBigDecimalScore</literal>, ...</para>
+    </section>
+
+    <section>
+      <title>OSGi support</title>
+
+      <para>OptaPlanner now has OSGi support.</para>
     </section>
   </section>
 
@@ -49,6 +157,7 @@
 
     <section>
       <title>TODO</title>
+
       <para>TODO</para>
     </section>
   </section>
