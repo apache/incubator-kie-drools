@@ -59,7 +59,6 @@ import org.drools.factmodel.FieldDefinition;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.Trait;
 import org.drools.factmodel.traits.TraitFactory;
-import org.drools.factmodel.traits.TraitRegistry;
 import org.drools.factmodel.traits.Traitable;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.facttemplates.FactTemplateImpl;
@@ -371,18 +370,18 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         TypeDeclaration colType = new TypeDeclaration( "Collection" );
         colType.setTypesafe( false );
         colType.setTypeClass( Collection.class );
-        builtinTypes.put( "java.util.Collection",
-                          colType );
+        builtinTypes.put("java.util.Collection",
+                colType);
 
         TypeDeclaration mapType = new TypeDeclaration( "Map" );
-        mapType.setTypesafe( false );
+        mapType.setTypesafe(false);
         mapType.setTypeClass( Map.class );
         builtinTypes.put( "java.util.Map",
                           mapType );
 
         TypeDeclaration activationType = new TypeDeclaration( "Activation" );
         activationType.setTypesafe( false );
-        activationType.setTypeClass( Activation.class );
+        activationType.setTypeClass(Activation.class);
         builtinTypes.put( Activation.class.getCanonicalName(),
                           activationType );
 
@@ -517,7 +516,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     PackageDescr xmlToPackageDescr(Resource resource) throws DroolsParserException, IOException {
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
-        xmlReader.getParser().setClassLoader( this.rootClassLoader );
+        xmlReader.getParser().setClassLoader(this.rootClassLoader);
 
         Reader reader = null;
         try {
@@ -741,11 +740,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
-    public void addPackageFromPMML(Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception, DroolsParserException {
+    public void addPackageFromPMML(Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         PMMLCompiler compiler = getPMMLCompiler();
         if ( compiler != null ) {
             this.resource = resource;
-            addPackage( pmmlModelToPackageDescr( compiler, resource ) );
+            addPackage(pmmlModelToPackageDescr(compiler, resource));
             this.resource = null;
         } else {
             addPackageForExternalType( resource, type, configuration );
@@ -753,8 +752,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     PackageDescr pmmlModelToPackageDescr( PMMLCompiler compiler, Resource resource ) throws DroolsParserException, IOException {
-        String theory = compiler.compile( resource.getInputStream(),
-                getPackageRegistry() );
+        String theory = compiler.compile(resource.getInputStream(),
+                getPackageRegistry());
 
         DrlParser parser = new DrlParser();
         PackageDescr pkg = parser.parse( new StringReader( theory ) );
@@ -907,9 +906,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         //Derive namespace
         if (isEmpty( packageDescr.getNamespace() )) {
-            packageDescr.setNamespace( this.configuration.getDefaultPackageName() );
+            packageDescr.setNamespace(this.configuration.getDefaultPackageName());
         }
-        validateUniqueRuleNames( packageDescr );
+        validateUniqueRuleNames(packageDescr);
         if (!checkNamespace( packageDescr.getNamespace() )) {
             return null;
         }
@@ -957,7 +956,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         // ensure that rules are ordered by dependency, so that dependent rules are built later
-        sortRulesByDependency( packageDescr );
+        sortRulesByDependency(packageDescr);
 
         // iterate and compile
         for (RuleDescr ruleDescr : packageDescr.getRules()) {
@@ -967,41 +966,92 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
 
             Map<String, AttributeDescr> pkgAttributes = packageAttributes.get(packageDescr.getNamespace());
-            inheritPackageAttributes(pkgAttributes,
-                    ruleDescr);
+            inheritPackageAttributes(pkgAttributes, ruleDescr);
 
             if (isEmpty(ruleDescr.getDialect())) {
-                ruleDescr.addAttribute(new AttributeDescr("dialect",
-                        pkgRegistry.getDialect()));
+                ruleDescr.addAttribute(new AttributeDescr("dialect", pkgRegistry.getDialect()));
             }
             addRule(ruleDescr);
         }
     }
 
-    // right now we only have dependencies by "extends", but others may be introduced later
-    // this method will then be expanded as needed
     private void sortRulesByDependency( PackageDescr packageDescr ) {
-        HierarchySorter<RuleDescr> sorter = new HierarchySorter<RuleDescr>();
-        Map<RuleDescr,Collection<RuleDescr>> deps = new HashMap<RuleDescr, Collection<RuleDescr>>();
+        // Using a topological sorting algorithm
+        // see http://en.wikipedia.org/wiki/Topological_sorting
 
-        List<RuleDescr> sorted = new LinkedList<RuleDescr>( packageDescr.getRules() );
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
+        Package pkg = pkgRegistry.getPackage();
 
-        //TODO Maybe the packageDescr should store rules in a name/value map rather than a plain list?
-        for ( RuleDescr rd : packageDescr.getRules() ) {
-            if ( rd.getParentName() != null ) {
-                for ( RuleDescr candidate : packageDescr.getRules() ) {
-                    if ( candidate.getName().equals( rd.getParentName() ) ) {
-                        deps.put( rd, Collections.singleton( candidate ) );
-                        sorted.remove( rd );
-                        break;
-                    }
+        List<RuleDescr> roots = new LinkedList<RuleDescr>();
+        Map<String, List<RuleDescr>> parents = new HashMap<String, List<RuleDescr>>();
+        List<RuleDescr> sorted = new ArrayList<RuleDescr>();
+
+        for ( RuleDescr ruleDescr : packageDescr.getRules() ) {
+            if ( !ruleDescr.hasParent() ) {
+                roots.add(ruleDescr);
+            } else if ( pkg.getRule( ruleDescr.getParentName() ) != null ) {
+                // The parent of this rule has been already compiled
+                sorted.add(ruleDescr);
+            } else {
+                List<RuleDescr> children = parents.get(ruleDescr.getParentName());
+                if (children == null) {
+                    children = new ArrayList<RuleDescr>();
+                    parents.put(ruleDescr.getParentName(), children);
                 }
+                children.add(ruleDescr);
             }
         }
 
-        sorted.addAll( sorter.sort( deps ) );
+        if ( parents.isEmpty() ) { // Sorting not necessary
+            return;
+        }
+
+        while ( !roots.isEmpty() ) {
+            RuleDescr root = roots.remove(0);
+            sorted.add(root);
+            List<RuleDescr> children = parents.remove(root.getName());
+            if ( children != null) {
+                roots.addAll(children);
+            }
+        }
+
+        reportHierarchyErrors(parents, sorted);
+
         packageDescr.getRules().clear();
         packageDescr.getRules().addAll( sorted );
+    }
+
+    private void reportHierarchyErrors(Map<String, List<RuleDescr>> parents, List<RuleDescr> sorted) {
+        boolean circularDep = false;
+        for ( List<RuleDescr> rds : parents.values() ) {
+            for ( RuleDescr ruleDescr : rds ) {
+                if (parents.get(ruleDescr.getParentName()) != null) {
+                    circularDep = true;
+                    results.add(new RuleBuildError(new Rule(ruleDescr.getName()), ruleDescr, null,
+                                "Circular dependency in rules hierarchy"));
+                    break;
+                }
+                manageUnresolvedExtension(ruleDescr, sorted);
+            }
+            if ( circularDep ) {
+                break;
+            }
+        }
+    }
+
+    private void manageUnresolvedExtension(RuleDescr ruleDescr, Collection<RuleDescr> candidates) {
+        List<String> candidateRules = new LinkedList<String>();
+        for ( RuleDescr r : candidates ) {
+            if ( StringUtils.stringSimilarity( ruleDescr.getParentName(), r.getName(), StringUtils.SIMILARITY_STRATS.DICE ) >= 0.75 ) {
+                candidateRules.add( r.getName() );
+            }
+        }
+        String msg = "Unresolved parent name " + ruleDescr.getParentName();
+        if ( candidateRules.size() > 0 ) {
+            msg += " >> did you mean any of :" + candidateRules;
+        }
+        results.add(new RuleBuildError(new Rule(ruleDescr.getName()), ruleDescr, msg,
+                    "Unable to resolve parent rule, please check that both rules are in the same package"));
     }
 
     private void initPackage(PackageDescr packageDescr) {

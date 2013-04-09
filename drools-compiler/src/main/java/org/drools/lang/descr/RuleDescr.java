@@ -196,6 +196,10 @@ public class RuleDescr extends AnnotatedBaseDescr
         return enabled != null ? enabled.getValue() : null;
     }
 
+    public boolean hasParent() {
+        return parentName != null;
+    }
+
     public void setParentName(String parentName) {
         this.parentName = parentName;
     }

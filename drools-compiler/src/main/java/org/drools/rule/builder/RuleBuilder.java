@@ -69,12 +69,8 @@ public class RuleBuilder {
         RuleDescr ruleDescr = context.getRuleDescr();
 
         //Query and get object instead of using String
-        if ( null != ruleDescr.getParentName() ) {
-            if ( null != context.getPkg().getRule( ruleDescr.getParentName() ) ) {
-                context.getRule().setParent( context.getPkg().getRule( ruleDescr.getParentName() ) );
-            } else {
-                manageUnresolvedExtension( ruleDescr, context );
-            }
+        if ( null != ruleDescr.getParentName() && null != context.getPkg().getRule( ruleDescr.getParentName() ) ) {
+            context.getRule().setParent( context.getPkg().getRule( ruleDescr.getParentName() ) );
         }
         // add all the rule's meta attributes
         buildMetaAttributes( context );
@@ -111,20 +107,6 @@ public class RuleBuilder {
                 consequenceBuilder.build( context, name );
             }
         }
-    }
-
-    private void manageUnresolvedExtension(RuleDescr ruleDescr, RuleBuildContext context) {
-        List<String> candidateRules = new LinkedList<String>();
-        for ( Rule r : context.getPkg().getRules() ) {
-            if ( StringUtils.stringSimilarity( ruleDescr.getParentName(), r.getName(), StringUtils.SIMILARITY_STRATS.DICE ) >= 0.75 ) {
-                candidateRules.add( r.getName() );
-            }
-        }
-        String msg = "Unresolved parent name " + ruleDescr.getParentName();
-        if ( candidateRules.size() > 0 ) {
-            msg += " >> did you mean any of :" + candidateRules;
-        }
-        context.addError( new RuleBuildError( context.getRule(), ruleDescr, msg, "Unable to resolve parent rule, please check that both rules are in the same package"  ) );
     }
 
     public void buildMetaAttributes(final RuleBuildContext context ) {

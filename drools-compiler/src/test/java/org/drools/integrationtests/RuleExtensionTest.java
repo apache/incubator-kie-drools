@@ -40,25 +40,25 @@ public class RuleExtensionTest {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
-                        "\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"Base\"\n" +
-                        "when\n" +
-                        "  String( this == \"go\" )\n" +
-                        "then\n" +
-                        "end\n" +
-                        "\n" +
-                        "rule \"ExtYes\" extends \"Bas\"\n" +
-                        "when\n" +
-                        "then\n" +
-                        "  list.add( 1 );\n" +
-                        "end\n";
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Base\"\n" +
+                "when\n" +
+                "  String( this == \"go\" )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule \"ExtYes\" extends \"Bas\"\n" +
+                "when\n" +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
-        System.out.println(kbuilder.getErrors());
         assertTrue( kbuilder.hasErrors() );
+        kbuilder.getErrors().iterator().next().toString().contains("Base");
     }
 
     @Test
@@ -66,30 +66,28 @@ public class RuleExtensionTest {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
-                        "\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"Base\"\n" +
-                        "when\n" +
-                        "  String( this == \"go\" )\n" +
-                        "then\n" +
-                        "end\n" +
-                        "";
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Base\"\n" +
+                "when\n" +
+                "  String( this == \"go\" )\n" +
+                "then\n" +
+                "end\n" +
+                "";
 
         String str2 =
                 "package org.drools.test;\n" +
-
-                        "\n" +
-                        "rule \"ExtYes\" extends \"Base\"\n" +
-                        "when\n" +
-                        "then\n" +
-                        "  list.add( 1 );\n" +
-                        "end\n";
+                "\n" +
+                "rule \"ExtYes\" extends \"Base\"\n" +
+                "when\n" +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
         kbuilder.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
-        System.out.println(kbuilder.getErrors());
         assertFalse(kbuilder.hasErrors());
 
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
@@ -115,25 +113,25 @@ public class RuleExtensionTest {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
-                        "\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"Base\"\n" +
-                        "when\n" +
-                        "  String( this == \"go\" )\n" +
-                        "then\n" +
-                        "end\n" +
-                        "";
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Base\"\n" +
+                "when\n" +
+                "  String( this == \"go\" )\n" +
+                "then\n" +
+                "end\n" +
+                "";
 
         String str2 =
                 "package org.drools.test;\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"ExtYes\" extends \"Base\"\n" +
-                        "when\n" +
-                        "then\n" +
-                        "  list.add( 1 );\n" +
-                        "end\n";
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"ExtYes\" extends \"Base\"\n" +
+                "when\n" +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
@@ -144,7 +142,6 @@ public class RuleExtensionTest {
 
         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kb );
         kbuilder2.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
-        System.err.println(kbuilder2.getErrors());
         assertFalse(kbuilder2.hasErrors());
 
         StatefulKnowledgeSession knowledgeSession = kb.newStatefulKnowledgeSession();
@@ -166,25 +163,25 @@ public class RuleExtensionTest {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
-                        "\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"Base\"\n" +
-                        "when\n" +
-                        "  String( this == \"go\" )\n" +
-                        "then\n" +
-                        "end\n" +
-                        "";
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Base\"\n" +
+                "when\n" +
+                "  String( this == \"go\" )\n" +
+                "then\n" +
+                "end\n" +
+                "";
 
         String str2 =
                 "package org.drools.test;\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"ExtYes\" extends \"Bse\"\n" +
-                        "when\n" +
-                        "then\n" +
-                        "  list.add( 1 );\n" +
-                        "end\n";
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"ExtYes\" extends \"Bse\"\n" +
+                "when\n" +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -195,9 +192,7 @@ public class RuleExtensionTest {
 
         KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kb );
         kbuilder2.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
-        System.err.println( kbuilder2.getErrors() );
         assertTrue(kbuilder2.hasErrors());
-
     }
 
 
@@ -207,40 +202,37 @@ public class RuleExtensionTest {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
-                        "\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"Base\"\n" +
-                        "when\n" +
-                        "  String( this == \"go\" )\n" +
-                        "then\n" +
-                        "end\n" +
-                        "";
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Base\"\n" +
+                "when\n" +
+                "  String( this == \"go\" )\n" +
+                "then\n" +
+                "end\n" +
+                "";
 
         String str2 =
                 "package org.drools.test;\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"ExtYes\" extends \"Base\"\n" +
-                        "when\n" +
-                        "then\n" +
-                        "  list.add( 1 );\n" +
-                        "end\n";
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"ExtYes\" extends \"Base\"\n" +
+                "when\n" +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         CompositeKnowledgeBuilder ckb = kbuilder.batch();
 
-        ckb
-                .add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL )
+        ckb.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL )
                 .add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
                 .build();
 
-        System.err.println( kbuilder.getErrors() );
         assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
 
         StatefulKnowledgeSession knowledgeSession = kb.newStatefulKnowledgeSession();
 
@@ -254,7 +246,6 @@ public class RuleExtensionTest {
         knowledgeSession.fireAllRules();
 
         assertEquals( 1, list.size() );
-
     }
 
     @Test
@@ -262,37 +253,34 @@ public class RuleExtensionTest {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
-                        "\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"Base\"\n" +
-                        "when\n" +
-                        "  String( this == \"go\" )\n" +
-                        "then\n" +
-                        "end\n" +
-                        "";
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Base\"\n" +
+                "when\n" +
+                "  String( this == \"go\" )\n" +
+                "then\n" +
+                "end\n" +
+                "";
 
         String str2 =
                 "package org.drools.test;\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"ExtYes\" extends \"ase\"\n" +
-                        "when\n" +
-                        "then\n" +
-                        "  list.add( 1 );\n" +
-                        "end\n";
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"ExtYes\" extends \"ase\"\n" +
+                "when\n" +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         CompositeKnowledgeBuilder ckb = kbuilder.batch();
 
-        ckb
-                .add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL )
+        ckb.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL )
                 .add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
                 .build();
 
-        System.err.println( kbuilder.getErrors() );
         assertTrue( kbuilder.hasErrors() );
-
     }
 
 
@@ -301,80 +289,72 @@ public class RuleExtensionTest {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
-                        "\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"Base\"\n" +
-                        "when\n" +
-                        "  String( this == \"go\" )\n" +
-                        "then\n" +
-                        "end\n" +
-                        "";
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Base\"\n" +
+                "when\n" +
+                "  String( this == \"go\" )\n" +
+                "then\n" +
+                "end\n" +
+                "";
 
         String str2 =
                 "package org.drools.test;\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"ExtYes\" extends \"ase\"\n" +
-                        "when\n" +
-                        "then\n" +
-                        "  list.add( 1 );\n" +
-                        "end\n";
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"ExtYes\" extends \"ase\"\n" +
+                "when\n" +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         CompositeKnowledgeBuilder ckb = kbuilder.batch();
 
-        ckb
-                .add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
+        ckb.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
                 .add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL )
                 .build();
 
-        System.err.println( kbuilder.getErrors() );
         assertTrue( kbuilder.hasErrors() );
-
     }
-
-
 
     @Test
     public void testRuleExtendsWithCompositeKBuilderFreeOrder() {
         // DROOLS-100
         String str =
                 "package org.drools.test;\n" +
-                        "\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"Base\"\n" +
-                        "when\n" +
-                        "  String( this == \"go\" )\n" +
-                        "then\n" +
-                        "end\n" +
-                        "";
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Base\"\n" +
+                "when\n" +
+                "  String( this == \"go\" )\n" +
+                "then\n" +
+                "end\n" +
+                "";
 
         String str2 =
                 "package org.drools.test;\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "rule \"ExtYes\" extends \"Base\"\n" +
-                        "when\n" +
-                        "then\n" +
-                        "  list.add( 1 );\n" +
-                        "end\n";
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"ExtYes\" extends \"Base\"\n" +
+                "when\n" +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         CompositeKnowledgeBuilder ckb = kbuilder.batch();
 
-        ckb
-                .add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
+        ckb.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
                 .add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL )
                 .build();
 
-        System.err.println( kbuilder.getErrors() );
         assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
 
         StatefulKnowledgeSession knowledgeSession = kb.newStatefulKnowledgeSession();
 
@@ -388,7 +368,113 @@ public class RuleExtensionTest {
         knowledgeSession.fireAllRules();
 
         assertEquals( 1, list.size() );
-
     }
 
+    @Test
+    public void testRuleExtendsExtendsWithCompositeKBuilderFreeOrder() {
+        // DROOLS-100
+        String str1 =
+                "package org.drools.test;\n" +
+                "\n" +
+                "rule \"Base\"\n" +
+                "when\n" +
+                "  $i : Integer( this < 5 )\n" +
+                "then\n" +
+                "end\n";
+
+        String str2 =
+                "package org.drools.test;\n" +
+                "\n" +
+                "rule \"ExtYes\" extends \"Base\"\n" +
+                "when\n" +
+                "  $j : Integer( this > 5 )\n" +
+                "then\n" +
+                "end\n";
+
+        String str3 =
+                "package org.drools.test;\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"FinalRule\" extends \"ExtYes\"\n" +
+                "when\n" +
+                "then\n" +
+                "  list.add( $i + $j );\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        CompositeKnowledgeBuilder ckb = kbuilder.batch();
+
+        ckb.add( ResourceFactory.newByteArrayResource( str3.getBytes() ), ResourceType.DRL )
+                .add( ResourceFactory.newByteArrayResource( str1.getBytes() ), ResourceType.DRL )
+                .add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
+                .build();
+
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession knowledgeSession = kb.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+        assertEquals( 0, list.size() );
+
+        knowledgeSession.insert( 4 );
+        knowledgeSession.insert( 6 );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( 10, (int)list.get(0) );
+    }
+
+    @Test
+    public void testRuleCircularExtension() {
+        // DROOLS-100
+        String str1 =
+                "package org.drools.test;\n" +
+                "\n" +
+                "rule \"Base\" extends \"FinalRule\"\n" +
+                "when\n" +
+                "  $i : Integer( this < 5 )\n" +
+                "then\n" +
+                "end\n";
+
+        String str2 =
+                "package org.drools.test;\n" +
+                "\n" +
+                "rule \"ExtYes\" extends \"Base\"\n" +
+                "when\n" +
+                "  $j : Integer( this > 5 )\n" +
+                "then\n" +
+                "end\n";
+
+        String str3 =
+                "package org.drools.test;\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Dummy\"\n" +
+                "when\n" +
+                "then\n" +
+                "end\n" +
+                "rule \"FinalRule\" extends \"ExtYes\"\n" +
+                "when\n" +
+                "then\n" +
+                "  list.add( $i + $j );\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        CompositeKnowledgeBuilder ckb = kbuilder.batch();
+
+        ckb.add( ResourceFactory.newByteArrayResource( str3.getBytes() ), ResourceType.DRL )
+                .add( ResourceFactory.newByteArrayResource( str1.getBytes() ), ResourceType.DRL )
+                .add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL )
+                .build();
+
+        assertTrue( kbuilder.hasErrors() );
+        assertEquals( 1, kbuilder.getErrors().size() );
+        assertTrue( kbuilder.getErrors().iterator().next().toString().contains("Circular") );
+    }
 }
