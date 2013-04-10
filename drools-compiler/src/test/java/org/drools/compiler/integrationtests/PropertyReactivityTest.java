@@ -15,6 +15,28 @@ import java.util.List;
 public class PropertyReactivityTest extends CommonTestMethodBase {
 
     @Test
+    public void testComposedConstraint() {
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.compiler.integrationtests.PropertyReactivityTest.Klass2;\n" +
+                "\n" +
+                "rule R when \n" +
+                " $k2 : Klass2(b == 0 || c == 0)\n" +
+                "then" +
+                " modify($k2) { setD(1) }\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Klass2 k2 = new Klass2(0, 0, 0, 0);
+        ksession.insert(k2);
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(1, k2.getD());
+    }
+
+    @Test
     public void testScrambleProperties() {
         // DROOLS-91
         String str =
