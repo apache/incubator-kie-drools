@@ -130,6 +130,9 @@ public class QueryElementNode extends LeftTupleSource
                             ReteooBuilder builder,
                             InternalWorkingMemory[] workingMemories) {
         if (!isInUse()) {
+            for ( InternalWorkingMemory workingMemory : workingMemories ) {
+                workingMemory.clearNodeMemory( this );
+            }
             tupleSource.removeTupleSink(this);
         }
     }
