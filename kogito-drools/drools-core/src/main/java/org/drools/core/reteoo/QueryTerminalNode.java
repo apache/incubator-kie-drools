@@ -304,8 +304,14 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new RuleTerminalNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
-    }    
-    
+    }
+
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
+                                     final LeftTupleSink sink) {
+        return new RuleTerminalNodeLeftTuple(factHandle,leftTuple, sink );
+    }
+
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
                                      PropagationContext pctx,

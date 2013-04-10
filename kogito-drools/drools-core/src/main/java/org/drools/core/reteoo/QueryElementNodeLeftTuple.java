@@ -37,6 +37,12 @@ public class QueryElementNodeLeftTuple extends BaseLeftTuple {
               leftTupleMemoryEnabled);
     }
 
+    public QueryElementNodeLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
+                                     final LeftTupleSink sink) {
+        super( factHandle, leftTuple, sink );
+    }
+
     public QueryElementNodeLeftTuple(final LeftTuple leftTuple,
                                      final LeftTupleSink sink,
                                      final PropagationContext pctx,

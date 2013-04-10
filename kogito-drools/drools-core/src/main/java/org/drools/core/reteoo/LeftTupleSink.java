@@ -73,7 +73,11 @@ public interface LeftTupleSink
     LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                               LeftTupleSink sink,
                               boolean leftTupleMemoryEnabled);
-    
+
+    LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                              final LeftTuple leftTuple,
+                              final LeftTupleSink sink);
+
     LeftTuple createLeftTuple(LeftTuple leftTuple,
                               LeftTupleSink sink,
                               PropagationContext pctx,

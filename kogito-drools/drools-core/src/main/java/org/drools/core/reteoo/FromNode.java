@@ -618,8 +618,14 @@ public class FromNode extends LeftTupleSource
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
-    }    
-    
+    }
+
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
+                                     final LeftTupleSink sink) {
+        return new FromNodeLeftTuple(factHandle,leftTuple, sink );
+    }
+
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {

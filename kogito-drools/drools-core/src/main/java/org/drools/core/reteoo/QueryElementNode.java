@@ -721,6 +721,12 @@ public class QueryElementNode extends LeftTupleSource
                                               leftTupleMemoryEnabled );
     }
 
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
+                                     final LeftTupleSink sink) {
+        return new QueryElementNodeLeftTuple(factHandle,leftTuple, sink );
+    }
+
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {

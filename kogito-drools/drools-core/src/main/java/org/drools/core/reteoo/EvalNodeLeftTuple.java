@@ -46,6 +46,12 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
               leftTupleMemoryEnabled);
     }
 
+    public EvalNodeLeftTuple(final InternalFactHandle factHandle,
+                             final LeftTuple leftTuple,
+                             final LeftTupleSink sink) {
+        super( factHandle, leftTuple, sink );
+    }
+
     public EvalNodeLeftTuple(final LeftTuple leftTuple,
                              final LeftTupleSink sink,
                              final PropagationContext pctx,

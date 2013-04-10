@@ -43,6 +43,12 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
               leftTupleMemoryEnabled);
     }
 
+    public NotNodeLeftTuple(final InternalFactHandle factHandle,
+                            final LeftTuple leftTuple,
+                            final LeftTupleSink sink) {
+        super( factHandle, leftTuple, sink );
+    }
+
     public NotNodeLeftTuple(final LeftTuple leftTuple,
                             final LeftTupleSink sink,
                             final PropagationContext pctx,
