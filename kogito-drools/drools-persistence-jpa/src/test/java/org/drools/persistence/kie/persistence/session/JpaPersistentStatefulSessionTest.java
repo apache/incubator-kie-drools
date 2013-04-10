@@ -356,7 +356,22 @@ public class JpaPersistentStatefulSessionTest {
     @Test
     public void testMergeConfig() {
         // JBRULES-3155
+        String str = "";
+        str += "package org.kie.test\n";
+        str += "global java.util.List list\n";
+        str += "rule rule1\n";
+        str += "when\n";
+        str += "  $i : Integer(intValue > 0)\n";
+        str += "then\n";
+        str += "  list.add( $i );\n";
+        str += "end\n";
+        str += "\n";
+
         KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        ks.newKieBuilder( kfs ).buildAll();
+
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
 
         Properties properties = new Properties();

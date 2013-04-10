@@ -41,12 +41,12 @@ public class ScorecardReasonCodeTest {
         drl = scorecardCompiler.getDRL();
         Assert.assertNotNull(drl);
         assertTrue(drl.length() > 0);
-        //System.out.println(drl);
+
+        pmmlDocument = scorecardCompiler.getPMMLDocument();
     }
 
     @Test
     public void testPMMLDocument() throws Exception {
-        pmmlDocument = scorecardCompiler.getPMMLDocument();
         Assert.assertNotNull(pmmlDocument);
 
         String pmml = scorecardCompiler.getPMML();
