@@ -24,11 +24,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Alternative;
+
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.utils.MVELUtils;
+import org.jbpm.shared.services.cdi.Selectable;
 import org.kie.internal.task.api.UserGroupCallback;
 
+@Alternative
+@Selectable
 public class MvelUserGroupCallbackImpl implements UserGroupCallback {
 
     private Map<UserImpl, List<GroupImpl>> userGroupMapping;

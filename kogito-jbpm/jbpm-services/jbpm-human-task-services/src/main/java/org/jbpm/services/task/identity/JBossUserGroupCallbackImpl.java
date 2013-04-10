@@ -27,11 +27,13 @@ import java.util.Properties;
 import java.util.Set;
 import javax.enterprise.inject.Alternative;
 
+import org.jbpm.shared.services.cdi.Selectable;
 import org.kie.internal.task.api.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Alternative
+@Selectable
 public class JBossUserGroupCallbackImpl implements UserGroupCallback {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JBossUserGroupCallbackImpl.class);

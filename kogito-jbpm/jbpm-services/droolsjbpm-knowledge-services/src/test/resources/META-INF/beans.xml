@@ -29,6 +29,7 @@
     <alternatives>
         <class>org.jbpm.services.task.lifecycle.listeners.JPATaskLifeCycleEventListener</class>
         <class>org.jbpm.shared.services.impl.TestVFSFileServiceImpl</class>
+        <class>org.jbpm.services.task.identity.MvelUserGroupCallbackImpl</class>
         <class>org.droolsjbpm.services.impl.util.BTMTransactionManagerSynchronizations</class>
         <!--class>org.jbpm.services.task.impl.CommandBasedTaskInstanceServiceImpl</class-->
     </alternatives>

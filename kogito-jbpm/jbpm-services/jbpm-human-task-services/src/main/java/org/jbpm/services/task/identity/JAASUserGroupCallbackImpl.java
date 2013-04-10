@@ -29,6 +29,7 @@ import javax.enterprise.inject.Alternative;
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
 
+import org.jbpm.shared.services.cdi.Selectable;
 import org.kie.internal.task.api.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Alternative
+@Selectable
 public class JAASUserGroupCallbackImpl implements UserGroupCallback {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JAASUserGroupCallbackImpl.class);

@@ -32,6 +32,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 
+import org.jbpm.shared.services.cdi.Selectable;
 import org.kie.internal.task.api.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,7 @@ import org.slf4j.LoggerFactory;
  */
 
 @Alternative
+@Selectable
 public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
     
     private static final Logger logger = LoggerFactory.getLogger(LDAPUserGroupCallbackImpl.class);

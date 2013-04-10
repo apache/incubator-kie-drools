@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
@@ -30,12 +31,14 @@ import javax.transaction.UserTransaction;
 
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.shared.services.cdi.Selectable;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
 import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
+import org.kie.internal.task.api.UserGroupCallback;
 
 /**
  *
@@ -49,6 +52,15 @@ public class TestEnvironmentProducer {
     
     
     private EntityManagerFactory emf;
+    
+    @Inject
+    @Selectable
+    private UserGroupCallback userGroupCallback;
+
+    @Produces
+    public UserGroupCallback produceSelectedUserGroupCalback() {
+        return userGroupCallback;
+    }
     
     @PersistenceUnit(unitName = "org.jbpm.domain")
     @ApplicationScoped
@@ -106,19 +118,6 @@ public class TestEnvironmentProducer {
     @Named("ioStrategy")
     public IOService prepareFileSystem() {
 
-        try {
-            final String userName = "guvnorngtestuser1";
-            final String password = "test1234";
-            final URI fsURI = URI.create( "git://jbpm-playground" );
-
-            final Map<String, Object> env = new HashMap<String, Object>();
-            env.put( "username", userName );
-            env.put( "password", password );
-            env.put( "origin", ORIGIN_URL );
-            ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
-        } catch ( Exception e ) {
-            System.out.println( ">>>>>>>>>>>>>>>>>>> E " + e.getMessage() );
-        }
         return ioService;
     }
     

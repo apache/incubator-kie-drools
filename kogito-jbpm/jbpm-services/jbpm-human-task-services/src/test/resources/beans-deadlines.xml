@@ -28,6 +28,7 @@
         <class>org.jbpm.services.task.lifecycle.listeners.JPATaskLifeCycleEventListener</class>
         <class>org.jbpm.services.task.impl.command.CommandBasedTaskInstanceServiceImpl</class>
         <class>org.jbpm.services.task.identity.PropertyUserInfoImpl</class>
+        <class>org.jbpm.services.task.identity.MvelUserGroupCallbackImpl</class>
     </alternatives>
     <decorators>
         <class>org.jbpm.services.task.identity.UserGroupTaskQueryServiceDecorator</class>
