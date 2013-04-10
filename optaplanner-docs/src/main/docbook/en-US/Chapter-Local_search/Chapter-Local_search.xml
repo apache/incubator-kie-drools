@@ -449,8 +449,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         <itemizedlist>
           <listitem>
             <para>An <literal>minimalAcceptedSelection</literal> integer, which specifies how many accepted moves should
-            have be evaluated during each step. By default it is positive infinity, so all accepted moves are evaluated
-            at every step.</para>
+            be evaluated during each step. By default, all accepted moves are evaluated at every step.</para>
 
             <programlisting language="xml">  &lt;forager&gt;
     &lt;minimalAcceptedSelection&gt;1000&lt;/minimalAcceptedSelection&gt;
