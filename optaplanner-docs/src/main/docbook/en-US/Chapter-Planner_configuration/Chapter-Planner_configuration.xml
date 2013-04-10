@@ -924,6 +924,12 @@ public class Visit ... implements Appearance {
         <para><emphasis>All planning entities are automatically inserted into the Drools working memory.</emphasis> Do
         not add them in the method <literal>getProblemFacts()</literal>.</para>
 
+        <note>
+          <para>A common mistake is to use <literal>facts.add(...)</literal> instead of
+          <literal>fact.addAll(...)</literal> for a <literal>Collection</literal>, which leads to score rules failing to
+          match because the elements of that <literal>Collection</literal> aren't in the Drools working memory.</para>
+        </note>
+
         <para>The method <literal>getProblemFacts()</literal> is not called much: at most only once per solver phase per
         solver thread.</para>
       </section>
