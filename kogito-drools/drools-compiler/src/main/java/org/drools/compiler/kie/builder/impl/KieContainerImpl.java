@@ -146,7 +146,7 @@ public class KieContainerImpl
     }
 
     public KieSession getKieSession() {
-        KieSessionModel defaultKieSessionModel = findKieSessionModel("Cannot find a defualt KieSession");
+        KieSessionModel defaultKieSessionModel = findKieSessionModel(false);
         return getKieSession(defaultKieSessionModel.getName());
     }
 
@@ -159,14 +159,14 @@ public class KieContainerImpl
     }
 
     public KieSession newKieSession(Environment environment, KieSessionConfiguration conf) {
-        KieSessionModel defaultKieSessionModel = findKieSessionModel("Cannot find a defualt KieSession");
+        KieSessionModel defaultKieSessionModel = findKieSessionModel(false);
         return newKieSession(defaultKieSessionModel.getName(), environment, conf);
     }
 
-    private KieSessionModel findKieSessionModel(String errorMessage) {
-        KieSessionModel defaultKieSessionModel = kProject.getDefaultKieSession();
+    private KieSessionModel findKieSessionModel(boolean stateless) {
+        KieSessionModel defaultKieSessionModel = stateless ? kProject.getDefaultStatelessKieSession() : kProject.getDefaultKieSession();
         if (defaultKieSessionModel == null) {
-            throw new RuntimeException("Cannot find a defualt KieSession");
+            throw new RuntimeException(stateless ? "Cannot find a defualt StatelessKieSession" : "Cannot find a defualt KieSession");
         }
         return defaultKieSessionModel;
     }
@@ -176,12 +176,12 @@ public class KieContainerImpl
     }
 
     public StatelessKieSession newStatelessKieSession(KieSessionConfiguration conf) {
-        KieSessionModel defaultKieSessionModel = findKieSessionModel("Cannot find a defualt StatelessKieSession");
+        KieSessionModel defaultKieSessionModel = findKieSessionModel(true);
         return newStatelessKieSession(defaultKieSessionModel.getName(), conf);
     }
 
     public StatelessKieSession getStatelessKieSession() {
-        KieSessionModel defaultKieSessionModel = findKieSessionModel("Cannot find a defualt StatelessKieSession");
+        KieSessionModel defaultKieSessionModel = findKieSessionModel(true);
         return getStatelessKieSession(defaultKieSessionModel.getName());
     }
 

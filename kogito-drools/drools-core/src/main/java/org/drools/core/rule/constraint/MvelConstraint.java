@@ -342,13 +342,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     // Slot specific
 
     public long getListenedPropertyMask(List<String> settableProperties) {
-        if (conditionEvaluator == null) {
-            return calculateMaskFromExpression(settableProperties);
-        }
-        if (analyzedCondition == null) {
-            analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition();
-        }
-        return calculateMask(analyzedCondition, settableProperties);
+        return analyzedCondition != null ?
+                calculateMask(analyzedCondition, settableProperties) :
+                calculateMaskFromExpression(settableProperties);
     }
 
     private long calculateMaskFromExpression(List<String> settableProperties) {
@@ -435,12 +431,16 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
         if (invocation instanceof MethodInvocation) {
             Method method = ((MethodInvocation)invocation).getMethod();
-            if (method == null && invocations.size() > 1) {
-                invocation = invocations.get(1);
-                if (invocation instanceof MethodInvocation) {
-                    method = ((MethodInvocation)invocation).getMethod();
-                } else if (invocation instanceof FieldAccessInvocation) {
-                    return ((FieldAccessInvocation)invocation).getField().getName();
+            if (method == null) {
+                if (invocations.size() > 1) {
+                    invocation = invocations.get(1);
+                    if (invocation instanceof MethodInvocation) {
+                        method = ((MethodInvocation)invocation).getMethod();
+                    } else if (invocation instanceof FieldAccessInvocation) {
+                        return ((FieldAccessInvocation)invocation).getField().getName();
+                    }
+                } else {
+                    return null;
                 }
             }
             return getter2property(method.getName());
