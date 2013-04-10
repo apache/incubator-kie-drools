@@ -182,8 +182,14 @@ public class MockLeftTupleSink extends LeftTupleSource
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new LeftTupleImpl(factHandle, sink, leftTupleMemoryEnabled );
-    }    
-    
+    }
+
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
+                                     final LeftTupleSink sink) {
+        return new LeftTupleImpl(factHandle,leftTuple, sink );
+    }
+
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
                                      PropagationContext pctx,

@@ -38,6 +38,12 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
         super(factHandle, sink, leftTupleMemoryEnabled);
     }
 
+    public JoinNodeLeftTuple(final InternalFactHandle factHandle,
+                             final LeftTuple leftTuple,
+                             final LeftTupleSink sink) {
+        super( factHandle, leftTuple, sink );
+    }
+
     public JoinNodeLeftTuple(final LeftTuple leftTuple,
                              final LeftTupleSink sink,
                              final PropagationContext pctx,

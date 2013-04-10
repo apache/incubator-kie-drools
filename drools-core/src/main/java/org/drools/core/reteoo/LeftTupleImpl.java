@@ -43,6 +43,12 @@ public class LeftTupleImpl extends BaseLeftTuple {
               leftTupleMemoryEnabled);
     }
 
+    public LeftTupleImpl(final InternalFactHandle factHandle,
+                         final LeftTuple leftTuple,
+                         final LeftTupleSink sink) {
+        super( factHandle, leftTuple, sink );
+    }
+
     public LeftTupleImpl(final LeftTuple leftTuple,
                          final LeftTupleSink sink,
                          final PropagationContext pctx,

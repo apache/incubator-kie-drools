@@ -269,8 +269,14 @@ public class QueryRiaFixerNode extends LeftTupleSource
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return this.betaNode.createLeftTuple( factHandle, this.betaNode, leftTupleMemoryEnabled  );
-    }    
-    
+    }
+
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
+                                     final LeftTupleSink sink) {
+        return this.betaNode.createLeftTuple(factHandle,leftTuple, sink );
+    }
+
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {

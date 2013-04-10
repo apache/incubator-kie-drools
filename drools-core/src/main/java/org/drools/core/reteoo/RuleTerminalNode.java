@@ -564,6 +564,12 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         }
     }
 
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
+                                     final LeftTupleSink sink) {
+        return new RuleTerminalNodeLeftTuple(factHandle,leftTuple, sink );
+    }
+
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {

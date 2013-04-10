@@ -2305,4 +2305,86 @@ public class AccumulateTest extends CommonTestMethodBase {
             this.kids = kids;
         }
     }
+
+    public static class Course {
+        private int minWorkingDaySize;
+
+        public Course(int minWorkingDaySize) {
+            this.minWorkingDaySize = minWorkingDaySize;
+        }
+
+        public int getMinWorkingDaySize() {
+            return minWorkingDaySize;
+        }
+
+        public void setMinWorkingDaySize(int minWorkingDaySize) {
+            this.minWorkingDaySize = minWorkingDaySize;
+        }
+    }
+
+    public static class Lecture {
+        private Course course;
+        private int day;
+
+        public Lecture(Course course, int day) {
+            this.course = course;
+            this.day = day;
+        }
+
+        public Course getCourse() {
+            return course;
+        }
+
+        public void setCourse(Course course) {
+            this.course = course;
+        }
+
+        public int getDay() {
+            return day;
+        }
+
+        public void setDay(int day) {
+            this.day = day;
+        }
+    }
+
+    @Test
+    public void testAccumulateWithExists() {
+        String str =
+                "import org.drools.compiler.integrationtests.AccumulateTest.Course\n" +
+                "import org.drools.compiler.integrationtests.AccumulateTest.Lecture\n" +
+                "rule \"minimumWorkingDays\"\n" +
+                "    when\n" +
+                "        $course : Course($minWorkingDaySize : minWorkingDaySize)\n" +
+                "        $dayCount : Number(intValue <= $minWorkingDaySize) from accumulate(\n" +
+                "            $day : Integer()\n" +
+                "            and exists Lecture(course == $course, day == $day),\n" +
+                "            count($day)\n" +
+                "        )\n" +
+                "        // An uninitialized schedule should have no constraints broken\n" +
+                "        exists Lecture(course == $course)\n" +
+                "    then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Integer day1 = 1;
+        Integer day2 = 2;
+        Integer day3 = 3;
+
+        Course c = new Course(2);
+
+        Lecture l1 = new Lecture(c, day1);
+        Lecture l2 = new Lecture(c, day2);
+
+        ksession.insert(day1);
+        ksession.insert(day2);
+        ksession.insert(day3);
+        ksession.insert(c);
+        ksession.insert(l1);
+        ksession.insert(l2);
+
+        assertEquals(1, ksession.fireAllRules());
+    }
 }

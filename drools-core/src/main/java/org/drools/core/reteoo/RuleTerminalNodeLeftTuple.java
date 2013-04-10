@@ -37,6 +37,12 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple {
               leftTupleMemoryEnabled);
     }
 
+    public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
+                                     final LeftTupleSink sink) {
+        super( factHandle, leftTuple, sink );
+    }
+
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                                      final LeftTupleSink sink,
                                      final PropagationContext pctx,

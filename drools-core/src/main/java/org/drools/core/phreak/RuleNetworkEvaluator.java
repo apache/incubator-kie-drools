@@ -2866,7 +2866,7 @@ public class RuleNetworkEvaluator {
 
                 accctx.setResultFactHandle(handle);
 
-                accctx.setResultLeftTuple(accNode.createLeftTuple(handle, leftTuple, sink));
+                accctx.setResultLeftTuple(sink.createLeftTuple(handle, leftTuple, sink));
             } else {
                 accctx.getResultFactHandle().setObject(result);
             }
