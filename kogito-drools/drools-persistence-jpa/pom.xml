@@ -38,13 +38,12 @@
             <Import-Package>
               javax.transaction;resolution:=optional,
               javax.naming;resolution:=optional,
-              org.osgi.framework.*;resolution:=optional,
-              javax.naming;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>
               org.drools.persistence.*
             </Export-Package>
+            <Private-Package></Private-Package>
             <Bundle-Activator>org.drools.persistence.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
