@@ -21,7 +21,7 @@ import java.util.Properties;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.EnvironmentFactory;
-import org.kie.internal.KieBaseConfiguration;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactoryService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
