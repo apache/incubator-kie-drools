@@ -45,7 +45,7 @@ public class Manners2009SolutionInitializer implements CustomSolverPhaseCommand 
         // TODO the planning entity list from the solution should be used and might already contain initialized entities
         List<SeatDesignation> seatDesignationList = createSeatDesignationList(manners2009);
         // Assign one guest at a time
-        List<Seat> undesignatedSeatList = manners2009.getSeatList();
+        List<Seat> undesignatedSeatList = new ArrayList<Seat>(manners2009.getSeatList());
         for (SeatDesignation seatDesignation : seatDesignationList) {
             Score bestScore = SimpleScore.valueOf(Integer.MIN_VALUE);
             Seat bestSeat = null;
