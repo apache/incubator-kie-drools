@@ -3998,6 +3998,7 @@ public class RuleNetworkEvaluator {
                 }
                 rtnNode.retractLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);
                 leftTuple.clearStaged();
+                leftTuple.setObject(null);
                 leftTuple = next;
             }
         }
