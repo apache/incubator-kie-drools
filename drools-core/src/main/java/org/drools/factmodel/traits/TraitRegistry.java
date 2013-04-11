@@ -90,7 +90,14 @@ public class TraitRegistry implements Externalizable {
             if ( other.traits != null ) {
                 for ( String traitName : other.traits.keySet() ) {
                     ClassDefinition trait = other.traits.get( traitName );
-                    hierarchy.encode( trait.getName(), Arrays.asList( trait.getInterfaces() ) );
+                    List<String> intfs = Arrays.asList( trait.getInterfaces() );
+                    List<String> parentTraits = new ArrayList<String>( intfs.size() );
+                    for ( String candidateIntf : intfs ) {
+                        if ( hierarchy.getCode( candidateIntf ) != null ) {
+                            parentTraits.add( candidateIntf );
+                        }
+                    }
+                    hierarchy.encode( trait.getName(), parentTraits );
                 }
             }
         }
