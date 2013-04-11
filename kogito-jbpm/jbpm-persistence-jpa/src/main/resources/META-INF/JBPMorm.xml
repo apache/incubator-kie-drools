@@ -24,7 +24,7 @@ from
     CorrelationKeyInfo key left join key.properties props 
 where 
     size(key.properties) = cast(:elem_count as integer) and 
-    props.value in ( :properties )
+    props.value in :properties 
     group by key.id 
 having count(key.id) = :elem_count
           </query>
