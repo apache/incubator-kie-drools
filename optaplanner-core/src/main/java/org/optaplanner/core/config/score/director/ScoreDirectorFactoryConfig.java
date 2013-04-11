@@ -29,6 +29,7 @@ import org.apache.commons.io.IOUtils;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -37,6 +38,8 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.KieResources;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.conf.PhreakOption;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
@@ -309,8 +312,11 @@ public class ScoreDirectorFactoryConfig {
                         + results.toString());
             }
             KieContainer kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
-            KieBase kieBase = kieContainer.getKieBase();
-            // ruleBaseConfiguration.setOption(PhreakOption.ENABLED);
+
+            KieBaseConfiguration kieBaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            // kieBaseConf.setOption(PhreakOption.ENABLED);
+            KieBase kieBase = kieContainer.newKieBase(kieBaseConf);
+
             return kieBase;
         }
     }
