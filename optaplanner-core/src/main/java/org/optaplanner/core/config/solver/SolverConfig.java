@@ -130,10 +130,10 @@ public class SolverConfig {
         solver.setBasicPlumbingTermination(basicPlumbingTermination);
         EnvironmentMode environmentMode = this.environmentMode == null ? EnvironmentMode.REPRODUCIBLE
                 : this.environmentMode;
-        if (environmentMode != EnvironmentMode.PRODUCTION) {
-            if (randomSeed != null) {
-                solver.setRandomSeed(randomSeed);
-            } else {
+        if (randomSeed != null) {
+            solver.setRandomSeed(randomSeed);
+        } else {
+            if (environmentMode != EnvironmentMode.PRODUCTION) {
                 solver.setRandomSeed(DEFAULT_RANDOM_SEED);
             }
         }
