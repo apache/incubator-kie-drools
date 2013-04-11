@@ -118,7 +118,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.flow-persistence-jpa;singleton:=true</Bundle-SymbolicName>
+            <Bundle-SymbolicName>org.jbpm.persistence.jpa;singleton:=true</Bundle-SymbolicName>
             <Import-Package>
               javax.transaction.*;resolution:=optional,
               *
