@@ -58,7 +58,7 @@ public abstract class SolutionDaoTest extends LoggingTest {
             }
         }
         File solvedDataDir = new File(dataDir, "solved");
-        if (unsolvedDataDir.exists()) {
+        if (solvedDataDir.exists()) {
             List<File> solvedFileList = Arrays.asList(solvedDataDir.listFiles(new SolutionFileFilter(solutionDao)));
             Collections.sort(solvedFileList);
             for (File solvedFile : solvedFileList) {
