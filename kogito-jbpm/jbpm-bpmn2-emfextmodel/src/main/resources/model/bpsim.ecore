@@ -554,7 +554,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ElementParametersType" eSuperTypes="#//ElementParameters">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
-      <details key="name" value="ElementParameters_._type"/>
+      <details key="name" value="ElementParametersType"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
   </eClassifiers>
@@ -952,7 +952,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="elementParameters" upperBound="-1"
-        eType="#//ElementParametersType" containment="true" resolveProxies="false">
+        eType="#//ElementParameters" containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
         <details key="name" value="ElementParameters"/>

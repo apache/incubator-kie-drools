@@ -65,7 +65,7 @@ public interface Scenario extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Element Parameters</b></em>' containment reference list.
-	 * The list contents are of type {@link bpsim.ElementParametersType}.
+	 * The list contents are of type {@link bpsim.ElementParameters}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Element Parameters</em>' containment reference list isn't clear,
@@ -78,7 +78,7 @@ public interface Scenario extends EObject {
 	 *        extendedMetaData="kind='element' name='ElementParameters' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	EList<ElementParametersType> getElementParameters();
+	EList<ElementParameters> getElementParameters();
 
 	/**
 	 * Returns the value of the '<em><b>Calendar</b></em>' containment reference list.

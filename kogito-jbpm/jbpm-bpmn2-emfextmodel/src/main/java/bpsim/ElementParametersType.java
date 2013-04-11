@@ -10,7 +10,7 @@ package bpsim;
  *
  *
  * @see bpsim.BpsimPackage#getElementParametersType()
- * @model extendedMetaData="name='ElementParameters_._type' kind='elementOnly'"
+ * @model extendedMetaData="name='ElementParametersType' kind='elementOnly'"
  * @generated
  */
 public interface ElementParametersType extends ElementParameters {

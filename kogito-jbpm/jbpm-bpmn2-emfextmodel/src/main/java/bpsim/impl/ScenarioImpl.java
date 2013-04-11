@@ -4,6 +4,7 @@ package bpsim.impl;
 
 import bpsim.BpsimPackage;
 import bpsim.Calendar;
+import bpsim.ElementParameters;
 import bpsim.ElementParametersType;
 import bpsim.Scenario;
 import bpsim.ScenarioParametersType;
@@ -70,7 +71,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<ElementParametersType> elementParameters;
+	protected EList<ElementParameters> elementParameters;
 
 	/**
 	 * The cached value of the '{@link #getCalendar() <em>Calendar</em>}' containment reference list.
@@ -359,9 +360,9 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<ElementParametersType> getElementParameters() {
+	public EList<ElementParameters> getElementParameters() {
 		if (elementParameters == null) {
-			elementParameters = new EObjectContainmentEList<ElementParametersType>(ElementParametersType.class, this, BpsimPackage.SCENARIO__ELEMENT_PARAMETERS);
+			elementParameters = new EObjectContainmentEList<ElementParameters>(ElementParameters.class, this, BpsimPackage.SCENARIO__ELEMENT_PARAMETERS);
 		}
 		return elementParameters;
 	}
@@ -674,7 +675,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 				return;
 			case BpsimPackage.SCENARIO__ELEMENT_PARAMETERS:
 				getElementParameters().clear();
-				getElementParameters().addAll((Collection<? extends ElementParametersType>)newValue);
+				getElementParameters().addAll((Collection<? extends ElementParameters>)newValue);
 				return;
 			case BpsimPackage.SCENARIO__CALENDAR:
 				getCalendar().clear();

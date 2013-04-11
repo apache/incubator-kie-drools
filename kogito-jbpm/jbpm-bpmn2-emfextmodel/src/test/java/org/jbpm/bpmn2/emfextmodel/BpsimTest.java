@@ -79,7 +79,7 @@ private ResourceSet resourceSet;
         ScenarioParametersType scenarioParams = BpsimFactory.eINSTANCE.createScenarioParametersType();
         scenarioParams.setBaseTimeUnit(TimeUnit.S);
         defaultScenario.setScenarioParameters(scenarioParams);
-        ElementParametersType elementParams = BpsimFactory.eINSTANCE.createElementParametersType();
+        ElementParameters elementParams = BpsimFactory.eINSTANCE.createElementParameters();
         TimeParameters elementTimeParams = BpsimFactory.eINSTANCE.createTimeParameters();
         
         Parameter processingTimeParameter = BpsimFactory.eINSTANCE.createParameter();
