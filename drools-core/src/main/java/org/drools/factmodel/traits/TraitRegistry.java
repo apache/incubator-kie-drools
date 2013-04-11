@@ -90,9 +90,8 @@ public class TraitRegistry implements Externalizable {
             if ( other.traits != null ) {
                 for ( String traitName : other.traits.keySet() ) {
                     ClassDefinition trait = other.traits.get( traitName );
-                    List<String> intfs = Arrays.asList( trait.getInterfaces() );
-                    List<String> parentTraits = new ArrayList<String>( intfs.size() );
-                    for ( String candidateIntf : intfs ) {
+                    List<String> parentTraits = new ArrayList<String>( );
+                    for ( String candidateIntf : trait.getInterfaces() ) {
                         if ( hierarchy.getCode( candidateIntf ) != null ) {
                             parentTraits.add( candidateIntf );
                         }
@@ -101,8 +100,6 @@ public class TraitRegistry implements Externalizable {
                 }
             }
         }
-
-
     }
 
     public Map<String, ClassDefinition> getTraits() {
