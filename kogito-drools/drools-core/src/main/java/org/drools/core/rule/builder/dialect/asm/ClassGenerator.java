@@ -69,17 +69,18 @@ import static org.mvel2.asm.Opcodes.T_FLOAT;
 import static org.mvel2.asm.Opcodes.T_INT;
 import static org.mvel2.asm.Opcodes.T_LONG;
 import static org.mvel2.asm.Opcodes.T_SHORT;
-import static org.mvel2.asm.Opcodes.V1_5;
+import static org.mvel2.asm.Opcodes.V1_6;
 
 public class ClassGenerator {
 
     private static final boolean DUMP_GENERATED_CLASSES = false;
 
+    public static final int JAVA_VERSION = V1_6;
+
     private final String className;
     private final TypeResolver typeResolver;
     private final ClassLoader classLoader;
 
-    private int version = V1_5;
     private int access = ACC_PUBLIC + ACC_SUPER;
     private String signature;
     private Class superClass = Object.class;
@@ -123,7 +124,7 @@ public class ClassGenerator {
     public byte[] generateBytecode() {
         if (bytecode == null) {
             ClassWriter cw = new InternalClassWriter(classLoader, ClassWriter.COMPUTE_MAXS);
-            cw.visit(version, access, getClassDescriptor(), signature, getSuperClassDescriptor(), toInteralNames(interfaces));
+            cw.visit(JAVA_VERSION, access, getClassDescriptor(), signature, getSuperClassDescriptor(), toInteralNames(interfaces));
             for (int i = 0; i < classParts.size(); i++) { // don't use iterator to allow method visits to add more class fields and methods
                 classParts.get(i).write(this, cw);
             }
@@ -210,11 +211,6 @@ public class ClassGenerator {
     public String getSuperClassDescriptor() {
         if (superDescriptor == null) superDescriptor = toInteralName(superClass);
         return superDescriptor;
-    }
-
-    public ClassGenerator setVersion(int version) {
-        this.version = version;
-        return this;
     }
 
     public ClassGenerator setAccess(int access) {

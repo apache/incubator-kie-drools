@@ -210,6 +210,10 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
             //System.out.println( "Ancestors of " + x + " >> " + ancestors );
             //System.out.println( "Affected " + x + " >> " + affectedAncestors );
 
+            if ( affectedAncestors.size() == 0 ) {
+                return;
+            }
+
             Set<HierNode<T>> gcs = gcs( affectedAncestors );
             //System.out.println( "GCS of Affected " + gcs );
 

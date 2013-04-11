@@ -19,6 +19,7 @@ package org.drools.core.factmodel.traits;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
 import org.mvel2.asm.*;
@@ -87,7 +88,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
             }
         }
         
-        cw.visit( V1_5, ACC_PUBLIC + ACC_SUPER,
+        cw.visit( ClassGenerator.JAVA_VERSION, ACC_PUBLIC + ACC_SUPER,
                 internalWrapper,
                 Type.getDescriptor( Object.class ) + Type.getDescriptor( Map.class ) + Type.getDescriptor( MapWrapper.class ),
 //                "Ljava/lang/Object;Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;Lorg/drools/factmodel/traits/MapWrapper;",

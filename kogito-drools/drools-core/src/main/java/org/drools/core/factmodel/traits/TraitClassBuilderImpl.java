@@ -20,6 +20,7 @@ import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.GeneratedFact;
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
@@ -58,7 +59,7 @@ public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
                 intfaces[ tmp.length + 2 ] = Type.getInternalName( GeneratedFact.class );
             }
 
-            cw.visit( V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,
+            cw.visit( ClassGenerator.JAVA_VERSION, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,
                     cName,
                     genericTypes,
                     superType,
