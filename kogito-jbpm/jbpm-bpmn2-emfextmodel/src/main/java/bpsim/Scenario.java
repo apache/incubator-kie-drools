@@ -45,13 +45,13 @@ public interface Scenario extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Scenario Parameters</em>' containment reference.
-	 * @see #setScenarioParameters(ScenarioParametersType)
+	 * @see #setScenarioParameters(ScenarioParameters)
 	 * @see bpsim.BpsimPackage#getScenario_ScenarioParameters()
 	 * @model containment="true"
 	 *        extendedMetaData="kind='element' name='ScenarioParameters' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	ScenarioParametersType getScenarioParameters();
+	ScenarioParameters getScenarioParameters();
 
 	/**
 	 * Sets the value of the '{@link bpsim.Scenario#getScenarioParameters <em>Scenario Parameters</em>}' containment reference.
@@ -61,7 +61,7 @@ public interface Scenario extends EObject {
 	 * @see #getScenarioParameters()
 	 * @generated
 	 */
-	void setScenarioParameters(ScenarioParametersType value);
+	void setScenarioParameters(ScenarioParameters value);
 
 	/**
 	 * Returns the value of the '<em><b>Element Parameters</b></em>' containment reference list.

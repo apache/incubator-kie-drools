@@ -7,6 +7,7 @@ import bpsim.Calendar;
 import bpsim.ElementParameters;
 import bpsim.ElementParametersType;
 import bpsim.Scenario;
+import bpsim.ScenarioParameters;
 import bpsim.ScenarioParametersType;
 import bpsim.VendorExtension;
 
@@ -61,7 +62,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * @generated
 	 * @ordered
 	 */
-	protected ScenarioParametersType scenarioParameters;
+	protected ScenarioParameters scenarioParameters;
 
 	/**
 	 * The cached value of the '{@link #getElementParameters() <em>Element Parameters</em>}' containment reference list.
@@ -317,7 +318,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ScenarioParametersType getScenarioParameters() {
+	public ScenarioParameters getScenarioParameters() {
 		return scenarioParameters;
 	}
 
@@ -326,8 +327,8 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetScenarioParameters(ScenarioParametersType newScenarioParameters, NotificationChain msgs) {
-		ScenarioParametersType oldScenarioParameters = scenarioParameters;
+	public NotificationChain basicSetScenarioParameters(ScenarioParameters newScenarioParameters, NotificationChain msgs) {
+		ScenarioParameters oldScenarioParameters = scenarioParameters;
 		scenarioParameters = newScenarioParameters;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, BpsimPackage.SCENARIO__SCENARIO_PARAMETERS, oldScenarioParameters, newScenarioParameters);
@@ -341,7 +342,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setScenarioParameters(ScenarioParametersType newScenarioParameters) {
+	public void setScenarioParameters(ScenarioParameters newScenarioParameters) {
 		if (newScenarioParameters != scenarioParameters) {
 			NotificationChain msgs = null;
 			if (scenarioParameters != null)
@@ -671,7 +672,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case BpsimPackage.SCENARIO__SCENARIO_PARAMETERS:
-				setScenarioParameters((ScenarioParametersType)newValue);
+				setScenarioParameters((ScenarioParameters)newValue);
 				return;
 			case BpsimPackage.SCENARIO__ELEMENT_PARAMETERS:
 				getElementParameters().clear();
@@ -728,7 +729,7 @@ public class ScenarioImpl extends EObjectImpl implements Scenario {
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case BpsimPackage.SCENARIO__SCENARIO_PARAMETERS:
-				setScenarioParameters((ScenarioParametersType)null);
+				setScenarioParameters((ScenarioParameters)null);
 				return;
 			case BpsimPackage.SCENARIO__ELEMENT_PARAMETERS:
 				getElementParameters().clear();

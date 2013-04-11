@@ -943,7 +943,7 @@
       <details key="name" value="Scenario"/>
       <details key="kind" value="elementOnly"/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="scenarioParameters" eType="#//ScenarioParametersType"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="scenarioParameters" eType="#//ScenarioParameters"
         containment="true" resolveProxies="false">
       <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
         <details key="kind" value="element"/>
