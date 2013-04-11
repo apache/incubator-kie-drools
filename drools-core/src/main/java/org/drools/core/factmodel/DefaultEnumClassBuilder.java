@@ -16,6 +16,7 @@
 
 package org.drools.core.factmodel;
 
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.FieldVisitor;
@@ -105,7 +106,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
 
 
     protected void buildClassHeader(ClassWriter cw, EnumClassDefinition classDef) {
-        cw.visit( V1_5,
+        cw.visit( ClassGenerator.JAVA_VERSION,
                 ACC_PUBLIC + ACC_FINAL + ACC_SUPER + ACC_ENUM,
                 BuildUtils.getInternalType( classDef.getClassName() ),
                 "Ljava/lang/Enum<" + BuildUtils.getTypeDescriptor( classDef.getClassName() ) + ">;",

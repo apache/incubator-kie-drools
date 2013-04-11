@@ -19,6 +19,7 @@ package org.drools.core.factmodel;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.mvel2.asm.*;
 
 import java.beans.IntrospectionException;
@@ -576,7 +577,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             classModifiers += Opcodes.ACC_ABSTRACT;
         }
         // Building class header
-        cw.visit( Opcodes.V1_5,
+        cw.visit( ClassGenerator.JAVA_VERSION,
                 classModifiers,
                 BuildUtils.getInternalType( classDef.getClassName() ),
                 null,

@@ -48,6 +48,7 @@ import org.drools.core.base.extractors.BaseShortClassFieldReader;
 import org.drools.core.base.extractors.BaseShortClassFieldWriter;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.Label;
@@ -278,7 +279,7 @@ public class ClassFieldAccessorFactory {
     protected void buildClassHeader(final Class< ? > superClass,
                                     final String className,
                                     final ClassWriter cw) {
-        cw.visit( Opcodes.V1_5,
+        cw.visit( ClassGenerator.JAVA_VERSION,
                   Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
                   className,
                   null,

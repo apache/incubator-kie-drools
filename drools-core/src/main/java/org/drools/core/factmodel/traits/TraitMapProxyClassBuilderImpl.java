@@ -16,6 +16,7 @@
 
 package org.drools.core.factmodel.traits;
 
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
@@ -129,7 +130,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
 
 
-        cw.visit( V1_5, ACC_PUBLIC + ACC_SUPER,
+        cw.visit( ClassGenerator.JAVA_VERSION, ACC_PUBLIC + ACC_SUPER,
                 internalProxy,
                 null,
                 Type.getInternalName( proxyBaseClass ),

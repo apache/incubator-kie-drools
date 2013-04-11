@@ -19,6 +19,7 @@ package org.drools.core.factmodel.traits;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.TraitCoreWrapperClassBuilder;
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.mvel2.asm.*;
 
 import java.beans.IntrospectionException;
@@ -60,7 +61,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
         FieldVisitor fv;
         MethodVisitor mv;
 
-        cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER,
+        cw.visit(ClassGenerator.JAVA_VERSION, ACC_PUBLIC + ACC_SUPER,
                 BuildUtils.getInternalType( wrapperName ),
                 BuildUtils.getTypeDescriptor( coreName ) +
                         "Lorg/drools/core/factmodel/traits/CoreWrapper<" + BuildUtils.getTypeDescriptor( coreName ) + ">;",

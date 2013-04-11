@@ -3135,4 +3135,39 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+    public interface IntfParent {}
+
+    @Test
+    public void testTraitEncodeExtendingNonTrait() {
+
+        String s1 = "package test;\n" +
+                "import org.drools.compiler.factmodel.traits.TraitTest.IntfParent;\n" +
+                "" +
+                "declare IntfParent end\n" +
+                "" +
+                "declare trait TChild extends IntfParent end \n" +
+                "";
+
+        String s2 = "package test; declare trait SomeThing end \n";
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s2.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, kbase ); // not relevant
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder2.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder2.hasErrors() ) {
+            fail( kbuilder2.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder2.getKnowledgePackages() );
+
+    }
 }

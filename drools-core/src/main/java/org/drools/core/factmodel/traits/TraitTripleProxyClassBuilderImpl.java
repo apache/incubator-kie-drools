@@ -16,6 +16,7 @@
 
 package org.drools.core.factmodel.traits;
 
+import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
@@ -131,7 +132,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
 
 
-        cw.visit( V1_5,
+        cw.visit( ClassGenerator.JAVA_VERSION,
                 ACC_PUBLIC + ACC_SUPER,
                 internalProxy,
                 null,
