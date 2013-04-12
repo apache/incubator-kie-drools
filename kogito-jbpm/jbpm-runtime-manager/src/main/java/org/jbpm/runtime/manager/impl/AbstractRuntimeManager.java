@@ -18,7 +18,7 @@ import org.kie.internal.runtime.manager.RuntimeManager;
 
 public abstract class AbstractRuntimeManager implements RuntimeManager {
 
-    protected static List<String> activeSingletons = new CopyOnWriteArrayList<String>();
+    protected volatile static List<String> activeSingletons = new CopyOnWriteArrayList<String>();
     protected RuntimeEnvironment environment;
     
     protected String identifier;
