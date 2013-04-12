@@ -1444,7 +1444,7 @@ public class RuleNetworkEvaluator {
             ContextEntry[] contextEntry = bm.getContext();
             BetaConstraints constraints = notNode.getRawConstraints();
 
-            boolean resumeFromCurrent =  !(notNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison());
+            boolean iterateFromStart = notNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison();
 
             for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
                 RightTuple next = rightTuple.getStagedNext();
@@ -1508,7 +1508,7 @@ public class RuleNetworkEvaluator {
                             rootBlocker = ( RightTuple ) rootBlocker.getNext();
                         }
                     } else{
-                        resumeFromCurrent = false;
+                        iterateFromStart = true;
                     }
 
 
@@ -1534,7 +1534,7 @@ public class RuleNetworkEvaluator {
                                                     wm,
                                                     leftTuple);
 
-                        if (!resumeFromCurrent) {
+                        if (iterateFromStart) {
                             rootBlocker = notNode.getFirstRightTuple(leftTuple, rtm, null, rightIt);
                         }
 
@@ -1961,7 +1961,7 @@ public class RuleNetworkEvaluator {
             ContextEntry[] contextEntry = bm.getContext();
             BetaConstraints constraints = existsNode.getRawConstraints();
 
-            boolean resumeFromCurrent =  !(existsNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison());
+            boolean iterateFromStart = existsNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison();
 
             for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
                 RightTuple next = rightTuple.getStagedNext();
@@ -2015,7 +2015,7 @@ public class RuleNetworkEvaluator {
                             rootBlocker = ( RightTuple ) rootBlocker.getNext();
                         }
                     } else{
-                        resumeFromCurrent = false;
+                        iterateFromStart = true;
                     }
 
 
@@ -2041,7 +2041,7 @@ public class RuleNetworkEvaluator {
                                                     wm,
                                                     leftTuple);
 
-                        if (resumeFromCurrent) {
+                        if (iterateFromStart) {
                             rootBlocker = existsNode.getFirstRightTuple(leftTuple, rtm, null, rightIt);
                         }
 
@@ -4272,6 +4272,14 @@ public class RuleNetworkEvaluator {
                         // the next RightTuple was null, but current RightTuple was added back into the same bucket, so reset as root blocker to re-match can be attempted
                         tempRightTuple = rightTuple;
                     }
+
+                    if ( tempRightTuple != null && tempRightTuple.getPrevious() != null ) {
+                        RightTuple existingTempRightTuple = ((RightTuple)tempRightTuple.getPrevious()).getTempNextRightTuple();
+                        if ( existingTempRightTuple != null ) {
+                            tempRightTuple = existingTempRightTuple;
+                        }
+                    }
+
                     rightTuple.setTempNextRightTuple( tempRightTuple );
                 }  else {
                     rtm.removeAdd( rightTuple );
