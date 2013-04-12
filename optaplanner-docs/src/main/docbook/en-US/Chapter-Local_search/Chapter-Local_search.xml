@@ -280,7 +280,7 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
     the decision making is shown in the log:</para>
 
     <programlisting>INFO  Solver started: time spend (0), score (-6), new best score (-6), random seed (0).
-TRACE         Ignoring not doable move (col0@row0 =&gt; row0).
+TRACE         Move index (0) not doable, ignoring move (col0@row0 =&gt; row0).
 TRACE         Move index (1), score (-4), accepted (true) for move (col0@row0 =&gt; row1).
 TRACE         Move index (2), score (-4), accepted (true) for move (col0@row0 =&gt; row2).
 TRACE         Move index (3), score (-4), accepted (true) for move (col0@row0 =&gt; row3).

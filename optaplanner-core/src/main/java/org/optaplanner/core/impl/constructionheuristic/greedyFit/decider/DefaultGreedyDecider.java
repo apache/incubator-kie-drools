@@ -85,7 +85,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
                     break;
                 }
             } else {
-                logger.trace("        Ignoring not doable move ({}).", move);
+                logger.trace("        Move index ({}) not doable, ignoring move ({}).", moveScope.getMoveIndex(), move);
             }
             moveIndex++;
             // TODO break when terminator returns false. See DefaultDecider

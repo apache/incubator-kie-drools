@@ -74,7 +74,7 @@ public class ValuePlacer extends AbstractPlacer {
             }
             moveScope.setMove(move);
             if (!move.isMoveDoable(stepScope.getScoreDirector())) {
-                logger.trace("        Ignoring not doable move ({}).", move);
+                logger.trace("        Move index ({}) not doable, ignoring move ({}).", moveScope.getMoveIndex(), move);
             } else {
                 doMove(moveScope);
                 // TODO extract to PlacerForager

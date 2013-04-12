@@ -111,7 +111,7 @@ public class DefaultDecider implements Decider {
             moveScope.setMove(move);
             // TODO use Selector filtering to filter out not doable moves
             if (!move.isMoveDoable(scoreDirector)) {
-                logger.trace("        Ignoring not doable move ({}).", move);
+                logger.trace("        Move index ({}) not doable, ignoring move ({}).", moveScope.getMoveIndex(), move);
             } else {
                 doMove(moveScope);
                 if (forager.isQuitEarly()) {
