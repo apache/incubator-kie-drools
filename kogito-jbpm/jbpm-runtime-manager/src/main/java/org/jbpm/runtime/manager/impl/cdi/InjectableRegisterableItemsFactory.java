@@ -3,7 +3,9 @@ package org.jbpm.runtime.manager.impl.cdi;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
@@ -12,6 +14,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
 import org.jbpm.process.audit.AbstractAuditLogger;
+import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
 import org.jbpm.services.task.annotations.External;
@@ -32,9 +35,26 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     private ExternalTaskEventListener taskListener; 
     
     @Inject
+    private WorkItemHandlerProducer workItemHandlerProducer;
+    
+    @Inject
     private RuntimeFinder finder;
     
     private AbstractAuditLogger auditlogger;
+    
+
+    @Override
+    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+        Map<String, WorkItemHandler> handler = new HashMap<String, WorkItemHandler>();
+        handler.put("Human Task", getHTWorkItemHandler(runtime));
+        
+        RuntimeManager manager = ((RuntimeEngineImpl)runtime).getManager();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("ksession", runtime.getKieSession());
+        params.put("taskClient", runtime.getTaskService());
+        handler.putAll(workItemHandlerProducer.getWorkItemHandlers(manager.getIdentifier(), params));
+        return handler;
+    }
     
     protected WorkItemHandler getHTWorkItemHandler(RuntimeEngine runtime) {
         

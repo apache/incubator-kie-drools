@@ -306,6 +306,40 @@ public class DomainServicesTest {
     
     }
     
+    @Test
+    public void initDomainTestWithWorkItemHandler(){
+        Organization organization = new Organization();
+        organization.setName("JBoss");
+        Domain domain = new Domain();
+        domain.setName("general");
+        List<RuntimeId> runtimes = new ArrayList<RuntimeId>();
+        RuntimeId runtime1 = new RuntimeId();
+        runtime1.setReference("processes/general/");
+        runtime1.setDomain(domain);
+        runtimes.add(runtime1);
+        domain.setRuntimes(runtimes);
+        domain.setOrganization(organization);
+        List<Domain> domains = new ArrayList<Domain>();
+        domains.add(domain);
+        organization.setDomains(domains);
+
+        domainService.storeOrganization(organization);
+        
+        domainService.initDomain(domain.getId());
+        RuntimeManager runtimesByDomain = domainService.getRuntimesByDomain(domain.getName());
+        RuntimeEngine runtime = runtimesByDomain.getRuntimeEngine(ProcessInstanceIdContext.get());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("id", "test");
+        ProcessInstance processInstance = runtime.getKieSession().startProcess("customtask", params);
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        Collection<ProcessDesc> processesByDomainName = domainService.getProcessesByDomainName("general");
+        assertNotNull(processesByDomainName);
+        
+        assertEquals(4, processesByDomainName.size());
+    
+    }
+    
     
 
     private void testProcessStartOnManager(RuntimeManager manager, Context context) {

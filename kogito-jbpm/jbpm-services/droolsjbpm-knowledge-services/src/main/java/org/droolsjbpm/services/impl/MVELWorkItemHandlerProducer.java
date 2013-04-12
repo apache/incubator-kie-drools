@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.droolsjbpm.services.api.WorkItemHandlerProducer;
+import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.kie.commons.java.nio.file.Path;
@@ -27,13 +27,13 @@ public class MVELWorkItemHandlerProducer implements WorkItemHandlerProducer {
     
     @SuppressWarnings("unchecked")
     @Override
-    public Map<String, WorkItemHandler> getWorkItemHandlers(String location, Map<String, Object> params) {
+    public Map<String, WorkItemHandler> getWorkItemHandlers(String identifier, Map<String, Object> params) {
         Map<String, WorkItemHandler> handlers = new HashMap<String, WorkItemHandler>();
-        if (location == null) {
+        if (identifier == null || !fs.exists("processes/" + identifier)) {
             return handlers;
         }
         try {
-            Iterable<Path> widFiles = fs.loadFilesByType(location, "conf");
+            Iterable<Path> widFiles = fs.loadFilesByType("processes/" + identifier, "conf");
             
             for (Path widPath : widFiles) {
                 String content = new String(fs.loadFile(widPath), "UTF-8");
