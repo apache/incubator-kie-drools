@@ -43,7 +43,7 @@ import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.query.DeadlineSummaryImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.shared.services.cdi.Startup;
+import org.kie.commons.services.cdi.Startup;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.kie.api.runtime.Environment;

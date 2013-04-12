@@ -65,6 +65,10 @@
     </dependency>
     <dependency>
       <groupId>org.kie.commons</groupId>
+      <artifactId>kie-commons-cdi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.commons</groupId>
       <artifactId>kie-nio2-model</artifactId>
     </dependency>    
 

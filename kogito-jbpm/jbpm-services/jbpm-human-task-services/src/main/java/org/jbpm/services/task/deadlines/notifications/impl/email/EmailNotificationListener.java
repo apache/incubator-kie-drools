@@ -46,7 +46,7 @@ import org.jbpm.services.task.deadlines.NotificationListener;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.LanguageImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.shared.services.cdi.Startup;
+import org.kie.commons.services.cdi.Startup;
 import org.kie.internal.task.api.UserInfo;
 import org.kie.internal.task.api.model.EmailNotification;
 import org.kie.internal.task.api.model.EmailNotificationHeader;
