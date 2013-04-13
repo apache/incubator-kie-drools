@@ -35,7 +35,7 @@ import org.kie.internal.task.api.model.User;
  * Status.Ready } ],
  */
 @Transactional
-public class ActivateTaskCommand<Void> extends TaskCommand {
+public class ActivateTaskCommand extends TaskCommand<Void> {
 
 
     public ActivateTaskCommand(long taskId, String userId) {

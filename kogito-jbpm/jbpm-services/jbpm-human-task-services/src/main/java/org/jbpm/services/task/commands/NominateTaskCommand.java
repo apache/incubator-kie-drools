@@ -40,7 +40,7 @@ import org.kie.internal.task.api.model.User;
  * Status.Obsolete, skipable = true } ],
  */
 @Transactional
-public class NominateTaskCommand<Void> extends TaskCommand {
+public class NominateTaskCommand extends TaskCommand<Void> {
 
     private List<OrganizationalEntity> potentialOwners;
     public NominateTaskCommand(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {

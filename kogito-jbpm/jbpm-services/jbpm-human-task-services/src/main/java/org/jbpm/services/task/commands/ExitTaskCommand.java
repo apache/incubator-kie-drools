@@ -35,7 +35,7 @@ import org.kie.internal.task.api.model.User;
             } ]
  */
 @Transactional
-public class ExitTaskCommand<Void> extends TaskCommand {
+public class ExitTaskCommand extends TaskCommand<Void> {
 
 
     public ExitTaskCommand(long taskId, String userId) {

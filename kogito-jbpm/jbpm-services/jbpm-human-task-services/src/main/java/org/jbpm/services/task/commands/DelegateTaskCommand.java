@@ -45,7 +45,7 @@ import org.kie.internal.task.api.model.User;
             } ],
  */
 @Transactional
-public class DelegateTaskCommand extends TaskCommand {
+public class DelegateTaskCommand extends TaskCommand<Void> {
 
    
 

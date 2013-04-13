@@ -40,7 +40,7 @@ import org.kie.internal.task.api.model.User;
  */
 
 @Transactional
-public class ClaimTaskCommand extends TaskCommand {
+public class ClaimTaskCommand extends TaskCommand<Void> {
 
     public ClaimTaskCommand(long taskId, String userId) {
         this.taskId = taskId;

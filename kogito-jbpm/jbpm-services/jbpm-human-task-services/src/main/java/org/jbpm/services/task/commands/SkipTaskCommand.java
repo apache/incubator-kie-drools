@@ -37,7 +37,7 @@ import org.kie.internal.task.api.model.User;
  * Status.Obsolete, skipable = true } ],
  */
 @Transactional
-public class SkipTaskCommand<Void> extends TaskCommand {
+public class SkipTaskCommand extends TaskCommand<Void> {
 
     public SkipTaskCommand(long taskId, String userId) {
         this.taskId = taskId;

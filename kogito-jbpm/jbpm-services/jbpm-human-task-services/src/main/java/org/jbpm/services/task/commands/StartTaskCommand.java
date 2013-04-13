@@ -34,7 +34,7 @@ import org.kie.internal.task.api.model.User;
  */
 
 @Transactional
-public class StartTaskCommand extends TaskCommand {
+public class StartTaskCommand extends TaskCommand<Void> {
 
 
     public StartTaskCommand(long taskId, String userId) {

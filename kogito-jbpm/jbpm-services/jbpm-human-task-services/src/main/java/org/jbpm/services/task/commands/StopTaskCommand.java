@@ -36,7 +36,7 @@ import org.kie.internal.task.api.model.User;
  */
 
 @Transactional
-public class StopTaskCommand extends TaskCommand {
+public class StopTaskCommand extends TaskCommand<Void> {
 
     public StopTaskCommand(long taskId, String userId) {
         this.taskId = taskId;

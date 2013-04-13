@@ -39,7 +39,7 @@ import org.kie.internal.task.api.model.User;
  * Allowed.BusinessAdministrator ], setToPreviousStatus = true } ],
  */
 @Transactional
-public class ResumeTaskCommand extends TaskCommand {
+public class ResumeTaskCommand extends TaskCommand<Void> {
 
     private long taskId;
     private String userId;

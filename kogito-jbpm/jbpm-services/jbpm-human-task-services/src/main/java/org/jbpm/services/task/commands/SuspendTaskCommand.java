@@ -34,7 +34,7 @@ import org.kie.internal.task.api.model.User;
  * Allowed.BusinessAdministrator ], newStatus = Status.Suspended } ],
  */
 @Transactional
-public class SuspendTaskCommand extends TaskCommand {
+public class SuspendTaskCommand extends TaskCommand<Void> {
 
 
     public SuspendTaskCommand(long taskId, String userId) {

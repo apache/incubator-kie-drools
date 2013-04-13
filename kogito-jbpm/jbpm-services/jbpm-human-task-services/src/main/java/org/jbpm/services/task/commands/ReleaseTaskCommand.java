@@ -41,7 +41,7 @@ import org.kie.internal.task.api.model.User;
  */
 
 @Transactional
-public class ReleaseTaskCommand extends TaskCommand {
+public class ReleaseTaskCommand extends TaskCommand<Void> {
 
 
     public ReleaseTaskCommand(long taskId, String userId) {

@@ -36,7 +36,7 @@ import org.kie.internal.task.api.model.User;
  * allowed = [ Allowed.Owner ], newStatus = Status.Failed } ],
  */
 @Transactional
-public class FailTaskCommand<Void> extends TaskCommand {
+public class FailTaskCommand extends TaskCommand<Void> {
 
     private Map<String, Object> data;
 

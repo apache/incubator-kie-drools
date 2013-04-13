@@ -36,7 +36,7 @@ import org.kie.internal.task.api.model.Task;
  * allowed = [ Allowed.Owner ], newStatus = Status.InProgress } ], *
  */
 @Transactional
-public class AddTaskCommand<Long> extends TaskCommand {
+public class AddTaskCommand extends TaskCommand<Long> {
 
     private Task task;
     private Map<String, Object> params;

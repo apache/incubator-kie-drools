@@ -25,7 +25,7 @@ import org.kie.internal.task.api.model.TaskSummary;
 
  */
 @Transactional
-public class ClaimNextAvailableTaskCommand<Void> extends TaskCommand {
+public class ClaimNextAvailableTaskCommand extends TaskCommand<Void> {
 
     private String language;
     public ClaimNextAvailableTaskCommand(String userId, String language) {

@@ -49,7 +49,7 @@ import org.kie.internal.task.api.model.User;
             }],          
  */
 @Transactional
-public class ForwardTaskCommand<Void> extends TaskCommand {
+public class ForwardTaskCommand extends TaskCommand<Void> {
 
     public ForwardTaskCommand(long taskId, String userId, String targetEntityId) {
         this.taskId = taskId;

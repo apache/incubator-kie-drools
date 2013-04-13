@@ -37,7 +37,7 @@ import org.kie.internal.task.api.model.User;
  */
 
 @Transactional
-public class CompleteTaskCommand<Void> extends TaskCommand {
+public class CompleteTaskCommand extends TaskCommand<Void> {
 
     private Map<String, Object> data;
 
