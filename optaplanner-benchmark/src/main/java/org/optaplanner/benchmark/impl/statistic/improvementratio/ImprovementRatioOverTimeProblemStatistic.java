@@ -117,11 +117,13 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
         this.graphStatisticFiles = new HashMap<String, File>(plots.size());
         for (final Map.Entry<Class<? extends Move>, XYPlot> entry : plots.entrySet()) {
             final Class<? extends Move> type = entry.getKey();
+            String id = type.getCanonicalName();
+            String htmlSafeId = id.replace('.', '_');
             final JFreeChart chart = new JFreeChart(
-                    this.problemBenchmark.getName() + " improvement ratio over time (" + type + ") statistic",
+                    this.problemBenchmark.getName() + " improvement ratio over time statistic, move type " + id,
                     JFreeChart.DEFAULT_TITLE_FONT, entry.getValue(), true);
-            this.graphStatisticFiles.put(type.toString(), this.writeChartToImageFile(chart,
-                    this.problemBenchmark.getName() + "ImprovementRatioOverTimeStatistic" + type));
+            this.graphStatisticFiles.put(htmlSafeId, this.writeChartToImageFile(chart,
+                    this.problemBenchmark.getName() + "ImprovementRatioOverTimeStatistic-" + id));
         }
     }
 
