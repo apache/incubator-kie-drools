@@ -486,14 +486,41 @@
                                                     </#list>
                                                 </div>
                                             </div>
+                                        <#elseif problemStatistic.problemStatisticType.name() == "IMPROVEMENT_RATIO_OVER_TIME">
+                                            <div class="tabbable tabs-right">
+                                                <ul class="nav nav-tabs">
+                                                    <#assign map = problemStatistic.graphFilePaths>
+                                                    <#assign itemIndex = 0>
+                                                    <#list map?keys as key> 
+                                                        <li<#if itemIndex == 0> class="active"</#if>>
+                                                            <a href="#problemStatistic_${problemStatistic.anchorId}_${key}" data-toggle="tab">Move type ${key}</a>
+                                                        </li>
+                                                        <#assign itemIndex = itemIndex + 1>
+                                                    </#list>                                                
+                                                </ul>
+                                                <div class="tab-content">
+                                                    <#assign map = problemStatistic.graphFilePaths>
+                                                    <#assign itemIndex = 0>
+                                                    <#list map?keys as key> 
+                                                        <div class="tab-pane<#if itemIndex == 0> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${key}">
+                                                            <div class="benchmark-chart">
+                                                                <img src="${map[key]}"/>
+                                                            </div>
+                                                        </div>
+                                                        <#assign itemIndex = itemIndex + 1>
+                                                    </#list>
+                                                </div>
+                                            </div>
                                         <#else>
                                             <div class="benchmark-chart">
                                                 <img src="${problemStatistic.graphFilePath}"/>
                                             </div>
                                         </#if>
-                                        <div class="btn-group download-btn-group">
-                                            <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CSV file</button>
-                                        </div>
+                                        <#if problemStatistic.problemStatisticType.name() != "IMPROVEMENT_RATIO_OVER_TIME">
+                                            <div class="btn-group download-btn-group">
+                                                <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CSV file</button>
+                                            </div>
+                                        </#if>
                                     </div>
                                     <#assign firstRow = false>
                                 </#list>
