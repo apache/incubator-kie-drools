@@ -261,7 +261,7 @@ public class DomainManagerServiceImpl implements DomainManagerService {
         for (Path domainDir : domainDirs) {
             String dirName = domainDir.getFileName().toString();
             Domain domain = new Domain();
-            domain.setName(dirName + " Domain");
+            domain.setName(dirName);
             List<RuntimeId> runtimesRelease = new ArrayList<RuntimeId>();
             RuntimeId releaseRuntime = new RuntimeId();
             releaseRuntime.setName(dirName + " Runtime");

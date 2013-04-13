@@ -121,8 +121,8 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
         long time = 0;
         while (getWiser().getMessages().size() != 2 && time < 5000) {
-            Thread.sleep(500);
-            time += 500;
+            Thread.sleep(50);
+            time += 50;
         }
         for (WiserMessage msg : getWiser().getMessages()) {
             System.out.println(msg.getEnvelopeReceiver());
