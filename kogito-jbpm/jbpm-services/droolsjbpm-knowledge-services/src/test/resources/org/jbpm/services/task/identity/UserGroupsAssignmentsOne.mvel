@@ -1,0 +1,6 @@
+usersgroups = [ 
+                new User('salaboy') :  [new Group("IT")],
+                new User('katy') : [new Group( "HR" )],
+                new User('Administrator') : [new Group( "HR" ),  new Group( "IT" )]
+              ];       
+return usersgroups;

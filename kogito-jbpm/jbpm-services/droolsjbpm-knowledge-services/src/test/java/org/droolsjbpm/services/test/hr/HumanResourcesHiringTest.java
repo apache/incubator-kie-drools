@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.droolsjbpm.services.test.domain;
+package org.droolsjbpm.services.test.hr;
 
+import org.droolsjbpm.services.test.domain.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -23,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,9 +43,12 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
+import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.junit.After;
@@ -58,6 +63,7 @@ import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.Context;
 import org.kie.internal.runtime.manager.RuntimeEngine;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
@@ -67,13 +73,16 @@ import org.kie.internal.task.api.model.Status;
 import org.kie.internal.task.api.model.TaskSummary;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.kie.internal.task.api.model.Content;
+import org.kie.internal.task.api.model.Task;
 
 /**
  *
  * @author salaboy
  */
 @RunWith(Arquillian.class)
-public class DomainServicesTest {
+public class HumanResourcesHiringTest {
 
     @Deployment()
     public static Archive<?> createDeployment() {
@@ -98,16 +107,13 @@ public class DomainServicesTest {
                 .addPackage("org.jbpm.services.task.deadlines") // deadlines
                 .addPackage("org.jbpm.services.task.deadlines.notifications.impl")
                 .addPackage("org.jbpm.services.task.subtask")
-
                 .addPackage("org.kie.internal.runtime")
                 .addPackage("org.kie.internal.runtime.manager")
                 .addPackage("org.kie.internal.runtime.manager.cdi.qualifier")
-                
                 .addPackage("org.jbpm.runtime.manager")
                 .addPackage("org.jbpm.runtime.manager.impl")
                 .addPackage("org.jbpm.runtime.manager.impl.cdi")
                 .addPackage("org.jbpm.runtime.manager.impl.cdi.qualifier")
-                
                 .addPackage("org.jbpm.runtime.manager.impl.context")
                 .addPackage("org.jbpm.runtime.manager.impl.factory")
                 .addPackage("org.jbpm.runtime.manager.impl.jpa")
@@ -115,10 +121,8 @@ public class DomainServicesTest {
                 .addPackage("org.jbpm.runtime.manager.mapper")
                 .addPackage("org.jbpm.runtime.manager.impl.task")
                 .addPackage("org.jbpm.runtime.manager.impl.tx")
-                
                 .addPackage("org.jbpm.shared.services.api")
                 .addPackage("org.jbpm.shared.services.impl")
-                
                 .addPackage("org.droolsjbpm.services.api")
                 .addPackage("org.droolsjbpm.services.impl")
                 .addPackage("org.droolsjbpm.services.api.bpmn2")
@@ -126,9 +130,7 @@ public class DomainServicesTest {
                 .addPackage("org.droolsjbpm.services.impl.event.listeners")
                 .addPackage("org.droolsjbpm.services.impl.audit")
                 .addPackage("org.droolsjbpm.services.impl.util")
-                
                 .addPackage("org.droolsjbpm.services.impl.vfs")
-                
                 .addPackage("org.droolsjbpm.services.impl.example")
                 .addPackage("org.kie.commons.java.nio.fs.jgit")
                 .addPackage("org.droolsjbpm.services.test") // Identity Provider Test Impl here
@@ -144,6 +146,8 @@ public class DomainServicesTest {
     public static void setup() {
         TestUtil.cleanupSingletonSessionId();
         pds = TestUtil.setupPoolingDataSource();
+        Properties props = new Properties();
+        props.setProperty("salaboy", "user");
 
     }
 
@@ -151,11 +155,11 @@ public class DomainServicesTest {
     public static void teardown() {
         pds.close();
     }
-    
+
     @After
-    public void tearDownTest(){
+    public void tearDownTest() {
         int removeAllTasks = taskService.removeAllTasks();
-        System.out.println(">>> Removed Tasks > "+removeAllTasks);
+        System.out.println(">>> Removed Tasks > " + removeAllTasks);
     }
     /*
      * end of initialization code, tests start here
@@ -168,7 +172,6 @@ public class DomainServicesTest {
     private FileService fs;
     @Inject
     protected DomainManagerService domainService;
-    
     @Inject
     protected TaskService taskService;
     @Inject
@@ -177,20 +180,12 @@ public class DomainServicesTest {
     @Test
     public void simpleExecutionTest() {
         assertNotNull(managerFactory);
-        String path = "processes/support/";
         RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
                 .entityManagerFactory(emf)
                 .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null));
-        Iterable<Path> loadProcessFiles = null;
 
-        try {
-            loadProcessFiles = fs.loadFilesByType(path, ".+bpmn[2]?$");
-        } catch (FileException ex) {
-            Logger.getLogger(DomainServicesTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        for (Path p : loadProcessFiles) {
-            builder.addAsset(ResourceFactory.newClassPathResource( fs.getRepositoryRoot() + "/" + path + p.getFileName().toString()), ResourceType.BPMN2);
-        }
+        builder.addAsset(ResourceFactory.newClassPathResource("repo/processes/hr/hiring.bpmn2"), ResourceType.BPMN2);
+
 
         RuntimeManager manager = managerFactory.newSingletonRuntimeManager(builder.get());
         testProcessStartOnManager(manager, EmptyContext.get());
@@ -199,142 +194,39 @@ public class DomainServicesTest {
 
     }
 
-    @Test
-    public void runtimeInDomainTest() {
-
-        Map<String, List<RuntimeEngine>> domainsMap = new HashMap<String, List<RuntimeEngine>>();
-
-        Organization organization = new Organization();
-        organization.setName("JBoss");
-        Domain domain = new Domain();
-        domain.setName("My First Domain");
-        List<RuntimeId> runtimes = new ArrayList<RuntimeId>();
-        RuntimeId runtime1 = new RuntimeId();
-        runtime1.setReference("processes/support/");
-        runtime1.setDomain(domain);
-        runtimes.add(runtime1);
-        domain.setRuntimes(runtimes);
-        domain.setOrganization(organization);
-        List<Domain> domains = new ArrayList<Domain>();
-        domains.add(domain);
-        organization.setDomains(domains);
-
-        domainService.storeOrganization(organization);
-        Organization org = domainService.getOrganizationById(organization.getId());
-
-        for (Domain d : org.getDomains()) {
-            for (RuntimeId r : d.getRuntimes()) {
-                String reference = r.getReference();
-                // Create Runtime Manager Based on the Reference
-                RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
-                        .entityManagerFactory(emf);
-                Iterable<Path> loadProcessFiles = null;
-
-                try {
-                    loadProcessFiles = fs.loadFilesByType(reference, ".+bpmn[2]?$");
-                } catch (FileException ex) {
-                    Logger.getLogger(DomainServicesTest.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                for (Path p : loadProcessFiles) {
-                    builder.addAsset(ResourceFactory.newClassPathResource(fs.getRepositoryRoot() + "/" + reference + p.getFileName().toString()), ResourceType.BPMN2);
-                }
-                // Parse and get the Metadata for all the assets
-
-                RuntimeManager manager = managerFactory.newSingletonRuntimeManager(builder.get(), d.getName());
-                org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
-                assertNotNull(runtime);
-                if (domainsMap.get(d.getName()) == null) {
-                    domainsMap.put(d.getName(), new ArrayList<RuntimeEngine>());
-                }
-                domainsMap.get(d.getName()).add(runtime);
-            }
-
-        }
-        Domain domainByName = domainService.getDomainByName("My First Domain");
-
-        List<RuntimeEngine> domainRuntimes = domainsMap.get(domainByName.getName());
-        RuntimeEngine runtime = domainRuntimes.get(0);
-        List<TaskSummary> salaboysTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
-        assertEquals(0, salaboysTasks.size());
-
-        runtime.getKieSession().startProcess("support.process");
-        
-        salaboysTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
-        assertEquals(1, salaboysTasks.size());
-        
-                       
-    }
-    
-    @Test
-    public void initDomainTest(){
-        Organization organization = new Organization();
-        organization.setName("JBoss");
-        Domain domain = new Domain();
-        domain.setName("My Second Domain");
-        List<RuntimeId> runtimes = new ArrayList<RuntimeId>();
-        RuntimeId runtime1 = new RuntimeId();
-        runtime1.setReference("processes/support/");
-        runtime1.setDomain(domain);
-        runtimes.add(runtime1);
-        domain.setRuntimes(runtimes);
-        domain.setOrganization(organization);
-        List<Domain> domains = new ArrayList<Domain>();
-        domains.add(domain);
-        organization.setDomains(domains);
-
-        domainService.storeOrganization(organization);
-        
-        domainService.initDomain(domain.getId());
-        RuntimeManager runtimesByDomain = domainService.getRuntimesByDomain(domain.getName());
-        RuntimeEngine runtime = runtimesByDomain.getRuntimeEngine(ProcessInstanceIdContext.get());
-        runtime.getKieSession().startProcess("support.process");
-        
-        List<TaskSummary> tasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
-        assertNotNull(tasks);
-        assertEquals(1, tasks.size());
-        Collection<ProcessDesc> processesByDomainName = domainService.getProcessesByDomainName("My Second Domain");
-        assertNotNull(processesByDomainName);
-        
-        assertEquals(1, processesByDomainName.size());
-    
-    }
-    
-    @Test
-    public void initDomainTestWithWorkItemHandler(){
-        Organization organization = new Organization();
-        organization.setName("JBoss");
-        Domain domain = new Domain();
-        domain.setName("general");
-        List<RuntimeId> runtimes = new ArrayList<RuntimeId>();
-        RuntimeId runtime1 = new RuntimeId();
-        runtime1.setReference("processes/general/");
-        runtime1.setDomain(domain);
-        runtimes.add(runtime1);
-        domain.setRuntimes(runtimes);
-        domain.setOrganization(organization);
-        List<Domain> domains = new ArrayList<Domain>();
-        domains.add(domain);
-        organization.setDomains(domains);
-
-        domainService.storeOrganization(organization);
-        
-        domainService.initDomain(domain.getId());
-        RuntimeManager runtimesByDomain = domainService.getRuntimesByDomain(domain.getName());
-        RuntimeEngine runtime = runtimesByDomain.getRuntimeEngine(ProcessInstanceIdContext.get());
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("id", "test");
-        ProcessInstance processInstance = runtime.getKieSession().startProcess("customtask", params);
-        
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        Collection<ProcessDesc> processesByDomainName = domainService.getProcessesByDomainName("general");
-        assertNotNull(processesByDomainName);
-        
-        assertEquals(4, processesByDomainName.size());
-    
-    }
-    
-    
-
+//    @Test
+//    public void initDomainTestWithWorkItemHandler(){
+//        Organization organization = new Organization();
+//        organization.setName("JBoss");
+//        Domain domain = new Domain();
+//        domain.setName("general");
+//        List<RuntimeId> runtimes = new ArrayList<RuntimeId>();
+//        RuntimeId runtime1 = new RuntimeId();
+//        runtime1.setReference("processes/general/");
+//        runtime1.setDomain(domain);
+//        runtimes.add(runtime1);
+//        domain.setRuntimes(runtimes);
+//        domain.setOrganization(organization);
+//        List<Domain> domains = new ArrayList<Domain>();
+//        domains.add(domain);
+//        organization.setDomains(domains);
+//
+//        domainService.storeOrganization(organization);
+//        
+//        domainService.initDomain(domain.getId());
+//        RuntimeManager runtimesByDomain = domainService.getRuntimesByDomain(domain.getName());
+//        RuntimeEngine runtime = runtimesByDomain.getRuntimeEngine(ProcessInstanceIdContext.get());
+//        Map<String, Object> params = new HashMap<String, Object>();
+//        params.put("id", "test");
+//        ProcessInstance processInstance = runtime.getKieSession().startProcess("customtask", params);
+//        
+//        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+//        Collection<ProcessDesc> processesByDomainName = domainService.getProcessesByDomainName("general");
+//        assertNotNull(processesByDomainName);
+//        
+//        assertEquals(4, processesByDomainName.size());
+//    
+//    }
     private void testProcessStartOnManager(RuntimeManager manager, Context context) {
         assertNotNull(manager);
 
@@ -344,23 +236,43 @@ public class DomainServicesTest {
         KieSession ksession = runtime.getKieSession();
         assertNotNull(ksession);
 
-        ProcessInstance processInstance = ksession.startProcess("support.process");
+        ProcessInstance processInstance = ksession.startProcess("hiring");
         assertNotNull(processInstance);
-
-        List<Status> statuses = new ArrayList<Status>();
-        statuses.add(Status.Reserved);
-        List<TaskSummary> tasks = runtime.getTaskService().getTasksOwned("salaboy", statuses, "en-UK");
+        TaskService taskService = runtime.getTaskService();
+        
+        List<TaskSummary> tasks = taskService.getTasksAssignedByGroup("HR", "en-UK");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
-
-        runtime.getTaskService().start(tasks.get(0).getId(), "salaboy");
-
-        runtime.getTaskService().complete(tasks.get(0).getId(), "salaboy", null);
-        List<TaskSummary> tasksAssignedAsPotentialOwner = runtime.getTaskService().getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
-
-        assertEquals(1, tasksAssignedAsPotentialOwner.size());
-
-        assertNotNull(runtime.getKieSession().getProcessInstance(processInstance.getId()));
-
+        TaskSummary HRInterview = tasks.get(0);
+        
+        taskService.claim(HRInterview.getId(), "katy");
+        
+        taskService.start(HRInterview.getId(), "katy");
+        
+        Map<String, Object> hrOutput = new HashMap<String, Object>();
+        hrOutput.put("out.name", "salaboy");
+        hrOutput.put("out.age", 29);
+        hrOutput.put("out.mail", "salaboy@gmail.com");
+        hrOutput.put("out.score", 8);
+        
+        taskService.complete(HRInterview.getId(), "katy", hrOutput);
+        
+        tasks = taskService.getTasksAssignedByGroup("IT", "en-UK");
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        TaskSummary techInterview = tasks.get(0);
+        Task techInterviewTask = taskService.getTaskById(techInterview.getId());
+        Content contentById = taskService.getContentById(techInterviewTask.getTaskData().getDocumentContentId());
+        assertNotNull(contentById);
+        
+        Map<String, Object> taskContent = (Map<String, Object>) ContentMarshallerHelper.unmarshall(contentById.getContent(), null);
+        
+        assertEquals(5, taskContent.size());
+        
+        assertEquals("salaboy@gmail.com", taskContent.get("in.mail"));
+        assertEquals(29, taskContent.get("in.age"));
+        assertEquals("salaboy", taskContent.get("in.name"));
+        
+        
     }
 }

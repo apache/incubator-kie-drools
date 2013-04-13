@@ -167,13 +167,13 @@ public class DomainEntitiesTest {
         assertTrue(storedOrganization > 0);
 
         List<Domain> allDomains = domainService.getAllDomains();
-        assertEquals(3, allDomains.size());
+        assertEquals(4, allDomains.size());
         List<Organization> allOrganizations = domainService.getAllOrganizations();
         assertEquals(1, allOrganizations.size());
 
         List<Domain> allDomainsByOrganization = domainService.getAllDomainsByOrganization(storedOrganization);
 
-        assertEquals(3, allDomainsByOrganization.size());
+        assertEquals(4, allDomainsByOrganization.size());
 
     }
 
