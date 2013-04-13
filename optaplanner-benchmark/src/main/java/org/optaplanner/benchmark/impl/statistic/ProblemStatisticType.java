@@ -19,19 +19,23 @@ package org.optaplanner.benchmark.impl.statistic;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.improvementratio.ImprovementRatioOverTimeProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
 
 public enum ProblemStatisticType implements StatisticType {
     BEST_SOLUTION_CHANGED,
     CALCULATE_COUNT_PER_SECOND,
+    IMPROVEMENT_RATIO_OVER_TIME,
     MEMORY_USE;
 
-    public ProblemStatistic create(ProblemBenchmark problemBenchmark) {
+    public ProblemStatistic create(final ProblemBenchmark problemBenchmark) {
         switch (this) {
             case BEST_SOLUTION_CHANGED:
                 return new BestScoreProblemStatistic(problemBenchmark);
             case CALCULATE_COUNT_PER_SECOND:
                 return new CalculateCountProblemStatistic(problemBenchmark);
+            case IMPROVEMENT_RATIO_OVER_TIME:
+                return new ImprovementRatioOverTimeProblemStatistic(problemBenchmark);
             case MEMORY_USE:
                 return new MemoryUseProblemStatistic(problemBenchmark);
             default:
