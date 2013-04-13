@@ -154,6 +154,12 @@ public class UserGroupTaskQueryServiceDecorator extends
     }
 
     @Override
+    public List<TaskSummary> getTasksOwnedByExpirationDateBeforeSpecifiedDate(
+            String userId, java.util.List<Status> status, Date date) {
+        return delegate.getTasksOwnedByExpirationDateBeforeSpecifiedDate(userId, status, date);
+    }
+
+    @Override
     public List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId,
             String userId, String language) {
 

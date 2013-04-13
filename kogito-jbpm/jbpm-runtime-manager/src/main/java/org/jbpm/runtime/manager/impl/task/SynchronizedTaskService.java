@@ -383,6 +383,13 @@ public class SynchronizedTaskService
     }
 
     @Override
+    public List<TaskSummary> getTasksOwnedByExpirationDateBeforeSpecifiedDate(String userId, List<Status> status, Date date) {
+        synchronized (ksession) {
+            return taskService.getTasksOwnedByExpirationDateBeforeSpecifiedDate(userId, status, date);
+        }
+    }
+
+    @Override
     public List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(
             List<String> groupIds, String language, Date expirationDate) {
         synchronized (ksession) {
@@ -861,6 +868,4 @@ public class SynchronizedTaskService
             ((EventService<JbpmServicesEventListener<NotificationEvent>, ?>)taskService).clearTasknotificationEventListeners();
          }
     }
-
-
 }

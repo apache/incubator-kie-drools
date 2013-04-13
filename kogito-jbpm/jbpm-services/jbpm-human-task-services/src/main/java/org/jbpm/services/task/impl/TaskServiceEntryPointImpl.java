@@ -637,6 +637,11 @@ public class TaskServiceEntryPointImpl implements TaskService, EventService<Jbpm
     }
 
     @Override
+    public List<TaskSummary> getTasksOwnedByExpirationDateBeforeSpecifiedDate(String userId, List<Status> status, Date date) {
+        return taskQueryService.getTasksOwnedByExpirationDateBeforeSpecifiedDate(userId, status, date);
+    }
+
+    @Override
     public List<TaskSummary> getTasksByStatusByProcessId(
             long processInstanceId, List<Status> status, String language) {
         return taskQueryService.getTasksByStatusByProcessId(processInstanceId, status, language);

@@ -23,7 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 
-
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.utils.MVELUtils;
 import org.junit.After;

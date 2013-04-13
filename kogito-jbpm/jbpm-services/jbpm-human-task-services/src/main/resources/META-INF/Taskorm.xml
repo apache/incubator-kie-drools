@@ -889,6 +889,58 @@ where
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
       
+      <named-query name="TasksOwnedWithParticularStatusByExpirationDateBeforeSpecifiedDate">
+          <query>
+select
+    new org.jbpm.services.task.query.TaskSummaryImpl(
+    t.id,
+    t.taskData.processInstanceId,
+    name.text,
+    subject.text,
+    description.text,
+    t.taskData.status,
+    t.priority,
+    t.taskData.skipable,
+    actualOwner,
+    createdBy,
+    t.taskData.createdOn,
+    t.taskData.activationTime,
+    t.taskData.expirationTime,
+    t.taskData.processId,
+    t.taskData.processSessionId,
+    t.subTaskStrategy,
+    t.taskData.parentId )
+from
+    TaskImpl t 
+    left join t.taskData.createdBy as createdBy
+    left join t.taskData.actualOwner as actualOwner 
+    left join t.subjects as subject
+    left join t.descriptions as description 
+    left join t.names as name
+    left join t.peopleAssignments.potentialOwners potOwners
+where
+    t.archived = 0 and
+    (t.taskData.actualOwner.id = :userId or potOwners.id = :userId) and
+    t.taskData.status in (:status) and
+    t.taskData.expirationTime &lt; :date and
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
+
+    (
+    subject.language = :language
+    or t.subjects.size = 0
+    ) and
+
+    (
+    description.language = :language
+    or t.descriptions.size = 0
+            ) 
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+      
         <named-query name="TasksOwnedWithParticularStatusByExpirationDateOptional">
           <query>
 select

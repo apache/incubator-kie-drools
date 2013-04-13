@@ -263,6 +263,11 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                     pm.addParametersToMap("userId", userId, "status", status, "expirationDate", expirationDate, "language", "en-UK")); //@TODO: FIX LANGUANGE
         
     }
+    @Override
+    public List<TaskSummary> getTasksOwnedByExpirationDateBeforeSpecifiedDate(String userId, List<Status> status, Date date) {
+        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksOwnedWithParticularStatusByExpirationDateBeforeSpecifiedDate",
+                pm.addParametersToMap("userId", userId, "status", status, "date", date, "language", "en-UK"));
+    }
 
     @Override
     public List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language) {
