@@ -133,6 +133,8 @@ public interface TaskService {
     
     List<TaskSummary> getTasksOwnedByExpirationDateOptional(String userId, List<Status> statuses, Date expirationDate);
     
+    List<TaskSummary> getTasksOwnedByExpirationDateBeforeSpecifiedDate(String userId, List<Status> status, Date date);
+    
     List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate);
     
     List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds, String language, Date expirationDate);
@@ -252,7 +254,4 @@ public interface TaskService {
     Comment getCommentById(long commentId);
     
     Map<String, Object> getTaskContent(long taskId);
-    
-  
-    
 }

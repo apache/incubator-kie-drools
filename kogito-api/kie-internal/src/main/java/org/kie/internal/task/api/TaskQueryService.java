@@ -69,6 +69,8 @@ public interface TaskQueryService {
     
     List<TaskSummary> getTasksOwnedByExpirationDateOptional(String userId, List<Status> status, Date expirationDate);
     
+    List<TaskSummary> getTasksOwnedByExpirationDateBeforeSpecifiedDate(String userId, List<Status> status, Date date);
+    
     List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId, String language);
     
     List<TaskSummary> getSubTasksByParent(long parentId);
