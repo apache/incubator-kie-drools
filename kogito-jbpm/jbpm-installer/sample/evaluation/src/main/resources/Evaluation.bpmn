@@ -212,7 +212,7 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="com.sample.evaluation">
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
-        <dc:Bounds height="48.0" width="48.0" x="16.0" y="56.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="30.0" y="62.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="_2">
         <dc:Bounds height="48.0" width="135.0" x="96.0" y="56.0"/>
@@ -230,10 +230,10 @@
         <dc:Bounds height="48.0" width="48.0" x="512.0" y="56.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_7">
-        <dc:Bounds height="48.0" width="48.0" x="593.0" y="56.0"/>
+        <dc:Bounds height="36.0" width="36.0" x="582.0" y="63.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_UserTask_1">
-        <di:waypoint xsi:type="dc:Point" x="64.0" y="80.0"/>
+        <di:waypoint xsi:type="dc:Point" x="66.0" y="80.0"/>
         <di:waypoint xsi:type="dc:Point" x="96.0" y="80.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_ParallelGateway_1">
@@ -262,7 +262,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_14" bpmnElement="SequenceFlow_7" sourceElement="BPMNShape_ParallelGateway_2" targetElement="BPMNShape_EndEvent_1">
         <di:waypoint xsi:type="dc:Point" x="561.0" y="80.0"/>
-        <di:waypoint xsi:type="dc:Point" x="593.0" y="80.0"/>
+        <di:waypoint xsi:type="dc:Point" x="582.0" y="80.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
