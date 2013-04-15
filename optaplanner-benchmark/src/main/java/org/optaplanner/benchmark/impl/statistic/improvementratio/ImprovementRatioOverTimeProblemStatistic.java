@@ -87,11 +87,11 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
                 ImprovementRatioOverTimeSingleStatistic singleStatistic = (ImprovementRatioOverTimeSingleStatistic)
                         singleBenchmark.getSingleStatistic(problemStatisticType);
                 for (Map.Entry<Class<? extends Move>, List<ImprovementRatioOverTimeSingleStatisticPoint>> entry : singleStatistic.getPointLists().entrySet()) {
-                    Class<? extends Move> type = entry.getKey();
-                    if (!seriesMap.containsKey(type)) {
-                        seriesMap.put(type, new XYSeries(singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix()));
+                    Class<? extends Move> moveClass = entry.getKey();
+                    if (!seriesMap.containsKey(moveClass)) {
+                        seriesMap.put(moveClass, new XYSeries(singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix()));
                     }
-                    XYSeries series = seriesMap.get(type);
+                    XYSeries series = seriesMap.get(moveClass);
                     for (ImprovementRatioOverTimeSingleStatisticPoint point : entry.getValue()) {
                         long timeMillisSpend = point.getTimeMillisSpend();
                         double ratio = point.getRatio();

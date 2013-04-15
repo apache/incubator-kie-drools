@@ -491,20 +491,20 @@
                                                 <ul class="nav nav-tabs">
                                                     <#assign map = problemStatistic.graphFilePaths>
                                                     <#assign itemIndex = 0>
-                                                    <#list map?keys as key> 
+                                                    <#list map?keys as moveClass>
                                                         <li<#if itemIndex == 0> class="active"</#if>>
-                                                            <a href="#problemStatistic_${problemStatistic.anchorId}_${key}" data-toggle="tab">Move type ${key}</a>
+                                                            <a href="#problemStatistic_${problemStatistic.anchorId}_${moveClass}" data-toggle="tab">Move class ${moveClass}</a>
                                                         </li>
                                                         <#assign itemIndex = itemIndex + 1>
-                                                    </#list>                                                
+                                                    </#list>
                                                 </ul>
                                                 <div class="tab-content">
                                                     <#assign map = problemStatistic.graphFilePaths>
                                                     <#assign itemIndex = 0>
-                                                    <#list map?keys as key> 
-                                                        <div class="tab-pane<#if itemIndex == 0> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${key}">
+                                                    <#list map?keys as moveClass>
+                                                        <div class="tab-pane<#if itemIndex == 0> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${moveClass}">
                                                             <div class="benchmark-chart">
-                                                                <img src="${map[key]}"/>
+                                                                <img src="${map[moveClass]}"/>
                                                             </div>
                                                         </div>
                                                         <#assign itemIndex = itemIndex + 1>
