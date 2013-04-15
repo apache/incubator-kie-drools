@@ -19,7 +19,9 @@ package org.optaplanner.benchmark.impl.statistic.improvementratio;
 import java.awt.BasicStroke;
 import java.io.File;
 import java.text.NumberFormat;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -43,7 +45,7 @@ import org.optaplanner.core.impl.move.Move;
 
 public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemStatistic {
 
-    protected Map<String, File> graphStatisticFiles = null;
+    protected Map<Class<? extends Move>, File> graphStatisticFileMap = null;
 
     public ImprovementRatioOverTimeProblemStatistic(ProblemBenchmark problemBenchmark) {
         super(problemBenchmark, ProblemStatisticType.IMPROVEMENT_RATIO_OVER_TIME);
@@ -54,16 +56,16 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
         return new ImprovementRatioOverTimeSingleStatistic();
     }
 
+    public Collection<Class<? extends Move>> getMoveClasses() {
+        return graphStatisticFileMap.keySet();
+    }
+
     /**
-     * @return never null, each path is relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory} (not
-     *  {@link ProblemBenchmark#problemReportDirectory})
+     * @return never null, relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
+     * (not {@link ProblemBenchmark#problemReportDirectory})
      */
-    public Map<String, String> getGraphFilePaths() {
-        Map<String, String> graphFilePaths = new HashMap<String, String>(graphStatisticFiles.size());
-        for (Map.Entry<String, File> entry : graphStatisticFiles.entrySet()) {
-            graphFilePaths.put(entry.getKey(), toFilePath(entry.getValue()));
-        }
-        return graphFilePaths;
+    public String getGraphFilePath(Class<? extends Move> moveClass) {
+        return toFilePath(graphStatisticFileMap.get(moveClass));
     }
 
     // ************************************************************************
@@ -115,16 +117,14 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
             }
             seriesIndex++;
         }
-        graphStatisticFiles = new HashMap<String, File>(plots.size());
+        graphStatisticFileMap = new LinkedHashMap<Class<? extends Move>, File>(plots.size());
         for (Map.Entry<Class<? extends Move>, XYPlot> entry : plots.entrySet()) {
             Class<? extends Move> moveClass = entry.getKey();
-            String id = moveClass.getCanonicalName();
-            String htmlSafeId = id.replace('.', '_');
             JFreeChart chart = new JFreeChart(
-                    problemBenchmark.getName() + " improvement ratio over time statistic, move moveClass " + id,
+                    problemBenchmark.getName() + " improvement ratio " + moveClass.getSimpleName() + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, entry.getValue(), true);
-            graphStatisticFiles.put(htmlSafeId, writeChartToImageFile(chart,
-                    problemBenchmark.getName() + "ImprovementRatioOverTimeStatistic-" + id));
+            graphStatisticFileMap.put(moveClass, writeChartToImageFile(chart,
+                    problemBenchmark.getName() + "ImprovementRatioOverTimeStatistic-" + moveClass.getCanonicalName().replaceAll("\\.", "_")));
         }
     }
 

@@ -489,22 +489,22 @@
                                         <#elseif problemStatistic.problemStatisticType.name() == "IMPROVEMENT_RATIO_OVER_TIME">
                                             <div class="tabbable tabs-right">
                                                 <ul class="nav nav-tabs">
-                                                    <#assign map = problemStatistic.graphFilePaths>
                                                     <#assign itemIndex = 0>
-                                                    <#list map?keys as moveClass>
+                                                    <#list problemStatistic.moveClasses as moveClass>
+                                                        <#assign moveClassId = moveClass.canonicalName?replace('.', '_')>
                                                         <li<#if itemIndex == 0> class="active"</#if>>
-                                                            <a href="#problemStatistic_${problemStatistic.anchorId}_${moveClass}" data-toggle="tab">Move class ${moveClass}</a>
+                                                            <a href="#problemStatistic_${problemStatistic.anchorId}_${moveClassId}" data-toggle="tab">${moveClass.getSimpleName()}</a>
                                                         </li>
                                                         <#assign itemIndex = itemIndex + 1>
                                                     </#list>
                                                 </ul>
                                                 <div class="tab-content">
-                                                    <#assign map = problemStatistic.graphFilePaths>
                                                     <#assign itemIndex = 0>
-                                                    <#list map?keys as moveClass>
-                                                        <div class="tab-pane<#if itemIndex == 0> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${moveClass}">
+                                                    <#list problemStatistic.moveClasses as moveClass>
+                                                        <#assign moveClassId = moveClass.canonicalName?replace('.', '_')>
+                                                        <div class="tab-pane<#if itemIndex == 0> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${moveClassId}">
                                                             <div class="benchmark-chart">
-                                                                <img src="${map[moveClass]}"/>
+                                                                <img src="${problemStatistic.getGraphFilePath(moveClass)}"/>
                                                             </div>
                                                         </div>
                                                         <#assign itemIndex = itemIndex + 1>
