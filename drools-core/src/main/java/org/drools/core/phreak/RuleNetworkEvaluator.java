@@ -4263,7 +4263,7 @@ public class RuleNetworkEvaluator {
 
                     while ( tempRightTuple != null && tempRightTuple.getStagedType() != LeftTuple.NONE ) {
                         // next cannot be an updated or deleted rightTuple
-                        tempRightTuple =(RightTuple) rightTuple.getPrevious();
+                        tempRightTuple =(RightTuple) tempRightTuple.getPrevious();
                     };
 
                     rtm.removeAdd( rightTuple );
