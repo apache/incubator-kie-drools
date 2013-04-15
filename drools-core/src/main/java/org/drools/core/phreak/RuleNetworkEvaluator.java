@@ -51,6 +51,8 @@ public class RuleNetworkEvaluator {
     private static PhreakQueryNode        pQueryNode  = new PhreakQueryNode();
     private static PhreakRuleTerminalNode pRtNode     = new PhreakRuleTerminalNode();
 
+    private static int cycle = 0;
+
     private static PhreakQueryTerminalNode pQtNode = new PhreakQueryTerminalNode();
 
     public RuleNetworkEvaluator() {
@@ -237,7 +239,7 @@ public class RuleNetworkEvaluator {
             srcTuples = trgTuples; // previous target, is now the source
             if (log.isTraceEnabled()) {
                 int offset = getOffset(node);
-                log.trace("{} {} {}", indent(offset), node.toString(), srcTuples.toStringSizes());
+                log.trace("{} {} {} {}", indent(offset), ++cycle, node.toString(), srcTuples.toStringSizes());
             }
 
             if (NodeTypeEnums.isTerminalNode(node)) {
