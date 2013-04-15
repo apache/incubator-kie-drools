@@ -56,7 +56,7 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
 
     /**
      * @return never null, each path is relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory} (not
-     *         {@link ProblemBenchmark#problemReportDirectory})
+     *  {@link ProblemBenchmark#problemReportDirectory})
      */
     public Map<String, String> getGraphFilePaths() {
         Map<String, String> graphFilePaths = new HashMap<String, String>(graphStatisticFiles.size());
@@ -104,11 +104,12 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
             }
             for (Map.Entry<Class<? extends Move>, XYSeries> entry : seriesMap.entrySet()) {
-                if (!plots.containsKey(entry.getKey())) {
-                    plots.put(entry.getKey(), createPlot(entry.getKey()));
+                Class<? extends Move> moveClass = entry.getKey();
+                if (!plots.containsKey(moveClass)) {
+                    plots.put(moveClass, createPlot(moveClass));
                 }
-                plots.get(entry.getKey()).setDataset(seriesIndex, new XYSeriesCollection(entry.getValue()));
-                plots.get(entry.getKey()).setRenderer(seriesIndex, renderer);
+                plots.get(moveClass).setDataset(seriesIndex, new XYSeriesCollection(entry.getValue()));
+                plots.get(moveClass).setRenderer(seriesIndex, renderer);
             }
             for (int i = 0; i < seriesMap.size(); i++) {
             }
@@ -116,18 +117,18 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
         }
         graphStatisticFiles = new HashMap<String, File>(plots.size());
         for (Map.Entry<Class<? extends Move>, XYPlot> entry : plots.entrySet()) {
-            Class<? extends Move> type = entry.getKey();
-            String id = type.getCanonicalName();
+            Class<? extends Move> moveClass = entry.getKey();
+            String id = moveClass.getCanonicalName();
             String htmlSafeId = id.replace('.', '_');
             JFreeChart chart = new JFreeChart(
-                    problemBenchmark.getName() + " improvement ratio over time statistic, move type " + id,
+                    problemBenchmark.getName() + " improvement ratio over time statistic, move moveClass " + id,
                     JFreeChart.DEFAULT_TITLE_FONT, entry.getValue(), true);
             graphStatisticFiles.put(htmlSafeId, writeChartToImageFile(chart,
                     problemBenchmark.getName() + "ImprovementRatioOverTimeStatistic-" + id));
         }
     }
 
-    private XYPlot createPlot(Class<? extends Move> type) {
+    private XYPlot createPlot(Class<? extends Move> moveClass) {
         Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
