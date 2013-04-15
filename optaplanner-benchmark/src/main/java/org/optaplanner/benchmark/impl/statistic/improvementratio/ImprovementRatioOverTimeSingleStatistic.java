@@ -42,7 +42,7 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
         this(1000L);
     }
 
-    public ImprovementRatioOverTimeSingleStatistic(final long timeMillisThresholdInterval) {
+    public ImprovementRatioOverTimeSingleStatistic(long timeMillisThresholdInterval) {
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");
@@ -60,12 +60,12 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
     // ************************************************************************
 
     @Override
-    public void open(final Solver solver) {
+    public void open(Solver solver) {
         ((DefaultSolver) solver).addSolverPhaseLifecycleListener(listener);
     }
 
     @Override
-    public void close(final Solver solver) {
+    public void close(Solver solver) {
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
 
@@ -74,7 +74,7 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
         private final Map<Class<? extends Move>, Integer> improvementCounts = new HashMap<Class<? extends Move>, Integer>();
         private final Map<Class<? extends Move>, Integer> totalCounts = new HashMap<Class<? extends Move>, Integer>();
 
-        private void increaseByOne(final Map<Class<? extends Move>, Integer> where, final Class<? extends Move> what) {
+        private void increaseByOne(Map<Class<? extends Move>, Integer> where, Class<? extends Move> what) {
             if (!where.containsKey(what)) {
                 where.put(what, 1);
             } else {
@@ -82,7 +82,7 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
             }
         }
 
-        private void addPoint(final Class<? extends Move> where, final ImprovementRatioOverTimeSingleStatisticPoint what) {
+        private void addPoint(Class<? extends Move> where, ImprovementRatioOverTimeSingleStatisticPoint what) {
             if (!pointLists.containsKey(where)) {
                 pointLists.put(where, new ArrayList<ImprovementRatioOverTimeSingleStatisticPoint>());
             }
@@ -93,25 +93,25 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
          * TODO moves should be counted not only by their type, but also by the variable they change.
          * this way, ChangeMove on different planning variables are merged together.
          */
-        private void localSearchStepEnded(final LocalSearchStepScope stepScope) {
+        private void localSearchStepEnded(LocalSearchStepScope stepScope) {
             // update the statistic
-            final Move moveBeingDone = stepScope.getStep();
-            final Class<? extends Move> moveType = moveBeingDone.getClass();
+            Move moveBeingDone = stepScope.getStep();
+            Class<? extends Move> moveType = moveBeingDone.getClass();
             increaseByOne(totalCounts, moveType);
             if (stepScope.getBestScoreImproved()) {
                 increaseByOne(improvementCounts, moveType);
             }
             // find out if we should record the current state
-            final long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
+            long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
             if (timeMillisSpend < ImprovementRatioOverTimeSingleStatistic.this.nextTimeMillisThreshold) {
                 return;
             }
             // record the state
-            for (final Map.Entry<Class<? extends Move>, Integer> entry : totalCounts.entrySet()) {
-                final Class<? extends Move> type = entry.getKey();
-                final int total = entry.getValue();
-                final int improved = improvementCounts.containsKey(type) ? improvementCounts.get(type) : 0;
-                final long ratio = improved * 100 / total;
+            for (Map.Entry<Class<? extends Move>, Integer> entry : totalCounts.entrySet()) {
+                Class<? extends Move> type = entry.getKey();
+                int total = entry.getValue();
+                int improved = improvementCounts.containsKey(type) ? improvementCounts.get(type) : 0;
+                long ratio = improved * 100 / total;
                 addPoint(type, new ImprovementRatioOverTimeSingleStatisticPoint(timeMillisSpend, ratio));
             }
             // figure out when the next recording should happen
@@ -122,7 +122,7 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
         }
 
         @Override
-        public void stepEnded(final AbstractStepScope stepScope) {
+        public void stepEnded(AbstractStepScope stepScope) {
             if (stepScope instanceof LocalSearchStepScope) {
                 localSearchStepEnded((LocalSearchStepScope) stepScope);
             }

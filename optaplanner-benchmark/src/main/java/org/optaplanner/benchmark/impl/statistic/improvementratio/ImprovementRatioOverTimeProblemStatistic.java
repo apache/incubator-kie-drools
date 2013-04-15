@@ -45,7 +45,7 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
 
     protected Map<String, File> graphStatisticFiles = null;
 
-    public ImprovementRatioOverTimeProblemStatistic(final ProblemBenchmark problemBenchmark) {
+    public ImprovementRatioOverTimeProblemStatistic(ProblemBenchmark problemBenchmark) {
         super(problemBenchmark, ProblemStatisticType.IMPROVEMENT_RATIO_OVER_TIME);
     }
 
@@ -59,8 +59,8 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
      *         {@link ProblemBenchmark#problemReportDirectory})
      */
     public Map<String, String> getGraphFilePaths() {
-        final Map<String, String> graphFilePaths = new HashMap<String, String>(graphStatisticFiles.size());
-        for (final Map.Entry<String, File> entry : graphStatisticFiles.entrySet()) {
+        Map<String, String> graphFilePaths = new HashMap<String, String>(graphStatisticFiles.size());
+        for (Map.Entry<String, File> entry : graphStatisticFiles.entrySet()) {
             graphFilePaths.put(entry.getKey(), toFilePath(entry.getValue()));
         }
         return graphFilePaths;
@@ -77,24 +77,24 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
 
     @Override
     protected void writeGraphStatistic() {
-        final Map<Class<? extends Move>, XYPlot> plots = new HashMap<Class<? extends Move>, XYPlot>();
+        Map<Class<? extends Move>, XYPlot> plots = new HashMap<Class<? extends Move>, XYPlot>();
         int seriesIndex = 0;
-        for (final SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            final Map<Class<? extends Move>, XYSeries> seriesMap = new HashMap<Class<? extends Move>, XYSeries>();
+        for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
+            Map<Class<? extends Move>, XYSeries> seriesMap = new HashMap<Class<? extends Move>, XYSeries>();
             // No direct ascending lines between 2 points, but a stepping line instead
-            final XYItemRenderer renderer = new XYStepRenderer();
+            XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmark.isSuccess()) {
-                final ImprovementRatioOverTimeSingleStatistic singleStatistic = (ImprovementRatioOverTimeSingleStatistic)
+                ImprovementRatioOverTimeSingleStatistic singleStatistic = (ImprovementRatioOverTimeSingleStatistic)
                         singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (final Map.Entry<Class<? extends Move>, List<ImprovementRatioOverTimeSingleStatisticPoint>> entry : singleStatistic.getPointLists().entrySet()) {
-                    final Class<? extends Move> type = entry.getKey();
+                for (Map.Entry<Class<? extends Move>, List<ImprovementRatioOverTimeSingleStatisticPoint>> entry : singleStatistic.getPointLists().entrySet()) {
+                    Class<? extends Move> type = entry.getKey();
                     if (!seriesMap.containsKey(type)) {
                         seriesMap.put(type, new XYSeries(singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix()));
                     }
-                    final XYSeries series = seriesMap.get(type);
-                    for (final ImprovementRatioOverTimeSingleStatisticPoint point : entry.getValue()) {
-                        final long timeMillisSpend = point.getTimeMillisSpend();
-                        final long ratio = point.getRatio();
+                    XYSeries series = seriesMap.get(type);
+                    for (ImprovementRatioOverTimeSingleStatisticPoint point : entry.getValue()) {
+                        long timeMillisSpend = point.getTimeMillisSpend();
+                        long ratio = point.getRatio();
                         series.add(timeMillisSpend, ratio);
                     }
                 }
@@ -103,7 +103,7 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
             }
-            for (final Map.Entry<Class<? extends Move>, XYSeries> entry : seriesMap.entrySet()) {
+            for (Map.Entry<Class<? extends Move>, XYSeries> entry : seriesMap.entrySet()) {
                 if (!plots.containsKey(entry.getKey())) {
                     plots.put(entry.getKey(), createPlot(entry.getKey()));
                 }
@@ -115,11 +115,11 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
             seriesIndex++;
         }
         graphStatisticFiles = new HashMap<String, File>(plots.size());
-        for (final Map.Entry<Class<? extends Move>, XYPlot> entry : plots.entrySet()) {
-            final Class<? extends Move> type = entry.getKey();
+        for (Map.Entry<Class<? extends Move>, XYPlot> entry : plots.entrySet()) {
+            Class<? extends Move> type = entry.getKey();
             String id = type.getCanonicalName();
             String htmlSafeId = id.replace('.', '_');
-            final JFreeChart chart = new JFreeChart(
+            JFreeChart chart = new JFreeChart(
                     problemBenchmark.getName() + " improvement ratio over time statistic, move type " + id,
                     JFreeChart.DEFAULT_TITLE_FONT, entry.getValue(), true);
             graphStatisticFiles.put(htmlSafeId, writeChartToImageFile(chart,
@@ -127,14 +127,14 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
         }
     }
 
-    private XYPlot createPlot(final Class<? extends Move> type) {
-        final Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
-        final NumberAxis xAxis = new NumberAxis("Time spend");
+    private XYPlot createPlot(Class<? extends Move> type) {
+        Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
+        NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
-        final NumberAxis yAxis = new NumberAxis("% score-improving");
+        NumberAxis yAxis = new NumberAxis("% score-improving");
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         yAxis.setAutoRangeIncludesZero(false);
-        final XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
+        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
         return plot;
     }
