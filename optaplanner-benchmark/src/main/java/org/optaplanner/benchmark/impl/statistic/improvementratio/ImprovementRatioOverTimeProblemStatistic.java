@@ -94,7 +94,7 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
                     XYSeries series = seriesMap.get(type);
                     for (ImprovementRatioOverTimeSingleStatisticPoint point : entry.getValue()) {
                         long timeMillisSpend = point.getTimeMillisSpend();
-                        long ratio = point.getRatio();
+                        double ratio = point.getRatio();
                         series.add(timeMillisSpend, ratio);
                     }
                 }
@@ -133,8 +133,8 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("% score-improving");
-        yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
-        yAxis.setAutoRangeIncludesZero(false);
+        yAxis.setNumberFormatOverride(NumberFormat.getPercentInstance(locale));
+        yAxis.setRange(0.0, 1.0);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
         return plot;

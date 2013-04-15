@@ -109,9 +109,9 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
             // record the state
             for (Map.Entry<Class<? extends Move>, Integer> entry : totalCounts.entrySet()) {
                 Class<? extends Move> type = entry.getKey();
-                int total = entry.getValue();
-                int improved = improvementCounts.containsKey(type) ? improvementCounts.get(type) : 0;
-                long ratio = improved * 100 / total;
+                double improved = improvementCounts.containsKey(type) ? improvementCounts.get(type) : 0.0;
+                double total = entry.getValue();
+                double ratio = improved / total;
                 addPoint(type, new ImprovementRatioOverTimeSingleStatisticPoint(timeMillisSpend, ratio));
             }
             // figure out when the next recording should happen

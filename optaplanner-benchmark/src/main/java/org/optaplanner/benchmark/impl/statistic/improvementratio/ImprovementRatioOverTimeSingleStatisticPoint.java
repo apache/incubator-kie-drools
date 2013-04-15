@@ -19,9 +19,9 @@ package org.optaplanner.benchmark.impl.statistic.improvementratio;
 public class ImprovementRatioOverTimeSingleStatisticPoint {
 
     private final long timeMillisSpend;
-    private final long ratio;
+    private final double ratio;
 
-    public ImprovementRatioOverTimeSingleStatisticPoint(long timeMillisSpend, long ratio) {
+    public ImprovementRatioOverTimeSingleStatisticPoint(long timeMillisSpend, double ratio) {
         this.timeMillisSpend = timeMillisSpend;
         this.ratio = ratio;
     }
@@ -30,7 +30,7 @@ public class ImprovementRatioOverTimeSingleStatisticPoint {
         return timeMillisSpend;
     }
 
-    public long getRatio() {
+    public double getRatio() {
         return ratio;
     }
 
