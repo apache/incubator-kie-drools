@@ -115,14 +115,14 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
 
     public boolean equals(final Object o) {
         if ( o instanceof ProcessImpl ) {
-        	if (this.id != null) {
+        	if (this.id == null) {
         		return ((ProcessImpl) o).getId() == null;
         	}
         	return this.id.equals(((ProcessImpl) o).getId());
         }
         return false;
     }
-
+    
     public int hashCode() {
         return this.id == null ? 0 : 3 * this.id.hashCode();
     }
