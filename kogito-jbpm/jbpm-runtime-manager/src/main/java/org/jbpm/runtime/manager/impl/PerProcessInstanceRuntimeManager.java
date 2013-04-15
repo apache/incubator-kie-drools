@@ -15,6 +15,7 @@ import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
@@ -39,7 +40,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         Object contextId = context.getContextId();
         KieSession ksession = null;
         Integer ksessionId = null;
-        if (contextId == null) {            
+        if (contextId == null || context instanceof EmptyContext ) { 
             ksession = factory.newKieSession();
             ksessionId = ksession.getId();                 
         } else {
