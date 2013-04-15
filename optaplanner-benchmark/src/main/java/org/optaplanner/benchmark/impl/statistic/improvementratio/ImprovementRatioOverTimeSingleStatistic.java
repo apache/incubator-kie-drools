@@ -95,15 +95,15 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
          */
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
             // update the statistic
-            Move moveBeingDone = stepScope.getStep();
-            Class<? extends Move> moveType = moveBeingDone.getClass();
+            Move step = stepScope.getStep();
+            Class<? extends Move> moveType = step.getClass();
             increaseByOne(totalCounts, moveType);
             if (stepScope.getBestScoreImproved()) {
                 increaseByOne(improvementCounts, moveType);
             }
             // find out if we should record the current state
             long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            if (timeMillisSpend < ImprovementRatioOverTimeSingleStatistic.this.nextTimeMillisThreshold) {
+            if (timeMillisSpend < nextTimeMillisThreshold) {
                 return;
             }
             // record the state
