@@ -59,9 +59,9 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
      *         {@link ProblemBenchmark#problemReportDirectory})
      */
     public Map<String, String> getGraphFilePaths() {
-        final Map<String, String> graphFilePaths = new HashMap<String, String>(this.graphStatisticFiles.size());
-        for (final Map.Entry<String, File> entry : this.graphStatisticFiles.entrySet()) {
-            graphFilePaths.put(entry.getKey(), this.toFilePath(entry.getValue()));
+        final Map<String, String> graphFilePaths = new HashMap<String, String>(graphStatisticFiles.size());
+        for (final Map.Entry<String, File> entry : graphStatisticFiles.entrySet()) {
+            graphFilePaths.put(entry.getKey(), toFilePath(entry.getValue()));
         }
         return graphFilePaths;
     }
@@ -72,20 +72,20 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
 
     @Override
     protected void writeCsvStatistic() {
-        // FIXME Planner doesn't support multiple CSV statistics per benchmark
+        // TODO FIXME Planner doesn't support multiple CSV statistics per benchmark
     }
 
     @Override
     protected void writeGraphStatistic() {
         final Map<Class<? extends Move>, XYPlot> plots = new HashMap<Class<? extends Move>, XYPlot>();
         int seriesIndex = 0;
-        for (final SingleBenchmark singleBenchmark : this.problemBenchmark.getSingleBenchmarkList()) {
+        for (final SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             final Map<Class<? extends Move>, XYSeries> seriesMap = new HashMap<Class<? extends Move>, XYSeries>();
             // No direct ascending lines between 2 points, but a stepping line instead
             final XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmark.isSuccess()) {
                 final ImprovementRatioOverTimeSingleStatistic singleStatistic = (ImprovementRatioOverTimeSingleStatistic)
-                        singleBenchmark.getSingleStatistic(this.problemStatisticType);
+                        singleBenchmark.getSingleStatistic(problemStatisticType);
                 for (final Map.Entry<Class<? extends Move>, List<ImprovementRatioOverTimeSingleStatisticPoint>> entry : singleStatistic.getPointLists().entrySet()) {
                     final Class<? extends Move> type = entry.getKey();
                     if (!seriesMap.containsKey(type)) {
@@ -105,7 +105,7 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
             }
             for (final Map.Entry<Class<? extends Move>, XYSeries> entry : seriesMap.entrySet()) {
                 if (!plots.containsKey(entry.getKey())) {
-                    plots.put(entry.getKey(), this.createPlot(entry.getKey()));
+                    plots.put(entry.getKey(), createPlot(entry.getKey()));
                 }
                 plots.get(entry.getKey()).setDataset(seriesIndex, new XYSeriesCollection(entry.getValue()));
                 plots.get(entry.getKey()).setRenderer(seriesIndex, renderer);
@@ -114,21 +114,21 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
             }
             seriesIndex++;
         }
-        this.graphStatisticFiles = new HashMap<String, File>(plots.size());
+        graphStatisticFiles = new HashMap<String, File>(plots.size());
         for (final Map.Entry<Class<? extends Move>, XYPlot> entry : plots.entrySet()) {
             final Class<? extends Move> type = entry.getKey();
             String id = type.getCanonicalName();
             String htmlSafeId = id.replace('.', '_');
             final JFreeChart chart = new JFreeChart(
-                    this.problemBenchmark.getName() + " improvement ratio over time statistic, move type " + id,
+                    problemBenchmark.getName() + " improvement ratio over time statistic, move type " + id,
                     JFreeChart.DEFAULT_TITLE_FONT, entry.getValue(), true);
-            this.graphStatisticFiles.put(htmlSafeId, this.writeChartToImageFile(chart,
-                    this.problemBenchmark.getName() + "ImprovementRatioOverTimeStatistic-" + id));
+            graphStatisticFiles.put(htmlSafeId, writeChartToImageFile(chart,
+                    problemBenchmark.getName() + "ImprovementRatioOverTimeStatistic-" + id));
         }
     }
 
     private XYPlot createPlot(final Class<? extends Move> type) {
-        final Locale locale = this.problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
+        final Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
         final NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         final NumberAxis yAxis = new NumberAxis("% score-improving");

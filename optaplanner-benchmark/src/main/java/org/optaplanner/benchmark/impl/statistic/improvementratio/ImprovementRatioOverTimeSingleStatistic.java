@@ -52,7 +52,7 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
     }
 
     public Map<Class<? extends Move>, List<ImprovementRatioOverTimeSingleStatisticPoint>> getPointLists() {
-        return this.pointLists;
+        return pointLists;
     }
 
     // ************************************************************************
@@ -61,12 +61,12 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
 
     @Override
     public void open(final Solver solver) {
-        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(this.listener);
+        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(listener);
     }
 
     @Override
     public void close(final Solver solver) {
-        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(this.listener);
+        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
 
     private class ImprovementRatioOverTimeSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
@@ -97,9 +97,9 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
             // update the statistic
             final Move moveBeingDone = stepScope.getStep();
             final Class<? extends Move> moveType = moveBeingDone.getClass();
-            this.increaseByOne(this.totalCounts, moveType);
+            increaseByOne(totalCounts, moveType);
             if (stepScope.getBestScoreImproved()) {
-                this.increaseByOne(this.improvementCounts, moveType);
+                increaseByOne(improvementCounts, moveType);
             }
             // find out if we should record the current state
             final long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
@@ -107,12 +107,12 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
                 return;
             }
             // record the state
-            for (final Map.Entry<Class<? extends Move>, Integer> entry : this.totalCounts.entrySet()) {
+            for (final Map.Entry<Class<? extends Move>, Integer> entry : totalCounts.entrySet()) {
                 final Class<? extends Move> type = entry.getKey();
                 final int total = entry.getValue();
-                final int improved = this.improvementCounts.containsKey(type) ? this.improvementCounts.get(type) : 0;
+                final int improved = improvementCounts.containsKey(type) ? improvementCounts.get(type) : 0;
                 final long ratio = improved * 100 / total;
-                this.addPoint(type, new ImprovementRatioOverTimeSingleStatisticPoint(timeMillisSpend, ratio));
+                addPoint(type, new ImprovementRatioOverTimeSingleStatisticPoint(timeMillisSpend, ratio));
             }
             // figure out when the next recording should happen
             nextTimeMillisThreshold += timeMillisThresholdInterval;
@@ -124,7 +124,7 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
         @Override
         public void stepEnded(final AbstractStepScope stepScope) {
             if (stepScope instanceof LocalSearchStepScope) {
-                this.localSearchStepEnded((LocalSearchStepScope) stepScope);
+                localSearchStepEnded((LocalSearchStepScope) stepScope);
             }
         }
 

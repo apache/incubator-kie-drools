@@ -28,7 +28,7 @@ public enum ProblemStatisticType implements StatisticType {
     IMPROVEMENT_RATIO_OVER_TIME,
     MEMORY_USE;
 
-    public ProblemStatistic create(final ProblemBenchmark problemBenchmark) {
+    public ProblemStatistic create(ProblemBenchmark problemBenchmark) {
         switch (this) {
             case BEST_SOLUTION_CHANGED:
                 return new BestScoreProblemStatistic(problemBenchmark);
@@ -42,4 +42,5 @@ public enum ProblemStatisticType implements StatisticType {
                 throw new IllegalStateException("The problemStatisticType (" + this + ") is not implemented.");
         }
     }
+
 }
