@@ -124,7 +124,7 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
                     problemBenchmark.getName() + " improvement ratio " + moveClass.getSimpleName() + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, entry.getValue(), true);
             graphStatisticFileMap.put(moveClass, writeChartToImageFile(chart,
-                    problemBenchmark.getName() + "ImprovementRatioOverTimeStatistic-" + moveClass.getCanonicalName().replaceAll("\\.", "_")));
+                    problemBenchmark.getName() + "ImprovementRatioOverTimeStatistic-" + moveClass.getCanonicalName()));
         }
     }
 
