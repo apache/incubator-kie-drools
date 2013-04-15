@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.improvementratio;
+package org.optaplanner.benchmark.impl.statistic.improvingsteppercentage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,20 +29,20 @@ import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStatistic {
+public class ImprovingStepPercentageSingleStatistic extends AbstractSingleStatistic {
 
     private final long timeMillisThresholdInterval;
     private long nextTimeMillisThreshold;
 
-    private final ImprovementRatioOverTimeSingleStatisticListener listener = new ImprovementRatioOverTimeSingleStatisticListener();
+    private final ImprovingStepPercentageSingleStatisticListener listener = new ImprovingStepPercentageSingleStatisticListener();
 
-    private final Map<Class<? extends Move>, List<ImprovementRatioOverTimeSingleStatisticPoint>> pointLists = new HashMap<Class<? extends Move>, List<ImprovementRatioOverTimeSingleStatisticPoint>>();
+    private final Map<Class<? extends Move>, List<ImprovingStepPercentageSingleStatisticPoint>> pointLists = new HashMap<Class<? extends Move>, List<ImprovingStepPercentageSingleStatisticPoint>>();
 
-    public ImprovementRatioOverTimeSingleStatistic() {
+    public ImprovingStepPercentageSingleStatistic() {
         this(1000L);
     }
 
-    public ImprovementRatioOverTimeSingleStatistic(long timeMillisThresholdInterval) {
+    public ImprovingStepPercentageSingleStatistic(long timeMillisThresholdInterval) {
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");
@@ -51,7 +51,7 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
         this.nextTimeMillisThreshold = timeMillisThresholdInterval;
     }
 
-    public Map<Class<? extends Move>, List<ImprovementRatioOverTimeSingleStatisticPoint>> getPointLists() {
+    public Map<Class<? extends Move>, List<ImprovingStepPercentageSingleStatisticPoint>> getPointLists() {
         return pointLists;
     }
 
@@ -69,7 +69,7 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
 
-    private class ImprovementRatioOverTimeSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
+    private class ImprovingStepPercentageSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
         private final Map<Class<? extends Move>, Integer> improvementCounts = new HashMap<Class<? extends Move>, Integer>();
         private final Map<Class<? extends Move>, Integer> totalCounts = new HashMap<Class<? extends Move>, Integer>();
@@ -82,9 +82,9 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
             }
         }
 
-        private void addPoint(Class<? extends Move> where, ImprovementRatioOverTimeSingleStatisticPoint what) {
+        private void addPoint(Class<? extends Move> where, ImprovingStepPercentageSingleStatisticPoint what) {
             if (!pointLists.containsKey(where)) {
-                pointLists.put(where, new ArrayList<ImprovementRatioOverTimeSingleStatisticPoint>());
+                pointLists.put(where, new ArrayList<ImprovingStepPercentageSingleStatisticPoint>());
             }
             pointLists.get(where).add(what);
         }
@@ -112,7 +112,7 @@ public class ImprovementRatioOverTimeSingleStatistic extends AbstractSingleStati
                 double improved = improvementCounts.containsKey(moveClass) ? improvementCounts.get(moveClass) : 0.0;
                 double total = entry.getValue();
                 double ratio = improved / total;
-                addPoint(moveClass, new ImprovementRatioOverTimeSingleStatisticPoint(timeMillisSpend, ratio));
+                addPoint(moveClass, new ImprovingStepPercentageSingleStatisticPoint(timeMillisSpend, ratio));
             }
             // figure out when the next recording should happen
             nextTimeMillisThreshold += timeMillisThresholdInterval;

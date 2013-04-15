@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.improvementratio;
+package org.optaplanner.benchmark.impl.statistic.improvingsteppercentage;
 
-public class ImprovementRatioOverTimeSingleStatisticPoint {
+public class ImprovingStepPercentageSingleStatisticPoint {
 
     private final long timeMillisSpend;
     private final double ratio;
 
-    public ImprovementRatioOverTimeSingleStatisticPoint(long timeMillisSpend, double ratio) {
+    public ImprovingStepPercentageSingleStatisticPoint(long timeMillisSpend, double ratio) {
         this.timeMillisSpend = timeMillisSpend;
         this.ratio = ratio;
     }

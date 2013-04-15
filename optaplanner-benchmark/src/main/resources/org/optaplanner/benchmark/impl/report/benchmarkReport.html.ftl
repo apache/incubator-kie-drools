@@ -486,7 +486,7 @@
                                                     </#list>
                                                 </div>
                                             </div>
-                                        <#elseif problemStatistic.problemStatisticType.name() == "IMPROVEMENT_RATIO_OVER_TIME">
+                                        <#elseif problemStatistic.problemStatisticType.name() == "IMPROVING_STEP_PERCENTAGE">
                                             <div class="tabbable tabs-right">
                                                 <ul class="nav nav-tabs">
                                                     <#assign itemIndex = 0>
@@ -518,7 +518,7 @@
                                                 <img src="${problemStatistic.graphFilePath}"/>
                                             </div>
                                         </#if>
-                                        <#if problemStatistic.problemStatisticType.name() != "IMPROVEMENT_RATIO_OVER_TIME">
+                                        <#if problemStatistic.problemStatisticType.name() != "IMPROVING_STEP_PERCENTAGE">
                                             <div class="btn-group download-btn-group">
                                                 <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CSV file</button>
                                             </div>

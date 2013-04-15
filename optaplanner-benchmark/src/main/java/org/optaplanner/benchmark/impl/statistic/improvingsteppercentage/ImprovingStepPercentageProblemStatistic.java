@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.improvementratio;
+package org.optaplanner.benchmark.impl.statistic.improvingsteppercentage;
 
 import java.awt.BasicStroke;
 import java.io.File;
@@ -43,17 +43,17 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.core.impl.move.Move;
 
-public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemStatistic {
+public class ImprovingStepPercentageProblemStatistic extends AbstractProblemStatistic {
 
     protected Map<Class<? extends Move>, File> graphStatisticFileMap = null;
 
-    public ImprovementRatioOverTimeProblemStatistic(ProblemBenchmark problemBenchmark) {
-        super(problemBenchmark, ProblemStatisticType.IMPROVEMENT_RATIO_OVER_TIME);
+    public ImprovingStepPercentageProblemStatistic(ProblemBenchmark problemBenchmark) {
+        super(problemBenchmark, ProblemStatisticType.IMPROVING_STEP_PERCENTAGE);
     }
 
     @Override
     public SingleStatistic createSingleStatistic() {
-        return new ImprovementRatioOverTimeSingleStatistic();
+        return new ImprovingStepPercentageSingleStatistic();
     }
 
     public Collection<Class<? extends Move>> getMoveClasses() {
@@ -86,15 +86,15 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmark.isSuccess()) {
-                ImprovementRatioOverTimeSingleStatistic singleStatistic = (ImprovementRatioOverTimeSingleStatistic)
+                ImprovingStepPercentageSingleStatistic singleStatistic = (ImprovingStepPercentageSingleStatistic)
                         singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (Map.Entry<Class<? extends Move>, List<ImprovementRatioOverTimeSingleStatisticPoint>> entry : singleStatistic.getPointLists().entrySet()) {
+                for (Map.Entry<Class<? extends Move>, List<ImprovingStepPercentageSingleStatisticPoint>> entry : singleStatistic.getPointLists().entrySet()) {
                     Class<? extends Move> moveClass = entry.getKey();
                     if (!seriesMap.containsKey(moveClass)) {
                         seriesMap.put(moveClass, new XYSeries(singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix()));
                     }
                     XYSeries series = seriesMap.get(moveClass);
-                    for (ImprovementRatioOverTimeSingleStatisticPoint point : entry.getValue()) {
+                    for (ImprovingStepPercentageSingleStatisticPoint point : entry.getValue()) {
                         long timeMillisSpend = point.getTimeMillisSpend();
                         double ratio = point.getRatio();
                         series.add(timeMillisSpend, ratio);
@@ -121,10 +121,10 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
         for (Map.Entry<Class<? extends Move>, XYPlot> entry : plots.entrySet()) {
             Class<? extends Move> moveClass = entry.getKey();
             JFreeChart chart = new JFreeChart(
-                    problemBenchmark.getName() + " improvement ratio " + moveClass.getSimpleName() + " statistic",
+                    problemBenchmark.getName() + " improving step percentage " + moveClass.getSimpleName() + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, entry.getValue(), true);
             graphStatisticFileMap.put(moveClass, writeChartToImageFile(chart,
-                    problemBenchmark.getName() + "ImprovementRatioOverTimeStatistic-" + moveClass.getCanonicalName()));
+                    problemBenchmark.getName() + "ImprovingStepPercentageStatistic-" + moveClass.getCanonicalName()));
         }
     }
 
@@ -132,7 +132,7 @@ public class ImprovementRatioOverTimeProblemStatistic extends AbstractProblemSta
         Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
-        NumberAxis yAxis = new NumberAxis("% score-improving");
+        NumberAxis yAxis = new NumberAxis("Percentage that improve the score");
         yAxis.setNumberFormatOverride(NumberFormat.getPercentInstance(locale));
         yAxis.setRange(0.0, 1.0);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
