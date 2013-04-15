@@ -220,7 +220,8 @@ public class RightTuple
     public void clearStaged() {
         this.stageType = LeftTuple.NONE;
         this.stageNext = null;
-        this.stagePrevious = null;;
+        this.stagePrevious = null;
+        this.tempNextRightTuple = null;
     }
 
     public RightTuple getTempNextRightTuple() {
