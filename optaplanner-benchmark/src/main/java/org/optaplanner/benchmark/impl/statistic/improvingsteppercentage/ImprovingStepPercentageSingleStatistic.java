@@ -98,7 +98,7 @@ public class ImprovingStepPercentageSingleStatistic extends AbstractSingleStatis
             Move step = stepScope.getStep();
             Class<? extends Move> moveType = step.getClass();
             increaseByOne(totalCounts, moveType);
-            if (stepScope.getBestScoreImproved()) {
+            if (stepScope.getBestScoreImproved()) { // TODO FIXME name implies it's step improving, not best score improving
                 increaseByOne(improvementCounts, moveType);
             }
             // find out if we should record the current state
@@ -114,6 +114,8 @@ public class ImprovingStepPercentageSingleStatistic extends AbstractSingleStatis
                 double ratio = improved / total;
                 addPoint(moveClass, new ImprovingStepPercentageSingleStatisticPoint(timeMillisSpend, ratio));
             }
+            improvementCounts.clear();
+            totalCounts.clear();
             // figure out when the next recording should happen
             nextTimeMillisThreshold += timeMillisThresholdInterval;
             if (nextTimeMillisThreshold < timeMillisSpend) {
