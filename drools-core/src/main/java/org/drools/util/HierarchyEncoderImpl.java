@@ -193,7 +193,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
 
 //        while ( inDex >= 0 ) {
         if ( inDex < 0 ) {
-            propagate( y, i );
+            propagate( y, Math.max( i, freeBit( y ) ) );
         } else {
 
             //System.out.println( "D " + toBinaryString( d ) );
@@ -219,13 +219,22 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
 
             Set<HierNode<T>> affectedDescendants = new HashSet<HierNode<T>>();
             for ( HierNode<T> g : gcs ) {
-                affectedDescendants.addAll( descendantNodes(g) );
+                affectedDescendants.addAll( descendantNodes( g ) );
             }
             affectedDescendants.remove( x );    // take x out it's not yet in the set
 
+            BitSet desc = new BitSet();
+            for ( HierNode node : affectedDescendants ) {
+                desc.or( node.getBitMask() );
+            }
+            if ( desc.get( i ) ) {
+//                System.err.println( "OVERRINDING I I I  " + i + " with " + ( desc.length() +1 ) );
+                i = Math.max( i, desc.length() + 1 );
+            }
             //System.out.println( "Affected Descs" + affectedDescendants );
 
             int dx = firstOne( d );
+
             for ( HierNode<T> sub : affectedDescendants ) {
 
                 boolean keepsBit = false;
@@ -363,7 +372,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
 
             if ( superset( y, x ) > 0 ) {
                 //System.out.println( "\t\t Subtype " + y + " contributes " + toBinaryString( y.getBitMask() ) );
-                forbid.or(y.getBitMask());
+                forbid.or( y.getBitMask() );
             }
 
             if ( superset( x, y ) < 0 ) {
