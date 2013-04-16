@@ -3181,8 +3181,8 @@ After in *ScoreDefinition.java:
 6.0 supports a bunch more score types: it's easier (as well as recommended) to switch to a build-in one if you can.
 
 
-From 6.0.0.Beta1 to 6.0.0.CR1
------------------------------
+From 6.0.0.Beta1 to 6.0.0.Beta2
+-------------------------------
 
 [MINOR] optaplanner-examples: The class XStreamSolutionDaoImpl has been renamed to XStreamSolutionDao.
 This should not affect you because you should not be depending on optaplanner-examples.
@@ -3191,3 +3191,11 @@ Before in *.java:
 After in *.java:
     public class ...Dao extends XStreamSolutionDao {...}
 
+[MAJOR] The API to configure a Benchmarker from a Freemarker Template has moved to a separate calls
+and the methods have been renamed.
+Before in *.java:
+    PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory()
+            .configureFromTemplate(benchmarkConfigTemplate);
+After in *.java:
+    PlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory(
+            benchmarkConfigTemplate);

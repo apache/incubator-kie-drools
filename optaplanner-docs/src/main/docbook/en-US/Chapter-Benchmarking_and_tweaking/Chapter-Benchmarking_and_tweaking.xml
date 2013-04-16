@@ -574,10 +574,10 @@
 &lt;/#list&gt;
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>And configure it with the method <literal>configureFromTemplate</literal>:</para>
+      <para>And build it with the class <literal>FreemarkerXmlPlannerBenchmarkFactory</literal>:</para>
 
-      <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory()
-                .configureFromTemplate("/org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
+      <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory(
+                "/org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
         PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();</programlisting>
     </section>
   </section>
