@@ -17,6 +17,9 @@ package org.jbpm.services.task;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -138,5 +141,21 @@ public abstract class HumanTaskServicesBaseTest {
 
     protected void printTestName() {
         System.out.println("Running " + this.getClass().getSimpleName() + "." + Thread.currentThread().getStackTrace()[2].getMethodName());
+    }
+    
+    /**
+     * Creates date using default format - "yyyy-MM-dd"
+     */
+    protected Date createDate(String dateString) {
+        return createDate(dateString, "yyyy-MM-dd");
+    }
+    
+    protected Date createDate(String dateString, String dateFormat) {
+        SimpleDateFormat fmt = new SimpleDateFormat(dateFormat);
+        try {
+            return fmt.parse(dateString);
+        } catch (ParseException e) {
+            throw new RuntimeException("Can't create date from string '" + dateString + "' using '" + dateFormat + "' format!", e);
+        }
     }
 }

@@ -16,8 +16,7 @@
 
 package org.jbpm.services.task;
 
-import static junit.framework.Assert.assertTrue;
-
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
@@ -716,51 +715,54 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
     @Test
     public void testGetTasksOwnedByExpirationDateBeforeSpecifiedDate() {
         // should be included in result
-        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {expirationTime = new Date( 10000000 ) } ), ";
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {" ;
+        str += "expirationTime = new java.text.SimpleDateFormat(\"yyyy-MM-dd\").parse(\"2011-10-15\") } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
         TaskImpl task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
         // should be included in result
-        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {expirationTime = new Date( 20000000 ) } ), ";
+        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {";
+        str += "expirationTime = new java.text.SimpleDateFormat(\"yyyy-MM-dd\").parse(\"2013-04-15\") } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
         task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
         // should not be included in result -> date is not before, it equals
-        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {expirationTime = new Date( 500000000 ) } ), ";
+        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {";
+        str += "expirationTime = new java.text.SimpleDateFormat(\"yyyy-MM-dd\").parse(\"2013-04-16\") } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        
+        // should not be included in result -> date is after not before
+        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {";
+        str += "expirationTime = new java.text.SimpleDateFormat(\"yyyy-MM-dd\").parse(\"2013-08-16\") } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
         task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
         // should not be included in result -> userId is different
-        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {expirationTime = new Date( 20000000 ) } ), ";
+        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {";
+        str += "expirationTime = new java.text.SimpleDateFormat(\"yyyy-MM-dd\").parse(\"2013-01-15\") } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader')], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
         task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         
-        // should not be included in result -> status is different
-        // FIXME determine why the task is included in the query result even though the status is different than expected
-//        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {expirationTime = new Date( 20000000 ) } ), ";
-//        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')], }),";
-//        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
-//        task = TaskFactory.evalTask(new StringReader(str));
-//        task.getTaskData().setStatus(Status.Completed);
-//        taskService.addTask(task, new HashMap<String, Object>());
-        
-        Date date = new Date(500000000);
+        Date dateSpecified = createDate("2013-04-16");
         List<Status> statuses = new ArrayList<Status>();
         statuses.addAll(Arrays.asList(new Status[] {Status.Created, Status.Ready, Status.Reserved, Status.InProgress}));
-        List<TaskSummary> tasks = taskService.getTasksOwnedByExpirationDateBeforeSpecifiedDate("Bobba Fet", statuses, date);
+        List<TaskSummary> tasks = taskService.getTasksOwnedByExpirationDateBeforeSpecifiedDate("Bobba Fet", statuses, dateSpecified);
         assertEquals(2, tasks.size());
         for(TaskSummary taskSummary : tasks) {
             assertTrue("Expected user 'Bobba Fet'!", taskSummary.getActualOwner().toString().contains("Bobba Fet"));
             // the expiration date should be before the specified date
-            assertTrue("Expiration date needs to be before the specified date!", taskSummary.getExpirationTime().compareTo(date) < 0);
+            assertTrue("Expiration date needs to be before the specified date!", taskSummary.getExpirationTime().compareTo(dateSpecified) < 0);
         }
     }
 }
