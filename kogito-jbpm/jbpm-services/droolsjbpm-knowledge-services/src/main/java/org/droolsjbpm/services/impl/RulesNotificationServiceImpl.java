@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import org.droolsjbpm.services.api.RulesNotificationService;
 import org.droolsjbpm.services.impl.model.RuleNotificationInstanceDesc;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
 /**
  *
@@ -33,28 +34,27 @@ import org.jboss.seam.transaction.Transactional;
 public class RulesNotificationServiceImpl implements RulesNotificationService {
     
     @Inject
-    private EntityManager em;
+    private JbpmServicesPersistenceManager pm;
     
     
     
     
     @Override
     public void insertNotification(int sessionId, String notification) {
-        em.persist(new RuleNotificationInstanceDesc(sessionId, notification));
+        pm.persist(new RuleNotificationInstanceDesc(sessionId, notification));
     }
 
     @Override
     public Collection<RuleNotificationInstanceDesc> getAllNotificationInstance() {
-        List<RuleNotificationInstanceDesc> notifications = em.createQuery("select ni FROM RuleNotificationInstanceDesc ni  ORDER BY ni.dataTimeStamp DESC").getResultList();
+        List<RuleNotificationInstanceDesc> notifications = (List<RuleNotificationInstanceDesc>)pm.queryStringInTransaction("select ni FROM RuleNotificationInstanceDesc ni  ORDER BY ni.dataTimeStamp DESC");
 
         return notifications;
     }
 
     @Override
     public Collection<RuleNotificationInstanceDesc> getAllNotificationInstanceBySessionId(int sessionId) {
-        List<RuleNotificationInstanceDesc> notifications = em.createQuery("select ni FROM RuleNotificationInstanceDesc ni where "
-                + "ni.sessionId=:sessionId ORDER BY ni.dataTimeStamp DESC").setParameter("sessionId", sessionId)
-                .getResultList();
+        List<RuleNotificationInstanceDesc> notifications = (List<RuleNotificationInstanceDesc>)pm.queryStringWithParametersInTransaction("select ni FROM RuleNotificationInstanceDesc ni where "
+                + "ni.sessionId=:sessionId ORDER BY ni.dataTimeStamp DESC", pm.addParametersToMap("sessionId", sessionId));
         return notifications;
     }
     

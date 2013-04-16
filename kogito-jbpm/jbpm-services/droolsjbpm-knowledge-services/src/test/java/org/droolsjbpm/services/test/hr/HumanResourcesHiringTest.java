@@ -15,42 +15,26 @@
  */
 package org.droolsjbpm.services.test.hr;
 
-import org.droolsjbpm.services.test.domain.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 
-import org.droolsjbpm.services.api.DomainManagerService;
-import org.droolsjbpm.services.domain.entities.Domain;
-import org.droolsjbpm.services.domain.entities.Organization;
-import org.droolsjbpm.services.domain.entities.RuntimeId;
-import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
-import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.shared.services.api.FileException;
-import org.jbpm.shared.services.api.FileService;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -59,17 +43,13 @@ import org.junit.runner.RunWith;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.Context;
 import org.kie.internal.runtime.manager.RuntimeEngine;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.TaskService;
-import org.kie.internal.task.api.model.Status;
 import org.kie.internal.task.api.model.TaskSummary;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -146,8 +126,7 @@ public class HumanResourcesHiringTest {
     public static void setup() {
         TestUtil.cleanupSingletonSessionId();
         pds = TestUtil.setupPoolingDataSource();
-        Properties props = new Properties();
-        props.setProperty("salaboy", "user");
+
 
     }
 
@@ -158,22 +137,13 @@ public class HumanResourcesHiringTest {
 
     @After
     public void tearDownTest() {
-        int removeAllTasks = taskService.removeAllTasks();
-        System.out.println(">>> Removed Tasks > " + removeAllTasks);
     }
+    
     /*
      * end of initialization code, tests start here
      */
     @Inject
-    private RuntimeManagerFactory managerFactory;
-    @Inject
     private EntityManagerFactory emf;
-    @Inject
-    private FileService fs;
-    @Inject
-    protected DomainManagerService domainService;
-    @Inject
-    protected TaskService taskService;
     @Inject
     private BeanManager beanManager;
 
@@ -188,75 +158,47 @@ public class HumanResourcesHiringTest {
 
 
         RuntimeManager manager = managerFactory.newSingletonRuntimeManager(builder.get());
-        testProcessStartOnManager(manager, EmptyContext.get());
+        testHiringProcess(manager, EmptyContext.get());
 
         manager.close();
 
     }
+    @Inject
+    private RuntimeManagerFactory managerFactory;
 
-//    @Test
-//    public void initDomainTestWithWorkItemHandler(){
-//        Organization organization = new Organization();
-//        organization.setName("JBoss");
-//        Domain domain = new Domain();
-//        domain.setName("general");
-//        List<RuntimeId> runtimes = new ArrayList<RuntimeId>();
-//        RuntimeId runtime1 = new RuntimeId();
-//        runtime1.setReference("processes/general/");
-//        runtime1.setDomain(domain);
-//        runtimes.add(runtime1);
-//        domain.setRuntimes(runtimes);
-//        domain.setOrganization(organization);
-//        List<Domain> domains = new ArrayList<Domain>();
-//        domains.add(domain);
-//        organization.setDomains(domains);
-//
-//        domainService.storeOrganization(organization);
-//        
-//        domainService.initDomain(domain.getId());
-//        RuntimeManager runtimesByDomain = domainService.getRuntimesByDomain(domain.getName());
-//        RuntimeEngine runtime = runtimesByDomain.getRuntimeEngine(ProcessInstanceIdContext.get());
-//        Map<String, Object> params = new HashMap<String, Object>();
-//        params.put("id", "test");
-//        ProcessInstance processInstance = runtime.getKieSession().startProcess("customtask", params);
-//        
-//        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-//        Collection<ProcessDesc> processesByDomainName = domainService.getProcessesByDomainName("general");
-//        assertNotNull(processesByDomainName);
-//        
-//        assertEquals(4, processesByDomainName.size());
-//    
-//    }
-    private void testProcessStartOnManager(RuntimeManager manager, Context context) {
-        assertNotNull(manager);
+    private void testHiringProcess(RuntimeManager manager, Context context) {
 
-        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(context);
-        assertNotNull(runtime);
-
+         RuntimeEngine runtime = manager.getRuntimeEngine(context);
         KieSession ksession = runtime.getKieSession();
+        TaskService taskService = runtime.getTaskService();
+
+
+        assertNotNull(runtime);
         assertNotNull(ksession);
 
         ProcessInstance processInstance = ksession.startProcess("hiring");
-        assertNotNull(processInstance);
-        TaskService taskService = runtime.getTaskService();
-        
+
         List<TaskSummary> tasks = taskService.getTasksAssignedByGroup("HR", "en-UK");
-        assertNotNull(tasks);
-        assertEquals(1, tasks.size());
+
         TaskSummary HRInterview = tasks.get(0);
-        
+
         taskService.claim(HRInterview.getId(), "katy");
-        
+
         taskService.start(HRInterview.getId(), "katy");
-        
+
         Map<String, Object> hrOutput = new HashMap<String, Object>();
         hrOutput.put("out.name", "salaboy");
         hrOutput.put("out.age", 29);
         hrOutput.put("out.mail", "salaboy@gmail.com");
         hrOutput.put("out.score", 8);
-        
+
         taskService.complete(HRInterview.getId(), "katy", hrOutput);
-        
+
+
+        assertNotNull(processInstance);
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+
         tasks = taskService.getTasksAssignedByGroup("IT", "en-UK");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
@@ -264,15 +206,80 @@ public class HumanResourcesHiringTest {
         Task techInterviewTask = taskService.getTaskById(techInterview.getId());
         Content contentById = taskService.getContentById(techInterviewTask.getTaskData().getDocumentContentId());
         assertNotNull(contentById);
-        
+
         Map<String, Object> taskContent = (Map<String, Object>) ContentMarshallerHelper.unmarshall(contentById.getContent(), null);
-        
+
         assertEquals(5, taskContent.size());
-        
+
         assertEquals("salaboy@gmail.com", taskContent.get("in.mail"));
         assertEquals(29, taskContent.get("in.age"));
         assertEquals("salaboy", taskContent.get("in.name"));
+
+        taskService.claim(techInterview.getId(), "salaboy");
+
+        taskService.start(techInterview.getId(), "salaboy");
+
+
+        Map<String, Object> techOutput = new HashMap<String, Object>();
+        techOutput.put("out.skills", "java, jbpm, drools");
+        techOutput.put("out.twitter", "@salaboy");
+        techOutput.put("out.score", 8);
+
+        taskService.complete(techInterview.getId(), "salaboy", techOutput);
+
+
+        tasks = taskService.getTasksAssignedByGroup("HR", "en-UK");
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        TaskSummary createProposal = tasks.get(0);
+
+        Task createProposalTask = taskService.getTaskById(createProposal.getId());
+        contentById = taskService.getContentById(createProposalTask.getTaskData().getDocumentContentId());
+        assertNotNull(contentById);
+        taskContent = (Map<String, Object>) ContentMarshallerHelper.unmarshall(contentById.getContent(), null);
+
+        assertEquals(4, taskContent.size());
+
+        assertEquals(8, taskContent.get("in.tech_score"));
+        assertEquals(8, taskContent.get("in.hr_score"));
+
+
+        taskService.claim(createProposal.getId(), "katy");
+
+        taskService.start(createProposal.getId(), "katy");
+
+        Map<String, Object> proposalOutput = new HashMap<String, Object>();
+        proposalOutput.put("out.offering", 10000);
+
+
+        taskService.complete(createProposal.getId(), "katy", proposalOutput);
+
+        tasks = taskService.getTasksAssignedByGroup("HR", "en-UK");
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        TaskSummary signContract = tasks.get(0);
+
+        Task signContractTask = taskService.getTaskById(signContract.getId());
+        contentById = taskService.getContentById(signContractTask.getTaskData().getDocumentContentId());
+        assertNotNull(contentById);
+        taskContent = (Map<String, Object>) ContentMarshallerHelper.unmarshall(contentById.getContent(), null);
+
+        assertEquals(4, taskContent.size());
+
+        assertEquals(10000, taskContent.get("in.offering"));
+        assertEquals("salaboy", taskContent.get("in.name"));
+
+        taskService.claim(signContract.getId(), "katy");
+
+        taskService.start(signContract.getId(), "katy");
+
+        Map<String, Object> signOutput = new HashMap<String, Object>();
+        signOutput.put("out.signed", true);
+        taskService.complete(signContract.getId(), "katy", signOutput);
+
         
-        
+        int removeAllTasks = taskService.removeAllTasks();
+        System.out.println(">>> Removed Tasks > " + removeAllTasks);
+
     }
 }
