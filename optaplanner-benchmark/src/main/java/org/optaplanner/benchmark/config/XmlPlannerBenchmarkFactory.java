@@ -91,7 +91,7 @@ public class XmlPlannerBenchmarkFactory implements PlannerBenchmarkFactory {
         if (templateIn == null) {
             throw new IllegalArgumentException("Could not find templateResource (" + templateResource + ").");
         }
-        return this.configureFromTemplate(templateIn, null);
+        return this.configureFromTemplate(templateIn, model);
     }
 
     public XmlPlannerBenchmarkFactory configureFromTemplate(InputStream templateIn) {
