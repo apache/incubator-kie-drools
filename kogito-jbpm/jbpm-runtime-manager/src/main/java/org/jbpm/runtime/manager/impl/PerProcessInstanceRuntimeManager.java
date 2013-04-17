@@ -32,6 +32,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         this.factory = factory;
         this.taskServiceFactory = taskServiceFactory;
         this.mapper = environment.getMapper();
+        activeManagers.add(identifier);
     }
     
     @Override

@@ -13,12 +13,8 @@ import org.kie.internal.task.api.TaskService;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import java.io.StringReader;
 import org.kie.internal.task.api.model.Task;
-import org.droolsjbpm.services.api.RulesNotificationService;
 import org.kie.api.runtime.KieSession;
 
-
-
-global RulesNotificationService rulesNotificationService;
 
 global TaskService taskService;
 
@@ -49,7 +45,7 @@ rule "Ongoing process for more than 15 seconds"
         not(ProcessInstanceCompletedEvent(processInstanceId == $w.getId(),  this after[0s, 2m] $pse ) from entry-point "process-events") 
  then
 	
-	rulesNotificationService.insertNotification(((KieSession)kcontext.getKieRuntime()).getId(), "The Process Instance (id="+$w.getId()+") is taking too long!");
+	System.out.println("The Process Instance (id="+$w.getId()+") is taking too long!");
 end
 
 
@@ -58,9 +54,7 @@ rule "Warn Two Process Instance doing a Release on the same Directory"
 	$w1: WorkflowProcessInstanceImpl($releasePath1: variables['release_path'] )
 	$w2: WorkflowProcessInstanceImpl( id > $w1.id  , variables['release_path'] == $releasePath1)
  then
-	
-	rulesNotificationService.insertNotification(((KieSession) kcontext.getKieRuntime()).getId(),"SEVERE: Aborting the process: "+$w2.getId());	
-       
+
         kcontext.getKieRuntime().abortProcessInstance($w2.getId());
 end
 
@@ -70,7 +64,7 @@ rule "More than two Fix Issues for the same Release Process Instance"
 	Number( intValue > 1) from accumulate($e: NodeInstanceTriggeredEvent(processInstanceId == $id, nodeName == "Fix Issues") from entry-point "process-events", count($e))
 
   then
-	rulesNotificationService.insertNotification(((KieSession) kcontext.getKieRuntime()).getId(),"WARN: The Process Instance (id="+$w1.getId()+") has being rejected at least 2 times");
+	System.out.println("WARN: The Process Instance (id="+$w1.getId()+") has being rejected at least 2 times");
 end
 
 rule "Fix Issues Task pending for more than 30 seconds"
@@ -79,7 +73,7 @@ rule "Fix Issues Task pending for more than 30 seconds"
 	$onEntry: NodeInstanceTriggeredEvent(processInstanceId == $id, $nid: nodeInstanceId, nodeName == "Fix Issues") from entry-point "process-events"
 	$onExit: NodeInstanceLeftEvent(this after[30s] $onEntry, processInstanceId == $id,  nodeInstanceId == $nid, nodeName == "Fix Issues") from entry-point "process-events"
   then
-	rulesNotificationService.insertNotification(((KieSession) kcontext.getKieRuntime()).getId(),"WARN: There is a Pending Fix Issues Task for process ("+$id+") for more than 30 seconds now");
+	System.out.println("WARN: There is a Pending Fix Issues Task for process ("+$id+") for more than 30 seconds now");
 end
 
 
@@ -89,7 +83,7 @@ rule "Trigger Test is taking too much time to run the tests - Create ad - hoc ta
 	$onEntry: NodeInstanceTriggeredEvent(processInstanceId == $id, $nid: nodeInstanceId,  nodeName == "Trigger Tests") from entry-point "process-events"
 	$onExit: NodeInstanceLeftEvent(this after[10s] $onEntry, processInstanceId == $id, nodeInstanceId == $nid, nodeName == "Trigger Tests") from entry-point "process-events"
   then
-	rulesNotificationService.insertNotification(((KieSession) kcontext.getKieRuntime()).getId(),"WARN: Trigger Tests activity from process id="+$w1.getId()+" is took too much time! an ad-hoc task was created to improve the performance of those tests");
+	System.out.println("WARN: Trigger Tests activity from process id="+$w1.getId()+" is took too much time! an ad-hoc task was created to improve the performance of those tests");
 	String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new Group('Release Manager')  ], }),";
         str += "names = [ new I18NText( 'en-UK', 'Improve Trigger Test Performance')] })";

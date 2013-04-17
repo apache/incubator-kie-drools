@@ -22,13 +22,15 @@ import javax.persistence.Column;
 
 public class VariableStateDesc implements Serializable{
 
+    private static final long serialVersionUID = -9063441776686542527L;
+
     private String variableId;
     private String variableInstanceId;
     @Column(length = 5000)
     private String oldValue;
     @Column(length = 5000)
     private String newValue;
-    private String domainId;
+    private String deploymentId;
     private long processInstanceId;
     
     private Date dataTimeStamp;
@@ -39,12 +41,13 @@ public class VariableStateDesc implements Serializable{
     
     
 
-    public VariableStateDesc(String variableId, String variableInstanceId, String oldValue, String newValue, String domainId, long processInstanceId, Date date) {
+    public VariableStateDesc(String variableId, String variableInstanceId, String oldValue, String newValue,
+            String deploymentId, long processInstanceId, Date date) {
         this.variableId = variableId;
         this.variableInstanceId = variableInstanceId;
         this.oldValue = oldValue;
         this.newValue = newValue;
-        this.domainId = domainId;
+        this.deploymentId = deploymentId;
         this.processInstanceId = processInstanceId;
         this.dataTimeStamp = date;
     }
@@ -66,8 +69,8 @@ public class VariableStateDesc implements Serializable{
         return newValue;
     }
 
-    public String getDomainId() {
-        return domainId;
+    public String getDeploymentId() {
+        return deploymentId;
     }
 
     public long getProcessInstanceId() {
@@ -80,7 +83,7 @@ public class VariableStateDesc implements Serializable{
 
     @Override
     public String toString() {
-        return "VariableStateDesc["+dataTimeStamp.toString()+"]{variableId=" + variableId + ", variableInstanceId=" + variableInstanceId + ", oldValue=" + oldValue + ", newValue=" + newValue + ", domainId=" + domainId + ", processInstanceId=" + processInstanceId + '}';
+        return "VariableStateDesc["+dataTimeStamp.toString()+"]{variableId=" + variableId + ", variableInstanceId=" + variableInstanceId + ", oldValue=" + oldValue + ", newValue=" + newValue + ", deploymentId=" + deploymentId + ", processInstanceId=" + processInstanceId + '}';
     }
     
     

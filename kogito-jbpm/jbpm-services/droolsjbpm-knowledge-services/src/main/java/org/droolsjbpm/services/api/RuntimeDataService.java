@@ -37,9 +37,9 @@ public interface RuntimeDataService {
     
     Collection<ProcessInstanceDesc> getProcessInstancesByProcessName(List<Integer> states, String processName, String initiator);
 
-    Collection<ProcessInstanceDesc> getProcessInstancesByDomainId(String domainId);
+    Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId);
 
-    Collection<ProcessDesc> getProcessesByDomainName(String domainId);   
+    Collection<ProcessDesc> getProcessesByDeploymentId(String deploymentId);   
     
     Collection<ProcessDesc> getProcessesByFilter(String filter);
 
@@ -47,15 +47,15 @@ public interface RuntimeDataService {
     
     ProcessInstanceDesc getProcessInstanceById(long processId);
     
-    Collection<NodeInstanceDesc> getProcessInstanceHistory(String domainId, long processId);
+    Collection<NodeInstanceDesc> getProcessInstanceHistory(String deploymentId, long processId);
     
-    Collection<NodeInstanceDesc> getProcessInstanceHistory(String domainId, long processId, boolean completed);
+    Collection<NodeInstanceDesc> getProcessInstanceHistory(String deploymentId, long processId, boolean completed);
     
-    Collection<NodeInstanceDesc> getProcessInstanceFullHistory(String domainId, long processId);
+    Collection<NodeInstanceDesc> getProcessInstanceFullHistory(String deploymentId, long processId);
     
-    Collection<NodeInstanceDesc> getProcessInstanceActiveNodes(String domainId, long processId);
+    Collection<NodeInstanceDesc> getProcessInstanceActiveNodes(String deploymentId, long processId);
     
-    Collection<NodeInstanceDesc> getProcessInstanceCompletedNodes(String domainId, long processId);
+    Collection<NodeInstanceDesc> getProcessInstanceCompletedNodes(String deploymentId, long processId);
     
     Collection<VariableStateDesc> getVariablesCurrentState(long processInstanceId);
     

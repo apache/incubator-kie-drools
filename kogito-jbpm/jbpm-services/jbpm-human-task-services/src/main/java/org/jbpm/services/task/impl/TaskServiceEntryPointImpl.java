@@ -17,7 +17,6 @@ import javax.inject.Inject;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
@@ -79,8 +78,6 @@ public class TaskServiceEntryPointImpl implements TaskService, EventService<Jbpm
     private TaskAttachmentService taskAttachmentService;
     @Inject 
     private TaskStatisticsService taskStatisticService;
-   
-    
     // External NON CDI event Listeners for Task Lifecycle
     private Event<Task> taskEvents = new JbpmServicesEventImpl<Task>();
     // External NON CDI event listener for Task Deadline and Email notifications

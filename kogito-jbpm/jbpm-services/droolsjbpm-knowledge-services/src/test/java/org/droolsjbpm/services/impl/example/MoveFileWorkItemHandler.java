@@ -42,6 +42,13 @@ public class MoveFileWorkItemHandler implements WorkItemHandler {
     
     @Inject
     private FileService fs;
+    
+    public MoveFileWorkItemHandler() {
+        
+    }
+    public MoveFileWorkItemHandler(FileService fs) {
+        this.fs = fs;
+    }
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -96,21 +103,21 @@ public class MoveFileWorkItemHandler implements WorkItemHandler {
 
 
         //Destination must exist
-        if (fs.exists(destination)) {
+        if (fs.exists(fs.getPath(destination))) {
             //Move each file to destination. If the file doesn't exist put it 
             //in the errors map
             for (String file : files) {
                 String fqn = source + "/" + file.trim();
 
                 try {
-                    if (!fs.exists(fqn)) {
+                    if (!fs.exists(fs.getPath(fqn))) {
                         errors.put(fqn, "Doesn't exist");
                         continue;
                     }
                     if (keepOriginalFiles){
-                        fs.copy(fqn, destination + "/" + file.trim());
+                        fs.copy(fs.getPath(fqn), fs.getPath(destination + "/" + file.trim()));
                     }else{
-                        fs.move(fqn, destination + "/" + file.trim());
+                        fs.move(fs.getPath(fqn), fs.getPath(destination + "/" + file.trim()));
                     }
                         
                 } catch (Exception e) {

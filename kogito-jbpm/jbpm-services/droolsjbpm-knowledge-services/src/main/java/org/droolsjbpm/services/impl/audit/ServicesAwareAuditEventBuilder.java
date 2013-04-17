@@ -1,7 +1,6 @@
 package org.droolsjbpm.services.impl.audit;
 
 import org.droolsjbpm.services.api.IdentityProvider;
-import org.droolsjbpm.services.domain.entities.Domain;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
@@ -19,7 +18,7 @@ public class ServicesAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl
     
     private IdentityProvider identityProvider;
     
-    private Domain domain;
+    private String deploymentUnitId;
 
     public IdentityProvider getIdentityProvider() {
         return identityProvider;
@@ -28,21 +27,13 @@ public class ServicesAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl
     public void setIdentityProvider(IdentityProvider identityProvider) {
         this.identityProvider = identityProvider;
     }
-
-    public Domain getDomain() {
-        return domain;
-    }
-
-    public void setDomain(Domain domain) {
-        this.domain = domain;
-    }
     
     @Override
     public AuditEvent buildEvent(ProcessStartedEvent pse) {
         
         ProcessInstanceLog log = (ProcessInstanceLog) super.buildEvent(pse);
         log.setIdentity(identityProvider.getName());
-        log.setDomainId(domain.getName());
+        log.setExternalId(deploymentUnitId);
         return log;
     }
 
@@ -50,7 +41,7 @@ public class ServicesAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl
     public AuditEvent buildEvent(ProcessCompletedEvent pce, Object log) {
         ProcessInstanceLog instanceLog = (ProcessInstanceLog) super.buildEvent(pce, log); 
         instanceLog.setIdentity(identityProvider.getName());
-        instanceLog.setDomainId(domain.getName());
+        instanceLog.setExternalId(deploymentUnitId);
         return instanceLog;
         
     }
@@ -58,7 +49,7 @@ public class ServicesAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl
     @Override
     public AuditEvent buildEvent(ProcessNodeTriggeredEvent pnte) {
         NodeInstanceLog nodeInstanceLog = (NodeInstanceLog)super.buildEvent(pnte); 
-        nodeInstanceLog.setDomainId(domain.getName());
+        nodeInstanceLog.setExternalId(deploymentUnitId);
         return nodeInstanceLog;
         
         
@@ -67,15 +58,23 @@ public class ServicesAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl
     @Override
     public AuditEvent buildEvent(ProcessNodeLeftEvent pnle, Object log) {
         NodeInstanceLog nodeInstanceLog = (NodeInstanceLog) super.buildEvent(pnle, log); 
-        nodeInstanceLog.setDomainId(domain.getName());
+        nodeInstanceLog.setExternalId(deploymentUnitId);
         return nodeInstanceLog;
     }
 
     @Override
     public AuditEvent buildEvent(ProcessVariableChangedEvent pvce) {
         VariableInstanceLog variableLog = (VariableInstanceLog)super.buildEvent(pvce); 
-        variableLog.setDomainId(domain.getName());
+        variableLog.setExternalId(deploymentUnitId);
         return variableLog;
+    }
+
+    public String getDeploymentUnitId() {
+        return deploymentUnitId;
+    }
+
+    public void setDeploymentUnitId(String deploymentUnitId) {
+        this.deploymentUnitId = deploymentUnitId;
     }
     
     

@@ -18,7 +18,7 @@ import org.kie.internal.runtime.manager.RuntimeManager;
 
 public abstract class AbstractRuntimeManager implements RuntimeManager {
 
-    protected volatile static List<String> activeSingletons = new CopyOnWriteArrayList<String>();
+    protected volatile static List<String> activeManagers = new CopyOnWriteArrayList<String>();
     protected RuntimeEnvironment environment;
     
     protected String identifier;
@@ -26,10 +26,10 @@ public abstract class AbstractRuntimeManager implements RuntimeManager {
     public AbstractRuntimeManager(RuntimeEnvironment environment, String identifier) {
         this.environment = environment;
         this.identifier = identifier;
-        if (activeSingletons.contains(identifier)) {
+        if (activeManagers.contains(identifier)) {
             throw new IllegalStateException("RuntimeManager with id " + identifier + " is already active");
         }
-        activeSingletons.add(identifier);
+        
     }
     
     protected void registerItems(RuntimeEngine runtime) {
@@ -75,7 +75,7 @@ public abstract class AbstractRuntimeManager implements RuntimeManager {
     @Override
     public void close() {
         environment.close();
-        activeSingletons.remove(identifier);
+        activeManagers.remove(identifier);
     }
 
     public RuntimeEnvironment getEnvironment() {

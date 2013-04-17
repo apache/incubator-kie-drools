@@ -20,10 +20,12 @@ import java.util.Date;
 
 public class NodeInstanceDesc implements Serializable{
     
+    private static final long serialVersionUID = -5724814793988493958L;
+    
     private long id;
     private String nodeId;
     private String name;
-    private String domainId;
+    private String deploymentId;
     private long processInstanceId;
     private String nodeType;
     private String connection;
@@ -36,13 +38,13 @@ public class NodeInstanceDesc implements Serializable{
 
 
     public NodeInstanceDesc(String id, String nodeId, String name, String nodeType,
-                            String domainId, long processInstanceId, Date date, 
+                            String deploymentId, long processInstanceId, Date date, 
                             String connection, int type) {
         this.id = Long.parseLong(id);
         this.name = name;
         this.nodeId = nodeId;
         this.nodeType = nodeType;
-        this.domainId = domainId;
+        this.deploymentId = deploymentId;
         this.processInstanceId = processInstanceId;
         this.dataTimeStamp = date;
         this.connection = connection;
@@ -57,8 +59,8 @@ public class NodeInstanceDesc implements Serializable{
         return name;
     }
 
-    public String getDomainId() {
-        return domainId;
+    public String getDeploymentId() {
+        return deploymentId;
     }
 
     public long getProcessInstanceId() {
@@ -87,7 +89,7 @@ public class NodeInstanceDesc implements Serializable{
     
     @Override
     public String toString() {
-        return "NodeInstanceDesc{" + "id=" + id + ", nodeId=" + nodeId + ", nodeUniqueId=" + nodeId + ", name=" + name + ", domainId=" + domainId + ", processInstanceId="
+        return "NodeInstanceDesc{" + "id=" + id + ", nodeId=" + nodeId + ", nodeUniqueId=" + nodeId + ", name=" + name + ", deploymentId=" + deploymentId + ", processInstanceId="
                 + processInstanceId + ", type=" + nodeType + ", completed=" + isCompleted() + ", dataTimeStamp=" + dataTimeStamp + '}';
     }
 

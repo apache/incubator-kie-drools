@@ -21,12 +21,14 @@ import java.util.Date;
 
 public class ProcessInstanceDesc implements Serializable{
 
+    private static final long serialVersionUID = 7310019271033570922L;
+
     private long id;
     private String processId;
     private String processName;
     private String processVersion;
     private int state;
-    private String domainId;    
+    private String deploymentId;    
     private String initiator;
     
     private Date dataTimeStamp;
@@ -36,13 +38,13 @@ public class ProcessInstanceDesc implements Serializable{
     }
 
     public ProcessInstanceDesc(long id, String processId, String processName, String processVersion, 
-                                int state, String domainId, Date dataTimeStamp, String initiator) {
+                                int state, String deploymentId, Date dataTimeStamp, String initiator) {
         this.id = id;
         this.processId = processId;
         this.processName = processName;
         this.processVersion = processVersion==null?"":processVersion;
         this.state = state;
-        this.domainId = domainId;
+        this.deploymentId = deploymentId;
         this.dataTimeStamp = dataTimeStamp;
         this.initiator = initiator;
     }
@@ -63,8 +65,8 @@ public class ProcessInstanceDesc implements Serializable{
         return state;
     }
 
-    public String getDomainId() {
-        return domainId;
+    public String getDeploymentId() {
+        return deploymentId;
     }
 
     public Date getDataTimeStamp() {
@@ -73,7 +75,7 @@ public class ProcessInstanceDesc implements Serializable{
 
     @Override
     public String toString() {
-        return "ProcessInstanceDesc{" + "id=" + id + ", processId=" + processId + ", processName=" + processName + ", processVersion=" + processVersion + ", state=" + state + ", domainId=" + domainId + ", initiator=" + initiator + ", dataTimeStamp=" + dataTimeStamp + '}';
+        return "ProcessInstanceDesc{" + "id=" + id + ", processId=" + processId + ", processName=" + processName + ", processVersion=" + processVersion + ", state=" + state + ", deploymentId=" + deploymentId + ", initiator=" + initiator + ", dataTimeStamp=" + dataTimeStamp + '}';
     }
 
     public String getProcessVersion() {
@@ -92,8 +94,8 @@ public class ProcessInstanceDesc implements Serializable{
         this.initiator = initiator;
     }
 
-    public void setDomainId(String domainId) {
-        this.domainId = domainId;
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
     }
 
 }

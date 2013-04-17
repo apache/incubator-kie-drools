@@ -43,19 +43,6 @@ public class TestVFSFileServiceImpl implements FileService {
     }
 
     @Override
-    public byte[] loadFile(String path) throws FileException {
-        Path file = ioService.get( repositoryRoot + path );
-        
-        checkNotNull( "file", file );
-
-        try {
-            return ioService.readAllBytes( file );
-        } catch ( IOException ex ) {
-            throw new FileException( ex.getMessage(), ex );
-        }
-    }
-
-    @Override
     public byte[] loadFile(Path file) throws FileException {
         checkNotNull( "file", file );
 
@@ -67,9 +54,9 @@ public class TestVFSFileServiceImpl implements FileService {
     }
 
     @Override
-    public Iterable<Path> loadFilesByType(String path, final String fileType)
+    public Iterable<Path> loadFilesByType(Path path, final String fileType)
             throws FileException {
-        return ioService.newDirectoryStream( ioService.get( repositoryRoot + path ), new DirectoryStream.Filter<Path>() {
+        return ioService.newDirectoryStream( path, new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws IOException {
                 if ( !org.kie.commons.java.nio.file.Files.isDirectory(entry) && 
@@ -88,74 +75,63 @@ public class TestVFSFileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean exists(String file) {
-        Path path = ioService.get( repositoryRoot + file );
-        return ioService.exists(path);
-    }
-
-    @Override
-    public void move(String source, String dest) {
+    public void move(Path source, Path dest) {
         this.copy(source, dest);
-        ioService.delete(ioService.get( repositoryRoot + source ));
+        ioService.delete(source);
     }
 
     @Override
-    public void copy(String source, String dest) {
+    public void copy(Path source, Path dest) {
         checkNotNull( "source", source );
         checkNotNull( "dest", dest );
-        
-        Path sourcePath = ioService.get( repositoryRoot + source );
-        Path targetPath = ioService.get( repositoryRoot + dest );
-        ioService.copy(sourcePath, targetPath);
+        ioService.copy(source, dest);
     }
 
     @Override
-    public Path createDirectory(String path) {
+    public Path createDirectory(Path path) {
         checkNotNull( "path", path );
         
-        return ioService.createDirectory(ioService.get( repositoryRoot + path));
+        return ioService.createDirectory(path);
     }
 
     @Override
-    public boolean deleteIfExists(String path) {
+    public boolean deleteIfExists(Path path) {
         checkNotNull( "path", path );
         
-        return ioService.deleteIfExists(ioService.get( repositoryRoot + path ));
+        return ioService.deleteIfExists(path );
     }
 
     @Override
-    public OutputStream openFile(String path) {
+    public OutputStream openFile(Path path) {
         checkNotNull( "path", path );
         
-        return ioService.newOutputStream(ioService.get( repositoryRoot + path ), StandardOpenOption.TRUNCATE_EXISTING);
+        return ioService.newOutputStream(path, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     @Override
-    public Path createFile(String path) {
-      return ioService.createFile(ioService.get( repositoryRoot + path));
+    public Path createFile(Path path) {
+      return ioService.createFile(path);
     }
 
-  @Override
-  public Iterable<Path> listDirectories(String path) {
-     return ioService.newDirectoryStream( ioService.get( repositoryRoot + path ), new DirectoryStream.Filter<Path>() {
-            @Override
-            public boolean accept( final Path entry ) throws IOException {
-                if ( org.kie.commons.java.nio.file.Files.isDirectory(entry) ) {
-                    return true;
-                }
-                return false;
-            }
-        } );
-  }
-
     @Override
-    public String getRepositoryRoot() {
-        return repositoryRoot;
+    public Iterable<Path> listDirectories(Path path) {
+        return ioService.newDirectoryStream(
+                path,
+                new DirectoryStream.Filter<Path>() {
+                    @Override
+                    public boolean accept(final Path entry) throws IOException {
+                        if (org.kie.commons.java.nio.file.Files
+                                .isDirectory(entry)) {
+                            return true;
+                        }
+                        return false;
+                    }
+                });
     }
 
     @Override
     public Path getPath(String path) {
-        return ioService.get(path);
+        return ioService.get(repositoryRoot + path);
     }
 
 }

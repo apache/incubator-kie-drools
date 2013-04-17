@@ -4,67 +4,6 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
   version="2.0">
 
-  <!-- process definition queries -->
-  <named-query name="getProcessesByDomainName">
-    <query>
-      select 
-        pd 
-      from 
-        ProcessDesc pd 
-      where 
-        pd.domainName=:domainName 
-      GROUP BY
-        pd.id 
-      ORDER BY 
-        pd.dataTimeStamp DESC
-    </query>
-    <!-- hint name="org.hibernate.timeout" value="200"/ -->
-  </named-query>
-  
-  <named-query name="getProcessById">
-    <query>
-      select 
-        pd 
-      from 
-        ProcessDesc pd 
-      where 
-        pd.id=:processId
-      GROUP BY
-        pd.pki, 
-        pd.id 
-      ORDER BY 
-        pd.dataTimeStamp DESC
-    </query>
-    <!-- hint name="org.hibernate.timeout" value="200"/ -->
-  </named-query>
-
-  <named-query name="getProcessesByFilter">
-    <query>
-    select 
-        pd 
-    from 
-        ProcessDesc pd 
-    where 
-        pd.id like :filter or pd.name like :filter 
-    ORDER BY 
-        pd.dataTimeStamp DESC
-    </query>
-    <!-- hint name="org.hibernate.timeout" value="200"/ -->
-  </named-query>
-
-  <named-query name="getProcesses">
-    <query>
-    select 
-        pd 
-    from 
-        ProcessDesc pd 
-    ORDER BY 
-        pd.pki DESC, pd.dataTimeStamp DESC
-    </query>
-    <!-- hint name="org.hibernate.timeout" value="200"/ -->
-  </named-query>
-
-
   <!-- process instance queries -->
   <named-query name="getProcessInstances">
     <query>
@@ -75,7 +14,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.domainId,
+      log.externalId,
       log.start,
       log.identity
       )
@@ -96,7 +35,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.domainId,
+      log.externalId,
       log.start,
       log.identity
       )
@@ -117,7 +56,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.domainId,
+      log.externalId,
       log.start,
       log.identity
       )
@@ -138,14 +77,14 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.domainId,
+      log.externalId,
       log.start,
       log.identity
       )
       from
         ProcessInstanceLog log
       where
-        log.domainId=:domainId
+        log.externalId=:externalId
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
@@ -159,7 +98,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.domainId,
+      log.externalId,
       log.start,
       log.identity
       )
@@ -180,7 +119,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.domainId,
+      log.externalId,
       log.start,
       log.identity
       )
@@ -202,7 +141,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.domainId,
+      log.externalId,
       log.start,
       log.identity
       )
@@ -223,7 +162,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.domainId,
+      log.externalId,
       log.start,
       log.identity
       )
@@ -244,7 +183,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.domainId,
+      log.externalId,
       log.start,
       log.identity
       )
@@ -265,7 +204,7 @@
       log.processName,
       log.processVersion,
       log.status,
-      log.domainId,
+      log.externalId,
       log.start,
       log.identity
       )
@@ -286,7 +225,7 @@
       log.nodeId,
       log.nodeName,
       log.nodeType,
-      log.domainId,
+      log.externalId,
       log.processInstanceId,
       log.date,
       log.connection,
@@ -295,7 +234,7 @@
       from
         NodeInstanceLog log
       where
-        log.processInstanceId=:processId AND log.domainId=:domainId AND log.type =:type 
+        log.processInstanceId=:processId AND log.externalId=:externalId AND log.type =:type 
       ORDER BY 
         log.date DESC
 
@@ -311,7 +250,7 @@
       log.nodeId,
       log.nodeName,
       log.nodeType,
-      log.domainId,
+      log.externalId,
       log.processInstanceId,
       log.date,
       log.connection,
@@ -320,7 +259,7 @@
       from
         NodeInstanceLog log
       where
-        log.processInstanceId=:processId AND log.domainId=:domainId 
+        log.processInstanceId=:processId AND log.externalId=:externalId 
       ORDER BY 
         log.date DESC
     </query>
@@ -336,7 +275,7 @@
       log.nodeId,
       log.nodeName,
       log.nodeType,
-      log.domainId,
+      log.externalId,
       log.processInstanceId,
       log.date,
       log.connection,
@@ -345,7 +284,7 @@
       from
         NodeInstanceLog log
       where
-        log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=:processId AND nil.domainId=:domainId
+        log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=:processId AND nil.externalId=:externalId
                     GROUP BY nil.nodeInstanceId
                     HAVING count(nil.nodeInstanceId) = 1)
         and log.type = 0  
@@ -364,7 +303,7 @@
       log.nodeId,
       log.nodeName,
       log.nodeType,
-      log.domainId,
+      log.externalId,
       log.processInstanceId,
       log.date,
       log.connection,
@@ -373,7 +312,7 @@
       from
         NodeInstanceLog log
       where
-        log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.domainId=:domainId AND nid.type = 1) 
+        log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.externalId=:externalId AND nid.type = 1) 
       ORDER BY 
         log.nodeInstanceId, log.id ASC
     </query>
@@ -390,7 +329,7 @@
       log.variableInstanceId,
       log.oldValue,
       log.value,
-      log.domainId,
+      log.externalId,
       log.processInstanceId,
       log.date
       )
@@ -410,7 +349,7 @@
       log.variableInstanceId,
       log.oldValue,
       log.value,
-      log.domainId,
+      log.externalId,
       log.processInstanceId,
       log.date
       )

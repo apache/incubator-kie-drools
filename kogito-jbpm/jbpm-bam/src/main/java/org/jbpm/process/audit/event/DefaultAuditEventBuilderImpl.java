@@ -23,7 +23,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
     public AuditEvent buildEvent(ProcessStartedEvent pse) {
         ProcessInstanceImpl pi = (ProcessInstanceImpl) pse.getProcessInstance();
         ProcessInstanceLog log = new ProcessInstanceLog(pi.getId(), pi.getProcessId());
-        log.setDomainId(""+((KieSession) pse.getKieRuntime()).getId());
+        log.setExternalId(""+((KieSession) pse.getKieRuntime()).getId());
         log.setProcessName(pi.getProcess().getName());
         log.setProcessVersion(pi.getProcess().getVersion());
         log.setStatus(ProcessInstance.STATE_ACTIVE);
@@ -75,7 +75,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         }
         String connection = (String)nodeInstance.getMetaData().get("IncomingConnection");
         log.setConnection(connection);
-        log.setDomainId(""+((KieSession) pnte.getKieRuntime()).getId());
+        log.setExternalId(""+((KieSession) pnte.getKieRuntime()).getId());
         log.setNodeType(nodeType);
         return log;
     }
@@ -107,7 +107,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         }
         String connection = (String)nodeInstance.getMetaData().get("OutgoingConnection");
         logEvent.setConnection(connection);
-        logEvent.setDomainId(""+((KieSession) pnle.getKieRuntime()).getId());
+        logEvent.setExternalId(""+((KieSession) pnle.getKieRuntime()).getId());
         logEvent.setNodeType(nodeType);
         return logEvent;
     }
@@ -122,7 +122,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         String newValue = (pvce.getNewValue() != null)?pvce.getNewValue().toString():"";
         VariableInstanceLog log = new VariableInstanceLog(
                 processInstanceId, processId, variableInstanceId, variableId, newValue, oldValue);
-        log.setDomainId(""+((KieSession) pvce.getKieRuntime()).getId());
+        log.setExternalId(""+((KieSession) pvce.getKieRuntime()).getId());
         return log;
     }
 

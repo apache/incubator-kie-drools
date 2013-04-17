@@ -127,6 +127,11 @@
       <version>2.3.8</version>
       <type>jar</type>
     </dependency>
+    
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
 
     <!-- test -->
     <dependency>

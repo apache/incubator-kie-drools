@@ -67,10 +67,10 @@ public class SearchServiceImpl {
         d.add(new StringField("processName", node.getName(), Field.Store.YES));
         d.add(new StringField("nodeId", String.valueOf(node.getNodeId()), Field.Store.YES));
         d.add(new StringField("processInstanceId", String.valueOf(node.getProcessInstanceId()), Field.Store.YES));
-        d.add(new StringField("sessionId", String.valueOf(node.getDomainId()), Field.Store.YES));
+        d.add(new StringField("sessionId", String.valueOf(node.getDeploymentId()), Field.Store.YES));
         //d.add(new TextField()); if I need to store large texts that requires tokenization
         // To support any value search
-        d.add(new StringField("all", String.valueOf(node.getDomainId()), Field.Store.NO));
+        d.add(new StringField("all", String.valueOf(node.getDeploymentId()), Field.Store.NO));
         d.add(new StringField("all", String.valueOf(node.getProcessInstanceId()), Field.Store.NO));
         d.add(new StringField("all", String.valueOf(node.getNodeId()), Field.Store.NO));
         d.add(new StringField("all", String.valueOf(node.getName()), Field.Store.NO));

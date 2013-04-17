@@ -125,6 +125,9 @@ public class HumanTaskConfigurator {
     }
     
     public HumanTaskConfigurator userGroupCallback(UserGroupCallback userGroupCallback) {
+        if (userGroupCallback == null) {
+            return this;
+        }
         this.userGroupCallback = userGroupCallback;
         
         return this;

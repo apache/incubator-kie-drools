@@ -55,6 +55,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         ((RuntimeEngineImpl) singleton).setManager(this);
         registerItems(this.singleton);
         attachManager(this.singleton);
+        activeManagers.add(identifier);
     }
 
     @SuppressWarnings("rawtypes")

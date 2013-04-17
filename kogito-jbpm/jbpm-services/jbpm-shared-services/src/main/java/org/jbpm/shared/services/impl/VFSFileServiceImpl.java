@@ -52,19 +52,6 @@ public class VFSFileServiceImpl implements FileService {
     public void fetchChanges() {
         ioService.getFileSystem( URI.create( REPO_PLAYGROUND + "?fetch" ) );
     }
-
-    @Override
-    public byte[] loadFile( final String path ) throws FileException {
-        Path file = ioService.get(REPO_PLAYGROUND + path );
-        
-        checkNotNull( "file", file );
-
-        try {
-            return ioService.readAllBytes( file );
-        } catch ( IOException ex ) {
-            throw new FileException( ex.getMessage(), ex );
-        }
-    }
     
     @Override
     public byte[] loadFile( final Path file ) throws FileException {
@@ -81,9 +68,9 @@ public class VFSFileServiceImpl implements FileService {
     
 
     @Override
-    public Iterable<Path> loadFilesByType( final String path,
+    public Iterable<Path> loadFilesByType( final Path path,
                                            final String fileType ) {
-        return ioService.newDirectoryStream( ioService.get( REPO_PLAYGROUND + path ), new DirectoryStream.Filter<Path>() {
+        return ioService.newDirectoryStream( path, new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws IOException {
                 if ( !org.kie.commons.java.nio.file.Files.isDirectory(entry) && 
@@ -96,8 +83,8 @@ public class VFSFileServiceImpl implements FileService {
         } );
     }
     
-    public Iterable<Path> listDirectories(final String path){
-      return ioService.newDirectoryStream( ioService.get( REPO_PLAYGROUND + path ), new DirectoryStream.Filter<Path>() {
+    public Iterable<Path> listDirectories(final Path path){
+      return ioService.newDirectoryStream( path, new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws IOException {
                 if ( org.kie.commons.java.nio.file.Files.isDirectory(entry) ) {
@@ -110,70 +97,57 @@ public class VFSFileServiceImpl implements FileService {
     }
     
     public Path getPath(String path){
-        return ioService.get(URI.create(REPO_PLAYGROUND + path));
+        return ioService.get(path);
     }
 
     @Override
     public boolean exists(Path file){
         return ioService.exists(file);
     }
-    
-    @Override
-    public boolean exists(String file){
-        Path path = ioService.get( REPO_PLAYGROUND + file );
-        return ioService.exists(path);
-    }
 
     @Override
-    public void move(String source, String dest){
+    public void move(Path source, Path dest){
         
         this.copy(source, dest);
-        ioService.delete(ioService.get( REPO_PLAYGROUND + source ));
+        ioService.delete(source);
     }
     
     @Override
-    public void copy(String source, String dest){
+    public void copy(Path source, Path dest){
         
         checkNotNull( "source", source );
         checkNotNull( "dest", dest );
         
-        Path sourcePath = ioService.get( REPO_PLAYGROUND + source );
-        Path targetPath = ioService.get( REPO_PLAYGROUND + dest );
-        ioService.copy(sourcePath, targetPath);
+        ioService.copy(source, dest);
     }
     
     @Override
-    public Path createDirectory(String path){
+    public Path createDirectory(Path path){
         
         checkNotNull( "path", path );
         
-        return ioService.createDirectory(ioService.get( REPO_PLAYGROUND + path));
+        return ioService.createDirectory(path);
     }
     
     @Override
-    public Path createFile(String path){
-        return ioService.createFile(ioService.get( REPO_PLAYGROUND + path));
+    public Path createFile(Path path){
+        return ioService.createFile(path);
     }
     
     @Override
-    public boolean deleteIfExists(String path){
+    public boolean deleteIfExists(Path path){
         
         checkNotNull( "path", path );
         
-        return ioService.deleteIfExists(ioService.get( REPO_PLAYGROUND + path ));
+        return ioService.deleteIfExists(path);
     }
     
     @Override
-    public OutputStream openFile(String path){
+    public OutputStream openFile(Path path){
         
         checkNotNull( "path", path );
         
-        return ioService.newOutputStream(ioService.get( REPO_PLAYGROUND + path ));
-    }
-
-    @Override
-    public String getRepositoryRoot() {
-        return REPO_PLAYGROUND;
+        return ioService.newOutputStream(path);
     }
     
 }

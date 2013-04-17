@@ -29,31 +29,25 @@ public interface FileService {
     
     public void fetchChanges();
 
-    byte[] loadFile(String file) throws FileException;
-    
     byte[] loadFile(Path file) throws FileException;
     
-    Iterable<Path> listDirectories(final String path);
+    Iterable<Path> listDirectories(final Path path);
 
-    Iterable<Path> loadFilesByType(final String path, final String fileType) throws FileException;
+    Iterable<Path> loadFilesByType(final Path path, final String fileType) throws FileException;
   
     boolean exists(Path file);
     
-    boolean exists(String file);
+    void move(Path source, Path dest);
     
-    void move(String source, String dest);
+    void copy(Path source, Path dest);
     
-    void copy(String source, String dest);
+    Path createDirectory(Path path);
     
-    Path createDirectory(String path);
+    Path createFile(Path path);
     
-    Path createFile(String path);
+    boolean deleteIfExists(Path path);
     
-    boolean deleteIfExists(String path);
-    
-    OutputStream openFile(String path);
-    
-    String getRepositoryRoot();
+    OutputStream openFile(Path path);
     
     Path getPath(String path);
     

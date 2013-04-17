@@ -15,6 +15,7 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
@@ -56,6 +57,14 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     
     public void addAsset(Resource resource, ResourceType type) {
         this.kbuilder.add(resource, type);
+        if (this.kbuilder.hasErrors()) {            
+            StringBuffer errorMessage = new StringBuffer();
+            for( KnowledgeBuilderError error : kbuilder.getErrors()) {
+                errorMessage.append(error.getMessage() + ",");
+            }
+            this.kbuilder.undo();
+            throw new IllegalArgumentException("Cannot add asset: " + errorMessage.toString());
+        }
     }
     
     public void addToEnvironment(String name, Object value) {

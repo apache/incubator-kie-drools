@@ -75,7 +75,7 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler {
 
         String testPath = releasePath + "/" + testDir;
 
-        if (!fs.exists(testPath)) {
+        if (!fs.exists(fs.getPath(testPath))) {
             throw new IllegalArgumentException(testPath + " doesn't exist!");
         }
 
@@ -84,7 +84,7 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler {
         report = new StringBuilder("");
 
         try {
-            Iterable<Path> txtFiles = fs.loadFilesByType(testPath, "txt");
+            Iterable<Path> txtFiles = fs.loadFilesByType(fs.getPath(testPath), "txt");
             if (txtFiles == null || !txtFiles.iterator().hasNext()) {
                 report.append("EE ").append(testPath).append(" doesn't contain any .txt file!\n");
                 success = false;
