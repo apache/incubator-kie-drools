@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
 public class HierarchyTest {
@@ -1102,6 +1103,51 @@ public class HierarchyTest {
         assertEquals( Arrays.asList( "ZZZZ" ), types.children( "p" ) );
         assertEquals( Arrays.asList( "p" ), types.children( "h" ) );
 
+    }
+
+    @Test
+    public void testUnwantedCodeOverriding() {
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
+
+        BitSet ak = encoder.encode( "A", Collections.EMPTY_LIST );
+        BitSet ck = encoder.encode( "C", Arrays.asList( "A" ) );
+        BitSet dk = encoder.encode( "D", Arrays.asList( "A" ) );
+        BitSet gk = encoder.encode( "G", Arrays.asList( "C", "D" ) );
+        BitSet bk = encoder.encode( "B", Arrays.asList( "A" ) );
+        BitSet ek = encoder.encode( "E", Arrays.asList( "B" ) );
+        BitSet ik = encoder.encode( "I", Arrays.asList( "E", "C" ) );
+        BitSet fk = encoder.encode( "F", Arrays.asList( "B", "C" ) );
+        BitSet jk = encoder.encode( "J", Arrays.asList( "F", "D" ) );
+        BitSet lk = encoder.encode( "L", Arrays.asList( "J" ) );
+
+        assertNotNull( encoder.getCode( "L" ) );
+
+        BitSet ok = encoder.encode( "O", Arrays.asList( "L" ) );
+
+        assertNotNull( encoder.getCode( "L" ) );
+
+        BitSet kk = encoder.encode( "K", Arrays.asList( "F", "G" ) );
+
+        assertNotNull( encoder.getCode( "L" ) );
+
+        BitSet mk = encoder.encode( "M", Arrays.asList( "J", "K" ) );
+
+        assertNotNull( encoder.getCode( "L" ) );
+
+        BitSet nk = encoder.encode( "N", Arrays.asList( "K" ) );
+
+        assertNotNull( encoder.getCode( "L" ) );
+
+        BitSet hk = encoder.encode( "H", Arrays.asList( "F" ) );
+
+        assertNotNull( encoder.getCode( "L" ) );
+
+        BitSet pk = encoder.encode( "P", Arrays.asList( "A" ) );
+
+        assertNotNull( encoder.getCode( "L" ) );
+
+        System.out.println( encoder );
+        assertEquals( 16, encoder.size() );
     }
 
 
