@@ -1450,16 +1450,6 @@ public class RuleNetworkEvaluator {
 
             for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
                 RightTuple next = rightTuple.getStagedNext();
-                if (ltm == null || (ltm.size() == 0 && rightTuple.getBlocked() == null)) {
-                    // do nothing here, as we know there are no left tuples
-
-                    //normally do this at the end, but as we are exiting early, make sure the buckets are still correct.
-                    rtm.removeAdd(rightTuple);
-                    rightTuple.clearStaged();
-                    rightTuple = next;
-                    continue;
-                }
-
                 PropagationContext context = rightTuple.getPropagationContext();
 
                 constraints.updateFromFactHandle(contextEntry,
@@ -1565,9 +1555,6 @@ public class RuleNetworkEvaluator {
 
                         leftTuple = temp;
                     }
-                } else {
-                    // we had to do this at the end, rather than beginning as this 'if' block needs the next memory tuple
-                    rtm.removeAdd(rightTuple);
                 }
                 rightTuple.clearStaged();
                 rightTuple = next;
@@ -2073,9 +2060,6 @@ public class RuleNetworkEvaluator {
 
                         leftTuple = temp;
                     }
-                } else {
-                    // we had to do this at the end, rather than beginning as this 'if' block needs the next memory tuple
-                    rtm.removeAdd(rightTuple);
                 }
 
                 rightTuple.clearStaged();
