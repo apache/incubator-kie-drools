@@ -71,6 +71,11 @@
             <Export-Package>
               org.drools.decisiontable.*
             </Export-Package>
+            <Import-Package>
+              org.apache.poi.*,
+              org.drools.template.*,
+              *
+            </Import-Package>
             <Bundle-Activator>org.drools.decisiontable.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
