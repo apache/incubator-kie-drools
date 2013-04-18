@@ -1,7 +1,0 @@
-package fol4.test1
-global java.util.List list;
-
-rule rule2 when 
-then 
-  list.add("fol4.test1:rule2"); 
-end 
