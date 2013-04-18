@@ -35,7 +35,7 @@ public class JtaTransactionManager
 
     public static final String           DEFAULT_USER_TRANSACTION_NAME                     = "java:comp/UserTransaction";
 
-    public static final String[]         FALLBACK_TRANSACTION_MANAGER_NAMES                = new String[]{"java:comp/TransactionManager", "java:appserver/TransactionManager", "java:pm/TransactionManager", "java:/TransactionManager"};
+    public static final String[]         FALLBACK_TRANSACTION_MANAGER_NAMES                = new String[]{"java:comp/TransactionManager", "java:appserver/TransactionManager", "java:pm/TransactionManager", "java:/TransactionManager", System.getProperty("jbpm.tm.jndi.lookup", "")};
 
     /**
      * Standard Java EE 5 JNDI location for the JTA TransactionSynchronizationRegistry.
@@ -118,10 +118,15 @@ public class JtaTransactionManager
             InitialContext context = new InitialContext();
             return (UserTransaction) context.lookup( DEFAULT_USER_TRANSACTION_NAME );
         } catch ( NamingException ex ) {
-            logger.debug( "No UserTransaction found at JNDI location [{}]",
-                          DEFAULT_USER_TRANSACTION_NAME,
-                          ex );
-            throw new IllegalStateException("Unable to find transaction: " + ex.getMessage(), ex);
+            logger.debug( "No UserTransaction found at JNDI location [{}]", DEFAULT_USER_TRANSACTION_NAME, ex );
+            // no user transaction found in default location try alternative ones
+            // on some app servers access to default UT is not allowed from non manged thread, e.g. timers
+            try {
+                return InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
+            } catch (Exception e1) {
+                throw new IllegalStateException("Unable to find transaction: " + ex.getMessage(), ex);
+            }
+
         }
     }
 
