@@ -30,6 +30,8 @@
               org.drools.compiler.builder.impl,
               org.drools.core.concurrent,
               org.drools.core.impl,
+              org.drools.core.io.impl,
+              org.drools.decisiontable;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>
