@@ -3207,22 +3207,24 @@ public class TraitTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = getSession( source );
         TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
 
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
         ksession.fireAllRules();
 
         ksession.insert( "Como" );
 
         ksession.fireAllRules();
 
+        assertTrue( list.contains( "Italy" ) );
     }
 
     @Test
-    @Ignore
     public void isAWithBackChainingTriples() {
         isAWithBackChaining( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
-    @Ignore
     public void isAWithBackChainingMap() {
         isAWithBackChaining( TraitFactory.VirtualPropertyMode.MAP );
     }

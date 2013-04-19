@@ -334,7 +334,7 @@ public class IndexUtil {
 
                     // look for other EQUAL constraint to eventually add them to the index
                     for (int i = firstIndexableConstraint+1; i < constraints.length && indexList.size() < keyDepth; i++) {
-                        if ( ConstraintType.getType(constraints[i]) == ConstraintType.EQUAL) {
+                        if ( ConstraintType.getType(constraints[i]) == ConstraintType.EQUAL && ! ((IndexableConstraint) constraints[i]).isUnification() ) {
                             indexList.add(((IndexableConstraint)constraints[i]).getFieldIndex());
                         }
                     }
