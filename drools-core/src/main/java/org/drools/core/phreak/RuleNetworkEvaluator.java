@@ -1174,7 +1174,7 @@ public class RuleNetworkEvaluator {
 
             if (srcLeftTuples.getUpdateFirst() != null) {
                 // must happen before right inserts, so it can find left tuples to block.
-                dpUpdatesReorderLeftMemory(bm,
+                dpUpdatesExistentialReorderLeftMemory(bm,
                                            srcLeftTuples);
             }
 
@@ -1496,7 +1496,7 @@ public class RuleNetworkEvaluator {
                 if (firstBlocked != null) {
                     RightTuple rootBlocker = rightTuple.getTempNextRightTuple();
                     if (rootBlocker != null ) {
-                        if ( rootBlocker != rightTuple ) {
+                        if ( rootBlocker != rightTuple && rootBlocker.getNext() != null ) {
                             rootBlocker = ( RightTuple ) rootBlocker.getNext();
                         }
                     } else{
@@ -1687,7 +1687,7 @@ public class RuleNetworkEvaluator {
 
 
             if (srcLeftTuples.getUpdateFirst() != null )  {
-                dpUpdatesReorderLeftMemory(bm,
+                dpUpdatesExistentialReorderLeftMemory(bm,
                                            srcLeftTuples);
             }
 
@@ -2000,10 +2000,10 @@ public class RuleNetworkEvaluator {
                 if (firstBlocked != null) {
                     RightTuple rootBlocker = rightTuple.getTempNextRightTuple();
                     if (rootBlocker != null ) {
-                        if ( rootBlocker != rightTuple ) {
+                        if ( rootBlocker != rightTuple && rootBlocker.getNext() != null ) {
                             rootBlocker = ( RightTuple ) rootBlocker.getNext();
                         }
-                    } else{
+                    } else {
                         iterateFromStart = true;
                     }
 
@@ -4193,24 +4193,42 @@ public class RuleNetworkEvaluator {
     public static void dpUpdatesReorderLeftMemory(BetaMemory bm,
                                                   LeftTupleSets srcLeftTuples) {
         LeftTupleMemory ltm = bm.getLeftTupleMemory();
-        boolean[] hasMemory = new boolean[srcLeftTuples.updateSize()];
 
         // sides must first be re-ordered, to ensure iteration integrity
-        int i = 0;
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            hasMemory[i] = leftTuple.getMemory() != null;
-            if (hasMemory[i]) {
+            ltm.remove(leftTuple);
+            leftTuple = next;
+        }
+
+        for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
+            LeftTuple next = leftTuple.getStagedNext();
+            ltm.add(leftTuple);
+            for (LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; ) {
+                LeftTuple childNext = childLeftTuple.getLeftParentNext();
+                childLeftTuple.reAddRight();
+                childLeftTuple = childNext;
+            }
+            leftTuple = next;
+        }
+    }
+
+    public static void dpUpdatesExistentialReorderLeftMemory(BetaMemory bm,
+                                                  LeftTupleSets srcLeftTuples) {
+        LeftTupleMemory ltm = bm.getLeftTupleMemory();
+
+        // sides must first be re-ordered, to ensure iteration integrity
+        for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
+            LeftTuple next = leftTuple.getStagedNext();
+            if ( leftTuple.getMemory() != null ) {
                 ltm.remove(leftTuple);
             }
             leftTuple = next;
-            i++;
         }
 
-        i = 0;
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            if (hasMemory[i]) {
+            if ( leftTuple.getBlocker() == null ) {
                 ltm.add(leftTuple);
                 for (LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; ) {
                     LeftTuple childNext = childLeftTuple.getLeftParentNext();
@@ -4219,30 +4237,25 @@ public class RuleNetworkEvaluator {
                 }
             }
             leftTuple = next;
-            i++;
         }
     }
 
     public static void dpUpdatesReorderRightMemory(BetaMemory bm,
                                                    RightTupleSets srcRightTuples) {
         RightTupleMemory rtm = bm.getRightTupleMemory();
-        boolean[] hasMemory = new boolean[srcRightTuples.updateSize()];
 
-        int i = 0;
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
-            hasMemory[i] = rightTuple.getMemory() != null;
-            if (hasMemory[i]) {
+            if ( rightTuple.getMemory() != null ) {
+                rightTuple.setTempRightTupleMemory(rightTuple.getMemory());
                 rtm.remove(rightTuple);
             }
             rightTuple = next;
-            i++;
         }
 
-        i = 0;
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
-            if (hasMemory[i]) {
+            if ( rightTuple.getTempRightTupleMemory() != null ) {
                 rtm.add(rightTuple);
                 for (LeftTuple childLeftTuple = rightTuple.getFirstChild(); childLeftTuple != null; ) {
                     LeftTuple childNext = childLeftTuple.getRightParentNext();
@@ -4251,7 +4264,6 @@ public class RuleNetworkEvaluator {
                 }
             }
             rightTuple = next;
-            i++;
         }
     }
 
@@ -4262,49 +4274,44 @@ public class RuleNetworkEvaluator {
 
         boolean resumeFromCurrent = !(betaNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison());
 
-        boolean[] hasMemory = new boolean[srcRightTuples.updateSize()];
-        RightTuple[] tempRightTuples = new RightTuple[srcRightTuples.updateSize()];
-        RightTupleMemory[] currentRtms = new RightTupleMemory[srcRightTuples.updateSize()];
-
         // remove all the staged rightTuples from the memory before to readd them all
         // this is to avoid split bucket when an updated rightTuple hasn't been moved yet
         // and so it is the first entry in the wrong bucket
 
-        int i = 0;
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
-            hasMemory[i] = rightTuple.getMemory() != null;
-            if (hasMemory[i]) {
+            if (rightTuple.getMemory() != null) {
 
                 if (resumeFromCurrent) {
-                    currentRtms[i] = rightTuple.getMemory();
-                    tempRightTuples[i] = ( RightTuple ) rightTuple.getPrevious();
+                    rightTuple.setTempRightTupleMemory(rightTuple.getMemory());
+                    RightTuple tempRightTuple = ( RightTuple ) rightTuple.getPrevious();
 
-                    while ( tempRightTuples[i] != null && tempRightTuples[i].getStagedType() != LeftTuple.NONE ) {
+                    while ( tempRightTuple != null && tempRightTuple.getStagedType() != LeftTuple.NONE ) {
                         // next cannot be an updated or deleted rightTuple
-                        tempRightTuples[i] = (RightTuple) tempRightTuples[i].getPrevious();
+                        tempRightTuple = (RightTuple) tempRightTuple.getPrevious();
                     }
+
+                    rightTuple.setTempNextRightTuple( tempRightTuple );
                 }
 
                 rtm.remove(rightTuple);
             }
             rightTuple = next;
-            i++;
         }
 
-        i = 0;
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
-            if (hasMemory[i]) {
+            if ( rightTuple.getTempRightTupleMemory() != null ) {
 
                 rtm.add( rightTuple );
 
                 if (resumeFromCurrent) {
-                    if ( tempRightTuples[i] == null && rightTuple.getMemory() == currentRtms[i]  ) {
+                    RightTuple tempRightTuple = rightTuple.getTempNextRightTuple();
+                    if ( tempRightTuple == null && rightTuple.getMemory() == rightTuple.getTempRightTupleMemory()  ) {
                         // the next RightTuple was null, but current RightTuple was added back into the same bucket, so reset as root blocker to re-match can be attempted
-                        tempRightTuples[i] = rightTuple;
+                        tempRightTuple = rightTuple;
                     }
-                    rightTuple.setTempNextRightTuple( tempRightTuples[i] );
+                    rightTuple.setTempNextRightTuple( tempRightTuple );
                 }
 
                 for (LeftTuple childLeftTuple = rightTuple.getFirstChild(); childLeftTuple != null; ) {
@@ -4314,7 +4321,6 @@ public class RuleNetworkEvaluator {
                 }
             }
             rightTuple = next;
-            i++;
         }
     }
 

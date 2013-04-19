@@ -46,7 +46,8 @@ public class RightTuple
     protected RightTuple          stagePrevious;
 
     private RightTuple            tempNextRightTuple;
-    
+    private RightTupleMemory      tempRightTupleMemory;
+
     private PropagationContext    propagationContext;
 
     public RightTuple() {
@@ -222,6 +223,7 @@ public class RightTuple
         this.stageNext = null;
         this.stagePrevious = null;
         this.tempNextRightTuple = null;
+        this.tempRightTupleMemory = null;
     }
 
     public RightTuple getTempNextRightTuple() {
@@ -230,6 +232,14 @@ public class RightTuple
 
     public void setTempNextRightTuple(RightTuple tempNextRightTuple) {
         this.tempNextRightTuple = tempNextRightTuple;
+    }
+
+    public RightTupleMemory getTempRightTupleMemory() {
+        return tempRightTupleMemory;
+    }
+
+    public void setTempRightTupleMemory(RightTupleMemory tempRightTupleMemory) {
+        this.tempRightTupleMemory = tempRightTupleMemory;
     }
 
     public int hashCode() {
