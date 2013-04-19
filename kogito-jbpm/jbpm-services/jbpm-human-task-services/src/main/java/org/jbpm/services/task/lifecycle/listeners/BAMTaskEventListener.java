@@ -15,7 +15,6 @@
  */
 package org.jbpm.services.task.lifecycle.listeners;
 
-import org.jbpm.services.task.annotations.BAM;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +38,6 @@ import org.kie.internal.task.api.model.Task;
 
 @ApplicationScoped
 @Transactional
-@BAM
 public class BAMTaskEventListener implements TaskLifeCycleEventListener {
 
     @Inject

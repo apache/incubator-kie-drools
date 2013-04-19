@@ -43,8 +43,6 @@ import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
-import org.jbpm.services.task.annotations.BAM;
-import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
@@ -78,9 +76,6 @@ public class DomainManagerServiceImpl implements DomainManagerService {
     @Inject
     private BPMN2DataService bpmn2Service;
     
-    @Inject
-    @BAM
-    private BAMTaskEventListener bamListener;
     
     private Map<String, RuntimeManager> domainsMap = new HashMap<String, RuntimeManager>();
     
