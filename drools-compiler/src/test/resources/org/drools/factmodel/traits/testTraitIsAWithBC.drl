@@ -73,9 +73,10 @@ when
 
     is_in( $p, Country.class, $q ; )
 
-    $q := Country( name == "Italy" )
+    $q := Country( $name : name == "Italy" )
 then
     System.out.println( "Checking " + $p + " in " + $q );
+    list.add( $name );
 end
 
 
