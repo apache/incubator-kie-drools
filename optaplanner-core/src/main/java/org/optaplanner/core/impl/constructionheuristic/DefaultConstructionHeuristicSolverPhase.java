@@ -55,7 +55,7 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         ConstructionHeuristicStepScope stepScope = createNextStepScope(phaseScope, null);
         while (!termination.isPhaseTerminated(phaseScope)) {
             stepStarted(stepScope);
-            ConstructionHeuristicMoveScope moveScope =  entityPlacer.nominateMove(stepScope);
+            ConstructionHeuristicMoveScope moveScope = entityPlacer.nominateMove(stepScope);
             if (moveScope == null) {
                 // All entities have been placed
                 break;
