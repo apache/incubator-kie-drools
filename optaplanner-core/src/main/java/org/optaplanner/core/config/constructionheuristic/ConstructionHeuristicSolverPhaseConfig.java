@@ -23,6 +23,7 @@ import java.util.Set;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
+import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.constructionheuristic.placer.entity.EntityPlacerConfig;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
@@ -58,6 +59,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     protected ConstructionHeuristicType constructionHeuristicType = null;
     protected ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType = null;
 
+    // TODO This is a List due to XStream limitations. With JAXB it could be just a EntityPlacerConfig instead.
     @XStreamImplicit
     protected List<EntityPlacerConfig> entityPlacerConfigList = null;
 
@@ -112,13 +114,17 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
             DefaultConstructionHeuristicSolverPhase phase = new DefaultConstructionHeuristicSolverPhase();
             configureSolverPhase(phase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
 
-            List<EntityPlacer> entityPlacerList = new ArrayList<EntityPlacer>(entityPlacerConfigList.size());
-            for (EntityPlacerConfig entityPlacerConfig : entityPlacerConfigList) {
-                EntityPlacer entityPlacer = entityPlacerConfig.buildEntityPlacer(
+            EntityPlacer entityPlacer;
+            if (entityPlacerConfigList.size() == 1) {
+                entityPlacer = entityPlacerConfigList.get(0).buildEntityPlacer(
                         environmentMode, solutionDescriptor, phase.getTermination());
-                entityPlacerList.add(entityPlacer);
+            } else {
+                // TODO entityPlacerConfigList is only a List because of XStream limitations.
+                throw new IllegalArgumentException("The entityPlacerConfigList (" + entityPlacerConfigList
+                        + ") must be a singleton or empty. Use multiple " + ConstructionHeuristicSolverPhaseConfig.class
+                        + " elements to initialize multiple entity classes.");
             }
-            phase.setEntityPlacerList(entityPlacerList);
+            phase.setEntityPlacer(entityPlacer);
             if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
                 phase.setAssertStepScoreIsUncorrupted(true);
             }

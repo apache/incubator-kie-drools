@@ -32,12 +32,12 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  */
 public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase implements ConstructionHeuristicSolverPhase {
 
-    protected List<EntityPlacer> entityPlacerList;
+    protected EntityPlacer entityPlacer;
 
     protected boolean assertStepScoreIsUncorrupted = false;
 
-    public void setEntityPlacerList(List<EntityPlacer> entityPlacerList) {
-        this.entityPlacerList = entityPlacerList;
+    public void setEntityPlacer(EntityPlacer entityPlacer) {
+        this.entityPlacer = entityPlacer;
     }
 
     public void setAssertStepScoreIsUncorrupted(boolean assertStepScoreIsUncorrupted) {
@@ -51,13 +51,6 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
     public void solve(DefaultSolverScope solverScope) {
         ConstructionHeuristicSolverPhaseScope phaseScope = new ConstructionHeuristicSolverPhaseScope(solverScope);
         phaseStarted(phaseScope);
-
-        // TODO FIXME
-        if (entityPlacerList.size() != 1) {
-            throw new UnsupportedOperationException();
-        }
-        // TODO HACK
-        EntityPlacer entityPlacer = entityPlacerList.get(0);
 
         ConstructionHeuristicStepScope stepScope = createNextStepScope(phaseScope, null);
         while (!termination.isPhaseTerminated(phaseScope)) {
@@ -109,30 +102,22 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
     @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
-        for (EntityPlacer entityPlacer : entityPlacerList) {
-            entityPlacer.solvingStarted(solverScope);
-        }
+        entityPlacer.solvingStarted(solverScope);
     }
 
     public void phaseStarted(ConstructionHeuristicSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
-        for (EntityPlacer entityPlacer : entityPlacerList) {
-            entityPlacer.phaseStarted(phaseScope);
-        }
+        entityPlacer.phaseStarted(phaseScope);
     }
 
     public void stepStarted(ConstructionHeuristicStepScope stepScope) {
         super.stepStarted(stepScope);
-        for (EntityPlacer entityPlacer : entityPlacerList) {
-            entityPlacer.stepStarted(stepScope);
-        }
+        entityPlacer.stepStarted(stepScope);
     }
 
     public void stepEnded(ConstructionHeuristicStepScope stepScope) {
         super.stepEnded(stepScope);
-        for (EntityPlacer entityPlacer : entityPlacerList) {
-            entityPlacer.stepEnded(stepScope);
-        }
+        entityPlacer.stepEnded(stepScope);
         if (logger.isDebugEnabled()) {
             long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), selected move count ({})"
@@ -151,9 +136,7 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
                 .countUninitializedVariables(newBestSolution);
         bestSolutionRecaller.updateBestSolution(phaseScope.getSolverScope(),
                 newBestSolution, newBestUninitializedVariableCount);
-        for (EntityPlacer entityPlacer : entityPlacerList) {
-            entityPlacer.phaseEnded(phaseScope);
-        }
+        entityPlacer.phaseEnded(phaseScope);
         logger.info("Phase ({}) constructionHeuristic ended: step total ({}), time spend ({}), best score ({}).",
                 phaseIndex,
                 phaseScope.getLastCompletedStepScope().getStepIndex() + 1,
@@ -164,9 +147,7 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
     @Override
     public void solvingEnded(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
-        for (EntityPlacer entityPlacer : entityPlacerList) {
-            entityPlacer.solvingEnded(solverScope);
-        }
+        entityPlacer.solvingEnded(solverScope);
     }
 
 }
