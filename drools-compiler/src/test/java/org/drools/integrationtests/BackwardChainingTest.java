@@ -3205,7 +3205,6 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
 
     @Test
-    @Ignore
     public void testQueryWithClassLiterals() throws Exception {
         String str = "" +
                 "package org.drools.test  \n" +
@@ -3251,10 +3250,9 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        List<Integer> list = new ArrayList<Integer>();
+        List list = new ArrayList();
         ksession.setGlobal( "list",
                 list );
-
 
         ksession.insert( "go1" );
         ksession.fireAllRules();
@@ -3263,7 +3261,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
         assertEquals( 2, list.size() );
         assertEquals( "go1", list.get( 0 ) );
-        assertEquals("org.drools.test.Foo", list.get(1).getClass());
+        assertEquals( "org.drools.test.Foo", list.get( 1 ).getClass().getName() );
     }
 
 
