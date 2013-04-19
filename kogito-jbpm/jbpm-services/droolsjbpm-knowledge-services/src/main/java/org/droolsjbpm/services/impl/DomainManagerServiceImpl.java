@@ -41,10 +41,10 @@ import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
+import org.jbpm.services.task.annotations.BAM;
+import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
@@ -52,7 +52,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 
@@ -78,6 +77,10 @@ public class DomainManagerServiceImpl implements DomainManagerService {
     
     @Inject
     private BPMN2DataService bpmn2Service;
+    
+    @Inject
+    @BAM
+    private BAMTaskEventListener bamListener;
     
     private Map<String, RuntimeManager> domainsMap = new HashMap<String, RuntimeManager>();
     

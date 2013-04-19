@@ -79,8 +79,7 @@ public class TaskServiceEntryPointImpl implements TaskService, EventService<Jbpm
     private TaskAttachmentService taskAttachmentService;
     @Inject 
     private TaskStatisticsService taskStatisticService;
-    @Inject
-    private TaskLifeCycleEventListener taskLifeCycleEventListener;
+   
     
     // External NON CDI event Listeners for Task Lifecycle
     private Event<Task> taskEvents = new JbpmServicesEventImpl<Task>();
@@ -527,10 +526,6 @@ public class TaskServiceEntryPointImpl implements TaskService, EventService<Jbpm
 
     public int getPendingSubTasksByParent(long parentId) {
         return this.taskQueryService.getPendingSubTasksByParent(parentId);
-    }
-
-    public TaskLifeCycleEventListener getTaskLifeCycleEventListener() {
-        return taskLifeCycleEventListener;
     }
 
     public void removeTaskEventsById(long taskId) {
