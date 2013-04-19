@@ -51,6 +51,7 @@ import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.Row;
 import org.drools.runtime.rule.Variable;
 import org.drools.runtime.rule.ViewChangedEventListener;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -3201,5 +3202,69 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }
 
     }
+
+
+    @Test
+    @Ignore
+    public void testQueryWithClassLiterals() throws Exception {
+        String str = "" +
+                "package org.drools.test  \n" +
+
+                "import java.util.List\n" +
+                "import java.util.ArrayList\n" +
+
+                "global List list\n" +
+
+                "declare Foo end \n" +
+
+                "query klass( Class $c )\n" +
+                "    Object( this.getClass() == $c ) \n" +
+                "end\n" +
+
+                "rule R when\n" +
+                "   o : String( this == 'go1' )\n" +
+                "   klass( String.class ; )\n" +
+                "then\n" +
+                "   list.add( o );\n" +
+                "   insert( new Foo() ); \n" +
+                "end\n" +
+
+                "rule S when\n" +
+                "   o : Foo()\n" +
+                "   klass( Foo.class ; )\n" +
+                "then\n" +
+                "   list.add( o );\n" +
+                "end\n";
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal( "list",
+                list );
+
+
+        ksession.insert( "go1" );
+        ksession.fireAllRules();
+
+        System.out.println( list );
+
+        assertEquals( 2, list.size() );
+        assertEquals( "go1", list.get( 0 ) );
+        assertEquals("org.drools.test.Foo", list.get(1).getClass());
+    }
+
 
 }

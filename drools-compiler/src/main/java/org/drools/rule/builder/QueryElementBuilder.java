@@ -328,7 +328,7 @@ public class QueryElementBuilder
             String rewrittenExpr = context.getCompilerFactory().getExpressionProcessor().dump( result,
                                                                                                  mvelCtx );
             arguments.set( position,
-                           MVEL.eval( rewrittenExpr ) ); // for now we just work with literals  
+                           MVEL.eval( rewrittenExpr ) ); // for now we just work with literals
         }
     }
 
@@ -423,6 +423,10 @@ public class QueryElementBuilder
                 case '}' :
                     return false;
             }
+        }
+
+        if ( str.endsWith( ".class" ) ) {
+            return false;
         }
 
         return true;
