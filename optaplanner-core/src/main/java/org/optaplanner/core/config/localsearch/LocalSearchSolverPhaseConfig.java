@@ -22,6 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
+import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
@@ -144,7 +145,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
             // TODO moveSelectorConfigList is only a List because of XStream limitations.
             throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList
                     + ") must be a singleton or empty. Use a single " + UnionMoveSelectorConfig.class
-                    // TODO + " or " + CartesianProductMoveSelectorConfig.class
+                    + " or " + CartesianProductMoveSelectorConfig.class
                     + " element to nest multiple MoveSelectors.");
         }
         return moveSelector;
