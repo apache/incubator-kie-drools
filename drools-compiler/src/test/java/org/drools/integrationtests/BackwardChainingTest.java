@@ -51,6 +51,7 @@ import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.Row;
 import org.drools.runtime.rule.Variable;
 import org.drools.runtime.rule.ViewChangedEventListener;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -3201,5 +3202,134 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         }
 
     }
+
+
+    @Test
+    public void testQueryWithClassLiterals() throws Exception {
+        String str = "" +
+                "package org.drools.test  \n" +
+
+                "import java.util.List\n" +
+                "import java.util.ArrayList\n" +
+
+                "global List list\n" +
+
+                "declare Foo end \n" +
+
+                "query klass( Class $c )\n" +
+                "    Object( this.getClass() == $c ) \n" +
+                "end\n" +
+
+                "rule R when\n" +
+                "   o : String( this == 'go1' )\n" +
+                "   klass( String.class ; )\n" +
+                "then\n" +
+                "   list.add( o );\n" +
+                "   insert( new Foo() ); \n" +
+                "end\n" +
+
+                "rule S when\n" +
+                "   o : Foo()\n" +
+                "   klass( Foo.class ; )\n" +
+                "then\n" +
+                "   list.add( o );\n" +
+                "end\n";
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        List list = new ArrayList();
+        ksession.setGlobal( "list",
+                list );
+
+        ksession.insert( "go1" );
+        ksession.fireAllRules();
+
+        System.out.println( list );
+
+        assertEquals( 2, list.size() );
+        assertEquals( "go1", list.get( 0 ) );
+        assertEquals( "org.drools.test.Foo", list.get( 1 ).getClass().getName() );
+    }
+
+
+
+    @Test
+    @Ignore
+    public void testQueryIndexingWithUnification() throws Exception {
+        String str = "" +
+                "package org.drools.test  \n" +
+
+                "import java.util.List\n" +
+                "import java.util.ArrayList\n" +
+
+                "global List list\n" +
+
+                "declare Foo id : int end \n" +
+                "declare Bar " +
+                "   name : String " +
+                "   val : int " +
+                "end \n" +
+
+                "query fooffa( String $name, Foo $f )\n" +
+                "    Bar( name == $name, $id : val )\n" +
+                "    $f := Foo( id == $id ) \n" +
+                "end\n" +
+
+                "rule R when\n" +
+                "   o : String( this == 'go' )\n" +
+                "   fooffa( \"x\", $f ; )\n" +
+                "then\n" +
+                "   list.add( $f );\n" +
+                "end\n" +
+
+                "rule S when\n" +
+                "then\n" +
+                "   insert( new Foo( 1 ) );\n" +
+                "   insert( new Bar( \"x\", 1 ) );\n" +
+                "end\n";
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal( "list",
+                list );
+
+        ksession.fireAllRules();
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        System.out.println( list );
+
+        assertEquals( 1, list.size() );
+    }
+
+
 
 }

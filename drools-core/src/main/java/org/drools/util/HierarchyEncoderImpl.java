@@ -84,7 +84,10 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
         bottom.merge( node.getBitMask() );
     }
 
-
+    public void clear() {
+        super.clear();
+        bottom = new ImmutableBitSet();
+    }
 
 
 

@@ -21,12 +21,14 @@ import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.factmodel.traits.*;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.runtime.ObjectFilter;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.util.CodedHierarchy;
 import org.drools.util.HierarchyEncoderImpl;
 
 import java.io.IOException;
@@ -245,12 +247,18 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 }
             }
 
-            if ( target instanceof Thing) {
+            if ( target instanceof Class ) {
+                CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                targetTraits = x.getCode( ((Class) target).getName() );
+            } else if ( target instanceof String ) {
+                CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                targetTraits = x.getCode( target );
+            } else if ( target instanceof Thing ) {
                 targetTraits = ((TraitableBean) ((Thing) target).getCore()).getCurrentTypeCode();
             } else if ( target instanceof TraitableBean ) {
                 targetTraits = ((TraitableBean) target).getCurrentTypeCode();
             } else {
-                TraitableBean tbean = lookForWrapper( target, workingMemory);
+                TraitableBean tbean = lookForWrapper( target, workingMemory );
                 if ( tbean != null ) {
                     targetTraits = tbean.getCurrentTypeCode();
                 }

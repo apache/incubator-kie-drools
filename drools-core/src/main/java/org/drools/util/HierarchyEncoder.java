@@ -25,4 +25,5 @@ public interface HierarchyEncoder<T> extends CodedHierarchy<T> {
 
     public BitSet getBottom();
 
+    public void clear();
 }
