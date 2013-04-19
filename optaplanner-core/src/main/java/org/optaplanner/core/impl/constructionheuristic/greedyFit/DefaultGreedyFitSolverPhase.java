@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.constructionheuristic.greedyFit;
 
 import java.util.Iterator;
 
+import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.GreedyDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
@@ -30,7 +31,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 /**
  * Default implementation of {@link GreedyFitSolverPhase}.
  */
-public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements GreedyFitSolverPhase {
+public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements GreedyFitSolverPhase, ConstructionHeuristicSolverPhase {
 
     protected GreedyPlanningEntitySelector greedyPlanningEntitySelector;
     protected GreedyDecider greedyDecider;

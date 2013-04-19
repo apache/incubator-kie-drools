@@ -27,6 +27,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.constructionheuristic.placer.entity.EntityPlacerConfig;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuristicSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
@@ -89,11 +90,10 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     // ************************************************************************
 
 
-    // TODO downcast return type SolverPhase
-    public SolverPhase buildSolverPhase(int phaseIndex, EnvironmentMode environmentMode,
+    public ConstructionHeuristicSolverPhase buildSolverPhase(int phaseIndex, EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
         if (constructionHeuristicType != null) {
-            // TODO delete GreedyFitSolverPhase
+            // TODO delete this legacy piece for GreedyFitSolverPhase
             DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
             configureSolverPhase(greedySolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
             greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
