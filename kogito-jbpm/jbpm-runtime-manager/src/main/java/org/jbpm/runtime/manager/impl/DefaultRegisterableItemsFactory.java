@@ -5,15 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManagerFactory;
+
+import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
-import org.jbpm.process.audit.AuditLoggerFactory.Type;
+import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
 import org.kie.internal.runtime.manager.RuntimeEngine;
@@ -37,7 +40,10 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     @Override
     public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
         List<ProcessEventListener> defaultListeners = new ArrayList<ProcessEventListener>();
-        
+        // register JPAWorkingMemoryDBLogger
+        AbstractAuditLogger logger = AuditLoggerFactory.newJPAInstance((EntityManagerFactory) 
+                runtime.getKieSession().getEnvironment().get(EnvironmentName.ENTITY_MANAGER_FACTORY));
+        defaultListeners.add(logger);
         // add any custom listeners
         defaultListeners.addAll(super.getProcessEventListeners(runtime));
         return defaultListeners;
@@ -46,7 +52,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     @Override
     public List<AgendaEventListener> getAgendaEventListeners(RuntimeEngine runtime) {
         List<AgendaEventListener> defaultListeners = new ArrayList<AgendaEventListener>();
-        
+        defaultListeners.add(new TriggerRulesEventListener(runtime.getKieSession()));
         // add any custom listeners
         defaultListeners.addAll(super.getAgendaEventListeners(runtime));
         return defaultListeners;
@@ -54,8 +60,6 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
 
     @Override
     public List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(RuntimeEngine runtime) {
-        // register JPAWorkingMemoryDBLogger
-        AuditLoggerFactory.newInstance(Type.JPA, (StatefulKnowledgeSession)runtime.getKieSession(), null);
         List<WorkingMemoryEventListener> defaultListeners = new ArrayList<WorkingMemoryEventListener>();
         
         // add any custom listeners

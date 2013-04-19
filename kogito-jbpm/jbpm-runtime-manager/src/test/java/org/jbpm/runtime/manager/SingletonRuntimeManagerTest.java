@@ -11,6 +11,7 @@ import java.util.Properties;
 
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
@@ -358,5 +359,93 @@ public class SingletonRuntimeManagerTest {
         logs = JPAProcessInstanceDbLog.findProcessInstances("SubProcess");
         assertNotNull(logs);
         assertEquals(1, logs.size());
+    }
+    
+    @Test
+    public void testBusinessRuleTask() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-BusinessRuleTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-BusinessRuleTask.drl"), ResourceType.DRL)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        int sessionId = ksession.getId();
+        assertTrue(sessionId == 1);
+        
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
+        ksession = runtime.getKieSession();        
+        assertEquals(sessionId, ksession.getId());
+        
+        // start process
+        ProcessInstance pi = ksession.createProcessInstance("BPMN2-BusinessRuleTask", null);
+        ksession.insert(pi);
+        
+        ksession.startProcessInstance(pi.getId());
+        
+        assertNull(ksession.getProcessInstance(pi.getId()));
+        
+        // dispose session that should not have affect on the session at all
+        manager.disposeRuntimeEngine(runtime);
+        
+        // close manager which will close session maintained by the manager
+        manager.close();
+        JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
+        List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findActiveProcessInstances("BPMN2-BusinessRuleTask");
+        assertNotNull(logs);
+        assertEquals(0, logs.size());
+        
+        logs = JPAProcessInstanceDbLog.findProcessInstances("BPMN2-BusinessRuleTask");
+        assertNotNull(logs);
+        assertEquals(1, logs.size());
+        
+    }
+    
+    @Test
+    public void testBusinessRuleTaskWithRuleAwareListener() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-BusinessRuleTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-BusinessRuleTask.drl"), ResourceType.DRL)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        int sessionId = ksession.getId();
+        assertTrue(sessionId == 1);
+        
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
+        ksession = runtime.getKieSession();        
+        assertEquals(sessionId, ksession.getId());
+        
+        // start process
+        ksession.addEventListener(new RuleAwareProcessEventLister());
+        ProcessInstance pi = ksession.startProcess("BPMN2-BusinessRuleTask");
+        
+        assertNull(ksession.getProcessInstance(pi.getId()));
+        
+        // dispose session that should not have affect on the session at all
+        manager.disposeRuntimeEngine(runtime);
+        
+        // close manager which will close session maintained by the manager
+        manager.close();
+        JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
+        List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findActiveProcessInstances("BPMN2-BusinessRuleTask");
+        assertNotNull(logs);
+        assertEquals(0, logs.size());
+        
+        logs = JPAProcessInstanceDbLog.findProcessInstances("BPMN2-BusinessRuleTask");
+        assertNotNull(logs);
+        assertEquals(1, logs.size());
+        
     }
 }

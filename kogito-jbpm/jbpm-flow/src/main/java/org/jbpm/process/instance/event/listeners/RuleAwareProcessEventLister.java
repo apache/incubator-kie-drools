@@ -1,4 +1,22 @@
-package org.jbpm.process.instance.impl;
+/*
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jbpm.process.instance.event.listeners;
+
+import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
@@ -11,9 +29,13 @@ import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * Process event listener that is responsible for managing process instance as fact
+ * so rules can reason over it. It ensure that process instance is inserted as soon as it starts
+ * and gets retracted as soon as process instance completes. In addition it updates process instance 
+ * whenever process variable is updated.
+ *
+ */
 public class RuleAwareProcessEventLister implements ProcessEventListener {
     
     private ConcurrentHashMap<Long, FactHandle> store = new ConcurrentHashMap<Long, FactHandle>();
@@ -36,7 +58,7 @@ public class RuleAwareProcessEventLister implements ProcessEventListener {
         FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKieRuntime());
         
         if (handle != null) {
-            event.getKieRuntime().retract(handle);
+            event.getKieRuntime().delete(handle);
         }
     }
 
