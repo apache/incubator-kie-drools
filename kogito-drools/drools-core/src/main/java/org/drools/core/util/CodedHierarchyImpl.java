@@ -708,6 +708,10 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
         fixedRoot = objectInput.readBoolean();
     }
 
+    public void clear() {
+        line.clear();
+        fixedRoot = false;
+    }
 
     protected static class HierNode<T> implements Comparable<HierNode<T>>, Externalizable {
 

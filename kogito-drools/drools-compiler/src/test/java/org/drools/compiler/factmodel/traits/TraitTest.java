@@ -3170,4 +3170,30 @@ public class TraitTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder2.getKnowledgePackages() );
 
     }
+
+    public void isAWithBackChaining( TraitFactory.VirtualPropertyMode mode ) {
+
+        String source = "org/drools/factmodel/traits/testTraitIsAWithBC.drl";
+        StatefulKnowledgeSession ksession = getSession( source );
+        TraitFactory.setMode( mode, ksession.getKieBase() );
+
+        ksession.fireAllRules();
+
+        ksession.insert( "Como" );
+
+        ksession.fireAllRules();
+
+    }
+
+    @Test
+    @Ignore
+    public void isAWithBackChainingTriples() {
+        isAWithBackChaining( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+    @Test
+    @Ignore
+    public void isAWithBackChainingMap() {
+        isAWithBackChaining( TraitFactory.VirtualPropertyMode.MAP );
+    }
 }

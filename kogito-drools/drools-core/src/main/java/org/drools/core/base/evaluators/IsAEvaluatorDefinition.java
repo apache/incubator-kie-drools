@@ -21,11 +21,13 @@ import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.factmodel.traits.*;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.rule.VariableRestriction;
 import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.CodedHierarchy;
 import org.drools.core.util.HierarchyEncoderImpl;
 import org.kie.api.runtime.ObjectFilter;
 
@@ -234,7 +236,13 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         private boolean compare( Object source, Object target, InternalWorkingMemory workingMemory ) {
             BitSet sourceTraits = null;
             BitSet targetTraits = null;
-            if ( source instanceof Thing ) {
+            if ( target instanceof Class ) {
+                CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                targetTraits = x.getCode(((Class) target).getName());
+            } else if ( target instanceof String ) {
+                CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+                targetTraits = x.getCode(target);
+            } else if ( source instanceof Thing ) {
                 sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getCurrentTypeCode();
             } else if ( source instanceof TraitableBean ) {
                 sourceTraits = ((TraitableBean) source).getCurrentTypeCode();
