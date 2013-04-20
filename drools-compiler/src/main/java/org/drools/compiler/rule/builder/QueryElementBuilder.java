@@ -17,6 +17,7 @@ import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.Query;
 import org.drools.core.rule.QueryElement;
@@ -25,6 +26,8 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.kie.api.runtime.rule.Variable;
 import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
 
 public class QueryElementBuilder
     implements
@@ -234,9 +237,12 @@ public class QueryElementBuilder
                 String expr = context.getCompilerFactory().getExpressionProcessor().dump( bresult,
                                                                                           mvelCtx );
                 try {
-                Object o = MVEL.eval( expr );
-                arguments.set( pos,
-                               o ); // for now we just work with literals
+                    MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+                    ParserConfiguration conf = data.getParserConfiguration();
+                    conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
+
+                    arguments.set( pos,
+                    MVEL.executeExpression( MVEL.compileExpression( expr, new ParserContext( conf ) ) ) );
                 } catch ( Exception e ) {
                     context.addError( new DescrBuildError( context.getParentDescr(),
                                                                   descr,
@@ -325,10 +331,17 @@ public class QueryElementBuilder
         } else {
             // it's an expression and thus an input
             MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
-            String rewrittenExpr = context.getCompilerFactory().getExpressionProcessor().dump( result,
-                                                                                                 mvelCtx );
-            arguments.set( position,
-                           MVEL.eval( rewrittenExpr ) ); // for now we just work with literals  
+            String rewrittenExpr = context.getCompilerFactory().getExpressionProcessor().dump( result, mvelCtx );
+
+            try {
+                MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+                ParserConfiguration conf = data.getParserConfiguration();
+                conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
+
+                arguments.set( position, MVEL.executeExpression( MVEL.compileExpression( rewrittenExpr, new ParserContext( conf ) ) ) );
+            } catch ( Exception e ) {
+                context.addError( new DescrBuildError( context.getParentDescr(), base, null, "Unable to compile expression:\n" + rewrittenExpr ) );
+            }
         }
     }
 
@@ -423,6 +436,10 @@ public class QueryElementBuilder
                 case '}' :
                     return false;
             }
+        }
+
+        if ( str.endsWith( ".class" ) ) {
+            return false;
         }
 
         return true;
