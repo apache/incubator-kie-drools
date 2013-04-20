@@ -2678,4 +2678,62 @@ public class CepEspTest extends CommonTestMethodBase {
             sessionFuture.get();
         }
     }
+
+    @Test
+    @Ignore
+    public void testSlidingWindowsAccumulateExternalJoin() throws Exception {
+
+        String str =
+                "package testing2;\n" +
+                        "\n" +
+                        "import java.util.*;\n" +
+                        "import org.drools.StockTick;\n" +
+                        "\n" +
+                        "" +
+                        "declare StockTick\n" +
+                        " @role( event )\n" +
+                        " @duration( duration )\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule test\n" +
+                        "when\n" +
+                        " $primary : StockTick( $name : company ) over window:length(4)\n" +
+                        " accumulate ( " +
+                        " $tick : StockTick( company == $name ), " +
+                        " $list : count( $tick ) )\n" +
+
+                        "then\n" +
+                        " System.out.println(\"Found name: \" + $primary + \" with \" );\n" +
+                        "end\n" +
+                        ""
+                ;
+
+        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(config, str);
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(conf, null);
+
+        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.getSessionClock();
+
+        int seq = 0;
+
+        clock.advanceTime( 10, TimeUnit.MILLISECONDS );
+        ksession.insert( new StockTick( seq++, "x", 10.0, 10L ) );
+        ksession.insert( new StockTick( seq++, "y", 10.0, 10L ) );
+        ksession.insert( new StockTick( seq++, "z", 10.0, 10L ) );
+
+        ksession.fireAllRules();
+
+        System.out.println(" ___________________________________- ");
+
+        ksession.insert( new StockTick( seq++, "z", 13.0, 20L ) );
+        ksession.insert( new StockTick( seq++, "x", 11.0, 20L ) );
+
+        // NPE Here
+        ksession.fireAllRules();
+
+    }
 }
