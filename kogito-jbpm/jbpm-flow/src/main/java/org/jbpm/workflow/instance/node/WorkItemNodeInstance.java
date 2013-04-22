@@ -16,32 +16,43 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
-import org.kie.api.definition.process.Node;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.NodeInstance;
 import org.drools.core.spi.ProcessContext;
+import org.jbpm.process.core.Context;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.ContextInstance;
+import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.AssignmentAction;
+import org.jbpm.process.instance.impl.ContextInstanceFactory;
+import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
+import org.kie.api.definition.process.Node;
+import org.kie.api.runtime.process.EventListener;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.internal.runtime.KnowledgeRuntime;
 import org.mvel2.MVEL;
 
 /**
@@ -49,9 +60,12 @@ import org.mvel2.MVEL;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemNodeInstance extends StateBasedNodeInstance implements EventListener {
+public class WorkItemNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
     
     private static final long serialVersionUID = 510l;
+    // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
+    private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
+    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
     
     private long workItemId = -1;
     private transient WorkItem workItem;
@@ -108,6 +122,16 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             } catch (WorkItemHandlerNotFoundException wihnfe){
                 getProcessInstance().setState( ProcessInstance.STATE_ABORTED );
                 throw wihnfe;
+            } catch (Exception e) {
+                String exceptionName = e.getClass().getName();
+                ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
+                    resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
+                if (exceptionScopeInstance == null) {
+                    throw new WorkflowRuntimeException(this, "Unable to execute Action: " + e.getMessage(), e);
+                }
+                // workItemId must be set otherwise cancel activity will not find the right work item
+                this.workItemId = workItem.getId();
+                exceptionScopeInstance.handleException(exceptionName, e);
             }
         }
         if (!workItemNode.isWaitForCompletion()) {
@@ -319,6 +343,60 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             return nodeName;
         }
         return super.getNodeName();
+    }
+
+    @Override
+    public List<ContextInstance> getContextInstances(String contextId) {
+        return this.subContextInstances.get(contextId);
+    }
+
+    @Override
+    public void addContextInstance(String contextId, ContextInstance contextInstance) {
+        List<ContextInstance> list = this.subContextInstances.get(contextId);
+        if (list == null) {
+            list = new ArrayList<ContextInstance>();
+            this.subContextInstances.put(contextId, list);
+        }
+        list.add(contextInstance);
+    }
+
+    @Override
+    public void removeContextInstance(String contextId, ContextInstance contextInstance) {
+        List<ContextInstance> list = this.subContextInstances.get(contextId);
+        if (list != null) {
+            list.remove(contextInstance);
+        }
+    }
+
+    @Override
+    public ContextInstance getContextInstance(String contextId, long id) {
+        List<ContextInstance> contextInstances = subContextInstances.get(contextId);
+        if (contextInstances != null) {
+            for (ContextInstance contextInstance: contextInstances) {
+                if (contextInstance.getContextId() == id) {
+                    return contextInstance;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ContextInstance getContextInstance(Context context) {
+        ContextInstanceFactory conf = ContextInstanceFactoryRegistry.INSTANCE.getContextInstanceFactory(context);
+        if (conf == null) {
+            throw new IllegalArgumentException("Illegal context type (registry not found): " + context.getClass());
+        }
+        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this, (ProcessInstance) getProcessInstance());
+        if (contextInstance == null) {
+            throw new IllegalArgumentException("Illegal context type (instance not found): " + context.getClass());
+        }
+        return contextInstance;
+    }
+
+    @Override
+    public ContextContainer getContextContainer() {
+        return getWorkItemNode();
     }
     
 }

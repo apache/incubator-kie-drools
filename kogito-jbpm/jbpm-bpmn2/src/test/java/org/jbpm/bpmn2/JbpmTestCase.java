@@ -45,6 +45,7 @@ import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
+import org.jbpm.process.audit.event.ExtendedRuleFlowLogEvent;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
@@ -428,16 +429,16 @@ public abstract class JbpmTestCase extends Assert {
     }
 
     public void assertProcessInstanceCompleted(ProcessInstance processInstance) {
-        assertTrue("Process instance has not been completed.", processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertTrue("Process instance has not been completed.", assertProcessInstanceState(ProcessInstance.STATE_COMPLETED, processInstance));
     }
 
     public void assertProcessInstanceAborted(ProcessInstance processInstance) {
-        assertTrue("Process instance has not been aborted.", processInstance.getState() == ProcessInstance.STATE_ABORTED);
+        assertTrue("Process instance has not been aborted.", assertProcessInstanceState(ProcessInstance.STATE_ABORTED, processInstance));
     }
 
     public void assertProcessInstanceActive(ProcessInstance processInstance) {
-        assertTrue("Process instance is not active.", processInstance.getState() == ProcessInstance.STATE_ACTIVE
-                || processInstance.getState() == ProcessInstance.STATE_PENDING);
+        assertTrue("Process instance is not active.", assertProcessInstanceState(ProcessInstance.STATE_ACTIVE, processInstance)
+                || assertProcessInstanceState(ProcessInstance.STATE_PENDING, processInstance));
     }
 
     public void assertProcessInstanceFinished(ProcessInstance processInstance,
@@ -540,6 +541,19 @@ public abstract class JbpmTestCase extends Assert {
             }
         }
         return counter;
+    }
+    
+    protected boolean assertProcessInstanceState(int state, ProcessInstance processInstance) {
+        if (sessionPersistence) {
+            ProcessInstanceLog log = JPAProcessInstanceDbLog.findProcessInstance(processInstance.getId());
+            if (log != null) {
+                return log.getStatus() == state;
+            }
+        } else {
+            return processInstance.getState() == state;
+        } 
+        
+        return false;
     }
 
     private List<String> getNotTriggeredNodes(long processInstanceId,

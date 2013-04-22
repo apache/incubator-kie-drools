@@ -29,6 +29,7 @@ import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.handler.SignallingTaskHandlerWrapper;
 import org.jbpm.bpmn2.objects.ExceptionService;
+import org.jbpm.bpmn2.objects.MyError;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
@@ -48,6 +49,7 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.Context;
@@ -751,6 +753,49 @@ public class IntermediateEventTest extends JbpmTestCase {
         assertEquals(1, executednodes.size());
 
     }
+    
+    @Test
+    public void testEventSubprocessErrorThrowOnTask() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessError.bpmn2");
+        final List<Long> executednodes = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                if (event.getNodeInstance().getNodeName()
+                        .equals("Script Task 1")) {
+                    executednodes.add(event.getNodeInstance().getId());
+                }
+            }
+
+        };
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(listener);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new TestWorkItemHandler(){
+
+            @Override
+            public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+                throw new MyError();
+                
+            }
+
+            @Override
+            public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+                manager.abortWorkItem(workItem.getId());
+            }
+  
+            
+        });
+        ProcessInstance processInstance = ksession
+                .startProcess("BPMN2-EventSubprocessError");
+ 
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceAborted(processInstance);
+        assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
+                "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
+        assertEquals(1, executednodes.size());
+
+    }
 
     @Test
     public void testEventSubprocessCompensation() throws Exception {
@@ -1048,35 +1093,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventOnTask.bpmn2");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler handler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                handler);
-        ksession.addEventListener(new DefaultProcessEventListener() {
-
-            @Override
-            public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                System.out.println("After node left "
-                        + event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-                System.out.println("After node triggered "
-                        + event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-                System.out.println("Before node left "
-                        + event.getNodeInstance().getNodeName());
-            }
-
-            @Override
-            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-                System.out.println("Before node triggered "
-                        + event.getNodeInstance().getNodeName());
-            }
-
-        });
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",handler);
         ProcessInstance processInstance = ksession
                 .startProcess("BPMN2-ErrorBoundaryEventOnTask");
 
@@ -1090,7 +1107,38 @@ public class IntermediateEventTest extends JbpmTestCase {
 
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceAborted(processInstance);
+        assertNodeTriggered(processInstance.getId(), "start", "split", "User Task", "User task error attached", "error end event");
+        assertNotNodeTriggered(processInstance.getId(), "Script Task", "error1", "error2");
+    }
+    
+    @Test
+    public void testCatchErrorBoundaryEventOnTask() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventOnTask.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new TestWorkItemHandler(){
 
+            @Override
+            public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+                if (workItem.getParameter("ActorId").equals("mary")) {
+                    throw new MyError();
+                }
+            }
+
+            @Override
+            public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+                manager.abortWorkItem(workItem.getId());
+            }
+  
+            
+        });
+        ProcessInstance processInstance = ksession
+                .startProcess("BPMN2-ErrorBoundaryEventOnTask");
+
+        assertProcessInstanceActive(processInstance);
+        assertNodeTriggered(processInstance.getId(), "start", "split", "User Task", "User task error attached",
+                "Script Task", "error1", "error2");
+ 
     }
 
     @Test

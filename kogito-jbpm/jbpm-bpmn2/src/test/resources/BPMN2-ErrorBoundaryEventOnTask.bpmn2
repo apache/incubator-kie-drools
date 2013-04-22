@@ -1,149 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definitions_1">
-  <bpmn2:error id="Error_1" errorCode="myerror"/>
-  <bpmn2:process id="BPMN2-ErrorBoundaryEventOnTask" tns:version="1" tns:packageName="defaultPackage" name="Default Process">
-    <bpmn2:startEvent id="StartEvent_1">
-      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
-    </bpmn2:startEvent>
-    <bpmn2:userTask id="UserTask_1" name="User Task">
-      <bpmn2:extensionElements>
-        <tns:onEntry-script tns:scriptFormat="">
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:_1="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definitions_1" targetNamespace="http://www.jboss.org/drools">
+  <error id="Error_1" errorCode="org.jbpm.bpmn2.objects.MyError"/>
+  <process id="BPMN2-ErrorBoundaryEventOnTask" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="Default Process" isExecutable="true">
+    <startEvent id="StartEvent_1" name="start">
+      <outgoing>SequenceFlow_4</outgoing>
+    </startEvent>
+    <userTask id="UserTask_1" name="User Task">
+      <extensionElements>
+        <tns:onEntry-script scriptFormat="">
           <tns:script></tns:script>
         </tns:onEntry-script>
-      </bpmn2:extensionElements>
-      <bpmn2:extensionElements>
-        <tns:onExit-script tns:scriptFormat="">
+      </extensionElements>
+      <extensionElements>
+        <tns:onExit-script scriptFormat="">
           <tns:script></tns:script>
         </tns:onExit-script>
-      </bpmn2:extensionElements>
-      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
-      <bpmn2:ioSpecification id="_InputOutputSpecification_6">
-        <bpmn2:dataInput id="_DataInput_26" name="TaskName"/>
-        <bpmn2:dataInput id="_DataInput_27" name="Priority"/>
-        <bpmn2:dataInput id="_DataInput_28" name="Comment"/>
-        <bpmn2:dataInput id="_DataInput_29" name="GroupId"/>
-        <bpmn2:dataInput id="_DataInput_30" name="Skippable"/>
-        <bpmn2:dataInput id="_DataInput_31" name="Content"/>
-        <bpmn2:inputSet id="_InputSet_6" name="  Input Set 6">
-          <bpmn2:dataInputRefs>_DataInput_26</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_27</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_28</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_29</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_30</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_31</bpmn2:dataInputRefs>
-        </bpmn2:inputSet>
-      </bpmn2:ioSpecification>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_26">
-        <bpmn2:targetRef>_DataInput_26</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_27">
-        <bpmn2:targetRef>_DataInput_27</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_28">
-        <bpmn2:targetRef>_DataInput_28</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_29">
-        <bpmn2:targetRef>_DataInput_29</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_30">
-        <bpmn2:targetRef>_DataInput_30</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_31">
-        <bpmn2:targetRef>_DataInput_31</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:potentialOwner id="PotentialOwner_1">
-        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_1">
-          <bpmn2:formalExpression id="FormalExpression_1">john</bpmn2:formalExpression>
-        </bpmn2:resourceAssignmentExpression>
-      </bpmn2:potentialOwner>
-    </bpmn2:userTask>
-    <bpmn2:userTask id="UserTask_2" name="User task error attached">
-      <bpmn2:extensionElements>
-        <tns:onEntry-script tns:scriptFormat="">
+      </extensionElements>
+      <incoming>SequenceFlow_2</incoming>
+      <outgoing>SequenceFlow_6</outgoing>
+      <ioSpecification id="_InputOutputSpecification_6">
+        <dataInput id="_DataInput_26" name="TaskName"/>
+        <dataInput id="_DataInput_27" name="Priority"/>
+        <dataInput id="_DataInput_28" name="Comment"/>
+        <dataInput id="_DataInput_29" name="GroupId"/>
+        <dataInput id="_DataInput_30" name="Skippable"/>
+        <dataInput id="_DataInput_31" name="Content"/>
+        <inputSet id="_InputSet_6" name="  Input Set 6">
+          <dataInputRefs>_DataInput_26</dataInputRefs>
+          <dataInputRefs>_DataInput_27</dataInputRefs>
+          <dataInputRefs>_DataInput_28</dataInputRefs>
+          <dataInputRefs>_DataInput_29</dataInputRefs>
+          <dataInputRefs>_DataInput_30</dataInputRefs>
+          <dataInputRefs>_DataInput_31</dataInputRefs>
+        </inputSet>
+      </ioSpecification>
+      <dataInputAssociation id="_DataInputAssociation_26">
+        <targetRef>_DataInput_26</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_27">
+        <targetRef>_DataInput_27</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_28">
+        <targetRef>_DataInput_28</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_29">
+        <targetRef>_DataInput_29</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_30">
+        <targetRef>_DataInput_30</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_31">
+        <targetRef>_DataInput_31</targetRef>
+      </dataInputAssociation>
+      <potentialOwner id="PotentialOwner_1">
+        <resourceAssignmentExpression id="ResourceAssignmentExpression_1">
+          <formalExpression id="FormalExpression_1">john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <userTask id="UserTask_2" name="User task error attached">
+      <extensionElements>
+        <tns:onEntry-script scriptFormat="">
           <tns:script></tns:script>
         </tns:onEntry-script>
-      </bpmn2:extensionElements>
-      <bpmn2:extensionElements>
-        <tns:onExit-script tns:scriptFormat="">
+      </extensionElements>
+      <extensionElements>
+        <tns:onExit-script scriptFormat="">
           <tns:script></tns:script>
         </tns:onExit-script>
-      </bpmn2:extensionElements>
-      <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_5</bpmn2:outgoing>
-      <bpmn2:ioSpecification id="_InputOutputSpecification_7">
-        <bpmn2:dataInput id="_DataInput_32" name="TaskName"/>
-        <bpmn2:dataInput id="_DataInput_33" name="Priority"/>
-        <bpmn2:dataInput id="_DataInput_34" name="Comment"/>
-        <bpmn2:dataInput id="_DataInput_35" name="GroupId"/>
-        <bpmn2:dataInput id="_DataInput_36" name="Skippable"/>
-        <bpmn2:dataInput id="_DataInput_37" name="Content"/>
-        <bpmn2:inputSet id="_InputSet_7" name="  Input Set 7">
-          <bpmn2:dataInputRefs>_DataInput_32</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_33</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_34</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_35</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_36</bpmn2:dataInputRefs>
-          <bpmn2:dataInputRefs>_DataInput_37</bpmn2:dataInputRefs>
-        </bpmn2:inputSet>
-      </bpmn2:ioSpecification>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_32">
-        <bpmn2:targetRef>_DataInput_32</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_33">
-        <bpmn2:targetRef>_DataInput_33</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_34">
-        <bpmn2:targetRef>_DataInput_34</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_35">
-        <bpmn2:targetRef>_DataInput_35</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_36">
-        <bpmn2:targetRef>_DataInput_36</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:dataInputAssociation id="_DataInputAssociation_37">
-        <bpmn2:targetRef>_DataInput_37</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
-      <bpmn2:potentialOwner id="PotentialOwner_1">
-        <bpmn2:resourceAssignmentExpression id="ResourceAssignmentExpression_1">
-          <bpmn2:formalExpression id="FormalExpression_1">mary</bpmn2:formalExpression>
-        </bpmn2:resourceAssignmentExpression>
-      </bpmn2:potentialOwner>
-    </bpmn2:userTask>
-    <bpmn2:parallelGateway id="ParallelGateway_1" gatewayDirection="Diverging">
-      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
-      <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
-    </bpmn2:parallelGateway>
-    <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" sourceRef="ParallelGateway_1" targetRef="UserTask_1"/>
-    <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" sourceRef="ParallelGateway_1" targetRef="UserTask_2"/>
-    <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="ParallelGateway_1"/>
-    <bpmn2:endEvent id="EndEvent_1" name="error">
-      <bpmn2:incoming>SequenceFlow_5</bpmn2:incoming>
-    </bpmn2:endEvent>
-    <bpmn2:sequenceFlow id="SequenceFlow_5" tns:priority="1" name="" sourceRef="UserTask_2" targetRef="EndEvent_1"/>
-    <bpmn2:sequenceFlow id="SequenceFlow_6" tns:priority="1" sourceRef="UserTask_1" targetRef="EndEvent_2"/>
-    <bpmn2:endEvent id="EndEvent_2" name="error end event">
-      <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
-      <bpmn2:errorEventDefinition id="ErrorEventDefinition_1" errorRef="Error_1"/>
-    </bpmn2:endEvent>
-    <bpmn2:boundaryEvent id="BoundaryEvent_1" name="Boundary event" attachedToRef="UserTask_2">
-      <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
-      <bpmn2:errorEventDefinition id="ErrorEventDefinition_2" errorRef="Error_1"/>
-    </bpmn2:boundaryEvent>
-    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task" scriptFormat="http://www.java.com/java">
-      <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
-      <bpmn2:script>System.out.println(&quot;Error handled&quot;);</bpmn2:script>
-    </bpmn2:scriptTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_7" tns:priority="1" name="" sourceRef="BoundaryEvent_1" targetRef="ScriptTask_1"/>
-    <bpmn2:sequenceFlow id="SequenceFlow_8" tns:priority="1" name="" sourceRef="ScriptTask_1" targetRef="EndEvent_3"/>
-    <bpmn2:endEvent id="EndEvent_3" name="error">
-      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
-    </bpmn2:endEvent>
-  </bpmn2:process>
-  
+      </extensionElements>
+      <incoming>SequenceFlow_3</incoming>
+      <outgoing>SequenceFlow_5</outgoing>
+      <ioSpecification id="_InputOutputSpecification_7">
+        <dataInput id="_DataInput_32" name="TaskName"/>
+        <dataInput id="_DataInput_33" name="Priority"/>
+        <dataInput id="_DataInput_34" name="Comment"/>
+        <dataInput id="_DataInput_35" name="GroupId"/>
+        <dataInput id="_DataInput_36" name="Skippable"/>
+        <dataInput id="_DataInput_37" name="Content"/>
+        <inputSet id="_InputSet_7" name="  Input Set 7">
+          <dataInputRefs>_DataInput_32</dataInputRefs>
+          <dataInputRefs>_DataInput_33</dataInputRefs>
+          <dataInputRefs>_DataInput_34</dataInputRefs>
+          <dataInputRefs>_DataInput_35</dataInputRefs>
+          <dataInputRefs>_DataInput_36</dataInputRefs>
+          <dataInputRefs>_DataInput_37</dataInputRefs>
+        </inputSet>
+      </ioSpecification>
+      <dataInputAssociation id="_DataInputAssociation_32">
+        <targetRef>_DataInput_32</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_33">
+        <targetRef>_DataInput_33</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_34">
+        <targetRef>_DataInput_34</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_35">
+        <targetRef>_DataInput_35</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_36">
+        <targetRef>_DataInput_36</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_37">
+        <targetRef>_DataInput_37</targetRef>
+      </dataInputAssociation>
+      <potentialOwner id="PotentialOwner_1">
+        <resourceAssignmentExpression id="ResourceAssignmentExpression_1">
+          <formalExpression id="FormalExpression_1">mary</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <parallelGateway id="ParallelGateway_1" name="split" gatewayDirection="Diverging">
+      <incoming>SequenceFlow_4</incoming>
+      <outgoing>SequenceFlow_2</outgoing>
+      <outgoing>SequenceFlow_3</outgoing>
+    </parallelGateway>
+    <sequenceFlow id="SequenceFlow_2" tns:priority="1" sourceRef="ParallelGateway_1" targetRef="UserTask_1"/>
+    <sequenceFlow id="SequenceFlow_3" tns:priority="1" sourceRef="ParallelGateway_1" targetRef="UserTask_2"/>
+    <sequenceFlow id="SequenceFlow_4" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="ParallelGateway_1"/>
+    <endEvent id="EndEvent_1" name="error1">
+      <incoming>SequenceFlow_5</incoming>
+    </endEvent>
+    <sequenceFlow id="SequenceFlow_5" tns:priority="1" name="" sourceRef="UserTask_2" targetRef="EndEvent_1"/>
+    <sequenceFlow id="SequenceFlow_6" tns:priority="1" sourceRef="UserTask_1" targetRef="EndEvent_2"/>
+    <endEvent id="EndEvent_2" name="error end event">
+      <incoming>SequenceFlow_6</incoming>
+      <errorEventDefinition id="ErrorEventDefinition_1" errorRef="Error_1"/>
+    </endEvent>
+    <boundaryEvent id="BoundaryEvent_1" name="Boundary event" attachedToRef="UserTask_2">
+      <outgoing>SequenceFlow_7</outgoing>
+      <errorEventDefinition id="ErrorEventDefinition_2" errorRef="Error_1"/>
+    </boundaryEvent>
+    <scriptTask id="ScriptTask_1" name="Script Task" scriptFormat="http://www.java.com/java">
+      <incoming>SequenceFlow_7</incoming>
+      <outgoing>SequenceFlow_8</outgoing>
+      <script>System.out.println(&quot;Error handled&quot;);</script>
+    </scriptTask>
+    <sequenceFlow id="SequenceFlow_7" tns:priority="1" name="" sourceRef="BoundaryEvent_1" targetRef="ScriptTask_1"/>
+    <sequenceFlow id="SequenceFlow_8" tns:priority="1" name="" sourceRef="ScriptTask_1" targetRef="EndEvent_3"/>
+    <endEvent id="EndEvent_3" name="error2">
+      <incoming>SequenceFlow_8</incoming>
+    </endEvent>
+  </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Process Diagram">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="BPMN2-ErrorBoundaryEventOnTask">
       <bpmndi:BPMNShape id="BPMNShape_1" bpmnElement="StartEvent_1" isHorizontal="true">
@@ -206,4 +205,151 @@
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</bpmn2:definitions>
+  <relationship id="Relationship_1">
+    <extensionElements>
+      <tns:ProcessAnalysisData>
+        <tns:Scenario xsi:type="tns:Scenario" id="Scenario_1" name="Scenario 1">
+          <tns:ScenarioParameters xsi:type="tns:ScenarioParameters" baseTimeUnit="ms"/>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="StartEvent_1" id="ElementParameters_1">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:WaitTime xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="1.0"/>
+              </tns:WaitTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="EndEvent_1" id="ElementParameters_2">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:ProcessingTime xsi:type="tns:Parameter">
+                <tns:RandomDistribution max="1.0" min="0.0"/>
+              </tns:ProcessingTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="UserTask_1" id="ElementParameters_3">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:ProcessingTime xsi:type="tns:Parameter">
+                <tns:RandomDistribution max="1.0" min="0.0"/>
+              </tns:ProcessingTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+            <tns:ResourceParameters xsi:type="tns:ResourceParameters">
+              <tns:Quantity xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="0.0"/>
+              </tns:Quantity>
+              <tns:Workinghours xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="0.0"/>
+              </tns:Workinghours>
+            </tns:ResourceParameters>
+            <tns:CostParameters xsi:type="tns:CostParameters">
+              <tns:UnitCost xsi:type="tns:Parameter">
+                <tns:DecimalParameter value="0"/>
+              </tns:UnitCost>
+            </tns:CostParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="UserTask_2" id="ElementParameters_4">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:ProcessingTime xsi:type="tns:Parameter">
+                <tns:RandomDistribution max="1.0" min="0.0"/>
+              </tns:ProcessingTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+            <tns:ResourceParameters xsi:type="tns:ResourceParameters">
+              <tns:Quantity xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="0.0"/>
+              </tns:Quantity>
+              <tns:Workinghours xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="0.0"/>
+              </tns:Workinghours>
+            </tns:ResourceParameters>
+            <tns:CostParameters xsi:type="tns:CostParameters">
+              <tns:UnitCost xsi:type="tns:Parameter">
+                <tns:DecimalParameter value="0"/>
+              </tns:UnitCost>
+            </tns:CostParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="EndEvent_2" id="ElementParameters_5">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:ProcessingTime xsi:type="tns:Parameter">
+                <tns:RandomDistribution max="1.0" min="0.0"/>
+              </tns:ProcessingTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="ScriptTask_1" id="ElementParameters_6">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:ProcessingTime xsi:type="tns:Parameter">
+                <tns:RandomDistribution max="1.0" min="0.0"/>
+              </tns:ProcessingTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+            <tns:CostParameters xsi:type="tns:CostParameters">
+              <tns:UnitCost xsi:type="tns:Parameter">
+                <tns:DecimalParameter value="0"/>
+              </tns:UnitCost>
+            </tns:CostParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="EndEvent_3" id="ElementParameters_7">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:ProcessingTime xsi:type="tns:Parameter">
+                <tns:RandomDistribution max="1.0" min="0.0"/>
+              </tns:ProcessingTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_2" id="ElementParameters_8">
+            <tns:ControlParameters xsi:type="tns:ControlParameters">
+              <tns:Probability xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="100.0"/>
+              </tns:Probability>
+            </tns:ControlParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_3" id="ElementParameters_9">
+            <tns:ControlParameters xsi:type="tns:ControlParameters">
+              <tns:Probability xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="100.0"/>
+              </tns:Probability>
+            </tns:ControlParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_4" id="ElementParameters_10">
+            <tns:ControlParameters xsi:type="tns:ControlParameters">
+              <tns:Probability xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="100.0"/>
+              </tns:Probability>
+            </tns:ControlParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_5" id="ElementParameters_11">
+            <tns:ControlParameters xsi:type="tns:ControlParameters">
+              <tns:Probability xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="100.0"/>
+              </tns:Probability>
+            </tns:ControlParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_6" id="ElementParameters_12">
+            <tns:ControlParameters xsi:type="tns:ControlParameters">
+              <tns:Probability xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="100.0"/>
+              </tns:Probability>
+            </tns:ControlParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_7" id="ElementParameters_13">
+            <tns:ControlParameters xsi:type="tns:ControlParameters">
+              <tns:Probability xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="100.0"/>
+              </tns:Probability>
+            </tns:ControlParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_8" id="ElementParameters_14">
+            <tns:ControlParameters xsi:type="tns:ControlParameters">
+              <tns:Probability xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="100.0"/>
+              </tns:Probability>
+            </tns:ControlParameters>
+          </tns:ElementParameters>
+        </tns:Scenario>
+      </tns:ProcessAnalysisData>
+    </extensionElements>
+    <source>Definitions_1</source>
+    <target>Definitions_1</target>
+  </relationship>
+</definitions>

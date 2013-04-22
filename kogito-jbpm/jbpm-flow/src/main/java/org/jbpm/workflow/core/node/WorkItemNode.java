@@ -28,6 +28,7 @@ import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.context.variable.Mappable;
+import org.jbpm.process.core.impl.ContextContainerImpl;
 
 /**
  * Default implementation of a task node.
@@ -37,7 +38,9 @@ import org.jbpm.process.core.context.variable.Mappable;
 public class WorkItemNode extends StateBasedNode implements Mappable, ContextContainer {
 
 	private static final long serialVersionUID = 510l;
-	
+	// NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
+	private ContextContainer contextContainer = new ContextContainerImpl();
+    
 	private Work work;
 
 	private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
@@ -153,24 +156,35 @@ public class WorkItemNode extends StateBasedNode implements Mappable, ContextCon
     }
     
     public List<Context> getContexts(String contextType) {
-        return ((ContextContainer)this.getNodeContainer()).getContexts(contextType);
+        return contextContainer.getContexts(contextType);
     }
     
     public void addContext(Context context) {
-        ((ContextContainer)this.getNodeContainer()).addContext(context);
         ((AbstractContext) context).setContextContainer(this);
+        contextContainer.addContext(context);
     }
     
     public Context getContext(String contextType, long id) {
-        return ((ContextContainer)this.getNodeContainer()).getContext(contextType, id);
+        return contextContainer.getContext(contextType, id);
     }
 
     public void setDefaultContext(Context context) {
-        ((ContextContainer)this.getNodeContainer()).setDefaultContext(context);
+        ((AbstractContext) context).setContextContainer(this);
+        contextContainer.setDefaultContext(context);
     }
     
     public Context getDefaultContext(String contextType) {
-        return ((ContextContainer)this.getNodeContainer()).getDefaultContext(contextType);
+        return contextContainer.getDefaultContext(contextType);
     }
+
+    @Override
+    public Context getContext(String contextId) {
+        Context context = getDefaultContext(contextId);
+        if (context != null) {
+            return context;
+        }
+        return super.getContext(contextId);
+    }
+
     
 }

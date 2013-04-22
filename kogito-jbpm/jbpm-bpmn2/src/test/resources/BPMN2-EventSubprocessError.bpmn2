@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definitions_1" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
-  <bpmn2:error id="error" errorCode="error" />
-  <bpmn2:process id="BPMN2-EventSubprocessError" tns:version="1" tns:packageName="defaultPackage" name="Default Process">
-    <bpmn2:startEvent id="StartEvent_1" name="start">
-      <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
-    </bpmn2:startEvent>
-    <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" sourceRef="UserTask_1" targetRef="EndEvent_1"/>
-    <bpmn2:endEvent id="EndEvent_1" name="end">
-      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
-      <bpmn2:errorEventDefinition errorRef="error" />
-    </bpmn2:endEvent>
-    <bpmn2:userTask id="UserTask_1" name="User Task 1">
-      <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
-    </bpmn2:userTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="UserTask_1"/>
-    <bpmn2:subProcess id="SubProcess_1" name="Sub Process 1" triggeredByEvent="true" >
-      <bpmn2:startEvent id="StartEvent_2" name="start-sub">
-        <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
-        <bpmn2:errorEventDefinition errorRef="error" />
-      </bpmn2:startEvent>
-      <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1">
-        <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
-        <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
-         <bpmn2:script>System.out.println("Event sub process triggered");</bpmn2:script>
-      </bpmn2:scriptTask>
-      <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" sourceRef="StartEvent_2" targetRef="ScriptTask_1"/>
-      <bpmn2:endEvent id="EndEvent_2" name="end-sub">
-        <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
-      </bpmn2:endEvent>
-      <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" sourceRef="ScriptTask_1" targetRef="EndEvent_2"/>
-    </bpmn2:subProcess>
-  </bpmn2:process>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definitions_1" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <error id="error" errorCode="org.jbpm.bpmn2.objects.MyError"/>
+  <process id="BPMN2-EventSubprocessError" tns:version="1" tns:packageName="defaultPackage" tns:adHoc="false" name="Default Process" isExecutable="true">
+    <startEvent id="StartEvent_1" name="start">
+      <outgoing>SequenceFlow_2</outgoing>
+    </startEvent>
+    <sequenceFlow id="SequenceFlow_1" tns:priority="1" sourceRef="UserTask_1" targetRef="EndEvent_1"/>
+    <endEvent id="EndEvent_1" name="end">
+      <incoming>SequenceFlow_1</incoming>
+      <errorEventDefinition id="ErrorEventDefinition_1" errorRef="error"/>
+    </endEvent>
+    <userTask id="UserTask_1" name="User Task 1">
+      <incoming>SequenceFlow_2</incoming>
+      <outgoing>SequenceFlow_1</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="StartEvent_1" targetRef="UserTask_1"/>
+    <subProcess id="SubProcess_1" name="Sub Process 1" triggeredByEvent="true">
+      <startEvent id="StartEvent_2" name="start-sub">
+        <outgoing>SequenceFlow_3</outgoing>
+        <errorEventDefinition id="ErrorEventDefinition_2" errorRef="error"/>
+      </startEvent>
+      <scriptTask id="ScriptTask_1" name="Script Task 1">
+        <incoming>SequenceFlow_3</incoming>
+        <outgoing>SequenceFlow_4</outgoing>
+        <script>System.out.println(&quot;Event sub process triggered&quot;);</script>
+      </scriptTask>
+      <sequenceFlow id="SequenceFlow_3" tns:priority="1" sourceRef="StartEvent_2" targetRef="ScriptTask_1"/>
+      <endEvent id="EndEvent_2" name="end-sub">
+        <incoming>SequenceFlow_4</incoming>
+      </endEvent>
+      <sequenceFlow id="SequenceFlow_4" tns:priority="1" sourceRef="ScriptTask_1" targetRef="EndEvent_2"/>
+    </subProcess>
+  </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Process Diagram">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="BPMN2-EventSubprocessError">
       <bpmndi:BPMNShape id="BPMNShape_1" bpmnElement="StartEvent_1">
@@ -73,4 +73,109 @@
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</bpmn2:definitions>
+  <relationship>
+    <extensionElements>
+      <tns:ProcessAnalysisData>
+        <tns:Scenario xsi:type="tns:Scenario" id="Scenario_1" name="Scenario 1">
+          <tns:ScenarioParameters xsi:type="tns:ScenarioParameters" baseTimeUnit="ms"/>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="StartEvent_1" id="ElementParameters_1">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:WaitTime xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="1.0"/>
+              </tns:WaitTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="EndEvent_1" id="ElementParameters_2">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:ProcessingTime xsi:type="tns:Parameter">
+                <tns:RandomDistribution max="1.0" min="0.0"/>
+              </tns:ProcessingTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="UserTask_1" id="ElementParameters_3">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:ProcessingTime xsi:type="tns:Parameter">
+                <tns:RandomDistribution max="1.0" min="0.0"/>
+              </tns:ProcessingTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+            <tns:ResourceParameters xsi:type="tns:ResourceParameters">
+              <tns:Quantity xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="0.0"/>
+              </tns:Quantity>
+              <tns:Workinghours xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="0.0"/>
+              </tns:Workinghours>
+            </tns:ResourceParameters>
+            <tns:CostParameters xsi:type="tns:CostParameters">
+              <tns:UnitCost xsi:type="tns:Parameter">
+                <tns:DecimalParameter value="0"/>
+              </tns:UnitCost>
+            </tns:CostParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="StartEvent_2" id="ElementParameters_4">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:WaitTime xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="1.0"/>
+              </tns:WaitTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="ScriptTask_1" id="ElementParameters_5">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:ProcessingTime xsi:type="tns:Parameter">
+                <tns:RandomDistribution max="1.0" min="0.0"/>
+              </tns:ProcessingTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+            <tns:CostParameters xsi:type="tns:CostParameters">
+              <tns:UnitCost xsi:type="tns:Parameter">
+                <tns:DecimalParameter value="0"/>
+              </tns:UnitCost>
+            </tns:CostParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="EndEvent_2" id="ElementParameters_6">
+            <tns:TimeParameters xsi:type="tns:TimeParameters">
+              <tns:ProcessingTime xsi:type="tns:Parameter">
+                <tns:RandomDistribution max="1.0" min="0.0"/>
+              </tns:ProcessingTime>
+              <tns:TimeUnit>s</tns:TimeUnit>
+            </tns:TimeParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_1" id="ElementParameters_7">
+            <tns:ControlParameters xsi:type="tns:ControlParameters">
+              <tns:Probability xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="100.0"/>
+              </tns:Probability>
+            </tns:ControlParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_2" id="ElementParameters_8">
+            <tns:ControlParameters xsi:type="tns:ControlParameters">
+              <tns:Probability xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="100.0"/>
+              </tns:Probability>
+            </tns:ControlParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_3" id="ElementParameters_9">
+            <tns:ControlParameters xsi:type="tns:ControlParameters">
+              <tns:Probability xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="100.0"/>
+              </tns:Probability>
+            </tns:ControlParameters>
+          </tns:ElementParameters>
+          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="SequenceFlow_4" id="ElementParameters_10">
+            <tns:ControlParameters xsi:type="tns:ControlParameters">
+              <tns:Probability xsi:type="tns:Parameter">
+                <tns:FloatingParameter value="100.0"/>
+              </tns:Probability>
+            </tns:ControlParameters>
+          </tns:ElementParameters>
+        </tns:Scenario>
+      </tns:ProcessAnalysisData>
+    </extensionElements>
+    <source>Definitions_1</source>
+    <target>Definitions_1</target>
+  </relationship>
+</definitions>
