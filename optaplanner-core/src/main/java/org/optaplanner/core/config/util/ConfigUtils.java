@@ -17,7 +17,10 @@
 package org.optaplanner.core.config.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConfigUtils {
 
@@ -52,6 +55,19 @@ public class ConfigUtils {
             List<T> mergedList = new ArrayList<T>(inheritedList);
             mergedList.addAll(originalList);
             return mergedList;
+        }
+    }
+
+    public static <K, T> Map<K, T> inheritMergeableMapProperty(Map<K, T> originalMap, Map<K, T> inheritedMap) {
+        if (inheritedMap == null) {
+            return originalMap;
+        } else if (originalMap == null) {
+            return inheritedMap;
+        } else {
+            // The inheritedMap should be before the originalMap
+            Map<K, T> mergedMap = new LinkedHashMap<K, T>(inheritedMap);
+            mergedMap.putAll(originalMap);
+            return mergedMap;
         }
     }
 

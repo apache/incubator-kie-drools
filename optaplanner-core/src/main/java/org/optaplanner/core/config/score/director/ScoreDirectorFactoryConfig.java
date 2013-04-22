@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.collections.CollectionUtils;
@@ -42,6 +44,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.conf.PhreakOption;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.config.util.KeyAsElementMapConverter;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
@@ -82,6 +85,8 @@ public class ScoreDirectorFactoryConfig {
     protected KieBase kieBase = null;
     @XStreamImplicit(itemFieldName = "scoreDrl")
     protected List<String> scoreDrlList = null;
+    @XStreamConverter(value = KeyAsElementMapConverter.class)
+    protected Map<String, String> droolsConfigurationProperties = null;
 
     @XStreamAlias("assertionScoreDirectorFactory")
     protected ScoreDirectorFactoryConfig assertionScoreDirectorFactory = null;
@@ -150,6 +155,14 @@ public class ScoreDirectorFactoryConfig {
         this.scoreDrlList = scoreDrlList;
     }
 
+    public Map<String, String> getDroolsConfigurationProperties() {
+        return droolsConfigurationProperties;
+    }
+
+    public void setDroolsConfigurationProperties(Map<String, String> droolsConfigurationProperties) {
+        this.droolsConfigurationProperties = droolsConfigurationProperties;
+    }
+
     public ScoreDirectorFactoryConfig getAssertionScoreDirectorFactory() {
         return assertionScoreDirectorFactory;
     }
@@ -171,7 +184,7 @@ public class ScoreDirectorFactoryConfig {
     protected ScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition) {
         AbstractScoreDirectorFactory scoreDirectorFactory;
-        // TODO this should fail-fast if multiple scoreDirectorFactory's are configured or if non are configured
+        // TODO this should fail-fast if multiple scoreDirectorFactory's are configured or if none are configured
         scoreDirectorFactory = buildSimpleScoreDirectorFactory();
         if (scoreDirectorFactory == null) {
             scoreDirectorFactory = buildIncrementalScoreDirectorFactory();
@@ -280,6 +293,10 @@ public class ScoreDirectorFactoryConfig {
                 throw new IllegalArgumentException("If kieBase is not null, the scoreDrlList (" + scoreDrlList
                         + ") must be empty.");
             }
+            if (droolsConfigurationProperties != null) {
+                throw new IllegalArgumentException("If kieBase is not null, the droolsConfigurationProperties ("
+                        + droolsConfigurationProperties + ") must be null.");
+            }
             return kieBase;
         } else {
             if (CollectionUtils.isEmpty(scoreDrlList)) {
@@ -313,9 +330,13 @@ public class ScoreDirectorFactoryConfig {
             }
             KieContainer kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
 
-            KieBaseConfiguration kieBaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-            // kieBaseConf.setOption(PhreakOption.ENABLED);
-            KieBase kieBase = kieContainer.newKieBase(kieBaseConf);
+            KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            if (droolsConfigurationProperties != null) {
+                for (Map.Entry<String, String> entry : droolsConfigurationProperties.entrySet()) {
+                    kieBaseConfiguration.setProperty(entry.getKey(), entry.getValue());
+                }
+            }
+            KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
 
             return kieBase;
         }
@@ -340,6 +361,9 @@ public class ScoreDirectorFactoryConfig {
         }
         scoreDrlList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlList, inheritedConfig.getScoreDrlList());
+        droolsConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(
+                droolsConfigurationProperties, inheritedConfig.getDroolsConfigurationProperties());
+
         if (assertionScoreDirectorFactory == null) {
             assertionScoreDirectorFactory = inheritedConfig.getAssertionScoreDirectorFactory();
         }
