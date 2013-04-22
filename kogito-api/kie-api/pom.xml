@@ -24,7 +24,8 @@
           <instructions>
             <Bundle-SymbolicName>org.kie.api</Bundle-SymbolicName>
             <Import-Package>
-              *;resolution:=optional
+              *;resolution:=optional,
+              org.drools.compiler.kie.builder.impl,
             </Import-Package>
             <Export-Package>
               org.kie.api.*
