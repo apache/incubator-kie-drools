@@ -16,9 +16,7 @@
 
 package org.optaplanner.core.config.score.director;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
@@ -27,9 +25,6 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.IOUtils;
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -38,10 +33,8 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.io.KieResources;
-import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.conf.PhreakOption;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.config.util.KeyAsElementMapConverter;
@@ -86,7 +79,7 @@ public class ScoreDirectorFactoryConfig {
     @XStreamImplicit(itemFieldName = "scoreDrl")
     protected List<String> scoreDrlList = null;
     @XStreamConverter(value = KeyAsElementMapConverter.class)
-    protected Map<String, String> droolsConfigurationProperties = null;
+    protected Map<String, String> kieBaseConfigurationProperties = null;
 
     @XStreamAlias("assertionScoreDirectorFactory")
     protected ScoreDirectorFactoryConfig assertionScoreDirectorFactory = null;
@@ -155,12 +148,12 @@ public class ScoreDirectorFactoryConfig {
         this.scoreDrlList = scoreDrlList;
     }
 
-    public Map<String, String> getDroolsConfigurationProperties() {
-        return droolsConfigurationProperties;
+    public Map<String, String> getKieBaseConfigurationProperties() {
+        return kieBaseConfigurationProperties;
     }
 
-    public void setDroolsConfigurationProperties(Map<String, String> droolsConfigurationProperties) {
-        this.droolsConfigurationProperties = droolsConfigurationProperties;
+    public void setKieBaseConfigurationProperties(Map<String, String> kieBaseConfigurationProperties) {
+        this.kieBaseConfigurationProperties = kieBaseConfigurationProperties;
     }
 
     public ScoreDirectorFactoryConfig getAssertionScoreDirectorFactory() {
@@ -293,9 +286,9 @@ public class ScoreDirectorFactoryConfig {
                 throw new IllegalArgumentException("If kieBase is not null, the scoreDrlList (" + scoreDrlList
                         + ") must be empty.");
             }
-            if (droolsConfigurationProperties != null) {
-                throw new IllegalArgumentException("If kieBase is not null, the droolsConfigurationProperties ("
-                        + droolsConfigurationProperties + ") must be null.");
+            if (kieBaseConfigurationProperties != null) {
+                throw new IllegalArgumentException("If kieBase is not null, the kieBaseConfigurationProperties ("
+                        + kieBaseConfigurationProperties + ") must be null.");
             }
             return kieBase;
         } else {
@@ -331,8 +324,8 @@ public class ScoreDirectorFactoryConfig {
             KieContainer kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
 
             KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-            if (droolsConfigurationProperties != null) {
-                for (Map.Entry<String, String> entry : droolsConfigurationProperties.entrySet()) {
+            if (kieBaseConfigurationProperties != null) {
+                for (Map.Entry<String, String> entry : kieBaseConfigurationProperties.entrySet()) {
                     kieBaseConfiguration.setProperty(entry.getKey(), entry.getValue());
                 }
             }
@@ -361,8 +354,8 @@ public class ScoreDirectorFactoryConfig {
         }
         scoreDrlList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlList, inheritedConfig.getScoreDrlList());
-        droolsConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(
-                droolsConfigurationProperties, inheritedConfig.getDroolsConfigurationProperties());
+        kieBaseConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(
+                kieBaseConfigurationProperties, inheritedConfig.getKieBaseConfigurationProperties());
 
         if (assertionScoreDirectorFactory == null) {
             assertionScoreDirectorFactory = inheritedConfig.getAssertionScoreDirectorFactory();
