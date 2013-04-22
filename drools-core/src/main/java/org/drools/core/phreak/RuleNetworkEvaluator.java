@@ -1358,7 +1358,9 @@ public class RuleNetworkEvaluator {
                 // If in memory, remove it, because we'll need to add it anyway if it's not blocked, to ensure iteration order
                 RightTuple blocker = leftTuple.getBlocker();
                 if (blocker == null) {
-                    ltm.remove(leftTuple);
+                    if (leftTuple.getMemory() != null) { // memory can be null, if blocker was deleted in same do loop
+                        ltm.remove(leftTuple);
+                    }
                 } else {
                     // check if we changed bucket
                     if (rtm.isIndexed() && !rightIt.isFullIterator()) {
@@ -1848,7 +1850,9 @@ public class RuleNetworkEvaluator {
                 // If in memory, remove it, because we'll need to add it anyway if it's not blocked, to ensure iteration order
                 RightTuple blocker = leftTuple.getBlocker();
                 if (blocker == null) {
-                    ltm.remove(leftTuple);
+                    if (leftTuple.getMemory() != null) { // memory can be null, if blocker was deleted in same do loop
+                        ltm.remove(leftTuple);
+                    }
                 } else {
                     // check if we changed bucket
                     if (rtm.isIndexed() && !rightIt.isFullIterator()) {
