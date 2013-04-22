@@ -76,7 +76,6 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         if(auditlogger != null) {
             defaultListeners.add(auditlogger);
         }
-        defaultListeners.addAll(super.getProcessEventListeners(runtime));
         return defaultListeners;
     }
     

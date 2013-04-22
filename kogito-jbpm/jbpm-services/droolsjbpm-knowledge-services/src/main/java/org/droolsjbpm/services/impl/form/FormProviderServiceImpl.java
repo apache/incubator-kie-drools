@@ -105,10 +105,15 @@ public class FormProviderServiceImpl implements FormProviderService {
                 }
                 
                 Path defaultFormPath = fileService.getPath(rootPath +"globals/forms/DefaultProcess.ftl"); 
-                template = new ByteArrayInputStream(fileService.loadFile(defaultFormPath));
+                if (fileService.exists(defaultFormPath)) {
+                    template = new ByteArrayInputStream(fileService.loadFile(defaultFormPath));
+                } else {
+                    // load from classpath
+                    template = this.getClass().getResourceAsStream("/forms/DefaultProcess.ftl");
+                }
 
             } else {
-
+                
                 template = new ByteArrayInputStream(fileService.loadFile(selectedForm));
 
             }
@@ -203,7 +208,12 @@ public class FormProviderServiceImpl implements FormProviderService {
                 // since we use default task that lists all inputs there needs to be complete map available
                 renderContext.put("inputs", input);
                 Path defaultFormPath = fileService.getPath(rootPath +"globals/forms/DefaultTask.ftl");
-                template = new ByteArrayInputStream(fileService.loadFile(defaultFormPath));
+                if (fileService.exists(defaultFormPath)) {
+                    template = new ByteArrayInputStream(fileService.loadFile(defaultFormPath));
+                } else {
+                    // load from classpath
+                    template = this.getClass().getResourceAsStream("/forms/DefaultTask.ftl");
+                }
 
             } else {
 
