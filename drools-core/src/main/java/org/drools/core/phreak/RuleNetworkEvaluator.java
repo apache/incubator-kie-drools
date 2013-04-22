@@ -1541,6 +1541,11 @@ public class RuleNetworkEvaluator {
                                 leftTuple.setBlocker(newBlocker);
                                 newBlocker.addBlocked(leftTuple);
 
+                                // if the newBlocker is staged it cannot resume the iteration when processing it
+                                if (newBlocker.getStagedType() != LeftTuple.NONE) {
+                                    iterateFromStart = true;
+                                }
+
                                 break;
                             }
                         }
@@ -2046,6 +2051,11 @@ public class RuleNetworkEvaluator {
                                                                                                                  newBlocker.getFactHandle())) {
                                 leftTuple.setBlocker(newBlocker);
                                 newBlocker.addBlocked(leftTuple);
+
+                                // if the newBlocker is staged it cannot resume the iteration when processing it
+                                if (newBlocker.getStagedType() != LeftTuple.NONE) {
+                                    iterateFromStart = true;
+                                }
 
                                 break;
                             }
