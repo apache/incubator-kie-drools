@@ -1536,15 +1536,10 @@ public class RuleNetworkEvaluator {
                         for (RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker)) {
                             // cannot select a RightTuple queued in the delete list
                             // There may be UPDATE RightTuples too, but that's ok. They've already been re-added to the correct bucket, safe to be reprocessed.
-                            if (leftTuple.getStagedType() != LeftTuple.DELETE && constraints.isAllowedCachedLeft(contextEntry,
-                                                                newBlocker.getFactHandle())) {
+                            if (leftTuple.getStagedType() != LeftTuple.DELETE && newBlocker.getStagedType() != LeftTuple.DELETE &&
+                                    constraints.isAllowedCachedLeft(contextEntry, newBlocker.getFactHandle())) {
                                 leftTuple.setBlocker(newBlocker);
                                 newBlocker.addBlocked(leftTuple);
-
-                                // if the newBlocker is staged it cannot resume the iteration when processing it
-                                if (newBlocker.getStagedType() != LeftTuple.NONE) {
-                                    iterateFromStart = true;
-                                }
 
                                 break;
                             }
@@ -2047,15 +2042,10 @@ public class RuleNetworkEvaluator {
                         for (RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker)) {
                             // cannot select a RightTuple queued in the delete list
                             // There may be UPDATE RightTuples too, but that's ok. They've already been re-added to the correct bucket, safe to be reprocessed.
-                            if (leftTuple.getStagedType() != LeftTuple.DELETE && constraints.isAllowedCachedLeft(contextEntry,
-                                                                                                                 newBlocker.getFactHandle())) {
+                            if (leftTuple.getStagedType() != LeftTuple.DELETE && newBlocker.getStagedType() != LeftTuple.DELETE &&
+                                    constraints.isAllowedCachedLeft(contextEntry, newBlocker.getFactHandle())) {
                                 leftTuple.setBlocker(newBlocker);
                                 newBlocker.addBlocked(leftTuple);
-
-                                // if the newBlocker is staged it cannot resume the iteration when processing it
-                                if (newBlocker.getStagedType() != LeftTuple.NONE) {
-                                    iterateFromStart = true;
-                                }
 
                                 break;
                             }
@@ -4298,7 +4288,7 @@ public class RuleNetworkEvaluator {
 
                 if (resumeFromCurrent) {
                     rightTuple.setTempRightTupleMemory(rightTuple.getMemory());
-                    RightTuple tempRightTuple = ( RightTuple ) rightTuple.getPrevious();
+                    RightTuple tempRightTuple = rightTuple.getBlocked() != null ? ( RightTuple ) rightTuple.getPrevious() : null;
 
                     while ( tempRightTuple != null && tempRightTuple.getStagedType() != LeftTuple.NONE ) {
                         // next cannot be an updated or deleted rightTuple
