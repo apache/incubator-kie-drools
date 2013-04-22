@@ -13,11 +13,15 @@ import javax.persistence.*;
  * @author salaboy
  */
 @Entity
+@SequenceGenerator(name="errorInfoIdSeq", sequenceName="ERROR_INFO_ID_SEQ")
 public class ErrorInfo implements Serializable {
 
+    private static final long serialVersionUID = 1548071325967795108L;
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="errorInfoIdSeq")
     private Long id;
+    @Column(name="timestamp")
     @Temporal(TemporalType.TIMESTAMP)
     private Date time;
     private String message;

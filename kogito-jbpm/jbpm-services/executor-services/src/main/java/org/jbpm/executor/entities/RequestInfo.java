@@ -4,6 +4,7 @@
  */
 package org.jbpm.executor.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -14,12 +15,16 @@ import javax.persistence.*;
  *
  * @author salaboy
  */
-@Entity(name = "RequestInfo")
-public class RequestInfo {
+@Entity
+@SequenceGenerator(name="requestInfoIdSeq", sequenceName="REQUEST_INFO_ID_SEQ")
+public class RequestInfo implements Serializable {
 
+    private static final long serialVersionUID = 5823083735663566537L;
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="requestInfoIdSeq")
     private Long id;
+    @Column(name="timestamp")
     @Temporal(TemporalType.TIMESTAMP)
     private Date time;
     @Enumerated(EnumType.STRING)
@@ -27,6 +32,7 @@ public class RequestInfo {
     private String commandName;
     private String message;
     //Business Key for callback
+    @Column(name="businessKey")
     private String key;
     //Number of times that this request must be retryied
     private int retries = 0;
