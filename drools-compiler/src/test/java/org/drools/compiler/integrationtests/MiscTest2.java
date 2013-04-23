@@ -1723,4 +1723,57 @@ public class MiscTest2 extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
         assertTrue(kbuilder.hasErrors());
     }
+
+    @Test
+    public void testConcurrentUpdates() {
+        // DROOLS-7
+        String str =
+                "import org.drools.compiler.Person\n" +
+                "rule R when\n" +
+                "  $s : String()\n" +
+                "  $i : Integer()\n" +
+                "  not Person( age == $i, name.startsWith($s) )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(30);
+        ksession.insert(31);
+        ksession.insert("B");
+        ksession.insert("D");
+
+        Person pA = new Person("AAA", 30);
+        Person pB = new Person("BBB", 30);
+        Person pC = new Person("CCC", 31);
+        Person pD = new Person("DDD", 31);
+
+        FactHandle fhB = ksession.insert(pB);
+        FactHandle fhD = ksession.insert(pD);
+        FactHandle fhA = ksession.insert(pA);
+        FactHandle fhC = ksession.insert(pC);
+
+        ksession.fireAllRules();
+
+        pB.setAge(31);
+        pB.setName("DBB");
+        ksession.update(fhB, pB);
+
+        pD.setAge(30);
+        pD.setName("BDD");
+        ksession.update(fhD, pD);
+
+        assertEquals(0, ksession.fireAllRules());
+
+        pB.setAge(30);
+        pB.setName("BBB");
+        ksession.update(fhB, pB);
+
+        pD.setAge(31);
+        pD.setName("DDD");
+        ksession.update(fhD, pD);
+
+        assertEquals(0, ksession.fireAllRules());
+    }
 }
