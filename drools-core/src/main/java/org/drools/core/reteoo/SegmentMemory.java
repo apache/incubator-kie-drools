@@ -36,8 +36,6 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     private LeftTupleSets stagedLeftTuples;
 
-    private int counter;
-
     private boolean active;
 
     private SegmentMemory previous;
@@ -83,6 +81,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public long getLinkedNodeMask() {
         return linkedNodeMask;
+    }
+
+    public void setLinkedNodeMask(long linkedNodeMask) {
+        this.linkedNodeMask =  linkedNodeMask;
     }
 
     public String getRuleNames() {

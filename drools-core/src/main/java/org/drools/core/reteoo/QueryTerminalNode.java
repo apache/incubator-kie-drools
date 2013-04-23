@@ -187,7 +187,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
 
     public void attach( BuildContext context ) {
         getLeftTupleSource().addTupleSink( this, context );
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 

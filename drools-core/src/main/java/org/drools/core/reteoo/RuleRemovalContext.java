@@ -17,6 +17,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 
 import java.io.Externalizable;
@@ -43,6 +44,8 @@ public class RuleRemovalContext
     private NodeSet        removedNodes = new NodeSet();
 
     private boolean        unlinkEnabled;
+
+    private InternalRuleBase ruleBase;
 
     public RuleRemovalContext(final Rule rule) {
         this.rule = rule;
@@ -91,5 +94,13 @@ public class RuleRemovalContext
 
     public boolean addRemovedNode(BaseNode node) {
         return removedNodes.add( node );
+    }
+
+    public InternalRuleBase getRuleBase() {
+        return ruleBase;
+    }
+
+    public void setRuleBase(InternalRuleBase ruleBase) {
+        this.ruleBase = ruleBase;
     }
 }

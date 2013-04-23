@@ -11,6 +11,7 @@ import java.util.Set;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.common.*;
+import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
@@ -33,6 +34,7 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.rule.Variable;
+import org.kie.internal.event.rule.RuleEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.drools.core.util.index.LeftTupleList;
@@ -76,16 +78,6 @@ public class RuleNetworkEvaluator {
             nodeMem = smem.getNodeMemories().getFirst();
         } else {
             // lia is in shared segment, so point to next node
-//            LeftTupleSinkPropagator sink = liaNode.getSinkPropagator();
-//            LeftTupleSinkNode firstSink = (LeftTupleSinkNode) sink.getFirstLeftTupleSink();
-//            LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode();
-//            if (sink.size() == 2) {
-//                // As we check above for segment splits, if the sink size is 2, it must be a subnetwork.
-//                // Always take the non riaNode path
-//                node = secondSink;
-//            } else {
-//                node = firstSink;
-//            }
             node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
             nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
         }
@@ -93,11 +85,11 @@ public class RuleNetworkEvaluator {
         LeftTupleSets srcTuples = smem.getStagedLeftTuples();
 
         if (log.isTraceEnabled()) {
-            log.trace("Rule[name={}] segments={} {}", pmem.getRuleTerminalNode().getRule().getName(), smems.length, srcTuples.toStringSizes());
+            log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getNetworkNode()).getRule().getName(), smems.length, srcTuples.toStringSizes());
         }
 
         Set<String> visitedRules;
-        if (pmem.getRuleTerminalNode().getType() == NodeTypeEnums.QueryTerminalNode) {
+        if (((TerminalNode)pmem.getNetworkNode()).getType() == NodeTypeEnums.QueryTerminalNode) {
             visitedRules = new HashSet<String>();
         } else {
             visitedRules = Collections.<String>emptySet();
@@ -164,14 +156,6 @@ public class RuleNetworkEvaluator {
                     // copy across the results, if any from the query node memory
                     trgTuples.addAll(((QueryElementNodeMemory) nodeMem).getResultLeftTuples());
                 }
-
-//                if (!stack.isEmpty() && trgTuples.isEmpty()) {
-//                    // The root stack entry must always be fully evaluated, as it may have later tuples
-//                    // nested rules are only evaluated if they have tuples . This typically only
-//                    // happens for 'or' braches, as results lazy add the parent to the queue
-//                    continue;
-//                }
-
 
                 LeftTupleSinkNode sink = entry.getSink();
                 rmem = entry.getRmem();
@@ -243,7 +227,7 @@ public class RuleNetworkEvaluator {
             }
 
             if (NodeTypeEnums.isTerminalNode(node)) {
-                TerminalNode rtn = rmem.getRuleTerminalNode();
+                TerminalNode rtn = ( TerminalNode ) node;
                 if (node.getType() == NodeTypeEnums.QueryTerminalNode) {
                     pQtNode.doNode((QueryTerminalNode) rtn,
                                    wm,
@@ -380,16 +364,6 @@ public class RuleNetworkEvaluator {
                                     nodeMem = smem.getNodeMemories().getFirst();
                                 } else {
                                     // lia is in shared segment, so point to next node
-                                    //            LeftTupleSinkPropagator sink = liaNode.getSinkPropagator();
-                                    //            LeftTupleSinkNode firstSink = (LeftTupleSinkNode) sink.getFirstLeftTupleSink();
-                                    //            LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode();
-                                    //            if (sink.size() == 2) {
-                                    //                // As we check above for segment splits, if the sink size is 2, it must be a subnetwork.
-                                    //                // Always take the non riaNode path
-                                    //                node = secondSink;
-                                    //            } else {
-                                    //                node = firstSink;
-                                    //            }
                                     node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
                                     nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
                                 }
@@ -423,14 +397,7 @@ public class RuleNetworkEvaluator {
 
             if (node != smem.getTipNode()) {
                 // get next node and node memory in the segment
-                LeftTupleSink nextSink = sink.getNextLeftTupleSinkNode();
-                if (nextSink == null) {
-                    node = sink;
-                } else {
-                    // there is a nested subnetwork, take out path
-                    node = nextSink;
-                }
-
+                node = sink;
                 nodeMem = nodeMem.getNext();
             } else {
                 // Reached end of segment, start on new segment.

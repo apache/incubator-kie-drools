@@ -413,7 +413,7 @@ public class FromNode extends LeftTupleSource
     public void attach( BuildContext context ) {
         betaConstraints.init(context, getType());
         this.leftInput.addTupleSink( this, context );
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 
@@ -438,17 +438,19 @@ public class FromNode extends LeftTupleSource
                             final InternalWorkingMemory[] workingMemories) {
 
         if ( !this.isInUse() ) {
-            for ( InternalWorkingMemory workingMemory : workingMemories ) {
-                FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
-                Iterator it = memory.betaMemory.getLeftTupleMemory().iterator();
-                for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
-                    unlinkCreatedHandles( workingMemory,
-                                          memory,
-                                          leftTuple );
-                    leftTuple.unlinkFromLeftParent();
-                    leftTuple.unlinkFromRightParent();
+            if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+                for ( InternalWorkingMemory workingMemory : workingMemories ) {
+                    FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
+                    Iterator it = memory.betaMemory.getLeftTupleMemory().iterator();
+                    for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
+                        unlinkCreatedHandles( workingMemory,
+                                              memory,
+                                              leftTuple );
+                        leftTuple.unlinkFromLeftParent();
+                        leftTuple.unlinkFromRightParent();
+                    }
+                    workingMemory.clearNodeMemory( this );
                 }
-                workingMemory.clearNodeMemory( this );
             }
             getLeftTupleSource().removeTupleSink( this );
         }
@@ -602,6 +604,10 @@ public class FromNode extends LeftTupleSource
 
         public SegmentMemory getSegmentMemory() {
             return betaMemory.getSegmentMemory();
+        }
+
+        public void setSegmentMemory(SegmentMemory segmentMemory) {
+            betaMemory.setSegmentMemory(segmentMemory);
         }
 
         public BetaMemory getBetaMemory() {

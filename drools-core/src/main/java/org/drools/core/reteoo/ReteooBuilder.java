@@ -22,6 +22,9 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.MemoryFactory;
+import org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory;
+import org.drools.core.phreak.AddRemoveRule;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.Rule;
 import org.drools.core.rule.WindowDeclaration;
@@ -249,6 +252,7 @@ public class ReteooBuilder
         InternalWorkingMemory[] workingMemories = this.ruleBase.getWorkingMemories();
 
         final RuleRemovalContext context = new RuleRemovalContext( rule );
+        context.setRuleBase( ruleBase );
 
         if (  ruleBase.getConfiguration().isPhreakEnabled() && !( ReteooRuleBuilder.unlinkingAllowedForRule( rule ) ) ) {
             context.setUnlinkEnabled( true);
@@ -257,6 +261,12 @@ public class ReteooBuilder
         }
         
         final BaseNode[] nodes = this.rules.remove( rule.getName() );
+
+        if ( this.ruleBase.getConfiguration().isPhreakEnabled() ) {
+            for ( BaseNode node : nodes ) {
+                AddRemoveRule.removeRule( (TerminalNode) node, workingMemories);
+            }
+        }
 
         for (BaseNode node : nodes) {
             NodeSet nodeSet = new NodeSet();
@@ -291,11 +301,19 @@ public class ReteooBuilder
 
             for (BaseNode removingNode : removingNodes) {
                 removingNode.remove(context, this, workingMemories);
+
+                if ( removingNode.getType() != NodeTypeEnums.ObjectTypeNode &&
+                     !removingNode.isInUse() && ruleBase.getConfiguration().isPhreakEnabled() ) {
+                    for (InternalWorkingMemory workingMemory : workingMemories) {
+                        workingMemory.clearNodeMemory( (MemoryFactory) removingNode);
+                    }
+                }
             }
 
-            if (node instanceof RuleTerminalNode) {
+            if (node instanceof TerminalNode) {
                 for ( InternalWorkingMemory workingMemory : workingMemories ) {
                     workingMemory.executeQueuedActions();
+                    workingMemory.clearNodeMemory( (MemoryFactory) node);
                 }
                 context.setCleanupAdapter(adapter);
             }

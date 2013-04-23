@@ -113,7 +113,7 @@ public class EvalConditionNode extends LeftTupleSource
 
     public void attach( BuildContext context ) {
         this.leftInput.addTupleSink( this, context );
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 
@@ -299,8 +299,10 @@ public class EvalConditionNode extends LeftTupleSource
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !this.isInUse() ) {
-            for( InternalWorkingMemory workingMemory : workingMemories ) {
-                workingMemory.clearNodeMemory( this );
+            if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+                for( InternalWorkingMemory workingMemory : workingMemories ) {
+                    workingMemory.clearNodeMemory( this );
+                }
             }
             getLeftTupleSource().removeTupleSink( this );
         } else {

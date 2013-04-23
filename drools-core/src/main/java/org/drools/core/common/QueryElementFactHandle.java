@@ -118,6 +118,10 @@ public class QueryElementFactHandle
     public void setFirstLeftTuple(LeftTuple leftTuple) {
     }
 
+    public void setLastLeftTuple(LeftTuple leftTuple) {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    }
+
     public void setRecency(long recency) {
         this.recency = recency;
     }
@@ -172,6 +176,10 @@ public class QueryElementFactHandle
     }
 
     public void disconnect() {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    }
+
+    public void addFirstLeftTuple(LeftTuple leftTuple) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 

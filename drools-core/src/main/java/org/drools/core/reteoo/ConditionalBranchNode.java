@@ -73,7 +73,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
 
     public void attach( BuildContext context ) {
         this.tupleSource.addTupleSink(this, context);
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled()) {
             return;
         }
 
@@ -302,8 +302,10 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !this.isInUse() ) {
-            for( InternalWorkingMemory workingMemory : workingMemories ) {
-                workingMemory.clearNodeMemory( this );
+            if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+                for( InternalWorkingMemory workingMemory : workingMemories ) {
+                    workingMemory.clearNodeMemory( this );
+                }
             }
             tupleSource.removeTupleSink( this );
         } else {

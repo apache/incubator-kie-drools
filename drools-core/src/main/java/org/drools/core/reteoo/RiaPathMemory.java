@@ -12,7 +12,7 @@ public class RiaPathMemory extends PathMemory {
     private String terminalNodes;
     
     public RiaPathMemory(RightInputAdapterNode riaNode) {
-        super( null );
+        super( riaNode );
         this.riaNode = riaNode;
     }
 

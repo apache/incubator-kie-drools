@@ -26,6 +26,7 @@ import java.util.Collections;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
+import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.junit.Test;
@@ -442,7 +443,9 @@ public class DescrBuilderTest extends CommonTestMethodBase {
     @Test
     public void testRule() throws InstantiationException,
                                        IllegalAccessException {
-        PackageDescr pkg = DescrFactory.newPackage()
+
+        PackageDescrBuilder packBuilder =
+                DescrFactory.newPackage()
                 .name( "org.drools.compiler" )
                 .newRule().name( "r1" )
                     .lhs()
@@ -455,8 +458,12 @@ public class DescrBuilderTest extends CommonTestMethodBase {
                         .end()
                     .end()
                     .rhs( "    System.out.println(\"foo\");\n" )
-                .end()
-                .getDescr();
+                .end();
+
+        PackageDescr pkg = packBuilder.getDescr();
+
+                String drl = new DrlDumper().dump( packBuilder.getDescr() );
+        System.out.println(drl);
 
         KnowledgePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.drools.compiler",

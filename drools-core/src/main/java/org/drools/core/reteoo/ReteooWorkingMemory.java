@@ -35,6 +35,7 @@ import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
 import org.drools.core.common.*;
 import org.drools.core.common.TupleStartEqualsConstraint.TupleStartEqualsConstraintContextEntry;
+import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.core.event.AgendaEventSupport;
@@ -107,14 +108,16 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                final SessionConfiguration config,
                                final Environment environment,
                                final WorkingMemoryEventSupport workingMemoryEventSupport,
-                               final AgendaEventSupport agendaEventSupport) {
+                               final AgendaEventSupport agendaEventSupport,
+                               final RuleEventListenerSupport ruleEventListenerSupport) {
         super( id,
                ruleBase,
                ruleBase.newFactHandleFactory(),
                config,
                environment,
                workingMemoryEventSupport,
-               agendaEventSupport );
+               agendaEventSupport,
+               ruleEventListenerSupport );
 
         this.agenda = ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( ruleBase );
         this.agenda.setWorkingMemory( this );
@@ -284,7 +287,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
             for ( int i = 0, length = rmems.size(); i < length; i++ ) {
                 PathMemory rm = rmems.get( i );
 
-                RuleNetworkEvaluatorActivation evaluator = agenda.createRuleNetworkEvaluatorActivation( Integer.MAX_VALUE, rm, rm.getRuleTerminalNode() );
+                RuleNetworkEvaluatorActivation evaluator = agenda.createRuleNetworkEvaluatorActivation( Integer.MAX_VALUE, rm,(TerminalNode) rm.getNetworkNode() );
                 evaluator.evaluateNetwork(this, 0, -1);
             }
         } else {
@@ -324,7 +327,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                 for ( int i = 0, length = rmems.size(); i < length; i++ ) {
                     PathMemory rm = rmems.get( i );
 
-                    RuleNetworkEvaluatorActivation evaluator = agenda.createRuleNetworkEvaluatorActivation( Integer.MAX_VALUE, rm, rm.getRuleTerminalNode() );
+                    RuleNetworkEvaluatorActivation evaluator = agenda.createRuleNetworkEvaluatorActivation( Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode() );
                     evaluator.evaluateNetwork(this, 0, -1);
                 }
             } else {

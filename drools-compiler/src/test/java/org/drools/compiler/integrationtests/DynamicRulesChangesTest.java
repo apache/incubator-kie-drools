@@ -14,16 +14,20 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.RuleBase;
 import org.drools.core.StatefulSession;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.command.Command;
 import org.kie.internal.command.CommandFactory;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -37,8 +41,11 @@ public class DynamicRulesChangesTest {
 
     @Before
     public void setUp() throws Exception {
+        KieBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbaseConf.setOption(CommonTestMethodBase.preak);
+        kbase = ( InternalKnowledgeBase ) KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
-        ruleBase = kbase.getRuleBase();
+        ruleBase = ((KnowledgeBaseImpl)kbase).ruleBase;
         addRule("raiseAlarm");
     }
 

@@ -171,7 +171,11 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     
     public LeftTupleSinkNode getFirstLeftTupleSink() {
         return ( LeftTupleSinkNode ) sink;
-    }    
+    }
+
+    public LeftTupleSinkNode getLastLeftTupleSink() {
+        return ( LeftTupleSinkNode ) sink;
+    }
 
     public int size() {
         return (this.sink != null) ? 1 : 0;

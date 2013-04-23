@@ -3,6 +3,8 @@ package org.drools.core.phreak;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NetworkNode;
+import org.drools.core.rule.Rule;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.reteoo.*;
@@ -45,7 +47,7 @@ public class SegmentUtilities {
 
     	// find segment root
     	while ( tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode &&
-                SegmentUtilities.parentInSameSegment(tupleSource)  ) {
+                SegmentUtilities.parentInSameSegment(tupleSource, null)  ) {
     		tupleSource = tupleSource.getLeftTupleSource();
     	}
 
@@ -59,87 +61,31 @@ public class SegmentUtilities {
     
     	// Iterate all nodes on the same segment, assigning their position as a bit mask value
     	// allLinkedTestMask is the resulting mask used to test if all nodes are linked in
-    	long nodePosMask = 1;	
+    	long nodePosMask = 1;
     	long allLinkedTestMask = 0;
         boolean updateNodeBit = true;  // nodes after a branch CE can notify, but they cannot impact linking
     	
     	while ( true ) {
             if ( NodeTypeEnums.isBetaNode( tupleSource ) ) {
-                BetaMemory bm;
-                BetaNode betaNode = ( BetaNode ) tupleSource;
-                if ( NodeTypeEnums.AccumulateNode == tupleSource.getType() ) {       
-                    bm = (( AccumulateMemory ) smem.createNodeMemory( ( AccumulateNode ) tupleSource, wm  )).getBetaMemory();
-                } else {                    
-                    bm = ( BetaMemory ) smem.createNodeMemory( betaNode, wm );
-    
-                }
-                // this must be set first, to avoid recursion as sub networks can be initialised multiple ways
-                // and bm.getSegmentMemory == null check can be used to avoid recursion.
-                bm.setSegmentMemory(smem);
-    
-                if ( betaNode.isRightInputIsRiaNode() ) {
-                    // Iterate to find outermost rianode
-                    RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
-                    //riaNode = getOuterMostRiaNode(riaNode, betaNode.getLeftTupleSource());
-
-                    // Iterat
-                    LeftTupleSource subnetworkLts = riaNode.getLeftTupleSource();
-                    while ( subnetworkLts.getLeftTupleSource() != riaNode.getStartTupleSource()) {
-                        subnetworkLts = subnetworkLts.getLeftTupleSource();
+                allLinkedTestMask = processBetaNode(tupleSource, wm, smem, nodePosMask, allLinkedTestMask, updateNodeBit);
+            } else {
+                switch ( tupleSource.getType() ) {
+                    case NodeTypeEnums.LeftInputAdapterNode:
+                        allLinkedTestMask = processLiaNode((LeftInputAdapterNode) tupleSource, wm, smem, nodePosMask, allLinkedTestMask);
+                        break;
+                    case NodeTypeEnums.EvalConditionNode:
+                        processEvalNode((EvalConditionNode) tupleSource, wm, smem);
+                        break;
+                    case NodeTypeEnums.ConditionalBranchNode:
+                        updateNodeBit = processBranchNode((ConditionalBranchNode) tupleSource, wm, smem);
+                        break;
+                    case NodeTypeEnums.FromNode :
+                        processFromNode((FromNode) tupleSource, wm, smem);
+                        break;
+                    case NodeTypeEnums.QueryElementNode:
+                        processQueryNode((QueryElementNode) tupleSource, wm, segmentRoot, smem);
+                        break;
                     }
-
-                    Memory rootSubNetwokrMem = wm.getNodeMemory( (MemoryFactory)  subnetworkLts);
-                    SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
-                    if ( subNetworkSegmentMemory == null ) {
-                        // we need to stop recursion here
-                        createSegmentMemory( ( LeftTupleSource ) subnetworkLts, wm );
-                    }
-
-                    RiaNodeMemory riaMem = ( RiaNodeMemory ) wm.getNodeMemory( (MemoryFactory) riaNode );
-                    bm.setRiaRuleMemory(riaMem.getRiaPathMemory());
-                    if ( updateNodeBit && riaMem.getRiaPathMemory().getAllLinkedMaskTest() > 0 ) {
-                        // only ria's with reactive subnetworks can be disabled and thus need checking
-                        allLinkedTestMask = allLinkedTestMask | nodePosMask;
-                    }
-                } else if ( updateNodeBit &&
-                            ( !(NodeTypeEnums.NotNode == tupleSource.getType() && !((NotNode)tupleSource).isEmptyBetaConstraints()) &&
-                            NodeTypeEnums.AccumulateNode != tupleSource.getType()) ) {
-                        // non empty not nodes and accumulates can never be disabled and thus don't need checking
-                        allLinkedTestMask = allLinkedTestMask | nodePosMask;
-
-                }
-                bm.setNodePosMaskBit(nodePosMask);
-                if ( NodeTypeEnums.NotNode == tupleSource.getType() ) {
-                    // not nodes start up linked in
-                    smem.linkNodeWithoutRuleNotify(bm.getNodePosMaskBit());
-                }
-            } else if ( tupleSource.getType() == NodeTypeEnums.LeftInputAdapterNode ) {                
-                LiaNodeMemory liaMemory = ( LiaNodeMemory ) smem.createNodeMemory( ( LeftInputAdapterNode ) tupleSource, wm );
-                liaMemory.setSegmentMemory( smem );
-                liaMemory.setNodePosMaskBit( nodePosMask );
-                allLinkedTestMask = allLinkedTestMask | nodePosMask;
-            } else if ( tupleSource.getType() == NodeTypeEnums.EvalConditionNode ) {
-                EvalMemory evalMem = ( EvalMemory ) smem.createNodeMemory( ( EvalConditionNode ) tupleSource, wm );
-                evalMem.setSegmentMemory( smem );
-            }  else if ( tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
-                ConditionalBranchMemory branchMem = ( ConditionalBranchMemory ) smem.createNodeMemory( ( ConditionalBranchNode ) tupleSource, wm );
-                branchMem.setSegmentMemory( smem );
-                updateNodeBit = false; // nodes after a branch CE can notify, but they cannot impact linking
-            } else if ( tupleSource.getType() == NodeTypeEnums.FromNode ) {
-                FromMemory fromMemory = ( FromMemory ) smem.createNodeMemory( ( FromNode ) tupleSource, wm );
-                fromMemory.getBetaMemory().setSegmentMemory( smem );
-            } else if ( tupleSource.getType() == NodeTypeEnums.QueryElementNode ) {
-                // Initialize the QueryElementNode and have it's memory reference the actual query SegmentMemory
-                QueryElementNode queryNode = ( QueryElementNode ) tupleSource;
-                LeftInputAdapterNode liaNode = getQueryLiaNode(queryNode.getQueryElement().getQueryName(), getQueryOtn(segmentRoot));
-                LiaNodeMemory liam = ( LiaNodeMemory ) wm.getNodeMemory( (MemoryFactory) liaNode );                
-                SegmentMemory querySmem = liam.getSegmentMemory();
-                if (  querySmem == null ) {
-                    querySmem = createSegmentMemory( liaNode, wm );
-                }                               
-                QueryElementNodeMemory queryNodeMem = ( QueryElementNodeMemory ) smem.createNodeMemory( queryNode, wm );
-                queryNodeMem.setQuerySegmentMemory( querySmem );
-                queryNodeMem.setSegmentMemory( smem );
             }
             nodePosMask = nodePosMask << 1;
 
@@ -168,39 +114,6 @@ public class SegmentUtilities {
                 smem.setTipNode( tupleSource );
                 break;
             }
-//            LeftTupleSinkPropagator sink = tupleSource.getSinkPropagator();
-//            LeftTupleSinkNode firstSink = (LeftTupleSinkNode) sink.getFirstLeftTupleSink() ;
-//            LeftTupleSinkNode secondSink = firstSink.getNextLeftTupleSinkNode();
-//            if ( secondSink == null ) {
-//                if ( NodeTypeEnums.isLeftTupleSource( firstSink ) ) {
-//                    tupleSource = ( LeftTupleSource ) firstSink;
-//                } else {
-//                    // rtn or rian
-//                    // While not technically in a segment, we want to be able to iterate easily from the last node memory to the ria/rtn memory
-//                    // we don't use createNodeMemory, as these may already have been created by, but not added, by the method updateRiaAndTerminalMemory
-//                    if ( firstSink.getType() == NodeTypeEnums.RightInputAdaterNode) {
-//                        RiaNodeMemory memory = ( RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) firstSink );
-//                        smem.getNodeMemories().add( memory.getRiaPathMemory() );
-//                        memory.getRiaPathMemory().setSegmentMemory( smem );
-//                    } else if ( NodeTypeEnums.isTerminalNode( firstSink) ) {
-//                        PathMemory rmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) firstSink );
-//                        smem.getNodeMemories().add( rmem );
-//                        rmem.setSegmentMemory( smem );
-//                    }
-//                    smem.setTipNode( firstSink );
-//                    break;
-//                }
-//            } else if ( sink.size() == 2 &&
-//                           NodeTypeEnums.isBetaNode( secondSink ) &&
-//                               ((BetaNode)secondSink).isRightInputIsRiaNode() ) {
-//                // must be a subnetwork split, always take the non riaNode path
-//                tupleSource = ( LeftTupleSource )secondSink;
-//            } else {
-//                // not in same segment
-//                smem.setTipNode( tupleSource );
-//                break;
-//            }
-//
     	}		
     	smem.setAllLinkedMaskTest( allLinkedTestMask );    	
     	
@@ -209,7 +122,7 @@ public class SegmentUtilities {
         int ruleSegmentPosMask = 1;
         int counter = 0;
         while ( pathRoot.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
-               if ( !SegmentUtilities.parentInSameSegment( pathRoot ) ) {
+               if ( !SegmentUtilities.parentInSameSegment( pathRoot, null ) ) {
                    // for each new found segment, increase the mask bit position
                    ruleSegmentPosMask = ruleSegmentPosMask << 1;
                    counter++;
@@ -223,36 +136,127 @@ public class SegmentUtilities {
     	return smem;
     }
 
+    private static void processQueryNode(QueryElementNode tupleSource, InternalWorkingMemory wm, LeftTupleSource segmentRoot, SegmentMemory smem) {// Initialize the QueryElementNode and have it's memory reference the actual query SegmentMemory
+        QueryElementNode queryNode = ( QueryElementNode ) tupleSource;
+        LeftInputAdapterNode liaNode = getQueryLiaNode(queryNode.getQueryElement().getQueryName(), getQueryOtn(segmentRoot));
+        LiaNodeMemory liam = (LiaNodeMemory) wm.getNodeMemory( (MemoryFactory) liaNode );
+        SegmentMemory querySmem = liam.getSegmentMemory();
+        if (  querySmem == null ) {
+            querySmem = createSegmentMemory( liaNode, wm );
+        }
+        QueryElementNodeMemory queryNodeMem = (QueryElementNodeMemory) smem.createNodeMemory( queryNode, wm );
+        queryNodeMem.setQuerySegmentMemory( querySmem );
+        queryNodeMem.setSegmentMemory( smem );
+    }
+
+    private static void processFromNode(FromNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {FromMemory fromMemory = (FromMemory) smem.createNodeMemory( ( FromNode ) tupleSource, wm );
+        fromMemory.getBetaMemory().setSegmentMemory( smem );
+    }
+
+    private static boolean processBranchNode(ConditionalBranchNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {
+        boolean updateNodeBit;ConditionalBranchMemory branchMem = (ConditionalBranchMemory) smem.createNodeMemory( ( ConditionalBranchNode ) tupleSource, wm );
+        branchMem.setSegmentMemory( smem );
+        updateNodeBit = false; // nodes after a branch CE can notify, but they cannot impact linking
+        return updateNodeBit;
+    }
+
+    private static void processEvalNode(EvalConditionNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {EvalMemory evalMem = (EvalMemory) smem.createNodeMemory( ( EvalConditionNode ) tupleSource, wm );
+        evalMem.setSegmentMemory( smem );
+    }
+
+    private static long processLiaNode(LeftInputAdapterNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask, long allLinkedTestMask) {LiaNodeMemory liaMemory = (LiaNodeMemory) smem.createNodeMemory( ( LeftInputAdapterNode ) tupleSource, wm );
+        liaMemory.setSegmentMemory( smem );
+        liaMemory.setNodePosMaskBit( nodePosMask );
+        allLinkedTestMask = allLinkedTestMask | nodePosMask;
+        return allLinkedTestMask;
+    }
+
+    private static long processBetaNode(LeftTupleSource tupleSource, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask, long allLinkedTestMask, boolean updateNodeBit) {BetaMemory bm;
+        BetaNode betaNode = ( BetaNode ) tupleSource;
+        if ( NodeTypeEnums.AccumulateNode == tupleSource.getType() ) {
+            bm = ((AccumulateMemory) smem.createNodeMemory( ( AccumulateNode ) tupleSource, wm  )).getBetaMemory();
+        } else {
+            bm = ( BetaMemory ) smem.createNodeMemory( betaNode, wm );
+
+        }
+        // this must be set first, to avoid recursion as sub networks can be initialised multiple ways
+        // and bm.getSegmentMemory == null check can be used to avoid recursion.
+        bm.setSegmentMemory(smem);
+
+        if ( betaNode.isRightInputIsRiaNode() ) {
+            // Iterate to find outermost rianode
+            RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
+            //riaNode = getOuterMostRiaNode(riaNode, betaNode.getLeftTupleSource());
+
+            // Iterat
+            LeftTupleSource subnetworkLts = riaNode.getLeftTupleSource();
+            while ( subnetworkLts.getLeftTupleSource() != riaNode.getStartTupleSource()) {
+                subnetworkLts = subnetworkLts.getLeftTupleSource();
+            }
+
+            Memory rootSubNetwokrMem = wm.getNodeMemory( (MemoryFactory)  subnetworkLts);
+            SegmentMemory subNetworkSegmentMemory = rootSubNetwokrMem.getSegmentMemory();
+            if ( subNetworkSegmentMemory == null ) {
+                // we need to stop recursion here
+                createSegmentMemory( ( LeftTupleSource ) subnetworkLts, wm );
+            }
+
+            RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory( (MemoryFactory) riaNode );
+            bm.setRiaRuleMemory(riaMem.getRiaPathMemory());
+            if ( updateNodeBit && riaMem.getRiaPathMemory().getAllLinkedMaskTest() > 0 ) {
+                // only ria's with reactive subnetworks can be disabled and thus need checking
+                allLinkedTestMask = allLinkedTestMask | nodePosMask;
+            }
+        } else if ( updateNodeBit &&
+                    ( !(NodeTypeEnums.NotNode == tupleSource.getType() && !((NotNode)tupleSource).isEmptyBetaConstraints()) &&
+                    NodeTypeEnums.AccumulateNode != tupleSource.getType()) ) {
+                // non empty not nodes and accumulates can never be disabled and thus don't need checking
+                allLinkedTestMask = allLinkedTestMask | nodePosMask;
+
+        }
+        bm.setNodePosMaskBit(nodePosMask);
+        if ( NodeTypeEnums.NotNode == tupleSource.getType() ) {
+            // not nodes start up linked in
+            smem.linkNodeWithoutRuleNotify(bm.getNodePosMaskBit());
+        }
+        return allLinkedTestMask;
+    }
+
     public static void createChildSegments(final InternalWorkingMemory wm,
                                             SegmentMemory smem,
                                             LeftTupleSinkPropagator sinkProp) {
         for ( LeftTupleSinkNode sink = ( LeftTupleSinkNode ) sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             Memory memory = wm.getNodeMemory( (MemoryFactory ) sink );
 
-             if ( !( NodeTypeEnums.isTerminalNode( sink  ) || sink.getType() == NodeTypeEnums.RightInputAdaterNode ) ) {
-                if ( memory.getSegmentMemory() == null ) {
-                    SegmentUtilities.createSegmentMemory( (LeftTupleSource ) sink, wm );
-                }
-            } else {
-                // RTNS and RiaNode's have their own segment, if they are the child of a split.
-                if ( memory.getSegmentMemory() == null ) {
-                    SegmentMemory childSmem = new SegmentMemory(sink);
-                    PathMemory rmem;
-                    if ( NodeTypeEnums.isTerminalNode( sink  ) ) {
-                        rmem = (PathMemory) memory;
-                    } else {
-                        rmem =  ((RiaNodeMemory) memory ).getRiaPathMemory();
-                    }
-                    rmem.getSegmentMemories()[ rmem.getSegmentMemories().length -1 ] = childSmem;
-                    rmem.setSegmentMemory( childSmem );
-                    childSmem.getPathMemories().add( rmem );
-
-                    childSmem.setTipNode( sink );
-                    childSmem.setSinkFactory( sink );
-                }
-            }
-            smem.add( memory.getSegmentMemory() );
+            SegmentMemory childSmem = createChildSegment(wm, sink, memory);
+            smem.add( childSmem );
         }
+    }
+
+    public static SegmentMemory createChildSegment(InternalWorkingMemory wm, LeftTupleSink sink, Memory memory) {
+        if ( !( NodeTypeEnums.isTerminalNode(sink) || sink.getType() == NodeTypeEnums.RightInputAdaterNode ) ) {
+            if ( memory.getSegmentMemory() == null ) {
+                SegmentUtilities.createSegmentMemory((LeftTupleSource) sink, wm);
+            }
+        } else {
+            // RTNS and RiaNode's have their own segment, if they are the child of a split.
+            if ( memory.getSegmentMemory() == null ) {
+                SegmentMemory childSmem = new SegmentMemory(sink);
+                PathMemory rmem;
+                if ( NodeTypeEnums.isTerminalNode( sink  ) ) {
+                    rmem = (PathMemory) memory;
+                } else {
+                    rmem =  ((RiaNodeMemory) memory ).getRiaPathMemory();
+                }
+                rmem.getSegmentMemories()[ rmem.getSegmentMemories().length -1 ] = childSmem;
+                rmem.setSegmentMemory( childSmem );
+                childSmem.getPathMemories().add( rmem );
+
+                childSmem.setTipNode( sink );
+                childSmem.setSinkFactory( sink );
+            }
+        }
+        return memory.getSegmentMemory();
     }
 
     /**
@@ -313,7 +317,7 @@ public class SegmentUtilities {
                     rmem.getSegmentMemories()[smem.getPos()] = smem;
     	        }
     	    } else if ( NodeTypeEnums.isTerminalNode( sink) ) {    	        
-    	        PathMemory rmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) sink );
+    	        PathMemory rmem =  (PathMemory) wm.getNodeMemory( (MemoryFactory) sink );
                 smem.getPathMemories().add( rmem );
                 rmem.getSegmentMemories()[smem.getPos()] = smem;
                 if ( smem.isSegmentLinked() ) {
@@ -331,13 +335,32 @@ public class SegmentUtilities {
                 initialiseRtnMemory((LeftTupleSource) sink, wm);
             } else  if ( NodeTypeEnums.isTerminalNode( sink) ) {
                 // getting will cause an initialization of rtn, which will recursively initialise rians too.
-                PathMemory rmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) sink );
+                PathMemory pmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) sink );
             }
         }
     }
 
-    public static boolean parentInSameSegment(LeftTupleSource lt) {
-        return lt.getLeftTupleSource().getSinkPropagator().size() == 1;
+    public static boolean parentInSameSegment(LeftTupleSource lt, Rule removingRule) {
+        LeftTupleSource parentLt = lt.getLeftTupleSource();
+        int size = parentLt.getSinkPropagator().size();
+
+        if ( removingRule != null && size == 2 && parentLt.getAssociations().containsKey( removingRule ) ) {
+            // looks like a split, but one of the branches may be removed.
+
+            LeftTupleSink first = parentLt.getSinkPropagator().getFirstLeftTupleSink();
+            LeftTupleSink last = parentLt.getSinkPropagator().getLastLeftTupleSink();
+
+            if ( first.getAssociations().size() == 1 && first.getAssociations().containsKey( removingRule) ) {
+                return true;
+            } else if ( last.getAssociations().size() == 1 && last.getAssociations().containsKey( removingRule) ) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return  size == 1;
+        }
+
         // comments out for now, as the optimization to preserve subnetwork segments down one side is troublesome.
 //        LeftTupleSource parent = lt.getLeftTupleSource();
 //        if ( parent != null && ( parent.getSinkPropagator().size() == 1 ||

@@ -32,11 +32,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalStatelessSession;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.event.AgendaEventListener;
-import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.event.RuleBaseEventListener;
-import org.drools.core.event.WorkingMemoryEventListener;
-import org.drools.core.event.WorkingMemoryEventSupport;
+import org.drools.core.event.*;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.rule.EntryPoint;
@@ -51,18 +47,20 @@ public class ReteooStatelessSession
     Externalizable {
     //private WorkingMemory workingMemory;
 
-    private InternalRuleBase            ruleBase;
-    private AgendaFilter                agendaFilter;
-    private GlobalResolver              globalResolver            = new MapGlobalResolver();
+    private InternalRuleBase ruleBase;
+    private AgendaFilter     agendaFilter;
+    private GlobalResolver globalResolver = new MapGlobalResolver();
 
-    private GlobalExporter              globalExporter;
-    
-    private SessionConfiguration        sessionConf;
+    private GlobalExporter globalExporter;
+
+    private SessionConfiguration sessionConf;
 
     /** The eventSupport */
     protected WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
 
-    protected AgendaEventSupport        agendaEventSupport        = new AgendaEventSupport();
+    protected AgendaEventSupport agendaEventSupport = new AgendaEventSupport();
+
+    final RuleEventListenerSupport ruleEventListenerSupport = new RuleEventListenerSupport();
 
     public ReteooStatelessSession() {
     }
@@ -73,7 +71,7 @@ public class ReteooStatelessSession
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
         ruleBase = (InternalRuleBase) in.readObject();
         agendaFilter = (AgendaFilter) in.readObject();
         globalResolver = (GlobalResolver) in.readObject();
@@ -82,12 +80,12 @@ public class ReteooStatelessSession
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( ruleBase );
-        out.writeObject( agendaFilter );
-        out.writeObject( globalResolver );
-        out.writeObject( globalExporter );
+        out.writeObject(ruleBase);
+        out.writeObject(agendaFilter);
+        out.writeObject(globalResolver);
+        out.writeObject(globalExporter);
     }
-    
+
     public InternalRuleBase getRuleBase() {
         return this.ruleBase;
     }
@@ -95,12 +93,13 @@ public class ReteooStatelessSession
     public InternalWorkingMemory newWorkingMemory() {
         this.ruleBase.readLock();
         try {
-            InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
-                                                                this.ruleBase,
-                                                                this.sessionConf,
-                                                                EnvironmentFactory.newEnvironment(),
-                                                                this.workingMemoryEventSupport,
-                                                                this.agendaEventSupport);
+            InternalWorkingMemory wm = new ReteooWorkingMemory(this.ruleBase.nextWorkingMemoryCounter(),
+                                                               this.ruleBase,
+                                                               this.sessionConf,
+                                                               EnvironmentFactory.newEnvironment(),
+                                                               this.workingMemoryEventSupport,
+                                                               this.agendaEventSupport,
+                                                               this.ruleEventListenerSupport );
 
             wm.setGlobalResolver( this.globalResolver );
 

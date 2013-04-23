@@ -405,13 +405,7 @@ public class JoinNode extends BetaNode {
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory ) {
 
-        Memory m = workingMemory.getNodeMemory( this );
-        BetaMemory memory = null;
-        if (m instanceof BetaMemory) {
-            memory = (BetaMemory) m;
-        } else {
-            workingMemory.getNodeMemory( this );
-        }
+        BetaMemory memory = ( BetaMemory ) workingMemory.getNodeMemory( this );
 
         FastIterator it = memory.getLeftTupleMemory().fastIterator();
 
@@ -437,6 +431,41 @@ public class JoinNode extends BetaNode {
 
             this.constraints.resetTuple( memory.getContext() );
         }
+    }
+
+    public void updateSinkPhreak( final LeftTupleSink sink,
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory ) {
+        BetaMemory memory = ( BetaMemory ) workingMemory.getNodeMemory( this );
+        if ( memory.getSegmentMemory() == null ) {
+            // this node has not yet been evaluated, so it has no tuples and nothing needs doing.
+            return; //
+        }
+
+//        FastIterator it = memory.getLeftTupleMemory().fastIterator();
+//
+////        final Iterator tupleIter = memory.getLeftTupleMemory().iterator();
+////        for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
+////            this.constraints.updateFromTuple( memory.getContext(),
+////                                              workingMemory,
+////                                              leftTuple );
+////            for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( leftTuple, (InternalFactHandle) context.getFactHandle(), it );
+////                  rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
+////                if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+////                                                           rightTuple.getFactHandle() ) ) {
+////                    sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
+////                                                                rightTuple,
+////                                                                null,
+////                                                                null,
+////                                                                sink,
+////                                                                true ),
+////                                          context,
+////                                          workingMemory );
+////                }
+////            }
+////
+////            this.constraints.resetTuple( memory.getContext() );
+////        }
     }
 
     public short getType() {

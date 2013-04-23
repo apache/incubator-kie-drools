@@ -415,7 +415,7 @@ public class ObjectTypeNode extends ObjectSource
      */
     public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled()) {
             return;
         }
 
@@ -480,7 +480,7 @@ public class ObjectTypeNode extends ObjectSource
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( context.getCleanupAdapter() != null ) {
+        if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && context.getCleanupAdapter() != null ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
                 CleanupAdapter adapter = context.getCleanupAdapter();
                 final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
@@ -505,7 +505,7 @@ public class ObjectTypeNode extends ObjectSource
      * to switch back to a standard HashMap.
      */
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
-        return new ObjectTypeNodeMemory();
+        return new ObjectTypeNodeMemory(this);
     }
 
     public boolean isObjectMemoryEnabled() {
@@ -762,12 +762,25 @@ public class ObjectTypeNode extends ObjectSource
     
     public static class ObjectTypeNodeMemory implements Memory {
         public ObjectHashSet memory = new ObjectHashSet();
+        private ObjectTypeNode otn;
+
+        ObjectTypeNodeMemory(ObjectTypeNode otn) {
+            this.otn = otn;
+        }
 
         public short getNodeType() {
             return NodeTypeEnums.ObjectTypeNode;
         }
 
+        public ObjectHashSet getObjectHashSet() {
+            return memory;
+        }
+
         public SegmentMemory getSegmentMemory() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setSegmentMemory(SegmentMemory segmentMemory) {
             throw new UnsupportedOperationException();
         }
 
@@ -785,6 +798,10 @@ public class ObjectTypeNode extends ObjectSource
 
         public Memory getNext() {
             throw new UnsupportedOperationException();
+        }
+
+        public String toString() {
+            return "ObjectTypeMemory " + otn;
         }
     }
 }

@@ -254,7 +254,7 @@ public class LinkedList<T extends LinkedListNode<T>>
         return node;
     }
     
-    public Object get(int i) {
+    public T get(int i) {
         T current = getFirst();
         for ( int j = 0; j < i; j++ ) {
             current = current.getNext();
