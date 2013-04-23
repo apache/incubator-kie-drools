@@ -117,6 +117,7 @@ message ProcessInstance {
         }
         message ForEachNode {
             repeated NodeInstance node_instance = 1;
+            repeated Variable variable = 2;
         }
     }
 

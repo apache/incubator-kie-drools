@@ -283,6 +283,43 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( NodeInstanceType.STATE_NODE )
                     .setState( _state.build() );
+        } else if ( nodeInstance instanceof ForEachNodeInstance ) {
+            JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.Builder _foreach = JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.newBuilder();
+            ForEachNodeInstance forEachNodeInstance = (ForEachNodeInstance) nodeInstance;
+            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>( forEachNodeInstance.getNodeInstances() );
+            Collections.sort( nodeInstances,
+                              new Comparator<NodeInstance>() {
+                                  public int compare(NodeInstance o1,
+                                                     NodeInstance o2) {
+                                      return (int) (o1.getId() - o2.getId());
+                                  }
+                              } );
+            for ( NodeInstance subNodeInstance : nodeInstances ) {
+                if ( subNodeInstance instanceof CompositeContextNodeInstance ) {
+                    _foreach.addNodeInstance( writeNodeInstance( context,
+                                                                 subNodeInstance ) );
+                }
+            }
+            
+            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) forEachNodeInstance.getContextInstance( VariableScope.VARIABLE_SCOPE);
+            if ( variableScopeInstance != null ) {
+                List<Map.Entry<String, Object>> variables = new ArrayList<Map.Entry<String, Object>>( variableScopeInstance.getVariables().entrySet() );
+                Collections.sort( variables,
+                                  new Comparator<Map.Entry<String, Object>>() {
+                                      public int compare(Map.Entry<String, Object> o1,
+                                                         Map.Entry<String, Object> o2) {
+                                          return o1.getKey().compareTo( o2.getKey() );
+                                      }
+                                  } );
+                for ( Map.Entry<String, Object> variable : variables ) {
+                    
+                    _foreach.addVariable( ProtobufProcessMarshaller.marshallVariable( context, variable.getKey(), variable.getValue() ) );
+                }
+            }
+            
+            _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
+                    .setType( NodeInstanceType.FOR_EACH_NODE )
+                    .setForEach( _foreach.build() );
         } else if ( nodeInstance instanceof CompositeContextNodeInstance ) {
             JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.Builder _composite = JBPMMessages.ProcessInstance.NodeInstanceContent.CompositeContextNode.newBuilder();
             JBPMMessages.ProcessInstance.NodeInstanceType _type = null;
@@ -346,26 +383,6 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
                     .setType( _type )
                     .setComposite( _composite.build() );
-        } else if ( nodeInstance instanceof ForEachNodeInstance ) {
-            JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.Builder _foreach = JBPMMessages.ProcessInstance.NodeInstanceContent.ForEachNode.newBuilder();
-            ForEachNodeInstance forEachNodeInstance = (ForEachNodeInstance) nodeInstance;
-            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>( forEachNodeInstance.getNodeInstances() );
-            Collections.sort( nodeInstances,
-                              new Comparator<NodeInstance>() {
-                                  public int compare(NodeInstance o1,
-                                                     NodeInstance o2) {
-                                      return (int) (o1.getId() - o2.getId());
-                                  }
-                              } );
-            for ( NodeInstance subNodeInstance : nodeInstances ) {
-                if ( subNodeInstance instanceof CompositeContextNodeInstance ) {
-                    _foreach.addNodeInstance( writeNodeInstance( context,
-                                                                 subNodeInstance ) );
-                }
-            }
-            _content = JBPMMessages.ProcessInstance.NodeInstanceContent.newBuilder()
-                    .setType( NodeInstanceType.FOR_EACH_NODE )
-                    .setForEach( _foreach.build() );
         } else {
             throw new IllegalArgumentException( "Unknown node instance type: " + nodeInstance );
         }
@@ -519,6 +536,15 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     readNodeInstance( context,
                                       (ForEachNodeInstance) nodeInstance,
                                       processInstance );
+                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance) ((ForEachNodeInstance) nodeInstance).getContextInstance( VariableScope.VARIABLE_SCOPE );
+                    for ( JBPMMessages.Variable _variable : _node.getContent().getForEach().getVariableList() ) {
+                        try {
+                            Object _value = ProtobufProcessMarshaller.unmarshallVariableValue( context, _variable );
+                            variableScopeInstance.internalSetVariable( _variable.getName(), _value );
+                        } catch ( ClassNotFoundException e ) {
+                            throw new IllegalArgumentException( "Could not reload variable " + _variable.getName() );
+                        }
+                    }
                 }
                 break;
             case EVENT_SUBPROCESS_NODE :
@@ -624,6 +650,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     ((JoinInstance) nodeInstance).internalSetTriggers( triggers );
                 }
                 break;
+            case FOR_EACH_NODE :
+                nodeInstance = new ForEachNodeInstance();
+                break;
             case COMPOSITE_CONTEXT_NODE :
                 nodeInstance = new CompositeContextNodeInstance();
                 
@@ -634,9 +663,6 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     }
                     ((CompositeContextNodeInstance) nodeInstance).internalSetTimerInstances( timerInstances );
                 }
-                break;
-            case FOR_EACH_NODE :
-                nodeInstance = new ForEachNodeInstance();
                 break;
             case DYNAMIC_NODE :
                 nodeInstance = new DynamicNodeInstance();

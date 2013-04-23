@@ -23,7 +23,9 @@ import java.util.List;
 
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
+import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.ForEachNode.ForEachJoinNode;
@@ -39,9 +41,11 @@ import org.mvel2.MVEL;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ForEachNodeInstance extends CompositeNodeInstance {
+public class ForEachNodeInstance extends CompositeContextNodeInstance {
 
     private static final long serialVersionUID = 510l;
+   
+    private static final String TEMP_OUTPUT_VAR = "foreach_output";
     
     public ForEachNode getForEachNode() {
         return (ForEachNode) getNode();
@@ -68,6 +72,26 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
         }
         return super.getNodeInstance(node);
     }
+    
+    @Override
+    public void internalTrigger(org.kie.api.runtime.process.NodeInstance from,
+            String type) {
+        super.internalTrigger(from, type);
+    }
+    
+
+    @Override
+    public void cancel() {
+        super.cancel();
+    }
+    
+
+    @Override
+    public ContextContainer getContextContainer() {
+        return (ContextContainer) getForEachNode().getCompositeNode();
+    }
+    
+    
     
     private Collection<?> evaluateCollectionExpression(String collectionExpression) {
         // TODO: should evaluate this expression using MVEL
@@ -147,12 +171,16 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             return (ForEachJoinNode) getNode();
         }
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         public void internalTrigger(org.kie.api.runtime.process.NodeInstance from, String type) {
             
+            VariableScopeInstance subprocessVariableScopeInstance = null;
             if (getForEachNode().getOutputVariableName() != null) {
-                Collection outputCollection = evaluateCollectionExpression(getForEachNode().getOutputCollectionExpression());
+                subprocessVariableScopeInstance = (VariableScopeInstance) getContextInstance(VariableScope.VARIABLE_SCOPE);
+                
+                Collection<Object> outputCollection = (Collection<Object>) subprocessVariableScopeInstance.getVariable(TEMP_OUTPUT_VAR);
                 if (outputCollection == null) {
-                    outputCollection = Collections.emptyList();
+                    outputCollection = new ArrayList<Object>();
                 }
             
                 VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
@@ -162,11 +190,21 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
                     outputVariable = variableScopeInstance.getVariable(getForEachNode().getOutputVariableName());
                 }
                 outputCollection.add(outputVariable);
-                VariableScopeInstance subprocessVariableScopeInstance = (VariableScopeInstance)
-                ((NodeInstanceImpl)from).resolveContextInstance(VariableScope.VARIABLE_SCOPE, getForEachNode().getOutputCollectionExpression());
-                subprocessVariableScopeInstance.setVariable(getForEachNode().getOutputCollectionExpression(), outputCollection);
+                
+                subprocessVariableScopeInstance.setVariable(TEMP_OUTPUT_VAR, outputCollection);
             }
             if (getNodeInstanceContainer().getNodeInstances().size() == 1) {
+                String outputCollection = getForEachNode().getOutputCollectionExpression();
+                if (outputCollection != null) {
+                    VariableScopeInstance variableScopeInstance = (VariableScopeInstance) resolveContextInstance(VariableScope.VARIABLE_SCOPE, outputCollection);
+                    Collection<?> outputVariable = (Collection<?>) variableScopeInstance.getVariable(outputCollection);
+                    if (outputVariable != null) {
+                        outputVariable.addAll((Collection) subprocessVariableScopeInstance.getVariable(TEMP_OUTPUT_VAR));
+                    } else {
+                        outputVariable = (Collection<Object>) subprocessVariableScopeInstance.getVariable(TEMP_OUTPUT_VAR);
+                    }
+                    variableScopeInstance.setVariable(outputCollection, outputVariable);
+                }
             	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 if (getForEachNode().isWaitForCompletion()) {
                 	
@@ -185,5 +223,15 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
         }
         
     }
-    
+
+    @Override
+    public ContextInstance getContextInstance(String contextId) {
+        ContextInstance contextInstance = super.getContextInstance(contextId);
+        if (contextInstance == null) {
+            contextInstance = resolveContextInstance(contextId, TEMP_OUTPUT_VAR);
+            setContextInstance(contextId, contextInstance);
+        }
+        
+        return contextInstance;
+    }    
 }

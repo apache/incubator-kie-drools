@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.kie.api.definition.process.Node;
 import org.drools.core.process.core.datatype.DataType;
+import org.jbpm.process.core.Context;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -35,7 +36,7 @@ import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ForEachNode extends CompositeNode {
+public class ForEachNode extends CompositeContextNode {
     
     private static final long serialVersionUID = 510l;
     
@@ -206,6 +207,11 @@ public class ForEachNode extends CompositeNode {
         variable.setName(variableName);
         variable.setType(type);
         variables.add(variable);
+        
+        Variable tmpvariable = new Variable();
+        tmpvariable.setName("foreach_output");
+        tmpvariable.setType(type);
+        variables.add(tmpvariable);
     }
 
     public String getCollectionExpression() {
@@ -238,6 +244,15 @@ public class ForEachNode extends CompositeNode {
 
     public class ForEachJoinNode extends ExtendedNodeImpl {
         private static final long serialVersionUID = 510l;
+    }
+
+    @Override
+    public Context getContext(String contextType) {
+        Context context = getCompositeNode().getDefaultContext(contextType);
+        if (context != null) {
+            return context;
+        }
+        return super.getContext(contextType);
     }
 
 }

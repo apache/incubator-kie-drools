@@ -24,18 +24,28 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.core.process.core.datatype.DataType;
+import org.drools.core.process.core.datatype.impl.type.BooleanDataType;
+import org.drools.core.process.core.datatype.impl.type.FloatDataType;
+import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
+import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.Association;
+import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
+import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.jbpm.workflow.core.node.ForEachNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
@@ -47,6 +57,8 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected final static String EOL = System.getProperty( "line.separator" );
     protected Map<String, String> dataInputs = new HashMap<String, String>();
     protected Map<String, String> dataOutputs = new HashMap<String, String>();
+    protected Map<String, String> inputAssociation = new HashMap<String, String>();
+    protected Map<String, String> outputAssociation = new HashMap<String, String>();
 
     public AbstractNodeHandler() {
         initValidParents();
@@ -288,6 +300,120 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             }
             subNode = subNode.getNextSibling();
         }
+    }
+    
+    protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, Map<String, String> forEachNodeInputAssociation) {
+        // sourceRef
+        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        if ("sourceRef".equals(subNode.getNodeName())) {
+            String source = subNode.getTextContent();
+            // targetRef
+            subNode = subNode.getNextSibling();
+            String target = subNode.getTextContent();
+            forEachNodeInputAssociation.put(target, source);
+        }
+    }
+    
+    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, Map<String, String> forEachNodeOutputAssociation) {
+        // sourceRef
+        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        if ("sourceRef".equals(subNode.getNodeName())) {
+            String source = subNode.getTextContent();
+            // targetRef
+            subNode = subNode.getNextSibling();
+            String target = subNode.getTextContent();
+            forEachNodeOutputAssociation.put(source, target);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected void readMultiInstanceLoopCharacteristics(org.w3c.dom.Node xmlNode, ForEachNode forEachNode, ExtensibleXmlParser parser) {
+        
+        // sourceRef
+        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        while (subNode != null) {
+            String nodeName = subNode.getNodeName();
+            if ("inputDataItem".equals(nodeName)) {
+                String variableName = ((Element) subNode).getAttribute("id");
+                String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
+                DataType dataType = null;
+                Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
+                    ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+                dataType = getDataType(itemSubjectRef, itemDefinitions);
+                
+                if (variableName != null && variableName.trim().length() > 0) {
+                    forEachNode.setVariable(variableName, dataType);
+                }
+            } else if ("outputDataItem".equals(nodeName)) {
+                String variableName = ((Element) subNode).getAttribute("id");
+                String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
+                DataType dataType = null;
+                Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
+                    ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+                dataType = getDataType(itemSubjectRef, itemDefinitions);
+                
+                if (variableName != null && variableName.trim().length() > 0) {
+                    forEachNode.setOutputVariable(variableName, dataType);
+                }
+            } else if ("loopDataOutputRef".equals(nodeName)) {
+                
+                String outputDataRef = ((Element) subNode).getTextContent();
+                
+                if (outputDataRef != null && outputDataRef.trim().length() > 0) {
+                    String collectionName = outputAssociation.get(outputDataRef);
+                    if (collectionName == null) {
+                        collectionName = dataOutputs.get(outputDataRef);
+                    }
+                    forEachNode.setOutputCollectionExpression(collectionName);
+                }
+                
+            } else if ("loopDataInputRef".equals(nodeName)) {
+                
+                String inputDataRef = ((Element) subNode).getTextContent();
+               
+                if (inputDataRef != null && inputDataRef.trim().length() > 0) {
+                    String collectionName = inputAssociation.get(inputDataRef);
+                    if (collectionName == null) {
+                        collectionName = dataInputs.get(inputDataRef);
+                    }
+                    forEachNode.setCollectionExpression(collectionName);
+                }
+                
+            }
+            subNode = subNode.getNextSibling();
+        }
+    }
+    
+    protected DataType getDataType(String itemSubjectRef, Map<String, ItemDefinition> itemDefinitions) {
+        DataType dataType = new ObjectDataType();
+        if (itemDefinitions == null) {
+            return dataType;
+        }
+        ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
+        if (itemDefinition != null) {
+            String structureRef = itemDefinition.getStructureRef();
+            
+            if ("java.lang.Boolean".equals(structureRef) || "Boolean".equals(structureRef)) {
+                dataType = new BooleanDataType();
+                
+            } else if ("java.lang.Integer".equals(structureRef) || "Integer".equals(structureRef)) {
+                dataType = new IntegerDataType();
+                
+            } else if ("java.lang.Float".equals(structureRef) || "Float".equals(structureRef)) {
+                dataType = new FloatDataType();
+                
+            } else if ("java.lang.String".equals(structureRef) || "String".equals(structureRef)) {
+                dataType = new StringDataType();
+                
+            } else if ("java.lang.Object".equals(structureRef) || "Object".equals(structureRef)) {
+                dataType = new ObjectDataType(structureRef);
+                
+            } else {
+                dataType = new ObjectDataType(structureRef);
+            }
+            
+        }
+        return dataType;
     }
     
 }

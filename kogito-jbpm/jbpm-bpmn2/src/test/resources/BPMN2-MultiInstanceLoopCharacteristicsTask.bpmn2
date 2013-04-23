@@ -32,12 +32,12 @@
         <outputSet/>
       </ioSpecification>
       <dataInputAssociation>
-        <sourceRef>item</sourceRef>
-        <targetRef>_2_item</targetRef>
-      </dataInputAssociation>
-      <dataInputAssociation>
         <sourceRef>list</sourceRef>
         <targetRef>_2_input</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <sourceRef>item</sourceRef>
+        <targetRef>_2_item</targetRef>
       </dataInputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
