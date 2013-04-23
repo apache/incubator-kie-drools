@@ -728,6 +728,32 @@ public class FlowTest extends JbpmTestCase {
         System.clearProperty("jbpm.enable.multi.con");
 
     }
+    
+    @Test
+    public void testMultipleEnabledOnSingleConditionalSequenceFlow() throws Exception {
+        System.setProperty("jbpm.enable.multi.con", "true");
+        KieBase kbase = createKnowledgeBase("BPMN2-MultiConnEnabled.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterNodeTriggered(org.kie.api.event.process.ProcessNodeTriggeredEvent event) {
+                if ("Task2".equals(event.getNodeInstance().getNodeName())) {
+                    list.add(event.getNodeInstance().getNodeId());
+                }
+            }
+        });
+
+        assertEquals(0, list.size());
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-MultiConnEnabled");
+        assertProcessInstanceActive(processInstance);
+        ksession.signalEvent("signal", null, processInstance.getId());
+        assertProcessInstanceCompleted(processInstance);
+
+        assertEquals(1, list.size());
+        System.clearProperty("jbpm.enable.multi.con");
+
+    }
 
     /**
      * FIXME process build is probably caught and there is another exception instead (ArrayIndexOutOfBoundsException)

@@ -239,7 +239,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                 }
                 if ( !found ) {
                     throw new IllegalArgumentException( "Uncontrolled flow node could not find at least one valid outgoing connection " + getNode().getName() );
-                }     
+                }   
+                return;
         	} else {
         		connections = node.getOutgoingConnections(type);
         	}
