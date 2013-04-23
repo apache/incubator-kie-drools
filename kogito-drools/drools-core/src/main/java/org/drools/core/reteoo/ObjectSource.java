@@ -233,7 +233,7 @@ public abstract class ObjectSource extends BaseNode
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !this.isInUse() && this instanceof MemoryFactory ) {
+        if ( !context.getRuleBase().getConfiguration().isPhreakEnabled()  && !this.isInUse() && this instanceof MemoryFactory ) {
             for( InternalWorkingMemory workingMemory : workingMemories ) {
                 workingMemory.clearNodeMemory( (MemoryFactory) this );
             }

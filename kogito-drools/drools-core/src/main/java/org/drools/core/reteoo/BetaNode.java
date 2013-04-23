@@ -511,7 +511,7 @@ public abstract class BetaNode extends LeftTupleSource
         this.rightInput.addObjectSink( this );
         this.leftInput.addTupleSink( this, context );
 
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 
@@ -536,7 +536,10 @@ public abstract class BetaNode extends LeftTupleSource
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !this.isInUse() || context.getCleanupAdapter() != null ) {
+        //context.getRuleBase().getConfiguration().isPhreakEnabled()
+
+        //context.get
+        if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && (!this.isInUse() || context.getCleanupAdapter() != null ) ) {
             for (InternalWorkingMemory workingMemory : workingMemories) {
                 BetaMemory memory;
                 Object object = workingMemory.getNodeMemory(this);

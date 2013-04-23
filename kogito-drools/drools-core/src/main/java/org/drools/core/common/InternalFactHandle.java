@@ -79,9 +79,15 @@ public interface InternalFactHandle
     
     void disconnect();
 
+    void addFirstLeftTuple(LeftTuple leftTuple);
+
     void addLastLeftTuple( LeftTuple leftTuple );
 
     void addLeftTupleInPosition( LeftTuple leftTuple );
+
+    void setFirstLeftTuple(LeftTuple leftTuple);
+
+    void setLastLeftTuple( LeftTuple leftTuple );
 
     void removeLeftTuple( LeftTuple leftTuple );
 

@@ -162,7 +162,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     
     public void attach( BuildContext context ) {
         this.objectSource.addObjectSink( this );
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled()) {
             return;
         }
 
@@ -510,7 +510,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
                             final InternalWorkingMemory[] workingMemories) {
         if (!isInUse()) {
             objectSource.removeObjectSink(this);
+            if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+                for ( InternalWorkingMemory wm : workingMemories ) {
+                    wm.clearNodeMemory( (MemoryFactory) this);
+                }
+            }
         }
+
         handleUnlinking(context);
     }
 
@@ -597,11 +603,16 @@ public class LeftInputAdapterNode extends LeftTupleSource
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
      */
-    private static class RightTupleSinkAdapter
+    public static class RightTupleSinkAdapter
         implements
         ObjectSink {
         private LeftTupleSink sink;
         private boolean       leftTupleMemoryEnabled;
+        private LeftInputAdapterNode liaNode;
+
+        public RightTupleSinkAdapter(LeftInputAdapterNode liaNode) {
+            this.liaNode = liaNode;
+        }
 
         public RightTupleSinkAdapter(final LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
@@ -612,12 +623,17 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-            final LeftTuple tuple = this.sink.createLeftTuple( factHandle,
-                                                               this.sink,
-                                                               this.leftTupleMemoryEnabled );
-            this.sink.assertLeftTuple( tuple,
-                                       context,
-                                       workingMemory );
+            if ( liaNode != null ) {
+                // phreak
+                liaNode.assertObject(factHandle, context, workingMemory);
+            } else {
+                final LeftTuple tuple = this.sink.createLeftTuple( factHandle,
+                                                                   this.sink,
+                                                                   this.leftTupleMemoryEnabled );
+                this.sink.assertLeftTuple( tuple,
+                                           context,
+                                           workingMemory );
+            }
         }
 
         public void modifyObject(InternalFactHandle factHandle,

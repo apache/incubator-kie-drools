@@ -123,7 +123,7 @@ public class RightInputAdapterNode extends ObjectSource
         
         if ( this.unlinkingEnabled ) {
             RiaPathMemory pmem = new RiaPathMemory(this);
-            AbstractTerminalNode.initPathMemory(pmem, getLeftTupleSource(), getStartTupleSource(), wm );
+            AbstractTerminalNode.initPathMemory(pmem, getLeftTupleSource(), getStartTupleSource(), wm, null );
             rianMem.setRiaPathMemory(pmem);
         }
         
@@ -255,7 +255,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     public void attach( BuildContext context ) {
         this.tupleSource.addTupleSink( this, context );
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 
@@ -294,7 +294,7 @@ public class RightInputAdapterNode extends ObjectSource
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !this.isInUse() ) {
+        if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && !this.isInUse() ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
                 RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
 
@@ -469,6 +469,10 @@ public class RightInputAdapterNode extends ObjectSource
 
         public SegmentMemory getSegmentMemory() {
             return pathMemory.getSegmentMemory();
+        }
+
+        public void setSegmentMemory(SegmentMemory segmentMemory) {
+            pathMemory.setSegmentMemory(segmentMemory);
         }
 
         public short getNodeType() {

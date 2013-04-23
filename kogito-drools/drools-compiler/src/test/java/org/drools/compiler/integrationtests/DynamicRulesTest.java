@@ -63,6 +63,7 @@ import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.rule.Package;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -122,7 +123,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kpkgs );
 
         workingMemory.fireAllRules();
-        assertEquals( 3,
+        assertEquals( 5,
                       list.size() );
 
         assertEquals( "stilton",
@@ -175,58 +176,70 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_Dynamic2.drl" ) );
         kbase.addKnowledgePackages( kpkgs );
 
-        StatefulKnowledgeSession workingMemory = createKnowledgeSession( kbase );
-        AgendaEventListener ael = mock( AgendaEventListener.class );
-        workingMemory.addEventListener( ael );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
+//        AgendaEventListener ael = mock( AgendaEventListener.class );
+//        wm.addEventListener( ael );
 
         final List< ? > list = new ArrayList<Object>();
-        workingMemory.setGlobal( "list",
+        wm.setGlobal( "list",
                                  list );
 
         final PersonInterface bob = new Person( "bob",
                                                 "stilton" );
         bob.setStatus( "Not evaluated" );
-        workingMemory.insert( bob );
+        FactHandle fh0 = wm.insert( bob );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             5 );
-        workingMemory.insert( stilton1 );
+        FactHandle fh1 = wm.insert( stilton1 );
 
         final Cheese stilton2 = new Cheese( "stilton",
                                             3 );
-        workingMemory.insert( stilton2 );
+        FactHandle fh2 = wm.insert( stilton2 );
 
         final Cheese stilton3 = new Cheese( "stilton",
                                             1 );
-        workingMemory.insert( stilton3 );
+        FactHandle fh3 = wm.insert( stilton3 );
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
-        workingMemory.insert( cheddar );
+        FactHandle fh4 = wm.insert( cheddar );
 
-        verify( ael, times( 15 ) ).matchCreated(any(MatchCreatedEvent.class));
-        verify( ael, never() ).matchCancelled(any(MatchCancelledEvent.class));
+        wm.fireAllRules();
+        assertEquals( 15, list.size() );
+        list.clear();
 
         kbase.removeRule( "org.drools.compiler.test",
                           "Who likes Stilton" );
 
-        verify( ael, times( 3 ) ).matchCancelled(any(MatchCancelledEvent.class));
+        wm.update( fh0, bob);
+        wm.update( fh1, stilton1);
+        wm.update( fh2, stilton2);
+        wm.update( fh3, stilton3);
+        wm.update( fh4, cheddar);
+        wm.fireAllRules();
+        assertEquals( 12, list.size() );
+        list.clear();
 
         kbase.removeRule( "org.drools.compiler.test",
                           "like cheese" );
 
-        verify( ael, times( 7 ) ).matchCancelled(any(MatchCancelledEvent.class));
+        wm.update( fh0, bob);
+        wm.update( fh1, stilton1);
+        wm.update( fh2, stilton2);
+        wm.update( fh3, stilton3);
+        wm.update( fh4, cheddar);
+        wm.fireAllRules();
+        assertEquals( 8, list.size() );
+        list.clear();
 
         final Cheese muzzarela = new Cheese( "muzzarela",
                                              5 );
-        workingMemory.insert( muzzarela );
+        wm.insert( muzzarela );
+        wm.fireAllRules();
 
-        verify( ael, times( 16 ) ).matchCreated(any(MatchCreatedEvent.class));
-
-        kbase.removeKnowledgePackage( "org.drools.compiler.test" );
-        verify( ael, times( 16 ) ).matchCancelled(any(MatchCancelledEvent.class));
-
-        kbase = SerializationHelper.serializeObject( kbase );
+        assertEquals( 1, list.size() );
+        list.clear();
     }
 
     @Test
@@ -679,7 +692,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test
     public void testDynamicRuleRemovalsSubNetwork() throws Exception {
-        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_DynamicRulesWithSubnetwork1.drl", 
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_DynamicRulesWithSubnetwork1.drl",
                                                                                                          "test_DynamicRulesWithSubnetwork.drl" ) );
         
         KnowledgeBase kbase = loadKnowledgeBase();
@@ -702,7 +715,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                          OrderItem.TYPE_BOOK,
                                          24 );
         order.addItem( item1 );
-        session.insert( item1 );
+        FactHandle item1Fh = session.insert( item1 );
 
         OrderItem item2 = new OrderItem( order,
                                          2,
@@ -710,7 +723,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                          OrderItem.TYPE_BOOK,
                                          15 );
         order.addItem( item2 );
-        session.insert( item2 );
+        FactHandle item2Fh = session.insert( item2 );
 
         OrderItem item3 = new OrderItem( order,
                                          3,
@@ -718,7 +731,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                          OrderItem.TYPE_CD,
                                          9 );
         order.addItem( item3 );
-        session.insert( item3 );
+        FactHandle item3Fh = session.insert( item3 );
 
         OrderItem item4 = new OrderItem( order,
                                          4,
@@ -726,38 +739,52 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                          OrderItem.TYPE_CD,
                                          11 );
         order.addItem( item4 );
-        session.insert( item4 );
+        FactHandle item4Fh = session.insert( item4 );
 
         session.insert( order );
-
-        assertEquals( 11,
-                      getInternalAgenda( session ).getActivations().length );
+        session.fireAllRules();
+        assertEquals( 11, list.size() );
 
         kbase.removeRule( "org.drools.compiler",
                           "Apply Discount on all books" );
-        assertEquals( 10,
-                      getInternalAgenda( session ).getActivations().length );
+
+        list.clear();
+        session.update( item1Fh, item1 );
+        session.update( item2Fh, item2 );
+        session.update( item3Fh, item3 );
+        session.update( item4Fh, item4 );
+        session.fireAllRules();
+
+        assertEquals( 10, list.size() );
 
         kbase.removeRule( "org.drools.compiler",
                           "like book" );
+        list.clear();
+        session.update( item1Fh, item1 );
+        session.update( item2Fh, item2 );
+        session.update( item3Fh, item3 );
+        session.update( item4Fh, item4 );
+        session.fireAllRules();
 
-        final OrderItem item5 = new OrderItem( order,
-                                               5,
-                                               "Sinatra : Vegas",
-                                               OrderItem.TYPE_CD,
-                                               5 );
-        assertEquals( 8,
-                      getInternalAgenda( session ).getActivations().length );
+        assertEquals( 8, list.size() );
 
-        session.insert( item5 );
+        final OrderItem item5 = new OrderItem( order, 5, "Sinatra : Vegas", OrderItem.TYPE_CD, 5 );
+        FactHandle item5Fh = session.insert( item5 );
 
-        assertEquals( 10,
-                      getInternalAgenda( session ).getActivations().length );
+        session.fireAllRules();
+
+        assertEquals( 10, list.size() );
 
         kbase.removeKnowledgePackage( "org.drools.compiler" );
+        list.clear();
+        session.update( item1Fh, item1 );
+        session.update( item2Fh, item2 );
+        session.update( item3Fh, item3 );
+        session.update( item4Fh, item4 );
+        session.update( item5Fh, item5 );
+        session.fireAllRules();
 
-        assertEquals( 0,
-                      getInternalAgenda( session ).getActivations().length );
+        assertEquals( 0, list.size() );
     }
 
     @Test

@@ -23,6 +23,7 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.phreak.AddRemoveRule;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleBuilder;
@@ -136,7 +137,6 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
             // adds the terminal node to the list of terminal nodes
             nodes.add( node );
-
         }
 
         return nodes;
@@ -171,6 +171,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
         BaseNode baseTerminalNode = (BaseNode) terminal;
         baseTerminalNode.networkUpdated(new UpdateContext());
         baseTerminalNode.attach(context);
+        if ( context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+            AddRemoveRule.addRule( terminal, context.getWorkingMemories() );
+        }
         
         if ( context.getRuleBase().getConfiguration().isPhreakEnabled() && !unlinkingAllowedForRule(context.getRule() ) ) {
             setUnlinkDisabledCount( null, terminal.getLeftTupleSource(),  ( context.getWorkingMemories().length == 0) ? null : context.getWorkingMemories() ); 

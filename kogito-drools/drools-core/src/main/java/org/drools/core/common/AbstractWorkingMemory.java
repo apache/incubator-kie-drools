@@ -45,11 +45,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.CalendarsImpl;
 import org.drools.core.base.MapGlobalResolver;
-import org.drools.core.event.AgendaEventListener;
-import org.drools.core.event.AgendaEventSupport;
-import org.drools.core.event.RuleBaseEventListener;
-import org.drools.core.event.WorkingMemoryEventListener;
-import org.drools.core.event.WorkingMemoryEventSupport;
+import org.drools.core.event.*;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
 import org.drools.core.reteoo.EntryPointNode;
@@ -78,6 +74,7 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
+import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.api.runtime.Calendars;
@@ -101,83 +98,85 @@ public abstract class AbstractWorkingMemory
     ProcessEventManager, 
     CorrelationAwareProcessRuntime {
 
-    protected int                                                id;
+    protected int id;
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    private   NodeMemories                                       nodeMemories;
+    private NodeMemories nodeMemories;
 
-    protected NamedEntryPoint                                    defaultEntryPoint;
+    protected NamedEntryPoint defaultEntryPoint;
 
     /** Global values which are associated with this memory. */
-    protected GlobalResolver                                     globalResolver;
+    protected GlobalResolver globalResolver;
 
-    protected Calendars                                          calendars;
-    protected DateFormats                                        dateFormats;
+    protected Calendars   calendars;
+    protected DateFormats dateFormats;
 
     /** The eventSupport */
-    protected WorkingMemoryEventSupport                          workingMemoryEventSupport;
+    protected WorkingMemoryEventSupport workingMemoryEventSupport;
 
-    protected AgendaEventSupport                                 agendaEventSupport;
+    protected RuleEventListenerSupport ruleEventListenerSupport;
 
-    protected List                                               __ruleBaseEventListeners;
+    protected AgendaEventSupport agendaEventSupport;
+
+    protected List __ruleBaseEventListeners;
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected transient InternalRuleBase                         ruleBase;
+    protected transient InternalRuleBase ruleBase;
 
-    protected FactHandleFactory                                  handleFactory;
+    protected FactHandleFactory handleFactory;
 
-    private   TruthMaintenanceSystem                             tms;
+    private TruthMaintenanceSystem tms;
 
     /** Rule-firing agenda. */
-    protected InternalAgenda                                     agenda;
+    protected InternalAgenda agenda;
 
-    private   Queue<WorkingMemoryAction>                         actionQueue;
+    private Queue<WorkingMemoryAction> actionQueue;
 
-    protected AtomicBoolean                                      evaluatingActionQueue;
+    protected AtomicBoolean evaluatingActionQueue;
 
-    protected ReentrantLock                                      lock;
+    protected ReentrantLock lock;
 
     /**
      * This must be thread safe as it is incremented and read via different
      * EntryPoints
      */
-    protected AtomicLong                                         propagationIdCounter;
+    protected AtomicLong propagationIdCounter;
 
-    private boolean                                              sequential;
+    private boolean sequential;
 
-    private List<LIANodePropagation>                             liaPropagations;
+    private List<LIANodePropagation> liaPropagations;
 
     /** Flag to determine if a rule is currently being fired. */
-    protected volatile AtomicBoolean                             firing;
+    protected volatile AtomicBoolean firing;
 
-    private WorkItemManager                                      workItemManager;
+    private WorkItemManager workItemManager;
 
-    private TimerService                                         timerService;
+    private TimerService timerService;
 
-    protected Map<String, WorkingMemoryEntryPoint>               entryPoints;
+    protected Map<String, WorkingMemoryEntryPoint> entryPoints;
 
-    protected InternalFactHandle                                 initialFactHandle;
+    protected InternalFactHandle initialFactHandle;
 
-    protected SessionConfiguration                               config;
+    protected SessionConfiguration config;
 
-    private InternalKnowledgeRuntime                             kruntime;
+    private InternalKnowledgeRuntime kruntime;
 
-    private Map<String, Channel>                                 channels;
+    private Map<String, Channel> channels;
 
-    private Environment                                          environment;
+    private Environment environment;
 
-    private ExecutionResults                                     batchExecutionResult;
+    private ExecutionResults batchExecutionResult;
 
     // this is a counter of concurrent operations happening. When this counter is zero, 
     // the engine is idle.
-    private AtomicLong                                           opCounter;
+    private AtomicLong opCounter;
     // this is the timestamp of the end of the last operation, based on the session clock,
     // or -1 if there are operation being executed at this moment
-    private AtomicLong                                           lastIdleTimestamp;
+    private AtomicLong lastIdleTimestamp;
 
-    private InternalProcessRuntime                               processRuntime;
+    private InternalProcessRuntime processRuntime;
 
-    private transient ObjectMarshallingStrategyStore             marshallingStore;
+    private transient ObjectMarshallingStrategyStore marshallingStore;
 
     // ------------------------------------------------------------
     // Constructors
@@ -188,7 +187,7 @@ public abstract class AbstractWorkingMemory
 
     /**
      * Construct.
-     * 
+     *
      * @param ruleBase
      *            The backing rule-base.
      */
@@ -197,13 +196,13 @@ public abstract class AbstractWorkingMemory
                                  final FactHandleFactory handleFactory,
                                  final SessionConfiguration config,
                                  final Environment environment) {
-        this( id,
-              ruleBase,
-              handleFactory,
-              null,
-              0,
-              config,
-              environment );
+        this(id,
+             ruleBase,
+             handleFactory,
+             null,
+             0,
+             config,
+             environment);
     }
 
     public AbstractWorkingMemory(final int id,
@@ -212,16 +211,18 @@ public abstract class AbstractWorkingMemory
                                  final SessionConfiguration config,
                                  final Environment environment,
                                  final WorkingMemoryEventSupport workingMemoryEventSupport,
-                                 final AgendaEventSupport agendaEventSupport) {
-        this( id,
-              ruleBase,
-              handleFactory,
-              null,
-              0,
-              config,
-              environment,
-              workingMemoryEventSupport,
-              agendaEventSupport );
+                                 final AgendaEventSupport agendaEventSupport,
+                                 final RuleEventListenerSupport ruleEventListenerSupport) {
+        this(id,
+             ruleBase,
+             handleFactory,
+             null,
+             0,
+             config,
+             environment,
+             workingMemoryEventSupport,
+             agendaEventSupport,
+             ruleEventListenerSupport);
     }
 
     public AbstractWorkingMemory(final int id,
@@ -231,15 +232,16 @@ public abstract class AbstractWorkingMemory
                                  final long propagationContext,
                                  final SessionConfiguration config,
                                  final Environment environment) {
-        this( id,
-              ruleBase,
-              handleFactory,
-              initialFactHandle,
-              propagationContext,
-              config,
-              environment,
-              new WorkingMemoryEventSupport(),
-              new AgendaEventSupport() );
+        this(id,
+             ruleBase,
+             handleFactory,
+             initialFactHandle,
+             propagationContext,
+             config,
+             environment,
+             new WorkingMemoryEventSupport(),
+             new AgendaEventSupport(),
+             new RuleEventListenerSupport() );
     }
 
     public AbstractWorkingMemory(final int id,
@@ -250,20 +252,21 @@ public abstract class AbstractWorkingMemory
                                  final SessionConfiguration config,
                                  final Environment environment,
                                  final WorkingMemoryEventSupport workingMemoryEventSupport,
-                                 final AgendaEventSupport agendaEventSupport) {
+                                 final AgendaEventSupport agendaEventSupport,
+                                 final RuleEventListenerSupport ruleEventListenerSupport) {
         this.id = id;
         this.config = config;
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
         this.environment = environment;
 
-        nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
+        nodeMemories = new ConcurrentNodeMemories(this.ruleBase);
         actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
 
-        Globals globals = (Globals) this.environment.get( EnvironmentName.GLOBALS );
-        if ( globals != null ) {
-            if ( !(globals instanceof GlobalResolver) ) {
-                this.globalResolver = new GlobalsAdapter( globals );
+        Globals globals = (Globals) this.environment.get(EnvironmentName.GLOBALS);
+        if (globals != null) {
+            if (!(globals instanceof GlobalResolver)) {
+                this.globalResolver = new GlobalsAdapter(globals);
             } else {
                 this.globalResolver = (GlobalResolver) globals;
             }
@@ -273,8 +276,8 @@ public abstract class AbstractWorkingMemory
 
         this.calendars = new CalendarsImpl();
 
-        this.dateFormats = (DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
-        if ( this.dateFormats == null ) {
+        this.dateFormats = (DateFormats) this.environment.get(EnvironmentName.DATE_FORMATS);
+        if (this.dateFormats == null) {
             this.dateFormats = new DateFormatsImpl();
             this.environment.set( EnvironmentName.DATE_FORMATS,
                                   this.dateFormats );
@@ -297,6 +300,7 @@ public abstract class AbstractWorkingMemory
 
         this.workingMemoryEventSupport = workingMemoryEventSupport;
         this.agendaEventSupport = agendaEventSupport;
+        this.ruleEventListenerSupport = ruleEventListenerSupport;
         this.__ruleBaseEventListeners = new LinkedList();
         this.lock = new ReentrantLock();
 
@@ -491,6 +495,19 @@ public abstract class AbstractWorkingMemory
 
     public void removeEventListener(ProcessEventListener listener) {
         ((ProcessEventManager) this.processRuntime).removeEventListener( listener );
+    }
+
+    ///RuleEventListenerSupport
+    public void addEventListener(final RuleEventListener listener) {
+        this.ruleEventListenerSupport.addEventListener( listener );
+    }
+
+    public void removeEventListener(final RuleEventListener listener) {
+        this.ruleEventListenerSupport.removeEventListener( listener );
+    }
+
+    public List getRuleEventListeners() {
+        return this.ruleEventListenerSupport.getEventListeners();
     }
 
     public FactHandleFactory getFactHandleFactory() {

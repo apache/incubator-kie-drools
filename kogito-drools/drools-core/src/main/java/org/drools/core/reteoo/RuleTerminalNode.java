@@ -357,7 +357,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public void attach( BuildContext context ) {
         getLeftTupleSource().addTupleSink(this, context);
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 

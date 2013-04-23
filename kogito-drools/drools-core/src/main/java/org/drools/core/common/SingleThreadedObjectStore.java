@@ -26,7 +26,7 @@ import java.util.concurrent.locks.Lock;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.util.JavaIteratorAdapter;
 import org.drools.core.util.ObjectHashMap;
-import org.drools.core.util.AbstractHashTable.HashTableIterator;
+import org.drools.core.util.HashTableIterator;
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.kie.api.runtime.rule.FactHandle;
 

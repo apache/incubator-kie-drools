@@ -118,7 +118,7 @@ public class AlphaNode extends ObjectSource
 
     public void attach(BuildContext context) {
         this.source.addObjectSink( this );
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 
@@ -293,6 +293,10 @@ public class AlphaNode extends ObjectSource
         }
 
         public SegmentMemory getSegmentMemory() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setSegmentMemory(SegmentMemory segmentMemory) {
             throw new UnsupportedOperationException();
         }
 

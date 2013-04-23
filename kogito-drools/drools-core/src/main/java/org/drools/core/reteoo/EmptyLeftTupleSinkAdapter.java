@@ -92,7 +92,11 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     
     public LeftTupleSinkNode getFirstLeftTupleSink() {
         return null;
-    }    
+    }
+
+    public LeftTupleSinkNode getLastLeftTupleSink() {
+        return null;
+    }
 
     public int size() {
         return 0;

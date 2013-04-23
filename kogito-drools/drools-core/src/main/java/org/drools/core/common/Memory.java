@@ -12,4 +12,6 @@ public interface Memory extends LinkedListNode<Memory> {
     
     public SegmentMemory getSegmentMemory();
 
+    public void setSegmentMemory(SegmentMemory segmentMemory);
+
 }

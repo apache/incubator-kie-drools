@@ -431,7 +431,7 @@ public class EntryPointNode extends ObjectSource
 
     public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 

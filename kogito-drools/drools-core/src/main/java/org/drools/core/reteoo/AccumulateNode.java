@@ -1110,6 +1110,10 @@ public class AccumulateNode extends BetaNode {
             return betaMemory.getSegmentMemory();
         }
 
+        public void setSegmentMemory(SegmentMemory segmentMemory) {
+            betaMemory.setSegmentMemory(segmentMemory);
+        }
+
     }
 
     public static class AccumulateContext

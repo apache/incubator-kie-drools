@@ -203,7 +203,11 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
     
     public LeftTupleSinkNode getFirstLeftTupleSink() {
         return this.sinks.getFirst();
-    }    
+    }
+
+    public LeftTupleSinkNode getLastLeftTupleSink() {
+        return this.sinks.getLast();
+    }
 
     public int size() {
         return this.sinks.size();

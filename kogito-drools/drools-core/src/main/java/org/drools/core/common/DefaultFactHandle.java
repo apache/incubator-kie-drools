@@ -288,7 +288,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         this.lastRightTuple = lastRightTuple;
     }
 
-    protected void setFirstLeftTuple( LeftTuple firstLeftTuple ) {
+    public void setFirstLeftTuple( LeftTuple firstLeftTuple ) {
         this.firstLeftTuple = firstLeftTuple;
     }
 
@@ -296,7 +296,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return this.firstLeftTuple;
     }
 
-    protected void setLastLeftTuple( LeftTuple lastLeftTuple ) {
+    public void setLastLeftTuple( LeftTuple lastLeftTuple ) {
         this.lastLeftTuple = lastLeftTuple;
     }
 

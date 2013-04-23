@@ -1,13 +1,17 @@
 package org.drools.compiler.phreak;
 
+import org.kie.api.definition.type.Position;
+
 public class B {
+
+    @Position(0)
     Object object;
 
     public B(Object object) {
         super();
         this.object = object;
     }
-    
+
     public static B b(Object object) {
         return new B( object );
     }

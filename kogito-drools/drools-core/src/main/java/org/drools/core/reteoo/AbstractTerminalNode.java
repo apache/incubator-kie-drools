@@ -116,72 +116,76 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         PathMemory rmem = new PathMemory(this);
-        initPathMemory(rmem, getLeftTupleSource(), null, wm );
+        initPathMemory(rmem, getLeftTupleSource(), null, wm, null );
         return rmem;
     }
 
     /**
      * Creates and return the node memory
      */
-    public static void initPathMemory(PathMemory pmem, LeftTupleSource tupleSource, LeftTupleSource startTupleSource, InternalWorkingMemory wm) {
-            int counter = 0;
-            long allLinkedTestMask = 0;
+    public static void initPathMemory(PathMemory pmem, LeftTupleSource tupleSource, LeftTupleSource startTupleSource, InternalWorkingMemory wm, Rule removingRule) {
+        int counter = 0;
+        long allLinkedTestMask = 0;
 
-            if ( tupleSource.getSinkPropagator().size() > 1 ) {
-                // it's shared, RTN is in it's own segment, so increase segmentCount
+
+        int size = tupleSource.getSinkPropagator().size();
+        if ( size > 2 ) {
+            counter++;
+        } else if ( size == 2 && ( removingRule == null || !tupleSource.getAssociations().containsKey( removingRule )  ) ) {
+            counter++;
+        }
+
+        ConditionalBranchNode cen = getConditionalBranchNode(tupleSource); // segments after a branch CE can notify, but they cannot impact linking
+        // @TODO optimization would be to split path's into two, to avoid wasted rule evaluation for segments after the first branch CE
+
+        boolean updateBitInNewSegment = true; // Avoids more than one isBetaNode check per segment
+        boolean updateAllLinkedTest = ( cen == null ) ? true : false; // if there is a CEN, do not set bit until it's reached
+        boolean subnetworkBoundaryCrossed = false;
+        while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+            if ( !subnetworkBoundaryCrossed &&  tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
+                // start recording now we are after the BranchCE, but only if we are not outside the target
+                // subnetwork
+                updateAllLinkedTest = true;
+            }
+
+            if ( updateAllLinkedTest && updateBitInNewSegment && NodeTypeEnums.isBetaNode( tupleSource )) {
+                updateBitInNewSegment = false;
+                BetaNode bn = ( BetaNode) tupleSource;
+                if ( bn.isRightInputIsRiaNode() ) {
+                    // only ria's without reactive subnetworks can be disabled and thus need checking
+                    // The getNodeMemory will7 call this method recursive for sub networks it reaches
+                    RiaNodeMemory rnmem = ( RiaNodeMemory ) wm.getNodeMemory((MemoryFactory) bn.getRightInput());
+                    if ( rnmem.getRiaPathMemory().getAllLinkedMaskTest() != 0 ) {
+                        allLinkedTestMask = allLinkedTestMask | 1;
+                    }
+                } else if ( ( !(NodeTypeEnums.NotNode == bn.getType() && !((NotNode)bn).isEmptyBetaConstraints()) &&
+                              NodeTypeEnums.AccumulateNode != bn.getType()) )  {
+                    // non empty not nodes and accumulates can never be disabled and thus don't need checking
+                    allLinkedTestMask = allLinkedTestMask | 1;
+                }
+            }
+
+            if ( !SegmentUtilities.parentInSameSegment( tupleSource, removingRule ) ) {
+                updateBitInNewSegment = true; // allow bit to be set for segment
+                allLinkedTestMask = allLinkedTestMask << 1;
                 counter++;
             }
 
-            ConditionalBranchNode cen = getConditionalBranchNode(tupleSource); // segments after a branch CE can notify, but they cannot impact linking
-            // @TODO optimization would be to split path's into two, to avoid wasted rule evaluation for segments after the first branch CE
-
-            boolean updateBitInNewSegment = true; // Avoids more than one isBetaNode check per segment
-            boolean updateAllLinkedTest = ( cen == null ) ? true : false; // if there is a CEN, do not set bit until it's reached
-            boolean subnetworkBoundaryCrossed = false;
-            while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
-                if ( !subnetworkBoundaryCrossed &&  tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
-                    // start recording now we are after the BranchCE, but only if we are not outside the target
-                    // subnetwork
-                    updateAllLinkedTest = true;
-                }
-
-                if ( updateAllLinkedTest && updateBitInNewSegment && NodeTypeEnums.isBetaNode( tupleSource )) {
-                    updateBitInNewSegment = false;
-                    BetaNode bn = ( BetaNode) tupleSource;
-                    if ( bn.isRightInputIsRiaNode() ) {
-                        // only ria's without reactive subnetworks can be disabled and thus need checking
-                        // The getNodeMemory will7 call this method recursive for sub networks it reaches
-                        RiaNodeMemory rnmem = ( RiaNodeMemory ) wm.getNodeMemory((MemoryFactory) bn.getRightInput());
-                        if ( rnmem.getRiaPathMemory().getAllLinkedMaskTest() != 0 ) {
-                            allLinkedTestMask = allLinkedTestMask | 1;
-                        }
-                    } else if ( ( !(NodeTypeEnums.NotNode == bn.getType() && !((NotNode)bn).isEmptyBetaConstraints()) &&
-                                  NodeTypeEnums.AccumulateNode != bn.getType()) )  {
-                        // non empty not nodes and accumulates can never be disabled and thus don't need checking
-                        allLinkedTestMask = allLinkedTestMask | 1;
-                    }
-                }
-
-                if ( !SegmentUtilities.parentInSameSegment( tupleSource ) ) {
-                    updateBitInNewSegment = true; // allow bit to be set for segment
-                    allLinkedTestMask = allLinkedTestMask << 1;
-                    counter++;
-                }
-
-                tupleSource = tupleSource.getLeftTupleSource();
-                if ( tupleSource == startTupleSource ) {
-                    // stop tracking if we move outside of a subnetwork boundary (if one is set)
-                    subnetworkBoundaryCrossed = true;
-                    updateAllLinkedTest = false;
-                }
+            tupleSource = tupleSource.getLeftTupleSource();
+            if ( tupleSource == startTupleSource ) {
+                // stop tracking if we move outside of a subnetwork boundary (if one is set)
+                subnetworkBoundaryCrossed = true;
+                updateAllLinkedTest = false;
             }
+        }
 
-            if ( !subnetworkBoundaryCrossed ) {
-                allLinkedTestMask = allLinkedTestMask | 1;
-            }
+        if ( !subnetworkBoundaryCrossed ) {
+            allLinkedTestMask = allLinkedTestMask | 1;
+        }
 
-            pmem.setAllLinkedMaskTest( allLinkedTestMask );
-            pmem.setSegmentMemories( new SegmentMemory[counter + 1] ); // +1 as arras are zero based.
+        pmem.setAllLinkedMaskTest( allLinkedTestMask );
+        pmem.setlinkedSegmentMask(0);
+        pmem.setSegmentMemories( new SegmentMemory[counter + 1] ); // +1 as arras are zero based.
     }
 
     private static ConditionalBranchNode getConditionalBranchNode(LeftTupleSource tupleSource) {

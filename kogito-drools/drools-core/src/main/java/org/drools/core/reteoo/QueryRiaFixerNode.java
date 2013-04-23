@@ -108,7 +108,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
     public void attach( BuildContext context ) {
         this.leftInput.addTupleSink( this, context );
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 

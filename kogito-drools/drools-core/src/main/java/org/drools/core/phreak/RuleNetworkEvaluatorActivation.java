@@ -61,7 +61,7 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
         //int fireCount = 0;
         int localFireCount = 0;
         if ( !tupleList.isEmpty() ) {
-            RuleTerminalNode rtn =  ( RuleTerminalNode ) rmem.getRuleTerminalNode();
+            RuleTerminalNode rtn =  ( RuleTerminalNode ) rmem.getNetworkNode();
             Rule rule = rtn.getRule();
 
             InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
@@ -93,12 +93,13 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                     continue;
                 }
 
-                long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
-                InternalAgendaGroup agendaGroup = (InternalAgendaGroup) agenda.getAgendaGroup(rule.getAgendaGroup());
-                if (blockedByLockOnActive(rule, agenda, pctx, handleRecency, agendaGroup)) {
-                    continue;
+                if ( pctx.getType() != org.kie.api.runtime.rule.PropagationContext.RULE_ADDITION ) {
+                    long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
+                    InternalAgendaGroup agendaGroup = (InternalAgendaGroup) agenda.getAgendaGroup(rule.getAgendaGroup());
+                    if (blockedByLockOnActive(rule, agenda, pctx, handleRecency, agendaGroup)) {
+                        continue;
+                    }
                 }
-
 
                 AgendaItem item = ( AgendaItem ) leftTuple.getObject();
                 if ( item == null ) {
@@ -195,5 +196,11 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
     public LeftTupleList getLeftTupleList() {
         return this.tupleList;
     }
+//
+//    public void removeLeftTuple(LeftTuple leftTuple) {
+//        this.tupleList.remove( leftTuple );
+//    }
+//
+//    public void addLeftTuple(LeftTuple lefTTuple)
 
 }

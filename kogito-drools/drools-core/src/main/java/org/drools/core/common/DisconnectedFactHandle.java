@@ -152,6 +152,10 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
+    public void setLastLeftTuple(LeftTuple leftTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
     public void setObject(Object object) {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
@@ -203,6 +207,10 @@ public class DisconnectedFactHandle
 
     public void disconnect() {
         throw new UnsupportedOperationException( "Not supported yet." );
+    }
+
+    public void addFirstLeftTuple(LeftTuple leftTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
     public void addLastLeftTuple(LeftTuple leftTuple) {

@@ -3,6 +3,7 @@ package org.drools.core.reteoo;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
 import org.slf4j.Logger;
@@ -13,24 +14,24 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         Memory {
     protected static transient Logger log = LoggerFactory.getLogger(SegmentMemory.class);
 
-    private long                           linkedSegmentMask;
+    private long linkedSegmentMask;
 
-    private long                           allLinkedMaskTest;
+    private long allLinkedMaskTest;
 
-    private TerminalNode                   rtn;
+    private NetworkNode networkNode;
 
     private RuleNetworkEvaluatorActivation agendaItem;
-    
-    private SegmentMemory[]                segmentMemories;
 
-    private SegmentMemory                  segmentMemory;
+    private SegmentMemory[] segmentMemories;
 
-    public PathMemory(TerminalNode rtn) {
-        this.rtn = rtn;
+    private SegmentMemory segmentMemory;
+
+    public PathMemory(NetworkNode networkNode) {
+        this.networkNode = networkNode;
     }
 
-    public TerminalNode getRuleTerminalNode() {
-        return rtn;
+    public NetworkNode getNetworkNode() {
+        return networkNode;
     }
 
     public RuleNetworkEvaluatorActivation getAgendaItem() {
@@ -39,6 +40,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void setAgendaItem(RuleNetworkEvaluatorActivation agendaItem) {
         this.agendaItem = agendaItem;
+    }
+
+    public void setlinkedSegmentMask(long mask) {
+        linkedSegmentMask = mask;
     }
 
     public long getLinkedSegmentMask() {
@@ -60,12 +65,12 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     public void linkSegment(long mask,
                             InternalWorkingMemory wm) {
         if ( log.isTraceEnabled() ) {
-            if ( getRuleTerminalNode() != null ) {
-                log.trace( "  LinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, getRuleTerminalNode().getRule().getName()  );
+            if ( NodeTypeEnums.isTerminalNode(getNetworkNode()) ) {
+                TerminalNode rtn = (TerminalNode) getNetworkNode();
+                log.trace( "  LinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, rtn.getRule().getName()  );
             }  else {
                 log.trace( "  LinkSegment smask={} rmask={} name={}", mask, "RiaNode" );
             }
-
         }
         linkedSegmentMask = linkedSegmentMask | mask;
         if ( isRuleLinked() ) {
@@ -74,8 +79,9 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void doLinkRule(InternalWorkingMemory wm) {
+        TerminalNode rtn = (TerminalNode) getNetworkNode();
         if ( log.isTraceEnabled() ) {
-            log.trace( "    LinkRule name={}", getRuleTerminalNode().getRule().getName()  );
+            log.trace( "    LinkRule name={}", rtn.getRule().getName()  );
         }
         if ( agendaItem == null ) {
             int salience = rtn.getRule().getSalience().getValue( null,
@@ -89,8 +95,9 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void doUnlinkRule(InternalWorkingMemory wm) {
+        TerminalNode rtn = (TerminalNode) getNetworkNode();
         if ( log.isTraceEnabled() ) {
-            log.trace( "    UnlinkRule name={}", getRuleTerminalNode().getRule().getName()  );
+            log.trace( "    UnlinkRule name={}", rtn.getRule().getName()  );
         }
         if ( agendaItem == null ) {
             int salience = rtn.getRule().getSalience().getValue( null,
@@ -140,7 +147,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public String toString() {
-        return "[RuleMem " + getRuleTerminalNode().getRule().getName() + "]";
+        return "[RuleMem " + ((TerminalNode)getNetworkNode()).getRule().getName() + "]";
     }
 
 }

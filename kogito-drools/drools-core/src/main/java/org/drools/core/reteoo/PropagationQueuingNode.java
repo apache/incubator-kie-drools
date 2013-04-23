@@ -390,6 +390,10 @@ public class PropagationQueuingNode extends ObjectSource
         public SegmentMemory getSegmentMemory() {
             throw new UnsupportedOperationException();
         }
+
+        public void setSegmentMemory(SegmentMemory segmentMemory) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     private static abstract class Action

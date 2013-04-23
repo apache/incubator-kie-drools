@@ -132,7 +132,7 @@ public class WindowNode extends ObjectSource
 
     public void attach(BuildContext context) {
         this.source.addObjectSink(this);
-        if (context == null) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
             return;
         }
 
@@ -150,9 +150,8 @@ public class WindowNode extends ObjectSource
     }
 
     public void assertObject(final InternalFactHandle factHandle,
-            final PropagationContext context,
-            final InternalWorkingMemory workingMemory) {
-
+                             final PropagationContext context,
+                             final InternalWorkingMemory workingMemory) {
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
         
         // must guarantee single thread from now on
@@ -160,27 +159,21 @@ public class WindowNode extends ObjectSource
         try {
             int index = 0;
             for (AlphaNodeFieldConstraint constraint : constraints) {
-                if (!constraint.isAllowed(factHandle,
-                        workingMemory,
-                        memory.context[index++])) {
+                if (!constraint.isAllowed(factHandle, workingMemory, memory.context[index++])) {
                     return;
                 }
             }
             // process the behavior
-            if (!behavior.assertFact(memory,
-                    factHandle,
-                    workingMemory)) {
+            if (!behavior.assertFact(memory, factHandle, workingMemory)) {
                 return;
             }
 
             // propagate
             WindowTupleList list = new WindowTupleList((EventFactHandle) factHandle, this);
             context.setActiveWindowTupleList(list);
-            memory.events.put(factHandle,
-                    list);
-            this.sink.propagateAssertObject(factHandle,
-                    context,
-                    workingMemory);
+
+            memory.events.put(factHandle, list);
+            this.sink.propagateAssertObject(factHandle, context, workingMemory);
             context.setActiveWindowTupleList(null);
         } finally {
             memory.gate.unlock();
@@ -409,6 +402,10 @@ public class WindowNode extends ObjectSource
         }
         
         public SegmentMemory getSegmentMemory() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setSegmentMemory(SegmentMemory segmentMemory) {
             throw new UnsupportedOperationException();
         }
 

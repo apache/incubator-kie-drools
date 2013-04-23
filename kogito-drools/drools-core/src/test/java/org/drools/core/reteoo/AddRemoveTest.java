@@ -23,7 +23,8 @@ import org.drools.core.reteoo.builder.BuildContext;
 
 import org.junit.Test;
 
-public class AddRemoveTest extends DroolsTestCase {
+public class
+        AddRemoveTest extends DroolsTestCase {
     @Test
     public void testAdd() {
         /*
