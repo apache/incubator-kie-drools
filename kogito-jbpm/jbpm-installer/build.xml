@@ -106,7 +106,24 @@
 
   <!-- Download Eclipse -->
   <condition property="download.type" value="win32">
-    <os family="windows" />
+  	<and>
+      <os family="windows" />
+      <not>
+        <or>
+          <os arch="x86_64" />
+          <os arch="amd64" />
+        </or>
+      </not>
+    </and>
+  </condition>
+  <condition property="download.type" value="win32-x86_64">
+    <and>
+      <os family="windows" />
+      <or>
+        <os arch="x86_64" />
+        <os arch="amd64" />
+      </or>
+    </and>
   </condition>	
   <condition property="download.type" value="macosx-cocoa">
     <and>
@@ -159,29 +176,29 @@
     <echo message="Checking Eclipse download ..." />
     <condition property="eclipse.not.available">
       <not>
-        <available file="${install.home}/lib/eclipse-java-juno-SR1-${download.type}.${download.extension}" />
+        <available file="${install.home}/lib/eclipse-java-juno-SR2-${download.type}.${download.extension}" />
       </not>
     </condition>
   </target>
   <target name="download.eclipse" depends="download.eclipse.check" if="eclipse.not.available">
     <echo message="Getting Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/technology/epp/downloads/release/juno/SR1/eclipse-java-juno-SR1-${download.type}.${download.extension}"
-         dest="${install.home}/lib/eclipse-java-juno-SR1-${download.type}.${download.extension}"  />
+    <get src="http://download.eclipse.org/technology/epp/downloads/release/juno/SR2/eclipse-java-juno-SR2-${download.type}.${download.extension}"
+         dest="${install.home}/lib/eclipse-java-juno-SR2-${download.type}.${download.extension}"  />
   </target>
   <target name="download.eclipse.gef.check">
     <echo message="Checking Eclipse GEF download ..." />
     <condition property="eclipse.gef.not.available">
       <not>
-        <available file="${install.home}/lib/GEF-SDK-3.8.1.zip" />
+        <available file="${install.home}/lib/GEF-SDK-3.8.2.zip" />
       </not>
     </condition>
   </target>
   <target name="download.eclipse.gef" depends="download.eclipse.gef.check" if="eclipse.gef.not.available">
     <echo message="Getting Eclipse GEF ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/tools/gef/downloads/drops/3.8.1/R201208200205/GEF-SDK-3.8.1.zip"
-         dest="${install.home}/lib/GEF-SDK-3.8.1.zip" />
+    <get src="http://download.eclipse.org/tools/gef/downloads/drops/3.8.2/R201301141834/GEF-SDK-3.8.2.zip"
+         dest="${install.home}/lib/GEF-SDK-3.8.2.zip" />
   </target>
 
   <!-- Download jBPM binaries -->
@@ -378,17 +395,17 @@
     <antcall target="unzipEclipse" />	
     <antcall target="untarEclipse" />
     <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/GEF-SDK-3.8.1.zip" />				         
+           src="${install.home}/lib/GEF-SDK-3.8.2.zip" />				         
   </target>
   
   <target name="unzipEclipse" if="expandTypeZip">
     <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/eclipse-java-juno-SR1-${download.type}.zip" />  
+           src="${install.home}/lib/eclipse-java-juno-SR2-${download.type}.zip" />  
   </target>
 
   <target name="untarEclipse" if="expandTypeTarGz">
-    <gunzip src="${install.home}/lib/eclipse-java-juno-SR1-${download.type}.tar.gz"/>
-    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-juno-SR1-${download.type}.tar" />
+    <gunzip src="${install.home}/lib/eclipse-java-juno-SR2-${download.type}.tar.gz"/>
+    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-juno-SR2-${download.type}.tar" />
     <chmod perm="a+x" file="${install.home}/eclipse/eclipse" os="Linux"/>
     <chmod perm="a+x" file="${install.home}/eclipse/Eclipse.app/Contents/MacOS/eclipse" os="Mac OS X"/>
   </target>
