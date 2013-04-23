@@ -529,7 +529,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
         List<String> names = getNotTriggeredNodes(processInstanceId, nodeNames);
         if (!names.isEmpty()) {
             String s = names.get(0);
-            for (int i = 1; i < names.size(); i++) {
+            for(int i = 1; i < names.size(); i++) {
                 s += ", " + names.get(i);
             }
             fail("Node(s) not executed: " + s);

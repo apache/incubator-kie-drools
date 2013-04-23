@@ -923,4 +923,5 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
             assertEquals( "Process instance is not completed.", ProcessInstance.STATE_COMPLETED, processInstance.getState() );
         } // otherwise, persistence use => processInstance == null => process is completed
     }
+    
 }

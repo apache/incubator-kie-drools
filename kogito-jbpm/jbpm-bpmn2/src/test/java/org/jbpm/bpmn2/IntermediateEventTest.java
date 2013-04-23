@@ -498,14 +498,42 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testEventSubprocessSignal() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessSignal.bpmn2");
+        String [] nodes = { 
+                "start", "User Task 1",
+                "end", "Sub Process 1", "start-sub", "sub-script", "end-sub"
+        };
+        runTestEventSubprocessSignal("BPMN2-EventSubprocessSignal.bpmn2", nodes);
+    }
+    
+    @Test
+    public void testEventSubprocessSignalNested() throws Exception {
+        String [] nodes = { 
+                "Start",
+                "Sub Process",
+                "Sub Start",
+                "Sub Sub Process",
+                "Sub Sub Start",
+                "Sub Sub User Task",
+                "Sub Sub Sub Process",
+                "start-sub",
+                "sub-script",
+                "end-sub",
+                "Sub Sub End",
+                "Sub End ",
+                "End"
+        };
+        runTestEventSubprocessSignal("BPMN2-EventSubprocessSignal-Nested.bpmn2", nodes);
+    }
+    
+    public void runTestEventSubprocessSignal(String processFile, String [] completedNodes) throws Exception { 
+        KieBase kbase = createKnowledgeBase(processFile);
         final List<Long> executednodes = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener() {
 
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 if (event.getNodeInstance().getNodeName()
-                        .equals("Script Task 1")) {
+                        .equals("sub-script")) {
                     executednodes.add(event.getNodeInstance().getId());
                 }
             }
@@ -534,8 +562,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertNotNull(workItem);
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
-        assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
-                "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
+        assertNodeTriggered(processInstance.getId(), completedNodes );
         assertEquals(4, executednodes.size());
 
     }
@@ -799,41 +826,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     }
 
-    @Test
-    public void testEventSubprocessCompensation() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessCompensation.bpmn2");
-        final List<Long> executednodes = new ArrayList<Long>();
-        ProcessEventListener listener = new DefaultProcessEventListener() {
-
-            @Override
-            public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                if (event.getNodeInstance().getNodeName()
-                        .equals("Script Task 1")) {
-                    executednodes.add(event.getNodeInstance().getId());
-                }
-            }
-
-        };
-        ksession = createKnowledgeSession(kbase);
-        ksession.addEventListener(listener);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-                workItemHandler);
-        ProcessInstance processInstance = ksession
-                .startProcess("BPMN2-EventSubprocessCompensation");
-        assertProcessInstanceActive(processInstance);
-        ksession = restoreSession(ksession, true);
-        ksession.addEventListener(listener);
-
-        WorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        assertProcessInstanceFinished(processInstance, ksession);
-        assertNodeTriggered(processInstance.getId(), "start", "User Task 1",
-                "end", "Sub Process 1", "start-sub", "Script Task 1", "end-sub");
-        assertEquals(1, executednodes.size());
-
-    }
+   
 
     @Test
     public void testEventSubprocessTimer() throws Exception {
@@ -1785,4 +1778,6 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.dispose();
     }
 
+
+    
 }

@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -29,6 +30,7 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.bpmn2.xml.ProcessHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -121,11 +123,10 @@ public class DataTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-Association.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("Evaluation");
-        Definitions def = (Definitions) processInstance.getProcess()
-                .getMetaData().get("Definitions");
-        assertNotNull(def.getAssociations());
-        assertTrue(def.getAssociations().size() == 1);
-        Association assoc = def.getAssociations().get(0);
+        List<Association> associations = (List<Association>) processInstance.getProcess().getMetaData().get(ProcessHandler.ASSOCIATIONS);
+        assertNotNull(associations);
+        assertTrue(associations.size() == 1);
+        Association assoc = associations.get(0);
         assertEquals("_1234", assoc.getId());
         assertEquals("_1", assoc.getSourceRef());
         assertEquals("_2", assoc.getTargetRef());

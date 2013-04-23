@@ -18,7 +18,7 @@
         <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
         <bpmn2:signalEventDefinition id="SignalEventDefinition_1" signalRef="MySignal"/>
       </bpmn2:startEvent>
-      <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1">
+      <bpmn2:scriptTask id="ScriptTask_1" name="sub-script">
         <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
         <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
          <bpmn2:script>System.out.println("Event sub process triggered");</bpmn2:script>

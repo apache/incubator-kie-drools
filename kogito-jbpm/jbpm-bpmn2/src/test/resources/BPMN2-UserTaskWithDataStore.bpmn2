@@ -2,12 +2,16 @@
 <bpmn2:definitions id="582149941146176592" name=""
   targetNamespace="http://www.omg.org/bpmn20"
   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:data="http://www.example.com/proxydata">
+
   <bpmn2:import importType="data" namespace="http://www.example.com/proxydata"/>
-  <bpmn2:itemDefinition id="_642F1C24-40EE-4F9B-9562-F3A419DB49D1item" structureRef="data:user"/>
-  <bpmn2:dataStore id="_642F1C24-40EE-4F9B-9562-F3A419DB49D1"
-    itemSubjectRef="_642F1C24-40EE-4F9B-9562-F3A419DB49D1item" name=""/>
+  <bpmn2:itemDefinition id="_dataStoreItem" structureRef="data:user"/>
+  <bpmn2:dataStore id="_dataStore" itemSubjectRef="_dataStoreItem" name=""/>
+
   <bpmn2:process id="UserProcess" name="">
-    <bpmn2:userTask id="_64D3D89E-4738-46A0-A5C5-33596B0FA087" name="">
+    <bpmn2:startEvent id="_1" name=""/>
+    <bpmn2:sequenceFlow id="_B2AA549E-4A7E-44EA-84F7-81CCFE936FE7" sourceRef="_1" targetRef="_2"/>
+
+    <bpmn2:userTask id="_2" name="">
       <bpmn2:humanPerformer id="79f69fda-565e-4650-b3ac-23753cccd763">
         <bpmn2:resourceAssignmentExpression>
           <bpmn2:expression id="b220ecdb-03ea-41a3-9541-d940a57943bf">
@@ -16,10 +20,9 @@
         </bpmn2:resourceAssignmentExpression>
       </bpmn2:humanPerformer>
     </bpmn2:userTask>
-    <bpmn2:startEvent id="_D5163F2D-3D54-477F-8928-9DD4BCB71D9B" name=""/>
-    <bpmn2:sequenceFlow id="_B2AA549E-4A7E-44EA-84F7-81CCFE936FE7"
-      sourceRef="_D5163F2D-3D54-477F-8928-9DD4BCB71D9B" targetRef="_64D3D89E-4738-46A0-A5C5-33596B0FA087"/>
-    <bpmn2:userTask id="_4D157129-E208-4296-9706-C029C1C76743" name="">
+    <bpmn2:sequenceFlow id="_257EA4A9-63A8-4447-B0B3-0780DCEA6B4D" sourceRef="_2" targetRef="_3"/>
+
+    <bpmn2:userTask id="_3" name="">
       <bpmn2:humanPerformer id="5b3b334c-74ff-44d6-bd34-ee477e4645ad">
         <bpmn2:resourceAssignmentExpression>
           <bpmn2:expression id="2bd3fc41-2f3f-4d35-b32c-862474d4caf7">
@@ -28,16 +31,11 @@
         </bpmn2:resourceAssignmentExpression>
       </bpmn2:humanPerformer>
     </bpmn2:userTask>
-    <bpmn2:sequenceFlow id="_257EA4A9-63A8-4447-B0B3-0780DCEA6B4D"
-      sourceRef="_64D3D89E-4738-46A0-A5C5-33596B0FA087" targetRef="_4D157129-E208-4296-9706-C029C1C76743"/>
-    <bpmn2:endEvent id="_96DF26DA-F87E-4901-A303-833550A6CCFD" name=""/>
-    <bpmn2:sequenceFlow id="_BB00A235-EE17-4C0B-8B98-1E4B939E88D9"
-      sourceRef="_4D157129-E208-4296-9706-C029C1C76743" targetRef="_96DF26DA-F87E-4901-A303-833550A6CCFD"/>
-    <bpmn2:association associationDirection="none"
-      id="_8EFA0BCB-1530-4869-907A-E2872EC7831A"
-      sourceRef="_64D3D89E-4738-46A0-A5C5-33596B0FA087" targetRef="_642F1C24-40EE-4F9B-9562-F3A419DB49D1"/>
-    <bpmn2:association associationDirection="none"
-      id="_554267E5-32DE-466F-94F8-2CD8EE289270"
-      sourceRef="_642F1C24-40EE-4F9B-9562-F3A419DB49D1" targetRef="_4D157129-E208-4296-9706-C029C1C76743"/>
+    <bpmn2:sequenceFlow id="_BB00A235-EE17-4C0B-8B98-1E4B939E88D9" sourceRef="_3" targetRef="_4"/>
+
+    <bpmn2:endEvent id="_4" name=""/>
+
+    <bpmn2:association associationDirection="none" id="_2_dataStore-assoc" sourceRef="_2" targetRef="_dataStore"/>
+    <bpmn2:association associationDirection="none" id="_dataStore_3-assoc" sourceRef="_dataStore" targetRef="_3"/>
   </bpmn2:process>
 </bpmn2:definitions>

@@ -194,5 +194,5 @@ public class EndEventTest extends JbpmBpmn2TestCase {
         assertEquals(4, myList.size());
         
     }
-    
+
 }
