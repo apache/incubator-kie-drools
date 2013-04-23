@@ -271,7 +271,7 @@
                         </login-module>
                     </authentication>
                 </security-domain>
-                <security-domain name="drools-guvnor" cache-type="default">
+                <security-domain name="jbpm-console-ng" cache-type="default">
                     <authentication>
                         <login-module code="UsersRoles" flag="required">
                             <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
