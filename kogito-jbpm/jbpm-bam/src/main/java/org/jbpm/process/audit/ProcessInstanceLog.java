@@ -55,7 +55,8 @@ public class ProcessInstanceLog implements Serializable, AuditEvent {
     private Long parentProcessInstanceId;
     @Column(nullable=true)
     private String outcome;    
-    private Long duration;    
+    private Long duration;
+    @Column(name="user_identity")
     private String identity;    
     private String externalId;
     private String processVersion;
