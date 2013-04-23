@@ -34,6 +34,14 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
     private BendableScore perfectMaximumScore = null;
     private BendableScore perfectMinimumScore = null;
 
+    /**
+     * To make Java serialization happy.
+     */
+    private BendableScoreDefinition() {
+        this.hardLevelCount = -1; // Java serialization still changes it
+        this.softLevelCount = -1; // Java serialization still changes it
+    }
+
     public BendableScoreDefinition(int hardLevelCount, int softLevelCount) {
         this.hardLevelCount = hardLevelCount;
         this.softLevelCount = softLevelCount;
