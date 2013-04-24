@@ -12,20 +12,8 @@
     </xs:element>
     <xs:complexType name="Scenario">
         <xs:sequence minOccurs="0">
-            <xs:element name="ScenarioParameters" minOccurs="0">
-                <xs:complexType>
-                    <xs:complexContent>
-                        <xs:extension base="bpsim:ScenarioParameters"/>
-                    </xs:complexContent>
-                </xs:complexType>
-            </xs:element>
-            <xs:element name="ElementParameters" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                    <xs:complexContent>
-                        <xs:extension base="bpsim:ElementParameters"/>
-                    </xs:complexContent>
-                </xs:complexType>
-            </xs:element>
+            <xs:element name="ScenarioParameters" minOccurs="0" type="bpsim:ScenarioParameters"/>
+            <xs:element name="ElementParameters" minOccurs="0" maxOccurs="unbounded" type="bpsim:ElementParameters"/>
             <xs:element name="Calendar" type="bpsim:Calendar" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element name="VendorExtension" type="bpsim:VendorExtension" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
@@ -69,7 +57,7 @@
             <xs:element name="VendorExtension" type="bpsim:VendorExtension" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="id" type="xs:ID"/>
-        <xs:attribute name="elementRef" type="xs:ID"/>
+        <xs:attribute name="elementRef" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="TimeParameters">
         <xs:sequence minOccurs="0">

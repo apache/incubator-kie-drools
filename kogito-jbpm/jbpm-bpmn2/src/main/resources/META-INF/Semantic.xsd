@@ -869,7 +869,7 @@
 					<xsd:element ref="operation" minOccurs="1" maxOccurs="unbounded"/>
 				</xsd:sequence>
 				<xsd:attribute name="name" type="xsd:string" use="required"/>
-				<xsd:attribute name="implementationRef" type="xsd:QName"/>
+				<xsd:attribute name="implementationRef" type="xsd:string"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -1076,7 +1076,7 @@
 					<xsd:element name="errorRef" type="xsd:QName" minOccurs="0" maxOccurs="unbounded"/>
 				</xsd:sequence>
 				<xsd:attribute name="name" type="xsd:string" use="required"/>
-				<xsd:attribute name="implementationRef" type="xsd:QName"/>
+				<xsd:attribute name="implementationRef" type="xsd:string"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>

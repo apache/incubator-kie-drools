@@ -6,6 +6,7 @@
 	targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
 
 	<xsd:import namespace="http://www.omg.org/spec/BPMN/20100524/DI" schemaLocation="BPMNDI.xsd"/>
+
 	<xsd:include schemaLocation="Semantic.xsd"/>
 
 	<xsd:element name="definitions" type="tDefinitions"/>
