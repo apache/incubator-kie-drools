@@ -35,6 +35,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
+import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.InternalTask;
@@ -140,7 +141,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
     
     protected boolean isAutoClaim(WorkItem workItem, Task task) {
         String swimlaneUser = (String) workItem.getParameter("SwimlaneActorId");
-        if (swimlaneUser != null  && !"".equals(swimlaneUser)) {
+        if (swimlaneUser != null  && !"".equals(swimlaneUser) && task.getTaskData().getStatus() == Status.Ready) {
             return true;
         }
         
