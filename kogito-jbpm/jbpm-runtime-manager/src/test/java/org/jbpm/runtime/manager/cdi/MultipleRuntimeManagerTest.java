@@ -25,16 +25,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.Context;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.Context;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.TaskSummary;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -146,7 +147,7 @@ public class MultipleRuntimeManagerTest {
     private void testProcessStartOnManager(RuntimeManager manager, Context<?> context) {
         assertNotNull(manager);
         
-        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(context);
+        RuntimeEngine runtime = manager.getRuntimeEngine(context);
         assertNotNull(runtime);
         
         KieSession ksession = runtime.getKieSession();
@@ -157,7 +158,7 @@ public class MultipleRuntimeManagerTest {
         
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Reserved);
-        List<TaskSummary> tasks = runtime.getTaskService().getTasksOwned("john", statuses, "en-UK");
+        List<TaskSummary> tasks = runtime.getTaskService().getTasksOwnedByStatus("john", statuses, "en-UK");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         

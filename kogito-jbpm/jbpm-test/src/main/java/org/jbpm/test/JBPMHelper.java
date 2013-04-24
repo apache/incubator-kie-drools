@@ -12,10 +12,10 @@ import org.h2.tools.Server;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.task.TaskService;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.task.api.TaskService;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;

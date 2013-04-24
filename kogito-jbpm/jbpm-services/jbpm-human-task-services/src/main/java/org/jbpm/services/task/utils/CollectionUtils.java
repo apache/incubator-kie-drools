@@ -23,19 +23,29 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jbpm.services.task.impl.model.*;
-import org.kie.internal.task.api.model.Attachment;
+import org.jbpm.services.task.impl.model.AttachmentImpl;
+import org.jbpm.services.task.impl.model.BooleanExpressionImpl;
+import org.jbpm.services.task.impl.model.CommentImpl;
+import org.jbpm.services.task.impl.model.DeadlineImpl;
+import org.jbpm.services.task.impl.model.EmailNotificationImpl;
+import org.jbpm.services.task.impl.model.EscalationImpl;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.I18NTextImpl;
+import org.jbpm.services.task.impl.model.NotificationImpl;
+import org.jbpm.services.task.impl.model.ReassignmentImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Comment;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.BooleanExpression;
-import org.kie.internal.task.api.model.Comment;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Escalation;
-import org.kie.internal.task.api.model.Group;
-import org.kie.internal.task.api.model.I18NText;
 import org.kie.internal.task.api.model.Notification;
 import org.kie.internal.task.api.model.NotificationType;
-import org.kie.internal.task.api.model.OrganizationalEntity;
 import org.kie.internal.task.api.model.Reassignment;
-import org.kie.internal.task.api.model.User;
 
 public class CollectionUtils {
     

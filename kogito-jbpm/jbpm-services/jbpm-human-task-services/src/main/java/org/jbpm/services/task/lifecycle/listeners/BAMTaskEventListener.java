@@ -34,7 +34,7 @@ import org.jbpm.services.task.events.AfterTaskStartedEvent;
 import org.jbpm.services.task.events.AfterTaskStoppedEvent;
 import org.jbpm.services.task.impl.model.BAMTaskSummaryImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.kie.internal.task.api.model.Task;
+import org.kie.api.task.model.Task;
 
 @ApplicationScoped
 @Transactional

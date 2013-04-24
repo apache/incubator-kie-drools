@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.task.TaskService;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
-import org.kie.internal.runtime.manager.RuntimeEngine;
-import org.kie.internal.runtime.manager.RuntimeManager;
-import org.kie.internal.task.api.TaskService;
 
 public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 

@@ -24,17 +24,17 @@ import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.TaskSummary;
+import org.kie.api.task.model.User;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.task.api.TaskService;
-import org.kie.internal.task.api.model.Group;
-import org.kie.internal.task.api.model.TaskSummary;
-import org.kie.internal.task.api.model.User;
+import org.kie.internal.task.api.InternalTaskService;
 
 import bitronix.tm.TransactionManagerServices;
 
@@ -76,7 +76,7 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
             users.put("Administrator", new UserImpl("Administrator"));
             users.put("john", new UserImpl("john"));
             Map<String, Group> groups = new HashMap<String, Group>();
-            taskService.addUsersAndGroups(users, groups);
+            ((InternalTaskService) taskService).addUsersAndGroups(users, groups);
 
 
 
@@ -143,7 +143,7 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
             users.put("Administrator", new UserImpl("Administrator"));
             users.put("john", new UserImpl("john"));
             Map<String, Group> groups = new HashMap<String, Group>();
-            taskService.addUsersAndGroups(users, groups);
+            ((InternalTaskService) taskService).addUsersAndGroups(users, groups);
 
 
             System.out.println("Attached human task work item handler");

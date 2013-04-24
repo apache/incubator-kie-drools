@@ -38,10 +38,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.commons.java.nio.file.Path;
-import org.kie.internal.runtime.manager.RuntimeEngine;
-import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
 

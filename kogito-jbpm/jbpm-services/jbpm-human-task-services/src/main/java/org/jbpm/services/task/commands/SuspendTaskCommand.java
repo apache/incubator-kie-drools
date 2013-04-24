@@ -21,10 +21,11 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskSuspendedEvent;
 import org.jbpm.services.task.events.BeforeTaskSuspendedEvent;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.User;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Suspend : [ new OperationCommand().{ status = [ Status.Ready ],
@@ -60,14 +61,14 @@ public class SuspendTaskCommand extends TaskCommand<Void> {
         
         if (potOwnerAllowed || adminAllowed ) {
             if (task.getTaskData().getStatus().equals(Status.Ready)) {
-                task.getTaskData().setStatus(Status.Suspended);
+            	((InternalTaskData) task.getTaskData()).setStatus(Status.Suspended);
                 noOp = false;
             }
         }
         if (ownerAllowed || adminAllowed  ) {
             if (task.getTaskData().getStatus().equals(Status.Reserved)
                     || task.getTaskData().getStatus().equals(Status.InProgress)) {
-                task.getTaskData().setStatus(Status.Suspended);
+            	((InternalTaskData) task.getTaskData()).setStatus(Status.Suspended);
                 noOp = false;
             }
         }

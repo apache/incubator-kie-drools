@@ -18,8 +18,8 @@ package org.jbpm.services.task.internals.lifecycle;
 
 import java.util.List;
 
+import org.kie.api.task.model.Status;
 import org.kie.internal.task.api.model.Operation;
-import org.kie.internal.task.api.model.Status;
 
 
 public class OperationCommand {

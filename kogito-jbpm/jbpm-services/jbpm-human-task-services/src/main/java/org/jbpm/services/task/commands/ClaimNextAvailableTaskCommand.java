@@ -18,8 +18,8 @@ package org.jbpm.services.task.commands;
 import java.util.List;
 
 import org.jboss.seam.transaction.Transactional;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.TaskSummary;
 
 /**
 

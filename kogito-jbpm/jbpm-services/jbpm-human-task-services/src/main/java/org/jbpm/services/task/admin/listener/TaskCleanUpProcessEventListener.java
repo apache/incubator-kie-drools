@@ -20,9 +20,10 @@ import java.util.List;
 
 import org.drools.core.event.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
-import org.kie.internal.task.api.TaskService;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.task.api.InternalTaskService;
 
 
 /**
@@ -31,10 +32,10 @@ import org.kie.internal.task.api.model.TaskSummary;
  */
 public class TaskCleanUpProcessEventListener extends DefaultProcessEventListener {
 
-    private TaskService taskService;
+    private InternalTaskService taskService;
     
     public TaskCleanUpProcessEventListener(TaskService taskService) {
-        this.taskService = taskService;
+        this.taskService = (InternalTaskService) taskService;
     }
 
  
@@ -47,7 +48,7 @@ public class TaskCleanUpProcessEventListener extends DefaultProcessEventListener
         statuses.add(Status.Suspended);
         statuses.add(Status.Completed);
         statuses.add(Status.Exited);
-        List<TaskSummary> completedTasksByProcessId = taskService.getTasksByStatusByProcessId(event.getProcessInstance().getId(), statuses, "en-UK");
+        List<TaskSummary> completedTasksByProcessId = taskService.getTasksByStatusByProcessInstanceId(event.getProcessInstance().getId(), statuses, "en-UK");
         taskService.archiveTasks(completedTasksByProcessId);
         taskService.removeTasks(completedTasksByProcessId);
         

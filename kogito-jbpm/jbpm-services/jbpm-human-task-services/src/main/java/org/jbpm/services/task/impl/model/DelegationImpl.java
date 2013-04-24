@@ -30,8 +30,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.jbpm.services.task.utils.CollectionUtils;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.task.api.model.AllowedToDelegate;
-import org.kie.internal.task.api.model.OrganizationalEntity;
 
 @Embeddable
 public class DelegationImpl  implements org.kie.internal.task.api.model.Delegation {

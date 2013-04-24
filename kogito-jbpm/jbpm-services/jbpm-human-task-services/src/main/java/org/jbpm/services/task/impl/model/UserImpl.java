@@ -22,8 +22,10 @@ import java.io.ObjectOutput;
 
 import javax.persistence.Entity;
 
+import org.kie.api.task.model.User;
+
 @Entity
-public class UserImpl extends OrganizationalEntityImpl implements org.kie.internal.task.api.model.User {
+public class UserImpl extends OrganizationalEntityImpl implements User {
     
     public UserImpl() {
         super();

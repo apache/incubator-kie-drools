@@ -10,37 +10,37 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Comment;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.EventService;
-import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.UserInfo;
-import org.kie.internal.task.api.model.Attachment;
-import org.kie.internal.task.api.model.Comment;
-import org.kie.internal.task.api.model.Content;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.Group;
-import org.kie.internal.task.api.model.I18NText;
 import org.kie.internal.task.api.model.NotificationEvent;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Status;
 import org.kie.internal.task.api.model.SubTasksStrategy;
-import org.kie.internal.task.api.model.Task;
 import org.kie.internal.task.api.model.TaskDef;
 import org.kie.internal.task.api.model.TaskEvent;
-import org.kie.internal.task.api.model.TaskSummary;
-import org.kie.internal.task.api.model.User;
 
 public class SynchronizedTaskService 
-            implements TaskService, EventService<JbpmServicesEventListener<NotificationEvent>,JbpmServicesEventListener<Task>> {
+            implements InternalTaskService, EventService<JbpmServicesEventListener<NotificationEvent>,JbpmServicesEventListener<Task>> {
 	
 	// TODO: when engine controls transaction boundaries, this is probably sufficient
 	// however, with user transactions, we should make sure we sync on the ksession
 	// until the transaction is committed
 	
 	private Object ksession;
-	private TaskService taskService;
+	private InternalTaskService taskService;
 	
-	public SynchronizedTaskService(KieSession ksession, TaskService taskService) {
+	public SynchronizedTaskService(KieSession ksession, InternalTaskService taskService) {
 	    if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
 	        this.ksession = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
 	    } else {
@@ -352,17 +352,17 @@ public class SynchronizedTaskService
     }
 
     @Override
-    public List<TaskSummary> getTasksOwned(String userId) {
+    public List<TaskSummary> getTasksOwned(String userId, String language) {
         synchronized (ksession) {
-            return  taskService.getTasksOwned(userId);
+            return  taskService.getTasksOwned(userId, language);
          }
     }
 
     @Override
-    public List<TaskSummary> getTasksOwned(String userId, List<Status> status,
+    public List<TaskSummary> getTasksOwnedByStatus(String userId, List<Status> status,
             String language) {
         synchronized (ksession) {
-            return  taskService.getTasksOwned(userId, status, language);
+            return  taskService.getTasksOwnedByStatus(userId, status, language);
          }
     }
 
@@ -406,19 +406,19 @@ public class SynchronizedTaskService
     }
 
     @Override
-    public List<TaskSummary> getTasksByStatusByProcessId(
+    public List<TaskSummary> getTasksByStatusByProcessInstanceId(
             long processInstanceId, List<Status> status, String language) {
         synchronized (ksession) {
-            return  taskService.getTasksByStatusByProcessId(processInstanceId, status, language);
+            return  taskService.getTasksByStatusByProcessInstanceId(processInstanceId, status, language);
          }
     }
 
     @Override
-    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(
+    public List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(
             long processInstanceId, List<Status> status, String taskName,
             String language) {
         synchronized (ksession) {
-            return  taskService.getTasksByStatusByProcessIdByTaskName(processInstanceId, status, taskName, language);
+            return  taskService.getTasksByStatusByProcessInstanceIdByTaskName(processInstanceId, status, taskName, language);
          }
     }
 

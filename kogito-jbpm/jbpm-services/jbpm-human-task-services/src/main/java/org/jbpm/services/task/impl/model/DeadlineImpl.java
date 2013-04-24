@@ -35,8 +35,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.jbpm.services.task.utils.CollectionUtils;
+import org.kie.api.task.model.I18NText;
 import org.kie.internal.task.api.model.Escalation;
-import org.kie.internal.task.api.model.I18NText;
 
 @Entity
 @Table(name="Deadline")

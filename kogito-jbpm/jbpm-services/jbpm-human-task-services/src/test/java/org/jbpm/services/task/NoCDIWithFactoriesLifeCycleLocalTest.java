@@ -20,6 +20,7 @@ import javax.persistence.Persistence;
 
 import org.junit.After;
 import org.junit.Before;
+import org.kie.internal.task.api.InternalTaskService;
 
 /**
  *
@@ -36,7 +37,7 @@ public class NoCDIWithFactoriesLifeCycleLocalTest extends LifeCycleBaseTest {
         emf = Persistence.createEntityManagerFactory("org.jbpm.services.task");
         // Default Configuration for standalone environments
         HumanTaskServiceFactory.setEntityManagerFactory(emf);
-        taskService = HumanTaskServiceFactory.newTaskService();
+        taskService = (InternalTaskService) HumanTaskServiceFactory.newTaskService();
 
         super.setUp();
         

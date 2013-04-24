@@ -23,15 +23,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
 import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.TaskSummary;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -121,7 +122,7 @@ public class SingleRuntimeManagerTest {
     public void testSingleSingletonManager() {
         assertNotNull(singletonManager);
         
-        org.kie.internal.runtime.manager.RuntimeEngine runtime = singletonManager.getRuntimeEngine(EmptyContext.get());
+        RuntimeEngine runtime = singletonManager.getRuntimeEngine(EmptyContext.get());
         assertNotNull(runtime);
         testProcessStartOnManager(runtime);
         
@@ -134,7 +135,7 @@ public class SingleRuntimeManagerTest {
     public void testSinglePerRequestManager() {
         assertNotNull(perRequestManager);
         
-        org.kie.internal.runtime.manager.RuntimeEngine runtime = perRequestManager.getRuntimeEngine(EmptyContext.get());
+        RuntimeEngine runtime = perRequestManager.getRuntimeEngine(EmptyContext.get());
         assertNotNull(runtime);
         testProcessStartOnManager(runtime);   
         perRequestManager.disposeRuntimeEngine(runtime);
@@ -144,14 +145,14 @@ public class SingleRuntimeManagerTest {
     public void testSinglePerProcessInstanceManager() {
         assertNotNull(perProcessInstanceManager);
         
-        org.kie.internal.runtime.manager.RuntimeEngine runtime = perProcessInstanceManager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        RuntimeEngine runtime = perProcessInstanceManager.getRuntimeEngine(ProcessInstanceIdContext.get());
         assertNotNull(runtime);
         testProcessStartOnManager(runtime);  
         perProcessInstanceManager.disposeRuntimeEngine(runtime);
     }
     
     
-    private void testProcessStartOnManager(org.kie.internal.runtime.manager.RuntimeEngine runtime) {
+    private void testProcessStartOnManager(RuntimeEngine runtime) {
         
         
         KieSession ksession = runtime.getKieSession();
@@ -162,7 +163,7 @@ public class SingleRuntimeManagerTest {
         
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Reserved);
-        List<TaskSummary> tasks = runtime.getTaskService().getTasksOwned("john", statuses, "en-UK");
+        List<TaskSummary> tasks = runtime.getTaskService().getTasksOwnedByStatus("john", statuses, "en-UK");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         

@@ -21,8 +21,8 @@ import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 
+import org.kie.api.task.model.Comment;
 import org.kie.internal.task.api.TaskCommentService;
-import org.kie.internal.task.api.model.Comment;
 
 /**
  *

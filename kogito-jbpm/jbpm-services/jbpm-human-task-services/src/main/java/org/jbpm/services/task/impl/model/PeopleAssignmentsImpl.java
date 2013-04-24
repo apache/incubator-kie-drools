@@ -29,13 +29,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import org.jbpm.services.task.utils.CollectionUtils;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.User;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
 
 @Embeddable
-public class PeopleAssignmentsImpl
-    implements
-    org.kie.internal.task.api.model.PeopleAssignments {
+public class PeopleAssignmentsImpl implements InternalPeopleAssignments {
+	
     @ManyToOne()
     private UserImpl                       taskInitiator;
 

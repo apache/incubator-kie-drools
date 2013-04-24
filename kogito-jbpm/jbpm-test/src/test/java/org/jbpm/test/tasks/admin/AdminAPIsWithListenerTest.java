@@ -18,13 +18,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.UserInfo;
-import org.kie.internal.task.api.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +68,7 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
 
         TaskService taskService = getTaskService();
 
-        taskService.setUserInfo(userInfo);
+        ((InternalTaskService) taskService).setUserInfo(userInfo);
 
         KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
 
@@ -145,7 +144,7 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
         KieSession ksession = createKnowledgeSession("patient-appointment.bpmn");
 
         TaskService taskService = getTaskService();
-        taskService.setUserInfo(userInfo);
+        ((InternalTaskService) taskService).setUserInfo(userInfo);
         KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
 
         ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));

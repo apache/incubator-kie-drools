@@ -34,11 +34,11 @@ import org.jbpm.workflow.instance.impl.VariableScopeResolverFactory;
 import org.kie.api.KieBase;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.manager.RuntimeEngine;
-import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.mvel2.MVEL;
 

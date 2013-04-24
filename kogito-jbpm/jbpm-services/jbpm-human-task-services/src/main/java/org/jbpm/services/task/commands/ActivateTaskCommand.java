@@ -23,11 +23,12 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskActivatedEvent;
 import org.jbpm.services.task.events.BeforeTaskActivatedEvent;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.User;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Activate : [ new OperationCommand().{ status = [ Status.Created ],
@@ -57,7 +58,7 @@ public class ActivateTaskCommand extends TaskCommand<Void> {
         }
 
         if (task.getTaskData().getStatus().equals(Status.Created)) {
-            task.getTaskData().setStatus(Status.Ready);
+            ((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
         }
 
         context.getTaskEvents().select(new AnnotationLiteral<AfterTaskActivatedEvent>() {

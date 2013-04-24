@@ -12,18 +12,18 @@ import org.jbpm.services.task.exception.CannotAddTaskException;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.UserGroupCallback;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.Escalation;
-import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.Notification;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.PeopleAssignments;
 import org.kie.internal.task.api.model.Reassignment;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.TaskData;
-import org.kie.internal.task.api.model.User;
 
 public class AbstractUserGroupCallbackDecorator {
 
@@ -130,7 +130,7 @@ public class AbstractUserGroupCallbackDecorator {
         }
     }
 
-    protected void doCallbackOperationForTaskData(TaskData data) {
+    protected void doCallbackOperationForTaskData(InternalTaskData data) {
 
         if (data.getActualOwner() != null) {
             boolean userExists = doCallbackUserOperation(data.getActualOwner().getId());
@@ -175,7 +175,7 @@ public class AbstractUserGroupCallbackDecorator {
 
     }
 
-    protected void doCallbackOperationForPeopleAssignments(PeopleAssignments assignments) {
+    protected void doCallbackOperationForPeopleAssignments(InternalPeopleAssignments assignments) {
 
         List<OrganizationalEntity> nonExistingEntities = new ArrayList<OrganizationalEntity>();
 

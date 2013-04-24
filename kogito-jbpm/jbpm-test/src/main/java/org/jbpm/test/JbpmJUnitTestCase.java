@@ -37,6 +37,8 @@ import org.kie.api.KieBase;
 import org.kie.api.definition.process.Node;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -44,16 +46,15 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.api.task.TaskService;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.internal.task.api.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -249,7 +250,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
     protected KieSession createKnowledgeSession() {
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
-        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
                 
         KieSession result = runtime.getKieSession();
         if (sessionPersistence) {
@@ -511,10 +512,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
     }
 
     public TaskService getTaskService() {
-       
-        
-        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
-                
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         return runtime.getTaskService();
     }
 

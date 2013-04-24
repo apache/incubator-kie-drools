@@ -2,7 +2,7 @@ package org.droolsjbpm.services.api;
 
 import java.util.Collection;
 
-import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManager;
 
 public interface DeploymentService {
 

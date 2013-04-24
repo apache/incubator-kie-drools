@@ -17,6 +17,7 @@ import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.kie.api.io.ResourceType;
+import org.kie.api.task.TaskService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
 import org.kie.internal.io.ResourceFactory;
@@ -24,7 +25,6 @@ import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
 import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
-import org.kie.internal.task.api.TaskService;
 
 @ApplicationScoped
 public class CDITestHelper {

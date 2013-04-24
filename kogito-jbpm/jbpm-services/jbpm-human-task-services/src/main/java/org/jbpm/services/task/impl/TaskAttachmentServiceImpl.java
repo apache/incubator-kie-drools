@@ -24,9 +24,11 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.impl.model.AttachmentImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Content;
 import org.kie.internal.task.api.TaskAttachmentService;
-import org.kie.internal.task.api.model.Attachment;
-import org.kie.internal.task.api.model.Content;
+import org.kie.internal.task.api.model.InternalAttachment;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  *
@@ -46,14 +48,14 @@ public class TaskAttachmentServiceImpl implements TaskAttachmentService {
         TaskImpl task = pm.find(TaskImpl.class, taskId);
         // doCallbackOperationForAttachment(attachment); -> This should go in a decorator
         pm.persist(content);
-        attachment.setContent(content);
-        task.getTaskData().addAttachment(attachment);
+        ((InternalAttachment) attachment).setContent(content);
+        ((InternalTaskData) task.getTaskData()).addAttachment(attachment);
         return content.getId();
     }
 
     public void deleteAttachment(long taskId, long attachmentId) {
        TaskImpl task = pm.find(TaskImpl.class, taskId);
-       task.getTaskData().removeAttachment(attachmentId);
+       ((InternalTaskData) task.getTaskData()).removeAttachment(attachmentId);
        //TODO: should I remove the content?
        
     }

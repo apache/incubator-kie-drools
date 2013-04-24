@@ -23,10 +23,10 @@ import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.services.task.wih.RuntimeFinder;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
-import org.kie.internal.runtime.manager.RuntimeEngine;
-import org.kie.internal.runtime.manager.RuntimeManager;
 
 public class InjectableRegisterableItemsFactory extends DefaultRegisterableItemsFactory {
 

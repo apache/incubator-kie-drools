@@ -20,7 +20,18 @@ import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Comment;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.EventService;
+import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.TaskAdminService;
 import org.kie.internal.task.api.TaskAttachmentService;
 import org.kie.internal.task.api.TaskCommentService;
@@ -30,25 +41,16 @@ import org.kie.internal.task.api.TaskEventsService;
 import org.kie.internal.task.api.TaskIdentityService;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
-import org.kie.internal.task.api.TaskService;
 import org.kie.internal.task.api.TaskStatisticsService;
 import org.kie.internal.task.api.UserInfo;
-import org.kie.internal.task.api.model.Attachment;
-import org.kie.internal.task.api.model.Comment;
-import org.kie.internal.task.api.model.Content;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.Group;
-import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.NotificationEvent;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Status;
 import org.kie.internal.task.api.model.SubTasksStrategy;
-import org.kie.internal.task.api.model.Task;
 import org.kie.internal.task.api.model.TaskDef;
 import org.kie.internal.task.api.model.TaskEvent;
-import org.kie.internal.task.api.model.TaskSummary;
-import org.kie.internal.task.api.model.User;
 
 
 /**
@@ -56,7 +58,7 @@ import org.kie.internal.task.api.model.User;
  */
 @Transactional
 @ApplicationScoped
-public class TaskServiceEntryPointImpl implements TaskService, EventService<JbpmServicesEventListener<NotificationEvent>,JbpmServicesEventListener<Task>> {
+public class TaskServiceEntryPointImpl implements InternalTaskService, EventService<JbpmServicesEventListener<NotificationEvent>,JbpmServicesEventListener<Task>> {
 
     @Inject
     private TaskDefService taskDefService;
@@ -338,12 +340,12 @@ public class TaskServiceEntryPointImpl implements TaskService, EventService<Jbpm
         return taskQueryService.getTasksAssignedAsTaskStakeholder(userId, language);
     }
 
-    public List<TaskSummary> getTasksOwned(String userId) {
-        return taskQueryService.getTasksOwned(userId);
+    public List<TaskSummary> getTasksOwned(String userId, String language) {
+        return taskQueryService.getTasksOwned(userId, language);
     }
 
-    public List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language) {
-        return taskQueryService.getTasksOwned(userId, status, language);
+    public List<TaskSummary> getTasksOwnedByStatus(String userId, List<Status> status, String language) {
+        return taskQueryService.getTasksOwnedByStatus(userId, status, language);
     }
 
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String salaboy, List<Status> status, String language) {
@@ -404,7 +406,7 @@ public class TaskServiceEntryPointImpl implements TaskService, EventService<Jbpm
             OrganizationalEntity potentialOwner = task.getPeopleAssignments().getPotentialOwners().get(0);
             // if there is a single potential user owner, assign and set status to Reserved
             if (potentialOwner instanceof UserImpl) {
-                task.getTaskData().setActualOwner((UserImpl) potentialOwner);
+            	((InternalTaskData) task.getTaskData()).setActualOwner((UserImpl) potentialOwner);
 
                 assignedStatus = Status.Reserved;
             }
@@ -421,14 +423,14 @@ public class TaskServiceEntryPointImpl implements TaskService, EventService<Jbpm
         }
 
         if (assignedStatus != null) {
-            task.getTaskData().setStatus(assignedStatus);
+            ((InternalTaskData) task.getTaskData()).setStatus(assignedStatus);
         }
 
         if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
             businessAdmins.add(new UserImpl("Administrator"));
             businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
-            task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
+            ((InternalPeopleAssignments) task.getPeopleAssignments()).setBusinessAdministrators(businessAdmins);
         }
         
     }
@@ -634,16 +636,16 @@ public class TaskServiceEntryPointImpl implements TaskService, EventService<Jbpm
     }
 
     @Override
-    public List<TaskSummary> getTasksByStatusByProcessId(
+    public List<TaskSummary> getTasksByStatusByProcessInstanceId(
             long processInstanceId, List<Status> status, String language) {
-        return taskQueryService.getTasksByStatusByProcessId(processInstanceId, status, language);
+        return taskQueryService.getTasksByStatusByProcessInstanceId(processInstanceId, status, language);
     }
 
     @Override
-    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(
+    public List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(
             long processInstanceId, List<Status> status, String taskName,
             String language) {
-        return taskQueryService.getTasksByStatusByProcessIdByTaskName(processInstanceId, status, taskName, language);
+        return taskQueryService.getTasksByStatusByProcessInstanceIdByTaskName(processInstanceId, status, taskName, language);
     }
 
     @Override

@@ -25,15 +25,16 @@ import javax.inject.Inject;
 
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.I18NText;
-import org.kie.internal.task.api.model.OrganizationalEntity;
+import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.SubTasksStrategy;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.TaskSummary;
 
 /**
  *
@@ -175,11 +176,11 @@ public class SubTaskDecorator implements TaskInstanceService {
     private void checkSubTaskStrategies(long taskId, String userId, Map<String, Object> data){
         Task task = queryService.getTaskInstanceById(taskId);
         Task parentTask = null;
-        if(task.getTaskData().getParentId() != -1){
+        if (task.getTaskData().getParentId() != -1){
             parentTask = pm.find(TaskImpl.class, task.getTaskData().getParentId());
         }
-        if(parentTask != null){
-            if(parentTask.getSubTaskStrategy().equals(SubTasksStrategy.EndParentOnAllSubTasksEnd)){
+        if (parentTask != null){
+            if(((InternalTask) parentTask).getSubTaskStrategy().equals(SubTasksStrategy.EndParentOnAllSubTasksEnd)){
                 List<TaskSummary> subTasks = queryService.getSubTasksByParent(parentTask.getId());
                     // If there are no more sub tasks or if the last sub task is the one that we are completing now
                     if (subTasks.isEmpty() || (subTasks.size() == 1 && subTasks.get(0).getId() == taskId)) {
@@ -188,7 +189,7 @@ public class SubTaskDecorator implements TaskInstanceService {
                     }
             }
         }
-        if(task.getSubTaskStrategy().equals(SubTasksStrategy.SkipAllSubTasksOnParentSkip)){
+        if (((InternalTask) task).getSubTaskStrategy().equals(SubTasksStrategy.SkipAllSubTasksOnParentSkip)){
             List<TaskSummary> subTasks = queryService.getSubTasksByParent(task.getId());
             for(TaskSummary taskSummary : subTasks){
                 Task subTask = queryService.getTaskInstanceById(taskSummary.getId());

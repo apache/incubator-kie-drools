@@ -14,7 +14,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.kie.internal.task.api.model.User;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.model.TaskEvent;
+import org.kie.internal.task.api.model.TaskEvent.TaskEventType;
 
 /**
  *
@@ -22,7 +24,7 @@ import org.kie.internal.task.api.model.User;
 
 @Entity
 @Table(name="TaskEvent")
-public class TaskEventImpl implements org.kie.internal.task.api.model.TaskEvent {
+public class TaskEventImpl implements TaskEvent {
     
     @Id
     @GeneratedValue

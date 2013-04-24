@@ -21,9 +21,7 @@ import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.timer.TimerBaseTest;
@@ -32,15 +30,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.UserGroupCallback;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.TaskSummary;
 
 public class GlobalTimerServiceTest extends TimerBaseTest {
     
@@ -118,7 +117,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
     }
     
 	
-	private void testStartProcess(org.kie.internal.runtime.manager.RuntimeEngine runtime) throws Exception {
+	private void testStartProcess(RuntimeEngine runtime) throws Exception {
 		
 		synchronized((SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) runtime.getKieSession()).getCommandService()) {
 			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
@@ -138,13 +137,13 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
 	}
 
 	
-	private boolean testCompleteTaskByProcessInstance(org.kie.internal.runtime.manager.RuntimeEngine runtime, long piId) throws InterruptedException, Exception {
+	private boolean testCompleteTaskByProcessInstance(RuntimeEngine runtime, long piId) throws InterruptedException, Exception {
         boolean result = false;
         List<Status> statusses = new ArrayList<Status>();
         statusses.add(Status.Reserved);
         
         List<TaskSummary> tasks = null;
-        tasks = runtime.getTaskService().getTasksByStatusByProcessId(piId, statusses, "en-UK");
+        tasks = runtime.getTaskService().getTasksByStatusByProcessInstanceId(piId, statusses, "en-UK");
         if (tasks.isEmpty()) {
             System.out.println("Task thread found no tasks");
             Thread.sleep(1000);
@@ -185,7 +184,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
         }
         public void run() {
             try {
-                org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
                 testStartProcess(runtime);                    
                 manager.disposeRuntimeEngine(runtime);                    
                 completedStart++;
@@ -207,7 +206,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
                 // wait for amount of time timer expires and plus 1s initially
                 Thread.sleep(wait * 1000 + 1000);
                 long processInstanceId = counter+1;
-                org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
 
                 for (int y = 0; y<wait; y++) {
                     testCompleteTaskByProcessInstance(runtime, processInstanceId);

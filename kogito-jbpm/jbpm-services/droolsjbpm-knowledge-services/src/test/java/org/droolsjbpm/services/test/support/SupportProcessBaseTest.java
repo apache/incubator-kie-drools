@@ -33,12 +33,13 @@ import org.droolsjbpm.services.impl.VFSDeploymentUnit;
 import org.jbpm.shared.services.api.FileException;
 import org.junit.After;
 import org.junit.Test;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.runtime.manager.RuntimeEngine;
-import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.internal.task.api.TaskService;
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.internal.task.api.InternalTaskService;
 
 
 public abstract class SupportProcessBaseTest {
@@ -95,7 +96,7 @@ public abstract class SupportProcessBaseTest {
 
 
 
-        Map<String, Object> taskContent = taskService.getTaskContent(createSupportTask.getId());
+        Map<String, Object> taskContent = ((InternalTaskService) taskService).getTaskContent(createSupportTask.getId());
 
         assertEquals("polymita", taskContent.get("input_customer"));
 

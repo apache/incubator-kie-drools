@@ -7,10 +7,10 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.manager.Context;
+import org.kie.api.runtime.manager.Context;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.Mapper;
-import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
@@ -23,7 +23,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     private SessionFactory factory;
     private TaskServiceFactory taskServiceFactory;
     
-    private static ThreadLocal<Map<Object, org.kie.internal.runtime.manager.RuntimeEngine>> local = new ThreadLocal<Map<Object, org.kie.internal.runtime.manager.RuntimeEngine>>();
+    private static ThreadLocal<Map<Object, RuntimeEngine>> local = new ThreadLocal<Map<Object, RuntimeEngine>>();
     
     private Mapper mapper;
     
@@ -36,7 +36,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     }
     
     @Override
-    public org.kie.internal.runtime.manager.RuntimeEngine getRuntimeEngine(Context<?> context) {
+    public RuntimeEngine getRuntimeEngine(Context<?> context) {
   
         Object contextId = context.getContextId();
         KieSession ksession = null;
@@ -56,7 +56,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             ksession = factory.findKieSessionById(ksessionId);
         }
         
-        org.kie.internal.runtime.manager.RuntimeEngine runtime = new RuntimeEngineImpl(ksession, taskServiceFactory.newTaskService());
+        RuntimeEngine runtime = new RuntimeEngineImpl(ksession, taskServiceFactory.newTaskService());
         ((RuntimeEngineImpl) runtime).setManager(this);
         registerDisposeCallback(runtime);
         registerItems(runtime);
@@ -91,7 +91,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     }
 
     @Override
-    public void disposeRuntimeEngine(org.kie.internal.runtime.manager.RuntimeEngine runtime) {
+    public void disposeRuntimeEngine(RuntimeEngine runtime) {
         removeLocalRuntime(runtime);
         if (runtime instanceof Disposable) {
             ((Disposable) runtime).dispose();
@@ -163,11 +163,11 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         this.mapper = mapper;
     }
     
-    protected org.kie.internal.runtime.manager.RuntimeEngine findLocalRuntime(Object processInstanceId) {
+    protected RuntimeEngine findLocalRuntime(Object processInstanceId) {
         if (processInstanceId == null) {
             return null;
         }
-        Map<Object, org.kie.internal.runtime.manager.RuntimeEngine> map = local.get();
+        Map<Object, RuntimeEngine> map = local.get();
         if (map == null) {
             return null;
         } else {
@@ -179,7 +179,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         if (processInstanceId == null) {
             return;
         }
-        Map<Object, org.kie.internal.runtime.manager.RuntimeEngine> map = local.get();
+        Map<Object, RuntimeEngine> map = local.get();
         if (map == null) {
             map = new HashMap<Object, RuntimeEngine>();
             local.set(map);
@@ -190,7 +190,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     }
     
     protected void removeLocalRuntime(RuntimeEngine runtime) {
-        Map<Object, org.kie.internal.runtime.manager.RuntimeEngine> map = local.get();
+        Map<Object, RuntimeEngine> map = local.get();
         Object keyToRemove = -1l;
         if (map != null) {
             for (Map.Entry<Object, RuntimeEngine> entry : map.entrySet()) {

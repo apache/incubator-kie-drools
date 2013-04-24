@@ -32,9 +32,10 @@ import javax.inject.Named;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.TaskQueryService;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.internal.task.api.model.InternalTaskSummary;
 
 /**
  *
@@ -104,7 +105,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                     
 
             for (TaskSummary ts : tasks) {
-                ts.setPotentialOwners(potentialOwners.get(ts.getId()));
+                ((InternalTaskSummary) ts).setPotentialOwners(potentialOwners.get(ts.getId()));
             }
             return tasks;
         }
@@ -138,7 +139,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                         pm.addParametersToMap("taskIds", tasksIds, "language", language));
 
             for (TaskSummary ts : tasks) {
-                ts.setPotentialOwners(potentialOwners.get(ts.getId()));
+                ((InternalTaskSummary) ts).setPotentialOwners(potentialOwners.get(ts.getId()));
             }
             return tasks;
         }
@@ -166,9 +167,9 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 pm.addParametersToMap("userId", userId,"language", language));
     }
 
-    public List<TaskSummary> getTasksOwned(String userId) {
+    public List<TaskSummary> getTasksOwned(String userId, String language) {
         return (List<TaskSummary>)pm.queryWithParametersInTransaction("TasksOwned", 
-                pm.addParametersToMap("userId", userId, "language", "en-UK"));
+                pm.addParametersToMap("userId", userId, "language", language));
 
     }
     
@@ -180,7 +181,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     }
     
 
-    public List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language) {
+    public List<TaskSummary> getTasksOwnedByStatus(String userId, List<Status> status, String language) {
 
         List<TaskSummary> taskOwned = (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksOwnedWithParticularStatus", 
                 pm.addParametersToMap("userId", userId, "status", status, "language", language));
@@ -204,7 +205,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 potentialOwners.get((Long) get[0]).add((String) get[1]);
             }
             for (TaskSummary ts : taskOwned) {
-                ts.setPotentialOwners(potentialOwners.get(ts.getId()));
+                ((InternalTaskSummary) ts).setPotentialOwners(potentialOwners.get(ts.getId()));
             }
         } else {
             return new ArrayList<TaskSummary>(0);
@@ -270,7 +271,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     }
 
     @Override
-    public List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language) {
+    public List<TaskSummary> getTasksByStatusByProcessInstanceId(long processInstanceId, List<Status> status, String language) {
         List<TaskSummary> tasks = (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksByStatusByProcessId",
                 pm.addParametersToMap("processInstanceId", processInstanceId, 
                                         "status", status,
@@ -280,7 +281,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     }
 
     @Override
-    public List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName,
+    public List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(long processInstanceId, List<Status> status, String taskName,
             String language) {
         List<TaskSummary> tasks = (List<TaskSummary>)pm.queryWithParametersInTransaction("TasksByStatusByProcessIdByTaskName", 
                 pm.addParametersToMap("processInstanceId", processInstanceId,

@@ -7,7 +7,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.internal.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEngine;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 

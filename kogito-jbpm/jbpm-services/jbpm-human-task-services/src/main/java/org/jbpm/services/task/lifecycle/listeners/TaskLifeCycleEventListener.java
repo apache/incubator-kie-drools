@@ -4,11 +4,7 @@
  */
 package org.jbpm.services.task.lifecycle.listeners;
 
-import org.kie.internal.task.api.model.Task;
-
-/**
- *
- */
+import org.kie.api.task.model.Task;
 
 public interface TaskLifeCycleEventListener {
     

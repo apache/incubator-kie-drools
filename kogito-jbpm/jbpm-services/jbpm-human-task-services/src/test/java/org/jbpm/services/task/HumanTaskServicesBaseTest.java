@@ -15,6 +15,8 @@
  */
 package org.jbpm.services.task;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.text.ParseException;
@@ -24,22 +26,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.inject.Inject;
 
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.utils.MVELUtils;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.Before;
-import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.InternalTaskService;
 
 public abstract class HumanTaskServicesBaseTest {
 
     protected static Logger logger;
     protected static boolean usersLoaded = false;
     @Inject
-    protected TaskService taskService;
+    protected InternalTaskService taskService;
 
     @Before
     public void setUp() {

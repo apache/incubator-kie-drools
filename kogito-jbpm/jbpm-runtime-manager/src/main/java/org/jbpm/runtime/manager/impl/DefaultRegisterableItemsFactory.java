@@ -16,10 +16,10 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
-import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.task.api.EventService;
 
 public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFactory {

@@ -21,9 +21,9 @@ import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Content;
 import org.kie.internal.task.api.TaskAttachmentService;
-import org.kie.internal.task.api.model.Attachment;
-import org.kie.internal.task.api.model.Content;
 
 /**
  *

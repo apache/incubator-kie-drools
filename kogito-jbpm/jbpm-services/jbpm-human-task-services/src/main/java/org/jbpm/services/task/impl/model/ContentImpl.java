@@ -30,10 +30,12 @@ import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.kie.internal.task.api.model.InternalContent;
+
 @Entity
 @Table(name="Content")
 @SequenceGenerator(name="contentIdSeq", sequenceName="CONTENT_ID_SEQ", allocationSize=1)
-public class ContentImpl implements org.kie.internal.task.api.model.Content {
+public class ContentImpl implements InternalContent {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="contentIdSeq")

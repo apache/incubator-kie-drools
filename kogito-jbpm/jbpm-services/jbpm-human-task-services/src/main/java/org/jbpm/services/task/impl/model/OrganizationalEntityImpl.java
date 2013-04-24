@@ -24,9 +24,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
+
 @Entity
 @Table(name="OrganizationalEntity")
-public abstract class OrganizationalEntityImpl implements org.kie.internal.task.api.model.OrganizationalEntity {
+public abstract class OrganizationalEntityImpl implements InternalOrganizationalEntity {
     
     @Id
     private String id;   

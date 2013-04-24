@@ -21,10 +21,11 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskStartedEvent;
 import org.jbpm.services.task.events.BeforeTaskStartedEvent;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.User;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Start : [ new OperationCommand().{ status = [ Status.Ready ],
@@ -55,12 +56,12 @@ public class StartTaskCommand extends TaskCommand<Void> {
         }
         if (task.getTaskData().getStatus().equals(Status.Ready)) {
             
-            task.getTaskData().setStatus(Status.InProgress);
-            task.getTaskData().setActualOwner(user);
+        	((InternalTaskData) task.getTaskData()).setStatus(Status.InProgress);
+        	((InternalTaskData) task.getTaskData()).setActualOwner(user);
         }
 
         if (task.getTaskData().getStatus().equals(Status.Reserved)) {
-            task.getTaskData().setStatus(Status.InProgress);
+        	((InternalTaskData) task.getTaskData()).setStatus(Status.InProgress);
         }
         context.getTaskEvents().select(new AnnotationLiteral<AfterTaskStartedEvent>() {}).fire(task);
 

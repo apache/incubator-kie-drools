@@ -17,12 +17,8 @@ import org.jbpm.services.task.events.AfterTaskFailedEvent;
 import org.jbpm.services.task.events.AfterTaskSkippedEvent;
 import org.jbpm.services.task.events.AfterTaskStartedEvent;
 import org.jbpm.services.task.events.AfterTaskStoppedEvent;
-import org.kie.internal.task.api.model.Task;
+import org.kie.api.task.model.Task;
 
-
-/**
- *
- */
 @Internal
 @ApplicationScoped
 public class InternalTaskLifeCycleEventListener implements TaskLifeCycleEventListener{

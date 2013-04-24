@@ -1,5 +1,13 @@
 package org.jbpm.persistence.processinstance;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.persistence.ProcessPersistenceContext;
 import org.jbpm.persistence.ProcessPersistenceContextManager;
@@ -11,21 +19,13 @@ import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.kie.api.definition.process.Process;
-import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.runtime.manager.RuntimeManager;
-import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.ConcurrentModificationException;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.kie.internal.process.CorrelationKey;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 /**
  * This is an implementation of the {@link ProcessInstanceManager} that uses JPA.
@@ -84,7 +84,7 @@ public class JPAProcessInstanceManager
     }
 
     public ProcessInstance getProcessInstance(long id, boolean readOnly) {
-        RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
+        InternalRuntimeManager manager = (InternalRuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
         if (manager != null) {
             manager.validate((KieSession) kruntime, ProcessInstanceIdContext.get(id));
         }

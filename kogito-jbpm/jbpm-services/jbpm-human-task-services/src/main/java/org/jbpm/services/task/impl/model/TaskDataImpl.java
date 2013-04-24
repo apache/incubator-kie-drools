@@ -36,17 +36,18 @@ import javax.persistence.Temporal;
 
 import org.jbpm.services.task.exception.IllegalTaskStateException;
 import org.jbpm.services.task.utils.CollectionUtils;
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Comment;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.AccessType;
-import org.kie.internal.task.api.model.Attachment;
-import org.kie.internal.task.api.model.Comment;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.User;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 @Embeddable
-public class TaskDataImpl implements org.kie.internal.task.api.model.TaskData {
+public class TaskDataImpl implements InternalTaskData {
     @Enumerated(EnumType.STRING)
     private Status status = Status.Created;         // initial default state
 

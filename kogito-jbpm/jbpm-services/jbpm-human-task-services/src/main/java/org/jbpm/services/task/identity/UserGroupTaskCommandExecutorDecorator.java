@@ -26,9 +26,12 @@ import org.jbpm.services.task.commands.AddTaskCommand;
 import org.jbpm.services.task.commands.NominateTaskCommand;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.kie.api.command.Command;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskCommandExecutor;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTask;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  *
@@ -45,9 +48,9 @@ public class UserGroupTaskCommandExecutorDecorator extends AbstractUserGroupCall
         TaskCommand<T> command = (TaskCommand<T>) cmd;
         if (command instanceof AddTaskCommand) {
             Task task = ((AddTaskCommand) command).getTask();
-            doCallbackOperationForPeopleAssignments(task.getPeopleAssignments());
-            doCallbackOperationForTaskData(task.getTaskData());
-            doCallbackOperationForTaskDeadlines(task.getDeadlines());
+            doCallbackOperationForPeopleAssignments((InternalPeopleAssignments) task.getPeopleAssignments());
+            doCallbackOperationForTaskData((InternalTaskData) task.getTaskData());
+            doCallbackOperationForTaskDeadlines(((InternalTask) task).getDeadlines());
         }
         if(command instanceof NominateTaskCommand){
             List<OrganizationalEntity> potentialOwners = ((NominateTaskCommand)command).getPotentialOwners();

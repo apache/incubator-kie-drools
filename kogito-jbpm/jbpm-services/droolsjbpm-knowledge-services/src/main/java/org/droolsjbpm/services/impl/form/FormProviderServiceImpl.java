@@ -29,6 +29,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.droolsjbpm.services.api.FormProviderService;
+import org.droolsjbpm.services.api.RuntimeDataService;
 import org.droolsjbpm.services.api.bpmn2.BPMN2DataService;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
 import org.jbpm.form.builder.services.model.InputData;
@@ -36,17 +37,16 @@ import org.jbpm.form.builder.services.model.OutputData;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.Task;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
-import org.kie.internal.task.api.model.Content;
-import org.kie.internal.task.api.model.I18NText;
-import org.kie.internal.task.api.model.Task;
 
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
-import org.droolsjbpm.services.api.RuntimeDataService;
 
 @ApplicationScoped
 public class FormProviderServiceImpl implements FormProviderService {

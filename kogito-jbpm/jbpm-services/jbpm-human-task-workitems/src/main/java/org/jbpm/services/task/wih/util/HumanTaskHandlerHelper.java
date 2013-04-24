@@ -8,17 +8,26 @@ import java.util.Map;
 
 import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendar;
-import org.jbpm.services.task.impl.model.*;
+import org.jbpm.services.task.impl.model.DeadlineImpl;
+import org.jbpm.services.task.impl.model.DeadlinesImpl;
+import org.jbpm.services.task.impl.model.EmailNotificationHeaderImpl;
+import org.jbpm.services.task.impl.model.EmailNotificationImpl;
+import org.jbpm.services.task.impl.model.EscalationImpl;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.I18NTextImpl;
+import org.jbpm.services.task.impl.model.LanguageImpl;
+import org.jbpm.services.task.impl.model.ReassignmentImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.EmailNotificationHeader;
 import org.kie.internal.task.api.model.Escalation;
-import org.kie.internal.task.api.model.I18NText;
 import org.kie.internal.task.api.model.Language;
 import org.kie.internal.task.api.model.Notification;
-import org.kie.internal.task.api.model.OrganizationalEntity;
 import org.kie.internal.task.api.model.Reassignment;
 
 

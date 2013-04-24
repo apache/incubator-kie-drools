@@ -13,8 +13,8 @@ import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.task.api.UserInfo;
-import org.kie.internal.task.api.model.OrganizationalEntity;
 
 //Ignore it as it relies on external LDAP server
 @Ignore

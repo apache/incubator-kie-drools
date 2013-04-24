@@ -23,8 +23,8 @@ import java.util.HashMap;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.junit.Test;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
 
 /**
  *

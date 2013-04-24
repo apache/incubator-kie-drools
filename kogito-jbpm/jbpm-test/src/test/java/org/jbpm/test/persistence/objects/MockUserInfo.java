@@ -21,9 +21,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.task.api.UserInfo;
-import org.kie.internal.task.api.model.Group;
-import org.kie.internal.task.api.model.OrganizationalEntity;
 
 public class MockUserInfo implements UserInfo {
 

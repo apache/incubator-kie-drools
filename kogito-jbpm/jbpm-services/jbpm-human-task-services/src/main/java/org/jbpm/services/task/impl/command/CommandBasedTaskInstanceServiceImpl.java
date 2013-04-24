@@ -24,18 +24,29 @@ import javax.inject.Inject;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.annotations.CommandBased;
-import org.jbpm.services.task.commands.*;
-import org.jbpm.services.task.impl.model.ContentDataImpl;
-import org.jbpm.services.task.impl.model.FaultDataImpl;
-import org.jbpm.services.task.impl.model.TaskDefImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
+import org.jbpm.services.task.commands.ActivateTaskCommand;
+import org.jbpm.services.task.commands.AddTaskCommand;
+import org.jbpm.services.task.commands.ClaimNextAvailableTaskCommand;
+import org.jbpm.services.task.commands.ClaimTaskCommand;
+import org.jbpm.services.task.commands.CompleteTaskCommand;
+import org.jbpm.services.task.commands.DelegateTaskCommand;
+import org.jbpm.services.task.commands.ExitTaskCommand;
+import org.jbpm.services.task.commands.FailTaskCommand;
+import org.jbpm.services.task.commands.ForwardTaskCommand;
+import org.jbpm.services.task.commands.NominateTaskCommand;
+import org.jbpm.services.task.commands.ReleaseTaskCommand;
+import org.jbpm.services.task.commands.ResumeTaskCommand;
+import org.jbpm.services.task.commands.SkipTaskCommand;
+import org.jbpm.services.task.commands.StartTaskCommand;
+import org.jbpm.services.task.commands.StopTaskCommand;
+import org.jbpm.services.task.commands.SuspendTaskCommand;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskCommandExecutor;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.I18NText;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Task;
 import org.kie.internal.task.api.model.TaskDef;
 
 /**

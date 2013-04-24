@@ -26,17 +26,18 @@ import org.jbpm.services.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.services.task.internals.lifecycle.MVELLifeCycleManager;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.I18NText;
+import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.Operation;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Status;
 import org.kie.internal.task.api.model.SubTasksStrategy;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.TaskSummary;
 
 /**
  *
@@ -84,7 +85,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
             ContentDataImpl contentData = ContentMarshallerHelper.marshal(params, null);
             ContentImpl content = new ContentImpl(contentData.getContent());
             pm.persist(content);
-            task.getTaskData().setDocument(content.getId(), contentData);
+            ((InternalTaskData) task.getTaskData()).setDocument(content.getId(), contentData);
         }
          
         pm.persist(task);
@@ -100,7 +101,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         if (contentData != null) {
             ContentImpl content = new ContentImpl(contentData.getContent());
             pm.persist(content);
-            task.getTaskData().setDocument(content.getId(), contentData);
+            ((InternalTaskData) task.getTaskData()).setDocument(content.getId(), contentData);
         }
         if(taskEvents != null){
             taskEvents.select(new AnnotationLiteral<AfterTaskAddedEvent>() {}).fire(task);
@@ -226,7 +227,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
 
     public void setExpirationDate(long taskId, Date date) {
         TaskImpl task = pm.find(TaskImpl.class, taskId);
-        task.getTaskData().setExpirationTime(date);
+        ((InternalTaskData) task.getTaskData()).setExpirationTime(date);
     }
 
     public void setDescriptions(long taskId, List<I18NText> descriptions) {
@@ -236,7 +237,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
 
     public void setSkipable(long taskId, boolean skipable) {
         TaskImpl task = pm.find(TaskImpl.class, taskId);
-        task.getTaskData().setSkipable(skipable);
+        ((InternalTaskData) task.getTaskData()).setSkipable(skipable);
     }
 
     public int getPriority(long taskId) {

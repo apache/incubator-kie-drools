@@ -13,9 +13,9 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
-import org.kie.internal.runtime.manager.RuntimeEngine;
 
 public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory {
 

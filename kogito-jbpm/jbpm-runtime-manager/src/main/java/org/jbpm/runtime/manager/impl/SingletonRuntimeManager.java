@@ -8,16 +8,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.manager.Context;
+import org.kie.api.runtime.manager.Context;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.Disposable;
-import org.kie.internal.runtime.manager.RuntimeEngine;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.kie.internal.task.api.InternalTaskService;
 
 public class SingletonRuntimeManager extends AbstractRuntimeManager {
-    
-
     
     private RuntimeEngine singleton;
     private SessionFactory factory;
@@ -42,14 +41,14 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         Integer knownSessionId = getPersistedSessionId(location, identifier);
         if (knownSessionId > 0) {
             try {
-                this.singleton = new SynchronizedRuntimeImpl(factory.findKieSessionById(knownSessionId), taskServiceFactory.newTaskService());
+                this.singleton = new SynchronizedRuntimeImpl(factory.findKieSessionById(knownSessionId), (InternalTaskService) taskServiceFactory.newTaskService());
             } catch (RuntimeException e) {
                 // in case session with known id was found
             }
         } 
         
         if (this.singleton == null) {
-            this.singleton = new SynchronizedRuntimeImpl(factory.newKieSession(), taskServiceFactory.newTaskService());
+            this.singleton = new SynchronizedRuntimeImpl(factory.newKieSession(), (InternalTaskService) taskServiceFactory.newTaskService());
             persistSessionId(location, identifier, singleton.getKieSession().getId());
         }
         ((RuntimeEngineImpl) singleton).setManager(this);
@@ -74,7 +73,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     }
     
     @Override
-    public void disposeRuntimeEngine(org.kie.internal.runtime.manager.RuntimeEngine runtime) {
+    public void disposeRuntimeEngine(RuntimeEngine runtime) {
         // no-op, singleton session is always active
     }
 

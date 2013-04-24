@@ -37,15 +37,15 @@ import org.jbpm.services.task.test.MyObject;
 import org.jbpm.services.task.test.TestStatefulKnowledgeSession;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.services.task.utils.OnErrorAction;
-import org.jbpm.services.task.wih.AbstractHTWorkItemHandler;
 import org.junit.Test;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.task.api.TaskService;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.model.AccessType;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 
 public abstract class HTWorkItemHandlerBaseTest {
@@ -365,7 +365,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
         
         Task task = taskService.getTaskById(taskSummary.getId());
-        assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+        assertEquals(AccessType.Inline, ((InternalTaskData) task.getTaskData()).getDocumentAccessType());
         assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
         long contentId = task.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
@@ -426,7 +426,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         
         
         Task task = taskService.getTaskById(taskSummary.getId());
-        assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+        assertEquals(AccessType.Inline, ((InternalTaskData) task.getTaskData()).getDocumentAccessType());
         long contentId = task.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
         

@@ -3,14 +3,12 @@ package org.jbpm.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.task.api.TaskService;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

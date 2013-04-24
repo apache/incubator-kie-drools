@@ -17,7 +17,6 @@ package org.droolsjbpm.services.test.support;
 
 import javax.inject.Inject;
 
-import org.droolsjbpm.services.api.KnowledgeAdminDataService;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -26,7 +25,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.runner.RunWith;
-import org.kie.internal.task.api.TaskService;
+import org.kie.api.task.TaskService;
+import org.kie.internal.task.api.InternalTaskService;
 
 @RunWith(Arquillian.class)
 public class CDISupportProcessTest extends SupportProcessBaseTest {
@@ -95,7 +95,7 @@ public class CDISupportProcessTest extends SupportProcessBaseTest {
 
     @After
     public void tearDown() throws Exception {
-        int removedTasks = taskService.removeAllTasks();
+        int removedTasks = ((InternalTaskService) taskService).removeAllTasks();
         int removedLogs = adminDataService.removeAllData();
         System.out.println(" --> Removed Tasks = "+removedTasks + " - ");
         System.out.println(" --> Removed Logs = "+removedLogs + " - ");

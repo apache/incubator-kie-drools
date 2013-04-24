@@ -8,7 +8,7 @@ import java.util.Map;
 import org.droolsjbpm.services.api.DeployedUnit;
 import org.droolsjbpm.services.api.DeploymentUnit;
 import org.droolsjbpm.services.impl.model.ProcessDesc;
-import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManager;
 
 public class DeployedUnitImpl implements DeployedUnit {
     

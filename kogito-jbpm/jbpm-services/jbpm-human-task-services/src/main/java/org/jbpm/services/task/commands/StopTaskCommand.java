@@ -21,10 +21,11 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskStoppedEvent;
 import org.jbpm.services.task.events.BeforeTaskStoppedEvent;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.User;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  *  Operation.Stop 
@@ -55,7 +56,7 @@ public class StopTaskCommand extends TaskCommand<Void> {
             throw new PermissionDeniedException(errorMessage);
         }
         if (task.getTaskData().getStatus().equals(Status.InProgress)) {
-            task.getTaskData().setStatus(Status.Reserved); 
+        	((InternalTaskData) task.getTaskData()).setStatus(Status.Reserved); 
         }
         context.getTaskEvents().select(new AnnotationLiteral<AfterTaskStoppedEvent>() {}).fire(task);
 

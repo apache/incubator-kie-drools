@@ -44,9 +44,10 @@ import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.shared.services.impl.TestVFSFileServiceImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.kie.api.task.TaskService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
-import org.kie.internal.task.api.TaskService;
+import org.kie.internal.task.api.InternalTaskService;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -143,7 +144,7 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
 
     @After
     public void tearDown() throws Exception {
-        int removedTasks = taskService.removeAllTasks();
+        int removedTasks = ((InternalTaskService) taskService).removeAllTasks();
         int removedLogs = adminDataService.removeAllData();
         System.out.println(" --> Removed Tasks = "+removedTasks + " - ");
         System.out.println(" --> Removed Logs = "+removedLogs + " - ");

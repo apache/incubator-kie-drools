@@ -42,6 +42,7 @@ import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
 import org.junit.Before;
+import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskAdminService;
 import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.TaskDeadlinesService;
@@ -50,7 +51,6 @@ import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.UserGroupCallback;
 import org.kie.internal.task.api.model.NotificationEvent;
-import org.kie.internal.task.api.model.Task;
 
 /**
  *

@@ -25,9 +25,10 @@ import org.jbpm.services.task.events.BeforeTaskAddedEvent;
 import org.jbpm.services.task.impl.model.ContentDataImpl;
 import org.jbpm.services.task.impl.model.ContentImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
 import org.kie.internal.task.api.model.ContentData;
-import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Start : [ new OperationCommand().{ status = [ Status.Ready ],
@@ -61,12 +62,12 @@ public class AddTaskCommand extends TaskCommand<Long> {
             ContentDataImpl contentData = ContentMarshallerHelper.marshal(params, null);
             ContentImpl content = new ContentImpl(contentData.getContent());
             context.getPm().persist(content);
-            task.getTaskData().setDocument(content.getId(), contentData);
+            ((InternalTaskData) task.getTaskData()).setDocument(content.getId(), contentData);
         }
         if (data != null) {
             ContentImpl content = new ContentImpl(data.getContent());
             context.getPm().persist(content);
-            task.getTaskData().setDocument(content.getId(), data);
+            ((InternalTaskData) task.getTaskData()).setDocument(content.getId(), data);
         }
         
         context.getPm().persist(task);

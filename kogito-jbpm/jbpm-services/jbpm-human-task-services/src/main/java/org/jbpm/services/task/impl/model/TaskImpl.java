@@ -39,17 +39,18 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.jbpm.services.task.utils.CollectionUtils;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.PeopleAssignments;
+import org.kie.api.task.model.TaskData;
 import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.Delegation;
-import org.kie.internal.task.api.model.I18NText;
-import org.kie.internal.task.api.model.PeopleAssignments;
+import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.SubTasksStrategy;
-import org.kie.internal.task.api.model.TaskData;
 
 @Entity
 @Table(name="Task")
 @SequenceGenerator(name="taskIdSeq", sequenceName="TASK_ID_SEQ", allocationSize=1)
-public class TaskImpl implements org.kie.internal.task.api.model.Task {
+public class TaskImpl implements InternalTask {
     /**
      * WSHT uses a name for the unique identifier, for now we use a generated ID which is also the key, which can be
      * mapped to the name or a unique name field added later.

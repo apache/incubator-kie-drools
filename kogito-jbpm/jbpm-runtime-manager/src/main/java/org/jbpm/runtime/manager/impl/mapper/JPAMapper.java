@@ -10,9 +10,9 @@ import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
 import org.jbpm.runtime.manager.impl.jpa.ContextMappingInfo;
+import org.kie.api.runtime.manager.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
-import org.kie.internal.runtime.manager.Context;
 import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;

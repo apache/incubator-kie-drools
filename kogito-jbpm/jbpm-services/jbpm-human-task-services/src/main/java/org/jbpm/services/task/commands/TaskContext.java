@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.jbpm.services.task.annotations.Internal;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.World;
 import org.kie.internal.task.api.TaskContentService;
@@ -28,7 +29,6 @@ import org.kie.internal.task.api.TaskDefService;
 import org.kie.internal.task.api.TaskIdentityService;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.UserGroupCallback;
-import org.kie.internal.task.api.model.Task;
 
 /**
  *

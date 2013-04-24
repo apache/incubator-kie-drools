@@ -31,9 +31,9 @@ import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 
 @ApplicationScoped

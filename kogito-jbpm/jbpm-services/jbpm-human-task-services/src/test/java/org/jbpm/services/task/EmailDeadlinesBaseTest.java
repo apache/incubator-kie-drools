@@ -42,12 +42,16 @@ import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.task.api.model.Content;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.PeopleAssignments;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.ContentData;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.PeopleAssignments;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.InternalContent;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTask;
+import org.kie.internal.task.api.model.InternalTaskData;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
@@ -100,7 +104,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new ContentImpl();
+        InternalContent content = new ContentImpl();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
         ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
@@ -108,7 +112,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addContent(taskId, content);
         long contentId = content.getId();
         
-        content = taskService.getContentById(contentId);
+        content = (InternalContent) taskService.getContentById(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         checkContentSubjectAndBody(unmarshallObject);
 
@@ -159,14 +163,14 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new ContentImpl();
+        InternalContent content = new ContentImpl();
         ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal("'singleobject'", null);
         content.setContent(marshalledObject.getContent());
        
         taskService.addContent(taskId, content);
         long contentId = content.getId();
       
-        content = taskService.getContentById(contentId);
+        content = (InternalContent) taskService.getContentById(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         assertEquals("'singleobject'", unmarshallObject.toString());
 
@@ -207,10 +211,10 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+        InternalTask task = (TaskImpl) TaskFactory.evalTask(reader, vars);
         
-        task.getTaskData().setSkipable(true);
-        PeopleAssignments assignments = new PeopleAssignmentsImpl();
+        ((InternalTaskData) task.getTaskData()).setSkipable(true);
+        InternalPeopleAssignments assignments = new PeopleAssignmentsImpl();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
         ba.add(new UserImpl("Administrator"));
         assignments.setBusinessAdministrators(ba);
@@ -224,7 +228,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new ContentImpl();
+        InternalContent content = new ContentImpl();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
         ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
@@ -232,7 +236,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addContent(taskId, content);
         long contentId = content.getId();
         
-        content = taskService.getContentById(contentId);
+        content = (InternalContent) taskService.getContentById(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         checkContentSubjectAndBody(unmarshallObject);
         
@@ -253,7 +257,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
-        task = taskService.getTaskById(taskId);
+        task = (InternalTask) taskService.getTaskById(taskId);
         assertEquals(Status.Completed, task.getTaskData().getStatus());
         assertEquals(0, task.getDeadlines().getStartDeadlines().size());
         assertEquals(0, task.getDeadlines().getEndDeadlines().size());
@@ -268,10 +272,10 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+        InternalTask task = (TaskImpl) TaskFactory.evalTask(reader, vars);
         
-        task.getTaskData().setSkipable(true);
-        PeopleAssignments assignments = new PeopleAssignmentsImpl();
+        ((InternalTaskData) task.getTaskData()).setSkipable(true);
+        InternalPeopleAssignments assignments = new PeopleAssignmentsImpl();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
         ba.add(new UserImpl("Administrator"));
         assignments.setBusinessAdministrators(ba);
@@ -286,7 +290,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new ContentImpl();
+        InternalContent content = new ContentImpl();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
         ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
@@ -294,7 +298,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addContent(taskId, content);
         long contentId = content.getId();
         
-        content = taskService.getContentById(contentId);
+        content = (InternalContent) taskService.getContentById(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         checkContentSubjectAndBody(unmarshallObject);
         
@@ -315,7 +319,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
-        task = taskService.getTaskById(taskId);
+        task = (InternalTask) taskService.getTaskById(taskId);
         assertEquals(Status.Failed, task.getTaskData().getStatus());
         assertEquals(0, task.getDeadlines().getStartDeadlines().size());
         assertEquals(0, task.getDeadlines().getEndDeadlines().size());
@@ -327,10 +331,10 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+        InternalTask task = (TaskImpl) TaskFactory.evalTask(reader, vars);
         
-        task.getTaskData().setSkipable(true);
-        PeopleAssignments assignments = new PeopleAssignmentsImpl();
+        ((InternalTaskData) task.getTaskData()).setSkipable(true);
+        InternalPeopleAssignments assignments = new PeopleAssignmentsImpl();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
         ba.add(new UserImpl("Administrator"));
         assignments.setBusinessAdministrators(ba);
@@ -343,7 +347,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new ContentImpl();
+        InternalContent content = new ContentImpl();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
         ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
@@ -351,7 +355,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addContent(taskId, content);
         long contentId = content.getId();
         
-        content = taskService.getContentById(contentId);
+        content = (InternalContent) taskService.getContentById(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         checkContentSubjectAndBody(unmarshallObject);
         
@@ -371,7 +375,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
-        task = taskService.getTaskById(taskId);
+        task = (InternalTask) taskService.getTaskById(taskId);
         assertEquals(Status.Obsolete, task.getTaskData().getStatus());
         assertEquals(0, task.getDeadlines().getStartDeadlines().size());
         assertEquals(0, task.getDeadlines().getEndDeadlines().size());
@@ -383,10 +387,10 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+        InternalTask task = (TaskImpl) TaskFactory.evalTask(reader, vars);
         
-        task.getTaskData().setSkipable(true);
-        PeopleAssignments assignments = new PeopleAssignmentsImpl();
+        ((InternalTaskData) task.getTaskData()).setSkipable(true);
+        InternalPeopleAssignments assignments = new PeopleAssignmentsImpl();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
         ba.add(new UserImpl("Administrator"));
         assignments.setBusinessAdministrators(ba);
@@ -399,7 +403,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        Content content = new ContentImpl();
+        InternalContent content = new ContentImpl();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
         ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
@@ -407,7 +411,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addContent(taskId, content);
         long contentId = content.getId();
         
-        content = taskService.getContentById(contentId);
+        content = (InternalContent) taskService.getContentById(contentId);
         Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         checkContentSubjectAndBody(unmarshallObject);
         
@@ -427,7 +431,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
-        task = taskService.getTaskById(taskId);
+        task = (InternalTask) taskService.getTaskById(taskId);
         assertEquals(Status.Exited, task.getTaskData().getStatus());
         assertEquals(0, task.getDeadlines().getStartDeadlines().size());
         assertEquals(0, task.getDeadlines().getEndDeadlines().size());
@@ -486,10 +490,10 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
           vars.put("now", new Date());
 
           Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-          Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+          InternalTask task = (TaskImpl) TaskFactory.evalTask(reader, vars);
           
-          task.getTaskData().setSkipable(true);
-          PeopleAssignments assignments = new PeopleAssignmentsImpl();
+          ((InternalTaskData) task.getTaskData()).setSkipable(true);
+          InternalPeopleAssignments assignments = new PeopleAssignmentsImpl();
           List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
           ba.add(new UserImpl("Administrator"));
           assignments.setBusinessAdministrators(ba);
@@ -503,7 +507,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
           taskService.addTask(task, new HashMap<String, Object>());
           long taskId = task.getId();
 
-          Content content = new ContentImpl();
+          InternalContent content = new ContentImpl();
           
           Map<String, String> params = fillMarshalSubjectAndBodyParams();
           ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
@@ -511,7 +515,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
           taskService.addContent(taskId, content);
           long contentId = content.getId();
           
-          content = taskService.getContentById(contentId);
+          content = (InternalContent) taskService.getContentById(contentId);
           Object unmarshallObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
           checkContentSubjectAndBody(unmarshallObject);
           
@@ -532,7 +536,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
           // no email should ne sent as task was completed before deadline was triggered
           assertEquals(0, getWiser().getMessages().size());
-          task = taskService.getTaskById(taskId);
+          task = (InternalTask) taskService.getTaskById(taskId);
           assertEquals(Status.InProgress, task.getTaskData().getStatus());
           assertEquals(0, task.getDeadlines().getStartDeadlines().size());
           assertEquals(0, task.getDeadlines().getEndDeadlines().size());

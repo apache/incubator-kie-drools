@@ -46,16 +46,16 @@ import org.jbpm.services.task.deadlines.NotificationListener;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.LanguageImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
 import org.kie.commons.services.cdi.Startup;
 import org.kie.internal.task.api.UserInfo;
 import org.kie.internal.task.api.model.EmailNotification;
 import org.kie.internal.task.api.model.EmailNotificationHeader;
-import org.kie.internal.task.api.model.Group;
 import org.kie.internal.task.api.model.Language;
 import org.kie.internal.task.api.model.NotificationEvent;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.User;
 import org.mvel2.templates.TemplateRuntime;
 
 @ApplicationScoped

@@ -24,8 +24,10 @@ import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 
-import org.jbpm.services.task.impl.model.FaultDataImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskDeadlinesService;
 import org.kie.internal.task.api.TaskDeadlinesService.DeadlineType;
 import org.kie.internal.task.api.TaskInstanceService;
@@ -34,9 +36,7 @@ import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.I18NText;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.InternalTask;
 
 /**
  *
@@ -77,13 +77,13 @@ public class DeadlinesDecorator implements TaskInstanceService {
     
     public long addTask(Task task, Map<String, Object> params) {
         long taskId = instanceService.addTask(task, params);
-        scheduleDeadlinesForTask(task);
+        scheduleDeadlinesForTask((InternalTask) task);
         return taskId;
     }
 
     public long addTask(Task task, ContentData data) {
         long taskId = instanceService.addTask(task, data);
-        scheduleDeadlinesForTask(task);
+        scheduleDeadlinesForTask((InternalTask) task);
         return taskId;
     }
 
@@ -186,7 +186,7 @@ public class DeadlinesDecorator implements TaskInstanceService {
         instanceService.nominate(taskId, userId, potentialOwners);
     }
 
-    private void scheduleDeadlinesForTask(final Task task) {
+    private void scheduleDeadlinesForTask(final InternalTask task) {
         final long now = System.currentTimeMillis();
 
         Deadlines deadlines = task.getDeadlines();
@@ -218,7 +218,7 @@ public class DeadlinesDecorator implements TaskInstanceService {
     }
 
     private void clearDeadlines(final long taskId, boolean removeStart, boolean removeEnd) {
-        Task task = queryService.getTaskInstanceById(taskId);
+        InternalTask task = (InternalTask) queryService.getTaskInstanceById(taskId);
         if (task.getDeadlines() == null) {
             return;
         }

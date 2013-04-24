@@ -21,16 +21,16 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.utils.OnErrorAction;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.runtime.manager.RuntimeEngine;
-import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.api.task.model.Task;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.model.ContentData;
-import org.kie.internal.task.api.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +62,7 @@ public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
         Task task = createTaskBasedOnWorkItemParams(ksessionById, workItem);
         ContentData content = createTaskContentBasedOnWorkItemParams(ksessionById, workItem);
         try {
-            long taskId = runtime.getTaskService().addTask(task, content);
+            long taskId = ((InternalTaskService) runtime.getTaskService()).addTask(task, content);
             if (isAutoClaim(workItem, task)) {
                 runtime.getTaskService().claim(taskId, (String) workItem.getParameter("SwimlaneActorId"));
             }

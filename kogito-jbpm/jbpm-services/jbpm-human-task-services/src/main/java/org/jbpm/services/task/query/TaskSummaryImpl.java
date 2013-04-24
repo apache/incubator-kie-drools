@@ -22,13 +22,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.kie.internal.task.api.model.Status;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.model.InternalTaskSummary;
 import org.kie.internal.task.api.model.SubTasksStrategy;
-import org.kie.internal.task.api.model.User;
 
-public class TaskSummaryImpl
-        implements
-        org.kie.internal.task.api.model.TaskSummary {
+public class TaskSummaryImpl implements InternalTaskSummary {
 
     private long id;
     private String name;

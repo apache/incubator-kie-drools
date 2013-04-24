@@ -21,10 +21,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.task.api.TaskService;
-import org.kie.internal.task.api.model.Content;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

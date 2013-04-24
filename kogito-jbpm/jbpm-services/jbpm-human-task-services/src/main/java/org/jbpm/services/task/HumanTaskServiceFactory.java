@@ -40,13 +40,13 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
+import org.kie.api.task.TaskService;
 import org.kie.internal.task.api.TaskAdminService;
 import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.TaskDeadlinesService;
 import org.kie.internal.task.api.TaskIdentityService;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
-import org.kie.internal.task.api.TaskService;
 import org.kie.internal.task.api.UserGroupCallback;
 
 /**

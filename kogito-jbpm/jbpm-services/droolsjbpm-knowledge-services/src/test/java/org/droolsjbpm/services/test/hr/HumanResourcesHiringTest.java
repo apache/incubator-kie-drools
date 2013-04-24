@@ -35,6 +35,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -42,20 +43,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.Context;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.Context;
-import org.kie.internal.runtime.manager.RuntimeEngine;
-import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.internal.task.api.TaskService;
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.internal.task.api.InternalTaskService;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
-import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.kie.internal.task.api.model.Content;
-import org.kie.internal.task.api.model.Task;
 
 /**
  *
@@ -178,7 +179,7 @@ public class HumanResourcesHiringTest {
 
         ProcessInstance processInstance = ksession.startProcess("hiring");
 
-        List<TaskSummary> tasks = taskService.getTasksAssignedByGroup("HR", "en-UK");
+        List<TaskSummary> tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("HR", "en-UK");
 
         TaskSummary HRInterview = tasks.get(0);
 
@@ -199,7 +200,7 @@ public class HumanResourcesHiringTest {
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
 
-        tasks = taskService.getTasksAssignedByGroup("IT", "en-UK");
+        tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("IT", "en-UK");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         TaskSummary techInterview = tasks.get(0);
@@ -228,7 +229,7 @@ public class HumanResourcesHiringTest {
         taskService.complete(techInterview.getId(), "salaboy", techOutput);
 
 
-        tasks = taskService.getTasksAssignedByGroup("HR", "en-UK");
+        tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("HR", "en-UK");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         TaskSummary createProposal = tasks.get(0);
@@ -254,7 +255,7 @@ public class HumanResourcesHiringTest {
 
         taskService.complete(createProposal.getId(), "katy", proposalOutput);
 
-        tasks = taskService.getTasksAssignedByGroup("HR", "en-UK");
+        tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("HR", "en-UK");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         TaskSummary signContract = tasks.get(0);
@@ -278,7 +279,7 @@ public class HumanResourcesHiringTest {
         taskService.complete(signContract.getId(), "katy", signOutput);
 
         
-        int removeAllTasks = taskService.removeAllTasks();
+        int removeAllTasks = ((InternalTaskService) taskService).removeAllTasks();
         System.out.println(">>> Removed Tasks > " + removeAllTasks);
 
     }

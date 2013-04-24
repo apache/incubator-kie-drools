@@ -35,12 +35,14 @@ import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.Test;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.model.AccessType;
-import org.kie.internal.task.api.model.Content;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
@@ -107,7 +109,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task1 = taskService.getTaskById(taskId);
-        assertEquals(AccessType.Inline, task1.getTaskData().getDocumentAccessType());
+        assertEquals(AccessType.Inline, ((InternalTaskData) task1.getTaskData()).getDocumentAccessType());
         assertEquals("java.lang.String", task1.getTaskData().getDocumentType());
         long contentId = task1.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
@@ -141,7 +143,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         
         
         Task task1 = taskService.getTaskById( taskId );
-        assertEquals( AccessType.Inline, task1.getTaskData().getDocumentAccessType() );
+        assertEquals( AccessType.Inline, ((InternalTaskData) task1.getTaskData()).getDocumentAccessType() );
         assertEquals( "java.util.HashMap", task1.getTaskData().getDocumentType() );
         long contentId = task1.getTaskData().getDocumentContentId();
         assertTrue( contentId != -1 ); 
@@ -194,7 +196,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         
         
         Task task1 = taskService.getTaskById( taskId );
-        assertEquals( AccessType.Inline, task1.getTaskData().getDocumentAccessType() );
+        assertEquals( AccessType.Inline, ((InternalTaskData) task1.getTaskData()).getDocumentAccessType() );
         assertEquals( "java.util.HashMap", task1.getTaskData().getDocumentType() );
         long contentId = task1.getTaskData().getDocumentContentId();
         assertTrue( contentId != -1 ); 
@@ -278,7 +280,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task1 = taskService.getTaskById(taskId);
-        assertEquals(AccessType.Inline, task1.getTaskData().getDocumentAccessType());
+        assertEquals(AccessType.Inline, ((InternalTaskData) task1.getTaskData()).getDocumentAccessType());
         assertEquals("java.lang.String", task1.getTaskData().getDocumentType());
         long contentId = task1.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
@@ -399,7 +401,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
           List<TaskSummary> allTasks = taskService.getTasksAssignedByGroups(groupIds, "en-UK");
         assertEquals(1, allTasks.size());
-        List<TaskSummary> personalTasks = taskService.getTasksOwned("salaboy", statuses, "en-UK");
+        List<TaskSummary> personalTasks = taskService.getTasksOwnedByStatus("salaboy", statuses, "en-UK");
         assertEquals(2, personalTasks.size());
         allTasks.addAll(personalTasks);
         assertEquals(3, allTasks.size());
@@ -414,7 +416,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         
         allTasks = taskService.getTasksAssignedByGroups(groupIds, "en-UK");
         assertEquals(2, allTasks.size());
-        personalTasks = taskService.getTasksOwned("salaboy", statuses, "en-UK");
+        personalTasks = taskService.getTasksOwnedByStatus("salaboy", statuses, "en-UK");
         assertEquals(1, personalTasks.size());
         allTasks.addAll(personalTasks);
         assertEquals(3, allTasks.size());
@@ -438,12 +440,12 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertEquals("salaboy", task2.getTaskData().getActualOwner().getId());
         assertEquals(1, task2.getPeopleAssignments().getPotentialOwners().size());
         
-        List<TaskSummary> tasksOwned = taskService.getTasksOwned("salaboy");
+        List<TaskSummary> tasksOwned = taskService.getTasksOwned("salaboy", "en-UK");
         assertEquals(2, tasksOwned.size());
   
         allTasks = taskService.getTasksAssignedByGroups(groupIds, "en-UK");
         assertEquals(1, allTasks.size());
-        personalTasks = taskService.getTasksOwned("salaboy", statuses, "en-UK");
+        personalTasks = taskService.getTasksOwnedByStatus("salaboy", statuses, "en-UK");
         assertEquals(2, personalTasks.size());
         allTasks.addAll(personalTasks);
         assertEquals(3, allTasks.size());
@@ -1390,7 +1392,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task2 = taskService.getTaskById(taskId);
-        assertEquals(AccessType.Inline, task2.getTaskData().getOutputAccessType());
+        assertEquals(AccessType.Inline, ((InternalTaskData) task2.getTaskData()).getOutputAccessType());
         assertEquals("java.util.HashMap", task2.getTaskData().getOutputType());
         long contentId = task2.getTaskData().getOutputContentId();
         assertTrue(contentId != -1);
@@ -1433,7 +1435,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task2 = taskService.getTaskById(taskId);
-        assertEquals(AccessType.Inline, task2.getTaskData().getOutputAccessType());
+        assertEquals(AccessType.Inline, ((InternalTaskData) task2.getTaskData()).getOutputAccessType());
         assertEquals("java.util.HashMap", task2.getTaskData().getOutputType());
         long contentId = task2.getTaskData().getOutputContentId();
         assertTrue(contentId != -1);
@@ -1562,7 +1564,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Failed, task2.getTaskData().getStatus());
-        assertEquals(AccessType.Inline, task2.getTaskData().getFaultAccessType());
+        assertEquals(AccessType.Inline, ((InternalTaskData) task2.getTaskData()).getFaultAccessType());
         assertEquals("type", task2.getTaskData().getFaultType());
         assertEquals("faultName", task2.getTaskData().getFaultName());
         long contentId = task2.getTaskData().getFaultContentId();
@@ -1636,7 +1638,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
             businessAdmins.add(new UserImpl("Administrator"));
             businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
-            task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
+            ((InternalPeopleAssignments) task.getPeopleAssignments()).setBusinessAdministrators(businessAdmins);
         }
         taskService.addTask(task, new HashMap<String, Object>());
 
@@ -1668,7 +1670,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task1 = taskService.getTaskById(taskId);
-        assertTrue(task1.getPeopleAssignments().getRecipients().contains(new UserImpl("Bobba Fet")));
+        assertTrue(((InternalPeopleAssignments) task1.getPeopleAssignments()).getRecipients().contains(new UserImpl("Bobba Fet")));
     }
 
     /**
@@ -1692,7 +1694,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
             businessAdmins.add(new UserImpl("Administrator"));
             businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
-            task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
+            ((InternalPeopleAssignments) task.getPeopleAssignments()).setBusinessAdministrators(businessAdmins);
         }
         taskService.addTask(task, new HashMap<String, Object>());
 
@@ -1879,7 +1881,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
             businessAdmins.add(new UserImpl("Administrator"));
             businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
-            task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
+            ((InternalPeopleAssignments) task.getPeopleAssignments()).setBusinessAdministrators(businessAdmins);
         }
         
         taskService.addTask(task, new HashMap<String, Object>());

@@ -14,10 +14,10 @@ import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskIdentityService;
-import org.kie.internal.task.api.model.Group;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.User;
 
 /**
  *

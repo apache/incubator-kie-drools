@@ -30,10 +30,12 @@ import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.kie.internal.task.api.model.InternalI18NText;
+
 @Entity
 @Table(name="I18NText")
 @SequenceGenerator(name="i18nTextIdSeq", sequenceName="I18NTEXT_ID_SEQ", allocationSize=1)
-public class I18NTextImpl implements org.kie.internal.task.api.model.I18NText {
+public class I18NTextImpl implements InternalI18NText {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="i18nTextIdSeq")

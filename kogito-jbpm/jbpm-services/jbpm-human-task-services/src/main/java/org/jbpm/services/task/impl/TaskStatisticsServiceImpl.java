@@ -22,10 +22,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.seam.transaction.Transactional;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.TaskStatisticsService;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.TaskSummary;
 
 /**
  *

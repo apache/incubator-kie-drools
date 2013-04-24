@@ -22,10 +22,10 @@ import java.io.ObjectOutput;
 
 import javax.persistence.Entity;
 
+import org.kie.api.task.model.Group;
+
 @Entity
-public class GroupImpl extends OrganizationalEntityImpl
-    implements
-    org.kie.internal.task.api.model.Group {
+public class GroupImpl extends OrganizationalEntityImpl implements Group {
 
     public GroupImpl() {
         super();

@@ -23,11 +23,13 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskNominatedEvent;
 import org.jbpm.services.task.events.BeforeTaskNominatedEvent;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.User;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Skip : [ new OperationCommand().{ status = [ Status.Created ],
@@ -59,9 +61,9 @@ public class NominateTaskCommand extends TaskCommand<Void> {
         if (CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getBusinessAdministrators())) {
 
 
-            task.getTaskData().assignOwnerAndStatus(potentialOwners);
+            ((InternalTaskData) task.getTaskData()).assignOwnerAndStatus(potentialOwners);
             if (task.getTaskData().getStatus() == Status.Ready) {
-                task.getPeopleAssignments().setPotentialOwners(potentialOwners);
+                ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
             }
 
         } else {

@@ -27,8 +27,9 @@ import org.jbpm.services.task.impl.model.TaskDataImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.Test;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.PeopleAssignments;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.PeopleAssignments;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
 
 /**
  * @author Eric Spiegelberg
@@ -150,7 +151,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		String taskStakeholderId = "espiegelberg";
 		
 		TaskImpl task = new TaskImpl();
-		PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
+		InternalPeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		
 		WorkItem workItem = new WorkItemImpl();		
 		workItem.setParameter(PeopleAssignmentHelper.TASKSTAKEHOLDER_ID, taskStakeholderId);
@@ -189,7 +190,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		
 		TaskImpl task = new TaskImpl();
 		
-		PeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
+		InternalPeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		assertNotNull(peopleAssignment);
 		
 		peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
@@ -211,7 +212,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		
 		TaskImpl task = new TaskImpl();
 		TaskDataImpl taskData = new TaskDataImpl();
-		PeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
+		InternalPeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		assertNotNull(peopleAssignment);
 		assertEquals(0, peopleAssignment.getPotentialOwners().size());
 		assertEquals(0, peopleAssignment.getBusinessAdministrators().size());
@@ -241,15 +242,15 @@ public class PeopleAssignmentHelperTest extends TestCase {
 		assertEquals("Administrator", businessAdministrators.get(0).getId());
 		assertEquals(businessAdministratorId, businessAdministrators.get(1).getId());
 		
-		List<OrganizationalEntity> taskStakehoders = task.getPeopleAssignments().getTaskStakeholders();
+		List<OrganizationalEntity> taskStakehoders = ((InternalPeopleAssignments) task.getPeopleAssignments()).getTaskStakeholders();
 		assertEquals(1, taskStakehoders.size());
 		assertEquals(taskStakeholderId, taskStakehoders.get(0).getId());
 
-        List<OrganizationalEntity> excludedOwners = task.getPeopleAssignments().getExcludedOwners();
+        List<OrganizationalEntity> excludedOwners = ((InternalPeopleAssignments) task.getPeopleAssignments()).getExcludedOwners();
         assertEquals(1, excludedOwners.size());
         assertEquals(excludedOwnerId, excludedOwners.get(0).getId());
 
-        List<OrganizationalEntity> recipients = task.getPeopleAssignments().getRecipients();
+        List<OrganizationalEntity> recipients = ((InternalPeopleAssignments) task.getPeopleAssignments()).getRecipients();
         assertEquals(1, recipients.size());
         assertEquals(recipientId, recipients.get(0).getId());
 		
@@ -260,7 +261,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
 
         TaskImpl task = new TaskImpl();
         TaskDataImpl taskData = new TaskDataImpl();
-        PeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
+        InternalPeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
         assertNotNull(peopleAssignment);
         assertEquals(0, peopleAssignment.getPotentialOwners().size());
         assertEquals(0, peopleAssignment.getBusinessAdministrators().size());
@@ -292,17 +293,17 @@ public class PeopleAssignmentHelperTest extends TestCase {
         assertEquals("drbug", businessAdministrators.get(1).getId());
         assertEquals("peter", businessAdministrators.get(2).getId());
 
-        List<OrganizationalEntity> taskStakehoders = task.getPeopleAssignments().getTaskStakeholders();
+        List<OrganizationalEntity> taskStakehoders = ((InternalPeopleAssignments) task.getPeopleAssignments()).getTaskStakeholders();
         assertEquals(2, taskStakehoders.size());
         assertEquals("drmary", taskStakehoders.get(0).getId());
         assertEquals("krisv", taskStakehoders.get(1).getId());
 
-        List<OrganizationalEntity> excludedOwners = task.getPeopleAssignments().getExcludedOwners();
+        List<OrganizationalEntity> excludedOwners = ((InternalPeopleAssignments) task.getPeopleAssignments()).getExcludedOwners();
         assertEquals(2, excludedOwners.size());
         assertEquals("john", excludedOwners.get(0).getId());
         assertEquals("poul", excludedOwners.get(1).getId());
 
-        List<OrganizationalEntity> recipients = task.getPeopleAssignments().getRecipients();
+        List<OrganizationalEntity> recipients = ((InternalPeopleAssignments) task.getPeopleAssignments()).getRecipients();
         assertEquals(2, recipients.size());
         assertEquals("mary", recipients.get(0).getId());
         assertEquals("steve", recipients.get(1).getId());
@@ -315,7 +316,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
         String excludedOwnerId = "espiegelberg";
 
         TaskImpl task = new TaskImpl();
-        PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
+        InternalPeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 
         WorkItem workItem = new WorkItemImpl();
         workItem.setParameter(PeopleAssignmentHelper.EXCLUDED_OWNER_ID, excludedOwnerId);
@@ -334,7 +335,7 @@ public class PeopleAssignmentHelperTest extends TestCase {
         String recipientId = "espiegelberg";
 
         TaskImpl task = new TaskImpl();
-        PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
+        InternalPeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 
         WorkItem workItem = new WorkItemImpl();
         workItem.setParameter(PeopleAssignmentHelper.RECIPIENT_ID, recipientId);

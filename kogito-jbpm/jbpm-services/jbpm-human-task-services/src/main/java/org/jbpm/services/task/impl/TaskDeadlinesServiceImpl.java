@@ -43,19 +43,21 @@ import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.query.DeadlineSummaryImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.kie.commons.services.cdi.Startup;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.kie.api.runtime.Environment;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskData;
+import org.kie.commons.services.cdi.Startup;
 import org.kie.internal.task.api.TaskDeadlinesService;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Escalation;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.Notification;
 import org.kie.internal.task.api.model.NotificationEvent;
 import org.kie.internal.task.api.model.NotificationType;
 import org.kie.internal.task.api.model.Reassignment;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.TaskData;
 
 
 /**
@@ -168,10 +170,10 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                         // get first and ignore the rest.
                         Reassignment reassignment = escalation.getReassignments().get(0);
 
-                        task.getTaskData().setStatus(Status.Ready);
+                        ((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
                         List potentialOwners = new ArrayList(reassignment.getPotentialOwners());
-                        task.getPeopleAssignments().setPotentialOwners(potentialOwners);
-                        task.getTaskData().setActualOwner(null);
+                        ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
+                        ((InternalTaskData) task.getTaskData()).setActualOwner(null);
 
                     }
                     for (Notification notification : escalation.getNotifications()) {

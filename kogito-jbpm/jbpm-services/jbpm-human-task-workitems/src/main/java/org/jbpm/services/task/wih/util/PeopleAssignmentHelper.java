@@ -22,10 +22,12 @@ import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.PeopleAssignments;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.TaskData;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.PeopleAssignments;
+import org.kie.api.task.model.Task;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTask;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 
 /**
@@ -43,9 +45,9 @@ public class PeopleAssignmentHelper {
     public static final String EXCLUDED_OWNER_ID = "ExcludedOwnerId";
     public static final String RECIPIENT_ID = "RecipientId";
 	
-	public void handlePeopleAssignments(WorkItem workItem, Task task, TaskData taskData) {
+	public void handlePeopleAssignments(WorkItem workItem, InternalTask task, InternalTaskData taskData) {
 		
-		PeopleAssignments peopleAssignments = getNullSafePeopleAssignments(task);
+		InternalPeopleAssignments peopleAssignments = getNullSafePeopleAssignments(task);
         
 		assignActors(workItem, peopleAssignments, taskData);
 		assignGroups(workItem, peopleAssignments);		
@@ -58,7 +60,7 @@ public class PeopleAssignmentHelper {
         
 	}
 	
-	protected void assignActors(WorkItem workItem, PeopleAssignments peopleAssignments, TaskData taskData) {
+	protected void assignActors(WorkItem workItem, PeopleAssignments peopleAssignments, InternalTaskData taskData) {
 		
         String actorIds = (String) workItem.getParameter(ACTOR_ID);        
         List<OrganizationalEntity> potentialOwners = peopleAssignments.getPotentialOwners();
@@ -96,7 +98,7 @@ public class PeopleAssignmentHelper {
         
 	}
 	
-	protected void assignTaskStakeholders(WorkItem workItem, PeopleAssignments peopleAssignments) {
+	protected void assignTaskStakeholders(WorkItem workItem, InternalPeopleAssignments peopleAssignments) {
 		
 		String taskStakehodlerIds = (String) workItem.getParameter(TASKSTAKEHOLDER_ID);
 		List<OrganizationalEntity> taskStakeholders = peopleAssignments.getTaskStakeholders();
@@ -105,7 +107,7 @@ public class PeopleAssignmentHelper {
 		
 	}
 
-    protected void assignExcludedOwners(WorkItem workItem, PeopleAssignments peopleAssignments) {
+    protected void assignExcludedOwners(WorkItem workItem, InternalPeopleAssignments peopleAssignments) {
 
         String excludedOwnerIds = (String) workItem.getParameter(EXCLUDED_OWNER_ID);
         List<OrganizationalEntity> excludedOwners = peopleAssignments.getExcludedOwners();
@@ -114,7 +116,7 @@ public class PeopleAssignmentHelper {
 
     }
 
-    protected void assignRecipients(WorkItem workItem, PeopleAssignments peopleAssignments) {
+    protected void assignRecipients(WorkItem workItem, InternalPeopleAssignments peopleAssignments) {
 
         String recipientIds = (String) workItem.getParameter(RECIPIENT_ID);
         List<OrganizationalEntity> recipients = peopleAssignments.getRecipients();
@@ -151,9 +153,9 @@ public class PeopleAssignmentHelper {
         }
 	}
 	
-	protected PeopleAssignments getNullSafePeopleAssignments(Task task) {
+	protected InternalPeopleAssignments getNullSafePeopleAssignments(Task task) {
 		
-		PeopleAssignments peopleAssignments = task.getPeopleAssignments();
+		InternalPeopleAssignments peopleAssignments = (InternalPeopleAssignments) task.getPeopleAssignments();
         
         if (peopleAssignments == null) {
         	

@@ -27,8 +27,9 @@ import org.jbpm.services.task.impl.model.ContentImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.Content;
 import org.kie.internal.task.api.TaskContentService;
-import org.kie.internal.task.api.model.Content;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  *
@@ -58,7 +59,7 @@ public class TaskContentServiceImpl implements TaskContentService {
             ContentImpl content = new ContentImpl(outputContentData.getContent());
             pm.persist(content);
             
-            task.getTaskData().setOutput(content.getId(), outputContentData);
+            ((InternalTaskData) task.getTaskData()).setOutput(content.getId(), outputContentData);
             contentId = content.getId();
         } else {
             // I need to merge it if it already exist
@@ -76,13 +77,13 @@ public class TaskContentServiceImpl implements TaskContentService {
     public long addContent(long taskId, Content content) {
         TaskImpl task = pm.find(TaskImpl.class, taskId);
         pm.persist(content);
-        task.getTaskData().setDocumentContentId(content.getId());
+        ((InternalTaskData) task.getTaskData()).setDocumentContentId(content.getId());
         return content.getId();
     }
 
     public void deleteContent(long taskId, long contentId) {
         TaskImpl task = pm.find(TaskImpl.class, taskId);
-        task.getTaskData().setDocumentContentId(-1);
+        ((InternalTaskData) task.getTaskData()).setDocumentContentId(-1);
         ContentImpl content = pm.find(ContentImpl.class, contentId);
         pm.remove(content);
 

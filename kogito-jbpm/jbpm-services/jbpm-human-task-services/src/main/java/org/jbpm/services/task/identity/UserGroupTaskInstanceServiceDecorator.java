@@ -23,12 +23,15 @@ import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.I18NText;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Task;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTask;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 @Decorator
 public class UserGroupTaskInstanceServiceDecorator extends
@@ -46,17 +49,17 @@ public class UserGroupTaskInstanceServiceDecorator extends
 
     @Override
     public long addTask(Task task, Map<String, Object> params) {
-        doCallbackOperationForPeopleAssignments(task.getPeopleAssignments());
-        doCallbackOperationForTaskData(task.getTaskData());
-        doCallbackOperationForTaskDeadlines(task.getDeadlines());
+        doCallbackOperationForPeopleAssignments((InternalPeopleAssignments) task.getPeopleAssignments());
+        doCallbackOperationForTaskData((InternalTaskData) task.getTaskData());
+        doCallbackOperationForTaskDeadlines(((InternalTask) task).getDeadlines());
         return delegate.addTask(task, params);
     }
 
     @Override
     public long addTask(Task task, ContentData data) {
-        doCallbackOperationForPeopleAssignments(task.getPeopleAssignments());
-        doCallbackOperationForTaskData(task.getTaskData());
-        doCallbackOperationForTaskDeadlines(task.getDeadlines());
+        doCallbackOperationForPeopleAssignments((InternalPeopleAssignments) task.getPeopleAssignments());
+        doCallbackOperationForTaskData((InternalTaskData) task.getTaskData());
+        doCallbackOperationForTaskDeadlines(((InternalTask) task).getDeadlines());
         return delegate.addTask(task, data);
     }
 

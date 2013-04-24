@@ -1,8 +1,8 @@
 package org.jbpm.runtime.manager.impl.tx;
 
 import org.drools.persistence.TransactionSynchronization;
-import org.kie.internal.runtime.manager.RuntimeEngine;
-import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 
 public class DisposeSessionTransactionSynchronization implements TransactionSynchronization {
 

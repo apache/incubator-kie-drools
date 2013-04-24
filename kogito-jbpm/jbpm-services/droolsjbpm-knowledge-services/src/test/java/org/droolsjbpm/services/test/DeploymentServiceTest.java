@@ -29,11 +29,11 @@ import org.jbpm.runtime.manager.util.TestUtil;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.runtime.manager.RuntimeEngine;
-import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.internal.task.api.model.TaskSummary;
 
 @RunWith(Arquillian.class)
 public class DeploymentServiceTest {
@@ -62,6 +62,7 @@ public class DeploymentServiceTest {
                 .addPackage("org.jbpm.services.task.deadlines.notifications.impl")
                 .addPackage("org.jbpm.services.task.subtask")
 
+                .addPackage("org.kie.api.runtime.manager")
                 .addPackage("org.kie.internal.runtime.manager")
                 .addPackage("org.kie.internal.runtime.manager.context")
                 .addPackage("org.kie.internal.runtime.manager.cdi.qualifier")

@@ -24,7 +24,31 @@ import javax.inject.Inject;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.annotations.Internal;
 import org.jbpm.services.task.annotations.Mvel;
-import org.jbpm.services.task.events.*;
+import org.jbpm.services.task.events.AfterTaskActivatedEvent;
+import org.jbpm.services.task.events.AfterTaskClaimedEvent;
+import org.jbpm.services.task.events.AfterTaskCompletedEvent;
+import org.jbpm.services.task.events.AfterTaskDelegatedEvent;
+import org.jbpm.services.task.events.AfterTaskExitedEvent;
+import org.jbpm.services.task.events.AfterTaskFailedEvent;
+import org.jbpm.services.task.events.AfterTaskForwardedEvent;
+import org.jbpm.services.task.events.AfterTaskReleasedEvent;
+import org.jbpm.services.task.events.AfterTaskResumedEvent;
+import org.jbpm.services.task.events.AfterTaskSkippedEvent;
+import org.jbpm.services.task.events.AfterTaskStartedEvent;
+import org.jbpm.services.task.events.AfterTaskSuspendedEvent;
+import org.jbpm.services.task.events.BeforeTaskActivatedEvent;
+import org.jbpm.services.task.events.BeforeTaskClaimedEvent;
+import org.jbpm.services.task.events.BeforeTaskCompletedEvent;
+import org.jbpm.services.task.events.BeforeTaskDelegatedEvent;
+import org.jbpm.services.task.events.BeforeTaskExitedEvent;
+import org.jbpm.services.task.events.BeforeTaskFailedEvent;
+import org.jbpm.services.task.events.BeforeTaskForwardedEvent;
+import org.jbpm.services.task.events.BeforeTaskReleasedEvent;
+import org.jbpm.services.task.events.BeforeTaskResumedEvent;
+import org.jbpm.services.task.events.BeforeTaskSkippedEvent;
+import org.jbpm.services.task.events.BeforeTaskStartedEvent;
+import org.jbpm.services.task.events.BeforeTaskStoppedEvent;
+import org.jbpm.services.task.events.BeforeTaskSuspendedEvent;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.exception.TaskException;
 import org.jbpm.services.task.impl.model.ContentImpl;
@@ -34,17 +58,19 @@ import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.PeopleAssignments;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskData;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.TaskIdentityService;
 import org.kie.internal.task.api.TaskQueryService;
-import org.kie.internal.task.api.model.Group;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.Operation;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.PeopleAssignments;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.TaskData;
-import org.kie.internal.task.api.model.User;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -219,7 +245,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
 
         final PeopleAssignments people = task.getPeopleAssignments();
-        final TaskData taskData = task.getTaskData();
+        final InternalTaskData taskData = (InternalTaskData) task.getTaskData();
 
         if (command.getNewStatus() != null) {
             taskData.setStatus(command.getNewStatus());
@@ -307,7 +333,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                         ContentImpl content = new ContentImpl();
                         content.setContent(faultData.getContent());
                         pm.persist(content);
-                        task.getTaskData().setFault(content.getId(), faultData);
+                        ((InternalTaskData) task.getTaskData()).setFault(content.getId(), faultData);
 
 
                     }
@@ -381,7 +407,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                     taskEvents.select(new AnnotationLiteral<AfterTaskDelegatedEvent>() {
                     }).fire(task);
                     // This is a really bad hack to execut the correct behavior
-                    task.getTaskData().setStatus(Status.Reserved);
+                    ((InternalTaskData) task.getTaskData()).setStatus(Status.Reserved);
                 }
                 case Exit: {
                     taskEvents.select(new AnnotationLiteral<AfterTaskExitedEvent>() {
@@ -515,9 +541,9 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         if (isAllowed(user, null, (List<OrganizationalEntity>) task.getPeopleAssignments().getBusinessAdministrators())) {
 
 
-            task.getTaskData().assignOwnerAndStatus(potentialOwners);
+            ((InternalTaskData) task.getTaskData()).assignOwnerAndStatus(potentialOwners);
             if (task.getTaskData().getStatus() == Status.Ready) {
-                task.getPeopleAssignments().setPotentialOwners(potentialOwners);
+                ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
             }
 
         } else {

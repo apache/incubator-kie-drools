@@ -24,7 +24,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 
 import org.jboss.seam.transaction.Transactional;
-
 import org.jbpm.services.task.annotations.External;
 import org.jbpm.services.task.events.AfterTaskCompletedEvent;
 import org.jbpm.services.task.events.AfterTaskFailedEvent;
@@ -33,12 +32,12 @@ import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.manager.RuntimeEngine;
-import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
-import org.kie.internal.task.api.model.Content;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

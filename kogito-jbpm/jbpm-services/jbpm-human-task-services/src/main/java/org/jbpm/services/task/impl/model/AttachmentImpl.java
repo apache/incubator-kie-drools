@@ -30,14 +30,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.AccessType;
-import org.kie.internal.task.api.model.Content;
-import org.kie.internal.task.api.model.User;
+import org.kie.internal.task.api.model.InternalAttachment;
 
 @Entity
 @Table(name="Attachment")
 @SequenceGenerator(name="attachmentIdSeq", sequenceName="ATTACHMENT_ID_SEQ", allocationSize=1)
-public class AttachmentImpl implements org.kie.internal.task.api.model.Attachment {
+public class AttachmentImpl implements InternalAttachment {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="attachmentIdSeq")

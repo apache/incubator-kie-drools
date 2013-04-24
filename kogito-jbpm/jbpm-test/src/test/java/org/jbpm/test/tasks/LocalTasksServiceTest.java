@@ -20,16 +20,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.internal.task.api.TaskService;
-import org.kie.internal.task.api.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +83,7 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
-        org.kie.internal.runtime.manager.RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
         
         KieSession ksession = runtime.getKieSession();
         TaskService taskService = runtime.getTaskService();

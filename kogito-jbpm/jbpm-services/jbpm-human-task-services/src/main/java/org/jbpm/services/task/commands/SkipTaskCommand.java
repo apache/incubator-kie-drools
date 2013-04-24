@@ -21,10 +21,11 @@ import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskSkippedEvent;
 import org.jbpm.services.task.events.BeforeTaskSkippedEvent;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.User;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Skip : [ new OperationCommand().{ status = [ Status.Created ],
@@ -64,14 +65,14 @@ public class SkipTaskCommand extends TaskCommand<Void> {
         if (adminAllowed || initiatorAllowed) {
             if (task.getTaskData().getStatus().equals(Status.Created)) {
                 // CHeck for potential Owner allowed (decorator?)
-                task.getTaskData().setStatus(Status.Obsolete);
+            	((InternalTaskData) task.getTaskData()).setStatus(Status.Obsolete);
 
             }
         }
         
         if (adminAllowed || potOwnerAllowed) {
             if (task.getTaskData().getStatus().equals(Status.Ready)) {
-                task.getTaskData().setStatus(Status.Obsolete);
+            	((InternalTaskData) task.getTaskData()).setStatus(Status.Obsolete);
             }
         }
 
@@ -79,11 +80,11 @@ public class SkipTaskCommand extends TaskCommand<Void> {
         if (adminAllowed || ownerAllowed) {
             if (task.getTaskData().getStatus().equals(Status.Reserved)
                     || task.getTaskData().getStatus().equals(Status.InProgress)) {
-                task.getTaskData().setStatus(Status.Obsolete);
+            	((InternalTaskData) task.getTaskData()).setStatus(Status.Obsolete);
             }
         }
         
-        task.getTaskData().setSkipable(true);
+        ((InternalTaskData) task.getTaskData()).setSkipable(true);
 
         context.getTaskEvents().select(new AnnotationLiteral<AfterTaskSkippedEvent>() {
         }).fire(task);

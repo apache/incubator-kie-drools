@@ -35,9 +35,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.jbpm.services.task.utils.CollectionUtils;
-import org.kie.internal.task.api.model.I18NText;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.task.api.model.NotificationType;
-import org.kie.internal.task.api.model.OrganizationalEntity;
 
 @Entity
 @Table(name="Notification")

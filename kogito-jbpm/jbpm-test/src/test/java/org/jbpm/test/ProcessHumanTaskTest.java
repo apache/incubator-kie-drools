@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.task.api.TaskService;
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.TaskSummary;
 
 
 /**
