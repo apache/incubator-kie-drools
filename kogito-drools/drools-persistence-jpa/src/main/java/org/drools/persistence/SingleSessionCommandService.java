@@ -400,7 +400,7 @@ public class SingleSessionCommandService
     private void rollbackTransaction(Exception t1,
                                      boolean transactionOwner) {
         try {
-            logger.error( "Could not commit session",
+            logger.warn( "Could not commit session",
                           t1 );
             txm.rollback( transactionOwner );
         } catch ( Exception t2 ) {
