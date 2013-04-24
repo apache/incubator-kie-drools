@@ -35,7 +35,7 @@ public class JtaTransactionManager
 
     public static final String           DEFAULT_USER_TRANSACTION_NAME                     = "java:comp/UserTransaction";
 
-    public static final String[]         FALLBACK_TRANSACTION_MANAGER_NAMES                = new String[]{"java:comp/TransactionManager", "java:appserver/TransactionManager", "java:pm/TransactionManager", "java:/TransactionManager", System.getProperty("jbpm.tm.jndi.lookup", "")};
+    public static final String[]         FALLBACK_TRANSACTION_MANAGER_NAMES                = new String[]{"java:comp/TransactionManager", "java:appserver/TransactionManager", "java:pm/TransactionManager", "java:/TransactionManager", System.getProperty("jbpm.tm.jndi.lookup")};
 
     /**
      * Standard Java EE 5 JNDI location for the JTA TransactionSynchronizationRegistry.
@@ -97,6 +97,9 @@ public class JtaTransactionManager
 
         // Check fallback JNDI locations.
         for ( String jndiName : FALLBACK_TRANSACTION_MANAGER_NAMES ) {
+            if (jndiName == null) {
+                continue;
+            }
             try {
                 javax.transaction.TransactionManager tm = (javax.transaction.TransactionManager) context.lookup( jndiName );
                 logger.debug( "JTA TransactionManager found at fallback JNDI location [{}]",
