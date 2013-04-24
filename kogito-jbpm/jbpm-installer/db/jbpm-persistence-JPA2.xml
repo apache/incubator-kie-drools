@@ -29,11 +29,9 @@
     <class>org.jbpm.services.task.impl.model.EmailNotificationHeaderImpl</class>
     <class>org.jbpm.services.task.impl.model.PeopleAssignmentsImpl</class>
     <class>org.jbpm.services.task.impl.model.ReassignmentImpl</class>
-    <class>org.kie.internal.task.api.model.Status</class>
     <class>org.jbpm.services.task.impl.model.TaskImpl</class>
     <class>org.jbpm.services.task.impl.model.TaskDefImpl</class>
     <class>org.jbpm.services.task.impl.model.TaskDataImpl</class>
-    <class>org.kie.internal.task.api.model.SubTasksStrategy</class>
     <class>org.jbpm.services.task.impl.model.UserImpl</class>
     <class>org.jbpm.executor.entities.ErrorInfo</class>
     <class>org.jbpm.executor.entities.RequestInfo</class>
