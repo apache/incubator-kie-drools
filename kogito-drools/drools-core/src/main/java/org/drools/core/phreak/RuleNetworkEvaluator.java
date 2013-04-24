@@ -1461,9 +1461,7 @@ public class RuleNetworkEvaluator {
                 FastIterator leftIt = notNode.getLeftIterator(ltm);
                 LeftTuple firstLeftTuple = notNode.getFirstLeftTuple(rightTuple, ltm, context, leftIt);
 
-                LeftTuple firstBlocked = rightTuple.getBlocked();
-                // we now have  reference to the first Blocked, so null it in the rightTuple itself, so we can rebuild
-                rightTuple.nullBlocked();
+                LeftTuple firstBlocked = rightTuple.getTempBlocked();
 
                 // first process non-blocked tuples, as we know only those ones are in the left memory.
                 for (LeftTuple leftTuple = firstLeftTuple; leftTuple != null; ) {
@@ -1497,11 +1495,7 @@ public class RuleNetworkEvaluator {
 
                 if (firstBlocked != null) {
                     RightTuple rootBlocker = rightTuple.getTempNextRightTuple();
-                    if (rootBlocker != null ) {
-                        if ( rootBlocker != rightTuple && rootBlocker.getNext() != null ) {
-                            rootBlocker = ( RightTuple ) rootBlocker.getNext();
-                        }
-                    } else{
+                    if (rootBlocker == null ) {
                         iterateFromStart = true;
                     }
 
@@ -1538,6 +1532,7 @@ public class RuleNetworkEvaluator {
                             // There may be UPDATE RightTuples too, but that's ok. They've already been re-added to the correct bucket, safe to be reprocessed.
                             if (leftTuple.getStagedType() != LeftTuple.DELETE && newBlocker.getStagedType() != LeftTuple.DELETE &&
                                     constraints.isAllowedCachedLeft(contextEntry, newBlocker.getFactHandle())) {
+
                                 leftTuple.setBlocker(newBlocker);
                                 newBlocker.addBlocked(leftTuple);
 
@@ -1968,9 +1963,7 @@ public class RuleNetworkEvaluator {
                                                   wm,
                                                   rightTuple.getFactHandle() );
 
-                LeftTuple firstBlocked = rightTuple.getBlocked();
-                // we now have  reference to the first Blocked, so null it in the rightTuple itself, so we can rebuild
-                rightTuple.nullBlocked();
+                LeftTuple firstBlocked = rightTuple.getTempBlocked();
 
                 // first process non-blocked tuples, as we know only those ones are in the left memory.
                 for (LeftTuple leftTuple = firstLeftTuple; leftTuple != null; ) {
@@ -2003,11 +1996,7 @@ public class RuleNetworkEvaluator {
 
                 if (firstBlocked != null) {
                     RightTuple rootBlocker = rightTuple.getTempNextRightTuple();
-                    if (rootBlocker != null ) {
-                        if ( rootBlocker != rightTuple && rootBlocker.getNext() != null ) {
-                            rootBlocker = ( RightTuple ) rootBlocker.getNext();
-                        }
-                    } else {
+                    if (rootBlocker == null ) {
                         iterateFromStart = true;
                     }
 
@@ -4288,16 +4277,30 @@ public class RuleNetworkEvaluator {
 
                 if (resumeFromCurrent) {
                     rightTuple.setTempRightTupleMemory(rightTuple.getMemory());
-                    RightTuple tempRightTuple = rightTuple.getBlocked() != null ? ( RightTuple ) rightTuple.getPrevious() : null;
 
-                    while ( tempRightTuple != null && tempRightTuple.getStagedType() != LeftTuple.NONE ) {
-                        // next cannot be an updated or deleted rightTuple
-                        tempRightTuple = (RightTuple) tempRightTuple.getPrevious();
+                    if (rightTuple.getBlocked() != null) {
+                        // look for a non-staged right tuple first forward ...
+                        RightTuple tempRightTuple = ( RightTuple ) rightTuple.getNext();
+                        while ( tempRightTuple != null && tempRightTuple.getStagedType() != LeftTuple.NONE ) {
+                            // next cannot be an updated or deleted rightTuple
+                            tempRightTuple = (RightTuple) tempRightTuple.getNext();
+                        }
+
+                        // ... and if cannot find one try backward
+                        if ( tempRightTuple == null ) {
+                            tempRightTuple = ( RightTuple ) rightTuple.getPrevious();
+                            while ( tempRightTuple != null && tempRightTuple.getStagedType() != LeftTuple.NONE ) {
+                                // next cannot be an updated or deleted rightTuple
+                                tempRightTuple = (RightTuple) tempRightTuple.getPrevious();
+                            }
+                        }
+
+                        rightTuple.setTempNextRightTuple( tempRightTuple );
                     }
-
-                    rightTuple.setTempNextRightTuple( tempRightTuple );
                 }
 
+                rightTuple.setTempBlocked(rightTuple.getBlocked());
+                rightTuple.nullBlocked();
                 rtm.remove(rightTuple);
             }
             rightTuple = next;
@@ -4311,11 +4314,10 @@ public class RuleNetworkEvaluator {
 
                 if (resumeFromCurrent) {
                     RightTuple tempRightTuple = rightTuple.getTempNextRightTuple();
-                    if ( tempRightTuple == null && rightTuple.getMemory() == rightTuple.getTempRightTupleMemory()  ) {
+                    if ( rightTuple.getBlocked() != null && tempRightTuple == null && rightTuple.getMemory() == rightTuple.getTempRightTupleMemory()  ) {
                         // the next RightTuple was null, but current RightTuple was added back into the same bucket, so reset as root blocker to re-match can be attempted
-                        tempRightTuple = rightTuple;
+                        rightTuple.setTempNextRightTuple( rightTuple );
                     }
-                    rightTuple.setTempNextRightTuple( tempRightTuple );
                 }
 
                 for (LeftTuple childLeftTuple = rightTuple.getFirstChild(); childLeftTuple != null; ) {
