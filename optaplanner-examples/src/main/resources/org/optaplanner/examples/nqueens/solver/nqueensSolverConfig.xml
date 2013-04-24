@@ -31,7 +31,7 @@
       <planningEntityTabuSize>5</planningEntityTabuSize>
     </acceptor>
     <forager>
-      <!-- Real world problems require to use of <minimalAcceptedSelection> -->
+      <!-- Real world problems require to use of <acceptedCountLimit> -->
     </forager>
   </localSearch>
   <!-- To scale out, replace <localSearch> with this configuration: -->
@@ -44,7 +44,7 @@
       <!--<planningEntityTabuSize>11</planningEntityTabuSize>-->
     <!--</acceptor>-->
     <!--<forager>-->
-      <!--<minimalAcceptedSelection>2000</minimalAcceptedSelection>-->
+      <!--<acceptedCountLimit>2000</acceptedCountLimit>-->
       <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
     <!--</forager>-->
   <!--</localSearch>-->

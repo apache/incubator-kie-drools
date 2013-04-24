@@ -35,9 +35,9 @@
   </inheritedSolverBenchmark>
 
 <#list [5, 7, 11, 13] as planningEntityTabuSize>
-<#list [500, 1000, 2000] as minimalAcceptedSelection>
+<#list [500, 1000, 2000] as acceptedCountLimit>
   <solverBenchmark>
-    <name>entityTabu ${planningEntityTabuSize} acceptedSelection ${minimalAcceptedSelection}</name>
+    <name>planningEntityTabuSize ${planningEntityTabuSize} acceptedCountLimit ${acceptedCountLimit}</name>
     <solver>
       <localSearch>
         <unionMoveSelector>
@@ -48,7 +48,7 @@
           <planningEntityTabuSize>${planningEntityTabuSize}</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>${minimalAcceptedSelection}</minimalAcceptedSelection>
+          <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>

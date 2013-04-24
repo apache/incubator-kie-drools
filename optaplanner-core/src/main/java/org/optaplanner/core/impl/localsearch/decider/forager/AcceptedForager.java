@@ -37,7 +37,7 @@ public class AcceptedForager extends AbstractForager {
     protected DeciderScoreComparatorFactory deciderScoreComparatorFactory;
     // final to allow better hotspot optimization. TODO prove that it indeed makes a difference
     protected final PickEarlyType pickEarlyType;
-    protected final int minimalAcceptedSelection;
+    protected final int acceptedCountLimit;
 
     protected Comparator<Score> scoreComparator;
 
@@ -50,11 +50,11 @@ public class AcceptedForager extends AbstractForager {
 
     protected LocalSearchMoveScope earlyPickedMoveScope;
 
-    public AcceptedForager(PickEarlyType pickEarlyType, int minimalAcceptedSelection) {
+    public AcceptedForager(PickEarlyType pickEarlyType, int acceptedCountLimit) {
         this.pickEarlyType = pickEarlyType;
-        this.minimalAcceptedSelection = minimalAcceptedSelection;
-        if (minimalAcceptedSelection < 1) {
-            throw new IllegalArgumentException("The minimalAcceptedSelection (" + minimalAcceptedSelection
+        this.acceptedCountLimit = acceptedCountLimit;
+        if (acceptedCountLimit < 1) {
+            throw new IllegalArgumentException("The acceptedCountLimit (" + acceptedCountLimit
                     + ") cannot be negative or zero.");
         }
     }
@@ -87,7 +87,7 @@ public class AcceptedForager extends AbstractForager {
 
     public boolean supportsNeverEndingMoveSelector() {
         // TODO FIXME magical value Integer.MAX_VALUE coming from ForagerConfig
-        return minimalAcceptedSelection < Integer.MAX_VALUE;
+        return acceptedCountLimit < Integer.MAX_VALUE;
     }
 
     public void addMove(LocalSearchMoveScope moveScope) {
@@ -145,7 +145,7 @@ public class AcceptedForager extends AbstractForager {
     }
 
     public boolean isQuitEarly() {
-        return earlyPickedMoveScope != null || acceptedMoveCount >= minimalAcceptedSelection;
+        return earlyPickedMoveScope != null || acceptedMoveCount >= acceptedCountLimit;
     }
 
     public LocalSearchMoveScope pickMove(LocalSearchStepScope stepScope) {
@@ -188,7 +188,7 @@ public class AcceptedForager extends AbstractForager {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + pickEarlyType + ", " + minimalAcceptedSelection + ")";
+        return getClass().getSimpleName() + "(" + pickEarlyType + ", " + acceptedCountLimit + ")";
     }
 
 }

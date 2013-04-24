@@ -73,7 +73,7 @@
           <planningEntityTabuSize>7</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+          <acceptedCountLimit>1000</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
@@ -94,7 +94,7 @@
           <simulatedAnnealingStartingTemperature>0hard/400soft</simulatedAnnealingStartingTemperature>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+          <acceptedCountLimit>4</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>

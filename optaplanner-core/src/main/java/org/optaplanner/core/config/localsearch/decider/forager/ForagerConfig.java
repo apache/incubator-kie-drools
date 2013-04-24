@@ -32,7 +32,7 @@ public class ForagerConfig {
     private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig = null;
     private PickEarlyType pickEarlyType = null;
 
-    protected Integer minimalAcceptedSelection = null;
+    protected Integer acceptedCountLimit = null;
 
     public Class<? extends Forager> getForagerClass() {
         return foragerClass;
@@ -59,12 +59,12 @@ public class ForagerConfig {
         this.pickEarlyType = pickEarlyType;
     }
 
-    public Integer getMinimalAcceptedSelection() {
-        return minimalAcceptedSelection;
+    public Integer getAcceptedCountLimit() {
+        return acceptedCountLimit;
     }
 
-    public void setMinimalAcceptedSelection(Integer minimalAcceptedSelection) {
-        this.minimalAcceptedSelection = minimalAcceptedSelection;
+    public void setAcceptedCountLimit(Integer acceptedCountLimit) {
+        this.acceptedCountLimit = acceptedCountLimit;
     }
 
     // ************************************************************************
@@ -76,10 +76,9 @@ public class ForagerConfig {
             return ConfigUtils.newInstance(this, "foragerClass", foragerClass);
         }
         PickEarlyType pickEarlyType = (this.pickEarlyType == null) ? PickEarlyType.NEVER : this.pickEarlyType;
-        int minimalAcceptedSelection = (this.minimalAcceptedSelection == null)
-                ? Integer.MAX_VALUE : this.minimalAcceptedSelection;
+        int acceptedCountLimit = (this.acceptedCountLimit == null) ? Integer.MAX_VALUE : this.acceptedCountLimit;
 
-        AcceptedForager forager = new AcceptedForager(pickEarlyType, minimalAcceptedSelection);
+        AcceptedForager forager = new AcceptedForager(pickEarlyType, acceptedCountLimit);
         DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig_
                 = deciderScoreComparatorFactoryConfig == null ? new DeciderScoreComparatorFactoryConfig()
                 : deciderScoreComparatorFactoryConfig;
@@ -90,10 +89,10 @@ public class ForagerConfig {
 
     public void inherit(ForagerConfig inheritedConfig) {
         // TODO this is messed up
-        if (foragerClass == null && pickEarlyType == null && minimalAcceptedSelection == null) {
+        if (foragerClass == null && pickEarlyType == null && acceptedCountLimit == null) {
             foragerClass = inheritedConfig.getForagerClass();
             pickEarlyType = inheritedConfig.getPickEarlyType();
-            minimalAcceptedSelection = inheritedConfig.getMinimalAcceptedSelection();
+            acceptedCountLimit = inheritedConfig.getAcceptedCountLimit();
         }
         if (deciderScoreComparatorFactoryConfig == null) {
             deciderScoreComparatorFactoryConfig = inheritedConfig.getDeciderScoreComparatorFactoryConfig();

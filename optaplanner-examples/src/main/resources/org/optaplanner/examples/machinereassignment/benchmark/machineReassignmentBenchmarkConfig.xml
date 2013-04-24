@@ -71,7 +71,7 @@
           <planningEntityTabuSize>7</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>2000</minimalAcceptedSelection>
+          <acceptedCountLimit>2000</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
@@ -92,7 +92,7 @@
           <!--<fadingPlanningEntityTabuSize>7</fadingPlanningEntityTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
-          <!--<minimalAcceptedSelection>2000</minimalAcceptedSelection>-->
+          <!--<acceptedCountLimit>2000</acceptedCountLimit>-->
         <!--</forager>-->
       <!--</localSearch>-->
     <!--</solver>-->
@@ -113,7 +113,7 @@
           <!--<fadingPlanningEntityTabuSize>10</fadingPlanningEntityTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
-          <!--<minimalAcceptedSelection>2000</minimalAcceptedSelection>-->
+          <!--<acceptedCountLimit>2000</acceptedCountLimit>-->
         <!--</forager>-->
       <!--</localSearch>-->
     <!--</solver>-->
@@ -135,7 +135,7 @@
           <lateAcceptanceSize>1000</lateAcceptanceSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>500</minimalAcceptedSelection>
+          <acceptedCountLimit>500</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
@@ -157,7 +157,7 @@
           <lateAcceptanceSize>2000</lateAcceptanceSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>500</minimalAcceptedSelection>
+          <acceptedCountLimit>500</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>

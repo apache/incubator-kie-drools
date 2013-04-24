@@ -35,7 +35,7 @@
       <undoMoveTabuSize>3</undoMoveTabuSize>
     </acceptor>
     <forager>
-      <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
+      <acceptedCountLimit>500</acceptedCountLimit><!-- TODO tweak me -->
     </forager>
   </localSearch>
 </solver>

@@ -42,7 +42,7 @@
           <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
-          <!-- Real world problems require to use of <minimalAcceptedSelection> -->
+          <!-- Real world problems require to use of <acceptedCountLimit> -->
         </forager>
       </localSearch>
     </solver>
@@ -88,7 +88,7 @@
           <solutionTabuSize>1500</solutionTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
+          <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->
         </forager>
       </localSearch>
     </solver>
@@ -132,7 +132,7 @@
           <planningEntityTabuSize>10</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>1400</minimalAcceptedSelection>
+          <acceptedCountLimit>1400</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
@@ -165,7 +165,7 @@
           <undoMoveTabuSize>3</undoMoveTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>500</minimalAcceptedSelection>
+          <acceptedCountLimit>500</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
@@ -209,7 +209,7 @@
           <planningEntityTabuSize>11</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>800</minimalAcceptedSelection>
+          <acceptedCountLimit>800</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
@@ -254,7 +254,7 @@
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
-          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+          <acceptedCountLimit>4</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>

@@ -69,7 +69,7 @@
           <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>800</minimalAcceptedSelection>
+          <acceptedCountLimit>800</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
@@ -99,7 +99,7 @@
           <planningEntityTabuSize>7</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>800</minimalAcceptedSelection>
+          <acceptedCountLimit>800</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
@@ -127,7 +127,7 @@
           <planningEntityTabuSize>5</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+          <acceptedCountLimit>4</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>

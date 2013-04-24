@@ -246,7 +246,7 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
       &lt;planningEntityTabuSize&gt;7&lt;/planningEntityTabuSize&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
-      &lt;minimalAcceptedSelection&gt;1000&lt;/minimalAcceptedSelection&gt;
+      &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
     &lt;/forager&gt;
   &lt;/localSearch&gt;
 &lt;/solver&gt;</programlisting>
@@ -295,7 +295,7 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
       &lt;planningEntityTabuSize&gt;7&lt;/planningEntityTabuSize&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
-      &lt;minimalAcceptedSelection&gt;1000&lt;/minimalAcceptedSelection&gt;
+      &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
     &lt;/forager&gt;
   &lt;/localSearch&gt;</programlisting>
         </listitem>

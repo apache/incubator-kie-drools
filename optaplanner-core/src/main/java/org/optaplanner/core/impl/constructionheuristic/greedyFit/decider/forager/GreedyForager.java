@@ -35,7 +35,7 @@ public class GreedyForager extends GreedySolverPhaseLifecycleListenerAdapter {
 
     protected Comparator<Score> scoreComparator = new NaturalScoreComparator();
     protected ConstructionHeuristicPickEarlyType pickEarlyType;
-    protected int minimalAcceptedSelection = Integer.MAX_VALUE;
+    protected int acceptedCountLimit = Integer.MAX_VALUE; // TODO rename to selectedCountLimit
 
     protected int selectedCount;
     protected List<GreedyMoveScope> maxScoreAcceptedList;
@@ -47,8 +47,8 @@ public class GreedyForager extends GreedySolverPhaseLifecycleListenerAdapter {
         this.pickEarlyType = pickEarlyType;
     }
 
-    public void setMinimalAcceptedSelection(int minimalAcceptedSelection) {
-        this.minimalAcceptedSelection = minimalAcceptedSelection;
+    public void setAcceptedCountLimit(int acceptedCountLimit) {
+        this.acceptedCountLimit = acceptedCountLimit;
     }
 
     // ************************************************************************
@@ -96,7 +96,7 @@ public class GreedyForager extends GreedySolverPhaseLifecycleListenerAdapter {
     }
 
     public boolean isQuitEarly() {
-        return earlyPickedMoveScope != null || selectedCount >= minimalAcceptedSelection;
+        return earlyPickedMoveScope != null || selectedCount >= acceptedCountLimit;
     }
 
     public GreedyMoveScope pickMove(GreedyFitStepScope greedyStepScope) {

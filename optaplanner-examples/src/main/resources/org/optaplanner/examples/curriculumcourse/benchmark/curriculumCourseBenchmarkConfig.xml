@@ -70,7 +70,7 @@
           <planningEntityTabuSize>10</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
+          <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->
         </forager>
       </localSearch>
     </solver>
@@ -98,7 +98,7 @@
           <planningEntityTabuSize>10</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
+          <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->
         </forager>
       </localSearch>
     </solver>
@@ -129,7 +129,7 @@
           <planningEntityTabuSize>10</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
+          <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->
         </forager>
       </localSearch>
     </solver>
@@ -158,7 +158,7 @@
           <!--<simulatedAnnealingStartingTemperature>0hard/100soft</simulatedAnnealingStartingTemperature>-->
         <!--</acceptor>-->
         <!--<forager>-->
-          <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
+          <!--<acceptedCountLimit>4</acceptedCountLimit>-->
         <!--</forager>-->
       <!--</localSearch>-->
     <!--</solver>-->

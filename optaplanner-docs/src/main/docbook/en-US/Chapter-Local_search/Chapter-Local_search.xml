@@ -393,11 +393,11 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
       &lt;simulatedAnnealingStartingTemperature&gt;2hard/100soft&lt;/simulatedAnnealingStartingTemperature&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
-        &lt;minimalAcceptedSelection&gt;4&lt;/minimalAcceptedSelection&gt;
+        &lt;acceptedCountLimit&gt;4&lt;/acceptedCountLimit&gt;
     &lt;/forager&gt;</programlisting>
 
         <para>A simulated annealing acceptor should be combined with a low subset selection. The classic algorithm uses
-        a <literal>minimalAcceptedSelection</literal> of <literal>1</literal>, but usually <literal>4</literal> performs
+        a <literal>acceptedCountLimit</literal> of <literal>1</literal>, but usually <literal>4</literal> performs
         better.</para>
 
         <para>You can even combine it with a tabu acceptor at the same time. Use a lower tabu size than in a pure tabu
@@ -408,7 +408,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
       &lt;planningEntityTabuSize&gt;5&lt;/planningEntityTabuSize&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
-        &lt;minimalAcceptedSelection&gt;4&lt;/minimalAcceptedSelection&gt;
+        &lt;acceptedCountLimit&gt;4&lt;/acceptedCountLimit&gt;
     &lt;/forager&gt;</programlisting>
 
         <para>This differs from phasing, another powerful technique, where first simulated annealing is used, followed
@@ -425,7 +425,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
       &lt;lateAcceptanceSize&gt;500&lt;/lateAcceptanceSize&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
-        &lt;minimalAcceptedSelection&gt;1000&lt;/minimalAcceptedSelection&gt;
+        &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
     &lt;/forager&gt;</programlisting>
       </section>
     </section>
@@ -448,21 +448,21 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
         <itemizedlist>
           <listitem>
-            <para>An <literal>minimalAcceptedSelection</literal> integer, which specifies how many accepted moves should
+            <para>An <literal>acceptedCountLimit</literal> integer, which specifies how many accepted moves should
             be evaluated during each step. By default, all accepted moves are evaluated at every step.</para>
 
             <programlisting language="xml">  &lt;forager&gt;
-    &lt;minimalAcceptedSelection&gt;1000&lt;/minimalAcceptedSelection&gt;
+    &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
   &lt;/forager&gt;</programlisting>
           </listitem>
         </itemizedlist>
 
         <para>Unlike the n queens problem, real world problems require the use of subset selection. Start from an
-        <literal>minimalAcceptedSelection</literal> that takes a step in less then 2 seconds. Turn on INFO logging to
+        <literal>acceptedCountLimit</literal> that takes a step in less then 2 seconds. Turn on INFO logging to
         see the step times. Use the <literal>Benchmarker</literal> to tweak the value.</para>
 
         <important>
-          <para>With a low <literal>minimalAcceptedSelection</literal> it is recommended to avoid using
+          <para>With a low <literal>acceptedCountLimit</literal> it is recommended to avoid using
           <literal>selectionOrder</literal> SHUFFLED because the shuffling generates a random number for every element
           in the selector, taking up a lot of time, but only a few are actually selected.</para>
         </important>

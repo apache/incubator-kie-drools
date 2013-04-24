@@ -76,7 +76,7 @@
           <planningEntityTabuSize>11</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>300</minimalAcceptedSelection>
+          <acceptedCountLimit>300</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>

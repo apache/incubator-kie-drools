@@ -39,7 +39,7 @@
         <hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>
         <startingHardWeight>1000</startingHardWeight>
       </deciderScoreComparatorFactory>
-      <!-- Real world problems require to use of <minimalAcceptedSelection> -->
+      <!-- Real world problems require to use of <acceptedCountLimit> -->
     </forager>
   </localSearch>
 </solver>

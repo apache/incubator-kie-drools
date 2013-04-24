@@ -3199,3 +3199,13 @@ Before in *.java:
 After in *.java:
     PlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory(
             benchmarkConfigTemplate);
+
+[MAJOR] The forager property minimalAcceptedSelection has been renamed to acceptedCountLimit.
+Before in *.xml:
+    <forager>
+      <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+    </forager>
+After in *.xml:
+    <forager>
+      <acceptedCountLimit>1000</acceptedCountLimit>
+    </forager>

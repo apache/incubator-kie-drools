@@ -43,7 +43,7 @@
           <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+          <acceptedCountLimit>1000</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>

@@ -56,10 +56,10 @@
       </customSolverPhase>
     </solver>
   </solverBenchmark>
-<#list [500, 1000, 2000, 4000] as minimalAcceptedSelection>
+<#list [500, 1000, 2000, 4000] as acceptedCountLimit>
 <#list [5, 7, 9, 11] as planningEntityTabuSize>
     <solverBenchmark>
-    <name>entityTabu${planningEntityTabuSize}-mas${minimalAcceptedSelection}</name>
+    <name>entityTabu${planningEntityTabuSize}-mas${acceptedCountLimit}</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
@@ -73,7 +73,7 @@
           <planningEntityTabuSize>${planningEntityTabuSize}</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>${minimalAcceptedSelection}</minimalAcceptedSelection>
+          <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
@@ -81,7 +81,7 @@
 </#list>
 <#list [500, 1000, 2000, 4000] as lateAcceptanceSize>
     <solverBenchmark>
-    <name>lateAcceptance${lateAcceptanceSize}-mas${minimalAcceptedSelection}</name>
+    <name>lateAcceptance${lateAcceptanceSize}-mas${acceptedCountLimit}</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
@@ -95,7 +95,7 @@
           <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>${minimalAcceptedSelection}</minimalAcceptedSelection>
+          <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>

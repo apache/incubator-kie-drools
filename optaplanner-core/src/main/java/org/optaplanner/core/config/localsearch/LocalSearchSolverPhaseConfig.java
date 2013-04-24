@@ -116,7 +116,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
                     + ") has neverEnding (" + moveSelector.isNeverEnding()
                     + "), but the forager (" + forager
                     + ") does not support it."
-                    + " Configure the <forager> with <minimalAcceptedSelection>.");
+                    + " Configure the <forager> with <acceptedCountLimit>.");
         }
         if (environmentMode == EnvironmentMode.FULL_ASSERT) {
             decider.setAssertMoveScoreIsUncorrupted(true);

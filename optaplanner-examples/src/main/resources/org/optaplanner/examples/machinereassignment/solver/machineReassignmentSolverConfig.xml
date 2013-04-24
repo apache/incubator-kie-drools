@@ -30,8 +30,8 @@
       <!--<lateAcceptanceSize>2000</lateAcceptanceSize>-->
     </acceptor>
     <forager>
-      <minimalAcceptedSelection>2000</minimalAcceptedSelection>
-      <!--<minimalAcceptedSelection>500</minimalAcceptedSelection>-->
+      <acceptedCountLimit>2000</acceptedCountLimit>
+      <!--<acceptedCountLimit>500</acceptedCountLimit>-->
     </forager>
   </localSearch>
 </solver>
