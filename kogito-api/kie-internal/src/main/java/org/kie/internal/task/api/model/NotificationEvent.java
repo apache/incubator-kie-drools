@@ -18,6 +18,8 @@ package org.kie.internal.task.api.model;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.kie.api.task.model.Task;
+
 
 /**
  *

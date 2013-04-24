@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.api.runtime.manager;
 
-package org.kie.internal.task.api.model;
+public interface Context<T> {
 
-
-public interface Group extends OrganizationalEntity {
-    
+    T getContextId();
 }

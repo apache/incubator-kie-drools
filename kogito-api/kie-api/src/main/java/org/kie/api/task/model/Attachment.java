@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.internal.task.api.model;
+package org.kie.api.task.model;
 
 import java.io.Externalizable;
+import java.util.Date;
 
-public interface Content extends Externalizable {
+public interface Attachment extends Externalizable {
     
-    long getId();
+    Long getId();
 
-    void setId(long id);
+    String getName();
 
-    byte[] getContent();
+    String getContentType();
 
-    void setContent(byte[] content);
-    
+    Date getAttachedAt();
+
+    User getAttachedBy();
+
+    int getSize();
+
+    long getAttachmentContentId();
+
 }

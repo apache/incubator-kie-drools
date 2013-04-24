@@ -18,7 +18,7 @@ package org.kie.internal.task.api;
 import java.util.Arrays;
 import java.util.List;
 
-import org.kie.internal.task.api.model.Status;
+import org.kie.api.task.model.Status;
 
 /**
  * The Task Deadlines Service is intended to handle

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.internal.runtime.manager;
 
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.task.api.TaskService;
+package org.kie.api.task.model;
 
-public interface RuntimeEngine {
 
-    KieSession getKieSession();
+public interface Group extends OrganizationalEntity {
     
-    TaskService getTaskService();   
 }

@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.internal.runtime.manager;
+package org.kie.api.runtime.manager;
 
-import org.kie.api.runtime.manager.Context;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.task.TaskService;
 
+public interface RuntimeEngine {
 
-public interface Mapper {
-
-    void saveMapping(Context<?> context, Integer ksessionId);
+    KieSession getKieSession();
     
-    Integer findMapping(Context<?> context);
-    
-    Object findContextId(Integer ksessionId);
-    
-    void removeMapping(Context<?> context);
+    TaskService getTaskService();   
 }

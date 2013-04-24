@@ -17,9 +17,9 @@ package org.kie.internal.task.api;
 
 import java.util.List;
 
-import org.kie.internal.task.api.model.Group;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.User;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.User;
 
 /**
  * The Task Identity Service provides all the 

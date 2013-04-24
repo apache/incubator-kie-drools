@@ -15,6 +15,7 @@
  */
 package org.kie.internal.runtime.manager;
 
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -15,8 +15,7 @@
  */
 package org.kie.internal.runtime.manager;
 
-import org.kie.internal.task.api.TaskService;
-
+import org.kie.api.task.TaskService;
 
 public interface TaskServiceFactory {
 

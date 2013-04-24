@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.internal.task.api.model;
+package org.kie.api.task.model;
+
+import java.io.Externalizable;
+import java.util.List;
 
 
+public interface PeopleAssignments extends Externalizable {
 
-public interface User extends OrganizationalEntity {    
-        
+    User getTaskInitiator();
+
+    List<OrganizationalEntity> getPotentialOwners();
+
+    List<OrganizationalEntity> getBusinessAdministrators();
+
 }

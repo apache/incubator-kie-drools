@@ -15,8 +15,8 @@
  */
 package org.kie.internal.runtime.manager.context;
 
+import org.kie.api.runtime.manager.Context;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.runtime.manager.Context;
 
 public class CorrelationKeyContext implements Context<CorrelationKey> {
 

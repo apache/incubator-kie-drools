@@ -17,10 +17,6 @@ package org.kie.internal.task.api;
 
 import org.kie.api.command.Command;
 
-
-/**
- *
- */
 public interface TaskCommandExecutor {
     public <T> T executeTaskCommand(Command<T> command);
 }

@@ -17,6 +17,8 @@ package org.kie.internal.task.api.model;
 
 import java.io.Externalizable;
 
+import org.kie.api.task.model.User;
+
 
 public interface TaskEvent extends Externalizable {
     

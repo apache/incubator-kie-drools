@@ -15,16 +15,13 @@
  */
 package org.kie.internal.runtime.manager;
 
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
+import org.kie.api.runtime.manager.RuntimeManager;
 
 
-public interface Mapper {
+public interface InternalRuntimeManager extends RuntimeManager {
 
-    void saveMapping(Context<?> context, Integer ksessionId);
+    void validate(KieSession ksession, Context<?> context) throws IllegalStateException;
     
-    Integer findMapping(Context<?> context);
-    
-    Object findContextId(Integer ksessionId);
-    
-    void removeMapping(Context<?> context);
 }

@@ -17,8 +17,8 @@ package org.kie.internal.task.api;
 
 import javax.enterprise.event.Event;
 
+import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.NotificationEvent;
-import org.kie.internal.task.api.model.Task;
 
 public interface EventService<T, V> {
 

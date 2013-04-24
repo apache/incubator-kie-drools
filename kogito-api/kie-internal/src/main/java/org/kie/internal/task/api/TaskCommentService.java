@@ -17,7 +17,7 @@ package org.kie.internal.task.api;
 
 import java.util.List;
 
-import org.kie.internal.task.api.model.Comment;
+import org.kie.api.task.model.Comment;
 
 /**
  * The Task Comment Service will handle all the 

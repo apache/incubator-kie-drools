@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.internal.task.api.model;
+package org.kie.api.task.model;
 
 import java.io.Externalizable;
 
-public interface OrganizationalEntity extends Externalizable {
+public interface I18NText extends Externalizable {
     
-    String getId();
+    Long getId();
 
-    void setId(String id);
+    String getLanguage();
+
+    String getText();
 
 }
