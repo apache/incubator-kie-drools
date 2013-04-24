@@ -1725,7 +1725,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     }
 
     @Test
-    public void testConcurrentUpdates() {
+    public void testPhreakWithConcurrentUpdates() {
         // DROOLS-7
         String str =
                 "import org.drools.compiler.Person\n" +
@@ -1775,5 +1775,49 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.update(fhD, pD);
 
         assertEquals(0, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testPhreakWith2Nots() {
+        // DROOLS-7
+        String str =
+                "import org.drools.compiler.Person\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  Person( $age : age, $name : name )\n" +
+                "  not Person( name == $name, age == $age + 1 )\n" +
+                "  not Person( name == $name, age == $age - 1 )\n" +
+                "then\n" +
+                "  list.add($age);\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        Person p1 = new Person("AAA", 31);
+        Person p2 = new Person("AAA", 34);
+        Person p3 = new Person("AAA", 33);
+
+        FactHandle fh1 = ksession.insert(p1);
+        FactHandle fh3 = ksession.insert(p3);
+        FactHandle fh2 = ksession.insert(p2);
+
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals(31, (int)list.get(0));
+
+        list.clear();
+
+        p1.setAge(35);
+        ksession.update(fh1, p1);
+        p3.setAge(31);
+        ksession.update(fh3, p3);
+
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals(31, (int)list.get(0));
     }
 }
