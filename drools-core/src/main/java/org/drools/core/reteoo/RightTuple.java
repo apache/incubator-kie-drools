@@ -47,6 +47,7 @@ public class RightTuple
 
     private RightTuple            tempNextRightTuple;
     private RightTupleMemory      tempRightTupleMemory;
+    private LeftTuple             tempBlocked;
 
     private PropagationContext    propagationContext;
 
@@ -224,6 +225,15 @@ public class RightTuple
         this.stagePrevious = null;
         this.tempNextRightTuple = null;
         this.tempRightTupleMemory = null;
+        this.tempBlocked = null;
+    }
+
+    public LeftTuple getTempBlocked() {
+        return tempBlocked;
+    }
+
+    public void setTempBlocked(LeftTuple tempBlocked) {
+        this.tempBlocked = tempBlocked;
     }
 
     public RightTuple getTempNextRightTuple() {
@@ -281,5 +291,4 @@ public class RightTuple
         this.next = null;
         this.memory = null;
     }
-    
 }
