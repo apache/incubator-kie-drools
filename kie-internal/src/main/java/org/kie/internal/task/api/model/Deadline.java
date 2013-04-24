@@ -19,6 +19,8 @@ import java.io.Externalizable;
 import java.util.Date;
 import java.util.List;
 
+import org.kie.api.task.model.I18NText;
+
 
 public interface Deadline extends Externalizable {
 

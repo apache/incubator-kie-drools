@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.internal.task.api.model;
+package org.kie.api.task.model;
 
 
 public enum Status {

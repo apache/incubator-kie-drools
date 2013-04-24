@@ -15,6 +15,8 @@
  */
 package org.kie.internal.runtime.manager;
 
+import org.kie.api.runtime.manager.RuntimeEngine;
+
 public interface DisposeListener {
 
     void onDispose(RuntimeEngine runtime);

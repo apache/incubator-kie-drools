@@ -19,9 +19,9 @@ package org.kie.internal.task.api;
 import java.util.Date;
 import java.util.List;
 
-import org.kie.internal.task.api.model.Status;
-import org.kie.internal.task.api.model.Task;
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
 
 
 /**
@@ -61,9 +61,9 @@ public interface TaskQueryService {
     
     List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds, String language, Date expirationDate);
     
-    List<TaskSummary> getTasksOwned(String userId);
+    List<TaskSummary> getTasksOwned(String userId, String language);
 
-    List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language);
+    List<TaskSummary> getTasksOwnedByStatus(String userId, List<Status> status, String language);
     
     List<TaskSummary> getTasksOwnedByExpirationDate(String userId, List<Status> status, Date expirationDate);
     
@@ -75,9 +75,9 @@ public interface TaskQueryService {
     
     List<TaskSummary> getSubTasksByParent(long parentId);
     
-    List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language);
+    List<TaskSummary> getTasksByStatusByProcessInstanceId(long processInstanceId, List<Status> status, String language);
 
-    List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language);
+    List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language);
 
     int getPendingSubTasksByParent(long parentId);
     

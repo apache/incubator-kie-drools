@@ -16,13 +16,15 @@
 
 package org.kie.internal.task.api.model;
 
-import java.io.Externalizable;
 import java.util.List;
 
-public interface Task extends Externalizable {
-   
-    Long getId();
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.PeopleAssignments;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskData;
 
+public interface InternalTask extends Task {
+   
     void setId(long id);
 
     Boolean isArchived();
@@ -31,23 +33,13 @@ public interface Task extends Externalizable {
     
     int getVersion();
 
-    int getPriority();
-
     void setPriority(int priority);
-
-    List<I18NText> getNames();
 
     void setNames(List<I18NText> names);
 
-    List<I18NText> getSubjects();
-
     void setSubjects(List<I18NText> subjects);
 
-    List<I18NText> getDescriptions();
-
     void setDescriptions(List<I18NText> descriptions);
-
-    PeopleAssignments getPeopleAssignments();
 
     void setPeopleAssignments(PeopleAssignments peopleAssignments);
 
@@ -55,15 +47,11 @@ public interface Task extends Externalizable {
 
     void setDelegation(Delegation delegation);
 
-    TaskData getTaskData();
-
     void setTaskData(TaskData taskData);
 
     Deadlines getDeadlines();
 
     void setDeadlines(Deadlines deadlines);
-
-    String getTaskType();
 
     void setTaskType(String taskType);
 

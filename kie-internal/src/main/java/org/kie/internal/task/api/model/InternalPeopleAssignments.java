@@ -16,17 +16,16 @@
 
 package org.kie.internal.task.api.model;
 
-import java.io.Externalizable;
 import java.util.List;
 
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.PeopleAssignments;
+import org.kie.api.task.model.User;
 
-public interface PeopleAssignments extends Externalizable {
 
-    User getTaskInitiator();
+public interface InternalPeopleAssignments extends PeopleAssignments {
 
     void setTaskInitiator(User taskInitiator);
-
-    List<OrganizationalEntity> getPotentialOwners();
 
     void setPotentialOwners(List<OrganizationalEntity> potentialOwners);
 
@@ -38,11 +37,10 @@ public interface PeopleAssignments extends Externalizable {
 
     void setTaskStakeholders(List<OrganizationalEntity> taskStakeholders);
 
-    List<OrganizationalEntity> getBusinessAdministrators();
-
     void setBusinessAdministrators(List<OrganizationalEntity> businessAdministrators);
 
     List<OrganizationalEntity> getRecipients();
 
     void setRecipients(List<OrganizationalEntity> recipients);
+
 }

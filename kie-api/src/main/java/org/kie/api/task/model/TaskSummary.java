@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kie.internal.task.api.model;
+package org.kie.api.task.model;
 
 import java.io.Externalizable;
 import java.util.Date;
@@ -23,73 +23,34 @@ public interface TaskSummary extends Externalizable {
 
     long getId();
 
-    void setId(long id);
-
     long getProcessInstanceId();
-
-    void setProcessInstanceId(long processInstanceId);
 
     String getName();
 
-    void setName(String name);
-
     String getSubject();
-
-    void setSubject(String subject);
 
     String getDescription();
 
-    void setDescription(String description);
-
     Status getStatus();
-
-    void setStatus(Status status);
 
     int getPriority();
 
-    void setPriority(int priority);
-
     boolean isSkipable();
-
-    void setSkipable(boolean skipable);
 
     User getActualOwner();
 
-    void setActualOwner(User actualOwner);
-
     User getCreatedBy();
-
-    void setCreatedBy(User createdBy);
 
     Date getCreatedOn();
 
-    void setCreatedOn(Date createdOn);
-
     Date getActivationTime();
-
-    void setActivationTime(Date activationTime);
 
     Date getExpirationTime();
 
-    void setExpirationTime(Date expirationTime);
-
     String getProcessId();
-
-    void setProcessId(String processId);
 
     int getProcessSessionId();
 
-    void setProcessSessionId(int processSessionId);
-
-    SubTasksStrategy getSubTaskStrategy();
-
-    void setSubTaskStrategy(SubTasksStrategy subTaskStrategy);
-
-    long getParentId();
-
-    void setParentId(long parentId);
-
     List<String> getPotentialOwners();
 
-    void setPotentialOwners(List<String> potentialOwners);
 }

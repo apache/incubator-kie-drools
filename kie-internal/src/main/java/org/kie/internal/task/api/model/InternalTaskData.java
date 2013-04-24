@@ -17,11 +17,17 @@
 package org.kie.internal.task.api.model;
 
 
-import java.io.Externalizable;
 import java.util.Date;
 import java.util.List;
 
-public interface TaskData extends Externalizable {
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Comment;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskData;
+import org.kie.api.task.model.User;
+
+public interface InternalTaskData extends TaskData {
 
     /**
      * Initializes the state of the TaskData, i.e. sets the <field>createdOn</field>, <field>activationTime</field>
@@ -46,52 +52,28 @@ public interface TaskData extends Externalizable {
      */
     Status assignOwnerAndStatus(List<OrganizationalEntity> potentialOwners);
 
-    Status getStatus();
-
     void setStatus(Status status);
-
-    Status getPreviousStatus();
 
     void setPreviousStatus(Status previousStatus);
 
-    User getActualOwner();
-
     void setActualOwner(User actualOwner);
-
-    User getCreatedBy();
 
     void setCreatedBy(User createdBy);
 
-    Date getCreatedOn();
-
     void setCreatedOn(Date createdOn);
-
-    Date getActivationTime();
 
     void setActivationTime(Date activationTime);
 
-    Date getExpirationTime();
-
     void setExpirationTime(Date expirationTime);
-
-    boolean isSkipable();
 
     void setSkipable(boolean isSkipable);
 
     void setWorkItemId(long workItemId);
 
-    long getWorkItemId();
-    
     void setProcessInstanceId(long processInstanceId);
     
-    long getProcessInstanceId();
-    
-    String getProcessId();
-
 	void setProcessId(String processId);
 	
-	int getProcessSessionId();
-
 	void setProcessSessionId(int processSessionId);
 
 	/**
@@ -106,10 +88,6 @@ public interface TaskData extends Externalizable {
     AccessType getDocumentAccessType();
 
     void setDocumentAccessType(AccessType accessType);
-
-    String getDocumentType();
-
-    long getDocumentContentId();
 
     void setDocumentContentId(long documentContentId);
 
@@ -128,11 +106,7 @@ public interface TaskData extends Externalizable {
 
     void setOutputAccessType(AccessType outputAccessType);
 
-    String getOutputType();
-
     void setOutputType(String outputType);
-
-    long getOutputContentId();
 
     void setOutputContentId(long outputContentId);
 
@@ -145,23 +119,15 @@ public interface TaskData extends Externalizable {
      */
     void setFault(long faultContentId, FaultData faultData);
 
-    String getFaultName();
-
     void setFaultName(String faultName);
 
     AccessType getFaultAccessType();
 
     void setFaultAccessType(AccessType faultAccessType);
 
-    String getFaultType();
-
     void setFaultType(String faultType);
 
-    long getFaultContentId();
-
     void setFaultContentId(long faultContentId);
-
-    List<Comment> getComments();
 
     /**
      * Adds the specified comment to our list of comments.
@@ -179,8 +145,6 @@ public interface TaskData extends Externalizable {
     Comment removeComment(final long commentId);
 
     void setComments(List<Comment> comments);
-
-    List<Attachment> getAttachments();
 
     /**
      * Adds the specified attachment to our list of Attachments.

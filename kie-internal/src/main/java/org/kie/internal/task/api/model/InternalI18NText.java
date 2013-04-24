@@ -16,19 +16,13 @@
 
 package org.kie.internal.task.api.model;
 
-import java.io.Externalizable;
+import org.kie.api.task.model.I18NText;
 
-public interface I18NText extends Externalizable {
+public interface InternalI18NText extends I18NText {
     
-    Long getId();
-
     void setId(long id);
 
-    String getLanguage();
-
     void setLanguage(String language);
-
-    String getText();
 
     void setText(String text);
     

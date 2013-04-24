@@ -15,7 +15,7 @@
  */
 package org.kie.internal.runtime.manager.context;
 
-import org.kie.internal.runtime.manager.Context;
+import org.kie.api.runtime.manager.Context;
 
 public class ProcessInstanceIdContext implements Context<Long> {
 

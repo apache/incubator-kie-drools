@@ -19,49 +19,39 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.internal.task.api.model.Attachment;
-import org.kie.internal.task.api.model.Comment;
-import org.kie.internal.task.api.model.Content;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Comment;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.Group;
-import org.kie.internal.task.api.model.I18NText;
-import org.kie.internal.task.api.model.OrganizationalEntity;
-import org.kie.internal.task.api.model.Status;
 import org.kie.internal.task.api.model.SubTasksStrategy;
-import org.kie.internal.task.api.model.Task;
 import org.kie.internal.task.api.model.TaskDef;
 import org.kie.internal.task.api.model.TaskEvent;
-import org.kie.internal.task.api.model.TaskSummary;
-import org.kie.internal.task.api.model.User;
 
 /**
  * The Task Service Entry Point serves as 
  *  facade of all the other services, providing a single entry point
  *  to access to all the services
  */
-public interface TaskService {
+public interface InternalTaskService extends TaskService {
     
-    // Delegates
-    void activate(long taskId, String userId);
-
     void addGroup(Group group);
 
     void addUser(User user);
 
     int archiveTasks(List<TaskSummary> tasks);
 
-    void claim(long taskId, String userId);
-
     void claim(long taskId, String userId, List<String> groupIds);
 
     void claimNextAvailable(String userId, List<String> groupIds, String language);
-
-    void claimNextAvailable(String userId, String language);
-
-    void complete(long taskId, String userId, Map<String, Object> data);
-
-    void delegate(long taskId, String userId, String targetUserId);
 
     void deleteFault(long taskId, String userId);
 
@@ -69,12 +59,6 @@ public interface TaskService {
 
     void deployTaskDef(TaskDef def);
     
-    void exit(long taskId, String userId);
-
-    void fail(long taskId, String userId, Map<String, Object> faultData);
-
-    void forward(long taskId, String userId, String targetEntityId);
-
     List<TaskSummary> getActiveTasks();
 
     List<TaskSummary> getActiveTasks(Date since);
@@ -99,23 +83,13 @@ public interface TaskService {
     
     int getPendingSubTasksByParent(long parentId);
 
-    Task getTaskByWorkItemId(long workItemId);
-
     TaskDef getTaskDefById(String id);
-
-    Task getTaskById(long taskId);
-
-    List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, String language);
 
     List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId, String language);
 
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language);
 
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults);
-
-    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language);
-
-    List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String salaboy, List<Status> status, String language);
 
     List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language);
 
@@ -124,10 +98,6 @@ public interface TaskService {
     List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId, String language);
 
     List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId, String language);
-
-    List<TaskSummary> getTasksOwned(String userId);
-
-    List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language);
 
     List<TaskSummary> getTasksOwnedByExpirationDate(String userId, List<Status> statuses, Date expirationDate);
     
@@ -139,21 +109,13 @@ public interface TaskService {
     
     List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds, String language, Date expirationDate);
     
-    List<TaskSummary> getTasksByStatusByProcessId(long processInstanceId, List<Status> status, String language);
-
-    List<TaskSummary> getTasksByStatusByProcessIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language);
-    
-    List<Long> getTasksByProcessInstanceId(long processInstanceId);
+    List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language);
     
     User getUserById(String userId);
 
     List<User> getUsers();
 
-    long addTask(Task task, Map<String, Object> params);
-
     long addTask(Task task, ContentData data);
-
-    void release(long taskId, String userId);
 
     void remove(long taskId, String userId);
 
@@ -163,8 +125,6 @@ public interface TaskService {
 
     void removeUser(String userId);
 
-    void resume(long taskId, String userId);
-
     void setFault(long taskId, String userId, FaultData fault);
 
     void setOutput(long taskId, String userId, Object outputContentData);
@@ -172,14 +132,6 @@ public interface TaskService {
     void setPriority(long taskId, int priority);
     
     void setTaskNames(long taskId, List<I18NText> taskNames);
-
-    void skip(long taskId, String userId);
-
-    void start(long taskId, String userId);
-
-    void stop(long taskId, String userId);
-
-    void suspend(long taskId, String userId);
 
     void undeployTaskDef(String id);
 
@@ -191,8 +143,6 @@ public interface TaskService {
 
     void addUsersAndGroups(Map<String, User> users, Map<String, Group> groups);
 
-    void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners);
-
     int removeAllTasks();
 
     long addContent(long taskId, Content content);
@@ -203,16 +153,12 @@ public interface TaskService {
 
     List<Content> getAllContentByTaskId(long taskId);
 
-    Content getContentById(long contentId);
-
     long addAttachment(long taskId, Attachment attachment, Content content);
 
     void deleteAttachment(long taskId, long attachmentId);
 
     List<Attachment> getAllAttachmentsByTaskId(long taskId);
 
-    Attachment getAttachmentById(long attachId);
-    
     void removeTaskEventsById(long taskId);
 
     OrganizationalEntity getOrganizationalEntityById(String entityId);

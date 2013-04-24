@@ -17,8 +17,8 @@ package org.kie.internal.task.api;
 
 import java.util.List;
 
-import org.kie.internal.task.api.model.Attachment;
-import org.kie.internal.task.api.model.Content;
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Content;
 
 /**
  * The Task Attachment Service will deal with all the 

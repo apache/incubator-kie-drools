@@ -16,43 +16,20 @@
 
 package org.kie.internal.task.api.model;
 
-import java.io.Externalizable;
 import java.util.Date;
 
-public interface Attachment extends Externalizable {
-    
-    Long getId();
+import org.kie.api.task.model.Comment;
+import org.kie.api.task.model.User;
 
+
+public interface InternalComment extends Comment {  
+    
     void setId(long id);
 
-    String getName();
+    void setText(String text);
 
-    void setName(String name);
+    void setAddedAt(Date addedDate);
 
-    AccessType getAccessType();
-
-    void setAccessType(AccessType accessType);
-
-    String getContentType();
-
-    void setContentType(String contentType);
-
-    Date getAttachedAt();
-
-    void setAttachedAt(Date attachedAt);
-
-    User getAttachedBy();
-
-    void setAttachedBy(User attachedBy);   
+    void setAddedBy(User addedBy);
     
-    int getSize();
-
-    void setContent(Content content);
-
-    void setSize(int size);
-        
-    long getAttachmentContentId();
-
-    void setAttachmentContentId(long contentId);
-
 }

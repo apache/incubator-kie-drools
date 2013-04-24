@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.internal.runtime.manager;
 
-import org.kie.api.runtime.manager.Context;
+package org.kie.internal.task.api.model;
 
+import org.kie.api.task.model.Content;
 
-public interface Mapper {
-
-    void saveMapping(Context<?> context, Integer ksessionId);
+public interface InternalContent extends Content {
     
-    Integer findMapping(Context<?> context);
+    void setId(long id);
+
+    void setContent(byte[] content);
     
-    Object findContextId(Integer ksessionId);
-    
-    void removeMapping(Context<?> context);
 }

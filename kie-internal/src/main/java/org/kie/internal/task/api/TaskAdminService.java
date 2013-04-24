@@ -18,7 +18,7 @@ package org.kie.internal.task.api;
 import java.util.Date;
 import java.util.List;
 
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.api.task.model.TaskSummary;
 
 
 /**

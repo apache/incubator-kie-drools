@@ -14,27 +14,8 @@
  * limitations under the License.
  */
 
-package org.kie.internal.task.api.model;
+package org.kie.api.task.model;
 
-import java.io.Externalizable;
-import java.util.Date;
-
-
-public interface Comment extends Externalizable  {  
-    
-    Long getId();
-
-    void setId(long id);
-
-    String getText();
-
-    void setText(String text);
-
-    Date getAddedAt();
-
-    void setAddedAt(Date addedDate);
-
-    User getAddedBy();
-
-    void setAddedBy(User addedBy);
+public interface User extends OrganizationalEntity {    
+        
 }

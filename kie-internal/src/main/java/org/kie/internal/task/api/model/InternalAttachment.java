@@ -16,24 +16,32 @@
 
 package org.kie.internal.task.api.model;
 
-import java.io.Externalizable;
-import java.util.List;
+import java.util.Date;
 
-import org.kie.api.task.model.I18NText;
-import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.User;
 
-public interface Reassignment extends Externalizable {
-
-    Long getId();
-
+public interface InternalAttachment extends Attachment {
+    
     void setId(long id);
 
-    List<I18NText> getDocumentation();
+    void setName(String name);
 
-    void setDocumentation(List<I18NText> documentation);
+    AccessType getAccessType();
 
-    List<OrganizationalEntity> getPotentialOwners();
+    void setAccessType(AccessType accessType);
 
-    void setPotentialOwners(List<OrganizationalEntity> potentialOwners);        
+    void setContentType(String contentType);
+
+    void setAttachedAt(Date attachedAt);
+
+    void setAttachedBy(User attachedBy);   
+    
+    void setContent(Content content);
+
+    void setSize(int size);
+        
+    void setAttachmentContentId(long contentId);
 
 }

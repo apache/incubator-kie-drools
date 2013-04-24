@@ -18,7 +18,7 @@ package org.kie.internal.task.api;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.internal.task.api.model.Content;
+import org.kie.api.task.model.Content;
 
 /**
  * The Task Content Service is intended to handle

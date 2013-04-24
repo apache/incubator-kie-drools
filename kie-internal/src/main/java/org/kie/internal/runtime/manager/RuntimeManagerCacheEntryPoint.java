@@ -1,6 +1,6 @@
 package org.kie.internal.runtime.manager;
 
-import org.kie.internal.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManager;
 
 /**
  * This interface is meant to be implemented in components that
