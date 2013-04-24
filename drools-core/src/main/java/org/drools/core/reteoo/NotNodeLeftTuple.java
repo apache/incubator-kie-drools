@@ -98,7 +98,6 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
      */
     public void unlinkFromLeftParent() {
         super.unlinkFromLeftParent();
-        this.blocker = null;
     }
 
     /* (non-Javadoc)
@@ -106,7 +105,6 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
      */
     public void unlinkFromRightParent() {
         super.unlinkFromRightParent();
-        this.blocker = null;
     }
 
     /* (non-Javadoc)
