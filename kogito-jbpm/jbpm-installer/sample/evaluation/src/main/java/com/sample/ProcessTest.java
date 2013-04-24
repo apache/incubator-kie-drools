@@ -10,8 +10,8 @@ import org.kie.api.KieServices;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.task.api.TaskService;
-import org.kie.internal.task.api.model.TaskSummary;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.TaskSummary;
 
 /**
  * This is a sample test of the evaluation process.
