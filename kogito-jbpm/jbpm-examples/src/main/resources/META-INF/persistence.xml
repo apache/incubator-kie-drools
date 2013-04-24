@@ -1,79 +1,67 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<persistence version="2.0"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd
-                                 http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
-             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xmlns="http://java.sun.com/xml/ns/persistence">
+<persistence 
+  version="2.0"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd
+                      http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://java.sun.com/xml/ns/persistence">
 
   <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <jta-data-source>jdbc/ProcessEngineDS</jta-data-source>       
-    <mapping-file>META-INF/JBPMorm.xml</mapping-file> 
-
+    <jta-data-source>jdbc/jbpm-ds</jta-data-source>        
+    
+    <mapping-file>META-INF/JBPMorm.xml</mapping-file>
+    <mapping-file>META-INF/Taskorm.xml</mapping-file>
+    
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
     <class>org.drools.persistence.info.SessionInfo</class>
     <class>org.drools.persistence.info.WorkItemInfo</class>
+
+    <class>org.jbpm.process.audit.ProcessInstanceLog</class>
+    <class>org.jbpm.process.audit.NodeInstanceLog</class>
+    <class>org.jbpm.process.audit.VariableInstanceLog</class>
+    
     <class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
-    <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>    
+    <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
+    
+    <class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
+    <class>org.jbpm.services.task.impl.model.ContentImpl</class>
+    <class>org.jbpm.services.task.impl.model.BooleanExpressionImpl</class>
+    <class>org.jbpm.services.task.impl.model.CommentImpl</class>
+    <class>org.jbpm.services.task.impl.model.DeadlineImpl</class>
+    <class>org.jbpm.services.task.impl.model.CommentImpl</class>
+    <class>org.jbpm.services.task.impl.model.DeadlineImpl</class>
+    <class>org.jbpm.services.task.impl.model.DelegationImpl</class>
+    <class>org.jbpm.services.task.impl.model.EscalationImpl</class>
+    <class>org.jbpm.services.task.impl.model.GroupImpl</class>
+    <class>org.jbpm.services.task.impl.model.I18NTextImpl</class>
+    <class>org.jbpm.services.task.impl.model.NotificationImpl</class>
+    <class>org.jbpm.services.task.impl.model.EmailNotificationImpl</class>
+    <class>org.jbpm.services.task.impl.model.EmailNotificationHeaderImpl</class>
+    <class>org.jbpm.services.task.impl.model.PeopleAssignmentsImpl</class>
+    <class>org.jbpm.services.task.impl.model.ReassignmentImpl</class>
+    
+    <class>org.jbpm.services.task.impl.model.TaskImpl</class>
+    <class>org.jbpm.services.task.impl.model.TaskDataImpl</class>
+    <class>org.jbpm.services.task.impl.model.UserImpl</class>
+    
+    <!--BAM for task service -->
+    <class>org.jbpm.services.task.impl.model.BAMTaskSummaryImpl</class>
+    
+    <!-- Event Classes -->
+    <class>org.jbpm.services.task.impl.model.TaskEventImpl</class>
+    
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>	        
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.hbm2ddl.auto" value="create" />
       <property name="hibernate.show_sql" value="false" />	
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
       <property name="hibernate.id.new_generator_mappings" value="false" />            
-      
-      <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
+
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
     </properties>        
   </persistence-unit>
-  
-  <persistence-unit name="org.jbpm.task">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <mapping-file>META-INF/Taskorm.xml</mapping-file>
-
-    <class>org.jbpm.task.Attachment</class>
-    <class>org.jbpm.task.Content</class>
-    <class>org.jbpm.task.BooleanExpression</class>
-    <class>org.jbpm.task.Comment</class>
-    <class>org.jbpm.task.Deadline</class>
-    <class>org.jbpm.task.Comment</class>
-    <class>org.jbpm.task.Deadline</class>
-    <class>org.jbpm.task.Delegation</class>
-    <class>org.jbpm.task.Escalation</class>
-    <class>org.jbpm.task.Group</class>
-    <class>org.jbpm.task.I18NText</class>
-    <class>org.jbpm.task.Notification</class>
-    <class>org.jbpm.task.EmailNotification</class>
-    <class>org.jbpm.task.EmailNotificationHeader</class>
-    <class>org.jbpm.task.PeopleAssignments</class>
-    <class>org.jbpm.task.Reassignment</class>
-    <class>org.jbpm.task.Status</class>
-    <class>org.jbpm.task.Task</class>
-    <class>org.jbpm.task.TaskData</class>
-    <class>org.jbpm.task.SubTasksStrategy</class>
-    <class>org.jbpm.task.OnParentAbortAllSubTasksEndStrategy</class>
-    <class>org.jbpm.task.OnAllSubTasksEndParentEndStrategy</class>
-    <class>org.jbpm.task.User</class>
-
-    <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-      <property name="hibernate.connection.autocommit" value="false" />
-      <property name="hibernate.max_fetch_depth" value="3"/>
-      <property name="hibernate.hbm2ddl.auto" value="create" />
-      <property name="hibernate.show_sql" value="false" />
-
-      <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
-      <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
-      <property name="hibernate.connection.username" value="sa"/>
-      <property name="hibernate.connection.password" value="sasa"/>
-
-      <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
-      <property name="hibernate.id.new_generator_mappings" value="false" />            
-    </properties>
-  </persistence-unit>
-   
     
 </persistence>

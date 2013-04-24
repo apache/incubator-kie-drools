@@ -4,30 +4,32 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
-import org.jbpm.process.workitem.wsht.hornetq.HornetQHTWorkItemHandler;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
+import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.test.JBPMHelper;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.logger.KnowledgeRuntimeLogger;
-import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.task.api.UserGroupCallback;
 
 
 public class MultipleInstanceExample {
 	
 	public static final void main(String[] args) {
 		try {
-			// load up the knowledge base
-			KnowledgeBase kbase = readKnowledgeBase();
-			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, "test", 1000);
-                        HornetQHTWorkItemHandler hornetQHTWorkItemHandler = new HornetQHTWorkItemHandler(ksession);
-                        hornetQHTWorkItemHandler.setPort(5153);
-			ksession.getWorkItemManager().registerWorkItemHandler("Human Task", hornetQHTWorkItemHandler);
-			
+            RuntimeManager manager = getRuntimeManager("multipleinstance/multipleinstance.bpmn");        
+            RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+            KieSession ksession = runtime.getKieSession();
+
 			// start a new process instance
 			Map<String, Object> params = new HashMap<String, Object>();
 			List<String> list = new ArrayList<String>();
@@ -36,16 +38,34 @@ public class MultipleInstanceExample {
 			list.add("superman");
 			params.put("list", list);
 			ksession.startProcess("com.sample.multipleinstance", params);
-			logger.close();
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
+
+            TaskService taskService = runtime.getTaskService();
+    		List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("sales-rep", "en-UK");
+    		for (TaskSummary task: tasks) {
+	            System.out.println("Sales-rep executing task " + task.getName() + "(" + task.getId() + ": " + task.getDescription() + ")");
+	            taskService.start(task.getId(), "sales-rep");
+	            taskService.complete(task.getId(), "sales-rep", null);
+    		}
+            
+            manager.disposeRuntimeEngine(runtime);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        System.exit(0);
 	}
 
-	private static KnowledgeBase readKnowledgeBase() throws Exception {
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("multipleinstance/multipleinstance.bpmn"), ResourceType.BPMN2);
-		return kbuilder.newKnowledgeBase();
-	}
-
+    private static RuntimeManager getRuntimeManager(String process) {
+        // load up the knowledge base
+    	JBPMHelper.startH2Server();
+    	JBPMHelper.setupDataSource();
+    	Properties properties= new Properties();
+        properties.setProperty("sales-rep", "");
+        UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+            .userGroupCallback(userGroupCallback)
+            .addAsset(ResourceFactory.newClassPathResource(process), ResourceType.BPMN2)
+            .get();
+        return RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+    }
+    
 }
