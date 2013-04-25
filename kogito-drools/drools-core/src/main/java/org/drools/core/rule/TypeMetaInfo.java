@@ -20,6 +20,10 @@ public class TypeMetaInfo {
         return role == TypeDeclaration.Role.EVENT;
     }
 
+    public boolean isDeclaredType() {
+        return true;
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("kind=").append(kind.toString().toLowerCase());
