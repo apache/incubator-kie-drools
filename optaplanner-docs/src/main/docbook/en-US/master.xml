@@ -17,7 +17,7 @@
     <cover>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/optaPlannerLogo.png" />
+          <imagedata fileref="images/Chapter-Planner_introduction/optaPlannerLogo.png" />
         </imageobject>
       </mediaobject>
     </cover>
@@ -27,7 +27,7 @@
   <preface>
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/optaPlannerLogo.png" />
+        <imagedata fileref="images/Chapter-Planner_introduction/optaPlannerLogo.png" />
       </imageobject>
     </mediaobject>
   </preface>
