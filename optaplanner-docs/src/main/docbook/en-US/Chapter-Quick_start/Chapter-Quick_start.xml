@@ -467,7 +467,7 @@ public class CloudProcess ... {
         </listitem>
       </itemizedlist>
 
-      <para>Let's take a look look at 2 different implementations:</para>
+      <para>Let's take a look at 2 different implementations:</para>
 
       <section>
         <title>Simple Java score configuration</title>
