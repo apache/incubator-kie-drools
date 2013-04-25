@@ -19,6 +19,7 @@ package org.drools.core.reteoo;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
@@ -282,6 +283,17 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 mask = ((LeftTupleSink)sm.getRootNode()).getLeftInferredMask();
                 doInsertSegmentMemory(context, wm, linkOrNotify, sm, leftTuple, mask);
             }              
+        }
+        if( context.getReaderContext() != null ) {
+            // we are deserializing a session
+            for( PathMemory pm : sm.getPathMemories() ) {
+                if( pm.getAgendaItem().isActivated() ) {
+                    // we need to check if we need to evaluate the network immediately or not
+                    pm.getAgendaItem().remove();
+                    pm.getAgendaItem().setActivated( false );
+                    pm.getAgendaItem().evaluateNetwork( wm );
+                }
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -64,8 +65,20 @@ public class LeftTupleIterator
     public LeftTuple getFirstLeftTuple(LeftTupleSource source,
                                        LeftTupleSink sink,
                                        InternalWorkingMemory wm) {
+        if ( ((InternalRuleBase)wm.getRuleBase()).getConfiguration().isPhreakEnabled() && source instanceof AccumulateNode ) {
+            AccumulateMemory accmem = (AccumulateMemory) wm.getNodeMemory( (MemoryFactory) source );
+            BetaMemory memory = accmem.betaMemory;
+            
+            FastIterator localIt = memory.getLeftTupleMemory().fullFastIterator();
+            LeftTuple leftTuple = BetaNode.getFirstLeftTuple( memory.getLeftTupleMemory(),
+                                                              localIt );
+            if( leftTuple != null ) {
+                AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
+                return accctx.getResultLeftTuple();
+            }
+            return null;
+        }
         if ( source instanceof JoinNode || source instanceof NotNode || source instanceof FromNode ||source instanceof AccumulateNode ) {
-
             BetaMemory memory;
             FastIterator localIt;
             if ( source instanceof FromNode ) {
@@ -227,6 +240,30 @@ public class LeftTupleIterator
             factHandleEntry = null;
             otnIterator = null;
 
+        } else if ( ((InternalRuleBase)wm.getRuleBase()).getConfiguration().isPhreakEnabled() && source instanceof AccumulateNode ) {
+            // when using phreak, accumulate result tuples will not link to leftParent, but to parent instead 
+            BetaMemory memory = ((AccumulateMemory) wm.getNodeMemory( (MemoryFactory) source )).betaMemory;
+            FastIterator localIt = memory.getLeftTupleMemory().fullFastIterator( leftTuple.getParent() );
+
+            LeftTuple childLeftTuple = leftTuple;
+            if ( childLeftTuple != null ) {
+                leftTuple = childLeftTuple.getParent();
+
+                while ( leftTuple != null ) {
+                    if ( childLeftTuple == null ) {
+                        childLeftTuple = leftTuple.getFirstChild();
+                    } else {
+                        childLeftTuple = childLeftTuple.getLeftParentNext();
+                    }
+                    for ( ; childLeftTuple != null; childLeftTuple = childLeftTuple.getLeftParentNext() ) {
+                        if ( childLeftTuple.getLeftTupleSink() == sink ) {
+                            return childLeftTuple;
+                        }
+                    }
+                    leftTuple = (LeftTuple) localIt.next( leftTuple );
+                }
+            }
+        
         } else if ( source instanceof JoinNode || source instanceof NotNode|| source instanceof FromNode || source instanceof AccumulateNode ) {
             BetaMemory memory;
             FastIterator localIt;
@@ -237,7 +274,7 @@ public class LeftTupleIterator
             } else {
                 memory = (BetaMemory) wm.getNodeMemory( (MemoryFactory) source );
             }
-
+            
             localIt = memory.getLeftTupleMemory().fullFastIterator( leftTuple.getLeftParent() );
 
             LeftTuple childLeftTuple = leftTuple;

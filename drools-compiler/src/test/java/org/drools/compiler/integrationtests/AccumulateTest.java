@@ -738,7 +738,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                                10 ) );
     }
 
-    @Test  (timeout = 10000)
+    @Test  //(timeout = 10000)
     public void testAccumulateSumJava() throws Exception {
         execTestAccumulateSum( "test_AccumulateSum.drl" );
     }
@@ -965,7 +965,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                              ((Number) data.results.get( data.results.size() - 1 )).intValue() );
 
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session,
-                true);
+                                                                            true);
         updateReferences( session,
                           data );
 
