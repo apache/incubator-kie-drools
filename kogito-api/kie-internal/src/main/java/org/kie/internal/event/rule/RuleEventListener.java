@@ -1,11 +1,23 @@
 package org.kie.internal.event.rule;
 
-/**
- * Created with IntelliJ IDEA.
- * User: mdproctor
- * Date: 06/04/2013
- * Time: 19:42
- * To change this template use File | Settings | File Templates.
- */
-public class RuleEventListener {
+
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.runtime.rule.Match;
+
+import java.util.EventListener;
+
+public interface RuleEventListener extends
+                                   EventListener {
+//
+//
+//    void onMatch(Match match);
+//    void onReMatch(Match match);
+//    void onUnMatch(Match match);
+//
+//    void onFiring(Match match);
+//    void onFired(Match match);
+
+//    to add later
+//    void onAllFiring(Rule rule);
+//    void onAllFired(Rule rule);
 }
