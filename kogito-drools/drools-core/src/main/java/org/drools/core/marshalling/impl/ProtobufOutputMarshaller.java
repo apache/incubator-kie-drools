@@ -293,10 +293,10 @@ public class ProtobufOutputMarshaller {
             final org.drools.core.util.Iterator tupleIter = accmem.betaMemory.getLeftTupleMemory().iterator();
             for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
                 AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
-                if ( accctx.result != null ) {
+                if ( accctx.getResultFactHandle() != null ) {
                     FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
-                            .setId( accctx.result.getFactHandle().getId() )
-                            .setRecency( accctx.result.getFactHandle().getRecency() )
+                            .setId( accctx.getResultFactHandle().getId() )
+                            .setRecency( accctx.getResultFactHandle().getRecency() )
                             .build();
                     _accumulate.addContext(
                             ProtobufMessages.NodeMemory.AccumulateNodeMemory.AccumulateContext.newBuilder()

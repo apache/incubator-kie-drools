@@ -87,7 +87,7 @@ public class NodeTypeEnums {
     }
 
     public static boolean isTerminalNode(NetworkNode node) {
-        return node.getType() == 91 || node.getType() == 101;
+        return node.getType() == QueryTerminalNode || node.getType() == RuleTerminalNode;
     }
 
     public static boolean isLeftTupleSink(NetworkNode node) {
