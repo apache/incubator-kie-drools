@@ -35,6 +35,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.conf.PhreakOption;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.config.util.KeyAsElementMapConverter;
@@ -329,6 +330,8 @@ public class ScoreDirectorFactoryConfig {
                     kieBaseConfiguration.setProperty(entry.getKey(), entry.getValue());
                 }
             }
+            // TODO remove this commented line once Phreak is stable
+//            kieBaseConfiguration.setOption(PhreakOption.ENABLED);
             KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
 
             return kieBase;
