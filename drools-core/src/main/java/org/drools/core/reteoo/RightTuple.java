@@ -129,14 +129,12 @@ public class RightTuple
         } else if ( next != null ) {
             //remove from first
             this.blocked = next;
-            this.tempBlocked = next;
             next.setBlockedPrevious( null );
         } else if ( previous != null ) {
             //remove from end
             previous.setBlockedNext( null );
         } else {
             this.blocked = null;
-            this.tempBlocked = null;
         }
         leftTuple.clearBlocker();
     }
