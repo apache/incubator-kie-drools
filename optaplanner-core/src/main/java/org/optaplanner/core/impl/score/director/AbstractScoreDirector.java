@@ -390,7 +390,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                 = new LinkedHashMap<List<Object>, ConstraintMatch>(constraintMatchTotals.size() * 16);
         for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
             for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                constraintMatchMap.put(
+                ConstraintMatch previousConstraintMatch = constraintMatchMap.put(
                         Arrays.<Object>asList(
                                 constraintMatchTotal.getConstraintPackage(),
                                 constraintMatchTotal.getConstraintName(),
@@ -398,6 +398,11 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                                 constraintMatch.getJustificationList(),
                                 constraintMatch.getWeightAsNumber()),
                         constraintMatch);
+                if (previousConstraintMatch != null) {
+                    throw new IllegalStateException("Score corruption because the constraintMatch (" + constraintMatch
+                            + ") was added twice for constraintMatchTotal (" + constraintMatchTotal
+                            + ") without removal.");
+                }
             }
         }
         return constraintMatchMap;
