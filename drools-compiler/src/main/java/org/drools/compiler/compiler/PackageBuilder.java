@@ -1532,8 +1532,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     private TypeDeclaration createTypeDeclarationForBean( Class<?> cls ) {
-        TypeDeclaration typeDeclaration = new TypeDeclaration( cls.getSimpleName() );
-        typeDeclaration.setTypeClass( cls );
+        TypeDeclaration typeDeclaration = new TypeDeclaration( cls );
 
         PropertySpecificOption propertySpecificOption = configuration.getOption(PropertySpecificOption.class);
         boolean propertyReactive = propertySpecificOption.isPropSpecific(cls.isAnnotationPresent(PropertyReactive.class),
