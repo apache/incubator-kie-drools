@@ -230,6 +230,8 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 										+ EOL
 										+ "workItem.setName(\"Send Task\");"
 										+ EOL
+										+ "workItem.setProcessInstanceId(kcontext.getProcessInstance().getId());"
+										+ EOL
 										+ "workItem.setParameter(\"MessageType\", \""
 										+ message.getType()
 										+ "\");"
