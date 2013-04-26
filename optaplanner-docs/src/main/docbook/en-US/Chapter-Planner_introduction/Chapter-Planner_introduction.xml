@@ -239,6 +239,12 @@ $ runExamples.bat</programlisting>
         </listitem>
       </itemizedlist>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Planner_introduction/distributionZip.png"/>
+        </imageobject>
+      </mediaobject>
+
       <para>The Examples GUI application will open. Just pick an example:</para>
 
       <mediaobject>
@@ -256,48 +262,60 @@ $ runExamples.bat</programlisting>
     <section xml:id="runTheExamplesInAnIDE">
       <title>Run the examples in an IDE (IntelliJ, Eclipse, NetBeans)</title>
 
-      <para>To run the examples in your favorite IDE, first configure your IDE:</para>
+      <para>To run the examples in your favorite IDE:</para>
 
-      <itemizedlist>
+      <orderedlist>
         <listitem>
-          <para>In IntelliJ and NetBeans, just open the file <filename>examples/sources/pom.xml</filename> as a new
-          project, the maven integration will take care of the rest.</para>
-        </listitem>
-
-        <listitem>
-          <para>In Eclipse, open a new project for the directory <filename>examples/sources</filename>.</para>
+          <para>Configure your IDE:</para>
 
           <itemizedlist>
             <listitem>
-              <para>Add all the jars to the classpath from the directory <filename>binaries</filename> and the directory
-              <filename>examples/binaries</filename>, except for the file
-              <filename>examples/binaries/optaplanner-examples-*.jar</filename>.</para>
+              <para>In IntelliJ and NetBeans, just open the file <filename>examples/sources/pom.xml</filename> as a new
+              project, the maven integration will take care of the rest.</para>
             </listitem>
 
             <listitem>
-              <para>Add the Java source directory <filename>src/main/java</filename> and the Java resources directory
-              <filename>src/main/resources</filename>.</para>
+              <para>In Eclipse, open a new project for the directory <filename>examples/sources</filename>.</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>Add all the jars to the classpath from the directory <filename>binaries</filename> and the
+                  directory <filename>examples/binaries</filename>, except for the file
+                  <filename>examples/binaries/optaplanner-examples-*.jar</filename>.</para>
+                </listitem>
+
+                <listitem>
+                  <para>Add the Java source directory <filename>src/main/java</filename> and the Java resources
+                  directory <filename>src/main/resources</filename>.</para>
+                </listitem>
+              </itemizedlist>
             </listitem>
           </itemizedlist>
         </listitem>
-      </itemizedlist>
 
-      <para>Next, create a run configuration:</para>
-
-      <itemizedlist>
         <listitem>
-          <para>Main class: <literal>org.optaplanner.examples.app.OptaPlannerExamplesApp</literal></para>
+          <para>Create a run configuration:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Main class: <literal>org.optaplanner.examples.app.OptaPlannerExamplesApp</literal></para>
+            </listitem>
+
+            <listitem>
+              <para>VM parameters (optional): <literal>-Xmx512M -server</literal></para>
+            </listitem>
+
+            <listitem>
+              <para>Working directory: <literal>examples</literal> (this is the directory that contains the directory
+              <literal>data</literal>)</para>
+            </listitem>
+          </itemizedlist>
         </listitem>
 
         <listitem>
-          <para>VM parameters (optional): <literal>-Xmx512M -server</literal></para>
+          <para>Run that run configuration.</para>
         </listitem>
-
-        <listitem>
-          <para>Working directory: <literal>examples</literal> (this is the directory that contains the directory
-          <literal>data</literal>)</para>
-        </listitem>
-      </itemizedlist>
+      </orderedlist>
     </section>
 
     <section xml:id="useWithMavenGradleEtc">
@@ -349,7 +367,7 @@ $ runExamples.bat</programlisting>
       <para>Then do a <link xlink:href="http://maven.apache.org/">Maven 3</link> build:</para>
 
       <programlisting>$ cd optaplanner
-$ mvn -DskipTests clean install
+$ mvn clean install -DskipTests
 ...</programlisting>
 
       <para>After that, you can run any example directly from the command line, just run this command and pick an
