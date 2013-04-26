@@ -1,20 +1,28 @@
 package org.kie.scanner;
 
 import org.drools.core.rule.TypeMetaInfo;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.kie.api.builder.model.KieModuleModel;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml;
 
 public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
@@ -43,6 +51,42 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
     @Test
     public void testKieModuleMetaDataForDependenciesInMemory() throws Exception {
         testKieModuleMetaDataForDependenciesInMemory(false);
+    }
+
+    @Test
+    @Ignore("Java Beans currently have to have an explicit package")
+    public void testKieModuleMetaDataInMemoryWithJavaClassDefaultPackage() throws Exception {
+        final KieServices ks = KieServices.Factory.get();
+        final ReleaseId releaseId = ks.newReleaseId( "org.kie", "javaDefaultPackage", "1.0-SNAPSHOT" );
+        final KieModuleModel kproj = ks.newKieModuleModel();
+
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.writeKModuleXML( kproj.toXML() )
+                .writePomXML( generatePomXml( releaseId ) )
+                .write( "src/main/java/Bean.java", createJavaSource() );
+
+        final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
+        assertTrue( messages.isEmpty() );
+
+        final KieModule kieModule = kieBuilder.getKieModule();
+        final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule);
+
+        //The call to kieModuleMetaData.getClass() assumes a Java file has an explicit package
+        final Class<?> beanClass = kieModuleMetaData.getClass("", "Bean");
+        assertNotNull( beanClass );
+
+        final TypeMetaInfo beanMetaInfo = kieModuleMetaData.getTypeMetaInfo( beanClass );
+        assertNotNull( beanMetaInfo );
+    }
+
+    private String createJavaSource() {
+        return "public class Bean {\n" +
+                "   private int value;\n" +
+                "   public int getValue() {\n" +
+                "       return value;\n" +
+                "   }\n" +
+                "}";
     }
 
     private void testKieModuleMetaDataInMemory(boolean useTypeDeclaration) throws Exception {
