@@ -2893,10 +2893,6 @@ public class RuleNetworkEvaluator {
                 } else {
                     // retract                 
                     trgLeftTuples.addDelete(childLeftTuple);
-                    RightTuple blocker = childLeftTuple.getBlocker();
-                    if (blocker != null) {
-                        blocker.removeBlocked(childLeftTuple);
-                    }
                     accctx.propagated = false;
                 }
             } else if (isAllowed) {
