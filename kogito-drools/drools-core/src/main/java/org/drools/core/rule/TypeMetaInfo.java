@@ -6,6 +6,7 @@ import java.util.Map;
 public class TypeMetaInfo {
     private TypeDeclaration.Kind kind;
     private TypeDeclaration.Role role;
+    private boolean isDeclaredType;
 
     public static TypeMetaInfo DEFAULT_TYPE_META_INFO = new TypeMetaInfo();
 
@@ -14,6 +15,7 @@ public class TypeMetaInfo {
     public TypeMetaInfo(TypeDeclaration typeDeclaration) {
         this.kind = typeDeclaration.getKind();
         this.role = typeDeclaration.getRole();
+        this.isDeclaredType = !typeDeclaration.isJavaBased();
     }
 
     public boolean isEvent() {
@@ -21,7 +23,7 @@ public class TypeMetaInfo {
     }
 
     public boolean isDeclaredType() {
-        return true;
+        return isDeclaredType;
     }
 
     public String toString() {
@@ -29,6 +31,8 @@ public class TypeMetaInfo {
         sb.append("kind=").append(kind.toString().toLowerCase());
         sb.append(",");
         sb.append("role=").append(role.toString().toLowerCase());
+        sb.append(",");
+        sb.append("isDeclaredType=").append(isDeclaredType);
         return sb.toString();
     }
 
@@ -39,6 +43,8 @@ public class TypeMetaInfo {
         typeMetaInfo.kind = TypeDeclaration.Kind.parseKind(kind);
         String role = split[1].substring("role=".length());
         typeMetaInfo.role = TypeDeclaration.Role.parseRole(role);
+        String isDeclaredType = split[2].substring("isDeclaredType=".length());
+        typeMetaInfo.isDeclaredType = Boolean.valueOf(isDeclaredType);
         return typeMetaInfo;
     }
 

@@ -158,6 +158,7 @@ public class TypeDeclaration
     private boolean                novel;
     private boolean                valid;
     private boolean                propertyReactive;
+    private boolean javaBased;
     private transient List<String> settableProprties;
 
     private transient ObjectType   objectType;
@@ -175,6 +176,12 @@ public class TypeDeclaration
         this.valid =  true;
 
         addRedeclaration( this );
+    }
+
+    public TypeDeclaration( Class< ? > typeClass ) {
+        this(typeClass.getSimpleName());
+        setTypeClass(typeClass);
+        javaBased = true;
     }
 
     public TypeDeclaration( String typeName ) {
@@ -499,6 +506,10 @@ public class TypeDeclaration
 
     public void setTypeClassName(String typeClassName) {
         this.typeClassName = typeClassName;
+    }
+
+    public boolean isJavaBased() {
+        return javaBased;
     }
 
     public boolean isDynamic() {

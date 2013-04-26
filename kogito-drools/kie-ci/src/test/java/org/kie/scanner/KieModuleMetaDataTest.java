@@ -104,9 +104,14 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         Class<?> beanClass = kieModuleMetaData.getClass("org.kie.test", "Bean");
         assertNotNull(beanClass.getMethod("getValue"));
 
+        TypeMetaInfo beanTypeInfo = kieModuleMetaData.getTypeMetaInfo( beanClass);
+        assertNotNull( beanTypeInfo );
+
         if (useTypeDeclaration) {
-            assertTrue(kieModuleMetaData.getTypeMetaInfo(beanClass).isEvent());
+            assertTrue(beanTypeInfo.isEvent());
         }
+
+        assertEquals(useTypeDeclaration, beanTypeInfo.isDeclaredType());
     }
 
     private void testKieModuleMetaDataInMemoryUsingPOM(boolean useTypeDeclaration) throws Exception {
@@ -179,7 +184,9 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         assertNotNull( beanTypeInfo );
 
         if (useTypeDeclaration) {
-            assertTrue(kieModuleMetaData.getTypeMetaInfo(beanClass).isEvent());
+            assertTrue(beanTypeInfo.isEvent());
         }
+
+        assertEquals(useTypeDeclaration, beanTypeInfo.isDeclaredType());
     }
 }
