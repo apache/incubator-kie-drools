@@ -2685,7 +2685,8 @@ public class RuleNetworkEvaluator {
                         LeftTuple temp = null;
                         if (childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple) {
                             temp = childLeftTuple.getRightParentNext();
-                            // we must re-add this to ensure deterministic iteration                            
+                            // we must re-add this to ensure deterministic iteration
+                            childLeftTuple.reAddLeft();
                             removeMatch(accNode,
                                         accumulate,
                                         rightTuple,
@@ -2892,6 +2893,10 @@ public class RuleNetworkEvaluator {
                 } else {
                     // retract                 
                     trgLeftTuples.addDelete(childLeftTuple);
+                    RightTuple blocker = childLeftTuple.getBlocker();
+                    if (blocker != null) {
+                        blocker.removeBlocked(childLeftTuple);
+                    }
                     accctx.propagated = false;
                 }
             } else if (isAllowed) {
