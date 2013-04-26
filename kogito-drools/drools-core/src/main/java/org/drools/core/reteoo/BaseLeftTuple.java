@@ -543,7 +543,7 @@ public class BaseLeftTuple
      * @see org.kie.reteoo.LeftTuple#getBlocker()
      */
     public RightTuple getBlocker() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     /* (non-Javadoc)
