@@ -30,11 +30,17 @@
 
       <para>Notice that it creates a search tree that explodes as the problem size increases. <emphasis
       role="bold">Brute Force is mostly unusable for a real-world problem due to time limitations</emphasis>,
-      as proven by this scalability graph from the benchmarker:</para>
+      as proven by these scalability graphs from the benchmarker:</para>
 
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-Exact_methods/bruteForceScalabilityNQueens.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Exact_methods/bruteForceScalabilityCloudBalance.png"></imagedata>
         </imageobject>
       </mediaobject>
     </section>
