@@ -1683,6 +1683,10 @@ public class RuleNetworkEvaluator {
             RightTupleSets srcRightTuples = bm.getStagedRightTuples();
 
 
+            if (srcLeftTuples.getDeleteFirst() != null) {
+                doLeftDeletes(existsNode, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            }
+
             if (srcLeftTuples.getUpdateFirst() != null )  {
                 dpUpdatesExistentialReorderLeftMemory(bm,
                                            srcLeftTuples);
@@ -1692,10 +1696,6 @@ public class RuleNetworkEvaluator {
                 dpUpdatesExistentialReorderRightMemory(bm,
                                                        existsNode,
                                                        srcRightTuples); // this also preserves the next rightTuple
-            }
-
-            if (srcLeftTuples.getDeleteFirst() != null) {
-                doLeftDeletes(existsNode, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
             }
 
             if (srcRightTuples.getInsertFirst() != null) {
