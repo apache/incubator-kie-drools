@@ -25,6 +25,7 @@ import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.Sensor;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
@@ -33,6 +34,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.BeliefSet;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LogicalDependency;
@@ -46,6 +48,7 @@ import org.drools.event.rule.ObjectRetractedEvent;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ByteArrayResource;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.rule.Package;
@@ -1370,6 +1373,80 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                          fh );
         }
         return (InternalFactHandle) handles.get( ((InternalFactHandle) factHandle).getId() );
-    }    
+    }
+
+
+
+    public static class HashBrown {
+        private int num;
+
+        public HashBrown(int num) {
+            this.num = num;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            HashBrown hashBrown = (HashBrown) o;
+            if (num != hashBrown.num) return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 + num;
+        }
+    }
+
+    public static class HashBlack extends HashBrown {
+        public HashBlack(int num) {
+            super(num);
+        }
+    }
+
+
+    @Test
+    public void testTMSWithEquivalentSubclasses() {
+        String droolsSource = "package project_java_rules2_xxx \n" +
+                "import org.drools.integrationtests.TruthMaintenanceTest.HashBrown; \n" +
+
+                "declare Foo id : int @key end \n\n" +
+
+                "rule Zero \n" +
+                "when \n" +
+                " $s : String( this == \"go\" ) \n" +
+                "then \n" +
+                "  insertLogical( new HashBrown(1) ); \n" +
+                "end \n" +
+
+                "rule Init \n" +
+                "when \n" +
+                "then \n" +
+                "  insertLogical( new HashBrown(7) ); \n" +
+                "end \n" ;
+
+        /////////////////////////////////////
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kBuilder.add( new ByteArrayResource( droolsSource.getBytes() ), ResourceType.DRL );
+        assertFalse(kBuilder.hasErrors());
+
+        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY );
+        conf.setSequentialAgenda( RuleBaseConfiguration.SequentialAgenda.SEQUENTIAL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
+        kbase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        session.fireAllRules();
+
+        FactHandle handle = session.insert( new HashBlack( 1 ) );
+        session.insert( "go" );
+        session.fireAllRules();
+
+        assertNotNull( ((DefaultFactHandle) handle).getEqualityKey() );
+        session.dispose();
+    }
 
 }
