@@ -122,7 +122,9 @@ public class HierarchySorter<K> {
             }
 
             for ( int j = 0; j < children.size(); j++ ) {
-                children.get( j ).accept( list );
+                if ( children.get( j ) != this ) {
+                    children.get( j ).accept( list );
+                }
             }
         }
 
