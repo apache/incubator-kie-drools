@@ -306,6 +306,7 @@
             <virtual-server name="default-host" enable-welcome-root="true">
                 <alias name="localhost"/>
                 <alias name="example.com"/>
+                <sso/>
             </virtual-server>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:webservices:1.1">
