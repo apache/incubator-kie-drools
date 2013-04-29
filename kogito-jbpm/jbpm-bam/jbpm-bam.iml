@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/filtered-resources" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="jbpm-flow-builder" />
+    <orderEntry type="module" module-name="jbpm-flow" />
+    <orderEntry type="library" name="Maven: org.drools:knowledge-api:5.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.drools:drools-core:5.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.mvel:mvel2:2.1.3.Final" level="project" />
+    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:2.4.1" level="project" />
+    <orderEntry type="library" name="Maven: org.drools:drools-compiler:5.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:antlr-runtime:3.3" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:antlr:3.3" level="project" />
+    <orderEntry type="library" name="Maven: org.antlr:stringtemplate:3.2.1" level="project" />
+    <orderEntry type="library" name="Maven: antlr:antlr:2.7.7" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.jdt.core.compiler:ecj:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: org.drools:drools-persistence-jpa:5.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final" level="project" />
+    <orderEntry type="library" name="Maven: dom4j:dom4j:1.6.1" level="project" />
+    <orderEntry type="library" name="Maven: xml-apis:xml-apis:1.3.04" level="project" />
+    <orderEntry type="library" name="Maven: org.javassist:javassist:3.14.0-GA" level="project" />
+    <orderEntry type="library" name="Maven: javax.transaction:jta:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.hibernate:hibernate-core:3.3.2.GA" level="project" />
+    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.1" level="project" />
+    <orderEntry type="module" module-name="jbpm-persistence-jpa" scope="TEST" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.drools:drools-persistence-jpa:test-jar:tests:5.3.4-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="jbpm-persistence-jpa" scope="TEST" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hibernate:hibernate-entitymanager:3.4.0.GA" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hibernate:ejb3-persistence:1.0.2.GA" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hibernate:hibernate-commons-annotations:3.1.0.GA" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hibernate:hibernate-annotations:3.4.0.GA" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.h2database:h2:1.3.161" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.slf4j:slf4j-log4j12:1.6.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: log4j:log4j:1.2.14" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.btm:btm:2.1.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.8.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.mockito:mockito-all:1.9.0" level="project" />
+  </component>
+</module>
+

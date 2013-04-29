@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Built-By: maciejswiderski
+Build-Jdk: 1.6.0_45
+Specification-Title: jBPM :: BAM
+Specification-Version: 6.0.0-SNAPSHOT
+Specification-Vendor: JBoss by Red Hat
+Implementation-Title: jBPM :: BAM
+Implementation-Version: 6.0.0-SNAPSHOT
+Implementation-Vendor-Id: org.jbpm
+Implementation-Vendor: JBoss by Red Hat
+Build-Timestamp: 
+Created-By: Maven Integration for Eclipse
+Implementation-URL: http://www.jboss.org/jbpm/jbpm-bam/
+Java-Vendor: Apple Inc.
+Java-Version: 1.6.0_45
+Os-Arch: x86_64
+Os-Name: Mac OS X
+Os-Version: 10.8.3
+Scm-Connection: scm:git:git@github.com:droolsjbpm/jbpm.git/jbpm-bam
+Scm-Revision: 
+Scm-Url: https://github.com/droolsjbpm/jbpm/jbpm-bam
+
