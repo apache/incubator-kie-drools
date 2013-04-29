@@ -45,7 +45,7 @@
   </process>
 
   <bpmndi:BPMNDiagram>
-    <bpmndi:BPMNPlane bpmnElement="org.drools.integrationtests.multithread" >
+    <bpmndi:BPMNPlane bpmnElement="customtask" >
       <bpmndi:BPMNShape bpmnElement="_1" >
         <dc:Bounds x="18" y="16" width="48" height="48" />
       </bpmndi:BPMNShape>

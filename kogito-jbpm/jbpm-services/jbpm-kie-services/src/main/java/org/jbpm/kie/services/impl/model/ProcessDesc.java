@@ -16,6 +16,8 @@
 package org.jbpm.kie.services.impl.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -34,6 +36,8 @@ public class ProcessDesc implements Serializable {
     private String namespace;
     private String originalPath;
     private String deploymentId;
+    private String encodedProcessSource;
+    private Map<String, String> forms = new HashMap<String, String>();
 
     public ProcessDesc() {
     }
@@ -163,6 +167,29 @@ public class ProcessDesc implements Serializable {
         this.deploymentId = deploymentId;
     }
 
+
+    public String getEncodedProcessSource() {
+        return encodedProcessSource;
+    }
+
+
+    public void setEncodedProcessSource(String processString) {
+        this.encodedProcessSource = processString;
+    }
+
+
+    public Map<String, String> getForms() {
+        return forms;
+    }
+
+
+    public void setForms(Map<String, String> forms) {
+        this.forms = forms;
+    }
+
+    public void addForm(String id, String formContent) {
+        this.forms.put(id, formContent);
+    }
     
 
 }

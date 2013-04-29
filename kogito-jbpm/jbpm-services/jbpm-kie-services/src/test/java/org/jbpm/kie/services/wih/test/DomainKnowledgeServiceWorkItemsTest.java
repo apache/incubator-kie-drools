@@ -31,6 +31,7 @@ import javax.inject.Inject;
 import org.apache.commons.io.IOUtils;
 import org.jbpm.kie.services.api.DeploymentService;
 import org.jbpm.kie.services.api.DeploymentUnit;
+import org.jbpm.kie.services.api.Vfs;
 import org.jbpm.kie.services.impl.VFSDeploymentUnit;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
@@ -56,6 +57,7 @@ public abstract class DomainKnowledgeServiceWorkItemsTest {
     
     
     @Inject
+    @Vfs
     private DeploymentService deploymentService;
 
     

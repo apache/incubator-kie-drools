@@ -1,27 +1,18 @@
 package org.jbpm.kie.services.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 
-import org.jbpm.kie.services.api.DeployedUnit;
-import org.jbpm.kie.services.api.DeploymentService;
 import org.jbpm.kie.services.api.DeploymentUnit;
 import org.jbpm.kie.services.api.IdentityProvider;
+import org.jbpm.kie.services.api.Vfs;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
-import org.jbpm.kie.services.impl.event.Deploy;
-import org.jbpm.kie.services.impl.event.DeploymentEvent;
-import org.jbpm.kie.services.impl.event.Undeploy;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
@@ -31,13 +22,12 @@ import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 
 @ApplicationScoped
-public class VFSDeploymentService implements DeploymentService {
+@Vfs
+public class VFSDeploymentService extends AbstractDeploymentService {
 
     @Inject
     private BeanManager beanManager;
@@ -46,30 +36,20 @@ public class VFSDeploymentService implements DeploymentService {
     @Inject
     private FileService fs;
     @Inject
-    private RuntimeManagerFactory managerFactory; 
-    @Inject
     private EntityManagerFactory emf;
     @Inject
     private IdentityProvider identityProvider; 
     @Inject
     private BPMN2DataService bpmn2Service;
-    @Inject
-    @Deploy
-    private Event<DeploymentEvent> deploymentEvent;
-    @Inject
-    @Undeploy
-    private Event<DeploymentEvent> undeploymentEvent;
-    
-    private Map<String, DeployedUnit> deploymentsMap = new ConcurrentHashMap<String, DeployedUnit>();
+
 
     @Override
     public void deploy(DeploymentUnit unit) {
+        super.deploy(unit);
         if (!(unit instanceof VFSDeploymentUnit)) {
             throw new IllegalArgumentException("Invalid deployment unit provided - " + unit.getClass().getName());
         }
-        if (deploymentsMap.containsKey(unit.getIdentifier())) {
-            throw new IllegalStateException("Unit with id " + unit.getIdentifier() + " is already deployed");
-        }
+        
         DeployedUnitImpl deployedUnit = new DeployedUnitImpl(unit);
         VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) unit;
         // Create Runtime Manager Based on the Reference
@@ -85,76 +65,13 @@ public class VFSDeploymentService implements DeploymentService {
             builder.registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger));
         }
         loadProcesses(vfsUnit, builder, deployedUnit);
-        loadRules(vfsUnit, builder, deployedUnit);
-          
-        synchronized (this) {
+        loadRules(vfsUnit, builder, deployedUnit); 
         
-            if (deploymentsMap.containsKey(vfsUnit.getIdentifier())) {
-                DeployedUnit deployed = deploymentsMap.remove(vfsUnit.getIdentifier());
-                RuntimeManager manager = deployed.getRuntimeManager();
-                manager.close();
-            }
-            RuntimeManager manager = null;
-            deploymentsMap.put(vfsUnit.getIdentifier(), deployedUnit);
-            try {
-                switch (vfsUnit.getStrategy()) {
-            
-                    case SINGLETON:
-                        manager = managerFactory.newSingletonRuntimeManager(builder.get(), vfsUnit.getIdentifier());
-                        break;
-                    case PER_REQUEST:
-                        manager = managerFactory.newPerRequestRuntimeManager(builder.get(), vfsUnit.getIdentifier());
-                        break;
-                        
-                    case PER_PROCESS_INSTANCE:
-                        manager = managerFactory.newPerProcessInstanceRuntimeManager(builder.get(), vfsUnit.getIdentifier());
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Invalid strategy " + vfsUnit.getStrategy());
-                }            
-                deployedUnit.setRuntimeManager(manager);
-            } catch (Exception e) {
-                deploymentsMap.remove(vfsUnit.getIdentifier());
-                throw new RuntimeException(e);
-            }
-        }
-        if (deploymentEvent != null) {
-            deploymentEvent.fire(new DeploymentEvent(unit.getIdentifier()));
-        }
+        commonDeploy(vfsUnit, deployedUnit, builder.get());
         
     }
 
-    @Override
-    public void undeploy(DeploymentUnit unit) {
-        synchronized (this) {
-            DeployedUnit deployed = deploymentsMap.remove(unit.getIdentifier());
-            if (deployed != null) {
-                RuntimeManager manager = deployed.getRuntimeManager();
-                manager.close();
-            }
-            if (undeploymentEvent != null) {
-                undeploymentEvent.fire(new DeploymentEvent(unit.getIdentifier()));
-            }
-        }
-    }
-
-    @Override
-    public RuntimeManager getRuntimeManager(String deploymentUnitId) {
-        if (deploymentsMap.containsKey(deploymentUnitId)) {
-            return deploymentsMap.get(deploymentUnitId).getRuntimeManager();
-        }
-        
-        return null;
-    }
-
-    @Override
-    public DeployedUnit getDeployedUnit(String deploymentUnitId) {
-        if (deploymentsMap.containsKey(deploymentUnitId)) {
-            return deploymentsMap.get(deploymentUnitId);
-        }
-        
-        return null;
-    }
+   
     
     protected void loadProcesses(VFSDeploymentUnit vfsUnit, RuntimeEnvironmentBuilder builder, DeployedUnitImpl deployedUnit) {
         Iterable<Path> loadProcessFiles = null;
@@ -220,14 +137,6 @@ public class VFSDeploymentService implements DeploymentService {
         this.fs = fs;
     }
 
-    public RuntimeManagerFactory getManagerFactory() {
-        return managerFactory;
-    }
-
-    public void setManagerFactory(RuntimeManagerFactory managerFactory) {
-        this.managerFactory = managerFactory;
-    }
-
     public EntityManagerFactory getEmf() {
         return emf;
     }
@@ -252,13 +161,5 @@ public class VFSDeploymentService implements DeploymentService {
         this.bpmn2Service = bpmn2Service;
     }
 
-    public Map<String, DeployedUnit> getDeploymentsMap() {
-        return deploymentsMap;
-    }
 
-    @Override
-    public Collection<DeployedUnit> getDeployedUnits() {
-        
-        return Collections.unmodifiableCollection(deploymentsMap.values()) ;
-    }
 }

@@ -3,10 +3,12 @@ package org.jbpm.kie.services.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jbpm.kie.services.api.DeployedUnit;
 import org.jbpm.kie.services.api.DeploymentService;
+import org.jbpm.kie.services.api.Vfs;
 import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
@@ -19,7 +21,8 @@ public class MVELWorkItemHandlerProducer implements WorkItemHandlerProducer {
     @Inject
     private FileService fs;
     @Inject
-    private DeploymentService deploymentService;
+    @Vfs
+    private Instance<DeploymentService> deploymentService;
 
     public MVELWorkItemHandlerProducer() {
     }
@@ -32,8 +35,12 @@ public class MVELWorkItemHandlerProducer implements WorkItemHandlerProducer {
     @Override
     public Map<String, WorkItemHandler> getWorkItemHandlers(String identifier, Map<String, Object> params) {
         Map<String, WorkItemHandler> handlers = new HashMap<String, WorkItemHandler>();
+
         try {
-            DeployedUnit deployedUnit = deploymentService.getDeployedUnit(identifier);
+            if (deploymentService.get() == null) {
+                return handlers;
+            }
+            DeployedUnit deployedUnit = deploymentService.get().getDeployedUnit(identifier);
             VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) deployedUnit.getDeploymentUnit();
             Path assetFolder = fs.getPath(vfsUnit.getRepository() + vfsUnit.getRepositoryFolder());
             if (identifier == null || !fs.exists(assetFolder)) {

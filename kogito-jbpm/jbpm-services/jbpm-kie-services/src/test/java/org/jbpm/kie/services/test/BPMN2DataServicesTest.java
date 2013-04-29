@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import org.jbpm.kie.services.api.DeploymentService;
 import org.jbpm.kie.services.api.DeploymentUnit;
+import org.jbpm.kie.services.api.Vfs;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.VFSDeploymentUnit;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -106,6 +107,7 @@ public class BPMN2DataServicesTest {
 
     }
     @Inject
+    @Vfs
     private DeploymentService deploymentService;
     @Inject
     private BPMN2DataService bpmn2Service;

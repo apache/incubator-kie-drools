@@ -25,6 +25,8 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -53,8 +55,6 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 public class RuntimeDataServiceImpl implements RuntimeDataService, RuntimeFinder {
 
     @Inject
-    private DeploymentService deploymentService;
-    @Inject
     private JbpmServicesPersistenceManager pm;
     
     private Set<ProcessDesc> availableProcesses = new HashSet<ProcessDesc>();
@@ -64,7 +64,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, RuntimeFinder
     }
     
     public void indexOnDeploy(@Observes@Deploy DeploymentEvent event) {
-        Collection<ProcessDesc> assets = deploymentService.getDeployedUnit(event.getDeploymentId()).getDeployedAssets();
+        Collection<ProcessDesc> assets = event.getDeployedUnit().getDeployedAssets();
         availableProcesses.addAll(assets);
     }
     

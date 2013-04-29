@@ -70,7 +70,11 @@
     <dependency>
       <groupId>org.kie.commons</groupId>
       <artifactId>kie-nio2-model</artifactId>
-    </dependency>    
+    </dependency>  
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-ci</artifactId>
+    </dependency>  
 
     <dependency>
       <groupId>org.jboss.seam.transaction</groupId>
@@ -132,7 +136,11 @@
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    
     <!-- test -->
     <dependency>
       <groupId>org.jboss.solder</groupId>
