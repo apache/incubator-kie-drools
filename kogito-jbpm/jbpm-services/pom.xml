@@ -14,11 +14,9 @@
 
     <modules>
         <module>jbpm-shared-services</module>
-        <module>jbpm-human-task-services</module>
-        <module>jbpm-human-task-workitems</module>
-        <module>droolsjbpm-knowledge-services</module>
-        <module>form-services</module>
-        <module>executor-services</module>
+        <module>jbpm-kie-services</module>
+        <module>jbpm-form-services</module>
+        <module>jbpm-executor</module>
   </modules>
 
     <properties>

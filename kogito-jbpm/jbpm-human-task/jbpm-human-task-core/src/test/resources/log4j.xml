@@ -11,7 +11,7 @@
 	<logger name="org.jbpm">
 		<level value="INFO"/>
 	</logger>
-	<logger name="org.jbpm.task.service.TaskServiceSession">
+	<logger name="org.jbpm.services.task.service.TaskServiceSession">
 		<level value="ERROR"/>
 	</logger>
 	

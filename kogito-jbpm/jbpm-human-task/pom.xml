@@ -14,10 +14,7 @@
   
   <modules>
     <module>jbpm-human-task-core</module>
-    <module>jbpm-human-task-hornetq</module>
-    <module>jbpm-human-task-mina</module>
-    <module>jbpm-human-task-jms</module>
-    <module>jbpm-human-task-war</module>
+    <module>jbpm-human-task-workitems</module>
   </modules>
 
   <dependencies>

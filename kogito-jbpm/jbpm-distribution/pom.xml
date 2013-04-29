@@ -129,42 +129,6 @@
       <artifactId>jbpm-bam</artifactId>
       <classifier>sources</classifier>
     </dependency>
-    <!--dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-mina</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-hornetq</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-jms</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-core</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-mina</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-hornetq</artifactId>
-      <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-jms</artifactId>
-      <classifier>sources</classifier>
-    </dependency-->
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-workitems</artifactId>
@@ -176,38 +140,38 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>droolsjbpm-knowledge-services</artifactId>
+      <artifactId>jbpm-kie-services</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>droolsjbpm-knowledge-services</artifactId>
+      <artifactId>jbpm-kie-services</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>executor-services</artifactId>
+      <artifactId>jbpm-executor</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>executor-services</artifactId>
+      <artifactId>jbpm-executor</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>form-services</artifactId>
+      <artifactId>jbpm-form-services</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>form-services</artifactId>
+      <artifactId>jbpm-form-services</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-services</artifactId>
+      <artifactId>jbpm-human-task-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task-services</artifactId>
+      <artifactId>jbpm-human-task-core</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
