@@ -1,5 +1,7 @@
 package org.jbpm.runtime.manager.impl;
 
+import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
+import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -29,7 +31,8 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
         }
         RuntimeEngine runtime = new RuntimeEngineImpl(factory.newKieSession(), taskServiceFactory.newTaskService());
         ((RuntimeEngineImpl) runtime).setManager(this);
-        registerDisposeCallback(runtime);
+        registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime));
+        registerDisposeCallback(runtime, new DestroySessionTransactionSynchronization(runtime.getKieSession()));
         registerItems(runtime);
         attachManager(runtime);
         local.set(runtime);

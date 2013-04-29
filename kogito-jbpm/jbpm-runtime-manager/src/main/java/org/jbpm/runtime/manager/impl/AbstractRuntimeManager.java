@@ -5,8 +5,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.drools.core.time.TimerService;
+import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.jta.JtaTransactionManager;
+import org.jbpm.process.core.timer.GlobalSchedulerService;
+import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
+import org.jbpm.runtime.manager.impl.tx.ExtendedJTATransactionManager;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
@@ -57,14 +62,14 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         }
     }
     
-    protected void registerDisposeCallback(RuntimeEngine runtime) {
+    protected void registerDisposeCallback(RuntimeEngine runtime, TransactionSynchronization sync) {
         // register it if there is an active transaction as we assume then to be running in a managed environment e.g CMT
         // TODO is there better way to register transaction synchronization?
-        JtaTransactionManager tm = new JtaTransactionManager(null, null, null);
+        JtaTransactionManager tm = new ExtendedJTATransactionManager(null, null, null);
         if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                 && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                 && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
-            tm.registerTransactionSynchronization(new DisposeSessionTransactionSynchronization(this, runtime));
+            tm.registerTransactionSynchronization(sync);
         }
     }
     
@@ -76,6 +81,14 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     public void close() {
         environment.close();
         activeManagers.remove(identifier);
+        TimerService timerService = TimerServiceRegistry.getInstance().remove(getIdentifier()+"-timerServiceId");
+        if (timerService != null) {
+            timerService.shutdown();
+            GlobalSchedulerService schedulerService = ((SchedulerProvider) environment).getSchedulerService();  
+            if (schedulerService != null) {
+                schedulerService.shutdown();
+            }
+        }
     }
 
     public RuntimeEnvironment getEnvironment() {

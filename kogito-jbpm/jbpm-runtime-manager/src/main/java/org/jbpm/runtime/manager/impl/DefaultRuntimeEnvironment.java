@@ -13,12 +13,11 @@ import org.kie.api.runtime.EnvironmentName;
 public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
 
     public DefaultRuntimeEnvironment() {
-        super(new DefaultRegisterableItemsFactory());
-        this.usePersistence = true;
+        this(null, new ThreadPoolSchedulerService(3));
     }
     
     public DefaultRuntimeEnvironment(EntityManagerFactory emf) {
-        this(emf, new ThreadPoolSchedulerService(1));
+        this(emf, new ThreadPoolSchedulerService(3));
     }
     
     public DefaultRuntimeEnvironment(EntityManagerFactory emf, GlobalSchedulerService globalSchedulerService) {
@@ -31,7 +30,7 @@ public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
     }
     
     public DefaultRuntimeEnvironment(EntityManagerFactory emf, boolean usePersistence) {
-        super(new DefaultRegisterableItemsFactory());
+        this(emf, null);
         this.usePersistence = usePersistence;
         this.emf = emf;
         // TODO is this the right one to be default?

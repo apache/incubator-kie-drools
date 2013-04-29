@@ -1,5 +1,7 @@
 package org.jbpm.runtime.manager.util;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FilenameFilter;
 
@@ -42,5 +44,19 @@ public class TestUtil {
     
     public static void main(String[] args) {
         cleanupSingletonSessionId();
+    }
+    
+    public static void checkDisposedSessionException(Throwable e) {
+        Throwable rootCause = e.getCause();
+        while (rootCause != null) {
+            if (rootCause.getCause() != null){
+                rootCause = rootCause.getCause();
+            } else {
+                break;
+            }
+        }
+        if (!(rootCause instanceof IllegalStateException)){
+            fail("Unexpected exception caught " + rootCause.getMessage());
+        }
     }
 }

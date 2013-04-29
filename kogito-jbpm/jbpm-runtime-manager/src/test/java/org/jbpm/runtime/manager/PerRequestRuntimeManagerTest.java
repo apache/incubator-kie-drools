@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.Properties;
 
@@ -37,6 +38,7 @@ public class PerRequestRuntimeManagerTest {
 
     private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;  
+    private RuntimeManager manager;
     
     @Before
     public void setup() {
@@ -49,6 +51,9 @@ public class PerRequestRuntimeManagerTest {
     
     @After
     public void teardown() {
+        if (manager != null) {
+            manager.close();
+        }
         pds.close();
     }
     
@@ -59,7 +64,7 @@ public class PerRequestRuntimeManagerTest {
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .get();
         
-        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
         assertNotNull(manager);
         
         RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
@@ -89,8 +94,9 @@ public class PerRequestRuntimeManagerTest {
             fail("Should fail as session manager was closed and with that it's session");
         } catch (IllegalStateException e) {
             
+        } catch (UndeclaredThrowableException e) {
+            TestUtil.checkDisposedSessionException(e);
         }
-        manager.close();
     }
     
     @Test
@@ -100,7 +106,7 @@ public class PerRequestRuntimeManagerTest {
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .get();
         
-        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
         assertNotNull(manager);
         
         RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
@@ -130,19 +136,20 @@ public class PerRequestRuntimeManagerTest {
             fail("Should fail as session manager was closed and with that it's session");
         } catch (IllegalStateException e) {
             
+        } catch (UndeclaredThrowableException e) {
+            TestUtil.checkDisposedSessionException(e);
         }
-        manager.close();
     }
     
     @Test
     public void testCreationOfSessionWithinTransaction() throws Exception {
-        
+        System.setProperty("jbpm.tm.jndi.lookup", "java:comp/UserTransaction");
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .get();
         
-        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
         assertNotNull(manager);
         
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
@@ -164,8 +171,10 @@ public class PerRequestRuntimeManagerTest {
             fail("Should fail as session manager was closed and with that it's session");
         } catch (IllegalStateException e) {
             
+        } catch (UndeclaredThrowableException e) {
+            TestUtil.checkDisposedSessionException(e);
         }
-        manager.close();
+        System.clearProperty("jbpm.tm.jndi.lookup");
     }
     
     @Test
@@ -176,7 +185,7 @@ public class PerRequestRuntimeManagerTest {
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"), ResourceType.BPMN2)
                 .get();
         
-        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
         assertNotNull(manager);
         // since there is no process instance yet we need to get new session
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());

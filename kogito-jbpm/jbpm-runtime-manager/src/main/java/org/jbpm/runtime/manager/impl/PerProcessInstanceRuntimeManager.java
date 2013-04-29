@@ -3,6 +3,8 @@ package org.jbpm.runtime.manager.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
+import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -58,7 +60,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         
         RuntimeEngine runtime = new RuntimeEngineImpl(ksession, taskServiceFactory.newTaskService());
         ((RuntimeEngineImpl) runtime).setManager(this);
-        registerDisposeCallback(runtime);
+        registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime));
         registerItems(runtime);
         attachManager(runtime);
         
@@ -128,6 +130,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         public void afterProcessCompleted(ProcessCompletedEvent event) {
             mapper.removeMapping(ProcessInstanceIdContext.get(event.getProcessInstance().getId()));
             removeLocalRuntime(runtime);
+            
+            registerDisposeCallback(runtime, 
+                        new DestroySessionTransactionSynchronization(runtime.getKieSession()));            
         }
 
         @Override

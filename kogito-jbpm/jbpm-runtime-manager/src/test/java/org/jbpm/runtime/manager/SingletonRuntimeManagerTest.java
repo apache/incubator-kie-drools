@@ -17,6 +17,7 @@ import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -325,7 +326,7 @@ public class SingletonRuntimeManagerTest {
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"), ResourceType.BPMN2)
                 .get();
         
-        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
         assertNotNull(manager);
         // since there is no process instance yet we need to get new session
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
@@ -447,5 +448,42 @@ public class SingletonRuntimeManagerTest {
         assertNotNull(logs);
         assertEquals(1, logs.size());
         
+    }
+    
+    @Test
+    @Ignore //until KieSession is protected so it won't be possible to dispose it manually
+    public void testCreationOfSessionProtectedDispose() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getEmpty()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        int sessionId = ksession.getId();
+        assertTrue(sessionId == 0);
+        
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
+        ksession = runtime.getKieSession();       
+        assertEquals(sessionId, ksession.getId());
+        // dispose session that should not have affect on the session at all
+        manager.disposeRuntimeEngine(runtime);
+        
+        ksession = manager.getRuntimeEngine(EmptyContext.get()).getKieSession();        
+        assertEquals(sessionId, ksession.getId());
+        
+        ksession.dispose();
+        assertEquals(sessionId, ksession.getId());
+        
+        // close manager which will close session maintained by the manager
+        manager.close();
+        
+        runtime = manager.getRuntimeEngine(EmptyContext.get());
+        assertNull(runtime);
     }
 }

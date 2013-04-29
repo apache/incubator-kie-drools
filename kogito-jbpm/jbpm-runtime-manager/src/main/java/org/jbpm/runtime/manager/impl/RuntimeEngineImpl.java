@@ -1,5 +1,8 @@
 package org.jbpm.runtime.manager.impl;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -74,4 +77,28 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
         this.manager = manager;
     }
 
+
+    private static class KieSessionProxyHandler implements InvocationHandler {
+
+        private static final List<String> NO_OP_METHODS = Arrays.asList(new String[]{"dispose"}); 
+        
+        private KieSession delegate;
+        
+        public KieSessionProxyHandler(KieSession delegate) {
+            this.delegate = delegate;            
+        }
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args)
+                throws Throwable {
+            if (NO_OP_METHODS.contains(method.getName())) {
+                return null;
+            }
+            return method.invoke(delegate, args);
+        }
+        
+        protected KieSession getDelegate() {
+            return this.delegate;
+        }
+        
+    }
 }

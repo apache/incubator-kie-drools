@@ -1,5 +1,7 @@
 package org.jbpm.kie.services.impl.audit;
 
+import javax.enterprise.context.ContextNotActiveException;
+
 import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
@@ -32,7 +34,7 @@ public class ServicesAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl
     public AuditEvent buildEvent(ProcessStartedEvent pse) {
         
         ProcessInstanceLog log = (ProcessInstanceLog) super.buildEvent(pse);
-        log.setIdentity(identityProvider.getName());
+        log.setIdentity(getIdentityName());
         log.setExternalId(deploymentUnitId);
         return log;
     }
@@ -40,7 +42,7 @@ public class ServicesAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl
     @Override
     public AuditEvent buildEvent(ProcessCompletedEvent pce, Object log) {
         ProcessInstanceLog instanceLog = (ProcessInstanceLog) super.buildEvent(pce, log); 
-        instanceLog.setIdentity(identityProvider.getName());
+        instanceLog.setIdentity(getIdentityName());
         instanceLog.setExternalId(deploymentUnitId);
         return instanceLog;
         
@@ -78,6 +80,12 @@ public class ServicesAwareAuditEventBuilder extends DefaultAuditEventBuilderImpl
     }
     
     
-    
+    protected String getIdentityName() {
+        try {
+            return identityProvider.getName();
+        } catch (ContextNotActiveException e) {
+            return "unknow";
+        }
+    }
     
 }

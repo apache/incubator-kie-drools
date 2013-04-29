@@ -62,4 +62,13 @@ public class TimerServiceRegistry {
     public TimerService get(String id) {
         return this.registeredServices.get(id);
     }
+    
+    /**
+     * Removes TimerService from the registry.
+     * @param id timer service identifier
+     * @return returns TimerService instance returned from the registry for cleanup tasks
+     */
+    public TimerService remove(String id) {
+        return this.registeredServices.remove(id);
+    }
 }
