@@ -30,6 +30,7 @@
       </includes>
       <excludes>
         <exclude>**/*.log/**</exclude>
+        <exclude>**/*.tlog/**</exclude>
         <exclude>**/target/**</exclude>
         <exclude>**/.git</exclude>
         <exclude>**/.metadata/**</exclude>
