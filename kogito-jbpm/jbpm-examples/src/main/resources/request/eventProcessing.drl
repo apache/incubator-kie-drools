@@ -1,6 +1,6 @@
 package com.sample
 
-import org.kie.event.process.ProcessStartedEvent
+import org.kie.api.event.process.ProcessStartedEvent
 
 rule "CheckProcessStart"
     when

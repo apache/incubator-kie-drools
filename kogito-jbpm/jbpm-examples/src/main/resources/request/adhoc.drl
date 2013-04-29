@@ -1,6 +1,6 @@
 package org.jbpm.examples.request
 
-import org.kie.runtime.process.WorkflowProcessInstance
+import org.kie.api.runtime.process.WorkflowProcessInstance
 
 rule "Automatically review large requests"
     when

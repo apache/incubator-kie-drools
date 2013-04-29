@@ -9,7 +9,8 @@
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
-             xmlns:tns="http://www.jboss.org/drools">
+             xmlns:tns="http://www.jboss.org/drools"
+             targetNamespace="">
 
   <process processType="Private" isExecutable="true" id="com.sample.requestHandling" name="Request Handling" tns:packageName="com.sample" >
 
