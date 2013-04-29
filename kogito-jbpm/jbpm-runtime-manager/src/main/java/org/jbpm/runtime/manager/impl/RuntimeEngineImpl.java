@@ -77,7 +77,6 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
         this.manager = manager;
     }
 
-
     private static class KieSessionProxyHandler implements InvocationHandler {
 
         private static final List<String> NO_OP_METHODS = Arrays.asList(new String[]{"dispose"}); 
