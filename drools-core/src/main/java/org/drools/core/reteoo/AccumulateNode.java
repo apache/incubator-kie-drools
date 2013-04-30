@@ -662,9 +662,12 @@ public class AccumulateNode extends BetaNode {
                                                                       leftTuple,
                                                                       result );
 
+            WindowTupleList windowTupleList = context.getActiveWindowTupleList();
+            context.setActiveWindowTupleList(null);
             accctx.result = createRightTuple( handle,
                                               this,
                                               context );
+            context.setActiveWindowTupleList(windowTupleList);
         } else {
             accctx.result.getFactHandle().setObject( result );
         }
