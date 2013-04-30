@@ -12,7 +12,7 @@
         <include>org.jbpm:jbpm-flow-builder</include>
         <include>org.jbpm:jbpm-persistence-jpa</include>
         <include>org.jbpm:jbpm-bpmn2</include>
-        <include>org.jbpm:jbpm-bam</include>
+        <include>org.jbpm:jbpm-audit</include>
         <include>org.jbpm:jbpm-workitems</include>
         <include>org.jbpm:jbpm-kie-services</include>
         <include>org.jbpm:jbpm-executor</include>
@@ -34,7 +34,7 @@
         <exclude>org.jbpm:jbpm-flow-builder</exclude>
         <exclude>org.jbpm:jbpm-persistence-jpa</exclude>
         <exclude>org.jbpm:jbpm-bpmn2</exclude>
-        <exclude>org.jbpm:jbpm-bam</exclude>
+        <exclude>org.jbpm:jbpm-audit</exclude>
         <exclude>org.jbpm:jbpm-workitems</exclude>
         <exclude>org.jbpm:jbpm-kie-services</exclude>
         <exclude>org.jbpm:jbpm-executor</exclude>

@@ -54,7 +54,7 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-bam</artifactId>
+      <artifactId>jbpm-audit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

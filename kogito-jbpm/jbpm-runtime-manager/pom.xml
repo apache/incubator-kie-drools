@@ -24,7 +24,7 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-bam</artifactId>
+      <artifactId>jbpm-audit</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

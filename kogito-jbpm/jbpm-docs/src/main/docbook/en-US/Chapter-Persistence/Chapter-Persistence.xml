@@ -740,9 +740,9 @@ ut.commit();</programlisting>
     used to limit the scope of the logged information.</para>
 
     <section>
-      <title>The Business Activity Monitoring data model</title>
+      <title>The jBPM Audit data model</title>
 
-      <para>The jbpm-bam module contains an event listener that stores
+      <para>The jbpm-audit module contains an event listener that stores
       process-related information in a database using JPA or Hibernate directly.
       The data model itself contains three entities, one for process instance 
       information, one for node instance information, and one for (process) 
@@ -750,7 +750,7 @@ ut.commit();</programlisting>
      
       <!-- width && scalefit for pdf's -->
       <figure>
-        <title>Business Activity Monitoring data model</title>
+        <title>jBPM Audit data model</title>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Persistence/bam_schema.png" format="PNG" 
