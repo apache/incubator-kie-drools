@@ -201,16 +201,21 @@ public class FormProviderServiceImpl implements FormProviderService {
         InputStream template = null;
         try {
             if (selectedForm == null) {
-                String rootPath = processPath.getRoot().toUri().toString();
-                if (!rootPath.endsWith(processPath.getFileSystem().getSeparator())) {
-                    rootPath +=processPath.getFileSystem().getSeparator();
-                }
+                String rootPath = "";
                 // since we use default task that lists all inputs there needs to be complete map available
                 renderContext.put("inputs", input);
-                Path defaultFormPath = fileService.getPath(rootPath +"globals/forms/DefaultTask.ftl");
-                if (fileService.exists(defaultFormPath)) {
-                    template = new ByteArrayInputStream(fileService.loadFile(defaultFormPath));
-                } else {
+                if(processPath != null){
+                    rootPath = processPath.getRoot().toUri().toString();
+                    if (!rootPath.endsWith(processPath.getFileSystem().getSeparator())) {
+                        rootPath +=processPath.getFileSystem().getSeparator();
+                    }
+                }
+                if(!rootPath.equals("")){
+                    Path defaultFormPath = fileService.getPath(rootPath +"globals/forms/DefaultTask.ftl");
+                    if (fileService.exists(defaultFormPath)) {
+                        template = new ByteArrayInputStream(fileService.loadFile(defaultFormPath));
+                    }
+                }else {
                     // load from classpath
                     template = this.getClass().getResourceAsStream("/forms/DefaultTask.ftl");
                 }
