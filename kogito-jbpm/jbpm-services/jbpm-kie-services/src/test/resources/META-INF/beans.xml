@@ -21,7 +21,7 @@
 <beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
        xmlns:s="urn:java:ee"
        xmlns:t="urn:java:org.jboss.seam.transaction"
-       xmlns:m="urn:java:org.droolsjbpm.services.impl.util"
+       xmlns:m="urn:java:org.jbpm.kie.services.impl.util"
        xmlns:task="urn:java:org.jbpm.services.task.annotations"
        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd
                            http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
@@ -30,7 +30,7 @@
         <class>org.jbpm.services.task.lifecycle.listeners.JPATaskLifeCycleEventListener</class>
         <class>org.jbpm.shared.services.impl.TestVFSFileServiceImpl</class>
         <class>org.jbpm.services.task.identity.MvelUserGroupCallbackImpl</class>
-        <class>org.droolsjbpm.services.impl.util.BTMTransactionManagerSynchronizations</class>
+        <class>org.jbpm.kie.services.impl.util.BTMTransactionManagerSynchronizations</class>
         <!--class>org.jbpm.services.task.impl.CommandBasedTaskInstanceServiceImpl</class-->
     </alternatives>
     <decorators>

@@ -1,1 +1,1 @@
-org.droolsjbpm.services.test.util.ArquillianTestWrapperExtension
+org.jbpm.kie.services.test.util.ArquillianTestWrapperExtension

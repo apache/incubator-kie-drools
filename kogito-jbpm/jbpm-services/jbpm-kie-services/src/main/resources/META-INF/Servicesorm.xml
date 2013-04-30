@@ -8,7 +8,7 @@
   <named-query name="getProcessInstances">
     <query>
       select
-      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
       log.processInstanceId,
       log.processId,
       log.processName,
@@ -29,7 +29,7 @@
   <named-query name="getProcessInstancesByStatus">
     <query>
       select
-      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
       log.processInstanceId,
       log.processId,
       log.processName,
@@ -50,7 +50,7 @@
   <named-query name="getProcessInstancesByStatusAndInitiator">
     <query>
       select
-      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
       log.processInstanceId,
       log.processId,
       log.processName,
@@ -71,7 +71,7 @@
   <named-query name="getProcessInstancesBySessionId">
     <query>
       select
-      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
       log.processInstanceId,
       log.processId,
       log.processName,
@@ -92,7 +92,7 @@
   <named-query name="getProcessInstancesByProcessDefinition">
     <query>
      select
-      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
       log.processInstanceId,
       log.processId,
       log.processName,
@@ -113,7 +113,7 @@
   <named-query name="getProcessInstanceById">
     <query>
      select
-      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
       log.processInstanceId,
       log.processId,
       log.processName,
@@ -135,7 +135,7 @@
   <named-query name="getProcessInstancesByProcessIdAndStatus">
     <query>
      select
-      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
       log.processInstanceId,
       log.processId,
       log.processName,
@@ -156,7 +156,7 @@
   <named-query name="getProcessInstancesByProcessIdAndStatusAndInitiator">
     <query>
      select
-      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
       log.processInstanceId,
       log.processId,
       log.processName,
@@ -177,7 +177,7 @@
 <named-query name="getProcessInstancesByProcessNameAndStatus">
     <query>
      select
-      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
       log.processInstanceId,
       log.processId,
       log.processName,
@@ -198,7 +198,7 @@
   <named-query name="getProcessInstancesByProcessNameAndStatusAndInitiator">
     <query>
      select
-      new org.droolsjbpm.services.impl.model.ProcessInstanceDesc(
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
       log.processInstanceId,
       log.processId,
       log.processName,
@@ -220,7 +220,7 @@
   <named-query name="getProcessInstanceHistory">
     <query>
       select
-      new org.droolsjbpm.services.impl.model.NodeInstanceDesc(
+      new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
       log.nodeInstanceId,
       log.nodeId,
       log.nodeName,
@@ -245,7 +245,7 @@
   <named-query name="getProcessInstanceFullHistory">
     <query>
       select
-      new org.droolsjbpm.services.impl.model.NodeInstanceDesc(
+      new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
       log.nodeInstanceId,
       log.nodeId,
       log.nodeName,
@@ -270,7 +270,7 @@
   <named-query name="getProcessInstanceActiveNodes">
     <query>
       select
-      new org.droolsjbpm.services.impl.model.NodeInstanceDesc(
+      new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
       log.nodeInstanceId,
       log.nodeId,
       log.nodeName,
@@ -298,7 +298,7 @@
   <named-query name="getProcessInstanceCompletedNodes">
     <query>
       select
-      new org.droolsjbpm.services.impl.model.NodeInstanceDesc(
+      new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
       log.nodeInstanceId,
       log.nodeId,
       log.nodeName,
@@ -324,7 +324,7 @@
   <named-query name="getVariablesCurrentState">
     <query>
       select
-      new org.droolsjbpm.services.impl.model.VariableStateDesc(
+      new org.jbpm.kie.services.impl.model.VariableStateDesc(
       log.variableId,
       log.variableInstanceId,
       log.oldValue,
@@ -344,7 +344,7 @@
   <named-query name="getVariableHistory">
     <query>
      select
-      new org.droolsjbpm.services.impl.model.VariableStateDesc(
+      new org.jbpm.kie.services.impl.model.VariableStateDesc(
       log.variableId,
       log.variableInstanceId,
       log.oldValue,
