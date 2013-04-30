@@ -17,8 +17,10 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.Address;
+import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.core.ClassObjectFilter;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.FileManager;
@@ -1819,5 +1821,36 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals(1, list.size());
         assertEquals(31, (int)list.get(0));
+    }
+
+    @Test
+    public void testPhreakTMS() {
+        // DROOLS-7
+        String str =
+                "import org.drools.compiler.Person\n" +
+                "import org.drools.compiler.Cheese\n" +
+                "rule R when\n" +
+                "  Person( $age : age, $name : name == \"A\" )\n" +
+                "  not Person( age == $age + 1 )\n" +
+                "then\n" +
+                "  insertLogical(new Cheese(\"gorgonzola\", 10));\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p1 = new Person("A", 31);
+        FactHandle fh1 = ksession.insert(p1);
+
+        ksession.fireAllRules();
+
+        assertEquals(1, ksession.getObjects(new ClassObjectFilter(Cheese.class)).size());
+
+        Person p2 = new Person("A", 32);
+        FactHandle fh2 = ksession.insert(p2);
+
+        ksession.fireAllRules();
+
+        assertEquals(1, ksession.getObjects(new ClassObjectFilter(Cheese.class)).size());
     }
 }

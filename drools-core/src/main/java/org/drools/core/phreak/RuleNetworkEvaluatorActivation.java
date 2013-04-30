@@ -56,6 +56,7 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
     public int evaluateNetwork(InternalWorkingMemory wm, int fireCount, int fireLimit) {
         this.networkEvaluator.evaluateNetwork(rmem, wm, this);
         setDirty( false );
+        wm.executeQueuedActions();
 
         //int fireCount = 0;
         int localFireCount = 0;
@@ -76,7 +77,6 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 }
             }
 
-            start:
             while (!tupleList.isEmpty() ) {
                 LeftTuple leftTuple = tupleList.removeFirst();
 
@@ -90,13 +90,13 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                 //check if the rule is not effective or
                 // if the current Rule is no-loop and the origin rule is the same then return
                 if (isNotEffective(wm, rtn, rule, leftTuple, pctx)) {
-                    continue start;
+                    continue;
                 }
 
                 long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
                 InternalAgendaGroup agendaGroup = (InternalAgendaGroup) agenda.getAgendaGroup(rule.getAgendaGroup());
                 if (blockedByLockOnActive(rule, agenda, pctx, handleRecency, agendaGroup)) {
-                    continue start;
+                    continue;
                 }
 
 
@@ -120,8 +120,8 @@ public class RuleNetworkEvaluatorActivation extends AgendaItem {
                     dequeue();
                     setDirty( false );
                     this.networkEvaluator.evaluateNetwork(rmem, wm, this);
-
                 }
+                wm.executeQueuedActions();
             }
         }
 
