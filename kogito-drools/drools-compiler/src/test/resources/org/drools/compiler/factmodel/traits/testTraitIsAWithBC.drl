@@ -1,8 +1,8 @@
 package org.test;
 
-import org.drools.factmodel.traits.Traitable;
-import org.drools.factmodel.traits.Entity;
-import org.drools.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Traitable;
+import org.drools.core.factmodel.traits.Entity;
+import org.drools.core.factmodel.traits.Thing;
 
 global java.util.List list;
 
@@ -73,7 +73,8 @@ when
 
     is_in( $p, Country.class, $q ; )
 
-    $q := Country( name == "Italy" )
+    $q := Country( $name : name == "Italy" )
 then
     System.out.println( "Checking " + $p + " in " + $q );
+    list.add( $name );
 end
