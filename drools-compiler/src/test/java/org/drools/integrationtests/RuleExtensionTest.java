@@ -317,6 +317,10 @@ public class RuleExtensionTest {
                 .build();
 
         assertTrue( kbuilder.hasErrors() );
+
+        System.out.println( kbuilder.getErrors() );
+        assertFalse( kbuilder.getErrors().toString().contains( "Circular" ) );
+        assertTrue( kbuilder.getErrors().toString().contains( "Base" ) );
     }
 
     @Test

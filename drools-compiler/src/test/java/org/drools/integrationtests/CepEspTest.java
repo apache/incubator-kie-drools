@@ -12,6 +12,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -2675,15 +2676,16 @@ public class CepEspTest extends CommonTestMethodBase {
 
 
     @Test
-    @Ignore
     public void testSlidingWindowsAccumulateExternalJoin() throws Exception {
-
+        // DROOLS-106
+        // The logic may not be optimal, but was used to detect a WM corruption
         String str =
                 "package testing2;\n" +
                         "\n" +
                         "import java.util.*;\n" +
                         "import org.drools.StockTick;\n" +
-                        "\n" +
+                        "" +
+                        "global List list;\n" +
                         "" +
                         "declare StockTick\n" +
                         "    @role( event )\n" +
@@ -2692,44 +2694,272 @@ public class CepEspTest extends CommonTestMethodBase {
                         "\n" +
                         "rule test\n" +
                         "when\n" +
-                        " $primary : StockTick( $name : company ) over window:length(4)\n" +
+                        " $primary : StockTick( $name : company ) over window:length(1)\n" +
                         " accumulate ( " +
-                        "           $tick : StockTick( company == $name ), " +
-                        "               $list : count( $tick ) )\n" +
+                        "           $tick : StockTick( company == $name ) , " +
+                        "               $num : count( $tick ) )\n" +
 
                         "then\n" +
-                        "   System.out.println(\"Found name: \" + $primary + \" with \"  );\n" +
+                        "   System.out.println(\"Found name: \" + $primary + \" with \" +$num );\n" +
+                        "   list.add( $num.intValue() ); \n" +
                         "end\n" +
                         ""
                         ;
 
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption(EventProcessingOption.STREAM);
+        config.setOption(EventProcessingOption.CLOUD);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(config, str);
 
         KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(conf, null);
 
-        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.getSessionClock();
-
         int seq = 0;
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
 
-        clock.advanceTime( 10, TimeUnit.MILLISECONDS );
-        ksession.insert( new StockTick( seq++, "x", 10.0, 10L ) );
-        ksession.insert( new StockTick( seq++, "y", 10.0, 10L ) );
-        ksession.insert( new StockTick( seq++, "z", 10.0, 10L ) );
-
+        ksession.insert( new StockTick( seq++, "AAA", 10.0, 10L ) );
         ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 1 ) );
+
+        ksession.insert( new StockTick( seq++, "AAA", 15.0, 10L ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 1, 2 ) );
+
+        ksession.insert( new StockTick( seq++, "CCC", 10.0, 10L ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 1, 2, 1 ) );
 
         System.out.println(" ___________________________________- ");
 
-        ksession.insert( new StockTick( seq++, "z", 13.0, 20L ) );
-        ksession.insert( new StockTick( seq++, "x", 11.0, 20L ) );
+        ksession.insert( new StockTick( seq++, "DDD", 13.0, 20L ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 1, 2, 1, 1 ) );
+
+        ksession.insert( new StockTick( seq++, "AAA", 11.0, 20L ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 1, 2, 1, 1, 3 ) );
 
         // NPE Here
         ksession.fireAllRules();
 
     }
+
+
+
+
+    @Test
+    public void testTimeAndLengthWindowConflict() throws Exception {
+        String drl = "package org.drools;\n" +
+                "\n" +
+                "import java.util.List\n" +
+                "\n" +
+                "global List timeResults;\n" +
+                "global List lengthResults;\n" +
+                "\n" +
+                "declare OrderEvent\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"collect with time window\"\n" +
+                "when\n" +
+                "    $list : List( empty == false ) from collect(\n" +
+                "              $o : OrderEvent() over window:time(30s) )\n" +
+                "then\n" +
+                "    timeResults.add( $list.size() );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"collect with length window\"\n" +
+                "when\n" +
+                "    accumulate (\n" +
+                "              $o : OrderEvent( $tot : total ) over window:length(3)," +
+                "              $avg : average( $tot ) )\n" +
+                "then\n" +
+                "    lengthResults.add( $avg );\n" +
+                "end\n";
+
+        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf,  drl );
+
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
+
+        List<Number> timeResults = new ArrayList<Number>();
+        List<Number> lengthResults = new ArrayList<Number>();
+
+        ksession.setGlobal( "timeResults",
+                timeResults );
+        ksession.setGlobal( "lengthResults",
+                lengthResults );
+
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+
+            clock.advanceTime( 5, TimeUnit.SECONDS ); // 5 seconds
+        ksession.insert( new OrderEvent( "1", "customer A", 70 ) );
+        ksession.fireAllRules();
+        System.out.println( lengthResults );
+        assertTrue( lengthResults.contains( 70.0 ) );
+
+        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
+        ksession.insert( new OrderEvent( "2", "customer A", 60 ) );
+        ksession.fireAllRules();
+        System.out.println( lengthResults );
+        assertTrue( lengthResults.contains( 65.0 ) );
+
+        // Third interaction: advance clock and assert new data
+        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
+        ksession.insert( new OrderEvent( "3", "customer A", 50 ) );
+        ksession.fireAllRules();
+        System.out.println( lengthResults );
+        assertTrue( lengthResults.contains( 60.0 ) );
+
+        // Fourth interaction: advance clock and assert new data
+        clock.advanceTime( 60, TimeUnit.SECONDS ); // 60 seconds
+        ksession.insert( new OrderEvent( "4", "customer A", 25 ) );
+        ksession.fireAllRules();
+        System.out.println( lengthResults );
+//        assertTrue( lengthResults.contains( 45 ) );
+
+    }
+
+    @Test
+    public void testTimeWindowWithPastEvents() throws Exception {
+        String drl = "package org.drools;\n" +
+                "\n" +
+                "import java.util.List\n" +
+                "\n" +
+                "global List timeResults;\n" +
+                "\n" +
+                "declare StockTick\n" +
+                "    @role( event )\n" +
+                "    @timestamp( time ) \n" +
+                "end\n" +
+                "\n" +
+                "rule \"collect with time window\"\n" +
+                "when\n" +
+                "    accumulate(\n" +
+                "              $o : StockTick() over window:time(10ms)," +
+                "              $tot : count( $o );" +
+                "              $tot > 0 )\n" +
+                "then\n" +
+                "    System.out.println( $tot ); \n" +
+                "    timeResults.add( $tot );\n" +
+                "end\n";
+
+        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf,  drl );
+
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
+
+        List<Number> timeResults = new ArrayList<Number>();
+
+        ksession.setGlobal( "timeResults",
+                timeResults );
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+
+        int count = 0;
+        StockTick tick1 = new StockTick( count++, "X", 0.0, 1 );
+        StockTick tick2 = new StockTick( count++, "X", 0.0, 3 );
+        StockTick tick3 = new StockTick( count++, "X", 0.0, 7 );
+        StockTick tick4 = new StockTick( count++, "X", 0.0, 9 );
+        StockTick tick5 = new StockTick( count++, "X", 0.0, 15 );
+
+        clock.advanceTime( 30, TimeUnit.MILLISECONDS );
+
+        ksession.insert( tick1 );
+        ksession.insert( tick2 );
+        ksession.insert( tick3 );
+        ksession.insert( tick4 );
+        ksession.insert( tick5 );
+
+        ksession.fireAllRules();
+        assertTrue( timeResults.isEmpty() );
+
+        clock.advanceTime( 0, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertTrue( timeResults.isEmpty() );
+
+        clock.advanceTime( 3, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertTrue( timeResults.isEmpty() );
+
+        clock.advanceTime( 10, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertTrue( timeResults.isEmpty() );
+
+    }
+
+
+
+    @Test
+    @Ignore()
+    public void testLeakingActivationsWithDetachedExpiredNonCancelling() throws Exception {
+        // JBRULES-3558
+        String drl = "package org.drools;\n" +
+                "\n" +
+                "import java.util.List\n" +
+                "\n" +
+                "global List list; \n" +
+                "" +
+                "declare Motion\n" +
+                "  @role( event )\n" +
+                "  @expires( 1ms )\n" +
+                "  @timestamp( timestamp )\n" +
+                "  timestamp : long\n" +
+                "end\n" +
+                "\n" +
+                "declare Recording\n" +
+                "end\n" +
+                "\n" +
+                "" +
+                "rule Init \n" +
+                "salience 1000\n" +
+                "when\n" +
+                "   $l : Long() \n" +
+                "then\n" +
+                "   System.out.println( \" Insert motion \" + $l );\n" +
+                "   insert( new Motion( $l ) ); \n" +
+                "end\n" +
+                "" +
+                "rule \"StartRecording\"\n" +
+                "  when\n" +
+                "    $mot : Motion()\n" +
+                "    not Recording()\n" +
+                "  then\n" +
+                "    list.add( $mot ); \n " +
+                "    System.out.println(\"Recording started\");\n" +
+                "    insert(new Recording());\n" +
+                "end\n";
+
+        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf,  drl );
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.REALTIME_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
+
+        List<Number> list = new ArrayList<Number>();
+
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new Long( 1000 ) );
+        ksession.insert( new Long( 1001 ) );
+        ksession.insert( new Long( 1002 ) );
+
+        Thread.sleep( 2000 );
+
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+
+    }
+
+
 
 }

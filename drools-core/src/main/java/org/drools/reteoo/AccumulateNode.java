@@ -41,6 +41,7 @@ import org.drools.reteoo.ReteooWorkingMemory.EvaluateResultConstraints;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.Rule;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
@@ -687,8 +688,16 @@ public class AccumulateNode extends BetaNode {
                 }
             } else {
                 // retract
+                // JBRULES-3201 we can't use the expiration context here, because it wouldn't cancel existing activations
+                // however, isAllowed is false -> so activations should not fire
+                PropagationContext cancelContext = new PropagationContextImpl(
+                        workingMemory.getNextPropagationIdCounter(),
+                        org.drools.runtime.rule.PropagationContext.RETRACTION,
+                        (Rule) context.getRule(),
+                        context.getLeftTupleOrigin(),
+                        (InternalFactHandle) context.getFactHandle() );
                 this.sink.propagateRetractLeftTuple( leftTuple,
-                                                     context,
+                                                     cancelContext,
                                                      workingMemory );
                 accctx.propagated = false;
             }

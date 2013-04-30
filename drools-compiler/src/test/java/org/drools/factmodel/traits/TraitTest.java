@@ -3207,25 +3207,82 @@ public class TraitTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = getSession( source );
         TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
 
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
         ksession.fireAllRules();
 
         ksession.insert( "Como" );
 
         ksession.fireAllRules();
 
+        assertTrue( list.contains( "Italy" ) );
     }
 
     @Test
-    @Ignore
     public void isAWithBackChainingTriples() {
         isAWithBackChaining( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
     @Test
-    @Ignore
     public void isAWithBackChainingMap() {
         isAWithBackChaining( TraitFactory.VirtualPropertyMode.MAP );
     }
+
+
+
+    @Test
+    public void donMapTest() {
+        String source = "package org.drools.traits.test; \n" +
+                "import java.util.*\n;" +
+                "" +
+                "declare org.drools.factmodel.MapCore end \n" +
+                "" +
+                "global List list; \n" +
+                "" +
+                "declare trait PersonMap" +
+                "@propertyReactive \n" +
+                "   name : String \n" +
+                "   age  : int \n" +
+                "   height : Double \n" +
+                "end\n" +
+                "" +
+                "" +
+                "rule Don \n" +
+                "when \n" +
+                "  $m : Map( this[ \"age\"] == 18 ) " +
+                "then \n" +
+                "   don( $m, PersonMap.class );\n" +
+                "end \n" +
+                "" +
+                "rule Log \n" +
+                "when \n" +
+                "   $p : PersonMap( name == \"john\", age > 10 ) \n" +
+                "then \n" +
+                "   System.out.println( $p ); \n" +
+                "   modify ( $p ) { \n" +
+                "       setHeight( 184.0 ); \n" +
+                "   }" +
+                "end \n";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString( source ).newStatefulKnowledgeSession();
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ksession.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Map map = new HashMap();
+        map.put( "name", "john" );
+        map.put( "age", 18 );
+
+        ksession.insert( map );
+        ksession.fireAllRules();
+
+        assertTrue( map.containsKey( "height" ) );
+        assertEquals( map.get( "height"), 184.0 );
+
+    }
+
 
 
 }

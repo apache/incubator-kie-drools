@@ -42,7 +42,9 @@ import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.common.TraitFactHandle;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
+import org.drools.factmodel.MapCore;
 import org.drools.factmodel.traits.CoreWrapper;
+import org.drools.factmodel.traits.Entity;
 import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitProxy;
@@ -625,6 +627,9 @@ public class DefaultKnowledgeHelper
     }
 
     protected <K> TraitableBean<K,CoreWrapper<K>> asTraitable( K core, TraitFactory builder ) {
+        if ( core instanceof Map ) {
+            return new MapCore( (Map) core );
+        }
         CoreWrapper<K> wrapper = builder.getCoreWrapper( core.getClass() );
         if ( wrapper == null ) {
             throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() );

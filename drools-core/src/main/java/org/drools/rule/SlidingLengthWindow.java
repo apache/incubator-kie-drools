@@ -106,18 +106,21 @@ public class SlidingLengthWindow
         if ( window.handles[window.pos] != null ) {
             final EventFactHandle previous = window.handles[window.pos];
             // retract previous
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.EXPIRATION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      previous );
-            WindowTupleList list = (WindowTupleList) memory.events.get( previous );
-            for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
-                tuple.getRightTupleSink().retractRightTuple( tuple,
-                                                             propagationContext,
-                                                             workingMemory );
-                propagationContext.evaluateActionQueue( workingMemory );
-                tuple.unlinkFromRightParent();
+            if ( ! previous.isExpired() ) {
+                final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                          PropagationContext.EXPIRATION,
+                                                                                          null,
+                                                                                          null,
+                                                                                          previous );
+                WindowTupleList list = (WindowTupleList) memory.events.get( previous );
+
+                for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
+                    tuple.getRightTupleSink().retractRightTuple( tuple,
+                                                                 propagationContext,
+                                                                 workingMemory );
+                    propagationContext.evaluateActionQueue( workingMemory );
+                    tuple.unlinkFromRightParent();
+                }
             }
         }
         window.handles[window.pos] = (EventFactHandle) handle;

@@ -8,6 +8,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -434,4 +435,62 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
     }
+
+
+    @Test
+    public void testRepeatedPatternWithPR() {
+        // JBRULES-3705
+        String str1 =
+                "package org.test;\n" +
+                        "global java.util.List list; \n" +
+                        "" +
+                        "declare SampleBean \n" +
+                        "@propertyReactive \n" +
+                        "x : java.math.BigDecimal \n" +
+                        "y : java.math.BigDecimal \n" +
+                        "id : Long @key\n" +
+                        "end \n" +
+                        "" +
+                        "    rule \"calculate y\"\n" +
+                        "    dialect \"mvel\"\n" +
+                        "    when\n" +
+                        "    $bean : SampleBean(id == 1L);\n" +
+                        "    then\n" +
+                        "    modify($bean){\n" +
+                        "        y =5B;\n" +
+                        "    }\n" +
+                        "    list.add( $bean.y ); \n" +
+                        "    end\n" +
+                        "\n" +
+                        "    rule \"calculate x\"\n" +
+                        "    dialect \"mvel\"\n" +
+                        "    when\n" +
+                        "    $bean : SampleBean(id == 1L);\n" +
+                        "    then\n" +
+                        "    modify($bean){\n" +
+                        "        x =10B;\n" +
+                        "    }\n" +
+                        "    list.add( $bean.x ); \n" +
+                        "    end\n" +
+                        "" +
+                        "   rule Init \n" +
+                        "   when\n" +
+                        "   then\n" +
+                        "       insert( new SampleBean( 1L ) ); \n" +
+                        "   end";
+
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( new BigDecimal( 10 ) ) );
+        assertTrue( list.contains( new BigDecimal( 5 ) ) );
+    }
+
+
+
 }

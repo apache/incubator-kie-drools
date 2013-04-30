@@ -194,6 +194,16 @@ public class NamedEntryPoint
                         // status and then return the handle
                         key = handle.getEqualityKey();
 
+                        if ( key == null ) {
+                            // Edge case: another object X, equivalent (equals+hashcode) to "object" Y
+                            // has been previously stated. However, if X is a subclass of Y, TMS
+                            // may have not been enabled yet, and key would be null.
+                            ObjectTypeConf typeC = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                    handle.getObject() );
+                            enableTMS( handle.getObject(), typeC );
+                            key = handle.getEqualityKey();
+                        }
+
                         if ( key.getStatus() == EqualityKey.STATED ) {
                             // return null as you cannot justify a stated object.
                             return handle;
