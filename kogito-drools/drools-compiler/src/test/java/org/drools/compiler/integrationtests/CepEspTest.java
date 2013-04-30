@@ -57,6 +57,7 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
@@ -2680,33 +2681,34 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testSlidingWindowsAccumulateExternalJoin() throws Exception {
-
+        // DROOLS-106
+        // The logic may not be optimal, but was used to detect a WM corruption
         String str =
                 "package testing2;\n" +
-                        "\n" +
-                        "import java.util.*;\n" +
-                        "import org.drools.StockTick;\n" +
-                        "\n" +
-                        "" +
-                        "declare StockTick\n" +
-                        " @role( event )\n" +
-                        " @duration( duration )\n" +
-                        "end\n" +
-                        "\n" +
-                        "rule test\n" +
-                        "when\n" +
-                        " $primary : StockTick( $name : company ) over window:length(4)\n" +
-                        " accumulate ( " +
-                        " $tick : StockTick( company == $name ), " +
-                        " $list : count( $tick ) )\n" +
+                "\n" +
+                "import java.util.*;\n" +
+                "import org.drools.compiler.StockTick;\n" +
+                "" +
+                "global List list;\n" +
+                "" +
+                "declare StockTick\n" +
+                " @role( event )\n" +
+                " @duration( duration )\n" +
+                "end\n" +
+                "\n" +
+                "rule test\n" +
+                "when\n" +
+                " $primary : StockTick( $name : company ) over window:length(1)\n" +
+                " accumulate ( " +
+                " $tick : StockTick( company == $name ) , " +
+                " $num : count( $tick ) )\n" +
 
-                        "then\n" +
-                        " System.out.println(\"Found name: \" + $primary + \" with \" );\n" +
-                        "end\n" +
-                        ""
-                ;
+                "then\n" +
+                " System.out.println(\"Found name: \" + $primary + \" with \" +$num );\n" +
+                " list.add( $num.intValue() ); \n" +
+                "end\n" +
+                "";
 
         KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption(EventProcessingOption.STREAM);
@@ -2716,24 +2718,35 @@ public class CepEspTest extends CommonTestMethodBase {
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(conf, null);
 
-        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.getSessionClock();
-
         int seq = 0;
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
 
-        clock.advanceTime( 10, TimeUnit.MILLISECONDS );
-        ksession.insert( new StockTick( seq++, "x", 10.0, 10L ) );
-        ksession.insert( new StockTick( seq++, "y", 10.0, 10L ) );
-        ksession.insert( new StockTick( seq++, "z", 10.0, 10L ) );
-
+        ksession.insert( new StockTick( seq++, "AAA", 10.0, 10L ) );
         ksession.fireAllRules();
+        assertEquals(list, Arrays.asList(1));
+
+        ksession.insert(new StockTick(seq++, "AAA", 15.0, 10L));
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 1, 2 ) );
+
+        ksession.insert( new StockTick( seq++, "CCC", 10.0, 10L ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 1, 2, 1 ) );
 
         System.out.println(" ___________________________________- ");
 
-        ksession.insert( new StockTick( seq++, "z", 13.0, 20L ) );
-        ksession.insert( new StockTick( seq++, "x", 11.0, 20L ) );
+        ksession.insert( new StockTick( seq++, "DDD", 13.0, 20L ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 1, 2, 1, 1 ) );
+
+        ksession.insert( new StockTick( seq++, "AAA", 11.0, 20L ) );
+        ksession.fireAllRules();
+        assertEquals(list, Arrays.asList(1, 2, 1, 1, 3));
 
         // NPE Here
         ksession.fireAllRules();
 
     }
+
 }
