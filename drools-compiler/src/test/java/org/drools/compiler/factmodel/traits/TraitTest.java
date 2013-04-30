@@ -3173,9 +3173,12 @@ public class TraitTest extends CommonTestMethodBase {
 
     public void isAWithBackChaining( TraitFactory.VirtualPropertyMode mode ) {
 
-        String source = "org/drools/factmodel/traits/testTraitIsAWithBC.drl";
+        String source = "org/drools/compiler/factmodel/traits/testTraitIsAWithBC.drl";
         StatefulKnowledgeSession ksession = getSession( source );
         TraitFactory.setMode( mode, ksession.getKieBase() );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
 
@@ -3183,16 +3186,15 @@ public class TraitTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
+        assertTrue( list.contains( "Italy" ) );
     }
 
-    @Test
-    @Ignore
+    @Test @Ignore
     public void isAWithBackChainingTriples() {
         isAWithBackChaining( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test
-    @Ignore
+    @Test @Ignore
     public void isAWithBackChainingMap() {
         isAWithBackChaining( TraitFactory.VirtualPropertyMode.MAP );
     }

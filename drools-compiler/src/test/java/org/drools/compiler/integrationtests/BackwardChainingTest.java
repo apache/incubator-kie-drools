@@ -3127,7 +3127,6 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testQueryIndexingWithUnification() throws Exception {
         String str = "" +
                 "package org.drools.test \n" +
