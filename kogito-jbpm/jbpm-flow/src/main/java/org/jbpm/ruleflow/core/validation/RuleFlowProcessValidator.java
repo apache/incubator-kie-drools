@@ -594,11 +594,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 
                 String stringType = varDataType.getStringType();
                 if (varDataType instanceof ObjectDataType) {
-                    if ("java.lang.Object".equals(stringType) || "Object".equals(stringType)) {
-                        errors.add(new ProcessValidationErrorImpl(process,
-                                "Process variable " + var.getName() + " must have a defined concrete type, currently '" 
-                                        + stringType + "' and data type '" + varDataType.getClass().getName()));
-                    } else if (stringType.startsWith("java.lang")) {
+                     if (stringType.startsWith("java.lang")) {
                         logger.warn("Process variable " + var.getName() + " uses ObjectDataType for default type (java.lang) " +
                         		"which could cause problems with setting variables, use dedicated type instead");
                     }

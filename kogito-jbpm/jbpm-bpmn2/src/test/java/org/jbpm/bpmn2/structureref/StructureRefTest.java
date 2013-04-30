@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.bpmn2.NewJbpmBpmn2TestBase;
+import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -121,12 +122,44 @@ public class StructureRefTest extends NewJbpmBpmn2TestBase {
     }
     
     @Test
-    public void testNoStructureRef() {
-        try {
-            KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-NoStructureRef.bpmn2");
-            fail("Structure ref must be defined for a process");
-        } catch (Exception e ) {
-            assertEquals("Exception about parsing errors missing.", "Errors while parsing knowledge base", e.getMessage());
-        }
+    public void testDefaultObjectStructureRef() throws Exception {
+        
+        String value = "simple text for testing";
+        
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DefaultObjectStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("StructureRef");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("testHT", value);
+        ksession.getWorkItemManager().completeWorkItem(
+                workItemHandler.getWorkItem().getId(), res);
+        
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+    
+    @Test
+    public void testNoStructureRef() throws Exception {
+        Person person = new Person();
+        person.setId(1L);
+        
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-NoStructureRef.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("StructureRef");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+
+        Map<String, Object> res = new HashMap<String, Object>();
+        res.put("testHT", person);
+        ksession.getWorkItemManager().completeWorkItem(
+                workItemHandler.getWorkItem().getId(), res);
+        
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 }

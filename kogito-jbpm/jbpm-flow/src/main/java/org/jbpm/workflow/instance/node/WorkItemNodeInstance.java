@@ -241,7 +241,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         Variable varDef = variableScopeInstance.getVariableScope().findVariable(association.getTarget());
                         DataType dataType = varDef.getType();
                         // exclude java.lang.Object as it is considered unknown type
-                        if (!dataType.getStringType().endsWith("java.lang.Object") && value instanceof String) {
+                        if (!dataType.getStringType().endsWith("java.lang.Object") && 
+                                !dataType.getStringType().endsWith("Object") && value instanceof String) {
                             value = dataType.readValue((String) value);
                         }
                         variableScopeInstance.setVariable(association.getTarget(), value);
