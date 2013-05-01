@@ -35,22 +35,20 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  */
 public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
-    protected int tabuSize = -1;
-    protected int fadingTabuSize = 0;
     protected boolean aspirationEnabled = true;
 
     protected boolean assertTabuHashCodeCorrectness = false;
 
     protected Map<Object, Integer> tabuToStepIndexMap;
     protected List<Object> tabuSequenceList;
+    
+    protected abstract void validate();
+    
+    protected abstract int calculateActualMaximumSize(LocalSearchStepScope scope);
+    
+    protected abstract int calculateFadingTabuSize(LocalSearchStepScope scope);
 
-    public void setTabuSize(int tabuSize) {
-        this.tabuSize = tabuSize;
-    }
-
-    public void setFadingTabuSize(int fadingTabuSize) {
-        this.fadingTabuSize = fadingTabuSize;
-    }
+    protected abstract int calculateRegularTabuSize(LocalSearchStepScope scope);
 
     public void setAspirationEnabled(boolean aspirationEnabled) {
         this.aspirationEnabled = aspirationEnabled;
@@ -68,22 +66,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         validate();
-        tabuToStepIndexMap = new HashMap<Object, Integer>(tabuSize + fadingTabuSize);
+        tabuToStepIndexMap = new HashMap<Object, Integer>(this.calculateActualMaximumSize(phaseScope.getLastCompletedStepScope()));
         tabuSequenceList = new LinkedList<Object>();
-    }
-
-    private void validate() {
-        if (tabuSize < 0) {
-            throw new IllegalArgumentException("The tabuSize (" + tabuSize
-                    + ") cannot be negative.");
-        }
-        if (fadingTabuSize < 0) {
-            throw new IllegalArgumentException("The fadingTabuSize (" + fadingTabuSize
-                    + ") cannot be negative.");
-        }
-        if (tabuSize + fadingTabuSize == 0) {
-            throw new IllegalArgumentException("The sum of tabuSize and fadingTabuSize should be at least 1.");
-        }
     }
 
     @Override
@@ -129,12 +113,13 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
                 return true;
             }
         }
+        int tabuSize = this.calculateRegularTabuSize(moveScope.getStepScope());
         int tabuStepCount = moveScope.getStepScope().getStepIndex() - maximumTabuStepIndex; // at least 1
         if (tabuStepCount <= tabuSize) {
             logger.trace("        Proposed move ({}) is tabu and is therefore not accepted.", moveScope.getMove());
             return false;
         }
-        double acceptChance = calculateFadingTabuAcceptChance(tabuStepCount - tabuSize);
+        double acceptChance = calculateFadingTabuAcceptChance(tabuStepCount - tabuSize, this.calculateFadingTabuSize(moveScope.getStepScope()));
         boolean accepted = moveScope.getWorkingRandom().nextDouble() < acceptChance;
         if (accepted) {
             logger.trace("        Proposed move ({}) is fading tabu with acceptChance ({}) and is accepted.",
@@ -150,7 +135,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
      * @param fadingTabuStepCount 0 < fadingTabuStepCount <= fadingTabuSize
      * @return 0.0 < acceptChance < 1.0
      */
-    protected double calculateFadingTabuAcceptChance(int fadingTabuStepCount) {
+    protected double calculateFadingTabuAcceptChance(int fadingTabuStepCount, int fadingTabuSize) {
         // The + 1's are because acceptChance should not be 0.0 or 1.0
         // when (fadingTabuStepCount == 0) or (fadingTabuStepCount + 1 == fadingTabuSize)
         return ((double) (fadingTabuSize - fadingTabuStepCount)) / ((double) (fadingTabuSize + 1));
@@ -158,7 +143,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     @Override
     public void stepEnded(LocalSearchStepScope stepScope) {
-        int maximumTabuListSize = tabuSize + fadingTabuSize; // is at least 1
+        int maximumTabuListSize = this.calculateActualMaximumSize(stepScope); // is at least 1
         int tabuStepIndex = stepScope.getStepIndex();
         // Remove the oldest tabu(s)
         for (Iterator<Object> it = tabuSequenceList.iterator(); it.hasNext();) {
