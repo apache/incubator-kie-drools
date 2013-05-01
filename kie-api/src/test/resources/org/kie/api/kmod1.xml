@@ -48,9 +48,9 @@
         <ksession name="ksession9" type="stateful"  clockType="realtime">
             <fileLogger name="logger3" file="...." threaded="true" interval="50" />
             <workItemHandlers>
-                <workItemHandler type="type1"/>
-                <workItemHandler type="type3"/>
-                <workItemHandler type="type4"/>
+                <workItemHandler name="name1" type="type1"/>
+                <workItemHandler name="name2" type="type3"/>
+                <workItemHandler name="name3" type="type4"/>
             </workItemHandlers>            
             <listeners>
                 <workingMemoryEventListener type="type1"/>
