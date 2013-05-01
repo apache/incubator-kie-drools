@@ -2707,7 +2707,7 @@ public class CepEspTest extends CommonTestMethodBase {
                         ;
 
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption(EventProcessingOption.CLOUD);
+        config.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(config, str);
 
         KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();

@@ -174,10 +174,11 @@ public class WindowNode extends ObjectSource
             WindowTupleList list = new WindowTupleList((EventFactHandle) factHandle, this);
             context.setActiveWindowTupleList(list);
             memory.events.put(factHandle,
-                    list);
+                              list);
             this.sink.propagateAssertObject(factHandle,
-                    context,
-                    workingMemory);
+                                            context,
+                                            workingMemory);
+            context.setActiveWindowTupleList(null);
         } finally {
             memory.gate.unlock();
         }
