@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -30,6 +31,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge.GreatD
 import org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.PlanningEntityRatioBasedTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.PlanningEntityTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.PlanningValueTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
@@ -44,6 +46,8 @@ public class AcceptorConfig {
     @XStreamImplicit(itemFieldName = "acceptorType")
     private List<AcceptorType> acceptorTypeList = null;
 
+    protected Double planningEntityTabuRatio = null;
+    protected Double fadingPlanningEntityTabuRatio = null;
     protected Integer planningEntityTabuSize = null;
     protected Integer fadingPlanningEntityTabuSize = null;
     protected Integer planningValueTabuSize = null;
@@ -78,12 +82,28 @@ public class AcceptorConfig {
         this.acceptorTypeList = acceptorTypeList;
     }
 
+    public Double getPlanningEntityTabuRatio() {
+        return planningEntityTabuRatio;
+    }
+
+    public void setPlanningEntityTabuRatio(Double planningEntityTabuRatio) {
+        this.planningEntityTabuRatio = planningEntityTabuRatio;
+    }
+
     public Integer getPlanningEntityTabuSize() {
         return planningEntityTabuSize;
     }
 
     public void setPlanningEntityTabuSize(Integer planningEntityTabuSize) {
         this.planningEntityTabuSize = planningEntityTabuSize;
+    }
+
+    public Double getFadingPlanningEntityTabuRatio() {
+        return fadingPlanningEntityTabuRatio;
+    }
+
+    public void setFadingPlanningEntityTabuRatio(Double fadingPlanningEntityTabuRatio) {
+        this.fadingPlanningEntityTabuRatio = fadingPlanningEntityTabuRatio;
     }
 
     public Integer getFadingPlanningEntityTabuSize() {
@@ -210,6 +230,20 @@ public class AcceptorConfig {
             }
             if (fadingPlanningEntityTabuSize != null) {
                 planningEntityTabuAcceptor.setFadingTabuSize(fadingPlanningEntityTabuSize);
+            }
+            if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+                planningEntityTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+            }
+            acceptorList.add(planningEntityTabuAcceptor);
+        }
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_ENTITY_TABU_RELATIVE))
+                || planningEntityTabuRatio != null || fadingPlanningEntityTabuRatio != null) {
+            PlanningEntityRatioBasedTabuAcceptor planningEntityTabuAcceptor = new PlanningEntityRatioBasedTabuAcceptor();
+            if (planningEntityTabuRatio != null) {
+                planningEntityTabuAcceptor.setTabuSizeToEntityCountRatio(planningEntityTabuRatio);
+            }
+            if (fadingPlanningEntityTabuRatio != null) {
+                planningEntityTabuAcceptor.setFadingTabuSizeToEntityCountRatio(fadingPlanningEntityTabuRatio);
             }
             if (environmentMode == EnvironmentMode.FULL_ASSERT) {
                 planningEntityTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
@@ -371,6 +405,7 @@ public class AcceptorConfig {
 
     public static enum AcceptorType {
         PLANNING_ENTITY_TABU,
+        PLANNING_ENTITY_TABU_RELATIVE,
         PLANNING_VALUE_TABU,
         MOVE_TABU,
         UNDO_MOVE_TABU,
