@@ -44,11 +44,11 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     
     protected abstract void validate();
     
-    protected abstract int calculateActualMaximumSize(LocalSearchStepScope scope);
+    protected abstract int calculateActualMaximumSize(LocalSearchSolverPhaseScope scope);
     
-    protected abstract int calculateFadingTabuSize(LocalSearchStepScope scope);
+    protected abstract int calculateFadingTabuSize(LocalSearchSolverPhaseScope scope);
 
-    protected abstract int calculateRegularTabuSize(LocalSearchStepScope scope);
+    protected abstract int calculateRegularTabuSize(LocalSearchSolverPhaseScope scope);
 
     public void setAspirationEnabled(boolean aspirationEnabled) {
         this.aspirationEnabled = aspirationEnabled;
@@ -66,7 +66,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         validate();
-        tabuToStepIndexMap = new HashMap<Object, Integer>(this.calculateActualMaximumSize(phaseScope.getLastCompletedStepScope()));
+        tabuToStepIndexMap = new HashMap<Object, Integer>(this.calculateActualMaximumSize(phaseScope));
         tabuSequenceList = new LinkedList<Object>();
     }
 
@@ -113,13 +113,14 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
                 return true;
             }
         }
-        int tabuSize = this.calculateRegularTabuSize(moveScope.getStepScope());
+        LocalSearchSolverPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
+        int tabuSize = this.calculateRegularTabuSize(phaseScope);
         int tabuStepCount = moveScope.getStepScope().getStepIndex() - maximumTabuStepIndex; // at least 1
         if (tabuStepCount <= tabuSize) {
             logger.trace("        Proposed move ({}) is tabu and is therefore not accepted.", moveScope.getMove());
             return false;
         }
-        double acceptChance = calculateFadingTabuAcceptChance(tabuStepCount - tabuSize, this.calculateFadingTabuSize(moveScope.getStepScope()));
+        double acceptChance = calculateFadingTabuAcceptChance(tabuStepCount - tabuSize, this.calculateFadingTabuSize(phaseScope));
         boolean accepted = moveScope.getWorkingRandom().nextDouble() < acceptChance;
         if (accepted) {
             logger.trace("        Proposed move ({}) is fading tabu with acceptChance ({}) and is accepted.",
@@ -143,7 +144,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     @Override
     public void stepEnded(LocalSearchStepScope stepScope) {
-        int maximumTabuListSize = this.calculateActualMaximumSize(stepScope); // is at least 1
+        int maximumTabuListSize = this.calculateActualMaximumSize(stepScope.getPhaseScope()); // is at least 1
         int tabuStepIndex = stepScope.getStepIndex();
         // Remove the oldest tabu(s)
         for (Iterator<Object> it = tabuSequenceList.iterator(); it.hasNext();) {

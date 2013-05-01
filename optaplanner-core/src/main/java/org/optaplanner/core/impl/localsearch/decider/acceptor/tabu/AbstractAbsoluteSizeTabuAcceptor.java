@@ -1,7 +1,6 @@
 package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu;
 
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 
 public abstract class AbstractAbsoluteSizeTabuAcceptor extends AbstractTabuAcceptor {
 
@@ -31,17 +30,17 @@ public abstract class AbstractAbsoluteSizeTabuAcceptor extends AbstractTabuAccep
     }
 
     @Override
-    protected int calculateActualMaximumSize(LocalSearchStepScope scope) {
+    protected int calculateActualMaximumSize(LocalSearchSolverPhaseScope scope) {
         return this.calculateFadingTabuSize(scope) + this.calculateRegularTabuSize(scope);
     }
     
     @Override
-    protected int calculateFadingTabuSize(LocalSearchStepScope scope) {
+    protected int calculateFadingTabuSize(LocalSearchSolverPhaseScope scope) {
         return this.fadingTabuSize;
     }
 
     @Override
-    protected int calculateRegularTabuSize(LocalSearchStepScope scope) {
+    protected int calculateRegularTabuSize(LocalSearchSolverPhaseScope scope) {
         // TODO Auto-generated method stub
         return this.tabuSize;
     }
