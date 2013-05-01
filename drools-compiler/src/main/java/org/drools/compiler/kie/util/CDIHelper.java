@@ -29,6 +29,7 @@ public class CDIHelper {
     }
 
     private static void wireListnersAndWIHs(BeanCreator beanCreator, KieSessionModel model, KieSession kSession) {
+
         for (ListenerModel listenerModel : model.getListenerModels()) {
             Object listener;
             try {
@@ -48,7 +49,6 @@ public class CDIHelper {
                     break;
             }
         }
-
         for (WorkItemHandlerModel wihModel : model.getWorkItemHandlerModels()) {
             WorkItemHandler wih;
             try {
@@ -56,8 +56,9 @@ public class CDIHelper {
             } catch (Exception e) {
                 throw new RuntimeException("Cannot instance WorkItemHandler " + wihModel.getType(), e);
             }
-            kSession.getWorkItemManager().registerWorkItemHandler( "???", wih );
+            kSession.getWorkItemManager().registerWorkItemHandler(wihModel.getName(), wih );
         }
+
     }
 
     private static class BeanCreatorHolder {
