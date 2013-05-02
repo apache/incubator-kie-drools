@@ -635,6 +635,45 @@ public class ExtendsTest extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testExtendSelf() throws Exception {
+        String s1 = "package org.drools;\n" +
+                    "global java.util.List list;\n" +
+                    "\n" +
+                    "declare Bean extends Bean \n" +
+                    " foo : int @key\n" +
+                    "end\n";
 
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( );
+        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        assertTrue( kBuilder.hasErrors() );
+    }
+
+    @Test
+    public void testExtendCircular() throws Exception {
+        String s1 = "package org.drools;\n" +
+                    "global java.util.List list;\n" +
+                    "\n" +
+                    "declare Bean1 extends Bean2 \n" +
+                    " foo : int @key\n" +
+                    "end\n" +
+                    "" +
+                    "declare Bean2 extends Bean3 \n" +
+                    " foo : int @key\n" +
+                    "end\n" +
+                    "" +
+                    "declare Bean3 extends Bean1 \n" +
+                    " foo : int @key\n" +
+                    "end\n";
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( );
+        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        assertTrue( kBuilder.hasErrors() );
+
+        System.out.println( kBuilder.getErrors() );
+        assertTrue( kBuilder.getErrors().toString().contains( "circular" ) );
+    }
 }
 

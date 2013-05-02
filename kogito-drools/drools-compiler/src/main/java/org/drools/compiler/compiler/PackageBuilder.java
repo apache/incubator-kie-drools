@@ -3471,16 +3471,31 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 taxonomy.put( name, new ArrayList<QualifiedName>() );
             } else {
                 this.results.add( new TypeDeclarationError( tdescr,
-                        "Found duplicate declaration for type " + tdescr.getTypeName() ) );
+                                                            "Found duplicate declaration for type " + tdescr.getTypeName() ) );
             }
 
             Collection<QualifiedName> supers = taxonomy.get( name );
 
-            supers.addAll( tdescr.getSuperTypes() );
+            boolean circular = false;
+            for ( QualifiedName sup : tdescr.getSuperTypes() ) {
+                if ( ! Object.class.getName().equals( name.getFullName() ) ) {
+                    if ( ! hasCircularDependency( tdescr.getType(), sup, taxonomy ) ) {
+                        supers.add( sup );
+                    } else {
+                        circular = true;
+                        this.results.add( new TypeDeclarationError( tdescr,
+                                                                    "Found circular dependency for type " + tdescr.getTypeName() ) );
+                        break;
+                    }
+                }
+            }
+            if ( circular ) {
+                tdescr.getSuperTypes().clear();
+            }
 
             for ( TypeFieldDescr field : tdescr.getFields().values() ) {
                 QualifiedName typeName = new QualifiedName( field.getPattern().getObjectType() );
-                if ( ! typeName.equals( name ) && ! hasCircularDependency( name, typeName, taxonomy ) ) {
+                if ( ! hasCircularDependency( name, typeName, taxonomy ) ) {
                     supers.add( typeName );
                 }
 
@@ -3497,8 +3512,20 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     private boolean hasCircularDependency( QualifiedName name, QualifiedName typeName, Map<QualifiedName, Collection<QualifiedName>> taxonomy) {
+        if ( name.equals( typeName ) ) {
+            return true;
+        }
         if ( taxonomy.containsKey( typeName ) ) {
-            return taxonomy.get( typeName ).contains( name );
+            Collection<QualifiedName> parents = taxonomy.get( typeName );
+            if ( parents.contains( name ) ) {
+                return true;
+            } else {
+                for ( QualifiedName ancestor : parents ) {
+                    if ( hasCircularDependency( name, ancestor, taxonomy ) ) {
+                        return true;
+                    }
+                }
+            }
         }
         return false;
     }
