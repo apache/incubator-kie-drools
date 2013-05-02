@@ -133,8 +133,8 @@ public class KieSessionModelImpl
         listeners.add(listener);
     }
 
-    public WorkItemHandlerModel newWorkItemHandlerModel(String type) {
-        WorkItemHandlerModelImpl wihModel = new WorkItemHandlerModelImpl(this, type);
+    public WorkItemHandlerModel newWorkItemHandlerModel(String name, String type) {
+        WorkItemHandlerModelImpl wihModel = new WorkItemHandlerModelImpl(this, name, type);
         wihs.add(wihModel);
         return wihModel;
     }
