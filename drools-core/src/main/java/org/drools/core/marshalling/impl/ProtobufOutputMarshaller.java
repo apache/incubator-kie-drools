@@ -47,10 +47,6 @@ import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.RuleFlowGroupImpl;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.ObjectHashMap;
-import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.marshalling.impl.ProtobufMessages.ProcessData.Builder;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers;
@@ -65,6 +61,7 @@ import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.Rule;
+import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.time.JobContext;
@@ -75,6 +72,10 @@ import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.time.impl.TimerJobInstance;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.SessionEntryPoint;
@@ -240,6 +241,14 @@ public class ProtobufOutputMarshaller {
         Collections.sort( dormant, ActivationsSorter.INSTANCE );
         for ( org.drools.core.spi.Activation activation : dormant ) {
             _ab.addActivation( writeActivation( context, (AgendaItem) activation ) );
+        }
+        
+        // serialize all network evaluator activations
+        for( Activation activation : agenda.getActivations() ) {
+            if( activation.isRuleNetworkEvaluatorActivation() ) {
+                // serialize it
+                _ab.addRnea( writeActivation( context, (AgendaItem) activation ) );
+            }
         }
 
         _ksb.setAgenda( _ab.build() );
