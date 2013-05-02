@@ -223,14 +223,20 @@ public class SlidingTimeWindow
         TimerService clock = workingMemory.getTimerService();
         if ( fact != null ) {
             long nextTimestamp = ((EventFactHandle) fact).getStartTimestamp() + stw.getSize();
-            JobContext jobctx = new BehaviorJobContext( workingMemory,
+            if ( nextTimestamp < clock.getCurrentTime() ) {
+                // Past and out-of-order events should not be insert,
+                // but the engine silently accepts them anyway, resulting in possibly undesirable behaviors
+                workingMemory.queueWorkingMemoryAction( new BehaviorExpireWMAction( stw, memory, context ) );
+            } else {
+                JobContext jobctx = new BehaviorJobContext( workingMemory,
                                                         stw,
                                                         memory,
                                                         context );
-            JobHandle handle = clock.scheduleJob( job,
-                                                  jobctx,
-                                                  new PointInTimeTrigger( nextTimestamp, null, null ) );
-            jobctx.setJobHandle( handle );
+                JobHandle handle = clock.scheduleJob( job,
+                                                      jobctx,
+                                                      new PointInTimeTrigger( nextTimestamp, null, null ) );
+                jobctx.setJobHandle( handle );
+            }
         }
     }
 

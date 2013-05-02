@@ -2826,4 +2826,76 @@ public class CepEspTest extends CommonTestMethodBase {
         // assertTrue( lengthResults.contains( 45 ) );
 
     }
+
+    @Test
+    public void testTimeWindowWithPastEvents() throws Exception {
+        // JBRULES-2258 
+        String drl = "package org.drools.compiler;\n" +
+                     "\n" +
+                     "import java.util.List\n" +
+                     "\n" +
+                     "global List timeResults;\n" +
+                     "\n" +
+                     "declare StockTick\n" +
+                     " @role( event )\n" +
+                     " @timestamp( time ) \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"collect with time window\"\n" +
+                     "when\n" +
+                     " accumulate(\n" +
+                     " $o : StockTick() over window:time(10ms)," +
+                     " $tot : count( $o );" +
+                     " $tot > 0 )\n" +
+                     "then\n" +
+                     " System.out.println( $tot ); \n" +
+                     " timeResults.add( $tot );\n" +
+                     "end\n";
+
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf, drl );
+
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
+
+        List<Number> timeResults = new ArrayList<Number>();
+
+        ksession.setGlobal( "timeResults",
+                            timeResults );
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+
+        int count = 0;
+        StockTick tick1 = new StockTick( count++, "X", 0.0, 1 );
+        StockTick tick2 = new StockTick( count++, "X", 0.0, 3 );
+        StockTick tick3 = new StockTick( count++, "X", 0.0, 7 );
+        StockTick tick4 = new StockTick( count++, "X", 0.0, 9 );
+        StockTick tick5 = new StockTick( count++, "X", 0.0, 15 );
+
+        clock.advanceTime( 30, TimeUnit.MILLISECONDS );
+
+        ksession.insert( tick1 );
+        ksession.insert( tick2 );
+        ksession.insert( tick3 );
+        ksession.insert( tick4 );
+        ksession.insert( tick5 );
+
+        ksession.fireAllRules();
+        assertTrue( timeResults.isEmpty() );
+
+        clock.advanceTime( 0, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertTrue( timeResults.isEmpty() );
+
+        clock.advanceTime( 3, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertTrue( timeResults.isEmpty() );
+
+        clock.advanceTime( 10, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertTrue( timeResults.isEmpty() );
+
+    }
 }
