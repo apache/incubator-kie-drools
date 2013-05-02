@@ -390,9 +390,12 @@ public class PropagationContextImpl
         if (modificationMask == Long.MAX_VALUE || !(type instanceof ClassObjectType)) {
             return this;
         }
+
         ClassObjectType classObjectType = (ClassObjectType)type;
         Class<?> classType = classObjectType.getClassType();
-        if (classType == modifiedClass || !(classType.isInterface() || modifiedClass.isInterface())) {
+        String pkgName = classType.getPackage().getName();
+
+        if (classType == modifiedClass || "java.lang".equals(pkgName) || !(classType.isInterface() || modifiedClass.isInterface())) {
             return this;
         }
 
@@ -403,7 +406,7 @@ public class PropagationContextImpl
         }
 
         modificationMask = 0L;
-        List<String> typeClassProps = getSettableProperties( workingMemory, classType );
+        List<String> typeClassProps = getSettableProperties(workingMemory, classType, pkgName);
         List<String> modifiedClassProps = getSettableProperties( workingMemory, modifiedClass );
 
         for (int i = 0; i < modifiedClassProps.size(); i++) {
@@ -420,10 +423,11 @@ public class PropagationContextImpl
     }
 
     private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType) {
-        String pkgName = classType.getPackage().getName();
-        return "java.lang".equals(pkgName) ?
-                Collections.EMPTY_LIST :
-                workingMemory.getRuleBase().getPackage(pkgName).getTypeDeclaration(classType).getSettableProperties();
+        return getSettableProperties(workingMemory, classType, classType.getPackage().getName());
+    }
+
+    private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType, String pkgName) {
+        return workingMemory.getRuleBase().getPackage(pkgName).getTypeDeclaration(classType).getSettableProperties();
     }
 
     public WindowTupleList getActiveWindowTupleList() {
