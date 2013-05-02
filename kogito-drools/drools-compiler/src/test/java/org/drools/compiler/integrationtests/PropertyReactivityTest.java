@@ -314,9 +314,9 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "\n" +
                 "rule \"LogObject\" salience -1\n" +
                 "when\n" +
-                "  Object( ) \n" +
+                "  $o : Object( ) \n" +
                 "then\n" +
-                "  list.add( \"Object\" );\n" +
+                "  list.add( $o.getClass().getSimpleName() );\n" +
                 "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
@@ -327,8 +327,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals( 2, list.size() );
-        assertTrue( list.containsAll( Arrays.asList( "Klass2", "Object" ) ) );
+        assertEquals( 3, list.size() );
+        assertTrue( list.containsAll( Arrays.asList( "Klass2", "InitialFactImpl" ) ) );
     }
 
     @Test
