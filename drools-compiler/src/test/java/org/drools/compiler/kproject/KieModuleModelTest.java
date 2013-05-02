@@ -56,7 +56,7 @@ public class KieModuleModelTest {
                 .addArgument("name1", "xxxx")
                 .addArgument("name2", "yyyy");
 
-        ksession1.newWorkItemHandlerModel("org.domain.FifthInterface")
+        ksession1.newWorkItemHandlerModel("name","org.domain.FifthInterface")
                 .newQualifierModel("MyQualfier5")
                 .addArgument("name1", "aaa")
                 .addArgument("name2", "bbb");
