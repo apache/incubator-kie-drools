@@ -1,6 +1,7 @@
 package org.drools.compiler.kie.util;
 
 import java.lang.annotation.Annotation;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.Bean;
@@ -17,6 +18,7 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.mvel2.MVEL;
 
 public class CDIHelper {
 
@@ -28,7 +30,12 @@ public class CDIHelper {
         wireListnersAndWIHs(new CDIBeanCreator(beanManager), model, kSession);
     }
 
+    public static void wireListnersAndWIHs(KieSessionModel model, KieSession kSession, Map<String, Object> parameters) {
+        wireListnersAndWIHs(new MVELBeanCreator(parameters), model, kSession);
+    }
+
     private static void wireListnersAndWIHs(BeanCreator beanCreator, KieSessionModel model, KieSession kSession) {
+
         for (ListenerModel listenerModel : model.getListenerModels()) {
             Object listener;
             try {
@@ -48,7 +55,6 @@ public class CDIHelper {
                     break;
             }
         }
-
         for (WorkItemHandlerModel wihModel : model.getWorkItemHandlerModels()) {
             WorkItemHandler wih;
             try {
@@ -56,8 +62,9 @@ public class CDIHelper {
             } catch (Exception e) {
                 throw new RuntimeException("Cannot instance WorkItemHandler " + wihModel.getType(), e);
             }
-            kSession.getWorkItemManager().registerWorkItemHandler( "???", wih );
+            kSession.getWorkItemManager().registerWorkItemHandler(wihModel.getName(), wih );
         }
+
     }
 
     private static class BeanCreatorHolder {
@@ -127,6 +134,21 @@ public class CDIHelper {
                 throw new IllegalArgumentException("Cannot use a qualifier without a CDI container");
             }
             return (T)Class.forName(type).newInstance();
+        }
+    }
+
+    private static class MVELBeanCreator implements BeanCreator {
+
+        private Map<String, Object> parameters;
+
+        private MVELBeanCreator(Map<String, Object> parameters) {
+            this.parameters = parameters;
+        }
+        public <T> T createBean(String type, QualifierModel qualifier) throws Exception {
+            if (qualifier != null) {
+                throw new IllegalArgumentException("Cannot use a qualifier without a CDI container");
+            }
+            return (T)MVEL.eval( type, parameters );
         }
     }
 }
