@@ -50,6 +50,12 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.FactHandle;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.optimizers.OptimizerFactory;
+import org.mvel2.templates.SimpleTemplateRegistry;
+import org.mvel2.templates.TemplateCompiler;
+import org.mvel2.templates.TemplateRegistry;
+import org.mvel2.templates.TemplateRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,9 +68,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -1852,5 +1862,53 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals(1, ksession.getObjects(new ClassObjectFilter(Cheese.class)).size());
+    }
+
+    public static class Node {
+        public Node(int base, List<Node> list) {
+            this.base = base;
+            this.list = list;
+        }
+
+        public int base;
+        public List<Node> list;
+    }
+
+    @Test
+    @Ignore
+    public void testDRLTemplate() {
+
+        String template = "@declare{\"drl\"}@includeNamed{\"ced\"; node=root }@end{}" +
+                          "" +
+                          "@declare{\"ced\"}" +
+                          "@if{ node.base==1 } @includeNamed{ \"cedX\"; connect=\"AND\"; args=node.list }" +
+                          "@elseif{ node.base ==2 }@includeNamed{ \"cedX\"; connect=\"OR\"; args=node.list }" +
+                          "@end{}" +
+                          "@end{}" +
+                          "" +
+                          "@declare{\"cedX\"}@{connect}@foreach{child : args}\n" +
+                          " @includeNamed{\"ced\"; node=child; } @end{} @{connect}@end{}\n";
+
+        TemplateRegistry REPORT_REGISTRY = new SimpleTemplateRegistry();
+        OptimizerFactory.setDefaultOptimizer("reflective");
+
+        REPORT_REGISTRY.addNamedTemplate( "drl", TemplateCompiler.compileTemplate(template) );
+        TemplateRuntime.execute(REPORT_REGISTRY.getNamedTemplate("drl"), null, REPORT_REGISTRY);
+
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put( "root", new Node( 1, Arrays.asList(
+                new Node( 2, Arrays.asList( new Node( 1, Collections.EMPTY_LIST ) ) )
+                                                       ) ) );
+
+
+        String result = (String) TemplateRuntime.execute( REPORT_REGISTRY.getNamedTemplate( "drl" ),
+                                                          null,
+                                                          new MapVariableResolverFactory( context ),
+                                                          REPORT_REGISTRY );
+
+        Matcher matcher = Pattern.compile("OR").matcher( result );
+        // need two "OR"s
+        assertTrue( matcher.find() );
+        assertTrue( matcher.find() );
     }
 }
