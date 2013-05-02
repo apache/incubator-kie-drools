@@ -31,6 +31,7 @@ import org.drools.core.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.common.*;
+import org.drools.core.factmodel.MapCore;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
@@ -681,6 +682,9 @@ public class DefaultKnowledgeHelper
     }
 
     protected <K> TraitableBean<K,CoreWrapper<K>> asTraitable( K core, TraitFactory builder ) {
+        if ( core instanceof Map ) {
+            return new MapCore( (Map) core );
+        }
         CoreWrapper<K> wrapper = builder.getCoreWrapper( core.getClass() );
         if ( wrapper == null ) {
             throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() );

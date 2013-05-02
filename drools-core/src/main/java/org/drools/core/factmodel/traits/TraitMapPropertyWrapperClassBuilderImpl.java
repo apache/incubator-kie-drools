@@ -274,6 +274,15 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
             boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
+
+                mv.visitVarInsn( ALOAD, varNum );
+                mv.visitLdcInsn( field.getName() );
+                mv.visitMethodInsn( INVOKEINTERFACE,
+                                    Type.getInternalName( Map.class ), "containsKey",
+                                    Type.getMethodDescriptor( Type.getType( boolean.class ), new Type[] { Type.getType( Object.class ) } ) );
+                Label l0 = new Label();
+                mv.visitJumpInsn( IFNE, l0 );
+
                 mv.visitVarInsn( ALOAD, varNum );
                 mv.visitLdcInsn( field.getName() );
                 mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
@@ -287,6 +296,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
                 mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "put", 
                                     "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
                 mv.visitInsn( POP );
+                mv.visitLabel( l0 );
             }
         }
         return stackSize;

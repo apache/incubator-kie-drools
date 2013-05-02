@@ -18,6 +18,7 @@ package org.drools.core.factmodel.traits;
 
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
+import org.drools.core.factmodel.MapCore;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.HierarchyEncoderImpl;
@@ -60,6 +61,13 @@ public class TraitRegistry implements Externalizable {
         individualDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName() } );
         individualDef.setTraitable( true );
         addTraitable( individualDef );
+
+        ClassDefinition mapcoreDef = new ClassDefinition();
+        mapcoreDef.setClassName( MapCore.class.getName() );
+        mapcoreDef.setDefinedClass( MapCore.class );
+        mapcoreDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName() } );
+        mapcoreDef.setTraitable( true );
+        addTraitable( mapcoreDef );
     }
 
     public void merge( TraitRegistry other ) {
