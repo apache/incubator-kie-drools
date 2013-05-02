@@ -2749,4 +2749,81 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testTimeAndLengthWindowConflict() throws Exception {
+        // JBRULES-3671
+        String drl = "package org.drools.compiler;\n" +
+                     "\n" +
+                     "import java.util.List\n" +
+                     "\n" +
+                     "global List timeResults;\n" +
+                     "global List lengthResults;\n" +
+                     "\n" +
+                     "declare OrderEvent\n" +
+                     " @role( event )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"collect with time window\"\n" +
+                     "when\n" +
+                     " $list : List( empty == false ) from collect(\n" +
+                     " $o : OrderEvent() over window:time(30s) )\n" +
+                     "then\n" +
+                     " timeResults.add( $list.size() );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"collect with length window\"\n" +
+                     "when\n" +
+                     " accumulate (\n" +
+                     " $o : OrderEvent( $tot : total ) over window:length(3)," +
+                     " $avg : average( $tot ) )\n" +
+                     "then\n" +
+                     " lengthResults.add( $avg );\n" +
+                     "end\n";
+
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf, drl );
+
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
+
+        List<Number> timeResults = new ArrayList<Number>();
+        List<Number> lengthResults = new ArrayList<Number>();
+
+        ksession.setGlobal( "timeResults",
+                            timeResults );
+        ksession.setGlobal( "lengthResults",
+                            lengthResults );
+
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+
+        clock.advanceTime( 5, TimeUnit.SECONDS ); // 5 seconds
+        ksession.insert( new OrderEvent( "1", "customer A", 70 ) );
+        ksession.fireAllRules();
+        System.out.println( lengthResults );
+        assertTrue( lengthResults.contains( 70.0 ) );
+
+        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
+        ksession.insert( new OrderEvent( "2", "customer A", 60 ) );
+        ksession.fireAllRules();
+        System.out.println( lengthResults );
+        assertTrue( lengthResults.contains( 65.0 ) );
+
+        // Third interaction: advance clock and assert new data
+        clock.advanceTime( 10, TimeUnit.SECONDS ); // 10 seconds
+        ksession.insert( new OrderEvent( "3", "customer A", 50 ) );
+        ksession.fireAllRules();
+        System.out.println( lengthResults );
+        assertTrue( lengthResults.contains( 60.0 ) );
+
+        // Fourth interaction: advance clock and assert new data
+        clock.advanceTime( 60, TimeUnit.SECONDS ); // 60 seconds
+        ksession.insert( new OrderEvent( "4", "customer A", 25 ) );
+        ksession.fireAllRules();
+        System.out.println( lengthResults );
+        // assertTrue( lengthResults.contains( 45 ) );
+
+    }
 }
