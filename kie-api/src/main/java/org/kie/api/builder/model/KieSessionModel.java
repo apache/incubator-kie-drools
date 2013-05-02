@@ -50,7 +50,7 @@ public interface KieSessionModel {
      * Creates a new WorkItemHandlerModel of the given type (i.e. the name of the class implementing it)
      * and add it to this KieSessionModel
      */
-    WorkItemHandlerModel newWorkItemHandlerModel(String type);
+    WorkItemHandlerModel newWorkItemHandlerModel(String name, String type);
 
     /**
      * Returns all the WorkItemHandlerModels defined for this KieSessionModel

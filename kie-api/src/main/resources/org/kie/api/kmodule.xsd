@@ -82,7 +82,8 @@
 
 	<xsd:element name="workItemHandler">
 		<xsd:complexType>
-			<xsd:attribute name="type" use="required" type="xsd:string" />
+            <xsd:attribute name="name" use="required" type="xsd:string" />
+            <xsd:attribute name="type" use="required" type="xsd:string" />
 		</xsd:complexType>
 	</xsd:element>
 
