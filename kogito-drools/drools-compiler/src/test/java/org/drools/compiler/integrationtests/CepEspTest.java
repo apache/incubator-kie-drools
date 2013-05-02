@@ -2898,4 +2898,64 @@ public class CepEspTest extends CommonTestMethodBase {
         assertTrue( timeResults.isEmpty() );
 
     }
+
+    @Test
+    @Ignore()
+    public void testLeakingActivationsWithDetachedExpiredNonCancelling() throws Exception {
+        // JBRULES-3558
+        String drl = "package org.drools;\n" +
+                     "\n" +
+                     "import java.util.List\n" +
+                     "\n" +
+                     "global List list; \n" +
+                     "" +
+                     "declare Motion\n" +
+                     " @role( event )\n" +
+                     " @expires( 1ms )\n" +
+                     " @timestamp( timestamp )\n" +
+                     " timestamp : long\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare Recording\n" +
+                     "end\n" +
+                     "\n" +
+                     "" +
+                     "rule Init \n" +
+                     "salience 1000\n" +
+                     "when\n" +
+                     " $l : Long() \n" +
+                     "then\n" +
+                     " System.out.println( \" Insert motion \" + $l );\n" +
+                     " insert( new Motion( $l ) ); \n" +
+                     "end\n" +
+                     "" +
+                     "rule \"StartRecording\"\n" +
+                     " when\n" +
+                     " $mot : Motion()\n" +
+                     " not Recording()\n" +
+                     " then\n" +
+                     " list.add( $mot ); \n " +
+                     " System.out.println(\"Recording started\");\n" +
+                     " insert(new Recording());\n" +
+                     "end\n";
+
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf, drl );
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.REALTIME_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
+
+        List<Number> list = new ArrayList<Number>();
+
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new Long( 1000 ) );
+        ksession.insert( new Long( 1001 ) );
+        ksession.insert( new Long( 1002 ) );
+
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+
+    }
 }
