@@ -16,10 +16,16 @@
 
 package org.drools.core.reteoo;
 
+import static org.drools.core.util.BitMaskUtil.intersect;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Map;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
@@ -27,19 +33,13 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.definition.rule.Rule;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map;
-
-import static org.drools.core.util.BitMaskUtil.intersect;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -284,16 +284,22 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 doInsertSegmentMemory(context, wm, linkOrNotify, sm, leftTuple, mask);
             }              
         }
-        if( context.getReaderContext() != null ) {
-            // we are deserializing a session
-            for( PathMemory pm : sm.getPathMemories() ) {
-                if( pm.getAgendaItem().isActivated() ) {
-                    // we need to check if we need to evaluate the network immediately or not
-                    pm.getAgendaItem().remove();
-                    pm.getAgendaItem().setActivated( false );
-                    pm.getAgendaItem().evaluateNetwork( wm );
-                }
-            }
+        if( context.getReaderContext() != null && sm != null ) {
+            // we are deserializing a session, so we might need to evaluate
+            // rule activations immediately
+            MarshallerReaderContext mrc = (MarshallerReaderContext) context.getReaderContext();
+            mrc.filter.fireRNEAs( wm );
+
+//            for( PathMemory pm : sm.getPathMemories() ) {
+//                if( pm.getAgendaItem().isActivated() ) {
+//                    // we need to check if we need to evaluate the network immediately or not
+//                    if( mrc.filter.shouldFire( pm.getAgendaItem() ) ) {
+//                        pm.getAgendaItem().remove();
+//                        pm.getAgendaItem().setActivated( false );
+//                        pm.getAgendaItem().evaluateNetwork( wm, 0, -1 );
+//                    }
+//                }
+//            }
         }
     }
 

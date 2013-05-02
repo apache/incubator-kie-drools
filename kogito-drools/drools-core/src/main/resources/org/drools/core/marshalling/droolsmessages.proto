@@ -105,6 +105,7 @@ message Agenda {
     repeated RuleFlowGroup rule_flow_group = 5;
 
     repeated Activation activation = 6;
+    repeated Activation rnea = 7;
 
     message AgendaGroup {
         optional string name = 1;

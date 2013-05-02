@@ -16,6 +16,19 @@
 
 package org.drools.core.reteoo;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import static org.drools.core.util.BitMaskUtil.intersect;
+import static org.drools.core.util.ClassUtils.areNullSafeEquals;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
@@ -35,8 +48,7 @@ import org.drools.core.common.SingleNonIndexSkipBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
 import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.index.IndexUtil;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -45,19 +57,8 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.drools.core.util.BitMaskUtil.intersect;
-import static org.drools.core.util.ClassUtils.areNullSafeEquals;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.index.IndexUtil;
 
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
@@ -314,8 +315,6 @@ public abstract class BetaNode extends LeftTupleSource
         RightTuple rightTuple = createRightTuple( factHandle,
                                                   this,
                                                   context );
-        rightTuple.setPropagationContext( context );
-        
         if ( isUnlinkingEnabled() ) {                            
             if ( memory.getAndIncCounter() == 0 ) {
                 memory.linkNode( wm );
@@ -323,11 +322,17 @@ public abstract class BetaNode extends LeftTupleSource
                 memory.getSegmentMemory().notifyRuleLinkSegment( wm );
             }
             memory.getStagedRightTuples().addInsert( rightTuple );  
+
+            if( context.getReaderContext() != null ) {
+                // we are deserializing a session, so we might need to evaluate
+                // rule activations immediately
+                MarshallerReaderContext mrc = (MarshallerReaderContext) context.getReaderContext();
+                mrc.filter.fireRNEAs( wm );
+            }
             return;
         }
         
         assertRightTuple(rightTuple, context, wm );
-        
     }    
     
     public abstract void assertRightTuple( final RightTuple rightTuple,
@@ -857,14 +862,17 @@ public abstract class BetaNode extends LeftTupleSource
     public RightTuple createRightTuple(InternalFactHandle handle,
                                        RightTupleSink sink,
                                        PropagationContext context) {
+        RightTuple rightTuple = null;
         if ( context.getActiveWindowTupleList() == null ) {
-            return new RightTuple( handle,
-                                   sink );
+            rightTuple = new RightTuple( handle,
+                                         sink );
         } else {
-            return new WindowTuple( handle,
-                                    sink,
-                                    context.getActiveWindowTupleList() );
+            rightTuple = new WindowTuple( handle,
+                                          sink,
+                                          context.getActiveWindowTupleList() );
         }
+        rightTuple.setPropagationContext( context );
+        return rightTuple;
     }
     
     public static Object getBetaMemoryFromRightInput( final BetaNode betaNode, final InternalWorkingMemory workingMemory ) {        

@@ -150,14 +150,18 @@ public class PersisterHelper {
     }
 
     public static int[] createTupleArray(final LeftTuple leftTuple) {
-        int[] tuple = new int[leftTuple.size()];
-        // tuple iterations happens backwards
-        int i = tuple.length;
-        for( LeftTuple entry = leftTuple; entry != null && i > 0; entry = entry.getParent() ) {
-            // have to decrement i before assignment
-            tuple[--i] = entry.getLastHandle().getId();
+        if( leftTuple != null ) {
+            int[] tuple = new int[leftTuple.size()];
+            // tuple iterations happens backwards
+            int i = tuple.length;
+            for( LeftTuple entry = leftTuple; entry != null && i > 0; entry = entry.getParent() ) {
+                // have to decrement i before assignment
+                tuple[--i] = entry.getLastHandle().getId();
+            }
+            return tuple;
+        } else {
+            return new int[0];
         }
-        return tuple;
     }
 
     public static ProtobufInputMarshaller.TupleKey createTupleKey(final ProtobufMessages.Tuple _tuple) {

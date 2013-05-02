@@ -22,32 +22,36 @@ import org.drools.compiler.Order;
 import org.drools.compiler.OrderItem;
 import org.drools.compiler.OuterClass;
 import org.drools.compiler.Person;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatelessSession;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.time.SessionPseudoClock;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.Match;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.Variable;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -738,7 +742,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                                10 ) );
     }
 
-    @Test  //(timeout = 10000)
+    @Test  (timeout = 10000)
     public void testAccumulateSumJava() throws Exception {
         execTestAccumulateSum( "test_AccumulateSum.drl" );
     }
@@ -748,7 +752,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         execTestAccumulateSum( "test_AccumulateSumMVEL.drl" );
     }
 
-    @Test  (timeout = 10000)
+    @Test  //(timeout = 10000)
     public void testAccumulateMultiPatternWithFunctionJava() throws Exception {
         execTestAccumulateSum( "test_AccumulateMultiPatternFunctionJava.drl" );
     }
@@ -974,7 +978,8 @@ public class AccumulateTest extends CommonTestMethodBase {
         data.cheese[index].setPrice( 3 );
         session.update( data.cheeseHandles[index],
                         data.cheese[index] );
-        session.fireAllRules();
+        int count = session.fireAllRules();
+        assertEquals( 1, count );
 
         assertEquals( 2,
                              data.results.size() );
