@@ -31,6 +31,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.rule.Rule;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.ArrayUtils;
 import org.drools.core.util.FastIterator;
@@ -630,13 +631,6 @@ public class AccumulateNode extends BetaNode {
 
     /**
      * Evaluate result constraints and propagate assert in case they are true
-     * 
-     * @param leftTuple
-     * @param context
-     * @param workingMemory
-     * @param memory
-     * @param accresult
-     * @param handle
      */
     public void evaluateResultConstraints( final ActivitySource source,
                                             final LeftTuple leftTuple,
@@ -714,8 +708,15 @@ public class AccumulateNode extends BetaNode {
                 }
             } else {
                 // retract
+                // we can't use the expiration context here, because it wouldn't cancel existing activations
+                // however, isAllowed is false so activations should not fire
+                PropagationContext cancelContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                               org.kie.api.runtime.rule.PropagationContext.DELETION,
+                                                                               (Rule) context.getRule(),
+                                                                               context.getLeftTupleOrigin(),
+                                                                               (InternalFactHandle) context.getFactHandle() );
                 this.sink.propagateRetractLeftTuple( leftTuple,
-                                                     context,
+                                                     cancelContext,
                                                      workingMemory );
                 accctx.propagated = false;
             }
@@ -903,10 +904,6 @@ public class AccumulateNode extends BetaNode {
 
     /**
      * Removes a match between left and right tuple
-     *
-     * @param rightTuple
-     * @param match
-     * @param result
      */
     private void removeMatch( final RightTuple rightTuple,
                               final LeftTuple match,
