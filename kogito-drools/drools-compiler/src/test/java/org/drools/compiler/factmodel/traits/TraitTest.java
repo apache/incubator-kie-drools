@@ -43,6 +43,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.event.AfterActivationFiredEvent;
+import org.drools.core.factmodel.MapCore;
 import org.drools.core.factmodel.traits.Entity;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.MapWrapper;
@@ -3197,5 +3198,57 @@ public class TraitTest extends CommonTestMethodBase {
     @Test @Ignore
     public void isAWithBackChainingMap() {
         isAWithBackChaining( TraitFactory.VirtualPropertyMode.MAP );
+    }
+
+    @Test
+    public void donMapTest() {
+        String source = "package org.drools.traits.test; \n" +
+                        "import java.util.*\n;" +
+                        "" +
+                        "declare " + MapCore.class.getCanonicalName() + " end \n" +
+                        "" +
+                        "global List list; \n" +
+                        "" +
+                        "declare trait PersonMap" +
+                        "@propertyReactive \n" +
+                        " name : String \n" +
+                        " age : int \n" +
+                        " height : Double \n" +
+                        "end\n" +
+                        "" +
+                        "" +
+                        "rule Don \n" +
+                        "when \n" +
+                        " $m : Map( this[ \"age\"] == 18 ) " +
+                        "then \n" +
+                        " don( $m, PersonMap.class );\n" +
+                        "end \n" +
+                        "" +
+                        "rule Log \n" +
+                        "when \n" +
+                        " $p : PersonMap( name == \"john\", age > 10 ) \n" +
+                        "then \n" +
+                        " System.out.println( $p ); \n" +
+                        " modify ( $p ) { \n" +
+                        " setHeight( 184.0 ); \n" +
+                        " }" +
+                        "end \n";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString( source ).newStatefulKnowledgeSession();
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ksession.getKieBase() );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Map map = new HashMap();
+        map.put( "name", "john" );
+        map.put( "age", 18 );
+
+        ksession.insert( map );
+        ksession.fireAllRules();
+
+        assertTrue( map.containsKey( "height" ) );
+        assertEquals( map.get( "height"), 184.0 );
+
     }
 }
