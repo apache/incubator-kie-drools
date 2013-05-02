@@ -315,8 +315,6 @@ public class HierarchyTest {
 
 
 
-
-
     @Test
     public void testConflictArising() {
         HierarchyEncoder encoder = new HierarchyEncoderImpl();
@@ -355,6 +353,34 @@ public class HierarchyTest {
         assertEquals(  parseBitSet( "1010" ), encoder.getCode( "G" ) );
         assertEquals(  parseBitSet( "1010001" ), encoder.getCode( "H" ) );
         assertEquals(  parseBitSet( "1100011" ), encoder.getCode( "I" ) );
+
+        checkHier( encoder, 'I' );
+    }
+
+
+    @Test
+    public void testConflictArising2() {
+        HierarchyEncoder encoder = new HierarchyEncoderImpl();
+
+        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "B", Arrays.asList( "A" ) );
+        encoder.encode( "C", Arrays.asList( "A" ) );
+        encoder.encode( "D", Arrays.asList( "B" ) );
+        encoder.encode( "E", Arrays.asList( "B" ) );
+        encoder.encode( "F", Arrays.asList( "C" ) );
+        encoder.encode( "G", Arrays.asList( "C" ) );
+        encoder.encode( "H", Arrays.asList( "E" ) );
+        encoder.encode( "J", Arrays.asList( "F" ) );
+        encoder.encode( "K", Arrays.asList( "J" ) );
+
+
+        System.out.println( encoder );
+
+        encoder.encode( "I", Arrays.asList( "E", "F" ) );
+
+        System.out.println( encoder );
+
+        checkHier( encoder, 'K' );
 
     }
 
@@ -1105,6 +1131,8 @@ public class HierarchyTest {
 
     }
 
+
+
     @Test
     public void testUnwantedCodeOverriding() {
         HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
@@ -1150,5 +1178,78 @@ public class HierarchyTest {
         assertEquals( 16, encoder.size() );
     }
 
+
+
+    @Test
+    public void testDeepTree() {
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
+
+        encoder.encode( "A", Collections.EMPTY_LIST );
+
+        encoder.encode( "B", Arrays.asList( "A" ) );
+
+        encoder.encode( "C", Arrays.asList( "A" ) );
+        encoder.encode( "D", Arrays.asList( "C" ) );
+        encoder.encode( "E", Arrays.asList( "D" ) );
+        encoder.encode( "F", Arrays.asList( "D" ) );
+        encoder.encode( "G", Arrays.asList( "C" ) );
+        encoder.encode( "H", Arrays.asList( "G" ) );
+        encoder.encode( "I", Arrays.asList( "G" ) );
+        encoder.encode( "J", Arrays.asList( "C" ) );
+        encoder.encode( "K", Arrays.asList( "C" ) );
+
+        encoder.encode( "L", Arrays.asList( "B" ) );
+        encoder.encode( "M", Arrays.asList( "B" ) );
+
+        encoder.encode( "N", Arrays.asList( "A" ) );
+        encoder.encode( "O", Arrays.asList( "N" ) );
+
+
+
+        System.out.println( encoder );
+
+        checkHier( encoder, 'O' );
+    }
+
+
+
+    @Test
+    public void testNestedTree() {
+        HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
+
+        encoder.encode( "A", Collections.EMPTY_LIST );
+        encoder.encode( "B", Arrays.asList( "A") );
+        encoder.encode( "C", Arrays.asList( "B") );
+        encoder.encode( "D", Arrays.asList( "B") );
+        encoder.encode( "E", Arrays.asList( "D") );
+        encoder.encode( "F", Arrays.asList( "E") );
+        encoder.encode( "G", Arrays.asList( "E") );
+        encoder.encode( "H", Arrays.asList( "G") );
+        encoder.encode( "I", Arrays.asList( "H") );
+        encoder.encode( "J", Arrays.asList( "E") );
+        encoder.encode( "K", Arrays.asList( "J") );
+        encoder.encode( "L", Arrays.asList( "K") );
+        encoder.encode( "M", Arrays.asList( "J") );
+        encoder.encode( "N", Arrays.asList( "M") );
+        encoder.encode( "O", Arrays.asList( "J") );
+        encoder.encode( "P", Arrays.asList( "O") );
+        encoder.encode( "Q", Arrays.asList( "J") );
+        encoder.encode( "R", Arrays.asList( "Q") );
+        encoder.encode( "S", Arrays.asList( "B") );
+        encoder.encode( "T", Arrays.asList( "S") );
+        encoder.encode( "U", Arrays.asList( "T") );
+        encoder.encode( "V", Arrays.asList( "B") );
+        encoder.encode( "W", Arrays.asList( "V") );
+        encoder.encode( "X", Arrays.asList( "W") );
+
+        System.out.println( encoder );
+
+        encoder.encode( "Y", Arrays.asList( "F", "W") );
+
+        System.out.println( encoder );
+
+        checkHier( encoder, (char) ( 'A' + encoder.size() - 1 ) );
+
+    }
 
 }
