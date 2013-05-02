@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Cheesery;
@@ -26,7 +27,13 @@ import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatelessSession;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.reteoo.*;
+import org.drools.core.time.SessionPseudoClock;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -2386,5 +2393,60 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.insert(l2);
 
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testAccumulatesExpireVsCancel() throws Exception {
+        // JBRULES-3201
+        String drl = "package com.sample;\n" +
+                     "\n" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "declare FactTest\n" +
+                     " @role( event ) \n" +
+                     "end\n" +
+                     " \n" +
+                     "rule \"A500 test\"\n" +
+                     "when\n" +
+                     " accumulate (\n" +
+                     " $d : FactTest() over window:time(1m), $tot : count($d); $tot > 0 )\n" +
+                     "then\n" +
+                     " System.out.println( $tot ); \n" +
+                     " list.add( $tot.intValue() ); \n "+
+                     "end\n" +
+                     "\n";
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        assertFalse( kbuilder.hasErrors() );
+
+        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbConf.setOption(EventProcessingOption.STREAM);
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbConf);
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksConf.setOption( ClockTypeOption.get("pseudo") );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksConf,null);
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactType ft = kbase.getFactType( "com.sample", "FactTest" );
+
+        ksession.insert( ft.newInstance() );
+        ksession.fireAllRules();
+        ksession.insert( ft.newInstance() );
+        ksession.fireAllRules();
+        ksession.insert( ft.newInstance() );
+        ksession.fireAllRules();
+
+        SessionPseudoClock clock = ksession.getSessionClock();
+        clock.advanceTime( 1, TimeUnit.MINUTES );
+
+        ksession.fireAllRules();
+
+        assertFalse( list.contains( 0 ) );
     }
 }
