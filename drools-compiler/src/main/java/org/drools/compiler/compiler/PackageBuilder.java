@@ -957,62 +957,64 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         Package pkg = pkgRegistry.getPackage();
 
         List<RuleDescr> roots = new LinkedList<RuleDescr>();
-        Map<String, List<RuleDescr>> parents = new HashMap<String, List<RuleDescr>>();
-        List<RuleDescr> sorted = new ArrayList<RuleDescr>();
+        Map<String, List<RuleDescr>> children = new HashMap<String, List<RuleDescr>>();
+        LinkedHashMap<String, RuleDescr> sorted = new LinkedHashMap<String, RuleDescr>();
 
         for ( RuleDescr ruleDescr : packageDescr.getRules() ) {
             if ( !ruleDescr.hasParent() ) {
                 roots.add(ruleDescr);
             } else if ( pkg.getRule( ruleDescr.getParentName() ) != null ) {
                 // The parent of this rule has been already compiled
-                sorted.add(ruleDescr);
+                sorted.put(ruleDescr.getName(), ruleDescr);
             } else {
-                List<RuleDescr> children = parents.get(ruleDescr.getParentName());
-                if (children == null) {
-                    children = new ArrayList<RuleDescr>();
-                    parents.put(ruleDescr.getParentName(), children);
+                List<RuleDescr> childz = children.get(ruleDescr.getParentName());
+                if (childz == null) {
+                    childz = new ArrayList<RuleDescr>();
+                    children.put( ruleDescr.getParentName(), childz );
                 }
-                children.add(ruleDescr);
+                childz.add( ruleDescr );
             }
         }
 
-        if ( parents.isEmpty() ) { // Sorting not necessary
+        if ( children.isEmpty() ) { // Sorting not necessary
             return;
         }
 
         while ( !roots.isEmpty() ) {
             RuleDescr root = roots.remove(0);
-            sorted.add(root);
-            List<RuleDescr> children = parents.remove(root.getName());
-            if ( children != null) {
-                roots.addAll(children);
+            sorted.put(root.getName(), root);
+            List<RuleDescr> childz = children.remove(root.getName());
+            if ( childz != null) {
+                roots.addAll( childz );
             }
         }
 
-        reportHierarchyErrors(parents, sorted);
+        reportHierarchyErrors( children, sorted );
 
         packageDescr.getRules().clear();
-        packageDescr.getRules().addAll( sorted );
+        for ( RuleDescr descr : sorted.values() ) {
+            packageDescr.getRules().add( descr);
+        }
     }
 
-    private void reportHierarchyErrors(Map<String, List<RuleDescr>> parents, List<RuleDescr> sorted) {
+    private void reportHierarchyErrors( Map<String, List<RuleDescr>> parents, Map<String, RuleDescr> sorted ) {
         boolean circularDep = false;
         for ( List<RuleDescr> rds : parents.values() ) {
             for ( RuleDescr ruleDescr : rds ) {
-                if (parents.get(ruleDescr.getParentName()) != null) {
+                if ( parents.get( ruleDescr.getParentName() ) != null
+                     && ( sorted.containsKey( ruleDescr.getName() ) || parents.containsKey( ruleDescr.getName() ) ) ) {
                     circularDep = true;
                     results.add(new RuleBuildError(new Rule(ruleDescr.getName()), ruleDescr, null,
-                            "Circular dependency in rules hierarchy"));
+                                                   "Circular dependency in rules hierarchy"));
                     break;
                 }
-                manageUnresolvedExtension(ruleDescr, sorted);
+                manageUnresolvedExtension( ruleDescr, sorted.values() );
             }
             if ( circularDep ) {
                 break;
             }
         }
     }
-
 
     private void manageUnresolvedExtension(RuleDescr ruleDescr, Collection<RuleDescr> candidates) {
         List<String> candidateRules = new LinkedList<String>();
