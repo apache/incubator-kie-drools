@@ -22,15 +22,18 @@ import org.drools.compiler.Father;
 import org.drools.compiler.Person;
 import org.drools.core.RuleBase;
 import org.drools.compiler.Sensor;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.StatefulSession;
 import org.drools.core.WorkingMemory;
 import org.drools.compiler.YoungestFather;
 import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -1383,6 +1386,78 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                          fh );
         }
         return (InternalFactHandle) handles.get( ((InternalFactHandle) factHandle).getId() );
-    }    
+    }
 
+    public static class HashBrown {
+        private int num;
+
+        public HashBrown(int num) {
+            this.num = num;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            HashBrown hashBrown = (HashBrown) o;
+            if (num != hashBrown.num) return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 + num;
+        }
+    }
+
+    public static class HashBlack extends HashBrown {
+        public HashBlack(int num) {
+            super(num);
+        }
+    }
+
+
+    @Test
+    public void testTMSWithEquivalentSubclasses() {
+        String droolsSource =
+                "package project_java_rules2_xxx \n" +
+                "import " + HashBrown.class.getCanonicalName() + "; \n" +
+
+                "declare Foo id : int @key end \n\n" +
+
+                "rule Zero \n" +
+                "when \n" +
+                " $s : String( this == \"go\" ) \n" +
+                "then \n" +
+                " insertLogical( new HashBrown(1) ); \n" +
+                "end \n" +
+
+                "rule Init \n" +
+                "when \n" +
+                "then \n" +
+                " insertLogical( new HashBrown(7) ); \n" +
+                "end \n" ;
+
+        /////////////////////////////////////
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kBuilder.add( new ByteArrayResource( droolsSource.getBytes() ), ResourceType.DRL );
+        assertFalse(kBuilder.getErrors().toString(), kBuilder.hasErrors());
+
+        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY );
+        conf.setSequentialAgenda( RuleBaseConfiguration.SequentialAgenda.SEQUENTIAL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( conf );
+        kbase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        session.fireAllRules();
+
+        FactHandle handle = session.insert( new HashBlack( 1 ) );
+        session.insert( "go" );
+        session.fireAllRules();
+
+        assertNotNull( ((DefaultFactHandle) handle).getEqualityKey() );
+        session.dispose();
+    }
 }
