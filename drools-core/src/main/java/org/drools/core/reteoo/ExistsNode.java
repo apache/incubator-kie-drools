@@ -205,16 +205,17 @@ public class ExistsNode extends BetaNode {
      *
      * @param handle
      *            the <codeFactHandleImpl</code> being retracted
-     * @param context
+     * @param pctx
      *            The <code>PropagationContext</code>
      * @param workingMemory
      *            The working memory session.
      */
     public void retractRightTuple(final RightTuple rightTuple,
-                                  final PropagationContext context,
+                                  final PropagationContext pctx,
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( isUnlinkingEnabled() ) {
+            rightTuple.setPropagationContext( pctx );
             doDeleteRightTuple( rightTuple,
                                  workingMemory,
                                  memory );
@@ -223,7 +224,7 @@ public class ExistsNode extends BetaNode {
 
         RightTupleMemory rtm = memory.getRightTupleMemory();
         if ( rightTuple.getBlocked() != null ) {
-            updateLeftTupleToNewBlocker(rightTuple, context, workingMemory, memory, memory.getLeftTupleMemory(), rightTuple.getBlocked(), rtm, false);
+            updateLeftTupleToNewBlocker(rightTuple, pctx, workingMemory, memory, memory.getLeftTupleMemory(), rightTuple.getBlocked(), rtm, false);
             rightTuple.nullBlocked();
         } else {
             // it's also removed in the updateLeftTupleToNewBlocker

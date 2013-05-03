@@ -1138,7 +1138,7 @@ public class CepEspTest extends CommonTestMethodBase {
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleLengthWindow.drl" );
-        
+
         KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
@@ -1215,6 +1215,90 @@ public class CepEspTest extends CommonTestMethodBase {
                       ((Number) results.get( 3 )).intValue() );
 
     }
+
+//    @Test
+//    public void testSimpleLengthWindowWithQueue() throws Exception {
+//        // read in the source
+//        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+//        conf.setOption( EventProcessingOption.STREAM );
+//        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleLengthWindow.drl" );
+//
+//        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+//        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+//        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
+//
+//        final List results = new ArrayList();
+//
+//        wm.setGlobal( "results",
+//                      results );
+//
+//        EventFactHandle handle1 = (EventFactHandle) wm.insert( new OrderEvent( "1",
+//                                                                               "customer A",
+//                                                                               70 ) );
+//
+//        //        wm  = SerializationHelper.serializeObject(wm);
+//
+//
+//        // assert new data
+//        EventFactHandle handle2 = (EventFactHandle) wm.insert( new OrderEvent( "2",
+//                                                                               "customer A",
+//                                                                               60 ) );
+//
+//        // assert new data
+//        EventFactHandle handle3 = (EventFactHandle) wm.insert( new OrderEvent( "3",
+//                                                                               "customer A",
+//                                                                               50 ) );
+//
+//
+//        // assert new data
+//        EventFactHandle handle4 = (EventFactHandle) wm.insert( new OrderEvent( "4",
+//                                                                               "customer A",
+//                                                                               50 ) );
+//        wm.fireAllRules();
+//
+//        // first event should have expired, making average under the rule threshold, so no additional rule fire
+//        assertEquals( 2,
+//                      results.size() );
+//
+//        assertEquals( 60,
+//                      ((Number) results.get( 0 )).intValue() );
+//
+//        assertEquals( 57.5,
+//                      ((Number) results.get( 1 )).intValue() );
+//
+////        assertEquals( 60,
+////                      ((Number) results.get( 2 )).intValue() );
+//
+////        // assert new data
+////        EventFactHandle handle4 = (EventFactHandle) wm.insert( new OrderEvent( "4",
+////                                                                               "customer A",
+////                                                                               25 ) );
+////
+////        // assert new data
+////        EventFactHandle handle5 = (EventFactHandle) wm.insert( new OrderEvent( "5",
+////                                                                               "customer A",
+////                                                                               70 ) );
+////        //        wm  = SerializationHelper.serializeObject(wm);
+////        wm.fireAllRules();
+////
+////        // still under the threshold, so no fire
+////        assertEquals( 3,
+////                      results.size() );
+////
+////        // assert new data
+////        EventFactHandle handle6 = (EventFactHandle) wm.insert( new OrderEvent( "6",
+////                                                                               "customer A",
+////                                                                               115 ) );
+////        wm.fireAllRules();
+////
+////        assertEquals( 4,
+////                      results.size() );
+////        assertEquals( 70,
+////                      ((Number) results.get( 3 )).intValue() );
+//
+//    }
+
+
 
     @Test
     public void testDelayingNot() throws Exception {

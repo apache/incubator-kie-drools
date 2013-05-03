@@ -1,7 +1,7 @@
 package org.drools.core.phreak;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Deque;import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -276,6 +276,46 @@ public class RuleNetworkEvaluator {
                     doRiaNode( wm, liaNode, rmem, srcTuples,
                               betaNode, sink, smems, smemIndex, nodeMem, bm, stack, visitedRules, activation);
                     return; // return here is doRiaNode queues the evaluation on the stack, which is necessary to handled nested query nodes
+                }
+
+                if ( !bm.getDequeu().isEmpty() ) {
+                    // If there are no staged RightTuples, then process the Dequeue, popping entries, until another insert/expiration clash
+                    RightTupleSets rightTuples = bm.getStagedRightTuples();
+                    if ( rightTuples.isEmpty() ) {
+                        // nothing staged, so now process the Dequeu
+                        Deque<RightTuple>  que = bm.getDequeu();
+                        while ( !que.isEmpty() ) {
+                            RightTuple rightTuple = que.peekFirst();
+                            if ( rightTuple.getPropagationContext().getType() == PropagationContext.EXPIRATION &&
+                                 // Cannot pop an expired fact, if the insert/update has not yet been evaluated.
+                                 rightTuple.getStagedType() != LeftTuple.NONE ) {
+                                break;
+                            }
+
+                            switch( rightTuple.getPropagationContext().getType() ) {
+                                case PropagationContext.INSERTION:
+                                case PropagationContext.RULE_ADDITION:
+                                    rightTuples.addInsert( rightTuple );
+                                    break;
+                                case PropagationContext.MODIFICATION:
+                                    rightTuples.addUpdate( rightTuple );
+                                    break;
+                                case PropagationContext.DELETION:
+                                case PropagationContext.EXPIRATION:
+                                case PropagationContext.RULE_REMOVAL:
+                                     rightTuples.addDelete( rightTuple );
+                                   break;
+                            }
+                            que.removeFirst();
+                        }
+                    }
+
+                    if ( !bm.getDequeu().isEmpty() ) {
+                        // The DeQue is not empty, add StackEntry for reprocessing.
+                        StackEntry stackEntry = new StackEntry(liaNode,node, sink, rmem, nodeMem, smems,
+                                                               smemIndex, trgTuples, visitedRules, false);
+                        stack.add(stackEntry);
+                    }
                 }
 
                 switch (node.getType()) {
@@ -2763,7 +2803,6 @@ public class RuleNetworkEvaluator {
 
                         while (match != null) {
                             LeftTuple nextLeft = match.getRightParentNext();
-                            ;
 
                             LeftTuple leftTuple = match.getLeftParent();
                             final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
@@ -2773,11 +2812,11 @@ public class RuleNetworkEvaluator {
                                 trgLeftTuples.addUpdate(leftTuple);
                             }
 
-                            match.unlinkFromLeftParent();
 
                             match = nextLeft;
                         }
                     }
+                    rightTuple.unlinkFromRightParent();
                 }
                 rightTuple.clearStaged();
                 rightTuple = next;
@@ -3938,7 +3977,9 @@ public class RuleNetworkEvaluator {
             LeftTupleList tupleList = activation.getLeftTupleList();
             for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();
-                if ( leftTuple.getMemory() != null ) {
+                PropagationContext pctx = leftTuple.getPropagationContext();
+                if ( leftTuple.getMemory() != null && !(pctx.getType() == PropagationContext.EXPIRATION && pctx.getFactHandleOrigin() != null ) ) {
+                    // Expiration propagations should not be removed from the list, as they still need to fire
                     tupleList.remove(leftTuple);
                 }
                 rtnNode.retractLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);

@@ -1415,7 +1415,6 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         }
     }
 
-
     @Test
     public void testTMSWithEquivalentSubclasses() {
         String droolsSource =

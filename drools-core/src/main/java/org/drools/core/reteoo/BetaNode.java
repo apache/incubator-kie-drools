@@ -60,6 +60,19 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.IndexUtil;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayDeque;import java.util.ArrayList;
+import java.util.Deque;import java.util.List;
+
+import static org.drools.core.util.BitMaskUtil.intersect;
+import static org.drools.core.util.ClassUtils.areNullSafeEquals;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
  * both TupleSink and ObjectSink and as such can receive <code>Tuple</code>s and <code>FactHandle</code>s. BetaNode uses BetaMemory
@@ -101,7 +114,7 @@ public abstract class BetaNode extends LeftTupleSource
     private List<String>      rightListenedProperties;
 
     private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFAULT_ID;
-    
+
     private boolean           rightInputIsRiaNode;
 
     private transient ObjectTypeNode objectTypeNode;
@@ -109,6 +122,8 @@ public abstract class BetaNode extends LeftTupleSource
     private boolean                  unlinkingEnabled;
 
     private int                      unlinkedDisabledCount;
+
+    private boolean                  parentIsWindowNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -137,25 +152,35 @@ public abstract class BetaNode extends LeftTupleSource
                 partitionsEnabled );
         setLeftTupleSource(leftInput);
         this.rightInput = rightInput;
-        
+
         if ( NodeTypeEnums.RightInputAdaterNode == rightInput.getType() ) {
             rightInputIsRiaNode = true;
         } else {
             rightInputIsRiaNode = false;
         }
-        
+
         this.constraints = constraints;
 
         if ( this.constraints == null ) {
             throw new RuntimeException( "cannot have null constraints, must at least be an instance of EmptyBetaConstraints" );
         }
 
-        initMasks( context, leftInput );        
-        
+        initMasks( context, leftInput );
+
         this.unlinkingEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
         this.unlinkedDisabledCount = 0;
+
+        if ( rightInput instanceof WindowNode ) {
+            parentIsWindowNode = true;
+        } else {
+            parentIsWindowNode = false;
+        }
     }
-    
+
+    public boolean isParentIsWindowNode() {
+        return parentIsWindowNode;
+    }
+
     public boolean isUnlinkingEnabled() {
         return unlinkingEnabled;
     }
@@ -163,7 +188,7 @@ public abstract class BetaNode extends LeftTupleSource
     public void setUnlinkingEnabled(boolean unlinkingEnabled) {
         this.unlinkingEnabled = unlinkingEnabled;
     }
-    
+
     public int getUnlinkedDisabledCount() {
         return unlinkedDisabledCount;
     }
@@ -234,7 +259,7 @@ public abstract class BetaNode extends LeftTupleSource
         rightInferredMask &= (Long.MAX_VALUE - rightNegativeMask);
     }
 
-    public ObjectSource unwrapRightInput() {   
+    public ObjectSource unwrapRightInput() {
         return rightInput.getType() == NodeTypeEnums.PropagationQueuingNode ? rightInput.getParentObjectSource() : rightInput;
     }
 
@@ -258,7 +283,12 @@ public abstract class BetaNode extends LeftTupleSource
             rightInputIsRiaNode = true;
         } else {
             rightInputIsRiaNode = false;
-        }        
+        }
+        if ( rightInput instanceof WindowNode ) {
+            parentIsWindowNode = true;
+        } else {
+            parentIsWindowNode = false;
+        }
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -284,7 +314,7 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeObject( rightListenedProperties );
         super.writeExternal( out );
     }
-    
+
     public void setUnificationJoin() {
         // If this join uses a indexed, ==, constraint on a query parameter then set indexedUnificationJoin to true
         // This ensure we get the correct iterator
@@ -305,7 +335,7 @@ public abstract class BetaNode extends LeftTupleSource
                 this.indexedUnificationJoin = true;
             }
         }
-    }    
+    }
 
     public void assertObject( final InternalFactHandle factHandle,
                               final PropagationContext context,
@@ -315,13 +345,20 @@ public abstract class BetaNode extends LeftTupleSource
         RightTuple rightTuple = createRightTuple( factHandle,
                                                   this,
                                                   context );
-        if ( isUnlinkingEnabled() ) {                            
+
+        if ( isUnlinkingEnabled() ) {
+            rightTuple.setPropagationContext( context );
             if ( memory.getAndIncCounter() == 0 ) {
                 memory.linkNode( wm );
             } else if (  memory.getStagedRightTuples().insertSize() == 0 ) {
                 memory.getSegmentMemory().notifyRuleLinkSegment( wm );
             }
-            memory.getStagedRightTuples().addInsert( rightTuple );  
+
+            if ( !memory.getDequeu().isEmpty() ) {
+                memory.getDequeu().add( rightTuple );
+            }  else {
+                memory.getStagedRightTuples().addInsert( rightTuple );
+            }
 
             if( context.getReaderContext() != null ) {
                 // we are deserializing a session, so we might need to evaluate
@@ -329,21 +366,32 @@ public abstract class BetaNode extends LeftTupleSource
                 MarshallerReaderContext mrc = (MarshallerReaderContext) context.getReaderContext();
                 mrc.filter.fireRNEAs( wm );
             }
+
             return;
         }
-        
+
         assertRightTuple(rightTuple, context, wm );
-    }    
-    
+
+    }
+
     public abstract void assertRightTuple( final RightTuple rightTuple,
                                            final PropagationContext context,
-                                           final InternalWorkingMemory workingMemory );    
-    
+                                           final InternalWorkingMemory workingMemory );
+
 
     public static void doDeleteRightTuple(final RightTuple rightTuple,
                                           final InternalWorkingMemory wm,
                                           final BetaMemory memory) {
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+
+
+
+        if ( ((BetaNode)rightTuple.getRightTupleSink()).isParentIsWindowNode() &&
+             rightTuple.getStagedType() != LeftTuple.NONE &&
+             ( rightTuple.getPropagationContext().getType() == PropagationContext.EXPIRATION || rightTuple.getPropagationContext().getType() == PropagationContext.DELETION ) ) {
+            memory.getDequeu().add( rightTuple );
+            return;
+        }
 
         switch ( rightTuple.getStagedType() ) {
             // handle clash with already staged entries
@@ -353,35 +401,36 @@ public abstract class BetaNode extends LeftTupleSource
             case LeftTuple.UPDATE:
                 stagedRightTuples.removeUpdate( rightTuple );
                 break;
-        }  
-         
+        }
+
         if ( memory.getAndDecCounter() == 1 ) {
-            memory.unlinkNode( wm );            
+            memory.unlinkNode( wm );
         } else if ( stagedRightTuples.deleteSize() == 0 ) {
             // nothing staged before, notify rule, so it can evaluate network
             memory.getSegmentMemory().notifyRuleLinkSegment( wm );
         }
-        
+
         stagedRightTuples.addDelete( rightTuple );
-    }   
-    
+    }
+
     public void doUpdateRightTuple(final RightTuple rightTuple,
                                     final InternalWorkingMemory wm,
                                     final BetaMemory memory) {
-       RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
-       
-       if ( stagedRightTuples.updateSize() == 0 || stagedRightTuples.insertSize() == 0 ) {
-           // also check inserts, as we'll leave it in insert stage list, if it has not yet been processed
-           // nothing staged before, notify rule, so it can evaluate network
-           memory.getSegmentMemory().notifyRuleLinkSegment( wm );
-       }
-       
-       if ( rightTuple.getStagedType() == LeftTuple.NONE ) {
+        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+
+        if ( stagedRightTuples.updateSize() == 0 || stagedRightTuples.insertSize() == 0 ) {
+            // also check inserts, as we'll leave it in insert stage list, if it has not yet been processed
+            // nothing staged before, notify rule, so it can evaluate network
+            memory.getSegmentMemory().notifyRuleLinkSegment( wm );
+        }
+
+        if ( !memory.getDequeu().isEmpty() ) {
+            memory.getDequeu().add( rightTuple );
+        } else if ( rightTuple.getStagedType() == LeftTuple.NONE ) {
            // only stage, if it's not already staged
            stagedRightTuples.addUpdate( rightTuple );
-       }       
-   }      
-    
+        }
+    }
 
     public boolean isRightInputIsRiaNode() {
         return rightInputIsRiaNode;
@@ -390,7 +439,7 @@ public abstract class BetaNode extends LeftTupleSource
     public ObjectSource getRightInput() {
         return this.rightInput;
     }
-    
+
     public FastIterator getRightIterator(RightTupleMemory memory) {
         if ( !this.indexedUnificationJoin ) {
             return memory.fastIterator();

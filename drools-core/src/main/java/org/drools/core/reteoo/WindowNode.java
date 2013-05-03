@@ -168,7 +168,7 @@ public class WindowNode extends ObjectSource
                 return;
             }
 
-            // propagate
+            // propagate                      v
             WindowTupleList list = new WindowTupleList((EventFactHandle) factHandle, this);
             context.setActiveWindowTupleList(list);
 

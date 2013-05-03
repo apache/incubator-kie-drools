@@ -316,7 +316,7 @@ public class AccumulateNode extends BetaNode {
      *  tuple match.
      */
     public void retractRightTuple( final RightTuple rightTuple,
-                                   final PropagationContext context,
+                                   final PropagationContext pctx,
                                    final InternalWorkingMemory workingMemory ) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
 
@@ -324,26 +324,28 @@ public class AccumulateNode extends BetaNode {
         BetaMemory bm = memory.getBetaMemory();
         
         if ( isUnlinkingEnabled() ) {
+            rightTuple.setPropagationContext( pctx );
             doDeleteRightTuple( rightTuple, workingMemory, bm );            
             return;
         } 
 
-        final InternalFactHandle origin = (InternalFactHandle) context.getFactHandleOrigin();
-        if ( context.getType() == PropagationContext.EXPIRATION ) {
-            ((PropagationContextImpl) context).setFactHandle( null );
+        final InternalFactHandle origin = (InternalFactHandle) pctx.getFactHandleOrigin();
+        if ( pctx.getType() == PropagationContext.EXPIRATION ) {
+            ((PropagationContextImpl) pctx).setFactHandle( null );
         }
         
         bm.getRightTupleMemory().remove( rightTuple );
         
         removePreviousMatchesForRightTuple( rightTuple,
-                                            context,
+                                            pctx,
                                             workingMemory,
                                             memory,
                                             rightTuple.firstChild );
 
-        if ( context.getType() == PropagationContext.EXPIRATION ) {
-            ((PropagationContextImpl) context).setFactHandle( origin );
+        if ( pctx.getType() == PropagationContext.EXPIRATION ) {
+            ((PropagationContextImpl) pctx).setFactHandle( origin );
         }
+        //rightTuple.unlinkFromRightParent();
 
     }
     

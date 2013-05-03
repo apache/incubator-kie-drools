@@ -27,6 +27,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
+import org.drools.core.reteoo.WindowTuple;
 import org.drools.core.reteoo.WindowTupleList;
 import org.drools.core.spi.PropagationContext;
 
@@ -106,19 +107,31 @@ public class SlidingLengthWindow
         if ( window.handles[window.pos] != null ) {
             final EventFactHandle previous = window.handles[window.pos];
             // retract previous
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+            final PropagationContext pctx = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.EXPIRATION,
                                                                                       null,
                                                                                       null,
                                                                                       previous );
             WindowTupleList list = (WindowTupleList) memory.events.get( previous );
             for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
-                tuple.getRightTupleSink().retractRightTuple( tuple,
-                                                             propagationContext,
-                                                             workingMemory );
-                propagationContext.evaluateActionQueue( workingMemory );
+                tuple.setPropagationContext(pctx);
+                tuple.getRightTupleSink().retractRightTuple(tuple,
+                                                            pctx,
+                                                            workingMemory);
+                pctx.evaluateActionQueue(workingMemory);
                 tuple.unlinkFromRightParent();
             }
+//            Commented out, for phreak development
+//            for( WindowTuple tuple = list.getFirstWindowTuple(); tuple != null;  ) {
+//                WindowTuple next = tuple.getWindowNext();
+//
+//                tuple.setPropagationContext(pctx);
+//                tuple.getRightTupleSink().retractRightTuple( tuple,
+//                                                             pctx,
+//                                                             workingMemory );
+//                pctx.evaluateActionQueue( workingMemory );
+//                tuple = next;
+//            }
         }
         window.handles[window.pos] = (EventFactHandle) handle;
         return true;
