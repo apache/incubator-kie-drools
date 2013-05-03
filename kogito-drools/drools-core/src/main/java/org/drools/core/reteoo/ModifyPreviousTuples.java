@@ -55,7 +55,7 @@ public class ModifyPreviousTuples {
         current.setHandleNext( null );       
     }        
     
-    public void retractTuples(PropagationContext context,
+    public void retractTuples(PropagationContext pctx,
                               InternalWorkingMemory wm) {
         // retract any remaining LeftTuples
         if ( this.leftTuple != null ) {
@@ -63,10 +63,10 @@ public class ModifyPreviousTuples {
                 if ( unlinkingEnabled ) {
                     LeftInputAdapterNode liaNode = (LeftInputAdapterNode) current.getLeftTupleSink().getLeftTupleSource();
                     LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
-                    LeftInputAdapterNode.doDeleteObject( current, context, lm.getSegmentMemory(), wm, liaNode, true, lm );
+                    LeftInputAdapterNode.doDeleteObject( current, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm );
                 } else {
                     current.getLeftTupleSink().retractLeftTuple( current,
-                                                                 context,
+                                                                 pctx,
                                                                  wm );                    
                 }
             }
@@ -78,10 +78,11 @@ public class ModifyPreviousTuples {
                 BetaNode node = ( BetaNode ) current.getRightTupleSink();
                 if ( unlinkingEnabled) {
                     BetaMemory bm = BetaNode.getBetaMemory( node, wm );
+                    current.setPropagationContext( pctx );
                     BetaNode.doDeleteRightTuple( current, wm, bm );                    
                 } else {
                     node.retractRightTuple( current,
-                                            context,
+                                            pctx,
                                             wm );
                 }
             }

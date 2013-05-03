@@ -179,17 +179,18 @@ public class SlidingTimeWindow
                 queue.queue.remove();
                 if( handle.isValid()) {
                     // if not expired yet, expire it
-                    final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                    final PropagationContext pctx = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                               PropagationContext.EXPIRATION,
                                                                                               null,
                                                                                               null,
                                                                                               handle );
                     WindowTupleList list = (WindowTupleList) memory.events.get( handle );
                     for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
+                        tuple.setPropagationContext( pctx );
                         tuple.getRightTupleSink().retractRightTuple( tuple,
-                                                                     propagationContext,
+                                                                     pctx,
                                                                      workingMemory );
-                        propagationContext.evaluateActionQueue( workingMemory );
+                        pctx.evaluateActionQueue( workingMemory );
                         tuple.unlinkFromRightParent();
                     }
                 }

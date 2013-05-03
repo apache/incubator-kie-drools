@@ -6113,7 +6113,6 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testFireUntilHaltFailingAcrossEntryPoints() throws Exception {
         String rule1 = "package org.drools.compiler\n";
         rule1 += "global java.util.List list\n";

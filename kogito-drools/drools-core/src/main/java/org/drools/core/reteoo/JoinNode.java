@@ -166,10 +166,11 @@ public class JoinNode extends BetaNode {
 //    }
     
     public void retractRightTuple( final RightTuple rightTuple,
-                                   final PropagationContext context,
+                                   final PropagationContext pctx,
                                    final InternalWorkingMemory wm ) {
         final BetaMemory memory = (BetaMemory) wm.getNodeMemory( this ); 
         if ( isUnlinkingEnabled() ) {
+            rightTuple.setPropagationContext( pctx );
             doDeleteRightTuple( rightTuple,
                                  wm,
                                  memory );
@@ -179,7 +180,7 @@ public class JoinNode extends BetaNode {
         memory.getRightTupleMemory().remove( rightTuple );
         
         this.sink.propagateRetractRightTuple( rightTuple,
-                                              context,
+                                              pctx,
                                               wm );                
     }
 

@@ -269,7 +269,7 @@ public class EntryPointNode extends ObjectSource
     }
     
     public void modifyObject(final InternalFactHandle handle,
-                             final PropagationContext context,
+                             final PropagationContext pctx,
                              final ObjectTypeConf objectTypeConf,
                              final InternalWorkingMemory wm) {
         if ( log.isTraceEnabled() ) {
@@ -293,7 +293,7 @@ public class EntryPointNode extends ObjectSource
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
             cachedNodes[i].modifyObject( handle,
                                          modifyPreviousTuples,
-                                         context, wm );
+                                         pctx, wm );
 
             // remove any right tuples that matches the current OTN before continue the modify on the next OTN cache entry
             if (i < cachedNodes.length - 1) {
@@ -303,11 +303,12 @@ public class EntryPointNode extends ObjectSource
                     modifyPreviousTuples.removeRightTuple();
                     
                     if ( unlinkingEnabled) {
+                        rightTuple.setPropagationContext( pctx );
                         BetaMemory bm = BetaNode.getBetaMemory( ( BetaNode ) rightTuple.getRightTupleSink(), wm );
                         BetaNode.doDeleteRightTuple( rightTuple, wm, bm );                    
                     } else {
                         (( BetaNode ) rightTuple.getRightTupleSink()).retractRightTuple( rightTuple,
-                                                                                         context,
+                                                                                         pctx,
                                                                                          wm );
                     }
                     
@@ -337,16 +338,16 @@ public class EntryPointNode extends ObjectSource
                     if ( unlinkingEnabled ) {
                         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
                         LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
-                        LeftInputAdapterNode.doDeleteObject( leftTuple, context, lm.getSegmentMemory(), wm, liaNode, true, lm );
+                        LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm );
                     } else {
                         leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
-                                                                     context,
+                                                                     pctx,
                                                                      wm );                    
                     }                   
                 }
             }
         }
-        modifyPreviousTuples.retractTuples( context, wm );
+        modifyPreviousTuples.retractTuples( pctx, wm );
     }
     
     public void modifyObject(InternalFactHandle factHandle,
