@@ -4242,10 +4242,9 @@ public class RuleNetworkEvaluator {
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
             if (rightTuple.getMemory() != null) {
+                rightTuple.setTempRightTupleMemory(rightTuple.getMemory());
 
                 if (resumeFromCurrent) {
-                    rightTuple.setTempRightTupleMemory(rightTuple.getMemory());
-
                     if (rightTuple.getBlocked() != null) {
                         // look for a non-staged right tuple first forward ...
                         RightTuple tempRightTuple = ( RightTuple ) rightTuple.getNext();
