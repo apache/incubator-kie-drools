@@ -25,11 +25,11 @@ when
     
     Yada(  )  and
     
-    Bar(  )    or
+    Bar(  )
     
     Zaa(  )  or
     
-    Foo(  )    and
+    Foo(  )
     eval( 1==1 ) 
 then
 
