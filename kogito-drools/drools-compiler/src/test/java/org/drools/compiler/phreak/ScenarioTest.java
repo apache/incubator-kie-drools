@@ -10,7 +10,7 @@ import java.beans.IntrospectionException;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.phreak.RuleNetworkEvaluator.PhreakJoinNode;
+import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSink;

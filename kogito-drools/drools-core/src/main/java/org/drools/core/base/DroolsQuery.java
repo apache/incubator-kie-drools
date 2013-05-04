@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.phreak.StackEntry;
 import org.drools.core.util.index.RightTupleList;
-import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.rule.Query;
@@ -46,7 +46,7 @@ public final class DroolsQuery extends ArrayElements {
 
     private List<PathMemory> rmems;
 
-    private RuleNetworkEvaluator.StackEntry stackEntry;
+    private StackEntry stackEntry;
 
     private LeftTupleSink sink;
 
@@ -65,14 +65,14 @@ public final class DroolsQuery extends ArrayElements {
                        final Object[] params,
                        final InternalViewChangedEventListener resultsCollector,
                        final boolean open) {
-        this( name, params, resultsCollector, open, null, null, null, null );
+        this(name, params, resultsCollector, open, null, null, null, null);
     }
 
     public DroolsQuery(final String name,
                        final Object[] params,
                        final InternalViewChangedEventListener resultsCollector,
                        final boolean open,
-                       final RuleNetworkEvaluator.StackEntry stackEntry,
+                       final StackEntry stackEntry,
                        final List<PathMemory> rmems,
                        final LeftTupleSets resultLeftTuples,
                        final LeftTupleSink sink) {
@@ -112,7 +112,7 @@ public final class DroolsQuery extends ArrayElements {
         return resultLeftTuples;
     }
 
-    public RuleNetworkEvaluator.StackEntry getStackEntry() {
+    public StackEntry getStackEntry() {
         return this.stackEntry;
     }
 

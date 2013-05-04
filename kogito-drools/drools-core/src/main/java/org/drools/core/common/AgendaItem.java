@@ -251,7 +251,7 @@ public class AgendaItem
                             // Make sure the rule evaluator is on the agenda, to be evaluated
                             agenda.addActivation( ruleNetworkEvaluatorActivation );
                         }
-                        ruleNetworkEvaluatorActivation.getLeftTupleList().add( justified.getTuple() );
+                        ruleNetworkEvaluatorActivation.getRuleExecutor().getLeftTupleList().add( justified.getTuple() );
                     }
                 }                
                 dep = tmp;

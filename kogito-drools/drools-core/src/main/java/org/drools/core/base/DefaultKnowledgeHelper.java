@@ -34,6 +34,7 @@ import org.drools.core.common.*;
 import org.drools.core.factmodel.MapCore;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitType;
+import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.HierarchyEncoder;
@@ -156,13 +157,13 @@ public class DefaultKnowledgeHelper
             dep = new SimpleLogicalDependency( activation, targetMatch );
         }
         this.activation.addBlocked(  dep );
-        
+
         if ( targetMatch.getBlockers().size() == 1 && targetMatch.isActive()  ) {
             if ( targetMatch.getRuleNetworkEvaluatorActivation() == null ) {
                 // it wasn't blocked before, but is now, so we must remove it from all groups, so it cannot be executed.
                 targetMatch.remove();
             } else {
-                targetMatch.getRuleNetworkEvaluatorActivation().getLeftTupleList().remove(targetMatch.getTuple());
+                targetMatch.getRuleNetworkEvaluatorActivation().getRuleExecutor().getLeftTupleList().remove(targetMatch.getTuple());
             }
 
             if ( targetMatch.getActivationGroupNode() != null ) {
@@ -197,7 +198,7 @@ public class DefaultKnowledgeHelper
                     // Make sure the rule evaluator is on the agenda, to be evaluated
                     ((InternalAgenda) workingMemory.getAgenda()).addActivation( ruleNetworkEvaluatorActivation );
                 }
-                targetMatch.getRuleNetworkEvaluatorActivation().getLeftTupleList().add( targetMatch.getTuple() );
+                targetMatch.getRuleNetworkEvaluatorActivation().getRuleExecutor().getLeftTupleList().add( targetMatch.getTuple() );
             }
         }
     }
@@ -302,7 +303,7 @@ public class DefaultKnowledgeHelper
                             // Make sure the rule evaluator is on the agenda, to be evaluated
                             ((InternalAgenda) workingMemory.getAgenda()).addActivation( ruleNetworkEvaluatorActivation );
                         }
-                        ruleNetworkEvaluatorActivation.getLeftTupleList().add( justified.getTuple() );
+                        ruleNetworkEvaluatorActivation.getRuleExecutor().getLeftTupleList().add( justified.getTuple() );
                     }
                 }
                 dep = tmp;

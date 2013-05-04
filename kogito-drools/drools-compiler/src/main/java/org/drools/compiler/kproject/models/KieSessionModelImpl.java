@@ -41,14 +41,14 @@ public class KieSessionModelImpl
     public KieBaseModelImpl getKieBaseModel() {
         return kBase;
     }
+    public boolean isDefault() {
+        return isDefault;
+    }
     
     public void setKBase(KieBaseModel kieBaseModel) {
         this.kBase = (KieBaseModelImpl) kieBaseModel;
     }
 
-    public boolean isDefault() {
-        return isDefault;
-    }
 
     public KieSessionModel setDefault(boolean isDefault) {
         this.isDefault = isDefault;

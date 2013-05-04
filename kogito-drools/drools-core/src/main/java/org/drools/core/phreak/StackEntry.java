@@ -1,0 +1,95 @@
+package org.drools.core.phreak;
+
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.Memory;
+import org.drools.core.common.NetworkNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.LeftTupleSinkNode;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.util.AbstractBaseLinkedListNode;
+
+import java.util.Set;
+
+/**
+* Created with IntelliJ IDEA.
+* User: mdproctor
+* Date: 03/05/2013
+* Time: 15:47
+* To change this template use File | Settings | File Templates.
+*/
+public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
+    private LeftInputAdapterNode liaNode;
+    private NetworkNode          node;
+    private LeftTupleSinkNode    sink;
+    private PathMemory           rmem;
+    private Memory               nodeMem;
+    private SegmentMemory[]      smems;
+    private int                  smemIndex;
+    private LeftTupleSets        trgTuples;
+    private Set<String>          visitedRules;
+    private boolean              resumeFromNextNode;
+
+
+    public StackEntry(LeftInputAdapterNode liaNode,
+                      NetworkNode node,
+                      LeftTupleSinkNode sink,
+                      PathMemory rmem,
+                      Memory nodeMem,
+                      SegmentMemory[] smems,
+                      int smemIndex,
+                      LeftTupleSets trgTuples,
+                      Set<String> visitedRules,
+                      boolean resumeFromNextNode) {
+        this.liaNode = liaNode;
+        this.node = node;
+        this.sink = sink;
+        this.rmem = rmem;
+        this.nodeMem = nodeMem;
+        this.smems = smems;
+        this.smemIndex = smemIndex;
+        this.trgTuples = trgTuples;
+        this.visitedRules = visitedRules;
+        this.resumeFromNextNode = resumeFromNextNode;
+    }
+
+    public LeftInputAdapterNode getLiaNode() {
+        return this.liaNode;
+    }
+
+    public NetworkNode getNode() {
+        return node;
+    }
+
+    public PathMemory getRmem() {
+        return rmem;
+    }
+
+    public Memory getNodeMem() {
+        return nodeMem;
+    }
+
+    public SegmentMemory[] getSmems() {
+        return smems;
+    }
+
+    public int getSmemIndex() {
+        return smemIndex;
+    }
+
+    public LeftTupleSets getTrgTuples() {
+        return trgTuples;
+    }
+
+    public LeftTupleSinkNode getSink() {
+        return sink;
+    }
+
+    public Set<String> getVisitedRules() {
+        return visitedRules;
+    }
+
+    public boolean isResumeFromNextNode() {
+        return resumeFromNextNode;
+    }
+}

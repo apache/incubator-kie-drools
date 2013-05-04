@@ -1342,7 +1342,7 @@ public class DefaultAgenda
                         if ( filter == null || filter.accept( item ) ) {
                             if ( this.unlinkingEnabled && item.isRuleNetworkEvaluatorActivation() ) {
                                 item.setActivated( false );
-                                localFireCount = ((RuleNetworkEvaluatorActivation) item).evaluateNetwork( this.workingMemory, fireCount, fireLimit );
+                                localFireCount = ((RuleNetworkEvaluatorActivation) item).getRuleExecutor().evaluateNetwork( this.workingMemory, fireCount, fireLimit );
                                 if ( localFireCount == 0 ) {
                                     // nothing matched
                                     tryagain = true; // will force the next Activation of the agenda, without going to outer loop which checks halt
