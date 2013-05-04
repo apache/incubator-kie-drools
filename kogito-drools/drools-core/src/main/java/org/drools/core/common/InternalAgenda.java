@@ -17,11 +17,10 @@
 package org.drools.core.common;
 
 import org.drools.core.Agenda;
-import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
+import org.drools.core.phreak.RuleInstanceAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ActivationGroup;
 import org.drools.core.spi.AgendaFilter;
@@ -50,7 +49,7 @@ public interface InternalAgenda
                                        final int salience,
                                        final PropagationContext context,
                                        final TerminalNode rtn,
-                                       RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation);
+                                       RuleInstanceAgendaItem ruleInstanceAgendaItem);
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
@@ -96,9 +95,9 @@ public interface InternalAgenda
      * 
      * @return 
      */
-    public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName,
-                                               String ruleName,
-                                               long processInstanceId);
+    public boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
+                                            String ruleName,
+                                            long processInstanceId);
 
     /**
      * Adds a RuleFlowGroupListerner to the named RuleFlowGroup
@@ -182,11 +181,11 @@ public interface InternalAgenda
      */
     public ActivationsFilter getActivationsFilter();
         
-    public RuleNetworkEvaluatorActivation createRuleNetworkEvaluatorActivation(final int salience,
-                                                                               final PathMemory rs,
-                                                                               final TerminalNode rtn);
+    public RuleInstanceAgendaItem createRuleInstanceAgendaItem(final int salience,
+                                                               final PathMemory rs,
+                                                               final TerminalNode rtn);
 
-    public RuleNetworkEvaluatorActivation peekNextRule();
+    public RuleInstanceAgendaItem peekNextRule();
 
     boolean continueFiring(int fireLimit);
 

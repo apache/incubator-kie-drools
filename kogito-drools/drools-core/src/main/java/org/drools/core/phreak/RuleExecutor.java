@@ -9,7 +9,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.index.LeftTupleList;
@@ -26,7 +25,7 @@ public class RuleExecutor {
 
     private static RuleNetworkEvaluator networkEvaluator = new RuleNetworkEvaluator();
 
-    private RuleNetworkEvaluatorActivation ruleAgendaItem;
+    private RuleInstanceAgendaItem ruleAgendaItem;
 
     private LeftTupleList tupleList;
 
@@ -35,8 +34,8 @@ public class RuleExecutor {
     private boolean declarativeAgendaEnabled;
 
     public RuleExecutor(final PathMemory rmem,
-                        RuleNetworkEvaluatorActivation ruleAgendaItem,
-                        boolean declarativeAgendaEnabled)  {
+                        RuleInstanceAgendaItem ruleAgendaItem,
+                        boolean declarativeAgendaEnabled) {
         this.rmem = rmem;
         this.ruleAgendaItem = ruleAgendaItem;
         this.tupleList = new LeftTupleList();
@@ -61,7 +60,7 @@ public class RuleExecutor {
 
             if (isDeclarativeAgendaEnabled()) {
                 // Network Evaluation can notify meta rules, which should be given a chance to fire first
-                RuleNetworkEvaluatorActivation nextRule = agenda.peekNextRule();
+                RuleInstanceAgendaItem nextRule = agenda.peekNextRule();
                 if ( !isHighestSalience( nextRule, salience ) ) {
                     // add it back onto the agenda, as the list still needs to be check after the meta rules have evalutated the matches
                     ((InternalAgenda) wm.getAgenda()).addActivation( ruleAgendaItem );
@@ -110,7 +109,7 @@ public class RuleExecutor {
                 agenda.fireActivation( item );
                 localFireCount++;
 
-                RuleNetworkEvaluatorActivation nextRule = agenda.peekNextRule();
+                RuleInstanceAgendaItem nextRule = agenda.peekNextRule();
                 if ( haltRuleFiring( nextRule, fireCount, fireLimit, localFireCount, agenda, salience ) ) {
                     break; // another rule has high priority and is on the agenda, so evaluate it first
                 }
@@ -126,7 +125,7 @@ public class RuleExecutor {
         return localFireCount;
     }
 
-    public RuleNetworkEvaluatorActivation getRuleAgendaItem() {
+    public RuleInstanceAgendaItem getRuleAgendaItem() {
         return ruleAgendaItem;
     }
 
@@ -186,7 +185,7 @@ public class RuleExecutor {
         return false;
     }
 
-    private boolean haltRuleFiring(RuleNetworkEvaluatorActivation nextRule,
+    private boolean haltRuleFiring(RuleInstanceAgendaItem nextRule,
                                    int fireCount,
                                    int fireLimit,
                                    int localFireCount,
@@ -198,7 +197,7 @@ public class RuleExecutor {
         return false;
     }
 
-    public boolean isHighestSalience(RuleNetworkEvaluatorActivation nextRule,
+    public boolean isHighestSalience(RuleInstanceAgendaItem nextRule,
                                      int currentSalience) {
         return (nextRule == null) || nextRule.getRule().getSalience().getValue( null, null, null ) <= currentSalience;
     }

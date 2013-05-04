@@ -4,8 +4,8 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.phreak.RuleInstanceAgendaItem;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     private NetworkNode networkNode;
 
-    private RuleNetworkEvaluatorActivation agendaItem;
+    private RuleInstanceAgendaItem agendaItem;
 
     private SegmentMemory[] segmentMemories;
 
@@ -34,11 +34,11 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         return networkNode;
     }
 
-    public RuleNetworkEvaluatorActivation getAgendaItem() {
+    public RuleInstanceAgendaItem getAgendaItem() {
         return agendaItem;
     }
 
-    public void setAgendaItem(RuleNetworkEvaluatorActivation agendaItem) {
+    public void setAgendaItem(RuleInstanceAgendaItem agendaItem) {
         this.agendaItem = agendaItem;
     }
 
@@ -87,7 +87,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
             int salience = rtn.getRule().getSalience().getValue( null,
                                                                  rtn.getRule(),
                                                                  wm );
-            agendaItem = ((InternalAgenda) wm.getAgenda()).createRuleNetworkEvaluatorActivation( salience, this, rtn );
+            agendaItem = ((InternalAgenda) wm.getAgenda()).createRuleInstanceAgendaItem(salience, this, rtn);
         } else if ( !agendaItem.isActive() ) {
             ((InternalAgenda) wm.getAgenda()).addActivation( agendaItem );
         }
@@ -103,7 +103,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
             int salience = rtn.getRule().getSalience().getValue( null,
                                                                  rtn.getRule(),
                                                                  wm );
-            agendaItem = ((InternalAgenda) wm.getAgenda()).createRuleNetworkEvaluatorActivation( salience, this, rtn );
+            agendaItem = ((InternalAgenda) wm.getAgenda()).createRuleInstanceAgendaItem(salience, this, rtn);
         } else if ( !agendaItem.isActive() ) {
             ((InternalAgenda) wm.getAgenda()).addActivation( agendaItem );
         }
