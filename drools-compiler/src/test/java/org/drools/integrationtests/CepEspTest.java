@@ -54,6 +54,8 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.DebugAgendaEventListener;
+import org.drools.event.rule.DebugWorkingMemoryEventListener;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
@@ -2962,4 +2964,118 @@ public class CepEspTest extends CommonTestMethodBase {
 
 
 
+
+    public static class ProbeEvent {
+        private int value = 1;
+        public int getValue() { return value; }
+        public ProbeEvent(int value) { this.value = value; }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ProbeEvent that = (ProbeEvent) o;
+
+            if (value != that.value) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return "ProbeEvent{" +
+                    "value=" + value +
+                    '}';
+        }
+    }
+    public static class ProbeCounter {
+        private long total = 0;
+        public void setTotal(long total) { this.total = total; }
+        public long getTotal() { return total; }
+        public void addValue () { total += 1; }
+    }
+
+    @Test
+    public void testExpirationAtHighRates() throws InterruptedException {
+        String drl = "package drools5fusioneval\n" +
+                "" +
+                "import org.drools.integrationtests.CepEspTest.ProbeEvent;\n" +
+                "import org.drools.integrationtests.CepEspTest.ProbeCounter;\n" +
+                "\n" +
+                "declare ProbeEvent\n" +
+                "    @role (event)\n" +
+                "    @expires(1ms)\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Probe rule\"\n" +
+                "when\n" +
+                "    $pe : ProbeEvent () from entry-point ep01\n" +
+                "    $pc : ProbeCounter ()\n" +
+                "then\n" +
+                "   System.out.println( Thread.currentThread().getName() + \" Fire  >>  \" + $pe ); \n" +
+                "    $pc.addValue ();\n" +
+                "end";
+
+        KnowledgeBaseConfiguration kbconfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconfig.setOption (EventProcessingOption.STREAM);
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbconfig);
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder ();
+        kbuilder.add (ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        if (kbuilder.hasErrors()) {
+            System.err.println (kbuilder.getErrors().toString());
+        }
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        WorkingMemoryEntryPoint ep01 = session.getWorkingMemoryEntryPoint("ep01");
+
+//        session.addEventListener( new DebugWorkingMemoryEventListener( ));
+//        session.addEventListener( new DebugAgendaEventListener( ));
+
+        new Thread () {
+            public void run () {
+                session.fireUntilHalt();
+            }
+        }.start ();
+
+        int eventLimit = 20000;
+
+        ProbeCounter pc = new ProbeCounter ();
+        long myTotal = 0;
+
+        try {
+            FactHandle pch = session.insert(pc);
+            long startTS = System.nanoTime();
+            for (int i = 0; i < eventLimit; i++) {
+                ep01.insert (new ProbeEvent (i));
+                myTotal += 1;
+            }
+            long stopTS = System.nanoTime();
+            long theirVal = pc.getTotal();
+            long durationNS = (stopTS - startTS);
+            long durationmS = durationNS / 1000;
+            long durationMS = durationmS/1000;
+            long durationS = durationMS / 1000;
+//            System.out.println ("ns / microsec / ms / sec");
+//            System.out.println (durationNS +" / "+ durationmS +" / "+ durationMS +" / "+ durationS);
+//            System.out.println (durationmS + " microsec, local sum: "+ myTotal +", rule sum: "+ theirVal +" @ "+ (theirVal/durationS) +" rules per sec");
+            Thread.sleep( 5000 );
+        } catch ( Throwable t ) {
+            t.printStackTrace();
+            System.out.println ("After x: "+ pc.getTotal() + " vs " + myTotal );
+        } finally {
+            System.out.println ("After 10s: "+ pc.getTotal() + " vs " + myTotal );
+        }
+
+
+    }
 }
+
