@@ -36,6 +36,7 @@ import org.drools.core.base.StandardQueryViewChangedEventListener;
 import org.drools.core.common.*;
 import org.drools.core.common.TupleStartEqualsConstraint.TupleStartEqualsConstraintContextEntry;
 import org.drools.core.event.RuleEventListenerSupport;
+import org.drools.core.phreak.RuleInstanceAgendaItem;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.core.event.AgendaEventSupport;
@@ -48,7 +49,6 @@ import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert;
-import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -287,7 +287,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
             for ( int i = 0, length = rmems.size(); i < length; i++ ) {
                 PathMemory rm = rmems.get( i );
 
-                RuleNetworkEvaluatorActivation evaluator = agenda.createRuleNetworkEvaluatorActivation( Integer.MAX_VALUE, rm,(TerminalNode) rm.getNetworkNode() );
+                RuleInstanceAgendaItem evaluator = agenda.createRuleInstanceAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
                 evaluator.getRuleExecutor().evaluateNetwork(this, 0, -1);
             }
         } else {
@@ -327,7 +327,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                 for ( int i = 0, length = rmems.size(); i < length; i++ ) {
                     PathMemory rm = rmems.get( i );
 
-                    RuleNetworkEvaluatorActivation evaluator = agenda.createRuleNetworkEvaluatorActivation( Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode() );
+                    RuleInstanceAgendaItem evaluator = agenda.createRuleInstanceAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
                     evaluator.getRuleExecutor().evaluateNetwork(this, 0, -1);
                 }
             } else {

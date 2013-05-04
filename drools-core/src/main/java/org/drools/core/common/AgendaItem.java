@@ -17,7 +17,7 @@
 package org.drools.core.common;
 
 import org.drools.core.FactHandle;
-import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
+import org.drools.core.phreak.RuleInstanceAgendaItem;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.Queueable;
@@ -97,7 +97,7 @@ public class AgendaItem
 
     private ActivationUnMatchListener activationUnMatchListener;
 
-    private RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation;
+    private RuleInstanceAgendaItem ruleInstanceAgendaItem;
 
     // ------------------------------------------------------------
     // Constructors
@@ -112,14 +112,14 @@ public class AgendaItem
      *
      * @param tuple
      *            The tuple.
-     * @param ruleNetworkEvaluatorActivation
+     * @param ruleInstanceAgendaItem
      */
     public AgendaItem(final long activationNumber,
                       final LeftTuple tuple,
                       final int salience,
                       final PropagationContext context,
                       final TerminalNode rtn,
-                      RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation) {
+                      RuleInstanceAgendaItem ruleInstanceAgendaItem) {
         this.tuple = tuple;
         this.context = context;
         this.salience = salience;
@@ -127,7 +127,7 @@ public class AgendaItem
         this.activationNumber = activationNumber;
         this.index = -1;
         this.matched = true;
-        this.ruleNetworkEvaluatorActivation  = ruleNetworkEvaluatorActivation;
+        this.ruleInstanceAgendaItem = ruleInstanceAgendaItem;
     }
 
     // ------------------------------------------------------------
@@ -195,8 +195,8 @@ public class AgendaItem
         this.factHandle = factHandle;
     }
 
-    public RuleNetworkEvaluatorActivation getRuleNetworkEvaluatorActivation() {
-        return ruleNetworkEvaluatorActivation;
+    public RuleInstanceAgendaItem getRuleInstanceAgendaItem() {
+        return ruleInstanceAgendaItem;
     }
 
     /*
@@ -243,15 +243,15 @@ public class AgendaItem
                 removeBlocked( dep );
                 AgendaItem justified = ( AgendaItem ) dep.getJustified();
                 if (justified.getBlockers().isEmpty() ) {
-                    if ( ruleNetworkEvaluatorActivation == null ) {
+                    if ( ruleInstanceAgendaItem == null ) {
                         // the match is no longer blocked, so stage it
                         agenda.getStageActivationsGroup().addActivation( justified );
                     } else {
-                        if ( !ruleNetworkEvaluatorActivation.isActivated() ) {
+                        if ( !ruleInstanceAgendaItem.isActivated() ) {
                             // Make sure the rule evaluator is on the agenda, to be evaluated
-                            agenda.addActivation( ruleNetworkEvaluatorActivation );
+                            agenda.addActivation(ruleInstanceAgendaItem);
                         }
-                        ruleNetworkEvaluatorActivation.getRuleExecutor().getLeftTupleList().add( justified.getTuple() );
+                        ruleInstanceAgendaItem.getRuleExecutor().getLeftTupleList().add( justified.getTuple() );
                     }
                 }                
                 dep = tmp;

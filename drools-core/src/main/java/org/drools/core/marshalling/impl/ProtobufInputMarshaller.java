@@ -51,7 +51,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.No
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.marshalling.impl.ProtobufMessages.RuleData;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
-import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
+import org.drools.core.phreak.RuleInstanceAgendaItem;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -722,13 +722,13 @@ public class ProtobufInputMarshaller {
         private Map<ActivationKey, ProtobufMessages.Activation> dormantActivations;
         private Map<ActivationKey, ProtobufMessages.Activation> rneActivations;
         private Map<ActivationKey, LeftTuple>                   tuplesCache;
-        private Queue<RuleNetworkEvaluatorActivation>           rneaToFire;
+        private Queue<RuleInstanceAgendaItem>                   rneaToFire;
 
         public PBActivationsFilter() {
             this.dormantActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ProtobufMessages.Activation>();
             this.rneActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ProtobufMessages.Activation>();
             this.tuplesCache = new HashMap<ProtobufInputMarshaller.ActivationKey, LeftTuple>();
-            this.rneaToFire = new ConcurrentLinkedQueue<RuleNetworkEvaluatorActivation>();
+            this.rneaToFire = new ConcurrentLinkedQueue<RuleInstanceAgendaItem>();
         }
 
         public Map<ActivationKey, ProtobufMessages.Activation> getDormantActivationsMap() {
@@ -739,18 +739,18 @@ public class ProtobufInputMarshaller {
                               PropagationContext context,
                               InternalWorkingMemory workingMemory,
                               TerminalNode rtn) {
-            if ( activation.isRuleNetworkEvaluatorActivation() ) {
-                ActivationKey key = PersisterHelper.createActivationKey( activation.getRule().getPackageName(), activation.getRule().getName(), activation.getTuple() );
-                if ( !this.rneActivations.containsKey( key ) ) {
-                    rneaToFire.add( (RuleNetworkEvaluatorActivation) activation );
+            if (activation.isRuleNetworkEvaluatorActivation()) {
+                ActivationKey key = PersisterHelper.createActivationKey(activation.getRule().getPackageName(), activation.getRule().getName(), activation.getTuple());
+                if (!this.rneActivations.containsKey(key)) {
+                    rneaToFire.add((RuleInstanceAgendaItem) activation);
                 }
                 return true;
             } else {
-                ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );
+                ActivationKey key = PersisterHelper.createActivationKey(rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple());
                 // add the tuple to the cache for correlation
-                this.tuplesCache.put( key, activation.getTuple() );
+                this.tuplesCache.put(key, activation.getTuple());
                 // check if there was an active activation for it
-                return !this.dormantActivations.containsKey( key );
+                return !this.dormantActivations.containsKey(key);
             }
         }
 
@@ -763,11 +763,11 @@ public class ProtobufInputMarshaller {
         }
 
         public void fireRNEAs(final InternalWorkingMemory wm) {
-            RuleNetworkEvaluatorActivation rnea = null;
-            while ( (rnea = rneaToFire.poll()) != null ) {
+            RuleInstanceAgendaItem rnea = null;
+            while ((rnea = rneaToFire.poll()) != null) {
                 rnea.remove();
-                rnea.setActivated( false );
-                rnea.getRuleExecutor().evaluateNetwork( wm, 0, -1 );
+                rnea.setActivated(false);
+                rnea.getRuleExecutor().evaluateNetwork(wm, 0, -1);
             }
         }
     }
@@ -792,23 +792,23 @@ public class ProtobufInputMarshaller {
             int result = 1;
             result = prime * result + ((pkgName == null) ? 0 : pkgName.hashCode());
             result = prime * result + ((ruleName == null) ? 0 : ruleName.hashCode());
-            result = prime * result + Arrays.hashCode( tuple );
+            result = prime * result + Arrays.hashCode(tuple);
             return result;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (getClass() != obj.getClass()) return false;
             ActivationKey other = (ActivationKey) obj;
-            if ( pkgName == null ) {
-                if ( other.pkgName != null ) return false;
-            } else if ( !pkgName.equals( other.pkgName ) ) return false;
-            if ( ruleName == null ) {
-                if ( other.ruleName != null ) return false;
-            } else if ( !ruleName.equals( other.ruleName ) ) return false;
-            if ( !Arrays.equals( tuple, other.tuple ) ) return false;
+            if (pkgName == null) {
+                if (other.pkgName != null) return false;
+            } else if (!pkgName.equals(other.pkgName)) return false;
+            if (ruleName == null) {
+                if (other.ruleName != null) return false;
+            } else if (!ruleName.equals(other.ruleName)) return false;
+            if (!Arrays.equals(tuple, other.tuple)) return false;
             return true;
         }
     }
@@ -825,17 +825,17 @@ public class ProtobufInputMarshaller {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + Arrays.hashCode( tuple );
+            result = prime * result + Arrays.hashCode(tuple);
             return result;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( obj == null ) return false;
-            if ( getClass() != obj.getClass() ) return false;
+            if (this == obj) return true;
+            if (obj == null) return false;
+            if (getClass() != obj.getClass()) return false;
             TupleKey other = (TupleKey) obj;
-            if ( !Arrays.equals( tuple, other.tuple ) ) return false;
+            if (!Arrays.equals(tuple, other.tuple)) return false;
             return true;
         }
     }

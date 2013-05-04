@@ -20,8 +20,8 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.RuleFlowGroupImpl.DeactivateCallback;
+import org.drools.core.phreak.RuleInstanceAgendaItem;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.phreak.RuleNetworkEvaluatorActivation;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.PathMemory;
@@ -186,11 +186,11 @@ public class DefaultAgenda
         this.unlinkingEnabled = rb.getConfiguration().isPhreakEnabled();
     }
 
-    public RuleNetworkEvaluatorActivation createRuleNetworkEvaluatorActivation(final int salience,
-                                                                               final PathMemory rs,
-                                                                               final TerminalNode rtn) {
+    public RuleInstanceAgendaItem createRuleInstanceAgendaItem(final int salience,
+                                                               final PathMemory rs,
+                                                               final TerminalNode rtn) {
         InternalAgendaGroup agendaGroup = (InternalAgendaGroup) getAgendaGroup( rtn.getRule().getAgendaGroup() );
-        RuleNetworkEvaluatorActivation lazyAgendaItem = new RuleNetworkEvaluatorActivation( activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda() );
+        RuleInstanceAgendaItem lazyAgendaItem = new RuleInstanceAgendaItem( activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda() );
         lazyAgendaItem.setActivated( true );
         lazyAgendaItem.setAgendaGroup( agendaGroup );
         if ( activationsFilter == null || activationsFilter.accept( lazyAgendaItem,
@@ -206,13 +206,13 @@ public class DefaultAgenda
                                        final int salience,
                                        final PropagationContext context,
                                        final TerminalNode rtn,
-                                       RuleNetworkEvaluatorActivation ruleNetworkEvaluatorActivation) {
+                                       RuleInstanceAgendaItem ruleInstanceAgendaItem) {
         return new AgendaItem( activationCounter++,
                                tuple,
                                salience,
                                context,
                                rtn,
-                               ruleNetworkEvaluatorActivation );
+                               ruleInstanceAgendaItem);
     }
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
@@ -837,8 +837,8 @@ public class DefaultAgenda
         return agendaGroup;
     }
 
-    public RuleNetworkEvaluatorActivation peekNextRule() {
-        return (RuleNetworkEvaluatorActivation) ((InternalAgendaGroup) this.focusStack.peek()).peekNext();
+    public RuleInstanceAgendaItem peekNextRule() {
+        return (RuleInstanceAgendaItem) ((InternalAgendaGroup) this.focusStack.peek()).peekNext();
     }
 
     /*
@@ -1050,16 +1050,16 @@ public class DefaultAgenda
         // reset staged activations
         getStageActivationsGroup().clear();
 
-        List<RuleNetworkEvaluatorActivation> lazyItems = null;
+        List<RuleInstanceAgendaItem> lazyItems = null;
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
             if ( this.unlinkingEnabled ) {
                 // preserve lazy items.
                 ((InternalAgendaGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
-                lazyItems = new ArrayList<RuleNetworkEvaluatorActivation>();
+                lazyItems = new ArrayList<RuleInstanceAgendaItem>();
                 for ( Match a : group.getActivations() ) {
                     if ( ((Activation) a).isRuleNetworkEvaluatorActivation() ) {
-                        lazyItems.add( (RuleNetworkEvaluatorActivation) a );
+                        lazyItems.add( (RuleInstanceAgendaItem) a );
                     }
                 }
             }
@@ -1068,7 +1068,7 @@ public class DefaultAgenda
 
             if ( this.unlinkingEnabled ) {
                 // restore lazy items
-                for ( RuleNetworkEvaluatorActivation lazyItem : lazyItems ) {
+                for ( RuleInstanceAgendaItem lazyItem : lazyItems ) {
                     group.add( lazyItem );
                 }
             }
@@ -1079,10 +1079,10 @@ public class DefaultAgenda
             if ( this.unlinkingEnabled ) {
                 // preserve lazy items
                 ((InternalRuleFlowGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
-                lazyItems = new ArrayList<RuleNetworkEvaluatorActivation>();
+                lazyItems = new ArrayList<RuleInstanceAgendaItem>();
                 for ( Match a : ((InternalRuleFlowGroup) group).getActivations() ) {
                     if ( ((Activation) a).isRuleNetworkEvaluatorActivation() ) {
-                        lazyItems.add( (RuleNetworkEvaluatorActivation) a );
+                        lazyItems.add( (RuleInstanceAgendaItem) a );
                     }
                 }
             }
@@ -1091,7 +1091,7 @@ public class DefaultAgenda
 
             if ( this.unlinkingEnabled ) {
                 // add lazy items back in
-                for ( RuleNetworkEvaluatorActivation lazyItem : lazyItems ) {
+                for ( RuleInstanceAgendaItem lazyItem : lazyItems ) {
                     lazyItem.setActivationNode( null );
                     ((InternalRuleFlowGroup) group).addActivation( lazyItem );
                 }
@@ -1163,9 +1163,9 @@ public class DefaultAgenda
 
         // this is thread safe for BinaryHeapQueue
         // Binary Heap locks while it returns the array and reset's it's own internal array. Lock is released afer getAndClear()
-        List<RuleNetworkEvaluatorActivation> lazyItems = null;
+        List<RuleInstanceAgendaItem> lazyItems = null;
         if ( this.unlinkingEnabled ) {
-            lazyItems = new ArrayList<RuleNetworkEvaluatorActivation>();
+            lazyItems = new ArrayList<RuleInstanceAgendaItem>();
         }
         for ( Activation aQueueable : ((InternalAgendaGroup) agendaGroup).getAndClear() ) {
             final AgendaItem item = (AgendaItem) aQueueable;
@@ -1174,7 +1174,7 @@ public class DefaultAgenda
             }
 
             if ( this.unlinkingEnabled && item.isRuleNetworkEvaluatorActivation() ) {
-                lazyItems.add( (RuleNetworkEvaluatorActivation) item );
+                lazyItems.add( (RuleInstanceAgendaItem) item );
                 continue;
             }
 
@@ -1198,7 +1198,7 @@ public class DefaultAgenda
         }
         if ( this.unlinkingEnabled ) {
             // restore lazy items
-            for ( RuleNetworkEvaluatorActivation lazyItem : lazyItems ) {
+            for ( RuleInstanceAgendaItem lazyItem : lazyItems ) {
                 ((InternalAgendaGroup) agendaGroup).add( lazyItem );
             }
         }
@@ -1259,9 +1259,9 @@ public class DefaultAgenda
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
         ((InternalRuleFlowGroup) ruleFlowGroup).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
-        List<RuleNetworkEvaluatorActivation> lazyItems = null;
+        List<RuleInstanceAgendaItem> lazyItems = null;
         if ( this.unlinkingEnabled ) {
-            lazyItems = new ArrayList<RuleNetworkEvaluatorActivation>();
+            lazyItems = new ArrayList<RuleInstanceAgendaItem>();
         }
         for ( Iterator it = ruleFlowGroup.iterator(); it.hasNext(); ) {
             ActivationNode node = (ActivationNode) it.next();
@@ -1269,7 +1269,7 @@ public class DefaultAgenda
 
             if ( item != null ) {
                 if ( this.unlinkingEnabled && item.isRuleNetworkEvaluatorActivation() ) {
-                    lazyItems.add( (RuleNetworkEvaluatorActivation) item );
+                    lazyItems.add( (RuleInstanceAgendaItem) item );
                     continue;
                 }
 
@@ -1296,7 +1296,7 @@ public class DefaultAgenda
 
         if ( this.unlinkingEnabled ) {
             // restore lazy items
-            for ( RuleNetworkEvaluatorActivation lazyItem : lazyItems ) {
+            for ( RuleInstanceAgendaItem lazyItem : lazyItems ) {
                 lazyItem.setActivationNode( null );
                 ((InternalRuleFlowGroup) ruleFlowGroup).addActivation( lazyItem );
             }
@@ -1342,7 +1342,7 @@ public class DefaultAgenda
                         if ( filter == null || filter.accept( item ) ) {
                             if ( this.unlinkingEnabled && item.isRuleNetworkEvaluatorActivation() ) {
                                 item.setActivated( false );
-                                localFireCount = ((RuleNetworkEvaluatorActivation) item).getRuleExecutor().evaluateNetwork( this.workingMemory, fireCount, fireLimit );
+                                localFireCount = ((RuleInstanceAgendaItem) item).getRuleExecutor().evaluateNetwork( this.workingMemory, fireCount, fireLimit );
                                 if ( localFireCount == 0 ) {
                                     // nothing matched
                                     tryagain = true; // will force the next Activation of the agenda, without going to outer loop which checks halt
@@ -1488,9 +1488,9 @@ public class DefaultAgenda
     /**
      * @inheritDoc
      */
-    public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName,
-                                               String ruleName,
-                                               long processInstanceId) {
+    public boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
+                                            String ruleName,
+                                            long processInstanceId) {
 
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
