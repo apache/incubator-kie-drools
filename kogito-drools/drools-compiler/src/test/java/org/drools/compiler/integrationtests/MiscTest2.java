@@ -1192,7 +1192,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore("fixed with mvel 2.1.5.Final")
+    @Test
     public void testEqualityOfDifferentTypes() {
         // DROOLS-42
         String str =
@@ -1875,7 +1875,6 @@ public class MiscTest2 extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testDRLTemplate() {
 
         String template = "@declare{\"drl\"}@includeNamed{\"ced\"; node=root }@end{}" +
@@ -1906,6 +1905,7 @@ public class MiscTest2 extends CommonTestMethodBase {
                                                           new MapVariableResolverFactory( context ),
                                                           REPORT_REGISTRY );
 
+        System.out.println(result);
         Matcher matcher = Pattern.compile("OR").matcher( result );
         // need two "OR"s
         assertTrue( matcher.find() );
