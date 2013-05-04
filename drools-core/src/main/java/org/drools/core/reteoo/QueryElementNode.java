@@ -29,13 +29,13 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.phreak.StackEntry;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.QueryElementContext;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
 import org.drools.core.marshalling.impl.ProtobufMessages;
-import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.core.reteoo.ReteooWorkingMemory.QueryInsertAction;
 import org.drools.core.reteoo.ReteooWorkingMemory.QueryResultInsertAction;
 import org.drools.core.reteoo.ReteooWorkingMemory.QueryResultRetractAction;
@@ -239,7 +239,7 @@ public class QueryElementNode extends LeftTupleSource
     
     public DroolsQuery createDroolsQuery(LeftTuple leftTuple,
                                          InternalFactHandle handle,
-                                         RuleNetworkEvaluator.StackEntry stackEntry,
+                                         StackEntry stackEntry,
                                          final List<PathMemory> rmems,
                                          LeftTupleSets trgLeftTuples,
                                          LeftTupleSink sink,

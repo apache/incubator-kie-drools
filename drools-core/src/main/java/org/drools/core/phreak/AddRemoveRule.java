@@ -3,12 +3,10 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.InternalFactHandle;
  import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.Memory;
  import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NetworkNode;import org.drools.core.common.PropagationContextImpl;
- import org.drools.core.phreak.RuleNetworkEvaluator.StackEntry;
- import org.drools.core.reteoo.AbstractTerminalNode;
+import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.reteoo.AbstractTerminalNode;
  import org.drools.core.reteoo.AccumulateNode;
  import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
  import org.drools.core.reteoo.BetaMemory;
@@ -38,7 +36,7 @@ import org.drools.core.spi.PropagationContext;
  import org.drools.core.util.LinkedList;
  import org.drools.core.util.ObjectHashSet.ObjectEntry;
 
- import java.lang.reflect.Member;import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.HashSet;
  import java.util.List;
  import java.util.Set;
@@ -205,8 +203,10 @@ public class AddRemoveRule {
 
 
          // The graph must be fully updated before SegmentMemory and PathMemories are mutated
-         rne.eval1(lian, pmem, sink, mem,
-                   smems, smemIndex, sm.getStagedLeftTuples(), wm,stack, visitedRules, true, pmem.getAgendaItem() );
+         if ( !sm.getStagedLeftTuples().isEmpty() && pmem.isRuleLinked() ) {
+             rne.eval1(lian, pmem, sink, mem,
+                       smems, smemIndex, sm.getStagedLeftTuples(), wm,stack, visitedRules, true, pmem.getAgendaItem().getRuleExecutor() );
+         }
      }
 
 

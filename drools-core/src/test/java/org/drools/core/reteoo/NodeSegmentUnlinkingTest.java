@@ -13,7 +13,7 @@ import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
-import org.drools.core.phreak.RuleNetworkEvaluator.PhreakNotNode;
+import org.drools.core.phreak.PhreakNotNode;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;

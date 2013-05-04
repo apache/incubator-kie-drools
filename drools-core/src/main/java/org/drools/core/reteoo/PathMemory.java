@@ -91,7 +91,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         } else if ( !agendaItem.isActive() ) {
             ((InternalAgenda) wm.getAgenda()).addActivation( agendaItem );
         }
-        agendaItem.setDirty(true);
+        agendaItem.getRuleExecutor().setDirty(true);
     }
 
     public void doUnlinkRule(InternalWorkingMemory wm) {
@@ -107,7 +107,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         } else if ( !agendaItem.isActive() ) {
             ((InternalAgenda) wm.getAgenda()).addActivation( agendaItem );
         }
-        agendaItem.setDirty(true);
+        agendaItem.getRuleExecutor().setDirty(true);
         //((InternalAgenda) wm.getAgenda()).removeActivation( agendaItem );
     }
 
