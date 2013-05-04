@@ -134,9 +134,12 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             return KieModuleModelImpl.fromXML(zipFile.getInputStream(zipEntry));
         } catch ( Exception e ) {
         } finally {
-            try {
-                zipFile.close();
-            } catch ( IOException e ) { }
+			if (zipFile != null) {
+				try {
+					zipFile.close();
+				} catch (IOException e) {
+				}
+			}
         }
         return null;
     }
