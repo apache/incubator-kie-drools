@@ -66,8 +66,8 @@ then
 @comment{***************************************************************
                        CONDITIONAL ELEMENT CHILD TEMPLATE
 ************************************************************************ }
-@declare{"cedchildren"}@foreach{child : list}
-    @includeNamed{"ced"; base=child; root=false} @end{connect}@end{}
+@declare{"cedchildren"}@if{connect!="" && list.size() > 1}(@end{}@foreach{child : list}
+    @includeNamed{"ced"; base=child; root=false} @end{connect}@if{connect!="" && list.size() > 1})@end{}@end{}
 
 @comment{***************************************************************
                        PATTERN SOURCE TEMPLATE
