@@ -3429,5 +3429,83 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
+    @Test
+    public void testTraitInitializationTriples() {
+        testTraitInitialization( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+    @Test
+    public void testTraitInitializationMap() {
+        testTraitInitialization( TraitFactory.VirtualPropertyMode.MAP );
+    }
+
+    public void testTraitInitialization( TraitFactory.VirtualPropertyMode mode ) {
+        String source = "package t.x \n" +
+                "import java.util.*; \n" +
+                "import org.drools.factmodel.traits.Thing \n" +
+                "import org.drools.factmodel.traits.Traitable \n" +
+                "\n" +
+                "global java.util.List list; \n" +
+                "\n" +
+                "declare trait Foo\n" +
+                "   hardList : List = new ArrayList() " +
+                "   softList : List = new ArrayList() " +
+                "   moreList : List = new ArrayList() " +
+                "   otraList : List = new ArrayList() " +
+                "\n" +
+                "end\n" +
+                "" +
+                "declare Bar\n" +
+                "   @Traitable()\n" +
+                "   hardList : List \n" +
+                "   moreList : List = Arrays.asList( 1, 2, 3 ) \n" +
+                "\n" +
+                "end\n" +
+                "" +
+                "rule Init when\n" +
+                "then\n" +
+                "   Bar o = new Bar();\n" +
+                "   insert(o);\n" +
+                "   Thing t = don( o, Thing.class ); \n" +
+                "   t.getFields().put( \"otraList\", Arrays.asList( 42 ) ); \n" +
+                "   don( o, Foo.class ); \n" +
+                "end\n" +
+                "" +
+                "rule Don when\n" +
+                "   $x : Foo( $h : hardList, $s : softList, $o : otraList, $m : moreList ) \n" +
+                "then \n" +
+                "   list.add( $h ); \n" +
+                "   list.add( $s ); \n" +
+                "   list.add( $o ); \n" +
+                "   list.add( $m ); \n" +
+                "   System.out.println( $x ); \n" +
+                "end\n" +
+                ""
+                ;
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( mode, ks.getKnowledgeBase() );
+
+        List<List> list = new ArrayList<List>();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        assertEquals( 4, list.size() );
+        assertFalse( list.contains( null ) );
+
+        List hard = list.get( 0 );
+        List soft = list.get( 1 );
+        List otra = list.get( 2 );
+        List more = list.get( 3 );
+
+        assertTrue( hard.isEmpty() );
+        assertTrue( soft.isEmpty() );
+        assertEquals( more, Arrays.asList( 1, 2, 3 ) );
+        assertEquals( otra, Arrays.asList( 42 ) );
+    }
+
+
+
+
 
 }
