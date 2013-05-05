@@ -28,7 +28,7 @@ import org.drools.lang.descr.ForallDescr;
 
 @foreach{ decl : pkg.typeDeclarations }declare @{decl.typeName} @if{ decl.superTypes.size() > 0 } extends @foreach{ sup : decl.superTypes } @{sup} @end{','} @end{}
 @foreach{ ann : decl.annotations.values() }    @includeNamed{"annotation"; ann=ann}@end{"\n"}
-@foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @foreach{ann:fld.annotations.values()}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
+@foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @if{fld.initExpr != null}= @{fld.initExpr}@end{} @foreach{ann:fld.annotations.values()}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
 end
 @end{"\n"}@end{}@if{!pkg.functions.isEmpty()}
 
