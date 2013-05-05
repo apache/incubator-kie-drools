@@ -31,18 +31,17 @@ public abstract class AbstractAbsoluteSizeTabuAcceptor extends AbstractTabuAccep
 
     @Override
     protected int calculateActualMaximumSize(LocalSearchSolverPhaseScope scope) {
-        return this.calculateFadingTabuSize(scope) + this.calculateRegularTabuSize(scope);
+        return calculateFadingTabuSize(scope) + calculateRegularTabuSize(scope);
     }
     
     @Override
     protected int calculateFadingTabuSize(LocalSearchSolverPhaseScope scope) {
-        return this.fadingTabuSize;
+        return fadingTabuSize;
     }
 
     @Override
     protected int calculateRegularTabuSize(LocalSearchSolverPhaseScope scope) {
-        // TODO Auto-generated method stub
-        return this.tabuSize;
+        return tabuSize;
     }
 
 }
