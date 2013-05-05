@@ -129,9 +129,9 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
             if (i != (levelCount - 1)) {
                 levelTimeGradientWeight *= recursiveTimeGradientWeight;
             }
-            int startScoreLevel = (i < hardLevelCount) ? startScore.getHardScore(i) : startScore.getSoftScore(i);
-            int endScoreLevel = (i < hardLevelCount) ? endScore.getHardScore(i) : endScore.getSoftScore(i);
-            int scoreLevel = (i < hardLevelCount) ? score.getHardScore(i) : score.getSoftScore(i);
+            int startScoreLevel = (i < hardLevelCount) ? startScore.getHardScore(i) : startScore.getSoftScore(i - hardLevelCount);
+            int endScoreLevel = (i < hardLevelCount) ? endScore.getHardScore(i) : endScore.getSoftScore(i - hardLevelCount);
+            int scoreLevel = (i < hardLevelCount) ? score.getHardScore(i) : score.getSoftScore(i - hardLevelCount);
             if (scoreLevel >= endScoreLevel) {
                 timeGradient += levelTimeGradientWeight;
             } else {
