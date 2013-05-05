@@ -3285,4 +3285,149 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
+
+    @Test
+    public void testIsAEvaluatorOnClassification( ) {
+        String source = "package t.x \n" +
+                "\n" +
+                "global java.util.List list; \n" +
+                "import org.drools.factmodel.traits.Thing\n" +
+                "import org.drools.factmodel.traits.Entity\n" +
+                "\n" +
+                "declare t.x.D\n" +
+                "    @propertyReactive\n" +
+                "    @kind( TRAIT )\n" +
+                "\n" +
+                "end\n" +
+                "" +
+                "declare t.x.E\n" +
+                "    @propertyReactive\n" +
+                "    @kind( TRAIT )\n" +
+                "\n" +
+                "end\n" +
+                "" +
+                "rule Init when\n" +
+                "then\n" +
+                "   Entity o = new Entity();\n" +
+                "   insert(o);\n" +
+                "   don( o, D.class ); \n" +
+                "end\n" +
+                "" +
+                "rule Don when\n" +
+                " $o : Entity() \n" +
+                "then \n" +
+                "end \n" +
+                "" +
+                "rule \"Rule 0 >> http://t/x#D\"\n" +
+                "when\n" +
+                "   $t : org.drools.factmodel.traits.Thing( $c : core, top == true, this not isA t.x.E.class, this isA t.x.D.class ) " +
+                "then\n" +
+                "   list.add( \"E\" ); \n" +
+                "   don( $t, E.class, true ); \n" +
+                "end\n" +
+                "" +
+                "rule React \n" +
+                "when E() then \n" +
+                "   list.add( \"X\" ); \n" +
+                "end \n"
+                ;
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "E" ) );
+        assertTrue( list.contains( "X" ) );
+
+//        for ( Object o : ks.getObjects() ) {
+//            System.out.println( o );
+//        }
+    }
+
+
+
+    @Test
+    public void testShedWithTMS( ) {
+        String source = "package t.x \n" +
+                "\n" +
+                "global java.util.List list; \n" +
+                "import org.drools.factmodel.traits.Thing\n" +
+                "import org.drools.factmodel.traits.Entity\n" +
+                "\n" +
+                "declare t.x.D\n" +
+                "    @propertyReactive\n" +
+                "    @kind( TRAIT )\n" +
+                "\n" +
+                "end\n" +
+                "" +
+                "declare t.x.E\n" +
+                "    @propertyReactive\n" +
+                "    @kind( TRAIT )\n" +
+                "\n" +
+                "end\n" +
+                "" +
+                "rule Init when\n" +
+                "then\n" +
+                "   Entity o = new Entity();\n" +
+                "   insert(o);\n" +
+                "   don( o, D.class ); \n" +
+                "end\n" +
+                "" +
+                "rule Don when\n" +
+                " $o : Entity() \n" +
+                "then \n" +
+                "end \n" +
+                "" +
+                "rule \"Rule 0 >> http://t/x#D\"\n" +
+                "when\n" +
+                "   $t : org.drools.factmodel.traits.Thing( $c : core, top == true, this not isA t.x.E.class, this isA t.x.D.class ) " +
+                "then\n" +
+                "   list.add( \"E\" ); \n" +
+                "   don( $t, E.class, true ); \n" +
+                "end\n" +
+                "" +
+                "rule React \n" +
+                "when $x : E() then \n" +
+                "   list.add( \"X\" ); \n" +
+                "end \n" +
+                "" +
+                "rule Shed \n" +
+                "when \n" +
+                "   $s : String() \n" +
+                "   $d : Entity() \n" +
+                "then \n" +
+                "   retract( $s ); \n" +
+                "   shed( $d, D.class );\n" +
+                "end \n" +
+                ""
+                ;
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "E" ) );
+        assertTrue( list.contains( "X" ) );
+
+        ks.insert( "shed" );
+        ks.fireAllRules();
+
+        assertEquals( 2, ks.getObjects().size() );
+
+        for ( Object o : ks.getObjects() ) {
+            System.out.println( o );
+        }
+    }
+
+
+
+
 }

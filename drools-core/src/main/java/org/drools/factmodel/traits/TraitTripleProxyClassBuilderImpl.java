@@ -264,6 +264,15 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         }
 
         {
+            mv = cw.visitMethod( ACC_PUBLIC, "isTop", "()Z", null, null );
+            mv.visitCode();
+            mv.visitInsn( Thing.class.equals( trait.getDefinedClass() ) ? ICONST_1 : ICONST_0 );
+            mv.visitInsn( IRETURN );
+            mv.visitMaxs( 0, 0 );
+            mv.visitEnd();
+        }
+
+        {
             mv = cw.visitMethod( ACC_PUBLIC, "writeExternal", "(" + Type.getDescriptor( ObjectOutput.class )+ ")V", null, new String[] { Type.getInternalName( IOException.class ) } );
             mv.visitCode();
 
