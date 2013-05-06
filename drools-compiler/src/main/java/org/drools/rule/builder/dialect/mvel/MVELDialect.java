@@ -309,6 +309,7 @@ public class MVELDialect
         String pkgName = this.pkg == null ? "" : this.pkg.getName();
         final String ruleClassName = getUniqueLegalName(pkgName,
                                                         ruleDescr.getName(),
+                                                        ruleDescr.getConsequence().hashCode(),
                                                         "mvel",
                                                         "Rule",
                                                         this.src);
@@ -318,6 +319,7 @@ public class MVELDialect
     public void init(final ProcessDescr processDescr) {
         final String processDescrClassName = getUniqueLegalName(this.pkg.getName(),
                                                                 processDescr.getName(),
+                                                                processDescr.getProcessId().hashCode(),
                                                                 "mvel",
                                                                 "Process",
                                                                 this.src);
