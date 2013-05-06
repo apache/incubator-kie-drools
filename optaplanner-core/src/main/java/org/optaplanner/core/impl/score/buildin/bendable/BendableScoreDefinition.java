@@ -123,11 +123,15 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
             return 0.0;
         }
         double timeGradient = 0.0;
-        double levelTimeGradientWeight = 1.0;
+        double remainingTimeGradient = 1.0;
         int levelCount = hardLevelCount + softLevelCount;
         for (int i = 0; i < levelCount; i++) {
+            double levelTimeGradientWeight;
             if (i != (levelCount - 1)) {
-                levelTimeGradientWeight *= recursiveTimeGradientWeight;
+                levelTimeGradientWeight = remainingTimeGradient * recursiveTimeGradientWeight;
+                remainingTimeGradient -= levelTimeGradientWeight;
+            } else {
+                levelTimeGradientWeight = remainingTimeGradient;
             }
             int startScoreLevel = (i < hardLevelCount) ? startScore.getHardScore(i) : startScore.getSoftScore(i - hardLevelCount);
             int endScoreLevel = (i < hardLevelCount) ? endScore.getHardScore(i) : endScore.getSoftScore(i - hardLevelCount);
