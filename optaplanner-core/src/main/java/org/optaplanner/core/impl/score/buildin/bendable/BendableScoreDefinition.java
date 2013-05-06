@@ -38,8 +38,8 @@ public class BendableScoreDefinition extends AbstractScoreDefinition<BendableSco
      * To make Java serialization happy.
      */
     private BendableScoreDefinition() {
-        this.hardLevelCount = -1; // Java serialization still changes it
-        this.softLevelCount = -1; // Java serialization still changes it
+        hardLevelCount = -1; // Java serialization still changes it
+        softLevelCount = -1; // Java serialization still changes it
     }
 
     public BendableScoreDefinition(int hardLevelCount, int softLevelCount) {

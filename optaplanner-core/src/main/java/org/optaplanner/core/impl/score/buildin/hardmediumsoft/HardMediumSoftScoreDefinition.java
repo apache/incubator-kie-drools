@@ -103,7 +103,7 @@ public class HardMediumSoftScoreDefinition extends AbstractScoreDefinition<HardM
             return 0.0;
         }
         double timeGradient = 0.0;
-        double softScoreTimeGradientWeight = 1.0 - this.hardScoreTimeGradientWeight - this.mediumScoreTimeGradientWeight;
+        double softScoreTimeGradientWeight = 1.0 - hardScoreTimeGradientWeight - mediumScoreTimeGradientWeight;
         if (startScore.getHardScore() == endScore.getHardScore()) {
             timeGradient += hardScoreTimeGradientWeight;
         } else {
