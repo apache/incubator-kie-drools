@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 /**
  * This {@link Score} is based on 1 level of double constraints.
  * <p/>
- * Warning: Summing doubles implies rounding errors, which can cause score corruption.
+ * Warning: Summing 2 doubles can cause a rounding error, which can cause score corruption.
  * For example, this prints false: <code>System.out.println((0.01 + 0.05) == (0.01 + 0.02 + 0.03));</code>
  * Use {@link SimpleBigDecimalScore} to avoid such problems.
  * <p/>
