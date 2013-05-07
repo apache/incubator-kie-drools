@@ -20,6 +20,8 @@ import org.drools.FactHandle;
 import org.drools.reteoo.WindowTupleList;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle> {
 
     private static final long serialVersionUID = 510l;
@@ -28,7 +30,8 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
     private long              duration;
     private boolean           expired;
     private long              activationsCount;
-    
+    private long              pendingActions;
+
     private WindowTupleList   firstWindowTuple;
     private WindowTupleList   lastWindowTuple;
 
@@ -221,5 +224,17 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
 
     public int compareTo(EventFactHandle e) {
         return (getStartTimestamp() < e.getStartTimestamp()) ? -1 : (getStartTimestamp() == e.getStartTimestamp() ? 0 : 1);
+    }
+
+    public synchronized boolean hasPendingActions() {
+        return pendingActions > 0;
+    }
+
+    public synchronized void incPendingActions() {
+        pendingActions++;
+    }
+
+    public synchronized void decPendingActions() {
+        pendingActions--;
     }
 }

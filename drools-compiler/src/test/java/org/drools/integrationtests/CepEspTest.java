@@ -3004,6 +3004,8 @@ public class CepEspTest extends CommonTestMethodBase {
     @Test
     public void testExpirationAtHighRates() throws InterruptedException {
         String drl = "package drools5fusioneval\n" +
+                     "" +
+                     "global java.util.List list; \n" +
                 "" +
                 "import org.drools.integrationtests.CepEspTest.ProbeEvent;\n" +
                 "import org.drools.integrationtests.CepEspTest.ProbeCounter;\n" +
@@ -3018,7 +3020,7 @@ public class CepEspTest extends CommonTestMethodBase {
                 "    $pe : ProbeEvent () from entry-point ep01\n" +
                 "    $pc : ProbeCounter ()\n" +
                 "then\n" +
-                "   System.out.println( Thread.currentThread().getName() + \" Fire  >>  \" + $pe ); \n" +
+                "   list.add( $pe.getValue() ); \n" +
                 "    $pc.addValue ();\n" +
                 "end";
 
@@ -3035,10 +3037,10 @@ public class CepEspTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList( );
+        session.setGlobal( "list", list );
         WorkingMemoryEntryPoint ep01 = session.getWorkingMemoryEntryPoint("ep01");
 
-//        session.addEventListener( new DebugWorkingMemoryEventListener( ));
-//        session.addEventListener( new DebugAgendaEventListener( ));
 
         new Thread () {
             public void run () {
@@ -3046,36 +3048,26 @@ public class CepEspTest extends CommonTestMethodBase {
             }
         }.start ();
 
-        int eventLimit = 20000;
+        int eventLimit = 5000;
 
         ProbeCounter pc = new ProbeCounter ();
         long myTotal = 0;
 
         try {
             FactHandle pch = session.insert(pc);
-            long startTS = System.nanoTime();
-            for (int i = 0; i < eventLimit; i++) {
-                ep01.insert (new ProbeEvent (i));
-                myTotal += 1;
+            for ( int i = 0; i < eventLimit; i++ ) {
+                ep01.insert ( new ProbeEvent ( i ) );
+                myTotal++;
             }
-            long stopTS = System.nanoTime();
-            long theirVal = pc.getTotal();
-            long durationNS = (stopTS - startTS);
-            long durationmS = durationNS / 1000;
-            long durationMS = durationmS/1000;
-            long durationS = durationMS / 1000;
-//            System.out.println ("ns / microsec / ms / sec");
-//            System.out.println (durationNS +" / "+ durationmS +" / "+ durationMS +" / "+ durationS);
-//            System.out.println (durationmS + " microsec, local sum: "+ myTotal +", rule sum: "+ theirVal +" @ "+ (theirVal/durationS) +" rules per sec");
-            Thread.sleep( 5000 );
+
+            Thread.sleep( 2000 );
         } catch ( Throwable t ) {
-            t.printStackTrace();
-            System.out.println ("After x: "+ pc.getTotal() + " vs " + myTotal );
-        } finally {
-            System.out.println ("After 10s: "+ pc.getTotal() + " vs " + myTotal );
+            fail( t.getMessage() );
         }
 
-
+        assertEquals( eventLimit, myTotal );
+        assertEquals( eventLimit, list.size() );
+        assertEquals( 0, session.getWorkingMemoryEntryPoint( "ep01" ).getObjects().size() );
     }
 }
 

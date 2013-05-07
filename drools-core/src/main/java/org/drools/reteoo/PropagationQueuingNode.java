@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
@@ -58,7 +59,7 @@ public class PropagationQueuingNode extends ObjectSource
 
     private ObjectSinkNode    previousObjectSinkNode;
     private ObjectSinkNode    nextObjectSinkNode;
-    private PropagateAction   action; 
+    private PropagateAction   action;
 
     public PropagationQueuingNode() {
     }
@@ -83,11 +84,11 @@ public class PropagationQueuingNode extends ObjectSource
         this.action = new PropagateAction( this );
         initDeclaredMask(context);
     }
-    
+
     @Override
     public long calculateDeclaredMask(List<String> settableProperties) {
         return 0;
-    }      
+    }
 
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
@@ -254,8 +255,8 @@ public class PropagationQueuingNode extends ObjectSource
                                          final PropagationContext context,
                                          final InternalWorkingMemory workingMemory) {
         modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
-    }    
-    
+    }
+
     /**
      * Propagate all queued actions (asserts and retracts).
      * <p/>
@@ -296,7 +297,7 @@ public class PropagationQueuingNode extends ObjectSource
     public Memory createMemory( RuleBaseConfiguration config ) {
         return new PropagationQueueingNodeMemory();
     }
-    
+
     public int hashCode() {
         return this.source.hashCode();
     }
@@ -320,7 +321,7 @@ public class PropagationQueuingNode extends ObjectSource
         return this.source.equals( other.source );
     }
 
-    
+
 
     /**
      * Memory implementation for the node
@@ -378,7 +379,7 @@ public class PropagationQueuingNode extends ObjectSource
         public long getSize() {
             return this.queue.size();
         }
- 
+
         public short getNodeType() {
             return NodeTypeEnums.PropagationQueueingNode;
         }
@@ -394,6 +395,9 @@ public class PropagationQueuingNode extends ObjectSource
         public Action(InternalFactHandle handle,
                       PropagationContext context) {
             super();
+            if ( handle.isEvent() ) {
+                (( EventFactHandle ) handle).incPendingActions();
+            }
             this.handle = handle;
             this.context = context;
         }
@@ -409,8 +413,12 @@ public class PropagationQueuingNode extends ObjectSource
             out.writeObject( context );
         }
 
-        public abstract void execute( final ObjectSinkPropagator sink,
-                                      final InternalWorkingMemory workingMemory );
+        public void execute( final ObjectSinkPropagator sink,
+                             final InternalWorkingMemory workingMemory ) {
+            if ( handle.isEvent() ) {
+                (( EventFactHandle ) handle).decPendingActions();
+            }
+        }
     }
 
     private static class AssertAction extends Action {
@@ -424,6 +432,7 @@ public class PropagationQueuingNode extends ObjectSource
 
         public void execute( final ObjectSinkPropagator sink,
                              final InternalWorkingMemory workingMemory ) {
+            super.execute( sink, workingMemory );
             sink.propagateAssertObject( this.handle,
                                         this.context,
                                         workingMemory );
@@ -446,6 +455,7 @@ public class PropagationQueuingNode extends ObjectSource
 
         public void execute( final ObjectSinkPropagator sink,
                              final InternalWorkingMemory workingMemory ) {
+            super.execute( sink, workingMemory );
             nodeSink.assertObject( this.handle,
                                    this.context,
                                    workingMemory );
@@ -478,6 +488,7 @@ public class PropagationQueuingNode extends ObjectSource
         public void execute( final ObjectSinkPropagator sink,
                              final InternalWorkingMemory workingMemory ) {
 
+            super.execute( sink, workingMemory );
             for ( RightTuple rightTuple = this.handle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
                 rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
                                                                   context,
@@ -511,12 +522,13 @@ public class PropagationQueuingNode extends ObjectSource
 
         public void execute( final ObjectSinkPropagator sink,
                              final InternalWorkingMemory workingMemory ) {
+            super.execute( sink, workingMemory );
             nodeSink.modifyRightTuple( rightTuple,
                                        context,
                                        workingMemory );
             context.evaluateActionQueue( workingMemory );
         }
-        
+
         @Override
         public void readExternal( ObjectInput in ) throws IOException,
                                                   ClassNotFoundException {
@@ -566,7 +578,7 @@ public class PropagationQueuingNode extends ObjectSource
             context.writeShort( WorkingMemoryAction.PropagateAction );
             context.write( node.getId() );
         }
-        
+
         public ProtobufMessages.ActionQueue.Action serialize( MarshallerWriteContext context ) {
             return ProtobufMessages.ActionQueue.Action.newBuilder()
                     .setType( ProtobufMessages.ActionQueue.ActionType.PROPAGATE )
