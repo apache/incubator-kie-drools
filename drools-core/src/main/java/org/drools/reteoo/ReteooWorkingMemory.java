@@ -203,7 +203,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
             }
 
             executeQueuedActions();
-            
+
 
             return new QueryResults( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
                                      decls.toArray( new Map[decls.size()] ),
@@ -294,7 +294,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                               this );
 
             propagationContext.evaluateActionQueue( this );
-            
+
             getFactHandleFactory().destroyFactHandle( factHandle );
 
         } finally {
@@ -455,7 +455,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                              final ObjectTypeNode node) {
             this.factHandle = factHandle;
             this.node = node;
-        }  
+        }
 
         public InternalFactHandle getFactHandle() {
             return factHandle;
@@ -503,22 +503,30 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         public void execute(InternalWorkingMemory workingMemory) {
             if ( this.factHandle.isValid() ) {
+
+                EventFactHandle eventHandle = (EventFactHandle) factHandle;
+                if ( eventHandle.hasPendingActions() ) {
+                    workingMemory.queueWorkingMemoryAction( this );
+                    return;
+                }
+
                 // if the fact is still in the working memory (since it may have been previously retracted already
                 final PropagationContext context = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                PropagationContext.EXPIRATION,
                                                                                null,
                                                                                null,
                                                                                this.factHandle );
-                ((EventFactHandle) factHandle).setExpired( true );
+
+                eventHandle.setExpired( true );
                 this.node.retractObject( factHandle,
                                          context,
                                          workingMemory );
 
                 context.evaluateActionQueue( workingMemory );
                 // if no activations for this expired event
-                if ( ((EventFactHandle) factHandle).getActivationsCount() == 0 ) {
+                if ( eventHandle.getActivationsCount() == 0 ) {
                     // remove it from the object store and clean up resources
-                    ((EventFactHandle) factHandle).getEntryPoint().retract( factHandle );
+                    eventHandle.getEntryPoint().retract( factHandle );
                 }
                 context.evaluateActionQueue( workingMemory );
             }
@@ -772,7 +780,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         public void execute(InternalWorkingMemory workingMemory) {
             InternalFactHandle factHandle = (InternalFactHandle) leftTuple.getObject();
             if ( node.isOpenQuery() ) {
-                // iterate to the query terminal node, as the child leftTuples will get picked up there                
+                // iterate to the query terminal node, as the child leftTuples will get picked up there
                 workingMemory.getEntryPointNode().retractObject( factHandle,
                                                                  context,
                                                                  workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( workingMemory.getEntryPoint(),
@@ -1086,19 +1094,19 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                     rightMemory = ((AccumulateMemory) node).betaMemory.getRightTupleMemory();
                 }
 
-                
+
                 final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
                 TupleStartEqualsConstraintContextEntry contextEntry = new TupleStartEqualsConstraintContextEntry();
                 contextEntry.updateFromTuple( workingMemory, leftTuple );
-                
+
                 FastIterator rightIt = rightMemory.fastIterator();
                 RightTuple temp = null;
                 for ( RightTuple rightTuple = rightMemory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle(), rightIt ); rightTuple != null; ) {
                     temp = (RightTuple) rightIt.next( rightTuple );
-                    
+
                     if ( constraint.isAllowedCachedLeft( contextEntry, rightTuple.getFactHandle() ) ) {
                         rightMemory.remove( rightTuple );
-                    }                                        
+                    }
                     rightTuple = temp;
                 }
             }
@@ -1130,12 +1138,12 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
     public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
         List list = new ArrayList();
-        
+
         for ( Iterator it = iterateFactHandles(); it.hasNext(); ) {
             FactHandle fh = ( FactHandle) it.next();
             list.add(  fh );
         }
-        
+
         return list;
     }
 

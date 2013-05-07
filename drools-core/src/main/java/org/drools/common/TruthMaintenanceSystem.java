@@ -24,6 +24,9 @@ import org.drools.FactException;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
+import org.drools.factmodel.traits.Thing;
+import org.drools.factmodel.traits.TraitProxy;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
@@ -314,7 +317,14 @@ public class TruthMaintenanceSystem {
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
-            if ( beliefSet.isEmpty() ) {                
+            if ( beliefSet.isEmpty() ) {
+                if ( this.handle.isTrait() && handle.getObject() instanceof TraitProxy ) {
+                    TraitProxy traitProxy = (TraitProxy) handle.getObject();
+                    TraitableBean core = ((TraitableBean) ((Thing) traitProxy).getCore());
+                    if ( core.hasTrait( traitProxy.getTraitName() ) ) {
+                        core.removeTrait( traitProxy.getTypeCode() );
+                    }
+                }
                 // this needs to be scheduled so we don't upset the current
                 // working memory operation
                 workingMemory.retract( this.handle,

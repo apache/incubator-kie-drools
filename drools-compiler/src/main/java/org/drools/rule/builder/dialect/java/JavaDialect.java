@@ -257,6 +257,7 @@ public class JavaDialect
     public void init(final RuleDescr ruleDescr) {
         final String ruleClassName = getUniqueLegalName( this.pkg.getName(),
                                                          ruleDescr.getName(),
+                                                         ruleDescr.getConsequence().hashCode(),
                                                          "java",
                                                          "Rule",
                                                          this.src );
@@ -266,6 +267,7 @@ public class JavaDialect
     public void init(final ProcessDescr processDescr) {
         final String processDescrClassName = getUniqueLegalName( this.pkg.getName(),
                                                                  processDescr.getName(),
+                                                                 processDescr.getProcessId().hashCode(),
                                                                  "java",
                                                                  "Process",
                                                                  this.src );
