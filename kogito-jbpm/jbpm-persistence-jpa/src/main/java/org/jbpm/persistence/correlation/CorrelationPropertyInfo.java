@@ -27,7 +27,7 @@ import javax.persistence.Version;
 import org.kie.internal.process.CorrelationProperty;
 
 @Entity
-@SequenceGenerator(name="correlationPropertyInfoIdSeq", sequenceName="CORRELATION_PROPERTY_INFO_ID_SEQ")
+@SequenceGenerator(name="correlationPropertyInfoIdSeq", sequenceName="CORRELATION_PROP_ID_SEQ")
 public class CorrelationPropertyInfo implements CorrelationProperty<String> {
 
     public CorrelationPropertyInfo() {

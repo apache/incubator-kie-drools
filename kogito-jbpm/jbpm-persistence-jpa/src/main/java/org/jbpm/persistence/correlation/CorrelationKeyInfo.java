@@ -32,7 +32,7 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
 
 @Entity
-@SequenceGenerator(name="correlationKeyInfoIdSeq", sequenceName="CORRELATION_KEY_INFO_ID_SEQ")
+@SequenceGenerator(name="correlationKeyInfoIdSeq", sequenceName="CORRELATION_KEY_ID_SEQ")
 public class CorrelationKeyInfo implements CorrelationKey {
 
     @Id
