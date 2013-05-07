@@ -75,16 +75,12 @@
     patient arrives (unless it's really worth it), avoid changing the airplane gate during the 2 hours before boarding
     (unless there is no alternative), ...</para>
 
-    <figure>
-      <title>Continuous planning diagram</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Repeated_planning/continuousPlanningPatientAdmissionSchedule.png"
-                     format="PNG"/>
-        </imageobject>
-      </mediaobject>
-    </figure>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Repeated_planning/continuousPlanningPatientAdmissionSchedule.png"
+                   format="PNG"/>
+      </imageobject>
+    </mediaobject>
 
     <para>Notice the difference between the original planning of November 1th and the new planning of November 5th: some
     planning facts (F, H, I, J, K) changed, which results in unrelated planning entities (G) changing too.</para>
@@ -124,6 +120,13 @@ public class ShiftAssignment {
 
     <para>To do real-time planning, first combine backup planning and continuous planning with short planning windows to
     lower the burden of real-time planning.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Repeated_planning/realTimePlanningVehicleRouting.png"
+                   format="PNG"/>
+      </imageobject>
+    </mediaobject>
 
     <para>While the <literal>Solver</literal> is solving, an outside event might want to change one of the problem
     facts, for example an airplane is delayed and needs the runway at a later time. Do not change the problem fact
