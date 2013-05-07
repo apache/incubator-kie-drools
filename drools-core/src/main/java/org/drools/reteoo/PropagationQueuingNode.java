@@ -273,10 +273,13 @@ public class PropagationQueuingNode extends ObjectSource
                                          false );
 
         // we limit the propagation to avoid a hang when this queue is never empty
-        Action next = memory.getNext();
-        for ( int counter = 0; next != null && counter < PROPAGATION_SLICE_LIMIT; next = memory.getNext(), counter++ ) {
-            next.execute( this.sink,
-                          workingMemory );
+        Action next;
+        for ( int counter = 0; counter < PROPAGATION_SLICE_LIMIT; counter++ ) {
+            next = memory.getNext();
+            if ( next != null ) {
+                next.execute( this.sink,
+                        workingMemory );
+            }
         }
 
         if ( memory.hasNext() && memory.isQueued().compareAndSet( false,
