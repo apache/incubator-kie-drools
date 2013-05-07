@@ -280,6 +280,8 @@ public class PropagationQueuingNode extends ObjectSource
             if ( next != null ) {
                 next.execute( this.sink,
                         workingMemory );
+            } else {
+                break;
             }
         }
 
