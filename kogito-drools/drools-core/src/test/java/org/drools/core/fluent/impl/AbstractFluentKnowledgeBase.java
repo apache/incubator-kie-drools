@@ -19,12 +19,12 @@ package org.drools.core.fluent.impl;
 import org.drools.core.command.KnowledgeBaseAddKnowledgePackagesCommand;
 import org.drools.core.command.builder.KnowledgeBuilderAddCommand;
 import org.kie.internal.fluent.CommandScript;
-import org.kie.internal.fluent.FluentKnowledgeBase;
+import org.kie.internal.fluent.KnowledgeBaseFluent;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 
-public class AbstractFluentKnowledgeBase<T> extends AbstractFluentTest<T> implements FluentKnowledgeBase<T> {
+public class AbstractFluentKnowledgeBase<T> extends AbstractFluentTest<T> implements KnowledgeBaseFluent<T> {
     
     private CommandScript cmdScript;
     
