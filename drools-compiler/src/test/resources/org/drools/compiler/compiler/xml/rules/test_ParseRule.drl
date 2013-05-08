@@ -25,8 +25,8 @@ when
     exists( 
     Person( likes == type )   )  ) 
     
-    foo3 : Bar( a == 3 || == 4, a3 == "hello", a4 == null )  or
-    foo4 : Bar( a4 : a, a != 4 && != 5 )
+    (foo3 : Bar( a == 3 || == 4, a3 == "hello", a4 == null )  or
+    foo4 : Bar( a4 : a, a != 4 && != 5 ))
     foo5 : Bar( b == (a4 + 1) || > a4 || == 
                      org.drools.compiler.Bar.BAR_ENUM_VALUE
                    )

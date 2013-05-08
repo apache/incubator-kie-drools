@@ -23,6 +23,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.lang.DrlDumper;
+import org.drools.compiler.lang.api.DescrFactory;
+import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
@@ -674,6 +677,31 @@ public class ExtendsTest extends CommonTestMethodBase {
 
         System.out.println( kBuilder.getErrors() );
         assertTrue( kBuilder.getErrors().toString().contains( "circular" ) );
+    }
+
+    @Test
+    public void testExtendsDump() {
+        PackageDescrBuilder pkgd = DescrFactory.newPackage();
+        pkgd.name( "org.test" )
+            .newDeclare().type().name( "Foo" )
+            .newField( "id" ).type( "int" ).end()
+            .end()
+            .newDeclare().type().name( "Bar" ).superType( "Foo" )
+            .newField( "val" ).type( "int" ).initialValue( "42" ).end()
+            .end();
+        String drl = new DrlDumper().dump( pkgd.getDescr() );
+
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+
+        FactType bar = kb.getFactType( "org.test", "Bar" );
+        try {
+            Object x = bar.newInstance();
+            assertEquals( 42, bar.get( x, "val" ) );
+            bar.set( x, "id", 1 );
+            assertEquals( 1, bar.get( x, "id" ) );
+        } catch ( Exception e ) {
+            fail( e.getMessage() );
+        }
     }
 }
 
