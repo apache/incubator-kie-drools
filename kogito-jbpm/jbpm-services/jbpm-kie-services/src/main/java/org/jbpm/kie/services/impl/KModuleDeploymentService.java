@@ -20,7 +20,10 @@ import org.jbpm.kie.services.api.DeploymentUnit;
 import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
+import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.process.audit.AbstractAuditLogger;
+import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.kie.api.KieBase;
@@ -99,10 +102,16 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             kbase = kieContainer.getKieBase();
         }
         
+        
+        ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
+        auditEventBuilder.setIdentityProvider(identityProvider);
+        auditEventBuilder.setDeploymentUnitId(unit.getIdentifier());
+        
         RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
                 .entityManagerFactory(emf)
                 .knowledgeBase(kbase)
-                .registerableItemsFactory(new KModuleRegisterableItemsFactory(kieContainer, kmoduleUnit.getKsessionName()));
+                .registerableItemsFactory(new KModuleRegisterableItemsFactory(kieContainer, 
+                        kmoduleUnit.getKsessionName(), auditEventBuilder));
         
         
         commonDeploy(unit, deployedUnit, builder.get());

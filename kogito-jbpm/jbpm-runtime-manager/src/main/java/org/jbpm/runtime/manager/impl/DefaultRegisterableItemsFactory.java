@@ -9,6 +9,8 @@ import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
+import org.jbpm.process.audit.event.AuditEventBuilder;
+import org.jbpm.process.audit.event.DefaultAuditEventBuilderImpl;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
@@ -24,6 +26,8 @@ import org.kie.internal.task.api.EventService;
 
 public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFactory {
 
+    private AuditEventBuilder auditBuilder = new DefaultAuditEventBuilderImpl();
+    
     @Override
     public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
         Map<String, WorkItemHandler> defaultHandlers = new HashMap<String, WorkItemHandler>();
@@ -43,6 +47,7 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
         // register JPAWorkingMemoryDBLogger
         AbstractAuditLogger logger = AuditLoggerFactory.newJPAInstance((EntityManagerFactory) 
                 runtime.getKieSession().getEnvironment().get(EnvironmentName.ENTITY_MANAGER_FACTORY));
+        logger.setBuilder(getAuditBuilder());
         defaultListeners.add(logger);
         // add any custom listeners
         defaultListeners.addAll(super.getProcessEventListeners(runtime));
@@ -93,5 +98,15 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
             });
         }
         return humanTaskHandler;
+    }
+
+
+    public AuditEventBuilder getAuditBuilder() {
+        return auditBuilder;
+    }
+
+
+    public void setAuditBuilder(AuditEventBuilder auditBuilder) {
+        this.auditBuilder = auditBuilder;
     }    
 }

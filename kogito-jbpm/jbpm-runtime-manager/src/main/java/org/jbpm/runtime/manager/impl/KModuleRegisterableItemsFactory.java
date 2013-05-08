@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.util.CDIHelper;
+import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -27,11 +28,20 @@ public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFac
     private KieContainer kieContainer;
     private String ksessionName;
     
+    
     public KModuleRegisterableItemsFactory(KieContainer kieContainer,
             String ksessionName) {
         super();
         this.kieContainer = kieContainer;
         this.ksessionName = ksessionName;
+    }
+    
+    public KModuleRegisterableItemsFactory(KieContainer kieContainer,
+            String ksessionName, AuditEventBuilder auditBuilder) {
+        super();
+        this.kieContainer = kieContainer;
+        this.ksessionName = ksessionName;
+        setAuditBuilder(auditBuilder);
     }
 
     @Override
