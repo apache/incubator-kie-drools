@@ -20,7 +20,10 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -34,7 +37,7 @@ public class MapGlobalResolver
 
     private static final long serialVersionUID = 510l;
 
-    private Map map;
+    private Map<String,Object> map;
     
     private Globals delegate;
 
@@ -59,7 +62,19 @@ public class MapGlobalResolver
     public void setDelegate(Globals delegate) {
         this.delegate = delegate;
     }
-    
+
+    public Collection<String> getGlobalKeys() {
+        if ( delegate == null ) {
+            return Collections.unmodifiableCollection(map.keySet());
+        } else if ( delegate != null && map.size() == 0 ) {
+            return Collections.unmodifiableCollection( ((MapGlobalResolver) delegate).map.keySet() );
+        } else {
+            Collection<String> combined = new HashSet<String>( map.keySet() );
+            combined.addAll( ((MapGlobalResolver) delegate).map.keySet() );
+            return Collections.unmodifiableCollection( combined );
+        }
+    }
+
     public Object get(String identifier) {
         return resolveGlobal( identifier );
     }
@@ -81,14 +96,23 @@ public class MapGlobalResolver
                       value );
     }
 
-    public Entry[] getGlobals() {
-        return (Entry[]) this.map.entrySet().toArray(new Entry[this.map.size()]);
+    public Entry<String,Object>[] getGlobals() {
+        if ( delegate == null ) {
+            return (Entry[]) this.map.entrySet().toArray(new Entry[this.map.size()]);
+        } else if ( delegate != null && map.size() == 0 ) {
+            Map<String,Object> delegateMap = ((MapGlobalResolver) delegate).map;
+            return (Entry[]) delegateMap.entrySet().toArray(new Entry[delegateMap.size()]);
+        } else {
+            Map<String,Object> combined = new HashMap<String,Object>( ((MapGlobalResolver) delegate).map );
+            combined.putAll( map );
+            return (Entry[]) combined.entrySet().toArray(new Entry[combined.size()]);
+        }
     }
     
     public GlobalResolver clone() {
-        Map clone = new HashMap();
+        Map<String,Object> clone = new HashMap<String,Object>();
         
-        for ( Entry entry : getGlobals() ) {
+        for ( Entry<String,Object> entry : getGlobals() ) {
             clone.put( entry.getKey(), entry.getValue() );
         }
         return new MapGlobalResolver( clone );
