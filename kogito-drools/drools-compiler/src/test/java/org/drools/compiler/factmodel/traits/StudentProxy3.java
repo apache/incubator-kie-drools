@@ -76,6 +76,10 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
         return object;
     }
 
+    public boolean isTop() {
+        return false;
+    }
+
     @Override
     public String getTraitName() {
         return traitType;

@@ -85,6 +85,10 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
         return this;
     }
 
+    public boolean isTop() {
+        return false;
+    }
+
     @Override
     public String toString() {
         return "StudentImpl{" +

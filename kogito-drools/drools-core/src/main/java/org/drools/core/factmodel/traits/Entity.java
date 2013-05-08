@@ -49,9 +49,6 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
     }
 
     public Map<String, Object> _getDynamicProperties() {
-//        if ( __$$dynamic_properties_map$$ == null ) {
-//            __$$dynamic_properties_map$$ = new HashMap<String,Object>(5) ;
-//        }
         return  __$$dynamic_properties_map$$;
     }
 
@@ -67,9 +64,6 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
 
 
     public Map<String, Thing<Entity>> _getTraitMap() {
-//        if ( __$$dynamic_traits_map$$ == null ) {
-//            __$$dynamic_traits_map$$ = new VetoableTypedMap( new HashMap<String, Thing>(5) );
-//        }
         return __$$dynamic_traits_map$$;
     }
 
@@ -110,10 +104,16 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
     }
 
     public Collection<Thing> getMostSpecificTraits() {
+        if ( __$$dynamic_traits_map$$ == null ) {
+            return Collections.EMPTY_LIST;
+        }
         return ((TraitTypeMap) __$$dynamic_traits_map$$).getMostSpecificTraits();
     }
 
     public BitSet getCurrentTypeCode() {
+        if ( __$$dynamic_traits_map$$ == null ) {
+            return null;
+        }
         return ((TraitTypeMap) __$$dynamic_traits_map$$).getCurrentTypeCode();
     }
 
@@ -139,5 +139,13 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
     public void _setBottomTypeCode( BitSet bottomTypeCode ) {
         ((TraitTypeMap) __$$dynamic_traits_map$$).setBottomCode( bottomTypeCode );
     }
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "id='" + id + '\'' +
+                '}';
+    }
+
 }
 

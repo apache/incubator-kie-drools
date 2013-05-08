@@ -391,7 +391,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         builtinTypes.put( Match.class.getCanonicalName(),
                           activationType );
 
-        TypeDeclaration thingType = new TypeDeclaration( Thing.class.getName() );
+        TypeDeclaration thingType = new TypeDeclaration( Thing.class.getSimpleName() );
         thingType.setKind( TypeDeclaration.Kind.TRAIT );
         thingType.setTypeClass( Thing.class );
         builtinTypes.put( Thing.class.getCanonicalName(),

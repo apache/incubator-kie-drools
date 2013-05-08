@@ -135,8 +135,7 @@ public class TraitRegistry implements Externalizable {
 
 
     public void addTrait( ClassDefinition trait ) {
-        addTrait(trait.getClassName(), trait);
-        hierarchy.encode( trait.getName(), Arrays.asList(trait.getInterfaces()) );
+        addTrait( trait.getClassName(), trait );
     }
 
 
