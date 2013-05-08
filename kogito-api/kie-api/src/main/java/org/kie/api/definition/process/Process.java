@@ -17,6 +17,7 @@
 package org.kie.api.definition.process;
 
 import org.kie.api.definition.KieDefinition;
+import org.kie.api.io.Resource;
 
 import java.util.Map;
 
@@ -73,4 +74,7 @@ public interface Process
 	 */
     Map<String, Object> getMetaData();
 
+    Resource getResource();
+
+    void setResource( Resource res );
 }
