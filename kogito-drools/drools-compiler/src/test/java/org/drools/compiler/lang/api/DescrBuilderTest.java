@@ -22,6 +22,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -29,6 +30,12 @@ import org.drools.compiler.StockTick;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.Rule;
+import org.drools.core.rule.RuleConditionElement;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -509,7 +516,51 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertEquals( 1, rules );
 
     }
-    
+
+    @Test
+    public void testDumperFromPkg() {
+        //DROOLS-109
+        PackageDescr pkg = DescrFactory.newPackage().name( "org.test" )
+                                       .newRule().name( "org.test" )
+                                       .lhs().and()
+                                       .or()
+                                       .pattern().id( "$x", false ).type( "Integer" ).constraint( "this > 10" ).end()
+                                       .pattern().id( "$x", false ).type( "Integer" ).constraint( "this < 20" ).end()
+                                       .end()
+                                       .pattern().type( "Integer" ).constraint( "this == $x" ).constraint( "this == 42" ).end()
+                                       .end().end()
+                                       .rhs( "" )
+                                       .end()
+                                       .end().getDescr();
+
+        String drl = new DrlDumper().dump( pkg );
+        System.out.println( drl );
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        System.err.println( knowledgeBuilder.getErrors() );
+        assertFalse( knowledgeBuilder.hasErrors() );
+
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+
+        KnowledgePackage rebuiltPkg = knowledgeBuilder.getKnowledgePackages().iterator().next();
+        org.kie.api.definition.rule.Rule rule = rebuiltPkg.getRules().iterator().next();
+        Rule r = ((RuleImpl) rule).getRule();
+
+        assertEquals( 2, r.getLhs().getChildren().size() );
+        Iterator<RuleConditionElement> iter = r.getLhs().getChildren().iterator();
+
+        RuleConditionElement arg1 = iter.next();
+        assertTrue( arg1 instanceof GroupElement && ((GroupElement) arg1).getType() == GroupElement.Type.OR );
+        assertEquals( 2, ((GroupElement) arg1).getChildren().size() );
+
+        RuleConditionElement arg2 = iter.next();
+        assertTrue( arg2 instanceof Pattern);
+
+    }
+
     private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newDescrResource( pkg ),

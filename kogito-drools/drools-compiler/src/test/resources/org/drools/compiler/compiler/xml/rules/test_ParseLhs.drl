@@ -23,13 +23,14 @@ when
     exists( 
     Bar(  )   ) 
     
-    Yada(  )  and
+    (Yada(  )
+     and
+    Bar(  ))
     
-    Bar(  )
-    
-    Zaa(  )  or
-    
-    Foo(  )
+    (Zaa(  )
+     or
+    Foo(  ))
+
     eval( 1==1 ) 
 then
 

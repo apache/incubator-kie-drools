@@ -26,9 +26,9 @@ import org.drools.compiler.lang.descr.ForallDescr;
 
 @foreach{ attr : pkg.attributes }@{attr.name} @{attr.valueString}@end{"\n"}@end{}@if{!pkg.typeDeclarations.isEmpty()}
 
-@foreach{ decl : pkg.typeDeclarations }declare @{decl.typeName}
+@foreach{ decl : pkg.typeDeclarations }declare @{decl.typeName} @if{ decl.superTypes.size() > 0 } extends @foreach{ sup : decl.superTypes } @{sup} @end{','} @end{}
 @foreach{ ann : decl.annotations.values() }    @includeNamed{"annotation"; ann=ann}@end{"\n"}
-@foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @foreach{ann:fld.annotations.values()}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
+@foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @if{fld.initExpr != null}= @{fld.initExpr}@end{} @foreach{ann:fld.annotations.values()}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
 end
 @end{"\n"}@end{}@if{!pkg.functions.isEmpty()}
 
@@ -66,8 +66,8 @@ then
 @comment{***************************************************************
                        CONDITIONAL ELEMENT CHILD TEMPLATE
 ************************************************************************ }
-@declare{"cedchildren"}@foreach{child : list}
-    @includeNamed{"ced"; base=child; root=false} @end{connect}@end{}
+@declare{"cedchildren"}@if{connect!="" && list.size() > 1}(@end{}@foreach{child : list}
+    @includeNamed{"ced"; base=child; root=false} @end{connect}@if{connect!="" && list.size() > 1})@end{}@end{}
 
 @comment{***************************************************************
                        PATTERN SOURCE TEMPLATE
