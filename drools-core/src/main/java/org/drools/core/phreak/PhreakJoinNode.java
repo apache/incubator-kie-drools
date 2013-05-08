@@ -244,7 +244,7 @@ public class PhreakJoinNode {
                     if (childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple) {
                         trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                      rightTuple,
-                                                                     null,
+                                                                     childLeftTuple,
                                                                      null,
                                                                      sink,
                                                                      true));
@@ -262,8 +262,9 @@ public class PhreakJoinNode {
                         // update, childLeftTuple is updated
                         trgLeftTuples.addUpdate(childLeftTuple);
 
+                        LeftTuple nextChildLeftTuple = childLeftTuple.getLeftParentNext();
                         childLeftTuple.reAddRight();
-                        childLeftTuple = childLeftTuple.getLeftParentNext();
+                        childLeftTuple = nextChildLeftTuple;
                     }
                 } else if (childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple) {
                     // delete, childLeftTuple is updated
@@ -363,7 +364,7 @@ public class PhreakJoinNode {
                         trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
                                                                      rightTuple,
                                                                      null,
-                                                                     null,
+                                                                     childLeftTuple,
                                                                      sink,
                                                                      true));
                     } else {
@@ -380,8 +381,9 @@ public class PhreakJoinNode {
                         // update, childLeftTuple is updated
                         trgLeftTuples.addUpdate(childLeftTuple);
 
+                        LeftTuple nextChildLeftTuple = childLeftTuple.getRightParentNext();
                         childLeftTuple.reAddLeft();
-                        childLeftTuple = childLeftTuple.getRightParentNext();
+                        childLeftTuple = nextChildLeftTuple;
                     }
                 } else if (childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple) {
                     // delete, childLeftTuple is updated
