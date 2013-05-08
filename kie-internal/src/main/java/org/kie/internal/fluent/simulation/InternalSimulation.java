@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.internal.fluent;
+package org.kie.internal.fluent.simulation;
 
 import org.kie.api.command.Command;
+import org.kie.internal.fluent.CommandScript;
 import org.kie.internal.simulation.Simulation;
 
 public interface InternalSimulation extends Simulation, CommandScript {
