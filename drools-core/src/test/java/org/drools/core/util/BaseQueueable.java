@@ -21,7 +21,9 @@ import java.util.List;
 import org.drools.core.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.GroupElement;
@@ -40,8 +42,12 @@ public class BaseQueueable
         this.queue = queue;
     }
 
-    public void enqueued(final int index) {
+    public void setIndex(final int index) {
         this.index = index;
+    }
+
+    public int getIndex() {
+        return this.index;
     }
 
     public void dequeue() {
@@ -59,7 +65,7 @@ public class BaseQueueable
         return 0;
     }
 
-    public AgendaGroup getAgendaGroup() {
+    public InternalAgendaGroup getAgendaGroup() {
         return null;
     }
 
@@ -96,14 +102,14 @@ public class BaseQueueable
         return null;
     }
 
-    public boolean isActivated() {
+    public boolean isQueued() {
         return false;
     }
 
     public void remove() {
     }
 
-    public void setActivated(boolean activated) {
+    public void setQueued(boolean activated) {
     }
 
     public void setActivationGroupNode(ActivationGroupNode activationGroupNode) {
@@ -140,7 +146,7 @@ public class BaseQueueable
     }
     
     public boolean isActive() {
-        return isActivated();
+        return isQueued();
     }
 
     public void addBlocked(LogicalDependency node) {
@@ -169,7 +175,11 @@ public class BaseQueueable
      
     }
   
-    public boolean isRuleNetworkEvaluatorActivation() {
+    public boolean isRuleAgendaItem() {
         return false;
-    }    
+    }
+
+    public InternalRuleFlowGroup getRuleFlowGroup() {
+        return null;
+    }
 }

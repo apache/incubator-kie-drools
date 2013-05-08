@@ -538,7 +538,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         System.err.println( knowledgeBuilder.getErrors() );
-        assertFalse( knowledgeBuilder.hasErrors() );
+        assertFalse(  knowledgeBuilder.getErrors().toString(), knowledgeBuilder.hasErrors() );
 
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

@@ -301,11 +301,11 @@ public class EntryPointNode extends ObjectSource
                 while ( rightTuple != null &&
                         (( BetaNode ) rightTuple.getRightTupleSink()).getObjectTypeNode() == cachedNodes[i] ) {
                     modifyPreviousTuples.removeRightTuple();
-                    
+
                     if ( unlinkingEnabled) {
                         rightTuple.setPropagationContext( pctx );
                         BetaMemory bm = BetaNode.getBetaMemory( ( BetaNode ) rightTuple.getRightTupleSink(), wm );
-                        BetaNode.doDeleteRightTuple( rightTuple, wm, bm );                    
+                        BetaNode.doDeleteRightTuple( rightTuple, ( BetaNode ) rightTuple.getRightTupleSink(), wm, bm );
                     } else {
                         (( BetaNode ) rightTuple.getRightTupleSink()).retractRightTuple( rightTuple,
                                                                                          pctx,

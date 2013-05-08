@@ -16,6 +16,8 @@
 
 package org.drools.core.util;
 
+import org.drools.core.common.InternalRuleFlowGroup;
+
 public class LongQueueable extends BaseQueueable
     implements
     Comparable {

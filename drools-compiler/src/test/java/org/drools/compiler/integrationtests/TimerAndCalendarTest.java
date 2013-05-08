@@ -30,10 +30,12 @@ import org.drools.core.rule.Package;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -45,60 +47,49 @@ import org.kie.api.time.SessionClock;
 
 public class TimerAndCalendarTest extends CommonTestMethodBase {
     
-    @Test
+    @Test(timeout=10000)
     public void testDuration() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase("test_Duration.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
+        ksession.setGlobal( "list",
                                  list );
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        final FactHandle brieHandle = workingMemory.insert( brie );
+        final FactHandle brieHandle = (FactHandle) ksession.insert( brie );
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
         // now check for update
         assertEquals( 0,
                       list.size() );
 
-        // sleep for 300ms
-        Thread.sleep( 300 );
+        // sleep for 500ms
+        Thread.sleep( 500 );
 
+
+        ksession.fireAllRules();
         // now check for update
         assertEquals( 1,
                       list.size() );
-
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDurationWithNoLoop() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration_with_NoLoop.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase("test_Duration_with_NoLoop.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
+        ksession.setGlobal( "list",
                                  list );
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        final FactHandle brieHandle = workingMemory.insert( brie );
+        final FactHandle brieHandle = (FactHandle) ksession.insert( brie );
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
         // now check for update
         assertEquals( 0,
@@ -107,12 +98,13 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         // sleep for 300ms
         Thread.sleep( 300 );
 
+        ksession.fireAllRules();
         // now check for update
         assertEquals( 1,
                       list.size() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDurationMemoryLeakonRepeatedUpdate() throws Exception {
         String str = "";
         str += "package org.drools.compiler.test\n";
@@ -150,26 +142,20 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                       session.getAgenda().getScheduledActivations().length );
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testFireRuleAfterDuration() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FireRuleAfterDuration.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase("test_FireRuleAfterDuration.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
+        ksession.setGlobal( "list",
                                  list );
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        final FactHandle brieHandle = workingMemory.insert( brie );
+        final FactHandle brieHandle = (FactHandle) ksession.insert( brie );
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
         // now check for update
         assertEquals( 0,
@@ -178,7 +164,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         // sleep for 300ms
         Thread.sleep( 300 );
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
         // now check for update
         assertEquals( 2,
@@ -186,7 +172,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testNoProtocolIntervalTimer() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -198,23 +184,13 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "  list.add(\"fired\"); \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
+
         List list = new ArrayList();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
         timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
         
@@ -244,7 +220,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( 3, list.size() );
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testIntervalTimer() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -256,20 +232,11 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "  list.add(\"fired\"); \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
 
@@ -302,27 +269,27 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( 3, list.size() );
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testUnknownProtocol() throws Exception {
         wrongTimerExpression("xyz:30");
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testMissingColon() throws Exception {
         wrongTimerExpression("int 30");
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testMalformedExpression() throws Exception {
         wrongTimerExpression("30s s30");
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testMalformedIntExpression() throws Exception {
         wrongTimerExpression("int 30s");
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testMalformedCronExpression() throws Exception {
         wrongTimerExpression("cron: 0/30 * * * * *");
     }
@@ -343,7 +310,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertTrue( kbuilder.hasErrors() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testCronTimer() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -355,23 +322,13 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "  list.add(\"fired\"); \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
         Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
@@ -400,7 +357,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( 2, list.size() );
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testCalendarNormalRuleSingleCalendar() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -413,14 +370,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "  list.add(\"fired\"); \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
-        }
 
         Calendar calFalse = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
@@ -433,15 +382,14 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 return true;
             }
         };
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
         Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
@@ -472,7 +420,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( 3, list.size() );
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testCalendarNormalRuleMultipleCalendars() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -485,14 +433,11 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "  list.add(\"fired\"); \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
-        }
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
 
         Calendar calFalse = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
@@ -506,14 +451,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             }
         };
         
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        
         List list = new ArrayList();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
         Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
@@ -547,7 +485,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( 2, list.size() );
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testCalendarsWithCron() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -560,23 +498,13 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "  list.add(\"fired\"); \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
         Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
@@ -619,25 +547,31 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                          
         ksession.fireAllRules();
         timeService.advanceTime( 20, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 1, list.size() );
                       
         timeService.advanceTime( 60, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 1, list.size() );
              
         timeService.advanceTime( 60, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 2, list.size() );
         
         timeService.advanceTime( 60, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 2, list.size() );
 
         timeService.advanceTime( 60, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 3, list.size() );
         
         timeService.advanceTime( 60, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 4, list.size() );
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testCalendarsWithIntervals() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -650,23 +584,13 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "  list.add(\"fired\"); \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
         Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
@@ -709,25 +633,31 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                          
         ksession.fireAllRules();
         timeService.advanceTime( 20, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 1, list.size() );
                       
         timeService.advanceTime( 60, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 1, list.size() );
              
         timeService.advanceTime( 60, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 2, list.size() );
         
         timeService.advanceTime( 60, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 2, list.size() );
 
         timeService.advanceTime( 60, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 3, list.size() );
         
         timeService.advanceTime( 60, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 4, list.size() );
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testCalendarsWithIntervalsAndStartAndEnd() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -740,23 +670,13 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "  list.add(\"fired\"); \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
         DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
         Date date = df.parse( "1-JAN-2010" );
@@ -776,22 +696,27 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( 0, list.size() );
         
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 0, list.size() );
                       
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );  // day 3
+        ksession.fireAllRules();
         assertEquals( 1, list.size() );
              
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 2, list.size() );
         
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5    
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
+        ksession.fireAllRules();
         assertEquals( 3, list.size() );
 
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 3, list.size() );
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testCalendarsWithIntervalsAndStartAndLimit() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -804,23 +729,13 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "  list.add(\"fired\"); \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        conf.setOption(ClockTypeOption.get("pseudo"));
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
         
         List list = new ArrayList();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
         DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
         Date date = df.parse( "1-JAN-2010" );
@@ -840,22 +755,27 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( 0, list.size() );
         
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 0, list.size() );
                       
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3  
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3
+        ksession.fireAllRules();
         assertEquals( 1, list.size() );
              
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 2, list.size() );
         
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5    
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
+        ksession.fireAllRules();
         assertEquals( 3, list.size() );
 
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        ksession.fireAllRules();
         assertEquals( 3, list.size() );
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testCalendarsWithCronAndStartAndEnd() throws Exception {
         Locale defaultLoc = Locale.getDefault();
         try {
@@ -870,24 +790,14 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             str += "then \n";
             str += "  list.add(\"fired\"); \n";
             str += "end  \n";
-    
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                          ResourceType.DRL );
-    
-            if ( kbuilder.hasErrors() ) {
-                System.out.println( kbuilder.getErrors() );
-                assertTrue( kbuilder.hasErrors() );
-            }
-            
-            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-    
+
             KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-            conf.setOption( ClockTypeOption.get( "pseudo" ) );
+            conf.setOption(ClockTypeOption.get("pseudo"));
+
+            KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+            KieSession ksession = createKnowledgeSession(kbase, conf);
             
             List list = new ArrayList();
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
             PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
             DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
             Date date = df.parse( "1-JAN-2010" );
@@ -907,25 +817,30 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             assertEquals( 0, list.size() );
             
             timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
             assertEquals( 0, list.size() );
                           
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3  
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3
+            ksession.fireAllRules();
             assertEquals( 1, list.size() );
                  
             timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
             assertEquals( 2, list.size() );
             
-            timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5  
+            timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
+            ksession.fireAllRules();
             assertEquals( 3, list.size() );
     
             timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
             assertEquals( 3, list.size() );
         } finally {
             Locale.setDefault( defaultLoc );
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testCalendarsWithCronAndStartAndLimit() throws Exception {
         Locale defaultLoc = Locale.getDefault();
         try {
@@ -941,23 +856,13 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             str += "  list.add(\"fired\"); \n";
             str += "end  \n";
 
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                          ResourceType.DRL );
-
-            if ( kbuilder.hasErrors() ) {
-                System.out.println( kbuilder.getErrors() );
-                assertTrue( kbuilder.hasErrors() );
-            }
-
-            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
             KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-            conf.setOption( ClockTypeOption.get( "pseudo" ) );
+            conf.setOption(ClockTypeOption.get("pseudo"));
+
+            KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+            KieSession ksession = createKnowledgeSession(kbase, conf);
 
             List list = new ArrayList();
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
             PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
             DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
             Date date = df.parse( "1-JAN-2010" );
@@ -977,66 +882,61 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             assertEquals( 0, list.size() );
 
             timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
             assertEquals( 0, list.size() );
 
             timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3
+            ksession.fireAllRules();
             assertEquals( 1, list.size() );
 
             timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
             assertEquals( 2, list.size() );
 
             timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5
+            ksession.fireAllRules();
             assertEquals( 3, list.size() );
 
             timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+            ksession.fireAllRules();
             assertEquals( 3, list.size() );
         } finally {
             Locale.setDefault( defaultLoc );
         }
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testTimerWithNot() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Timer_With_Not.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KnowledgeBase kbase = loadKnowledgeBase("test_Timer_With_Not.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        workingMemory.fireAllRules();
-        Thread.sleep( 1500 );
-
+        ksession.fireAllRules();
+        Thread.sleep( 200 );
+        ksession.fireAllRules();
+        Thread.sleep( 200 );
+        ksession.fireAllRules();
         // now check that rule "wrap A" fired once, creating one B
-        assertEquals( 2, workingMemory.getFactCount() );
+        assertEquals( 2, ksession.getFactCount() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testHaltWithTimer() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Halt_With_Timer.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final StatefulSession workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase("test_Halt_With_Timer.drl");
+        final KieSession ksession = createKnowledgeSession(kbase);
 
         new Thread( new Runnable(){
-            public void run(){ workingMemory.fireUntilHalt(); }
+            public void run(){ ksession.fireUntilHalt(); }
             } ).start();
         Thread.sleep( 1000 );
-        FactHandle handle = workingMemory.insert( "halt" );
+        FactHandle handle = (FactHandle) ksession.insert( "halt" );
         Thread.sleep( 2000 );
 
         // now check that rule "halt" fired once, creating one Integer
-        assertEquals( 2, workingMemory.getFactCount() );
-        workingMemory.retract( handle );
+        assertEquals( 2, ksession.getFactCount() );
+        ksession.retract( handle );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTimerRemoval() {
         try {
             String str = "package org.drools.compiler.test\n" +
@@ -1044,33 +944,18 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             		"global java.util.List list \n" +
             		"global " + CountDownLatch.class.getName() + " latch\n" + 
                     "rule TimerRule \n" + 
-                    "   timer (int:0 50) \n" + 
+                    "   timer (int:100 50) \n" +
                     "when \n" + 
                     "then \n" +
                     "        //forces it to pause until main thread is ready\n" +
                     "        latch.await(10, TimeUnit.MINUTES); \n" +
                     "        list.add(list.size()); \n" +  
                     " end";
-            
-            final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            // this will parse and compile in one step
-            kbuilder.add(ResourceFactory.newByteArrayResource( str.getBytes()), ResourceType.DRL);
 
-            // Check the builder for errors
-            if (kbuilder.hasErrors()) {
-                System.out.println(kbuilder.getErrors().toString());
-                throw new RuntimeException("Unable to compile \"TimerRule.drl\".");
-            }            
-
-            // get the compiled packages (which are serializable)
-            final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
-
-            // add the packages to a knowledgebase (deploy the knowledge packages).
-            final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            kbase.addKnowledgePackages(pkgs);
+            KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+            KieSession ksession = createKnowledgeSession(kbase);
 
             CountDownLatch latch = new CountDownLatch(1);
-            final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
             List list = Collections.synchronizedList( new ArrayList() );
             ksession.setGlobal( "list", list );
             ksession.setGlobal( "latch", latch );            
@@ -1078,10 +963,13 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             ksession.fireAllRules();           
             Thread.sleep(200); // this makes sure it actually enters a rule
             kbase.removeRule("org.drools.compiler.test", "TimerRule");
+            ksession.fireAllRules();
             latch.countDown();
             Thread.sleep(100); // allow the last rule, if we were in the middle of one to actually fire, before clearing
+            ksession.fireAllRules();
             list.clear();
             Thread.sleep(500); // now wait to see if any more fire, they shouldn't
+            ksession.fireAllRules();
             assertEquals( 0, list.size() );
             ksession.dispose();
         } catch (InterruptedException e) {
@@ -1089,8 +977,12 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testIntervalTimerWithLongExpressions() throws Exception {
+        if ( CommonTestMethodBase.preak == PhreakOption.ENABLED ) {
+            return; // phreak does not yet support dynamic salience
+        }
+
         String str = "package org.simple;\n" +
                 "global java.util.List list;\n" +
                 "\n" +
@@ -1115,20 +1007,11 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "  list.add( \"fired\" );\n" +
                 "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        conf.setOption(ClockTypeOption.get("pseudo"));
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
 
         List list = new ArrayList();
 
@@ -1162,8 +1045,12 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     }
 
 
-    @Test
+    @Test(timeout=10000)
     public void testIntervalTimerWithStringExpressions() throws Exception {
+        if ( CommonTestMethodBase.preak == PhreakOption.ENABLED ) {
+            return; // phreak does not yet support dynamic salience
+        }
+
         String str = "package org.simple;\n" +
                 "global java.util.List list;\n" +
                 "\n" +
@@ -1187,20 +1074,11 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "  list.add( \"fired\" );\n" +
                 "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        conf.setOption(ClockTypeOption.get("pseudo"));
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
 
         List list = new ArrayList();
 
@@ -1233,10 +1111,8 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( 3, list.size() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testIntervalTimerExpressionWithOr() throws Exception {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        
         String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
@@ -1252,17 +1128,11 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                       + "    foo.setId( 'xxx' );\n"
                       + "end\n" + "\n";
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( text.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
+        KieSession ksession = createKnowledgeSession(kbase, conf);
         
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
         timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
@@ -1286,23 +1156,37 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 0, list.size() );
 
-        timeService.advanceTime( 900, TimeUnit.MILLISECONDS );
+        timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertEquals( fact1, list.get( 0 ) );
+
+        timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
-        assertEquals( fact1, list.get( 0 ) );
         assertEquals( fact1, list.get( 1 ) );
-        
-        timeService.advanceTime( 5000, TimeUnit.MILLISECONDS );
+
+        timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() ); // did not change, repeat-limit kicked in
+
+        timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 3, list.size() );
+        assertEquals( fact3, list.get( 2 ) );
+
+        timeService.advanceTime( 1000, TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
         assertEquals( 4, list.size() );
-        assertEquals( fact3, list.get( 2 ) );
-        assertEquals( fact3, list.get( 3 ) );  
+        assertEquals( fact3, list.get( 3 ) );
+
+        timeService.advanceTime( 1000, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 4, list.size() ); // did not change, repeat-limit kicked in
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testExprTimeRescheduled() throws Exception {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        
         String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
@@ -1313,17 +1197,11 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                       + "    list.add( f1 );\n"
                       + "end\n" + "\n";
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( text.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
+        KieSession ksession = createKnowledgeSession(kbase, conf);
         
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
         timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
@@ -1340,44 +1218,56 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 0, list.size() );
 
-        timeService.advanceTime( 2600, TimeUnit.MILLISECONDS );
+        timeService.advanceTime( 1100, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertEquals( fact1, list.get( 0 ) );
+
+        timeService.advanceTime( 1100, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
+        assertEquals( fact1, list.get( 1 ) );
+
+        timeService.advanceTime( 400, TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
         assertEquals( 3, list.size() );
-        assertEquals( fact1, list.get( 0 ) );
-        assertEquals( fact1, list.get( 1 ) );
         assertEquals( fact1, list.get( 2 ) );
         list.clear();
-        
+
         fact1.setField2( 300 );
-        fact1.setField4( 2000 );     
+        fact1.setField4( 2000 );
         ksession.update(  fh, fact1 );
-        
+
         // 100 has passed of the 1000, from the previous schedule
-        // so that should be deducted from the 300 delay above, meaning 
+        // so that should be deducted from the 300 delay above, meaning
         //  we only need to increment another 250
         timeService.advanceTime( 250, TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
         assertEquals( 1, list.size() );
-        assertEquals( fact1, list.get( 0 ) );   
-        list.clear();        
-        
+        assertEquals( fact1, list.get( 0 ) );
+        list.clear();
+
         timeService.advanceTime( 1000, TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
-        assertEquals( 0, list.size() );  
-        
+        assertEquals( 0, list.size() );
+
         timeService.advanceTime( 700, TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
-        assertEquals( 0, list.size() );   
-        
+        assertEquals( 0, list.size() );
+
         timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );             
+        assertEquals( 1, list.size() );
         
     }    
     
     
-    @Test @Ignore // TODO: fails randomly FIXME
+    @Test(timeout=10000)
     public void testHaltAfterSomeTimeThenRestart() throws Exception {
+        if ( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+            return; // fails randomly for Rete
+        }
+
         String drl = "package org.kie.test;" +
                 "global java.util.List list; \n" +
                 "\n" +
@@ -1412,15 +1302,10 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "  list.add( -5 ); \n" +
                 "end \n"
                 ;
-        
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new ByteArrayResource( drl.getBytes() ) );
-        final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final StatefulSession ksession = ruleBase.newStatefulSession();
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        final KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -1430,28 +1315,35 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         } ).start();
         Thread.sleep( 250 );
 
+        assertEquals( java.util.Arrays.asList( 0, 0, 0 ), list );
+
         ksession.insert( "halt" );
         ksession.insert( "trigger" );
         Thread.sleep( 300 );
+        assertEquals( java.util.Arrays.asList( 0, 0, 0 ), list );
 
         new Thread( new Runnable(){
             public void run(){ ksession.fireUntilHalt(); }
         } ).start();
         Thread.sleep( 200 );
 
-        assertEquals( java.util.Arrays.asList( 0, 0, 0, 5, 0, 0, 0, -5, 0, 0 ), list );
+        assertEquals( java.util.Arrays.asList( 0, 0, 0, 5, 0, -5, 0, 0 ), list );
     }
 
 
 
-    @Test @Ignore // TODO: fix random failures
+    @Test(timeout=10000)
     public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
+        if ( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+            return; // fails randomly for Rete
+        }
+
         String drl = "package org.kie.test;" +
                 "global java.util.List list; \n" +
                 "\n" +
                 "\n" +
                 "rule FireAtWill\n" +
-                "timer(int:0 100)\n" +
+                "   timer(int:0 100)\n" +
                 "when  \n" +
                 "  eval(true)" +
                 "  String( this == \"trigger\" )" +
@@ -1468,28 +1360,25 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "\n"
                 ;
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new ByteArrayResource( drl.getBytes() ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final StatefulSession ksession = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        final KieSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        FactHandle handle = ksession.insert( "trigger" );
+        FactHandle handle = (FactHandle) ksession.insert( "trigger" );
         new Thread( new Runnable(){
             public void run(){ ksession.fireUntilHalt(); }
         } ).start();
         Thread.sleep( 150 );
+        assertEquals( 2, list.size() ); // delay 0, repeat after 100
+        assertEquals( java.util.Arrays.asList( 0, 0 ), list );
 
         ksession.insert( "halt" );
 
         Thread.sleep( 200 );
         ksession.retract( handle );
+        assertEquals( 2, list.size() ); // halted, no more rule firing
 
         new Thread( new Runnable(){
             public void run(){ ksession.fireUntilHalt(); }

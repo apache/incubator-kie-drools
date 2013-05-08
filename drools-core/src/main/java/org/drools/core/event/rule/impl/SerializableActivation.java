@@ -27,6 +27,7 @@ import java.util.List;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
+import org.drools.core.spi.Activation;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
@@ -49,7 +50,7 @@ public class SerializableActivation
     public SerializableActivation(Match activation) {
         this.rule = activation.getRule();
         this.factHandles = activation.getFactHandles();
-        this.propgationContext = activation.getPropagationContext();
+        this.propgationContext = ((Activation)activation).getPropagationContext();
         if ( activation instanceof AgendaItem ) {
             declarations = ((org.drools.core.reteoo.RuleTerminalNode)((AgendaItem)activation).getTuple().getLeftTupleSink()).getDeclarations();
         } else if ( activation instanceof SerializableActivation ) {
@@ -57,7 +58,7 @@ public class SerializableActivation
         } else {
             throw new RuntimeException("Unable to get declarations " + activation);
         }
-        this.active = activation.isActive();
+        this.active = ((Activation)activation).isQueued();
     }
 
     public void readExternal(ObjectInput in) throws IOException,

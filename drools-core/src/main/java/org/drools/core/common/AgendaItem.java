@@ -17,10 +17,7 @@
 package org.drools.core.common;
 
 import org.drools.core.FactHandle;
-import org.drools.core.phreak.RuleInstanceAgendaItem;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.Queueable;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
@@ -28,9 +25,11 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.Queueable;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 
 import java.io.Externalizable;
@@ -45,59 +44,53 @@ import java.util.List;
  * Item entry in the <code>Agenda</code>.
  */
 public class AgendaItem
-    implements
-    Activation,
-    Queueable,
-    Externalizable {
+        implements
+        Activation,
+        Queueable,
+        Externalizable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     private static final long serialVersionUID = 510l;
-
-    /** The tuple. */
-    private LeftTuple tuple;
-
-    /** The salience */
-    private int salience;
-
-    /** Used for sequential mode */
-    private int sequenence;
-
-    /** Rule terminal node, gives access to SubRule **/
-    private TerminalNode rtn;
-
-    /** The propagation context */
-    private PropagationContext context;
-
-    /** The activation number */
-    private long activationNumber;
-
-    private int index;
-
-    private LinkedList<LogicalDependency> justified;
-
-    private LinkedList<LogicalDependency> blocked;
-
-    private LinkedList<LinkedListEntry<LogicalDependency>> blockers;
-
-    private boolean activated;
-
-    private InternalAgendaGroup agendaGroup;
-
-    private ActivationGroupNode activationGroupNode;
-
-    private ActivationNode activationNode;
-
-    private InternalFactHandle factHandle;
-
-    private transient boolean canceled;
-
-    private boolean matched;
-
-    private ActivationUnMatchListener activationUnMatchListener;
-
-    private RuleInstanceAgendaItem ruleInstanceAgendaItem;
+    /**
+     * The tuple.
+     */
+    private           LeftTuple                                      tuple;
+    /**
+     * The salience
+     */
+    private           int                                            salience;
+    /**
+     * Used for sequential mode
+     */
+    private           int                                            sequenence;
+    /**
+     * Rule terminal node, gives access to SubRule *
+     */
+    private           TerminalNode                                   rtn;
+    /**
+     * The propagation context
+     */
+    private           PropagationContext                             context;
+    /**
+     * The activation number
+     */
+    private           long                                           activationNumber;
+    private volatile  int                                            index;
+    private volatile  boolean                                        queued;
+    private           LinkedList<LogicalDependency>                  justified;
+    private           LinkedList<LogicalDependency>                  blocked;
+    private           LinkedList<LinkedListEntry<LogicalDependency>> blockers;
+    private           InternalAgendaGroup                            agendaGroup;
+    private           InternalRuleFlowGroup                          ruleFlowGroup;
+    private           ActivationGroupNode                            activationGroupNode;
+    private           ActivationNode                                 activationNode;
+    private           InternalFactHandle                             factHandle;
+    private transient boolean                                        canceled;
+    private           boolean                                        matched;
+    private           ActivationUnMatchListener                      activationUnMatchListener;
+    private           RuleAgendaItem                                 ruleAgendaItem;
 
     // ------------------------------------------------------------
     // Constructors
@@ -110,16 +103,19 @@ public class AgendaItem
     /**
      * Construct.
      *
-     * @param tuple
-     *            The tuple.
-     * @param ruleInstanceAgendaItem
+     * @param tuple          The tuple.
+     * @param ruleAgendaItem
+     * @param agendaGroup
+     * @param ruleFlowGroup
      */
     public AgendaItem(final long activationNumber,
                       final LeftTuple tuple,
                       final int salience,
                       final PropagationContext context,
                       final TerminalNode rtn,
-                      RuleInstanceAgendaItem ruleInstanceAgendaItem) {
+                      final RuleAgendaItem ruleAgendaItem,
+                      InternalAgendaGroup agendaGroup,
+                      InternalRuleFlowGroup ruleFlowGroup) {
         this.tuple = tuple;
         this.context = context;
         this.salience = salience;
@@ -127,7 +123,10 @@ public class AgendaItem
         this.activationNumber = activationNumber;
         this.index = -1;
         this.matched = true;
-        this.ruleInstanceAgendaItem = ruleInstanceAgendaItem;
+        this.ruleAgendaItem = ruleAgendaItem;
+        this.agendaGroup = agendaGroup;
+        this.ruleFlowGroup = ruleFlowGroup;
+
     }
 
     // ------------------------------------------------------------
@@ -174,7 +173,7 @@ public class AgendaItem
     public int getSalience() {
         return this.salience;
     }
-    
+
     public void setSalience(int salience) {
         this.salience = salience;
     }
@@ -195,8 +194,8 @@ public class AgendaItem
         this.factHandle = factHandle;
     }
 
-    public RuleInstanceAgendaItem getRuleInstanceAgendaItem() {
-        return ruleInstanceAgendaItem;
+    public RuleAgendaItem getRuleAgendaItem() {
+        return ruleAgendaItem;
     }
 
     /*
@@ -207,84 +206,84 @@ public class AgendaItem
     public long getActivationNumber() {
         return this.activationNumber;
     }
-    
+
     public void addBlocked(final LogicalDependency dep) {
         // Adds the blocked to the blockers list
-        if ( this.blocked == null ) {
+        if (this.blocked == null) {
             this.blocked = new LinkedList<LogicalDependency>();
         }
 
-        this.blocked.add( dep );
+        this.blocked.add(dep);
 
         // now ad the blocker to the blocked's list - we need to check that references are null first
-        AgendaItem blocked = (AgendaItem)dep.getJustified();
-        if ( blocked.blockers == null ) {
+        AgendaItem blocked = (AgendaItem) dep.getJustified();
+        if (blocked.blockers == null) {
             blocked.blockers = new LinkedList<LinkedListEntry<LogicalDependency>>();
-            blocked.blockers.add( dep.getJustifierEntry() );
-        } else if ( dep.getJustifierEntry().getNext() == null && dep.getJustifierEntry().getPrevious() == null && blocked.getBlockers().getFirst() != dep.getJustifierEntry() ) {
-            blocked.blockers.add( dep.getJustifierEntry() );
+            blocked.blockers.add(dep.getJustifierEntry());
+        } else if (dep.getJustifierEntry().getNext() == null && dep.getJustifierEntry().getPrevious() == null && blocked.getBlockers().getFirst() != dep.getJustifierEntry()) {
+            blocked.blockers.add(dep.getJustifierEntry());
         }
     }
-    
-    public void removeAllBlockersAndBlocked(DefaultAgenda agenda){
-        if ( this.blockers != null ) {
+
+    public void removeAllBlockersAndBlocked(DefaultAgenda agenda) {
+        if (this.blockers != null) {
             // Iterate and remove this node's logical dependency list from each of it's blockers
-            for ( LinkedListEntry<LogicalDependency> node = blockers.getFirst(); node != null; node = node.getNext() ) {
+            for (LinkedListEntry<LogicalDependency> node = blockers.getFirst(); node != null; node = node.getNext()) {
                 LogicalDependency dep = node.getObject();
-                dep.getJustifier().getBlocked().remove( dep );                
+                dep.getJustifier().getBlocked().remove(dep);
             }
-        }  
+        }
         this.blockers = null;
-        
-        if ( this.blocked != null ) {
+
+        if (this.blocked != null) {
             // Iterate and remove this node's logical dependency list from each of it's blocked
-            for ( LogicalDependency dep = blocked.getFirst(); dep != null; ) {
+            for (LogicalDependency dep = blocked.getFirst(); dep != null; ) {
                 LogicalDependency tmp = dep.getNext();
-                removeBlocked( dep );
-                AgendaItem justified = ( AgendaItem ) dep.getJustified();
-                if (justified.getBlockers().isEmpty() ) {
-                    if ( ruleInstanceAgendaItem == null ) {
+                removeBlocked(dep);
+                AgendaItem justified = (AgendaItem) dep.getJustified();
+                if (justified.getBlockers().isEmpty()) {
+                    if (ruleAgendaItem == null) {
                         // the match is no longer blocked, so stage it
-                        agenda.getStageActivationsGroup().addActivation( justified );
+                        agenda.getStageActivationsGroup().addActivation(justified);
                     } else {
-                        if ( !ruleInstanceAgendaItem.isActivated() ) {
+                        if (!ruleAgendaItem.isQueued()) {
                             // Make sure the rule evaluator is on the agenda, to be evaluated
-                            agenda.addActivation(ruleInstanceAgendaItem);
+                            agenda.addActivation(ruleAgendaItem);
                         }
-                        ruleInstanceAgendaItem.getRuleExecutor().getLeftTupleList().add( justified.getTuple() );
+                        ruleAgendaItem.getRuleExecutor().getLeftTupleList().add(justified.getTuple());
                     }
-                }                
+                }
                 dep = tmp;
             }
         }
         this.blocked = null;
     }
-    
+
     public void removeBlocked(final LogicalDependency dep) {
-        this.blocked.remove( dep );
-        
-        AgendaItem blocked = (AgendaItem)dep.getJustified();
-        blocked.blockers.remove( dep.getJustifierEntry() );
+        this.blocked.remove(dep);
+
+        AgendaItem blocked = (AgendaItem) dep.getJustified();
+        blocked.blockers.remove(dep.getJustifierEntry());
     }
-    
+
+    public LinkedList<LogicalDependency> getBlocked() {
+        return this.blocked;
+    }
+
     public void setBlocked(LinkedList<LogicalDependency> justified) {
         this.blocked = justified;
-    }        
-    
-    public LinkedList<LogicalDependency> getBlocked() {
-        return  this.blocked;
-    } 
-    
+    }
+
     public LinkedList<LinkedListEntry<LogicalDependency>> getBlockers() {
-        return  this.blockers;
-    }    
+        return this.blockers;
+    }
 
     public void addLogicalDependency(final LogicalDependency node) {
-        if ( this.justified == null ) {
+        if (this.justified == null) {
             this.justified = new LinkedList<LogicalDependency>();
         }
 
-        this.justified.add( node );
+        this.justified.add(node);
     }
 
     public LinkedList<LogicalDependency> getLogicalDependencies() {
@@ -295,16 +294,16 @@ public class AgendaItem
         this.justified = justified;
     }
 
-    public boolean isActivated() {
-        return this.activated;
+    public boolean isQueued() {
+        return this.queued;
     }
 
-    public void setActivated(final boolean activated) {
-        this.activated = activated;
+    public void setQueued(final boolean queued) {
+        this.queued = queued;
     }
 
-    public String toString() {                
-        return "[Activation rule=" + this.rtn.getRule().getName() + ", act#=" + this.activationNumber + ", salience="+ this.salience + ", tuple=" + this.tuple + "]";
+    public String toString() {
+        return "[Activation rule=" + this.rtn.getRule().getName() + ", act#=" + this.activationNumber + ", salience=" + this.salience + ", tuple=" + this.tuple + "]";
     }
 
     /*
@@ -313,40 +312,40 @@ public class AgendaItem
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(final Object object) {
-        if ( object == this ) {
+        if (object == this) {
             return true;
         }
 
-        if ( !(object instanceof AgendaItem) ) {
+        if (!(object instanceof AgendaItem)) {
             return false;
         }
 
         final AgendaItem otherItem = (AgendaItem) object;
 
-        return (this.rtn.getRule().equals( otherItem.getRule() ) && this.tuple.equals( otherItem.getTuple() ));
+        return (this.rtn.getRule().equals(otherItem.getRule()) && this.tuple.equals(otherItem.getTuple()));
     }
 
     /**
      * Return the hashCode of the
      * <code>TupleKey<code> as the hashCode of the AgendaItem
+     *
      * @return
      */
     public int hashCode() {
         return this.tuple.hashCode();
     }
 
-    public void enqueued(final int index) {
+    public void setIndex(final int index) {
         this.index = index;
     }
 
     public void dequeue() {
-        if ( this.agendaGroup != null ) {
-            this.agendaGroup.remove( this );
+        if (this.agendaGroup != null) {
+            this.agendaGroup.remove(this);
         }
-        this.activated = false;
-        this.index = -1;
+        this.queued = false;
     }
-    
+
     public int getIndex() {
         return this.index;
     }
@@ -363,13 +362,17 @@ public class AgendaItem
         this.activationGroupNode = activationNode;
     }
 
-    public AgendaGroup getAgendaGroup() {
+    public InternalAgendaGroup getAgendaGroup() {
         return this.agendaGroup;
     }
 
-    public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
-        this.agendaGroup = agendaGroup;
+    public InternalRuleFlowGroup getRuleFlowGroup() {
+        return this.ruleFlowGroup;
     }
+
+//    public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
+//        this.agendaGroup = agendaGroup;
+//    }
 
     public ActivationNode getActivationNode() {
         return this.activationNode;
@@ -382,12 +385,11 @@ public class AgendaItem
     public GroupElement getSubRule() {
         return this.rtn.getSubRule();
     }
-    
+
     public TerminalNode getTerminalNode() {
         return this.rtn;
     }
-        
-    
+
     public ActivationUnMatchListener getActivationUnMatchListener() {
         return activationUnMatchListener;
     }
@@ -398,50 +400,46 @@ public class AgendaItem
 
     public List<FactHandle> getFactHandles() {
         FactHandle[] factHandles = this.tuple.getFactHandles();
-        List<FactHandle> list = new ArrayList<FactHandle>( factHandles.length );
-        for ( FactHandle factHandle : factHandles ) {
+        List<FactHandle> list = new ArrayList<FactHandle>(factHandles.length);
+        for (FactHandle factHandle : factHandles) {
             Object o = ((InternalFactHandle) factHandle).getObject();
-            if ( !(o instanceof QueryElementFactHandle)) {
-                list.add( factHandle );
+            if (!(o instanceof QueryElementFactHandle)) {
+                list.add(factHandle);
             }
         }
-        return Collections.unmodifiableList( list );
+        return Collections.unmodifiableList(list);
     }
-    
+
     public String toExternalForm() {
-        return "[ "+this.getRule().getName()+" active="+this.activated+ " ]";
+        return "[ " + this.getRule().getName() + " active=" + this.queued + " ]";
     }
 
     public List<Object> getObjects() {
         FactHandle[] factHandles = this.tuple.getFactHandles();
-        List<Object> list = new ArrayList<Object>( factHandles.length );
-        for ( FactHandle factHandle : factHandles ) {
+        List<Object> list = new ArrayList<Object>(factHandles.length);
+        for (FactHandle factHandle : factHandles) {
             Object o = ((InternalFactHandle) factHandle).getObject();
             if (!(o instanceof QueryElementFactHandle)) {
-                list.add( o );
+                list.add(o);
             }
         }
-        return Collections.unmodifiableList( list );
+        return Collections.unmodifiableList(list);
     }
 
     public Object getDeclarationValue(String variableName) {
-        Declaration decl = this.rtn.getSubRule().getOuterDeclarations().get( variableName );
-        InternalFactHandle handle = this.tuple.get( decl );
+        Declaration decl = this.rtn.getSubRule().getOuterDeclarations().get(variableName);
+        InternalFactHandle handle = this.tuple.get(decl);
         // need to double check, but the working memory reference is only used for resolving globals, right?
-        return decl.getValue( null, handle.getObject() );
+        return decl.getValue(null, handle.getObject());
     }
 
     public List<String> getDeclarationIds() {
-        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode)this.tuple.getLeftTupleSink()).getDeclarations();
+        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) this.tuple.getLeftTupleSink()).getDeclarations();
         List<String> declarations = new ArrayList<String>();
-        for( Declaration decl : declArray ) {
-            declarations.add( decl.getIdentifier() );
+        for (Declaration decl : declArray) {
+            declarations.add(decl.getIdentifier());
         }
-        return Collections.unmodifiableList( declarations );
-    }
-
-    public boolean isActive() {
-        return isActivated();
+        return Collections.unmodifiableList(declarations);
     }
 
     public boolean isCanceled() {
@@ -459,9 +457,9 @@ public class AgendaItem
     public void setMatched(boolean matched) {
         this.matched = matched;
     }
-    
-    public boolean isRuleNetworkEvaluatorActivation() {
+
+    public boolean isRuleAgendaItem() {
         return false;
-    }    
-    
+    }
+
 }

@@ -297,7 +297,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     	Object o = leftTuple.getObject();
     	if ( o != Boolean.TRUE) {  // would be true due to lock-on-active blocking activation creation
     		AgendaItem match = (AgendaItem) o;       
-	        if ( match != null && match.isActivated() ) {
+	        if ( match != null && match.isQueued() ) {
 	            // already activated, do nothing
 	            // although we need to notify the inserted Activation, as it's declarations may have changed.
 	            agenda.modifyActivation( match, true );
@@ -544,7 +544,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                 scheduled.getJobHandle().setCancel( true );
             }
 
-            if ( activation.isActivated() ) {
+            if ( activation.isQueued() ) {
                 activation.remove();
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
                                                                                                 workingMemory,

@@ -51,7 +51,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.No
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.marshalling.impl.ProtobufMessages.RuleData;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
-import org.drools.core.phreak.RuleInstanceAgendaItem;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -722,13 +722,13 @@ public class ProtobufInputMarshaller {
         private Map<ActivationKey, ProtobufMessages.Activation> dormantActivations;
         private Map<ActivationKey, ProtobufMessages.Activation> rneActivations;
         private Map<ActivationKey, LeftTuple>                   tuplesCache;
-        private Queue<RuleInstanceAgendaItem>                   rneaToFire;
+        private Queue<RuleAgendaItem>                           rneaToFire;
 
         public PBActivationsFilter() {
             this.dormantActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ProtobufMessages.Activation>();
             this.rneActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ProtobufMessages.Activation>();
             this.tuplesCache = new HashMap<ProtobufInputMarshaller.ActivationKey, LeftTuple>();
-            this.rneaToFire = new ConcurrentLinkedQueue<RuleInstanceAgendaItem>();
+            this.rneaToFire = new ConcurrentLinkedQueue<RuleAgendaItem>();
         }
 
         public Map<ActivationKey, ProtobufMessages.Activation> getDormantActivationsMap() {
@@ -739,10 +739,10 @@ public class ProtobufInputMarshaller {
                               PropagationContext context,
                               InternalWorkingMemory workingMemory,
                               TerminalNode rtn) {
-            if (activation.isRuleNetworkEvaluatorActivation()) {
+            if (activation.isRuleAgendaItem()) {
                 ActivationKey key = PersisterHelper.createActivationKey(activation.getRule().getPackageName(), activation.getRule().getName(), activation.getTuple());
                 if (!this.rneActivations.containsKey(key)) {
-                    rneaToFire.add((RuleInstanceAgendaItem) activation);
+                    rneaToFire.add((RuleAgendaItem) activation);
                 }
                 return true;
             } else {
@@ -763,10 +763,10 @@ public class ProtobufInputMarshaller {
         }
 
         public void fireRNEAs(final InternalWorkingMemory wm) {
-            RuleInstanceAgendaItem rnea = null;
+            RuleAgendaItem rnea = null;
             while ((rnea = rneaToFire.poll()) != null) {
                 rnea.remove();
-                rnea.setActivated(false);
+                rnea.setQueued(false);
                 rnea.getRuleExecutor().evaluateNetwork(wm, 0, -1);
             }
         }

@@ -113,13 +113,16 @@ public class SlidingLengthWindow
                                                                                       null,
                                                                                       previous );
             WindowTupleList list = (WindowTupleList) memory.events.get( previous );
-            for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
+            //for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
+            for( WindowTuple tuple = list.getFirstWindowTuple(); tuple != null;  ) {
+                WindowTuple next = tuple.getWindowNext();
                 tuple.setPropagationContext(pctx);
                 tuple.getRightTupleSink().retractRightTuple(tuple,
                                                             pctx,
                                                             workingMemory);
                 pctx.evaluateActionQueue(workingMemory);
-                tuple.unlinkFromRightParent();
+                //tuple.unlinkFromRightParent();
+                tuple = next;
             }
 //            Commented out, for phreak development
 //            for( WindowTuple tuple = list.getFirstWindowTuple(); tuple != null;  ) {

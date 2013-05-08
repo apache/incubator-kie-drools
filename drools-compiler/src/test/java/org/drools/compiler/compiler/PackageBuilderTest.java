@@ -42,7 +42,9 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.LogicalDependency;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JaninoJavaCompiler;
@@ -1407,11 +1409,11 @@ public class PackageBuilderTest extends DroolsTestCase {
             return null;
         }
 
-        public boolean isActivated() {
+        public boolean isQueued() {
             return false;
         }
 
-        public void setActivated( final boolean activated ) {
+        public void setQueued(final boolean activated) {
         }
 
         public ActivationGroupNode getActivationGroupNode() {
@@ -1425,7 +1427,11 @@ public class PackageBuilderTest extends DroolsTestCase {
             return this.subrule;
         }
 
-        public AgendaGroup getAgendaGroup() {
+        public InternalAgendaGroup getAgendaGroup() {
+            return null;
+        }
+
+        public InternalRuleFlowGroup getRuleFlowGroup() {
             return null;
         }
 
@@ -1464,7 +1470,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
         
         public boolean isActive() {
-            return isActivated();
+            return isQueued();
         }
 
         public void addBlocked(LogicalDependency node) {
@@ -1492,7 +1498,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         public void setMatched(boolean matched) {
         }
 
-        public boolean isRuleNetworkEvaluatorActivation() {
+        public boolean isRuleAgendaItem() {
             return false;
         }            
     }

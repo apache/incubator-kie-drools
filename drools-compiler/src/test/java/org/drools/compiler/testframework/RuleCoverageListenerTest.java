@@ -3,6 +3,8 @@ package org.drools.compiler.testframework;
 import java.util.HashSet;
 import java.util.List;
 
+import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.spi.Consequence;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -94,7 +96,11 @@ class MockActivation
         return 0;
     }
 
-    public AgendaGroup getAgendaGroup() {
+    public InternalAgendaGroup getAgendaGroup() {
+        return null;
+    }
+
+    public InternalRuleFlowGroup getRuleFlowGroup() {
         return null;
     }
 
@@ -130,14 +136,14 @@ class MockActivation
         return null;
     }
 
-    public boolean isActivated() {
+    public boolean isQueued() {
         return false;
     }
 
     public void remove() {
     }
 
-    public void setActivated(boolean activated) {
+    public void setQueued(boolean activated) {
     }
 
     public void setActivationGroupNode(ActivationGroupNode activationGroupNode) {
@@ -174,7 +180,7 @@ class MockActivation
     }
     
     public boolean isActive() {
-        return isActivated();
+        return isQueued();
     }
 
     public void addBlocked(LogicalDependency node) {
@@ -205,7 +211,7 @@ class MockActivation
         // TODO Auto-generated method stub
     }
 
-    public boolean isRuleNetworkEvaluatorActivation() {
+    public boolean isRuleAgendaItem() {
         return false;
     }        
 

@@ -15,6 +15,10 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.TimerNode;
+import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.LinkedList;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -65,6 +69,7 @@ public class RuleNetworkEvaluator {
     private static PhreakAccumulateNode   pAccNode    = new PhreakAccumulateNode();
     private static PhreakBranchNode       pBranchNode = new PhreakBranchNode();
     private static PhreakQueryNode        pQueryNode  = new PhreakQueryNode();
+    private static PhreakTimerNode        pTimerNode  = new PhreakTimerNode();
     private static PhreakRuleTerminalNode pRtNode     = new PhreakRuleTerminalNode();
 
     private static int cycle = 0;
@@ -75,7 +80,7 @@ public class RuleNetworkEvaluator {
 
     }
 
-    public int evaluateNetwork(PathMemory pmem, InternalWorkingMemory wm, RuleExecutor executor) {
+    public int evaluateNetwork(PathMemory pmem, LinkedList<StackEntry> outerStack, RuleExecutor executor, InternalWorkingMemory wm) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
 
         int smemIndex = 0;
@@ -110,7 +115,7 @@ public class RuleNetworkEvaluator {
         }
 
         LinkedList<StackEntry> stack = new LinkedList<StackEntry>();
-        eval1(liaNode, pmem, (LeftTupleSink) node, nodeMem, smems, smemIndex, srcTuples, wm, stack, visitedRules, true, executor);
+        outerEval(liaNode, pmem, (LeftTupleSink) node, nodeMem, smems, smemIndex, srcTuples, wm, stack, outerStack, visitedRules, true, executor);
 
         return 0;
     }
@@ -144,93 +149,99 @@ public class RuleNetworkEvaluator {
         return offset;
     }
 
-    public void eval1(LeftInputAdapterNode liaNode,
-                      PathMemory rmem,
-                      NetworkNode node,
-                      Memory nodeMem,
-                      SegmentMemory[] smems,
-                      int smemIndex,
-                      LeftTupleSets trgTuples,
-                      InternalWorkingMemory wm,
-                      LinkedList<StackEntry> stack,
-                      Set<String> visitedRules,
-                      boolean processRian,
-                      RuleExecutor executor) {
+    public void outerEval(LeftInputAdapterNode liaNode,
+                          PathMemory rmem,
+                          NetworkNode node,
+                          Memory nodeMem,
+                          SegmentMemory[] smems,
+                          int smemIndex,
+                          LeftTupleSets trgTuples,
+                          InternalWorkingMemory wm,
+                          LinkedList<StackEntry> stack,
+                          LinkedList<StackEntry> outerStack,
+                          Set<String> visitedRules,
+                          boolean processRian,
+                          RuleExecutor executor) {
+        innerEval(liaNode, rmem, node, nodeMem, smems, smemIndex, trgTuples, wm, stack, outerStack, visitedRules, processRian, executor);
         while (true) {
-            eval2(liaNode, rmem, node, nodeMem, smems, smemIndex, trgTuples, wm, stack, visitedRules, processRian, executor);
-
             // eval
             if (!stack.isEmpty()) {
                 StackEntry entry = stack.removeLast();
-
-                node = entry.getNode();
-                nodeMem = entry.getNodeMem();
-                trgTuples = entry.getTrgTuples();
-                if (node.getType() == NodeTypeEnums.QueryElementNode) {
-                    // copy across the results, if any from the query node memory
-                    trgTuples.addAll(((QueryElementNodeMemory) nodeMem).getResultLeftTuples());
-                }
-
-                LeftTupleSinkNode sink = entry.getSink();
-                rmem = entry.getRmem();
-
-                smems = entry.getSmems();
-                smemIndex = entry.getSmemIndex();
-                visitedRules = entry.getVisitedRules();
-                if (NodeTypeEnums.isBetaNode(node)) {
-                    // queued beta nodes do not want their ria node evaluated, otherwise there is recursion
-                    processRian = false;
-                } else {
-                    processRian = true;
-                }
-
-                if (entry.isResumeFromNextNode()) {
-                    SegmentMemory smem = smems[smemIndex];
-                    if (node != smem.getTipNode()) {
-                        // get next node and node memory in the segment
-                        LeftTupleSink nextSink = sink.getNextLeftTupleSinkNode();
-                        if (nextSink == null) {
-                            node = sink;
-                        } else {
-                            // there is a nested subnetwork, take out path
-                            node = nextSink;
-                        }
-
-                        nodeMem = nodeMem.getNext();
-                    } else {
-                        // Reached end of segment, start on new segment.
-                        SegmentPropagator.propagate(smem,
-                                                    trgTuples,
-                                                    wm);
-                        smem = smems[++smemIndex];
-                        trgTuples = smem.getStagedLeftTuples();
-                        node = (LeftTupleSink) smem.getRootNode();
-                        nodeMem = smem.getNodeMemories().getFirst();
-                    }
-                }
-
-                if (log.isTraceEnabled()) {
-                    int offset = getOffset(node);
-                    log.trace("{} Resume {} {}", indent(offset), node.toString(), trgTuples.toStringSizes());
-                }
+                evalStackEntry(entry, stack, outerStack, executor, wm);
             } else {
                 return; // stack is empty return;
             }
         }
     }
 
-    public void eval2(LeftInputAdapterNode liaNode,
-                      PathMemory rmem,
-                      NetworkNode node,
-                      Memory nodeMem,
-                      SegmentMemory[] smems,
-                      int smemIndex,
-                      LeftTupleSets trgTuples,
-                      InternalWorkingMemory wm,
-                      LinkedList<StackEntry> stack,
-                      Set<String> visitedRules,
-                      boolean processRian,
-                      RuleExecutor executor) {
+    public void evalStackEntry(StackEntry entry, LinkedList<StackEntry> stack, LinkedList<StackEntry> outerStack, RuleExecutor executor, InternalWorkingMemory wm) {
+        NetworkNode node = entry.getNode();
+        Memory nodeMem = entry.getNodeMem();
+        LeftTupleSets trgTuples = entry.getTrgTuples();
+        if (node.getType() == NodeTypeEnums.QueryElementNode) {
+            // copy across the results, if any from the query node memory
+            trgTuples.addAll(((QueryElementNodeMemory) nodeMem).getResultLeftTuples());
+        }
+
+        LeftTupleSinkNode sink = entry.getSink();
+        PathMemory rmem = entry.getRmem();
+
+        SegmentMemory[] smems = entry.getSmems();
+        int smemIndex = entry.getSmemIndex();
+        Set<String> visitedRules = entry.getVisitedRules();
+        boolean processRian;
+        if (NodeTypeEnums.isBetaNode(node)) {
+            // queued beta nodes do not want their ria node evaluated, otherwise there is recursion
+            processRian = false;
+        } else {
+            processRian = true;
+        }
+
+        if (entry.isResumeFromNextNode()) {
+            SegmentMemory smem = smems[smemIndex];
+            if (node != smem.getTipNode()) {
+                // get next node and node memory in the segment
+                LeftTupleSink nextSink = sink.getNextLeftTupleSinkNode();
+                if (nextSink == null) {
+                    node = sink;
+                } else {
+                    // there is a nested subnetwork, take out path
+                    node = nextSink;
+                }
+
+                nodeMem = nodeMem.getNext();
+            } else {
+                // Reached end of segment, start on new segment.
+                SegmentPropagator.propagate(smem,
+                                            trgTuples,
+                                            wm);
+                smem = smems[++smemIndex];
+                trgTuples = smem.getStagedLeftTuples();
+                node = (LeftTupleSink) smem.getRootNode();
+                nodeMem = smem.getNodeMemories().getFirst();
+            }
+        }
+
+        if (log.isTraceEnabled()) {
+            int offset = getOffset(node);
+            log.trace("{} Resume {} {}", indent(offset), node.toString(), trgTuples.toStringSizes());
+        }
+        innerEval(entry.getLiaNode(), rmem, node, nodeMem, smems, smemIndex, trgTuples, wm, stack, outerStack, visitedRules, processRian, executor);
+    }
+
+    public void innerEval(LeftInputAdapterNode liaNode,
+                          PathMemory rmem,
+                          NetworkNode node,
+                          Memory nodeMem,
+                          SegmentMemory[] smems,
+                          int smemIndex,
+                          LeftTupleSets trgTuples,
+                          InternalWorkingMemory wm,
+                          LinkedList<StackEntry> stack,
+                          LinkedList<StackEntry> outerStack,
+                          Set<String> visitedRules,
+                          boolean processRian,
+                          RuleExecutor executor) {
         LeftTupleSets srcTuples;
         SegmentMemory smem = smems[smemIndex];
         while (true) {
@@ -260,10 +271,21 @@ public class RuleNetworkEvaluator {
             }
 
             LeftTupleSets stagedLeftTuples;
-            if (node == smem.getTipNode() && smem.getFirst() != null) {
+            if (node == smem.getTipNode() ) {
                 // we are about to process the segment tip, allow it to merge insert/update/delete clashes
-                // Can happen if the next segments have not yet been initialized
-                stagedLeftTuples = smem.getFirst().getStagedLeftTuples();
+                if ( smem.isEmpty() ) {
+                    // Can happen if the next segments have not yet been initialized, only when there are no right inputs
+                    synchronized ( smem ) {
+                        if ( smem.isEmpty() ) {
+                            SegmentUtilities.createChildSegments( wm,
+                                                                  smem,
+                                                                  ((LeftTupleSource) node).getSinkPropagator() );
+                        }
+                        stagedLeftTuples = smem.getFirst().getStagedLeftTuples();
+                    }
+                } else {
+                    stagedLeftTuples = smem.getFirst().getStagedLeftTuples();
+                }
             } else {
                 stagedLeftTuples = null;
             }
@@ -272,178 +294,66 @@ public class RuleNetworkEvaluator {
 
             trgTuples = new LeftTupleSets();
 
+
             if (NodeTypeEnums.isBetaNode(node)) {
-                BetaNode betaNode = (BetaNode) node;
-
-                BetaMemory bm = null;
-                AccumulateMemory am = null;
-                if (NodeTypeEnums.AccumulateNode == node.getType()) {
-                    am = (AccumulateMemory) nodeMem;
-                    bm = am.getBetaMemory();
-                } else {
-                    bm = (BetaMemory) nodeMem;
-                }
-
-                if (processRian && betaNode.isRightInputIsRiaNode()) {
-                    // if the subnetwork is nested in this segment, it will create srcTuples containing
-                    // peer LeftTuples, suitable for the node in the main path.
-                    doRiaNode( wm, liaNode, rmem, srcTuples,
-                              betaNode, sink, smems, smemIndex, nodeMem, bm, stack, visitedRules, executor);
-                    return; // return here is doRiaNode queues the evaluation on the stack, which is necessary to handled nested query nodes
-                }
-
-                if ( !bm.getDequeu().isEmpty() ) {
-                    // If there are no staged RightTuples, then process the Dequeue, popping entries, until another insert/expiration clash
-                    RightTupleSets rightTuples = bm.getStagedRightTuples();
-                    if ( rightTuples.isEmpty() ) {
-                        // nothing staged, so now process the Dequeu
-                        Deque<RightTuple>  que = bm.getDequeu();
-                        while ( !que.isEmpty() ) {
-                            RightTuple rightTuple = que.peekFirst();
-                            if ( rightTuple.getPropagationContext().getType() == PropagationContext.EXPIRATION &&
-                                 // Cannot pop an expired fact, if the insert/update has not yet been evaluated.
-                                 rightTuple.getStagedType() != LeftTuple.NONE ) {
-                                break;
-                            }
-
-                            switch( rightTuple.getPropagationContext().getType() ) {
-                                case PropagationContext.INSERTION:
-                                case PropagationContext.RULE_ADDITION:
-                                    rightTuples.addInsert( rightTuple );
-                                    break;
-                                case PropagationContext.MODIFICATION:
-                                    rightTuples.addUpdate( rightTuple );
-                                    break;
-                                case PropagationContext.DELETION:
-                                case PropagationContext.EXPIRATION:
-                                case PropagationContext.RULE_REMOVAL:
-                                     rightTuples.addDelete( rightTuple );
-                                   break;
-                            }
-                            que.removeFirst();
-                        }
-                    }
-
-                    if ( !bm.getDequeu().isEmpty() ) {
-                        // The DeQue is not empty, add StackEntry for reprocessing.
-                        StackEntry stackEntry = new StackEntry(liaNode,node, sink, rmem, nodeMem, smems,
-                                                               smemIndex, trgTuples, visitedRules, false);
-                        stack.add(stackEntry);
-                    }
-                }
-
-                switch (node.getType()) {
-                    case NodeTypeEnums.JoinNode: {
-                        pJoinNode.doNode((JoinNode) node, sink, bm,
-                                         wm, srcTuples, trgTuples, stagedLeftTuples);
-                        break;
-                    }
-                    case NodeTypeEnums.NotNode: {
-                        pNotNode.doNode((NotNode) node, sink, bm,
-                                        wm, srcTuples, trgTuples, stagedLeftTuples);
-                        break;
-                    }
-                    case NodeTypeEnums.ExistsNode: {
-                        pExistsNode.doNode((ExistsNode) node, sink, bm,
-                                           wm, srcTuples, trgTuples, stagedLeftTuples);
-                        break;
-                    }
-                    case NodeTypeEnums.AccumulateNode: {
-                        pAccNode.doNode((AccumulateNode) node, sink, am, wm,
-                                        srcTuples, trgTuples, stagedLeftTuples);
-                        break;
-                    }
+                boolean exitInnerEval = evalBetaNode(liaNode, rmem, node, nodeMem, smems, smemIndex, trgTuples, wm, stack, outerStack, visitedRules, processRian, executor, srcTuples, stagedLeftTuples, sink);
+                if ( exitInnerEval ) {
+                    return; // RiaNode exists and has placed StackEntry on the Stack
                 }
             } else {
                 switch (node.getType()) {
                     case NodeTypeEnums.EvalConditionNode: {
-                        pEvalNode.doNode((EvalConditionNode) node, (EvalMemory) nodeMem, sink,
-                                         wm, srcTuples, trgTuples, stagedLeftTuples);
+                        if ( stagedLeftTuples != null ) {
+                            synchronized ( stagedLeftTuples ) {
+                                pEvalNode.doNode((EvalConditionNode) node, (EvalMemory) nodeMem, sink,
+                                                 wm, srcTuples, trgTuples, stagedLeftTuples);
+                            }
+                        } else {
+                            pEvalNode.doNode((EvalConditionNode) node, (EvalMemory) nodeMem, sink,
+                                             wm, srcTuples, trgTuples, stagedLeftTuples);
+                        }
                         break;
 
                     }
                     case NodeTypeEnums.FromNode: {
-                        pFromNode.doNode((FromNode) node, (FromMemory) nodeMem, sink,
-                                         wm, srcTuples, trgTuples, stagedLeftTuples);
+                        if ( stagedLeftTuples != null ) {
+                            synchronized ( stagedLeftTuples ) {
+                                pFromNode.doNode((FromNode) node, (FromMemory) nodeMem, sink,
+                                                 wm, srcTuples, trgTuples, stagedLeftTuples);
+                            }
+                        } else {
+                            pFromNode.doNode((FromNode) node, (FromMemory) nodeMem, sink,
+                                             wm, srcTuples, trgTuples, stagedLeftTuples);
+                        }
                         break;
                     }
                     case NodeTypeEnums.QueryElementNode: {
-                        QueryElementNodeMemory qmem = (QueryElementNodeMemory) nodeMem;
-
-                        if (srcTuples.isEmpty() && qmem.getResultLeftTuples().isEmpty()) {
-                            // no point in evaluating query element, and setting up stack, if there is nothing to process
-                            break;
+                        boolean exitInnerEval =  evalQueryNode(liaNode, rmem, node, nodeMem, smems, smemIndex, trgTuples, wm, stack, visitedRules, srcTuples, sink);
+                        if ( exitInnerEval ) {
+                            return; // RiaNode exists and has placed StackEntry on the Stack
                         }
-
-                        QueryElementNode qnode = (QueryElementNode) node;
-                        if (visitedRules == Collections.<String>emptySet()) {
-                            visitedRules = new HashSet<String>();
-                        }
-                        visitedRules.add(qnode.getQueryElement().getQueryName());
-
-
-                        // result tuples can happen when reactivity occurs inside of the query, prior to evaluation
-                        // we will need special behaviour to add the results again, when this query result resumes
-                        trgTuples.addAll(qmem.getResultLeftTuples());
-
-                        if (!srcTuples.isEmpty()) {
-                            // only process the Query Node if there are src tuples
-                            StackEntry stackEntry = new StackEntry(liaNode,node, sink, rmem, nodeMem, smems,
-                                                                   smemIndex, trgTuples, visitedRules, true);
-
-                            stack.add(stackEntry);
-
-                            pQueryNode.doNode(qnode, (QueryElementNodeMemory) nodeMem, stackEntry, sink,
-                                              wm, srcTuples);
-
-                            SegmentMemory qsmem = ((QueryElementNodeMemory) nodeMem).getQuerySegmentMemory();
-                            List<PathMemory> qrmems = qsmem.getPathMemories();
-
-                            // Build the evaluation information for each 'or' branch
-                            // Exception fo the last, place each entry on the stack, the last one evaluate now.
-                            for (int i = qrmems.size() - 1; i >= 0; i--) {
-                                PathMemory qrmem = qrmems.get(i);
-
-                                rmem = qrmem;
-                                smems = qrmem.getSegmentMemories();
-                                smemIndex = 0;
-                                smem = smems[smemIndex]; // 0
-                                liaNode = (LeftInputAdapterNode) smem.getRootNode();
-
-                                if (liaNode == smem.getTipNode()) {
-                                    // segment only has liaNode in it
-                                    // nothing is staged in the liaNode, so skip to next segment
-                                    smem = smems[++smemIndex]; // 1
-                                    node = smem.getRootNode();
-                                    nodeMem = smem.getNodeMemories().getFirst();
-                                } else {
-                                    // lia is in shared segment, so point to next node
-                                    node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
-                                    nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
-                                }
-
-                                trgTuples = smem.getStagedLeftTuples();
-
-                                if (i != 0 && !trgTuples.isEmpty()) {
-                                    // All entries except the last should be placed on the stack for evaluation later.
-                                    stackEntry = new StackEntry(liaNode,node, null, rmem,
-                                                                nodeMem, smems, smemIndex,
-                                                                trgTuples, visitedRules, false);
-                                    if (log.isTraceEnabled()) {
-                                        int offset = getOffset(stackEntry.getNode());
-                                        log.trace("{} ORQueue branch={} {} {}", indent(offset), i, stackEntry.getNode().toString(), trgTuples.toStringSizes());
-                                    }
-                                    stack.add(stackEntry);
-                                }
+                        break;
+                    }
+                    case NodeTypeEnums.TimerConditionNode: {
+                        if ( stagedLeftTuples != null ) {
+                            synchronized ( stagedLeftTuples ) {
+                                pTimerNode.doNode( (TimerNode) node, (TimerNodeMemory) nodeMem, rmem, sink, wm, srcTuples, trgTuples, stagedLeftTuples);
                             }
-                            processRian = true; //  make sure it's reset, so ria nodes are processed
-                            continue;
+                        } else {
+                            pTimerNode.doNode( (TimerNode) node, (TimerNodeMemory) nodeMem, rmem, sink, wm, srcTuples, trgTuples, stagedLeftTuples);
                         }
                         break;
                     }
                     case NodeTypeEnums.ConditionalBranchNode: {
-                        pBranchNode.doNode((ConditionalBranchNode) node, (ConditionalBranchMemory) nodeMem, sink,
-                                           wm, srcTuples, trgTuples, stagedLeftTuples, executor);
+                        if ( stagedLeftTuples != null ) {
+                            synchronized ( stagedLeftTuples ) {
+                                pBranchNode.doNode((ConditionalBranchNode) node, (ConditionalBranchMemory) nodeMem, sink,
+                                                   wm, srcTuples, trgTuples, stagedLeftTuples, executor);
+                            }
+                        } else {
+                            pBranchNode.doNode((ConditionalBranchNode) node, (ConditionalBranchMemory) nodeMem, sink,
+                                               wm, srcTuples, trgTuples, stagedLeftTuples, executor);
+                        }
                         break;
                     }
                 }
@@ -455,11 +365,15 @@ public class RuleNetworkEvaluator {
                 nodeMem = nodeMem.getNext();
             } else {
                 // Reached end of segment, start on new segment.
-                SegmentPropagator.propagate(smem,
-                                            trgTuples,
-                                            wm);
-                smem = smems[++smemIndex];
-                trgTuples = smem.getStagedLeftTuples();
+                synchronized ( stagedLeftTuples ) {
+                    // end of SegmentMemory, so we know that stagedLeftTuples is not null
+                    SegmentPropagator.propagate(smem,
+                                                trgTuples,
+                                                wm);
+                    smem = smems[++smemIndex];
+                    trgTuples = smem.getStagedLeftTuples().cloneAndReset();
+                }
+
                 if (log.isTraceEnabled()) {
                     log.trace("Segment {}", smemIndex);
                 }
@@ -467,6 +381,171 @@ public class RuleNetworkEvaluator {
                 nodeMem = smem.getNodeMemories().getFirst();
             }
             processRian = true; //  make sure it's reset, so ria nodes are processed
+        }
+    }
+
+    private boolean evalQueryNode(LeftInputAdapterNode liaNode, PathMemory rmem, NetworkNode node, Memory nodeMem, SegmentMemory[] smems, int smemIndex, LeftTupleSets trgTuples, InternalWorkingMemory wm, LinkedList<StackEntry> stack, Set<String> visitedRules, LeftTupleSets srcTuples, LeftTupleSinkNode sink) {
+        QueryElementNodeMemory qmem = (QueryElementNodeMemory) nodeMem;
+
+        if (srcTuples.isEmpty() && qmem.getResultLeftTuples().isEmpty()) {
+            // no point in evaluating query element, and setting up stack, if there is nothing to process
+            return false;
+        }
+
+        QueryElementNode qnode = (QueryElementNode) node;
+        if (visitedRules == Collections.<String>emptySet()) {
+            visitedRules = new HashSet<String>();
+        }
+        visitedRules.add(qnode.getQueryElement().getQueryName());
+
+
+        // result tuples can happen when reactivity occurs inside of the query, prior to evaluation
+        // we will need special behaviour to add the results again, when this query result resumes
+        trgTuples.addAll(qmem.getResultLeftTuples());
+
+        if (!srcTuples.isEmpty()) {
+            // only process the Query Node if there are src tuples
+            StackEntry stackEntry = new StackEntry(liaNode,node, sink, rmem, nodeMem, smems,
+                                                   smemIndex, trgTuples, visitedRules, true);
+
+            stack.add(stackEntry);
+
+            pQueryNode.doNode(qnode, (QueryElementNodeMemory) nodeMem, stackEntry, sink,
+                              wm, srcTuples);
+
+            SegmentMemory qsmem = ((QueryElementNodeMemory) nodeMem).getQuerySegmentMemory();
+            List<PathMemory> qrmems = qsmem.getPathMemories();
+
+            // Build the evaluation information for each 'or' branch
+            for (int i = qrmems.size() - 1; i >= 0; i--) {
+                PathMemory qrmem = qrmems.get(i);
+
+                rmem = qrmem;
+                smems = qrmem.getSegmentMemories();
+                smemIndex = 0;
+                SegmentMemory smem = smems[smemIndex]; // 0
+                liaNode = (LeftInputAdapterNode) smem.getRootNode();
+
+                if (liaNode == smem.getTipNode()) {
+                    // segment only has liaNode in it
+                    // nothing is staged in the liaNode, so skip to next segment
+                    smem = smems[++smemIndex]; // 1
+                    node = smem.getRootNode();
+                    nodeMem = smem.getNodeMemories().getFirst();
+                } else {
+                    // lia is in shared segment, so point to next node
+                    node = liaNode.getSinkPropagator().getFirstLeftTupleSink();
+                    nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
+                }
+
+                trgTuples = smem.getStagedLeftTuples();
+                stackEntry = new StackEntry(liaNode,node, null, rmem,
+                                            nodeMem, smems, smemIndex,
+                                            trgTuples, visitedRules, false);
+                if (log.isTraceEnabled()) {
+                    int offset = getOffset(stackEntry.getNode());
+                    log.trace("{} ORQueue branch={} {} {}", indent(offset), i, stackEntry.getNode().toString(), trgTuples.toStringSizes());
+                }
+                stack.add(stackEntry);
+            }
+        }
+        return true;
+    }
+
+    private boolean evalBetaNode(LeftInputAdapterNode liaNode, PathMemory rmem, NetworkNode node, Memory nodeMem, SegmentMemory[] smems, int smemIndex, LeftTupleSets trgTuples, InternalWorkingMemory wm, LinkedList<StackEntry> stack, LinkedList<StackEntry> outerStack, Set<String> visitedRules, boolean processRian, RuleExecutor executor, LeftTupleSets srcTuples, LeftTupleSets stagedLeftTuples, LeftTupleSinkNode sink) {BetaNode betaNode = (BetaNode) node;
+
+        BetaMemory bm = null;
+        AccumulateMemory am = null;
+        if (NodeTypeEnums.AccumulateNode == node.getType()) {
+            am = (AccumulateMemory) nodeMem;
+            bm = am.getBetaMemory();
+        } else {
+            bm = (BetaMemory) nodeMem;
+        }
+
+        if (processRian && betaNode.isRightInputIsRiaNode()) {
+            // if the subnetwork is nested in this segment, it will create srcTuples containing
+            // peer LeftTuples, suitable for the node in the main path.
+            doRiaNode( wm, liaNode, rmem, srcTuples,
+                      betaNode, sink, smems, smemIndex, nodeMem, bm, stack, outerStack, visitedRules, executor);
+            return true; // return here, doRiaNode queues the evaluation on the stack, which is necessary to handled nested query nodes
+        }
+
+        Deque<RightTuple> que = bm.getDequeu();
+        if ( !que.isEmpty() ) {
+            // If there are no staged RightTuples, then process the Dequeue, popping entries, until another insert/expiration clash
+            RightTupleSets rightTuples = bm.getStagedRightTuples();
+
+            if ( rightTuples.isEmpty()) {
+                RightTuple rightTuple = que.peekFirst();
+                PropagationContext pctx = rightTuple.getPropagationContext();
+                // nothing staged, so now process the Dequeu
+                loop:
+                while ( rightTuple != null && rightTuple.getPropagationContext() == pctx ) {
+                    switch( rightTuple.getPropagationContext().getType() ) {
+                        case PropagationContext.INSERTION:
+                        case PropagationContext.RULE_ADDITION:
+                            rightTuples.addInsert( rightTuple );
+                            break;
+                        case PropagationContext.MODIFICATION:
+                            rightTuples.addUpdate( rightTuple );
+                            break;
+                        case PropagationContext.DELETION:
+                        case PropagationContext.RULE_REMOVAL:
+                             rightTuples.addDelete( rightTuple );
+                        break;
+                        case PropagationContext.EXPIRATION:
+                            // expirations must be handled serially
+                            rightTuples.addDelete( rightTuple );
+                            break loop;
+                    }
+                    que.removeFirst();
+                    rightTuple = que.peekFirst();
+                }
+            }
+
+            if ( !que.isEmpty() ) {
+                // The DeQue is not empty, add StackEntry for reprocessing. Note it uses the outerStack, which means it executes after rule firing
+                StackEntry stackEntry = new StackEntry(liaNode,node, sink, rmem, nodeMem, smems,
+                                                       smemIndex, trgTuples, visitedRules, false);
+                outerStack.add(stackEntry);
+            }
+        }
+
+        if ( stagedLeftTuples != null ) {
+            synchronized ( stagedLeftTuples ) {
+                switchOnDoBetaNode(node, trgTuples, wm, srcTuples, stagedLeftTuples, sink, bm, am);
+            }
+        } else {
+            switchOnDoBetaNode(node, trgTuples, wm, srcTuples, stagedLeftTuples, sink, bm, am);
+        }
+
+
+        return false;
+    }
+
+    private void switchOnDoBetaNode(NetworkNode node, LeftTupleSets trgTuples, InternalWorkingMemory wm, LeftTupleSets srcTuples, LeftTupleSets stagedLeftTuples, LeftTupleSinkNode sink, BetaMemory bm, AccumulateMemory am) {
+        switch (node.getType()) {
+            case NodeTypeEnums.JoinNode: {
+                pJoinNode.doNode((JoinNode) node, sink, bm,
+                                 wm, srcTuples, trgTuples, stagedLeftTuples);
+                break;
+            }
+            case NodeTypeEnums.NotNode: {
+                pNotNode.doNode((NotNode) node, sink, bm,
+                                wm, srcTuples, trgTuples, stagedLeftTuples);
+                break;
+            }
+            case NodeTypeEnums.ExistsNode: {
+                pExistsNode.doNode((ExistsNode) node, sink, bm,
+                                   wm, srcTuples, trgTuples, stagedLeftTuples);
+                break;
+            }
+            case NodeTypeEnums.AccumulateNode: {
+                pAccNode.doNode((AccumulateNode) node, sink, am, wm,
+                                srcTuples, trgTuples, stagedLeftTuples);
+                break;
+            }
         }
     }
 
@@ -481,6 +560,7 @@ public class RuleNetworkEvaluator {
                            Memory nodeMem,
                            BetaMemory bm,
                            LinkedList<StackEntry> stack,
+                           LinkedList<StackEntry> outerStack,
                            Set<String> visitedRules,
                            RuleExecutor executor) {
         RiaPathMemory pathMem = bm.getRiaRuleMemory();
@@ -492,22 +572,6 @@ public class RuleNetworkEvaluator {
             subSmem =  subnetworkSmems[i];
         }
 
-
-//        if (betaNode.getLeftTupleSource().getSinkPropagator().size() == 2) {
-//            // sub network is not part of  share split, so need to handle propagation
-//            // this ensures the first LeftTuple is actually the subnetwork node
-//            // and the main outer network now receives the peer, notice the swap at the end "srcTuples == peerTuples"
-//            LeftTupleSets peerTuples = new LeftTupleSets();
-//            SegmentPropagator.processPeers(srcTuples, peerTuples, betaNode);
-//            // Make sure subnetwork Segment has tuples to process
-//            LeftTupleSets subnetworkStaged = subSmem.getStagedLeftTuples();
-//            subnetworkStaged.addAll(srcTuples);
-//
-//            srcTuples.resetAll();
-//
-//            srcTuples = peerTuples;
-//        }
-
         // Resume the node after the riaNode segment has been processed and the right input memory populated
         StackEntry stackEntry = new StackEntry(liaNode, betaNode, sink, rmem, nodeMem, smems,
                                                smemIndex, srcTuples, visitedRules, false);
@@ -517,12 +581,9 @@ public class RuleNetworkEvaluator {
             log.trace("{} RiaQueue {} {}", indent(offset), betaNode.toString(), srcTuples.toStringSizes());
         }
 
-        //        RightInputAdapterNode riaNode = ( RightInputAdapterNode ) betaNode.getRightInput();
-        //RiaNodeMemory riaNodeMemory = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) betaNode.getRightInput());
-        //LeftTupleSets riaStagedTuples =
-        eval2( liaNode, pathMem, (LeftTupleSink) subSmem.getRootNode(), subSmem.getNodeMemories().getFirst(),
-               subnetworkSmems, subSmem.getPos(),
-               subSmem.getStagedLeftTuples(), wm, stack, visitedRules, true, executor);
+        innerEval(liaNode, pathMem, subSmem.getRootNode(), subSmem.getNodeMemories().getFirst(),
+                  subnetworkSmems, subSmem.getPos(),
+                  subSmem.getStagedLeftTuples(), wm, stack, outerStack, visitedRules, true, executor);
     }
 
     private void doRiaNode2(InternalWorkingMemory wm,

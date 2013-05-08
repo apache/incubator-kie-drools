@@ -25,11 +25,14 @@ import java.util.Date;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.rule.ConditionalElement;
+import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
-public class CronTimer
+public class CronTimer extends BaseTimer
     implements
     Timer,
     Externalizable {
@@ -86,10 +89,20 @@ public class CronTimer
     }
 
 
-    public Trigger createTrigger( Activation item, WorkingMemory wm ) {
-        long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
+    public Trigger createTrigger( Activation item, InternalWorkingMemory wm ) {
+        long timestamp = wm.getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
-        Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
+        Calendars calendars = wm.getCalendars();
+        return createTrigger( timestamp, calendarNames, calendars );
+    }
+
+    public Trigger createTrigger(long timestamp,
+                                 LeftTuple leftTuple,
+                                 DefaultJobHandle jh,
+                                 String[] calendarNames,
+                                 Calendars calendars,
+                                 Declaration[][] declrs,
+                                 InternalWorkingMemory wm) {
         return createTrigger( timestamp, calendarNames, calendars );
     }
 
@@ -133,6 +146,11 @@ public class CronTimer
             if ( other.startTime != null ) return false;
         } else if ( !startTime.equals( other.startTime ) ) return false;
         return true;
+    }
+
+    @Override
+    public ConditionalElement clone() {
+        return new CronTimer(startTime, endTime, repeatLimit, cronExpression) ;
     }
 
 }

@@ -17,7 +17,7 @@
 package org.drools.core.common;
 
 import org.drools.core.Agenda;
-import org.drools.core.phreak.RuleInstanceAgendaItem;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
@@ -49,11 +49,15 @@ public interface InternalAgenda
                                        final int salience,
                                        final PropagationContext context,
                                        final TerminalNode rtn,
-                                       RuleInstanceAgendaItem ruleInstanceAgendaItem);
+                                       RuleAgendaItem ruleAgendaItem,
+                                       InternalAgendaGroup agendaGroup,
+                                       InternalRuleFlowGroup ruleFlowGroup);
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
-                                                         final TerminalNode rtn);
+                                                         final TerminalNode rtn,
+                                                         InternalAgendaGroup agendaGroup,
+                                                         InternalRuleFlowGroup ruleFlowGroup);
     
     public boolean createActivation(final LeftTuple tuple,
                                     final PropagationContext context,
@@ -181,13 +185,15 @@ public interface InternalAgenda
      */
     public ActivationsFilter getActivationsFilter();
         
-    public RuleInstanceAgendaItem createRuleInstanceAgendaItem(final int salience,
-                                                               final PathMemory rs,
-                                                               final TerminalNode rtn);
+    public RuleAgendaItem createRuleAgendaItem(final int salience,
+                                               final PathMemory rs,
+                                               final TerminalNode rtn);
 
-    public RuleInstanceAgendaItem peekNextRule();
+    public RuleAgendaItem peekNextRule();
 
     boolean continueFiring(int fireLimit);
 
     void insertAndStageActivation(AgendaItem activation);
+
+    void addAgendaItemToGroup(AgendaItem item);
 }

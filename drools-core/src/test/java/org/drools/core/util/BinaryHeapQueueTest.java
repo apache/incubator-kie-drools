@@ -1,5 +1,7 @@
 package org.drools.core.util;
 
+import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.spi.Consequence;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -234,12 +236,14 @@ public class BinaryHeapQueueTest {
         Queueable,
         Activation {
 
+
+
         private static int actNo = 1;
 
-        private int        index;
-        private long       activationNumber;
-        private Group      group;
-        private int        salience;
+        private int   index;
+        private long  activationNumber;
+        private Group group;
+        private int   salience;
 
         public Item(Group group,
                     int salience) {
@@ -249,13 +253,13 @@ public class BinaryHeapQueueTest {
         }
 
         public void dequeue() {
-            if ( this.group != null ) {
-                this.group.remove( this );
+            if (this.group != null) {
+                this.group.remove(this);
             }
             this.index = -1;
         }
 
-        public void enqueued(int index) {
+        public void setIndex(int index) {
             this.index = index;
         }
 
@@ -282,7 +286,11 @@ public class BinaryHeapQueueTest {
             return null;
         }
 
-        public AgendaGroup getAgendaGroup() {
+        public InternalAgendaGroup getAgendaGroup() {
+            return null;
+        }
+
+        public InternalRuleFlowGroup getRuleFlowGroup() {
             return null;
         }
 
@@ -311,14 +319,14 @@ public class BinaryHeapQueueTest {
             return null;
         }
 
-        public boolean isActivated() {
+        public boolean isQueued() {
             return false;
         }
 
         public void remove() {
         }
 
-        public void setActivated(boolean arg0) {
+        public void setQueued(boolean arg0) {
         }
 
         public void setActivationGroupNode(ActivationGroupNode arg0) {
@@ -339,7 +347,7 @@ public class BinaryHeapQueueTest {
             return null;
         }
 
-        public List< ? extends FactHandle> getFactHandles() {
+        public List<? extends FactHandle> getFactHandles() {
             return null;
         }
 
@@ -354,9 +362,9 @@ public class BinaryHeapQueueTest {
         public boolean isAdded() {
             return false;
         }
-        
+
         public boolean isActive() {
-            return isActivated();
+            return isQueued();
         }
 
         public void addBlocked(LogicalDependency node) {
@@ -375,7 +383,7 @@ public class BinaryHeapQueueTest {
         public LinkedList getBlockers() {
             return null;
         }
-        
+
         public boolean isMatched() {
             // TODO Auto-generated method stub
             return false;
@@ -383,21 +391,21 @@ public class BinaryHeapQueueTest {
 
         public void setMatched(boolean matched) {
         }
-        
-        public boolean isRuleNetworkEvaluatorActivation() {
+
+        public boolean isRuleAgendaItem() {
             return false;
-        }            
+        }
     }
 
     public static class ItemConflictResolver
-        implements
-        ConflictResolver {
+            implements
+            ConflictResolver {
 
         /**
-           * 
-           */
-        private static final long                serialVersionUID = 1L;
-        public static final ItemConflictResolver INSTANCE         = new ItemConflictResolver();
+         *
+         */
+        private static final long                 serialVersionUID = 1L;
+        public static final  ItemConflictResolver INSTANCE         = new ItemConflictResolver();
 
         public static ItemConflictResolver getInstance() {
             return ItemConflictResolver.INSTANCE;
@@ -408,8 +416,8 @@ public class BinaryHeapQueueTest {
          */
         public final int compare(final Object existing,
                                  final Object adding) {
-            return compare( (Item) existing,
-                            (Item) adding );
+            return compare((Item) existing,
+                           (Item) adding);
         }
 
         public final int compare(final Item existing,
@@ -417,7 +425,7 @@ public class BinaryHeapQueueTest {
             final int s1 = existing.getSalience();
             final int s2 = adding.getSalience();
 
-            if ( s1 != s2 ) {
+            if (s1 != s2) {
                 return s1 - s2;
             }
 

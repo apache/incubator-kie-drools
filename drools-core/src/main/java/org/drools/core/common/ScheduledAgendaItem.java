@@ -40,19 +40,20 @@ public class ScheduledAgendaItem extends AgendaItem
 
     private ScheduledAgendaItem      next;
 
-//
     private InternalAgenda           agenda;
 
     private boolean                  enqueued;
     
-    private JobHandle jobHandle;
+    private JobHandle                jobHandle;
 
     public ScheduledAgendaItem(final long activationNumber,
                                final LeftTuple tuple,
                                final InternalAgenda agenda,
                                final PropagationContext context,
-                               final TerminalNode rtn) {
-        super(activationNumber, tuple, 0, context, rtn, null);
+                               final TerminalNode rtn,
+                               InternalAgendaGroup agendaGroup,
+                               InternalRuleFlowGroup ruleFlowGroup) {
+        super(activationNumber, tuple, 0, context, rtn, null, agendaGroup, ruleFlowGroup);
         this.agenda = agenda;
         this.enqueued = false;
     }

@@ -69,15 +69,15 @@ public class MVELObjectExpression
         expr = unit.getCompiledExpression( runtimeData );
     }
 
-    public Object getValue(final Activation item,
+    public Object getValue(final LeftTuple leftTuple,
                            final Declaration[] declrs,
                            final Rule rule,
-                           final WorkingMemory workingMemory) {
+                           final InternalWorkingMemory wm) {
         VariableResolverFactory factory = unit.getFactory( null, declrs,
-                                                           rule, null, (LeftTuple)item.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver() );
+                                                           rule, null, leftTuple, null, wm, wm.getGlobalResolver() );
         
         // do we have any functions for this namespace?
-        Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
+        Package pkg = wm.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );

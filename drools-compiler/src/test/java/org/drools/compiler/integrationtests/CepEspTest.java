@@ -1216,87 +1216,74 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-//    @Test
-//    public void testSimpleLengthWindowWithQueue() throws Exception {
-//        // read in the source
-//        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-//        conf.setOption( EventProcessingOption.STREAM );
-//        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleLengthWindow.drl" );
-//
-//        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-//        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-//        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
-//
-//        final List results = new ArrayList();
-//
-//        wm.setGlobal( "results",
-//                      results );
-//
-//        EventFactHandle handle1 = (EventFactHandle) wm.insert( new OrderEvent( "1",
-//                                                                               "customer A",
-//                                                                               70 ) );
-//
-//        //        wm  = SerializationHelper.serializeObject(wm);
-//
-//
-//        // assert new data
-//        EventFactHandle handle2 = (EventFactHandle) wm.insert( new OrderEvent( "2",
-//                                                                               "customer A",
-//                                                                               60 ) );
-//
-//        // assert new data
-//        EventFactHandle handle3 = (EventFactHandle) wm.insert( new OrderEvent( "3",
-//                                                                               "customer A",
-//                                                                               50 ) );
-//
-//
-//        // assert new data
-//        EventFactHandle handle4 = (EventFactHandle) wm.insert( new OrderEvent( "4",
-//                                                                               "customer A",
-//                                                                               50 ) );
-//        wm.fireAllRules();
-//
-//        // first event should have expired, making average under the rule threshold, so no additional rule fire
-//        assertEquals( 2,
-//                      results.size() );
-//
-//        assertEquals( 60,
-//                      ((Number) results.get( 0 )).intValue() );
-//
-//        assertEquals( 57.5,
-//                      ((Number) results.get( 1 )).intValue() );
-//
-////        assertEquals( 60,
-////                      ((Number) results.get( 2 )).intValue() );
-//
-////        // assert new data
-////        EventFactHandle handle4 = (EventFactHandle) wm.insert( new OrderEvent( "4",
-////                                                                               "customer A",
-////                                                                               25 ) );
-////
-////        // assert new data
-////        EventFactHandle handle5 = (EventFactHandle) wm.insert( new OrderEvent( "5",
-////                                                                               "customer A",
-////                                                                               70 ) );
-////        //        wm  = SerializationHelper.serializeObject(wm);
-////        wm.fireAllRules();
-////
-////        // still under the threshold, so no fire
-////        assertEquals( 3,
-////                      results.size() );
-////
-////        // assert new data
-////        EventFactHandle handle6 = (EventFactHandle) wm.insert( new OrderEvent( "6",
-////                                                                               "customer A",
-////                                                                               115 ) );
-////        wm.fireAllRules();
-////
-////        assertEquals( 4,
-////                      results.size() );
-////        assertEquals( 70,
-////                      ((Number) results.get( 3 )).intValue() );
-//
-//    }
+    @Test @Ignore
+    public void testSimpleLengthWindowWithQueue() throws Exception {
+        // read in the source
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_SimpleLengthWindow.drl" );
+
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase, sconf );
+
+        final List results = new ArrayList();
+
+        ksession.setGlobal("results",
+                           results);
+
+        EventFactHandle handle1 = (EventFactHandle) ksession.insert( new OrderEvent( "1", "customer A", 80 ) );
+        ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+
+        // assert new data
+        EventFactHandle handle2 = (EventFactHandle) ksession.insert( new OrderEvent( "2", "customer A", 70 ) );
+        ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+        // assert new data
+        EventFactHandle handle3 = (EventFactHandle) ksession.insert( new OrderEvent( "3", "customer A", 60 ) );
+        ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+        // assert new data
+        EventFactHandle handle4 = (EventFactHandle) ksession.insert( new OrderEvent( "4", "customer A", 50 ) );
+        ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+
+        ksession.fireAllRules();
+
+        // first event should have expired, making average under the rule threshold, so no additional rule fire
+        assertEquals( 4,
+                      results.size() );
+
+        assertEquals(80,
+                     ((Number) results.get(0)).intValue());
+
+        assertEquals(75,
+                     ((Number) results.get(1)).intValue());
+
+        assertEquals( 70,
+                      ((Number) results.get( 2 )).intValue() );
+
+        assertEquals( 65,
+                     ((Number) results.get( 3 )).intValue() );
+
+        // assert new data
+        EventFactHandle handle5 = (EventFactHandle) ksession.insert( new OrderEvent( "5", "customer A", 10 ) );
+        ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+        ksession.fireAllRules();
+
+        assertEquals( 4,
+                      results.size() );
+
+        EventFactHandle handle6 = (EventFactHandle) ksession.insert( new OrderEvent( "6", "customer A", 90 ) );
+        ksession  = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
+        ksession.fireAllRules();
+
+        assertEquals( 5,
+                      results.size() );
+        assertEquals( 57,
+                      ((Number) results.get( 4 )).intValue() );
+
+    }
 
 
 
@@ -2117,31 +2104,31 @@ public class CepEspTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
                                                                                null );
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
         SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
         SessionEntryPoint ep = ksession.getEntryPoint( "X" );
 
-        clock.advanceTime( 1000,
-                           TimeUnit.SECONDS );
-        ep.insert( new StockTick( 1,
-                                  "A",
-                                  10,
-                                  clock.getCurrentTime() ) );
-        clock.advanceTime( 8,
-                           TimeUnit.SECONDS );
-        ep.insert( new StockTick( 2,
-                                  "B",
-                                  10,
-                                  clock.getCurrentTime() ) );
-        clock.advanceTime( 8,
-                           TimeUnit.SECONDS );
-        ep.insert( new StockTick( 3,
-                                  "B",
-                                  10,
-                                  clock.getCurrentTime() ) );
-        clock.advanceTime( 8,
-                           TimeUnit.SECONDS );
-        int rules = ksession.fireAllRules();
+        clock.advanceTime( 1000, TimeUnit.SECONDS );
+
+        int rules = 0;
+        ep.insert( new StockTick( 1, "A", 10, clock.getCurrentTime() ) );
+        clock.advanceTime( 8, TimeUnit.SECONDS );
+        //int rules = ksession.fireAllRules();
+        System.out.println( list );
+
+        ep.insert( new StockTick( 2, "B", 10, clock.getCurrentTime() ) );
+        clock.advanceTime( 8, TimeUnit.SECONDS );
+        //rules = ksession.fireAllRules();
+        System.out.println( list );
+
+        ep.insert( new StockTick( 3, "B", 10, clock.getCurrentTime() ) );
+        clock.advanceTime( 8, TimeUnit.SECONDS );
+        rules = ksession.fireAllRules();
+        System.out.println( list );
+
         assertEquals( 3,
                       rules );
     }

@@ -16,12 +16,18 @@
 
 package org.drools.core.time.impl;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.rule.ConditionalElement;
+import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
@@ -31,7 +37,7 @@ import org.kie.api.runtime.Calendars;
  * be one timer attribute. Duration rules should be considered a priority over the one timer rule.
  * So the Timer cannot fire, until the maximum duration has passed.
  */
-public class CompositeMaxDurationTimer
+public class CompositeMaxDurationTimer extends BaseTimer
     implements
     Timer {
 
@@ -57,10 +63,20 @@ public class CompositeMaxDurationTimer
     }
 
 
-    public Trigger createTrigger( Activation item, WorkingMemory wm ) {
+    public Trigger createTrigger( Activation item, InternalWorkingMemory wm ) {
         long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
         Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
+        return createTrigger( timestamp, calendarNames, calendars );
+    }
+
+    public Trigger createTrigger(long timestamp,
+                                 LeftTuple leftTuple,
+                                 DefaultJobHandle jh,
+                                 String[] calendarNames,
+                                 Calendars calendars,
+                                 Declaration[][] declrs,
+                                 InternalWorkingMemory wm) {
         return createTrigger( timestamp, calendarNames, calendars );
     }
 
@@ -88,5 +104,32 @@ public class CompositeMaxDurationTimer
                                durationTimer.getDuration() );
         }
         return result;
+    }
+
+    @Override
+    public ConditionalElement clone() {
+        CompositeMaxDurationTimer clone = new CompositeMaxDurationTimer();
+        if ( durations != null && !durations.isEmpty() ) {
+            for ( DurationTimer timer : durations ) {
+                clone.addDurationTimer(timer);
+            }
+        }
+
+        if ( timer != null) {
+            clone.timer = timer;
+        }
+        return clone;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( durations );
+        out.writeObject( timer );
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        durations = ( List<DurationTimer>  ) in.readObject();
+        timer = ( Timer )in.readObject();
     }
 }

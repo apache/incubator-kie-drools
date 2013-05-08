@@ -8,7 +8,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.*;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.phreak.RuleInstanceAgendaItem;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
@@ -1664,7 +1664,7 @@ public class LinkingTest {
         DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
         InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
         AgendaItem item = (AgendaItem) group.getNext();
-        int count = ((RuleInstanceAgendaItem)item).getRuleExecutor().evaluateNetwork( wm, 0, -1);
+        int count = ((RuleAgendaItem)item).getRuleExecutor().evaluateNetwork( wm, 0, -1);
         //assertEquals(3, count );
         
         wm.fireAllRules();
@@ -1730,7 +1730,7 @@ public class LinkingTest {
 //        DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
 //        InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
 //        AgendaItem item = (AgendaItem) group.getNext();
-//        int count = ((RuleInstanceAgendaItem)item).evaluateNetwork( wm );
+//        int count = ((RuleAgendaItem)item).evaluateNetwork( wm );
 //        //assertEquals(7, count ); // proves we correctly track nested sub network staged propagations
 //                
 //        agenda.addActivation( item, true );
@@ -1744,7 +1744,7 @@ public class LinkingTest {
 //        agenda = ( DefaultAgenda ) wm.getAgenda();
 //        group = (InternalAgendaGroup) agenda.getNextFocus();
 //        item = (AgendaItem) group.getNext();
-//        count = ((RuleInstanceAgendaItem)item).evaluateNetwork( wm );
+//        count = ((RuleAgendaItem)item).evaluateNetwork( wm );
 //        //assertEquals(0, count );        
         
         wm.fireAllRules();

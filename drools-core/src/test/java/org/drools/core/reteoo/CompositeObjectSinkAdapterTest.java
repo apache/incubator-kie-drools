@@ -711,7 +711,7 @@ public class CompositeObjectSinkAdapterTest {
         }
 
         public void assertObject(final InternalFactHandle factHandle,
-                                 final PropagationContext context,
+                                 final PropagationContext pctx,
                                  final InternalWorkingMemory workingMemory) {
         }
 
