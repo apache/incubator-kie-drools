@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-package org.kie.internal.fluent;
+package org.kie.internal.fluent.builder;
 
-public interface FluentKnowledgeBase<T> {
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
+
+public interface KnowledgeBuilderFluent<T> {
     
-    T addKnowledgePackages();
-    
+    T add(Resource resource,
+          ResourceType type);
+
+    T add(Resource resource,
+          ResourceType type,
+          ResourceConfiguration configuration);
+
 }
