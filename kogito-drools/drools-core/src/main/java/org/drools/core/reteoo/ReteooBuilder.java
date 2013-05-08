@@ -254,7 +254,7 @@ public class ReteooBuilder
         final RuleRemovalContext context = new RuleRemovalContext( rule );
         context.setRuleBase( ruleBase );
 
-        if (  ruleBase.getConfiguration().isPhreakEnabled() && !( ReteooRuleBuilder.unlinkingAllowedForRule( rule ) ) ) {
+        if (  ruleBase.getConfiguration().isPhreakEnabled() ) { // && !( ReteooRuleBuilder.unlinkingAllowedForRule( rule ) ) ) {
             context.setUnlinkEnabled( true);
         } else {
             context.setUnlinkEnabled( false );

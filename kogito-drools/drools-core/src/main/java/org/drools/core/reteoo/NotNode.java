@@ -137,15 +137,15 @@ public class NotNode extends BetaNode {
     }
     
     public void assertObject( final InternalFactHandle factHandle,
-                              final PropagationContext context,
+                              final PropagationContext pctx,
                               final InternalWorkingMemory wm ) {
         final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, wm); 
 
         RightTuple rightTuple = createRightTuple( factHandle,
                                                   this,
-                                                  context );
+                                                  pctx);
         
-        rightTuple.setPropagationContext( context );
+        rightTuple.setPropagationContext(pctx);
 
         if ( isUnlinkingEnabled() ) {              
             // strangely we link here, this is actually just to force a network evaluation
@@ -164,7 +164,7 @@ public class NotNode extends BetaNode {
         }     
         
         // NotNodes must always propagate, they never get staged.
-        assertRightTuple(rightTuple, context, wm );        
+        assertRightTuple(rightTuple, pctx, wm );
     }      
 
     public void assertRightTuple( final RightTuple rightTuple,

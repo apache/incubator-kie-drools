@@ -21,6 +21,7 @@ import static org.drools.core.util.BitMaskUtil.intersect;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Deque;
 import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -251,7 +252,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( sm.getTipNode() == liaNode) {
             if ( sm.isEmpty() ) {
                 // liaNode in it's own segment and child segments not yet created
-                SegmentUtilities.createChildSegments( wm, sm, liaNode.getSinkPropagator() );
+                synchronized ( sm ) {
+                    if ( sm.isEmpty() ) {
+                        SegmentUtilities.createChildSegments( wm,
+                                                              sm,
+                                                              liaNode.getSinkPropagator() );
+                    }
+                }
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -291,12 +298,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
             mrc.filter.fireRNEAs( wm );
 
 //            for( PathMemory pm : sm.getPathMemories() ) {
-//                if( pm.getAgendaItem().isActivated() ) {
+//                if( pm.getRuleAgendaItem().isQueued() ) {
 //                    // we need to check if we need to evaluate the network immediately or not
-//                    if( mrc.filter.shouldFire( pm.getAgendaItem() ) ) {
-//                        pm.getAgendaItem().remove();
-//                        pm.getAgendaItem().setActivated( false );
-//                        pm.getAgendaItem().evaluateNetwork( wm, 0, -1 );
+//                    if( mrc.filter.shouldFire( pm.getRuleAgendaItem() ) ) {
+//                        pm.getRuleAgendaItem().remove();
+//                        pm.getRuleAgendaItem().setQueued( false );
+//                        pm.getRuleAgendaItem().evaluateNetwork( wm, 0, -1 );
 //                    }
 //                }
 //            }
@@ -327,9 +334,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( sm.getTipNode() == liaNode ) {
             if ( sm.isEmpty() ) {
                 // liaNode in it's own segment and child segments not yet created
-                SegmentUtilities.createChildSegments( wm,
-                                                      sm,
-                                                      liaNode.getSinkPropagator() );
+                synchronized ( sm ) {
+                    if ( sm.isEmpty() ) {
+                        SegmentUtilities.createChildSegments( wm,
+                                                              sm,
+                                                              liaNode.getSinkPropagator() );
+                    }
+                }
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -384,7 +395,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( sm.getTipNode() == liaNode) {
             if ( sm.isEmpty() ) {
                 // liaNode in it's own segment and child segments not yet created
-                SegmentUtilities.createChildSegments( wm, sm, liaNode.getSinkPropagator() );
+                synchronized ( sm ) {
+                    if ( sm.isEmpty() ) {
+                        SegmentUtilities.createChildSegments( wm,
+                                                              sm,
+                                                              liaNode.getSinkPropagator() );
+                    }
+                }
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -711,17 +728,19 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return new LiaNodeMemory();
     }    
     
-    public static class LiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory { 
-        private int                 counter;
-        
-        private SegmentMemory       segmentMemory;
+    public static class LiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory {
+        private int               counter;
 
-        private long                nodePosMaskBit;     
-        
+        private SegmentMemory     segmentMemory;
+
+        private long              nodePosMaskBit;
+
+        private Deque<RightTuple> dequeu;
+
         public LiaNodeMemory() {
         }
-        
-        
+
+
         public int getCounter() {
             return counter;
         }
@@ -729,11 +748,11 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public int getAndIncreaseCounter() {
             return this.counter++;
         }
-        
+
         public int getAndDecreaseCounter() {
             return this.counter--;
-        }        
-        
+        }
+
         public void setCounter(int counter) {
             this.counter = counter;
         }
@@ -755,24 +774,24 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         public void linkNodeWithoutRuleNotify() {
-            segmentMemory.linkNodeWithoutRuleNotify( nodePosMaskBit );        
-        }        
-        
-        public void linkNode(InternalWorkingMemory wm) {
-            segmentMemory.linkNode( nodePosMaskBit, wm );        
+            segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);
         }
-        
+
+        public void linkNode(InternalWorkingMemory wm) {
+            segmentMemory.linkNode(nodePosMaskBit, wm);
+        }
+
         public void unlinkNode(InternalWorkingMemory wm) {
-            segmentMemory.unlinkNode( nodePosMaskBit, wm );        
+            segmentMemory.unlinkNode(nodePosMaskBit, wm);
         }
 
         public void unlinkNodeWithoutRuleNotify() {
-            segmentMemory.unlinkNodeWithoutRuleNotify( nodePosMaskBit  );
+            segmentMemory.unlinkNodeWithoutRuleNotify(nodePosMaskBit);
         }
 
-        public short getNodeType() {           
+        public short getNodeType() {
             return NodeTypeEnums.LeftInputAdapterNode;
-        }  
+        }
 
     }
 

@@ -11,6 +11,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.LeftTupleList;
 
 /**
@@ -25,7 +26,7 @@ public class RuleExecutor {
 
     private static RuleNetworkEvaluator networkEvaluator = new RuleNetworkEvaluator();
 
-    private RuleInstanceAgendaItem ruleAgendaItem;
+    private RuleAgendaItem ruleAgendaItem;
 
     private LeftTupleList tupleList;
 
@@ -34,7 +35,7 @@ public class RuleExecutor {
     private boolean declarativeAgendaEnabled;
 
     public RuleExecutor(final PathMemory rmem,
-                        RuleInstanceAgendaItem ruleAgendaItem,
+                        RuleAgendaItem ruleAgendaItem,
                         boolean declarativeAgendaEnabled) {
         this.rmem = rmem;
         this.ruleAgendaItem = ruleAgendaItem;
@@ -45,7 +46,9 @@ public class RuleExecutor {
     public int evaluateNetwork(InternalWorkingMemory wm,
                                int fireCount,
                                int fireLimit) {
-        this.networkEvaluator.evaluateNetwork(rmem, wm, this);
+        LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
+
+        this.networkEvaluator.evaluateNetwork(rmem, outerStack, this, wm);
         setDirty(false);
         wm.executeQueuedActions();
 
@@ -60,7 +63,7 @@ public class RuleExecutor {
 
             if (isDeclarativeAgendaEnabled()) {
                 // Network Evaluation can notify meta rules, which should be given a chance to fire first
-                RuleInstanceAgendaItem nextRule = agenda.peekNextRule();
+                RuleAgendaItem nextRule = agenda.peekNextRule();
                 if ( !isHighestSalience( nextRule, salience ) ) {
                     // add it back onto the agenda, as the list still needs to be check after the meta rules have evalutated the matches
                     ((InternalAgenda) wm.getAgenda()).addActivation( ruleAgendaItem );
@@ -94,7 +97,7 @@ public class RuleExecutor {
 
                 AgendaItem item = ( AgendaItem ) leftTuple.getObject();
                 if ( item == null ) {
-                    item = agenda.createAgendaItem( leftTuple, salience, pctx, rtn, ruleAgendaItem );
+                    item = agenda.createAgendaItem( leftTuple, salience, pctx, rtn, ruleAgendaItem, ruleAgendaItem.getAgendaGroup(), ruleAgendaItem.getRuleFlowGroup() );
                     leftTuple.setObject( item );
                 } else {
                     item.setPropagationContext( pctx );
@@ -105,27 +108,34 @@ public class RuleExecutor {
                                                                                                      rtn ) ) {
                     continue;
                 }
-                item.setActivated( true );
+                item.setQueued(true);
                 agenda.fireActivation( item );
                 localFireCount++;
 
-                RuleInstanceAgendaItem nextRule = agenda.peekNextRule();
+                RuleAgendaItem nextRule = agenda.peekNextRule();
                 if ( haltRuleFiring( nextRule, fireCount, fireLimit, localFireCount, agenda, salience ) ) {
                     break; // another rule has high priority and is on the agenda, so evaluate it first
                 }
                 if ( isDirty() ) {
                     ruleAgendaItem.dequeue();
                     setDirty( false );
-                    this.networkEvaluator.evaluateNetwork( rmem, wm, this );
+                    this.networkEvaluator.evaluateNetwork( rmem, outerStack, this, wm);
                 }
                 wm.executeQueuedActions();
+
+                if ( tupleList.isEmpty() && !outerStack.isEmpty() ) {
+                    // the outer stack is nodes needing evaluation, once all rule firing is done
+                    // such as window expiration, which must be done serially
+                    StackEntry entry = outerStack.removeFirst();
+                    this.networkEvaluator.evalStackEntry(entry, outerStack, outerStack, this, wm);
+                }
             }
         }
 
         return localFireCount;
     }
 
-    public RuleInstanceAgendaItem getRuleAgendaItem() {
+    public RuleAgendaItem getRuleAgendaItem() {
         return ruleAgendaItem;
     }
 
@@ -185,7 +195,7 @@ public class RuleExecutor {
         return false;
     }
 
-    private boolean haltRuleFiring(RuleInstanceAgendaItem nextRule,
+    private boolean haltRuleFiring(RuleAgendaItem nextRule,
                                    int fireCount,
                                    int fireLimit,
                                    int localFireCount,
@@ -197,7 +207,7 @@ public class RuleExecutor {
         return false;
     }
 
-    public boolean isHighestSalience(RuleInstanceAgendaItem nextRule,
+    public boolean isHighestSalience(RuleAgendaItem nextRule,
                                      int currentSalience) {
         return (nextRule == null) || nextRule.getRule().getSalience().getValue( null, null, null ) <= currentSalience;
     }

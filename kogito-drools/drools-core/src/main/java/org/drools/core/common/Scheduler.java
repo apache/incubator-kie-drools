@@ -32,7 +32,12 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.core.marshalling.impl.TimersInputMarshaller;
 import org.drools.core.marshalling.impl.TimersOutputMarshaller;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
@@ -97,7 +102,7 @@ public final class Scheduler {
             } else {
                 // the activation has been rescheduled, the Agenda would have set it's activated to false
                 // so reset the activated to true here
-                item.setActivated( true );
+                item.setQueued(true);
                 if ( wasFired ) {
                     agenda.getWorkingMemory().fireAllRules();
                 } else {
@@ -248,5 +253,4 @@ public final class Scheduler {
             item.setJobHandle( jobHandle );            
         }
     }
-
 }

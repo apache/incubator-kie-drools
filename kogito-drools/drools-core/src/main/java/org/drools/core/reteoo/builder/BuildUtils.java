@@ -77,6 +77,10 @@ public class BuildUtils {
         return this.componentBuilders.get( target.getClass() );
     }
 
+    public ReteooComponentBuilder getBuilderFor(final Class  cls) {
+        return this.componentBuilders.get( cls );
+    }
+
     /**
      * Attaches a node into the network. If a node already exists that could
      * substitute, it is used instead.

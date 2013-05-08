@@ -232,7 +232,7 @@ public class ProtobufOutputMarshaller {
         ActivationIterator it = ActivationIterator.iterator( wm );
         List<org.drools.core.spi.Activation> dormant = new ArrayList<org.drools.core.spi.Activation>();
         for ( org.drools.core.spi.Activation item = (org.drools.core.spi.Activation) it.next(); item != null; item = (org.drools.core.spi.Activation) it.next() ) {
-            if ( !item.isActive() ) {
+            if ( !item.isQueued() ) {
                 dormant.add( item );
             }
         }
@@ -243,7 +243,7 @@ public class ProtobufOutputMarshaller {
         
         // serialize all network evaluator activations
         for( Activation activation : agenda.getActivations() ) {
-            if( activation.isRuleNetworkEvaluatorActivation() ) {
+            if( activation.isRuleAgendaItem() ) {
                 // serialize it
                 _ab.addRnea( writeActivation( context, (AgendaItem) activation ) );
             }
@@ -703,7 +703,7 @@ public class ProtobufOutputMarshaller {
         _activation.setTuple( _tb.build() );
 
         _activation.setSalience( agendaItem.getSalience() );
-        _activation.setIsActivated( agendaItem.isActivated() );
+        _activation.setIsActivated( agendaItem.isQueued() );
 
         if ( agendaItem.getActivationGroupNode() != null ) {
             _activation.setActivationGroup( agendaItem.getActivationGroupNode().getActivationGroup().getName() );

@@ -164,8 +164,8 @@ public class AddRemoveRule {
                      }
                  }
              }
-             if ( removedPmem.getAgendaItem() != null && removedPmem.getAgendaItem().isActivated() ) {
-                 removedPmem.getAgendaItem().dequeue();
+             if ( removedPmem.getRuleAgendaItem() != null && removedPmem.getRuleAgendaItem().isQueued() ) {
+                 removedPmem.getRuleAgendaItem().dequeue();
              }
          }
      }
@@ -199,13 +199,14 @@ public class AddRemoveRule {
          RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
          LeftInputAdapterNode lian = ( LeftInputAdapterNode ) smems[0].getRootNode();
          LinkedList<StackEntry> stack = new LinkedList<StackEntry>();
+         LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
          Set<String> visitedRules = new HashSet<String>();
 
 
          // The graph must be fully updated before SegmentMemory and PathMemories are mutated
          if ( !sm.getStagedLeftTuples().isEmpty() && pmem.isRuleLinked() ) {
-             rne.eval1(lian, pmem, sink, mem,
-                       smems, smemIndex, sm.getStagedLeftTuples(), wm,stack, visitedRules, true, pmem.getAgendaItem().getRuleExecutor() );
+             rne.outerEval(lian, pmem, sink, mem,
+                           smems, smemIndex, sm.getStagedLeftTuples(), wm, stack, outerStack, visitedRules, true, pmem.getRuleAgendaItem().getRuleExecutor());
          }
      }
 

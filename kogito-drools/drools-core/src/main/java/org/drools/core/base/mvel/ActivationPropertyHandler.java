@@ -19,7 +19,7 @@ public class ActivationPropertyHandler implements PropertyHandler {
         }
         
         if ( "active".equals( name ) ) {
-            return item.isActive();
+            return item.isQueued();
         }
         
         // FIXME hack as MVEL seems to be ignoring indexed variables

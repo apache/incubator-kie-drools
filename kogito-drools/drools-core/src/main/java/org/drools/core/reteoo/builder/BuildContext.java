@@ -16,11 +16,6 @@
 
 package org.drools.core.reteoo.builder;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Stack;
-
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
@@ -31,6 +26,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.ReteooComponentFactory;
 import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.Query;
 import org.drools.core.rule.Rule;
@@ -40,6 +36,11 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.RuleComponent;
 import org.drools.core.time.TemporalDependencyMatrix;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Stack;
+
 /**
  * A build context for Reteoo Builder
  */
@@ -47,70 +48,54 @@ public class BuildContext {
 
     // tuple source to attach next node to
     private LeftTupleSource                  tupleSource;
-
     // object source to attach next node to
     private ObjectSource                     objectSource;
-
     // object type cache to check for cross products
     private LinkedList<Pattern>              objectType;
-
     // offset of the pattern
     private int                              currentPatternOffset;
-
     // rule base to add rules to
     private InternalRuleBase                 rulebase;
-    
     // rule being added at this moment
     private Rule                             rule;
-    
+    private GroupElement                     subRule;
     // the rule component being processed at the moment
     private Stack<RuleComponent>             ruleComponent;
-
     // working memories attached to the given rulebase
     private InternalWorkingMemory[]          workingMemories;
-
     // id generator
     private ReteooBuilder.IdGenerator        idGenerator;
-
     // a build stack to track nested elements
     private LinkedList<RuleConditionElement> buildstack;
-
     // beta constraints from the last pattern attached
     private List<BetaNodeFieldConstraint>    betaconstraints;
-
     // alpha constraints from the last pattern attached
     private List<AlphaNodeFieldConstraint>   alphaConstraints;
-
     // the current entry point
     private EntryPoint                       currentEntryPoint;
-
     private boolean                          tupleMemoryEnabled;
-
     private boolean                          objectTypeNodeMemoryEnabled;
-    
     private boolean                          query;
-
-    /** Stores the list of nodes being added that require partitionIds */
+    /**
+     * Stores the list of nodes being added that require partitionIds
+     */
     private List<BaseNode>                   nodes;
-
-    /** Stores the id of the partition this rule will be added to */
+    /**
+     * Stores the id of the partition this rule will be added to
+     */
     private RuleBasePartitionId              partitionId;
-
-    /** the calculate temporal distance matrix */
+    /**
+     * the calculate temporal distance matrix
+     */
     private TemporalDependencyMatrix         temporal;
-
-    private ObjectTypeNode rootObjectTypeNode;
-    
+    private ObjectTypeNode                   rootObjectTypeNode;
     private Pattern[]                        lastBuiltPatterns;
-    
     // The reason why this is here is because forall can inject a
     //  "this == " + BASE_IDENTIFIER $__forallBaseIdentifier
     // Which we don't want to actually count in the case of forall node linking    
     private boolean                          emptyForAllBetaConstraints;
-
     private ReteooComponentFactory           componentFactory;
-
-    private boolean attachPQN;
+    private boolean                          attachPQN;
 
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
@@ -137,13 +122,13 @@ public class BuildContext {
         this.nodes = new LinkedList<BaseNode>();
 
         this.partitionId = null;
-        
+
         this.ruleComponent = new Stack<RuleComponent>();
-        
+
         this.attachPQN = true;
 
         this.componentFactory = rulebase.getConfiguration().getComponentFactory();
-        
+
         this.emptyForAllBetaConstraints = false;
     }
 
@@ -171,10 +156,10 @@ public class BuildContext {
     }
 
     public void syncObjectTypesWithPatternOffset() {
-        if ( this.objectType == null ) {
+        if (this.objectType == null) {
             this.objectType = new LinkedList<Pattern>();
         }
-        while ( this.objectType.size() > this.currentPatternOffset ) {
+        while (this.objectType.size() > this.currentPatternOffset) {
             this.objectType.removeLast();
         }
     }
@@ -197,7 +182,7 @@ public class BuildContext {
      * @return the objectType
      */
     public LinkedList<Pattern> getObjectType() {
-        if ( this.objectType == null ) {
+        if (this.objectType == null) {
             this.objectType = new LinkedList<Pattern>();
         }
         return this.objectType;
@@ -207,7 +192,7 @@ public class BuildContext {
      * @param objectType the objectType to set
      */
     public void setObjectType(final LinkedList<Pattern> objectType) {
-        if ( this.objectType == null ) {
+        if (this.objectType == null) {
             this.objectType = new LinkedList<Pattern>();
         }
         this.objectType = objectType;
@@ -238,6 +223,7 @@ public class BuildContext {
 
     /**
      * Returns context rulebase
+     *
      * @return
      */
     public InternalRuleBase getRuleBase() {
@@ -247,11 +233,11 @@ public class BuildContext {
     /**
      * Return the array of working memories associated with the given
      * rulebase.
-     * 
+     *
      * @return
      */
     public InternalWorkingMemory[] getWorkingMemories() {
-        if ( this.workingMemories == null ) {
+        if (this.workingMemories == null) {
             this.workingMemories = this.rulebase.getWorkingMemories();
         }
         return this.workingMemories;
@@ -259,6 +245,7 @@ public class BuildContext {
 
     /**
      * Returns an Id for the next node
+     *
      * @return
      */
     public int getNextId() {
@@ -269,26 +256,28 @@ public class BuildContext {
      * Method used to undo previous id assignment
      */
     public void releaseId(int id) {
-        this.idGenerator.releaseId( id );
+        this.idGenerator.releaseId(id);
     }
 
     /**
      * Adds the rce to the build stack
+     *
      * @param rce
      */
     public void push(final RuleConditionElement rce) {
-        if ( this.buildstack == null ) {
+        if (this.buildstack == null) {
             this.buildstack = new LinkedList<RuleConditionElement>();
         }
-        this.buildstack.addLast( rce );
+        this.buildstack.addLast(rce);
     }
 
     /**
      * Removes the top stack element
+     *
      * @return
      */
     public RuleConditionElement pop() {
-        if ( this.buildstack == null ) {
+        if (this.buildstack == null) {
             this.buildstack = new LinkedList<RuleConditionElement>();
         }
         return this.buildstack.removeLast();
@@ -296,10 +285,11 @@ public class BuildContext {
 
     /**
      * Returns the top stack element without removing it
+     *
      * @return
      */
     public RuleConditionElement peek() {
-        if ( this.buildstack == null ) {
+        if (this.buildstack == null) {
             this.buildstack = new LinkedList<RuleConditionElement>();
         }
         return this.buildstack.getLast();
@@ -307,13 +297,14 @@ public class BuildContext {
 
     /**
      * Returns a list iterator to iterate over the stacked elements
+     *
      * @return
      */
     public ListIterator<RuleConditionElement> stackIterator() {
-        if ( this.buildstack == null ) {
+        if (this.buildstack == null) {
             this.buildstack = new LinkedList<RuleConditionElement>();
         }
-        return this.buildstack.listIterator( this.buildstack.size() );
+        return this.buildstack.listIterator(this.buildstack.size());
     }
 
     /**
@@ -334,13 +325,13 @@ public class BuildContext {
     public int getNextSequence(String groupName) {
         //List list = new ArrayList();
 
-        Integer seq = (Integer) this.rulebase.getAgendaGroupRuleTotals().get( groupName );
-        if ( seq == null ) {
-            seq = new Integer( 0 );
+        Integer seq = (Integer) this.rulebase.getAgendaGroupRuleTotals().get(groupName);
+        if (seq == null) {
+            seq = new Integer(0);
         }
-        Integer newSeq = new Integer( seq.intValue() + 1 );
-        this.rulebase.getAgendaGroupRuleTotals().put( groupName,
-                                                      newSeq );
+        Integer newSeq = new Integer(seq.intValue() + 1);
+        this.rulebase.getAgendaGroupRuleTotals().put(groupName,
+                                                     newSeq);
 
         return newSeq.intValue();
     }
@@ -355,7 +346,6 @@ public class BuildContext {
     public void setAlphaConstraints(List<AlphaNodeFieldConstraint> alphaConstraints) {
         this.alphaConstraints = alphaConstraints;
     }
-
 
     public boolean isTupleMemoryEnabled() {
         return this.tupleMemoryEnabled;
@@ -419,12 +409,16 @@ public class BuildContext {
         this.partitionId = partitionId;
     }
 
-    public void setTemporalDistance(TemporalDependencyMatrix temporal) {
-        this.temporal = temporal;
+    public boolean isStreamMode() {
+        return this.temporal != null;
     }
 
     public TemporalDependencyMatrix getTemporalDistance() {
         return this.temporal;
+    }
+
+    public void setTemporalDistance(TemporalDependencyMatrix temporal) {
+        this.temporal = temporal;
     }
 
     public LinkedList<RuleConditionElement> getBuildStack() {
@@ -437,9 +431,17 @@ public class BuildContext {
 
     public void setRule(Rule rule) {
         this.rule = rule;
-        if ( rule instanceof Query) {
+        if (rule instanceof Query) {
             this.query = true;
         }
+    }
+
+    public GroupElement getSubRule() {
+        return subRule;
+    }
+
+    public void setSubRule(GroupElement subRule) {
+        this.subRule = subRule;
     }
 
     /**
@@ -447,43 +449,43 @@ public class BuildContext {
      * The rule component stack is used to add trackability to
      * the ReteOO nodes so that they can be linked to the rule
      * components that originated them.
-     *  
+     *
      * @return
      */
     public RuleComponent popRuleComponent() {
         return this.ruleComponent.pop();
     }
-    
+
     /**
      * Peeks at the top element from the rule component stack.
      * The rule component stack is used to add trackability to
      * the ReteOO nodes so that they can be linked to the rule
      * components that originated them.
-     *  
+     *
      * @return
      */
     public RuleComponent peekRuleComponent() {
         return this.ruleComponent.isEmpty() ? null : this.ruleComponent.peek();
     }
-    
+
     /**
      * Adds the ruleComponent to the top of the rule component stack.
      * The rule component stack is used to add trackability to
      * the ReteOO nodes so that they can be linked to the rule
      * components that originated them.
-     *  
+     *
      * @return
      */
-    public void pushRuleComponent( RuleComponent ruleComponent ) {
-        this.ruleComponent.push( ruleComponent );
+    public void pushRuleComponent(RuleComponent ruleComponent) {
+        this.ruleComponent.push(ruleComponent);
+    }
+
+    public ObjectTypeNode getRootObjectTypeNode() {
+        return rootObjectTypeNode;
     }
 
     public void setRootObjectTypeNode(ObjectTypeNode source) {
-        rootObjectTypeNode = source;        
-    }
-    
-    public ObjectTypeNode getRootObjectTypeNode() {
-        return rootObjectTypeNode;
+        rootObjectTypeNode = source;
     }
 
     public Pattern[] getLastBuiltPatterns() {
@@ -491,20 +493,20 @@ public class BuildContext {
     }
 
     public void setLastBuiltPattern(Pattern lastBuiltPattern) {
-        if (this.lastBuiltPatterns == null ) {            
-            this.lastBuiltPatterns = new Pattern[] { lastBuiltPattern, null };
+        if (this.lastBuiltPatterns == null) {
+            this.lastBuiltPatterns = new Pattern[]{lastBuiltPattern, null};
         } else {
             this.lastBuiltPatterns[1] = this.lastBuiltPatterns[0];
             this.lastBuiltPatterns[0] = lastBuiltPattern;
         }
     }
 
-    public void setAttachPQN( final boolean attachPQN ) {
-        this.attachPQN = attachPQN;
-    }
-    
     public boolean isAttachPQN() {
         return attachPQN;
+    }
+
+    public void setAttachPQN(final boolean attachPQN) {
+        this.attachPQN = attachPQN;
     }
 
     public ReteooComponentFactory getComponentFactory() {

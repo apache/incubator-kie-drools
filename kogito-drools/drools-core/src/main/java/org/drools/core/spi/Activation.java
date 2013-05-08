@@ -20,7 +20,9 @@ import java.io.Serializable;
 
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
+import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
@@ -102,11 +104,13 @@ public interface Activation
     
     public void setLogicalDependencies(LinkedList<LogicalDependency> justified);
 
-    public void setActivated(boolean activated);
+    public void setQueued(boolean activated);
     
-    public boolean isActivated();
+    public boolean isQueued();
 
-    public AgendaGroup getAgendaGroup();
+    public InternalAgendaGroup getAgendaGroup();
+
+    public InternalRuleFlowGroup getRuleFlowGroup();
 
     public ActivationGroupNode getActivationGroupNode();
 
@@ -122,7 +126,7 @@ public interface Activation
 
     public void setMatched(boolean matched);    
 
-    public boolean isRuleNetworkEvaluatorActivation();
+    public boolean isRuleAgendaItem();
 
     
 }

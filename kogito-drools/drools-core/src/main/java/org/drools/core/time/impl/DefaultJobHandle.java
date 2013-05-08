@@ -19,6 +19,7 @@ package org.drools.core.time.impl;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.drools.core.time.Job;
 import org.drools.core.time.JobHandle;
 
 /**
@@ -52,7 +53,7 @@ public class DefaultJobHandle
         return cancel.get();
     }
 
-    public Object getJob() {
+    public Job getJob() {
         return timerJobInstance.getJob();
     }
 

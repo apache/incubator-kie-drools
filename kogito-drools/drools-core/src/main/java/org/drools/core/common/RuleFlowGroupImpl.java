@@ -101,39 +101,41 @@ public class RuleFlowGroupImpl
             return;
         }
         this.active = active;
-        if ( active ) {
-            setActivatedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
-            ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupActivated( this,
-                                                                                                            this.workingMemory );
-            if ( this.list.isEmpty() ) {
-                if ( this.autoDeactivate ) {
-                    // if the list of activations is empty and
-                    // auto-deactivate is on, deactivate this group
-                    WorkingMemoryAction action = new DeactivateCallback( this );
-                    this.workingMemory.queueWorkingMemoryAction( action );
+        synchronized ( list ) {
+            if ( active ) {
+                setActivatedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
+                ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupActivated( this,
+                                                                                                                this.workingMemory );
+                if ( this.list.isEmpty() ) {
+                    if ( this.autoDeactivate ) {
+                        // if the list of activations is empty and
+                        // auto-deactivate is on, deactivate this group
+                        WorkingMemoryAction action = new DeactivateCallback( this );
+                        this.workingMemory.queueWorkingMemoryAction( action );
+                    }
+                } else {
+                    triggerActivations();
                 }
-            } else {
-                triggerActivations();
-            }
-            ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupActivated( this,
-                                                                                                         this.workingMemory );
-        } else {
-            ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( this,
-                                                                                                            this.workingMemory );
-            
-            FastIterator it = list.fastIterator();
-            for ( ActivationNode entry =  list.getFirst(); entry != null; entry = (ActivationNode) it.next( entry ) ) {
-                final Activation activation = entry.getActivation();
-                activation.remove();
-                if ( activation.getActivationGroupNode() != null ) {
-                    activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
-                }                
-            }
-
-            nodeInstances.clear();
-            notifyRuleFlowGroupListeners();
-            ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( this,
+                ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupActivated( this,
                                                                                                              this.workingMemory );
+            } else {
+                ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( this,
+                                                                                                                this.workingMemory );
+
+                FastIterator it = list.fastIterator();
+                for ( ActivationNode entry =  list.getFirst(); entry != null; entry = (ActivationNode) it.next( entry ) ) {
+                    final Activation activation = entry.getActivation();
+                    activation.remove();
+                    if ( activation.getActivationGroupNode() != null ) {
+                        activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+                    }
+                }
+
+                nodeInstances.clear();
+                notifyRuleFlowGroupListeners();
+                ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( this,
+                                                                                                                 this.workingMemory );
+            }
         }
     }
 
@@ -147,27 +149,33 @@ public class RuleFlowGroupImpl
 
     public void setAutoDeactivate(final boolean autoDeactivate) {
         this.autoDeactivate = autoDeactivate;
-        if ( autoDeactivate && this.active && this.list.isEmpty() ) {
-            this.active = false;
+        synchronized ( this.list ) {
+            if ( autoDeactivate && this.active && this.list.isEmpty() ) {
+                this.active = false;
+            }
         }
     }
 
     private void triggerActivations() {
         
-        // iterate all activations adding them to their AgendaGroups        
-        FastIterator it = list.fastIterator();
-        for ( ActivationNode entry =  list.getFirst(); entry != null; entry = (ActivationNode) it.next( entry ) ) {   
-            final Activation activation = entry.getActivation();
-            ((InternalAgendaGroup) activation.getAgendaGroup()).add( activation );            
+        // iterate all activations adding them to their AgendaGroups
+        synchronized ( this.list ) {
+            FastIterator it = list.fastIterator();
+            for ( ActivationNode entry =  list.getFirst(); entry != null; entry = (ActivationNode) it.next( entry ) ) {
+                final Activation activation = entry.getActivation();
+                ((InternalAgendaGroup) activation.getAgendaGroup()).add( activation );
+            }
         }
-        
+
         // making sure we re-evaluate agenda in case we are waiting for activations
         ((InternalAgenda) workingMemory.getAgenda()).notifyHalt();
     }
 
     public void clear() {
-        this.list.clear();
-        this.active = false;
+        synchronized ( this.list ) {
+            this.list.clear();
+            this.active = false;
+        }
     }
 
     public int size() {
@@ -179,7 +187,9 @@ public class RuleFlowGroupImpl
         final ActivationNode node = new ActivationNode( activation,
                                                         this );
         activation.setActivationNode( node );
-        this.list.add( node );
+        synchronized ( this.list ) {
+            this.list.add( node );
+        }
 
         if ( this.active ) {
             ((InternalAgendaGroup) activation.getAgendaGroup()).add( activation );
@@ -187,9 +197,11 @@ public class RuleFlowGroupImpl
     }
 
     public void removeActivation(final Activation activation) {
-        final ActivationNode node = activation.getActivationNode();
-        this.list.remove( node );
-        activation.setActivationNode( null );
+        synchronized ( this.list ) {
+            final ActivationNode node = activation.getActivationNode();
+            this.list.remove( node );
+            activation.setActivationNode( null );
+        }
     }
 
     /**
@@ -197,10 +209,12 @@ public class RuleFlowGroupImpl
      * If the queue is empty, it deactivates the group.
      */
     public void deactivateIfEmpty() {
-        if ( this.active && this.autoDeactivate && this.list.isEmpty() ) {
-            // deactivate callback
-            WorkingMemoryAction action = new DeactivateCallback( this );
-            this.workingMemory.queueWorkingMemoryAction( action );
+        synchronized ( this.list ) {
+            if ( this.active && this.autoDeactivate && this.list.isEmpty() ) {
+                // deactivate callback
+                WorkingMemoryAction action = new DeactivateCallback( this );
+                this.workingMemory.queueWorkingMemoryAction( action );
+            }
         }
     }
 
@@ -226,19 +240,23 @@ public class RuleFlowGroupImpl
     }
 
     public boolean isEmpty() {
-        return this.list.isEmpty();
+        synchronized ( this.list ) {
+            return this.list.isEmpty();
+        }
     }
     
     public Activation[] getActivations() {
-        Activation[] activations = new Activation[ list.size() ];
-        
-        FastIterator it = list.fastIterator();
-        int i = 0;
-        for ( ActivationNode entry =  list.getFirst(); entry != null; entry = (ActivationNode) it.next( entry ) ) {
-            activations[i++] =  entry.getActivation();
-        }       
-        
-        return activations;
+        synchronized ( list ) {
+            Activation[] activations = new Activation[ list.size() ];
+
+            FastIterator it = list.fastIterator();
+            int i = 0;
+            for ( ActivationNode entry =  list.getFirst(); entry != null; entry = (ActivationNode) it.next( entry ) ) {
+                activations[i++] =  entry.getActivation();
+            }
+
+            return activations;
+        }
     }
 
     public java.util.Iterator iterator() {

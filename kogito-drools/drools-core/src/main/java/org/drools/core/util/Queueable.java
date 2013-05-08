@@ -19,7 +19,9 @@ package org.drools.core.util;
 import org.drools.core.spi.Activation;
 
 public interface Queueable extends Activation {
-    public void enqueued(int index);
+    public void setIndex(int index);
+
+    public int getIndex();
 
     public void dequeue();
 }

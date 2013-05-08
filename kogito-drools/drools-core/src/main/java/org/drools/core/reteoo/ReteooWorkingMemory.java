@@ -36,7 +36,7 @@ import org.drools.core.base.StandardQueryViewChangedEventListener;
 import org.drools.core.common.*;
 import org.drools.core.common.TupleStartEqualsConstraint.TupleStartEqualsConstraintContextEntry;
 import org.drools.core.event.RuleEventListenerSupport;
-import org.drools.core.phreak.RuleInstanceAgendaItem;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.core.event.AgendaEventSupport;
@@ -287,7 +287,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
             for ( int i = 0, length = rmems.size(); i < length; i++ ) {
                 PathMemory rm = rmems.get( i );
 
-                RuleInstanceAgendaItem evaluator = agenda.createRuleInstanceAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
+                RuleAgendaItem evaluator = agenda.createRuleAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
                 evaluator.getRuleExecutor().evaluateNetwork(this, 0, -1);
             }
         } else {
@@ -327,7 +327,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                 for ( int i = 0, length = rmems.size(); i < length; i++ ) {
                     PathMemory rm = rmems.get( i );
 
-                    RuleInstanceAgendaItem evaluator = agenda.createRuleInstanceAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
+                    RuleAgendaItem evaluator = agenda.createRuleAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
                     evaluator.getRuleExecutor().evaluateNetwork(this, 0, -1);
                 }
             } else {

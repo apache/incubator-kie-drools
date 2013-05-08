@@ -40,6 +40,7 @@ import org.drools.core.marshalling.impl.TimersOutputMarshaller;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
+import org.drools.core.reteoo.WindowTuple;
 import org.drools.core.reteoo.WindowTupleList;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.Job;
@@ -185,13 +186,15 @@ public class SlidingTimeWindow
                                                                                               null,
                                                                                               handle );
                     WindowTupleList list = (WindowTupleList) memory.events.get( handle );
-                    for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
+                    for( WindowTuple tuple = list.getFirstWindowTuple(); tuple != null;  ) {
+                        WindowTuple next = tuple.getWindowNext();
                         tuple.setPropagationContext( pctx );
                         tuple.getRightTupleSink().retractRightTuple( tuple,
                                                                      pctx,
                                                                      workingMemory );
                         pctx.evaluateActionQueue( workingMemory );
-                        tuple.unlinkFromRightParent();
+                        //tuple.unlinkFromRightParent();
+                        tuple = next;
                     }
                 }
                 queue.expiringHandle = null;

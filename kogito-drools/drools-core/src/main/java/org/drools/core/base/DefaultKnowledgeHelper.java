@@ -34,7 +34,7 @@ import org.drools.core.common.*;
 import org.drools.core.factmodel.MapCore;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitType;
-import org.drools.core.phreak.RuleInstanceAgendaItem;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.LinkedList;
@@ -157,12 +157,12 @@ public class DefaultKnowledgeHelper
         }
         this.activation.addBlocked(  dep );
 
-        if ( targetMatch.getBlockers().size() == 1 && targetMatch.isActive()  ) {
-            if ( targetMatch.getRuleInstanceAgendaItem() == null ) {
+        if ( targetMatch.getBlockers().size() == 1 && targetMatch.isQueued()  ) {
+            if ( targetMatch.getRuleAgendaItem() == null ) {
                 // it wasn't blocked before, but is now, so we must remove it from all groups, so it cannot be executed.
                 targetMatch.remove();
             } else {
-                targetMatch.getRuleInstanceAgendaItem().getRuleExecutor().getLeftTupleList().remove(targetMatch.getTuple());
+                targetMatch.getRuleAgendaItem().getRuleExecutor().getLeftTupleList().remove(targetMatch.getTuple());
             }
 
             if ( targetMatch.getActivationGroupNode() != null ) {
@@ -188,16 +188,16 @@ public class DefaultKnowledgeHelper
         }
         
         if ( wasBlocked ) {
-            RuleInstanceAgendaItem ruleInstanceAgendaItem = targetMatch.getRuleInstanceAgendaItem();
-            if ( ruleInstanceAgendaItem == null ) {
+            RuleAgendaItem ruleAgendaItem = targetMatch.getRuleAgendaItem();
+            if ( ruleAgendaItem == null ) {
                 // the match is no longer blocked, so stage it
                 ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( targetMatch );
             } else {
-                if ( !ruleInstanceAgendaItem.isActivated() ) {
+                if ( !ruleAgendaItem.isQueued() ) {
                     // Make sure the rule evaluator is on the agenda, to be evaluated
-                    ((InternalAgenda) workingMemory.getAgenda()).addActivation(ruleInstanceAgendaItem);
+                    ((InternalAgenda) workingMemory.getAgenda()).addActivation(ruleAgendaItem);
                 }
-                targetMatch.getRuleInstanceAgendaItem().getRuleExecutor().getLeftTupleList().add( targetMatch.getTuple() );
+                targetMatch.getRuleAgendaItem().getRuleExecutor().getLeftTupleList().add( targetMatch.getTuple() );
             }
         }
     }
@@ -293,16 +293,16 @@ public class DefaultKnowledgeHelper
                 AgendaItem justified = ( AgendaItem ) dep.getJustified();
                 justified.getBlockers().remove( dep.getJustifierEntry() );
                 if (justified.getBlockers().isEmpty() ) {
-                    RuleInstanceAgendaItem ruleInstanceAgendaItem = justified.getRuleInstanceAgendaItem();
-                    if ( ruleInstanceAgendaItem == null ) {
+                    RuleAgendaItem ruleAgendaItem = justified.getRuleAgendaItem();
+                    if ( ruleAgendaItem == null ) {
                         // the match is no longer blocked, so stage it
                         ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( justified );
                     } else {
-                        if ( !ruleInstanceAgendaItem.isActivated() ) {
+                        if ( !ruleAgendaItem.isQueued() ) {
                             // Make sure the rule evaluator is on the agenda, to be evaluated
-                            ((InternalAgenda) workingMemory.getAgenda()).addActivation(ruleInstanceAgendaItem);
+                            ((InternalAgenda) workingMemory.getAgenda()).addActivation(ruleAgendaItem);
                         }
-                        ruleInstanceAgendaItem.getRuleExecutor().getLeftTupleList().add( justified.getTuple() );
+                        ruleAgendaItem.getRuleExecutor().getLeftTupleList().add( justified.getTuple() );
                     }
                 }
                 dep = tmp;
@@ -313,15 +313,15 @@ public class DefaultKnowledgeHelper
     public void cancelMatch(Match act) {
         AgendaItem match = ( AgendaItem ) act;
         match.cancel();
-        if ( match.isActive() ) {
+        if ( match.isQueued() ) {
             LeftTuple leftTuple = match.getTuple();
-            if ( match.getRuleInstanceAgendaItem() != null ) {
+            if ( match.getRuleAgendaItem() != null ) {
                 // phreak must also remove the LT from the rule network evaluator
                 if ( leftTuple.getMemory() != null ) {
                     leftTuple.getMemory().remove( leftTuple );
                 }
             }
-            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, (PropagationContext) act.getPropagationContext(), workingMemory );
+            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, (PropagationContext) match.getPropagationContext(), workingMemory );
         }
     }
     

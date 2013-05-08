@@ -48,6 +48,7 @@ public class PhreakRuleTerminalNode {
             salience = rtnNode.getRule().getSalience().getValue(null, null, null); // currently all branches have the same salience for the same rule
         }
 
+        RuleAgendaItem agendaItem = executor.getRuleAgendaItem();
         LeftTupleList tupleList = executor.getLeftTupleList();
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -55,9 +56,10 @@ public class PhreakRuleTerminalNode {
             leftTuple.increaseActivationCountForEvents(); // increased here, decreased in Agenda's cancelActivation and fireActivation
             if( declarativeAgendaEnabled ) {
                 PropagationContext pctx = leftTuple.getPropagationContext();
+
                 AgendaItem item = agenda.createAgendaItem(leftTuple, salience, pctx,
-                                                          rtnNode, executor.getRuleAgendaItem() );
-                item.setActivated(true);
+                                                          rtnNode, agendaItem, agendaItem.getAgendaGroup(), agendaItem.getRuleFlowGroup() );
+                item.setQueued(true);
                 leftTuple.setObject(item);
                 agenda.insertAndStageActivation(item);
             }
@@ -89,7 +91,7 @@ public class PhreakRuleTerminalNode {
             }
 
             if( declarativeAgendaEnabled) {
-                agenda.modifyActivation(item, item.isActive());
+                agenda.modifyActivation(item, item.isQueued());
             }
             leftTuple.clearStaged();
             leftTuple = next;

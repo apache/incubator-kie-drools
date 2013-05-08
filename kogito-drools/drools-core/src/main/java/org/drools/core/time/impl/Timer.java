@@ -19,13 +19,26 @@ package org.drools.core.time.impl;
 import java.io.Serializable;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.RuleComponent;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
-public interface Timer extends Serializable {
+public interface Timer extends Serializable, RuleComponent, RuleConditionElement {
 
     Trigger createTrigger( long timestamp, String[] calendarNames, Calendars calendars);
 
-    Trigger createTrigger( Activation schedulableActivation, WorkingMemory workingMemory );
+    public Trigger createTrigger(long timestamp,
+                                 LeftTuple leftTuple,
+                                 DefaultJobHandle jh,
+                                 String[] calendarNames,
+                                 Calendars calendars,
+                                 Declaration[][] declrs,
+                                 InternalWorkingMemory wm);
+
+    Trigger createTrigger( Activation schedulableActivation, InternalWorkingMemory workingMemory );
 }

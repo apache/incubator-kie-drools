@@ -29,6 +29,7 @@ import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.rule.Declaration;
 import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.QueryElement;
@@ -36,6 +37,7 @@ import org.drools.core.rule.Rule;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.time.impl.Timer;
 
 public interface NodeFactory {
 
@@ -89,4 +91,11 @@ public interface NodeFactory {
                                    boolean tupleMemoryEnabled,
                                    BuildContext context,
                                    From from );
+
+    public BaseNode buildTimerNode( int id,
+                                    Timer timer,
+                                    final String[] calendarNames,
+                                    final Declaration[][]   declarations,
+                                    LeftTupleSource tupleSource,
+                                    BuildContext context  );
 }

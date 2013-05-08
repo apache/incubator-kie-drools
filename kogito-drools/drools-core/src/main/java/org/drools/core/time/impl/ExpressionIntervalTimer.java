@@ -22,6 +22,9 @@ import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ScheduledAgendaItem;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.rule.ConditionalElement;
+import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.Trigger;
@@ -33,7 +36,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
 
-public class ExpressionIntervalTimer
+public class ExpressionIntervalTimer  extends BaseTimer
     implements
     Timer,
     Externalizable {
@@ -107,57 +110,77 @@ public class ExpressionIntervalTimer
     }
 
 
-    public Trigger createTrigger( Activation item, WorkingMemory wm ) {
+    public Trigger createTrigger( Activation item, InternalWorkingMemory wm ) {
 
         long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
         Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
-        
-        long timeSinceLastFire = 0;
+
+        Declaration[] delayDeclrs = ((AgendaItem)item).getTerminalNode().getTimerDelayDeclarations();
+        Declaration[] periodDeclrs = ((AgendaItem)item).getTerminalNode().getTimerPeriodDeclarations();
+//
+//        long timeSinceLastFire = 0;
         ScheduledAgendaItem schItem = ( ScheduledAgendaItem ) item;
+        DefaultJobHandle jh = null;
         if ( schItem.getJobHandle() != null ) {
-            DefaultJobHandle jh = ( DefaultJobHandle) schItem.getJobHandle();
-            IntervalTrigger preTrig = ( IntervalTrigger ) jh.getTimerJobInstance().getTrigger();
-            if ( preTrig.hasNextFireTime() != null ) {
+            jh = ( DefaultJobHandle) schItem.getJobHandle();
+//            IntervalTrigger preTrig = ( IntervalTrigger ) jh.getTimerJobInstance().getTrigger();
+//            if ( preTrig.hasNextFireTime() != null ) {
+//                timeSinceLastFire = timestamp - preTrig.getLastFireTime().getTime();
+//            }
+        }
+//
+//
+//        long newDelay = (delay  != null ? evalDelay( item.getTuple(), ((AgendaItem)item).getTerminalNode().getTimerDelayDeclarations(), wm ) : 0) - timeSinceLastFire;
+//        if ( newDelay < 0 ) {
+//            newDelay = 0;
+//        }
+//
+//        return new IntervalTrigger( timestamp,
+//                                    this.startTime,
+//                                    this.endTime,
+//                                    this.repeatLimit,
+//                                    newDelay,
+//                                    period != null ? evalPeriod( item.getTuple(), ((AgendaItem)item).getTerminalNode().getTimerPeriodDeclarations(), wm) : 0,
+//                                    calendarNames,
+//                                    calendars );
+        return createTrigger(timestamp, item.getTuple(), jh, calendarNames, calendars, new Declaration[][] { delayDeclrs, periodDeclrs }, wm);
+    }
+
+    public Trigger createTrigger(long timestamp,
+                                 LeftTuple leftTuple,
+                                 DefaultJobHandle jh,
+                                 String[] calendarNames,
+                                 Calendars calendars,
+                                 Declaration[][] declrs,
+                                 InternalWorkingMemory wm) {
+        long timeSinceLastFire = 0;
+
+        Declaration[] delayDeclarations = declrs[0];
+        Declaration[] periodDeclarations = declrs[1];
+
+        if ( jh != null ) {
+            IntervalTrigger preTrig = (IntervalTrigger) jh.getTimerJobInstance().getTrigger();
+            if (preTrig.hasNextFireTime() != null) {
                 timeSinceLastFire = timestamp - preTrig.getLastFireTime().getTime();
             }
         }
-        
-        long newDelay = (delay  != null ? evalDelay( item, wm ) : 0) - timeSinceLastFire;
-        if ( newDelay < 0 ) {
+
+
+        long newDelay = (delay != null ? evalDelay(leftTuple, delayDeclarations, wm) : 0) - timeSinceLastFire;
+        if (newDelay < 0) {
             newDelay = 0;
-        }        
-
-        return new IntervalTrigger( timestamp,
-                                    this.startTime,
-                                    this.endTime,
-                                    this.repeatLimit,
-                                    newDelay,
-                                    period != null ? evalPeriod( item, wm ) : 0,
-                                    calendarNames,
-                                    calendars );
-    }
-
-    private long evalPeriod( Activation item, WorkingMemory wm ) {
-        Object p = this.period.getValue( item, ((AgendaItem)item).getTerminalNode().getTimerPeriodDeclarations(),
-                                         item.getRule(), wm );
-        if ( p instanceof Number ) {
-            return ((Number) p).longValue();
-        } else {
-            return TimeUtils.parseTimeString( p.toString() );
         }
-    }
 
-    private long evalDelay(Activation item, WorkingMemory wm) {
-        Object d = this.delay.getValue( item,  ((AgendaItem)item).getTerminalNode().getTimerDelayDeclarations(), 
-                                        item.getRule(), wm );
-        if ( d instanceof Number ) {
-            return ((Number) d).longValue();
-        } else {
-            return TimeUtils.parseTimeString( d.toString() );
-        }
+        return new IntervalTrigger(timestamp,
+                                   this.startTime,
+                                   this.endTime,
+                                   this.repeatLimit,
+                                   newDelay,
+                                   period != null ? evalPeriod(leftTuple, periodDeclarations, wm) : 0,
+                                   calendarNames,
+                                   calendars);
     }
-
 
     public Trigger createTrigger(long timestamp,
                                  String[] calendarNames,
@@ -172,7 +195,23 @@ public class ExpressionIntervalTimer
                                     calendars );
     }
 
+    private long evalPeriod(LeftTuple leftTuple, Declaration[] declrs, InternalWorkingMemory wm) {
+        Object p = this.period.getValue( leftTuple,  declrs, null, wm );
+        if ( p instanceof Number ) {
+            return ((Number) p).longValue();
+        } else {
+            return TimeUtils.parseTimeString( p.toString() );
+        }
+    }
 
+    private long evalDelay(LeftTuple leftTuple, Declaration[] declrs, InternalWorkingMemory wm) {
+        Object d = this.delay.getValue( leftTuple,  declrs, null, wm );
+        if ( d instanceof Number ) {
+            return ((Number) d).longValue();
+        } else {
+            return TimeUtils.parseTimeString( d.toString() );
+        }
+    }
 
     @Override
     public int hashCode() {
@@ -202,5 +241,14 @@ public class ExpressionIntervalTimer
             if ( other.startTime != null ) return false;
         } else if ( !startTime.equals( other.startTime ) ) return false;
         return true;
+    }
+
+    @Override
+    public ConditionalElement clone() {
+        return new ExpressionIntervalTimer(startTime,
+                                           endTime,
+                                           repeatLimit,
+                                           delay,
+                                           period);
     }
 }

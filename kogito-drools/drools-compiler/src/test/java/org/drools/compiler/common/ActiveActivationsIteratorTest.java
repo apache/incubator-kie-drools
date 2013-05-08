@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.ActiveActivationIterator;
+import org.drools.core.common.AgendaItem;
 import org.drools.core.util.Iterator;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ReteooWorkingMemory;
@@ -82,8 +83,8 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
 
         Iterator it = ActiveActivationIterator.iterator(ksession);
         List list = new ArrayList();
-        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
-            list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isActive() );
+        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+            list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule7:2:true", "rule7:0:true", "rule7:1:true", "rule0:2:true", "rule0:0:true", "rule0:1:true", "rule1:2:true", "rule1:0:true", "rule1:1:true", "rule2:2:true", "rule2:0:true", "rule2:1:true"},
                         list );
@@ -93,8 +94,8 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
         it = ActiveActivationIterator.iterator( ksession );
 
         list = new ArrayList();
-        for ( Match act = (Match) it.next(); act != null; act = (Match) it.next() ) {
-            list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isActive() );
+        for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
+            list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
         }
         assertContains( new String[]{"rule0:2:true", "rule0:0:true", "rule0:1:true", "rule1:2:true", "rule1:0:true", "rule1:1:true", "rule2:2:true", "rule2:0:true", "rule2:1:true"},
                         list );

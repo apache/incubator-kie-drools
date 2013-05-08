@@ -20,7 +20,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.RuleFlowGroupImpl.DeactivateCallback;
-import org.drools.core.phreak.RuleInstanceAgendaItem;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -40,6 +40,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.drools.core.time.impl.Timer;
+import org.drools.core.util.StringUtils;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.Match;
@@ -186,19 +187,12 @@ public class DefaultAgenda
         this.unlinkingEnabled = rb.getConfiguration().isPhreakEnabled();
     }
 
-    public RuleInstanceAgendaItem createRuleInstanceAgendaItem(final int salience,
-                                                               final PathMemory rs,
-                                                               final TerminalNode rtn) {
+    public RuleAgendaItem createRuleAgendaItem(final int salience,
+                                               final PathMemory rs,
+                                               final TerminalNode rtn) {
         InternalAgendaGroup agendaGroup = (InternalAgendaGroup) getAgendaGroup( rtn.getRule().getAgendaGroup() );
-        RuleInstanceAgendaItem lazyAgendaItem = new RuleInstanceAgendaItem( activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda() );
-        lazyAgendaItem.setActivated( true );
-        lazyAgendaItem.setAgendaGroup( agendaGroup );
-        if ( activationsFilter == null || activationsFilter.accept( lazyAgendaItem,
-                                                                    null,
-                                                                    workingMemory,
-                                                                    rtn ) ) {
-            addActivation( lazyAgendaItem, true );
-        }
+        InternalRuleFlowGroup ruleflowGroup = (InternalRuleFlowGroup) getRuleFlowGroup(rtn.getRule().getRuleFlowGroup());
+        RuleAgendaItem lazyAgendaItem = new RuleAgendaItem( activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda(), agendaGroup, ruleflowGroup );
         return lazyAgendaItem;
     }
 
@@ -206,23 +200,27 @@ public class DefaultAgenda
                                        final int salience,
                                        final PropagationContext context,
                                        final TerminalNode rtn,
-                                       RuleInstanceAgendaItem ruleInstanceAgendaItem) {
+                                       RuleAgendaItem ruleAgendaItem,
+                                       InternalAgendaGroup agendaGroup,
+                                       InternalRuleFlowGroup ruleFlowGroup) {
         return new AgendaItem( activationCounter++,
                                tuple,
                                salience,
                                context,
                                rtn,
-                               ruleInstanceAgendaItem);
+                               ruleAgendaItem, agendaGroup, ruleFlowGroup);
     }
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
-                                                         final TerminalNode rtn) {
+                                                         final TerminalNode rtn,
+                                                         InternalAgendaGroup agendaGroup,
+                                                         InternalRuleFlowGroup ruleFlowGroup) {
         return new ScheduledAgendaItem( activationCounter++,
                                         tuple,
                                         this,
                                         context,
-                                        rtn );
+                                        rtn, agendaGroup, ruleFlowGroup );
     }
 
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
@@ -304,7 +302,7 @@ public class DefaultAgenda
      * @param item
      */
     private void addItemToActivationGroup(final AgendaItem item) {
-        if ( item.isRuleNetworkEvaluatorActivation() ) {
+        if ( item.isRuleAgendaItem() ) {
             return;
         }
         String group = item.getRule().getActivationGroup();
@@ -348,7 +346,7 @@ public class DefaultAgenda
     }
 
     public boolean addActivation(final AgendaItem activation) {
-        if ( declarativeAgenda && !activation.isRuleNetworkEvaluatorActivation() ) {
+        if ( declarativeAgenda && !activation.isRuleAgendaItem() ) {
             insertAndStageActivation( activation );
             return true;
         } else {
@@ -427,7 +425,7 @@ public class DefaultAgenda
         for ( ActivationGroupNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
             AgendaItem item = (AgendaItem) node.getActivation();
             // This must be set to false otherwise modify won't work properly
-            item.setActivated( false );
+            item.setQueued(false);
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
                                                                           this.workingMemory,
                                                                           MatchCancelledCause.CLEAR );
@@ -457,10 +455,10 @@ public class DefaultAgenda
     public void addActivation(AgendaItem item,
                               boolean notify) {
         Rule rule = item.getRule();
-        item.setActivated( true );
+        item.setQueued(true);
 
         // set the focus if rule autoFocus is true
-        if ( rule.getAutoFocus() ) {
+        if ( !item.isRuleAgendaItem() && rule.getAutoFocus() ) {
             this.setFocus( item.getPropagationContext(),
                            rule.getAgendaGroup() );
         }
@@ -469,7 +467,7 @@ public class DefaultAgenda
         addItemToActivationGroup( item );
 
         final Timer timer = rule.getTimer();
-        if ( timer != null && item instanceof ScheduledAgendaItem ) {
+        if ( !item.isRuleAgendaItem() && timer != null && item instanceof ScheduledAgendaItem ) {
             ScheduledAgendaItem sitem = (ScheduledAgendaItem) item;
             if ( sitem.isEnqueued() ) {
                 // it's about to be re-added to scheduled list, so remove first
@@ -478,15 +476,7 @@ public class DefaultAgenda
             scheduleItem( sitem,
                           workingMemory );
         } else {
-            InternalAgendaGroup agendaGroup = (InternalAgendaGroup) this.getAgendaGroup( rule.getAgendaGroup() );
-
-            if ( item.getRule().getRuleFlowGroup() == null ) {
-                agendaGroup.add( item );
-            } else {
-                // There is a RuleFlowNode so add it there, instead of the Agenda
-                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) this.getRuleFlowGroup( rule.getRuleFlowGroup() );
-                rfg.addActivation( item );
-            }
+            addAgendaItemToGroup( item );
         }
         if ( notify ) {
             // if an activation is currently firing allows to completely fire it before to send the notify
@@ -495,6 +485,19 @@ public class DefaultAgenda
             } else {
                 notifyHalt();
             }
+        }
+    }
+
+    @Override
+    public void addAgendaItemToGroup(AgendaItem item) {
+        InternalAgendaGroup agendaGroup = (InternalAgendaGroup) this.getAgendaGroup(item.getRule().getAgendaGroup());
+
+        if ( item.getRule().getRuleFlowGroup() == null ) {
+            agendaGroup.add( item );
+        } else {
+            // There is a RuleFlowNode so add it there, instead of the Agenda
+            InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) this.getRuleFlowGroup( item.getRule().getRuleFlowGroup() );
+            rfg.addActivation( item );
         }
     }
 
@@ -530,7 +533,7 @@ public class DefaultAgenda
                 item = createAgendaItem( tuple,
                                          0,
                                          context,
-                                         rtn, null );
+                                         rtn, null, null, null );
             }
             tuple.setObject( item );
             if ( activationsFilter != null && !activationsFilter.accept( item,
@@ -540,7 +543,7 @@ public class DefaultAgenda
                 return false;
             }
 
-            item.setActivated( true );
+            item.setQueued(true);
             tuple.increaseActivationCountForEvents();
             fireActivation( item ); // Control rules fire straight away.       
             return true;
@@ -549,6 +552,8 @@ public class DefaultAgenda
         final Rule rule = rtn.getRule();
         AgendaItem item;
         final Timer timer = rule.getTimer();
+        InternalAgendaGroup agendaGroup = (InternalAgendaGroup) getAgendaGroup( rule.getAgendaGroup() );
+        InternalRuleFlowGroup  rfg = (InternalRuleFlowGroup) getRuleFlowGroup( rule.getRuleFlowGroup() );
         if ( timer != null ) {
             if ( reuseActivation ) {
                 item = (AgendaItem) tuple.getObject();
@@ -556,7 +561,9 @@ public class DefaultAgenda
             } else {
                 item = createScheduledAgendaItem( tuple,
                                                   context,
-                                                  rtn );
+                                                  rtn,
+                                                  agendaGroup,
+                                                  rfg );
             }
         } else {
             if ( rule.getCalendars() != null ) {
@@ -570,8 +577,8 @@ public class DefaultAgenda
             }
 
             long handleRecency = this.unlinkingEnabled ? ((InternalFactHandle) context.getFactHandle()).getRecency() : 0; // this is needed as on sink updates context fh may not be sets
-            InternalAgendaGroup agendaGroup = (InternalAgendaGroup) getAgendaGroup( rule.getAgendaGroup() );
-            if ( rule.getRuleFlowGroup() == null ) {
+
+            if ( rfg == null ) {
                 // No RuleFlowNode so add it directly to the Agenda
                 // do not add the activation if the rule is "lock-on-active" and the
                 // AgendaGroup is active
@@ -587,7 +594,6 @@ public class DefaultAgenda
                 }
             } else {
                 // There is a RuleFlowNode so add it there, instead of the Agenda
-                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) getRuleFlowGroup( rule.getRuleFlowGroup() );
 
                 // do not add the activation if the rule is "lock-on-active" and the
                 // RuleFlowGroup is active
@@ -614,13 +620,13 @@ public class DefaultAgenda
                                          0,
                                          context,
                                          rtn,
-                                         null );
+                                         null,
+                                         agendaGroup,
+                                         rfg );
                 item.setSalience( rule.getSalience().getValue( new DefaultKnowledgeHelper( item, workingMemory ),
                                                                rule,
                                                                workingMemory ) );
             }
-
-            item.setAgendaGroup( agendaGroup );
         }
 
         tuple.setObject( item );
@@ -631,7 +637,7 @@ public class DefaultAgenda
                                                                      rtn ) ) {
             return false;
         }
-        item.setActivated( true );
+        item.setQueued(true);
         tuple.increaseActivationCountForEvents();
         item.setSequenence( rtn.getSequence() );
 
@@ -658,6 +664,7 @@ public class DefaultAgenda
         }
 
         InternalAgendaGroup agendaGroup = (InternalAgendaGroup) getAgendaGroup( rule.getAgendaGroup() );
+        InternalRuleFlowGroup rfg = null;
         if ( rule.getRuleFlowGroup() == null ) {
             // No RuleFlowNode so add it directly to the Agenda
             // do not add the activation if the rule is "lock-on-active" and the
@@ -667,7 +674,7 @@ public class DefaultAgenda
             }
         } else {
             // There is a RuleFlowNode so add it there, instead of the Agenda
-            InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) getRuleFlowGroup( rule.getRuleFlowGroup() );
+            rfg = (InternalRuleFlowGroup) getRuleFlowGroup( rule.getRuleFlowGroup() );
 
             // do not add the activation if the rule is "lock-on-active" and the
             // RuleFlowGroup is active
@@ -680,12 +687,12 @@ public class DefaultAgenda
                                  0,
                                  context,
                                  rtn,
-                                 null );
+                                 null,
+                                 agendaGroup,
+                                 rfg);
         item.setSalience( rule.getSalience().getValue( new DefaultKnowledgeHelper( item, workingMemory ),
                                                        rule,
                                                        workingMemory ) );
-
-        item.setAgendaGroup( agendaGroup );
 
         tuple.setObject( item );
 
@@ -695,7 +702,7 @@ public class DefaultAgenda
                                                                      rtn ) ) {
             return false;
         }
-        item.setActivated( true );
+        item.setQueued(true);
         tuple.increaseActivationCountForEvents();
         item.setSequenence( rtn.getSequence() );
 
@@ -720,7 +727,7 @@ public class DefaultAgenda
             removeActivation( item );
         }
 
-        if ( activation.isActivated() ) {
+        if ( activation.isQueued() ) {
             // on fact expiration, we don't remove the activation, but let it fire
             if ( context.getType() == PropagationContext.EXPIRATION && context.getFactHandleOrigin() != null ) {
             } else {
@@ -837,8 +844,8 @@ public class DefaultAgenda
         return agendaGroup;
     }
 
-    public RuleInstanceAgendaItem peekNextRule() {
-        return (RuleInstanceAgendaItem) ((InternalAgendaGroup) this.focusStack.peek()).peekNext();
+    public RuleAgendaItem peekNextRule() {
+        return (RuleAgendaItem) ((InternalAgendaGroup) this.focusStack.peek()).peekNext();
     }
 
     /*
@@ -947,6 +954,9 @@ public class DefaultAgenda
     }
 
     public RuleFlowGroup getRuleFlowGroup(final String name) {
+        if ( name == null || StringUtils.isEmpty( name ) ) {
+            return null;
+        }
         RuleFlowGroup ruleFlowGroup = this.ruleFlowGroups.get( name );
         if ( ruleFlowGroup == null ) {
             ruleFlowGroup = new RuleFlowGroupImpl( name );
@@ -1050,16 +1060,16 @@ public class DefaultAgenda
         // reset staged activations
         getStageActivationsGroup().clear();
 
-        List<RuleInstanceAgendaItem> lazyItems = null;
+        List<RuleAgendaItem> lazyItems = null;
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
             if ( this.unlinkingEnabled ) {
                 // preserve lazy items.
                 ((InternalAgendaGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
-                lazyItems = new ArrayList<RuleInstanceAgendaItem>();
+                lazyItems = new ArrayList<RuleAgendaItem>();
                 for ( Match a : group.getActivations() ) {
-                    if ( ((Activation) a).isRuleNetworkEvaluatorActivation() ) {
-                        lazyItems.add( (RuleInstanceAgendaItem) a );
+                    if ( ((Activation) a).isRuleAgendaItem() ) {
+                        lazyItems.add( (RuleAgendaItem) a );
                     }
                 }
             }
@@ -1068,7 +1078,7 @@ public class DefaultAgenda
 
             if ( this.unlinkingEnabled ) {
                 // restore lazy items
-                for ( RuleInstanceAgendaItem lazyItem : lazyItems ) {
+                for ( RuleAgendaItem lazyItem : lazyItems ) {
                     group.add( lazyItem );
                 }
             }
@@ -1079,10 +1089,10 @@ public class DefaultAgenda
             if ( this.unlinkingEnabled ) {
                 // preserve lazy items
                 ((InternalRuleFlowGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
-                lazyItems = new ArrayList<RuleInstanceAgendaItem>();
+                lazyItems = new ArrayList<RuleAgendaItem>();
                 for ( Match a : ((InternalRuleFlowGroup) group).getActivations() ) {
-                    if ( ((Activation) a).isRuleNetworkEvaluatorActivation() ) {
-                        lazyItems.add( (RuleInstanceAgendaItem) a );
+                    if ( ((Activation) a).isRuleAgendaItem() ) {
+                        lazyItems.add( (RuleAgendaItem) a );
                     }
                 }
             }
@@ -1091,7 +1101,7 @@ public class DefaultAgenda
 
             if ( this.unlinkingEnabled ) {
                 // add lazy items back in
-                for ( RuleInstanceAgendaItem lazyItem : lazyItems ) {
+                for ( RuleAgendaItem lazyItem : lazyItems ) {
                     lazyItem.setActivationNode( null );
                     ((InternalRuleFlowGroup) group).addActivation( lazyItem );
                 }
@@ -1163,9 +1173,9 @@ public class DefaultAgenda
 
         // this is thread safe for BinaryHeapQueue
         // Binary Heap locks while it returns the array and reset's it's own internal array. Lock is released afer getAndClear()
-        List<RuleInstanceAgendaItem> lazyItems = null;
+        List<RuleAgendaItem> lazyItems = null;
         if ( this.unlinkingEnabled ) {
-            lazyItems = new ArrayList<RuleInstanceAgendaItem>();
+            lazyItems = new ArrayList<RuleAgendaItem>();
         }
         for ( Activation aQueueable : ((InternalAgendaGroup) agendaGroup).getAndClear() ) {
             final AgendaItem item = (AgendaItem) aQueueable;
@@ -1173,15 +1183,15 @@ public class DefaultAgenda
                 continue;
             }
 
-            if ( this.unlinkingEnabled && item.isRuleNetworkEvaluatorActivation() ) {
-                lazyItems.add( (RuleInstanceAgendaItem) item );
+            if ( this.unlinkingEnabled && item.isRuleAgendaItem() ) {
+                lazyItems.add( (RuleAgendaItem) item );
                 continue;
             }
 
             // this must be set false before removal from the activationGroup.
             // Otherwise the activationGroup will also try to cancel the Actvation
             // Also modify won't work properly
-            item.setActivated( false );
+            item.setQueued(false);
 
             if ( item.getActivationGroupNode() != null ) {
                 item.getActivationGroupNode().getActivationGroup().removeActivation( item );
@@ -1198,7 +1208,7 @@ public class DefaultAgenda
         }
         if ( this.unlinkingEnabled ) {
             // restore lazy items
-            for ( RuleInstanceAgendaItem lazyItem : lazyItems ) {
+            for ( RuleAgendaItem lazyItem : lazyItems ) {
                 ((InternalAgendaGroup) agendaGroup).add( lazyItem );
             }
         }
@@ -1231,8 +1241,8 @@ public class DefaultAgenda
             final Activation activation = node.getActivation();
             activation.setActivationGroupNode( null );
 
-            if ( activation.isActivated() ) {
-                activation.setActivated( false );
+            if ( activation.isQueued() ) {
+                activation.setQueued(false);
                 activation.remove();
 
                 if ( activation.getActivationNode() != null ) {
@@ -1259,21 +1269,21 @@ public class DefaultAgenda
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
         ((InternalRuleFlowGroup) ruleFlowGroup).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
-        List<RuleInstanceAgendaItem> lazyItems = null;
+        List<RuleAgendaItem> lazyItems = null;
         if ( this.unlinkingEnabled ) {
-            lazyItems = new ArrayList<RuleInstanceAgendaItem>();
+            lazyItems = new ArrayList<RuleAgendaItem>();
         }
         for ( Iterator it = ruleFlowGroup.iterator(); it.hasNext(); ) {
             ActivationNode node = (ActivationNode) it.next();
             AgendaItem item = (AgendaItem) node.getActivation();
 
             if ( item != null ) {
-                if ( this.unlinkingEnabled && item.isRuleNetworkEvaluatorActivation() ) {
-                    lazyItems.add( (RuleInstanceAgendaItem) item );
+                if ( this.unlinkingEnabled && item.isRuleAgendaItem() ) {
+                    lazyItems.add( (RuleAgendaItem) item );
                     continue;
                 }
 
-                item.setActivated( false );
+                item.setQueued(false);
                 item.remove();
 
                 if ( item.getActivationGroupNode() != null ) {
@@ -1296,7 +1306,7 @@ public class DefaultAgenda
 
         if ( this.unlinkingEnabled ) {
             // restore lazy items
-            for ( RuleInstanceAgendaItem lazyItem : lazyItems ) {
+            for ( RuleAgendaItem lazyItem : lazyItems ) {
                 lazyItem.setActivationNode( null );
                 ((InternalRuleFlowGroup) ruleFlowGroup).addActivation( lazyItem );
             }
@@ -1340,9 +1350,9 @@ public class DefaultAgenda
 
                         // if that item is allowed to fire
                         if ( filter == null || filter.accept( item ) ) {
-                            if ( this.unlinkingEnabled && item.isRuleNetworkEvaluatorActivation() ) {
-                                item.setActivated( false );
-                                localFireCount = ((RuleInstanceAgendaItem) item).getRuleExecutor().evaluateNetwork( this.workingMemory, fireCount, fireLimit );
+                            if ( this.unlinkingEnabled && item.isRuleAgendaItem() ) {
+                                item.setQueued(false);
+                                localFireCount = ((RuleAgendaItem) item).getRuleExecutor().evaluateNetwork( this.workingMemory, fireCount, fireLimit );
                                 if ( localFireCount == 0 ) {
                                     // nothing matched
                                     tryagain = true; // will force the next Activation of the agenda, without going to outer loop which checks halt
@@ -1413,7 +1423,7 @@ public class DefaultAgenda
                 activationGroup.removeActivation( activation );
                 clearAndCancelActivationGroup( activationGroup );
             }
-            activation.setActivated( false );
+            activation.setQueued(false);
 
             try {
 

@@ -64,7 +64,7 @@ public class PhreakConflictResolver
             return (int) ( existing.getActivationNumber() - adding.getActivationNumber() );
         }
 
-        if ( existing.isRuleNetworkEvaluatorActivation()) {
+        if ( existing.isRuleAgendaItem()) {
             return +1;
         } else {
             return (int) ( existing.getActivationNumber() - adding.getActivationNumber() );

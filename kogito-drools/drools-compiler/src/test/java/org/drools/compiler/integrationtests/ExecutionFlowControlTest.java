@@ -26,6 +26,7 @@ import org.drools.core.StatefulSession;
 import org.drools.compiler.TotalHolder;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.DefaultAgenda;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.RuleFlowGroupImpl;
 import org.drools.compiler.compiler.PackageBuilder;
@@ -34,11 +35,13 @@ import org.drools.core.event.ActivationCreatedEvent;
 import org.drools.core.event.AgendaEventListener;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.rule.Package;
+import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ActivationGroup;
 import org.drools.core.spi.AgendaGroup;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -209,8 +212,6 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     
     @Test
     public void testEnabledExpressionWithOr() throws Exception {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        
         String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
@@ -225,17 +226,10 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                       + "    list.add( f1 );\n"
                       + "    foo.setId( 'xxx' );\n"
                       + "end\n" + "\n";
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( text.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
-        
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );        
         ksession.insert ( new Foo(null, null) );
@@ -266,26 +260,16 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testNoLoop() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass()
-                .getResourceAsStream( "no-loop.drl" ) ) );
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
-        }
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase("no-loop.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
         final Cheese brie = new Cheese( "brie", 12 );
-        workingMemory.insert( brie );
+        ksession.insert( brie );
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
         assertEquals( "Should not loop  and thus size should be 1", 1,
                       list.size() );
@@ -294,22 +278,16 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testNoLoopWithModify() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "no-loop_with_modify.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase("no-loop_with_modify.drl");
+        KieSession ksession =  createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
         final Cheese brie = new Cheese( "brie", 12 );
-        workingMemory.insert( brie );
+        ksession.insert( brie );
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
         assertEquals( "Should not loop  and thus size should be 1", 1,
                       list.size() );
@@ -319,41 +297,35 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testLockOnActive() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActive.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase("test_LockOnActive.drl");
+        KieSession ksession =  createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
         // AgendaGroup "group1" is not active, so should receive activation
         final Cheese brie12 = new Cheese( "brie", 12 );
-        workingMemory.insert( brie12 );
-        DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
+        ksession.insert( brie12 );
+        InternalAgenda agenda = ((AgendaImpl) ksession.getAgenda()).getAgenda();
         final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
         assertEquals( 1, group1.size() );
 
-        workingMemory.setFocus( "group1" );
+        ksession.getAgenda().getAgendaGroup("group1").setFocus( );
         // AgendaqGroup "group1" is now active, so should not receive
         // activations
         final Cheese brie10 = new Cheese( "brie", 10 );
-        workingMemory.insert( brie10 );
+        ksession.insert( brie10 );
         assertEquals( 1, group1.size() );
 
         final Cheese cheddar20 = new Cheese( "cheddar", 20 );
-        workingMemory.insert( cheddar20 );
+        ksession.insert( cheddar20 );
         final AgendaGroup group2 = agenda.getAgendaGroup( "group1" );
         assertEquals( 1, group2.size() );
 
         final RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "ruleflow2" );
         rfg.setActive( true );
         final Cheese cheddar17 = new Cheese( "cheddar", 17 );
-        workingMemory.insert( cheddar17 );
+        ksession.insert( cheddar17 );
         assertEquals( 1, group2.size() );
     }
 
@@ -369,15 +341,10 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         str += "then \n";
         str += "    list.add( $str ); \n";
         str += "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 
-        assertFalse( kbuilder.hasErrors() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = createKnowledgeSession(kbase);
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         ksession.insert( "hello1" );
@@ -409,15 +376,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         str += "    if ( list.size() == 2 ) {\n" + "        drools.halt();\n"
                + "    }";
         str += "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession =  createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         ksession.insert( "hello1" );
@@ -439,17 +399,11 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testLockOnActiveWithModify() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActiveWithUpdate.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase("test_LockOnActiveWithUpdate.drl");
+        KieSession ksession =  createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
-        wm.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
         final Cheese brie = new Cheese( "brie", 13 );
 
@@ -462,30 +416,30 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         final Person mark = new Person( "mark" );
         mark.setCheese( brie );
 
-        final FactHandle brieHandle = wm.insert( brie );
-        wm.insert( bob );
-        wm.insert( mic );
-        wm.insert( mark );
+        final FactHandle brieHandle = ( FactHandle ) ksession.insert( brie );
+        ksession.insert( bob );
+        ksession.insert( mic );
+        ksession.insert( mark );
 
-        final DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
+        final DefaultAgenda agenda = (DefaultAgenda) ((AgendaImpl)ksession.getAgenda()).getAgenda();
         final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
         agenda.setFocus( group1 );
         assertEquals( 3, group1.size() );
         agenda.fireNextItem( null, 0, 0 );
         assertEquals( 2, group1.size() );
-        wm.update( brieHandle, brie );
+        ksession.update( brieHandle, brie );
         assertEquals( 2, group1.size() );
 
         AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
         agenda.setFocus( group2 );
 
-        RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) ((DefaultAgenda) wm.getAgenda()).getRuleFlowGroup( "ruleflow2" );
+        RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) ((AgendaImpl)ksession.getAgenda()).getAgenda().getRuleFlowGroup( "ruleflow2" );
         assertEquals( 3, rfg.size() );
 
         agenda.activateRuleFlowGroup( "ruleflow2" );
         agenda.fireNextItem( null, 0, 0 );
         assertEquals( 2, rfg.size() );
-        wm.update( brieHandle, brie );
+        ksession.update( brieHandle, brie );
         assertEquals( 2, group2.size() );
     }
 

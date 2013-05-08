@@ -45,6 +45,7 @@ import org.drools.core.rule.Rule;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.rule.WindowReference;
 import org.drools.core.time.TemporalDependencyMatrix;
+import org.drools.core.time.impl.Timer;
 import org.kie.api.conf.EventProcessingOption;
 
 import java.util.ArrayList;
@@ -71,6 +72,8 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                new CollectBuilder() );
         this.utils.addBuilder( Accumulate.class,
                                new AccumulateBuilder() );
+        this.utils.addBuilder( Timer.class,
+                               new TimerBuilder() );
         this.utils.addBuilder( Forall.class,
                                new ForallBuilder() );
         this.utils.addBuilder( EntryPoint.class,
@@ -146,8 +149,10 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                      final GroupElement subrule,
                                      final int subruleIndex,
                                      final Rule rule ) throws InvalidPatternException {
+        context.setSubRule(subrule);
+
         // gets the appropriate builder
-        final ReteooComponentBuilder builder = this.utils.getBuilderFor( subrule );
+        ReteooComponentBuilder builder = this.utils.getBuilderFor( subrule );
 
         // checks if an initial-fact is needed
         if (builder.requiresLeftActivation( this.utils,
@@ -159,6 +164,11 @@ public class ReteooRuleBuilder implements RuleBuilder {
         builder.build( context,
                        this.utils,
                        subrule );
+
+        if  ( context.getRuleBase().getConfiguration().isPhreakEnabled() && rule.getTimer() != null ) {
+            builder = this.utils.getBuilderFor( Timer.class );
+            builder.build( context, this.utils, rule.getTimer() );
+        }
 
         ActivationListenerFactory factory = context.getRuleBase().getConfiguration().getActivationListenerFactory( rule.getActivationListener() );
         TerminalNode terminal = factory.createActivationListener( context.getNextId(),
@@ -175,9 +185,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
             AddRemoveRule.addRule( terminal, context.getWorkingMemories() );
         }
         
-        if ( context.getRuleBase().getConfiguration().isPhreakEnabled() && !unlinkingAllowedForRule(context.getRule() ) ) {
-            setUnlinkDisabledCount( null, terminal.getLeftTupleSource(),  ( context.getWorkingMemories().length == 0) ? null : context.getWorkingMemories() ); 
-        }               
+//        if ( context.getRuleBase().getConfiguration().isPhreakEnabled() && !unlinkingAllowedForRule(context.getRule() ) ) {
+//            setUnlinkDisabledCount( null, terminal.getLeftTupleSource(),  ( context.getWorkingMemories().length == 0) ? null : context.getWorkingMemories() );
+//        }
 
         // adds the terminal node to the list of nodes created/added by this sub-rule
         context.getNodes().add( baseTerminalNode );
@@ -188,12 +198,12 @@ public class ReteooRuleBuilder implements RuleBuilder {
         return terminal;
     }
     
-    public static boolean unlinkingAllowedForRule(Rule rule) {
-        return !(rule.isQuery() ||
-                   rule.getTimer() != null || 
-                   rule.getAutoFocus() || 
-                   rule.getSalience() instanceof MVELSalienceExpression);
-    }
+//    public static boolean unlinkingAllowedForRule(Rule rule) {
+//        return !(rule.isQuery() ||
+//                   rule.getTimer() != null ||
+//                   rule.getAutoFocus() ||
+//                   rule.getSalience() instanceof MVELSalienceExpression);
+//    }
     
     public void setUnlinkDisabledCount(LeftTupleSource startNode,
                                        LeftTupleSource lt,

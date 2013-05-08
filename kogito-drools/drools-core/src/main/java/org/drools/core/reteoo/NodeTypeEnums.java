@@ -51,6 +51,7 @@ public class NodeTypeEnums {
     public static final short LeftTupleSource         = 111;
     public static final short LeftInputAdapterNode    = 120; // also ObjectSink %2 == 0
     public static final short EvalConditionNode       = 131;
+    public static final short TimerConditionNode      = 133;
     public static final short QueryRiaFixerNode       = 141;
     public static final short FromNode                = 151;
     public static final short UnificationNode         = 165; // these two need to be merged

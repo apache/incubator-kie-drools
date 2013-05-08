@@ -23,31 +23,35 @@ import java.io.ObjectOutput;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.rule.ConditionalElement;
+import org.drools.core.rule.Declaration;
 import org.drools.core.util.NumberUtils;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
-public class DurationTimer
+public class DurationTimer extends BaseTimer
     implements
     Timer,
     Externalizable {
+
     private long duration;
-    
+
     public DurationTimer() {
-        
+
     }
-    
+
     public DurationTimer(long duration) {
         this.duration = duration;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeLong( duration );
+        out.writeLong(duration);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
         duration = in.readLong();
     }
 
@@ -55,11 +59,21 @@ public class DurationTimer
         return duration;
     }
 
-    public Trigger createTrigger( Activation item, WorkingMemory wm ) {
-        long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
+    public Trigger createTrigger(Activation item, InternalWorkingMemory wm) {
+        long timestamp = wm.getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
-        Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
-        return createTrigger( timestamp, calendarNames, calendars );
+        Calendars calendars = wm.getCalendars();
+        return createTrigger(timestamp, calendarNames, calendars);
+    }
+
+    public Trigger createTrigger(long timestamp,
+                                 LeftTuple leftTuple,
+                                 DefaultJobHandle jh,
+                                 String[] calendarNames,
+                                 Calendars calendars,
+                                 Declaration[][] declrs,
+                                 InternalWorkingMemory wm) {
+        return createTrigger(timestamp, calendarNames, calendars);
     }
 
     public Trigger createTrigger(long timestamp,
@@ -94,6 +108,11 @@ public class DurationTimer
         DurationTimer other = (DurationTimer) obj;
         if ( duration != other.duration ) return false;
         return true;
+    }
+
+    @Override
+    public ConditionalElement clone() {
+        return new DurationTimer( duration );
     }
 
 }

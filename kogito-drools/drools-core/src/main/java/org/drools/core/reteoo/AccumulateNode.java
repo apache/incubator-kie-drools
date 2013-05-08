@@ -325,7 +325,7 @@ public class AccumulateNode extends BetaNode {
         
         if ( isUnlinkingEnabled() ) {
             rightTuple.setPropagationContext( pctx );
-            doDeleteRightTuple( rightTuple, workingMemory, bm );            
+            doDeleteRightTuple( rightTuple, this, workingMemory, bm );
             return;
         } 
 
@@ -345,7 +345,7 @@ public class AccumulateNode extends BetaNode {
         if ( pctx.getType() == PropagationContext.EXPIRATION ) {
             ((PropagationContextImpl) pctx).setFactHandle( origin );
         }
-        //rightTuple.unlinkFromRightParent();
+        rightTuple.unlinkFromRightParent();
 
     }
     

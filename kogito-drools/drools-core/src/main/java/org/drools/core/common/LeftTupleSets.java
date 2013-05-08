@@ -251,7 +251,26 @@ public class LeftTupleSets {
 //        updateFirst = leftTuple;
 //        leftTuple.setStagePrevious( null );
 //        updateSize = updateSize - count;
-//    }     
+//    }
+
+    public LeftTupleSets cloneAndReset() {
+        LeftTupleSets clone = new LeftTupleSets();
+        clone.insertSize = this.insertSize;
+        clone.deleteSize = this.deleteSize;
+        clone.updateSize = this.updateSize;
+        clone.insertFirst = this.insertFirst;
+        clone.deleteFirst = this.deleteFirst;
+        clone.updateFirst = this.updateFirst;
+
+        this.insertSize = 0;
+        this.deleteSize = 0;
+        this.updateSize = 0;
+        this.insertFirst = null;
+        this.deleteFirst = null;
+        this.updateFirst = null;
+
+        return clone;
+    }
     
     /**
      * clear also ensures all contained LeftTuples are cleared

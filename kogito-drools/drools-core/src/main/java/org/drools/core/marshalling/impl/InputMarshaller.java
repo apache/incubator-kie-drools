@@ -997,36 +997,6 @@ public class InputMarshaller {
 
         AgendaItem activation;
 
-        boolean scheduled = false;
-        if (rule.getTimer() != null) {
-            activation = new ScheduledAgendaItem( activationNumber,
-                                                  leftTuple,
-                                                  (InternalAgenda) wm.getAgenda(),
-                                                  pc,
-                                                  ruleTerminalNode );
-            scheduled = true;
-        } else {
-            activation = new AgendaItem( activationNumber,
-                                         leftTuple,
-                                         salience,
-                                         pc,
-                                         ruleTerminalNode, null);
-        }
-        leftTuple.setObject( activation );
-
-        if (stream.readBoolean()) {
-            String activationGroupName = stream.readUTF();
-            ( (DefaultAgenda) wm.getAgenda() ).getActivationGroup( activationGroupName ).addActivation( activation );
-        }
-
-        boolean activated = stream.readBoolean();
-        activation.setActivated( activated );
-
-        if (stream.readBoolean()) {
-            InternalFactHandle handle = context.handles.get( stream.readInt() );
-            activation.setFactHandle( handle );
-            handle.setObject( activation );
-        }
 
         InternalAgendaGroup agendaGroup;
         if (rule.getAgendaGroup() == null || rule.getAgendaGroup().equals( "" ) ||
@@ -1040,13 +1010,47 @@ public class InputMarshaller {
             agendaGroup = (InternalAgendaGroup) ( (DefaultAgenda) wm.getAgenda() ).getAgendaGroup( rule.getAgendaGroup() );
         }
 
-        activation.setAgendaGroup( agendaGroup );
+        InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) ( (DefaultAgenda) wm.getAgenda() ).getRuleFlowGroup( rule.getRuleFlowGroup() );
+
+        boolean scheduled = false;
+        if (rule.getTimer() != null) {
+            activation = new ScheduledAgendaItem( activationNumber,
+                                                  leftTuple,
+                                                  (InternalAgenda) wm.getAgenda(),
+                                                  pc,
+                                                  ruleTerminalNode,
+                                                  agendaGroup,
+                                                  rfg);
+            scheduled = true;
+        } else {
+            activation = new AgendaItem( activationNumber,
+                                         leftTuple,
+                                         salience,
+                                         pc,
+                                         ruleTerminalNode, null,
+                                         agendaGroup,
+                                         rfg );
+        }
+        leftTuple.setObject( activation );
+
+        if (stream.readBoolean()) {
+            String activationGroupName = stream.readUTF();
+            ( (DefaultAgenda) wm.getAgenda() ).getActivationGroup( activationGroupName ).addActivation( activation );
+        }
+
+        boolean activated = stream.readBoolean();
+        activation.setQueued(activated);
+
+        if (stream.readBoolean()) {
+            InternalFactHandle handle = context.handles.get( stream.readInt() );
+            activation.setFactHandle( handle );
+            handle.setObject( activation );
+        }
 
         if (!scheduled && activated) {
             if (rule.getRuleFlowGroup() == null) {
                 agendaGroup.add( activation );
             } else {
-                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) ( (DefaultAgenda) wm.getAgenda() ).getRuleFlowGroup( rule.getRuleFlowGroup() );
                 rfg.addActivation( activation );
             }
         }

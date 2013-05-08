@@ -183,6 +183,11 @@ public class CommonTestMethodBase extends Assert {
         kbaseConf.setOption( preak );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase.addKnowledgePackages( knowledgePackages );
+        try {
+            kbase = SerializationHelper.serializeObject( kbase );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return kbase;
     }
 
@@ -201,6 +206,11 @@ public class CommonTestMethodBase extends Assert {
         kbaseConf.setOption( preak );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase.addKnowledgePackages( knowledgePackages );
+        try {
+            kbase = SerializationHelper.serializeObject( kbase );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return kbase;
     }
 

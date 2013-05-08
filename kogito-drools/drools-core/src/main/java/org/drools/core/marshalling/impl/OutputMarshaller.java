@@ -959,8 +959,8 @@ public class OutputMarshaller {
             //context.out.println( "ActivationGroup bool:" + false );
         }
 
-        stream.writeBoolean( agendaItem.isActivated() );
-        //context.out.println( "AgendaItem bool:" + agendaItem.isActivated() );
+        stream.writeBoolean( agendaItem.isQueued() );
+        //context.out.println( "AgendaItem bool:" + agendaItem.isQueued() );
 
         if ( agendaItem.getFactHandle() != null ) {
             stream.writeBoolean( true );
