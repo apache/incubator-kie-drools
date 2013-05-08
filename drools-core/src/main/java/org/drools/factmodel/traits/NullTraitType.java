@@ -60,6 +60,10 @@ public class NullTraitType implements TraitType, Thing, Externalizable {
         return null;
     }
 
+    public boolean isTop() {
+        return false;
+    }
+
     public void writeExternal(ObjectOutput objectOutput) throws IOException {
         objectOutput.writeObject( typeCode );
     }

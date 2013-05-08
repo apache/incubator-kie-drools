@@ -178,7 +178,6 @@ public class WindowNode extends ObjectSource
             this.sink.propagateAssertObject(factHandle,
                                             context,
                                             workingMemory);
-            context.setActiveWindowTupleList(null);
         } finally {
             memory.gate.unlock();
         }

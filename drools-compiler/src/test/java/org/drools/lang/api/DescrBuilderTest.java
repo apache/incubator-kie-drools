@@ -18,6 +18,7 @@ package org.drools.lang.api;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
@@ -29,11 +30,18 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.FactType;
+import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ByteArrayResource;
+import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.rule.GroupElement;
+import org.drools.rule.Pattern;
+import org.drools.rule.Rule;
+import org.drools.rule.RuleConditionElement;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Test;
@@ -503,7 +511,51 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertEquals( 1, rules );
 
     }
-    
+
+    @Test
+    public void testDumperFromPkg() {
+        //DROOLS-109
+        PackageDescr pkg = DescrFactory.newPackage().name( "org.test" )
+                .newRule().name( "org.test" )
+                    .lhs().and()
+                        .or()
+                            .pattern().id( "$x", false ).type( "Integer" ).constraint( "this > 10" ).end()
+                            .pattern().id( "$x", false ).type( "Integer" ).constraint( "this < 20" ).end()
+                        .end()
+                        .pattern().type( "Integer" ).constraint( "this == $x" ).constraint( "this == 42" ).end()
+                    .end().end()
+                .rhs( "" )
+                .end()
+                .end().getDescr();
+
+        String drl = new DrlDumper().dump( pkg );
+        System.out.println( drl );
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        System.err.println( knowledgeBuilder.getErrors() );
+        assertFalse( knowledgeBuilder.hasErrors() );
+
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+
+        KnowledgePackage rebuiltPkg = knowledgeBuilder.getKnowledgePackages().iterator().next();
+        org.drools.definition.rule.Rule rule = rebuiltPkg.getRules().iterator().next();
+        Rule r = ((RuleImpl) rule).getRule();
+
+        assertEquals( 2, r.getLhs().getChildren().size() );
+        Iterator<RuleConditionElement> iter = r.getLhs().getChildren().iterator();
+
+        RuleConditionElement arg1 = iter.next();
+        assertTrue( arg1 instanceof GroupElement && ((GroupElement) arg1).getType() == GroupElement.Type.OR );
+        assertEquals( 2, ((GroupElement) arg1).getChildren().size() );
+
+        RuleConditionElement arg2 = iter.next();
+        assertTrue( arg2 instanceof Pattern );
+
+    }
+
     private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newDescrResource( pkg ),

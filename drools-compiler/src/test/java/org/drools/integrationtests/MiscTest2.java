@@ -1164,7 +1164,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore("fixed with mvel 2.1.5.Final")
+    @Test
     public void testEqualityOfDifferentTypes() {
         // DROOLS-42
         String str =
@@ -1553,53 +1553,39 @@ public class MiscTest2 extends CommonTestMethodBase {
     }
 
 
-    public static class Node {
-        public Node(int base, List<Node> list) {
-            this.base = base;
-            this.list = list;
+    @Test
+    public void testFactLeak() throws InterruptedException {
+        //DROOLS-131
+        String drl = "package org.drools.test; \n" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "" +
+                     "rule Intx when\n" +
+                     "  $x : Integer() from entry-point \"x\" \n" +
+                     "then\n" +
+                     "  list.add( $x ); \n" +
+                     "end";
+        int N = 1100;
+
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        final StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        new Thread () {
+            public void run () {
+                ks.fireUntilHalt();
+            }
+        }.start ();
+
+        for ( int j = 0; j < N; j++ ) {
+            ks.getWorkingMemoryEntryPoint( "x" ).insert( new Integer( j ) );
         }
 
-        public int base;
-        public List<Node> list;
+        Thread.sleep( 1000 );
+        ks.halt();
+
+        assertEquals( N, list.size() );
     }
-
-    @Test
-    @Ignore
-    public void testDRLTemplate() {
-
-        String template = "@declare{\"drl\"}@includeNamed{\"ced\"; node=root }@end{}" +
-                "" +
-                "@declare{\"ced\"}" +
-                "@if{ node.base==1 } @includeNamed{ \"cedX\"; connect=\"AND\"; args=node.list }" +
-                "@elseif{ node.base ==2 }@includeNamed{ \"cedX\"; connect=\"OR\"; args=node.list }" +
-                "@end{}" +
-                "@end{}" +
-                "" +
-                "@declare{\"cedX\"}@{connect}@foreach{child : args}\n" +
-                "    @includeNamed{\"ced\"; node=child; } @end{} @{connect}@end{}\n";
-
-        TemplateRegistry REPORT_REGISTRY = new SimpleTemplateRegistry();
-        OptimizerFactory.setDefaultOptimizer("reflective");
-
-        REPORT_REGISTRY.addNamedTemplate( "drl", TemplateCompiler.compileTemplate(template) );
-        TemplateRuntime.execute( REPORT_REGISTRY.getNamedTemplate("drl"), null, REPORT_REGISTRY );
-
-        Map<String, Object> context = new HashMap<String, Object>();
-        context.put( "root", new Node( 1, Arrays.asList(
-                new Node( 2, Arrays.asList( new Node( 1, Collections.EMPTY_LIST ) ) )
-        ) ) );
-
-
-        String result = (String) TemplateRuntime.execute( REPORT_REGISTRY.getNamedTemplate( "drl" ),
-                null,
-                new MapVariableResolverFactory( context ),
-                REPORT_REGISTRY );
-
-        Matcher matcher = Pattern.compile("OR").matcher( result );
-        // need two "OR"s
-        assertTrue( matcher.find() );
-        assertTrue( matcher.find() );
-    }
-
 
 }

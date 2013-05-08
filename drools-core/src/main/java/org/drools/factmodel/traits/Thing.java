@@ -25,4 +25,6 @@ public interface Thing<K> {
 
     public K getCore();
 
+    public boolean isTop();
+
 }
