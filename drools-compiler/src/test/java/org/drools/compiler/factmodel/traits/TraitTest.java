@@ -3251,4 +3251,219 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( map.get( "height"), 184.0 );
 
     }
+
+    @Test
+    public void testIsAEvaluatorOnClassification( ) {
+        String source = "package t.x \n" +
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "import org.drools.core.factmodel.traits.Thing\n" +
+                        "import org.drools.core.factmodel.traits.Entity\n" +
+                        "\n" +
+                        "declare t.x.D\n" +
+                        " @propertyReactive\n" +
+                        " @kind( TRAIT )\n" +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "declare t.x.E\n" +
+                        " @propertyReactive\n" +
+                        " @kind( TRAIT )\n" +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        " Entity o = new Entity();\n" +
+                        " insert(o);\n" +
+                        " don( o, D.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule Don when\n" +
+                        " $o : Entity() \n" +
+                        "then \n" +
+                        "end \n" +
+                        "" +
+                        "rule \"Rule 0 >> http://t/x#D\"\n" +
+                        "when\n" +
+                        " $t : org.drools.core.factmodel.traits.Thing( $c : core, top == true, this not isA t.x.E.class, this isA t.x.D.class ) " +
+                        "then\n" +
+                        " list.add( \"E\" ); \n" +
+                        " don( $t, E.class, true ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule React \n" +
+                        "when E() then \n" +
+                        " list.add( \"X\" ); \n" +
+                        "end \n"
+                ;
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES, ks.getKieBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "E" ) );
+        assertTrue( list.contains( "X" ) );
+
+    }
+
+
+
+    @Test @Ignore
+    public void testShedWithTMS( ) {
+        String source = "package t.x \n" +
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "import org.drools.core.factmodel.traits.Thing\n" +
+                        "import org.drools.core.factmodel.traits.Entity\n" +
+                        "\n" +
+                        "declare t.x.D\n" +
+                        " @propertyReactive\n" +
+                        " @kind( TRAIT )\n" +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "declare t.x.E\n" +
+                        " @propertyReactive\n" +
+                        " @kind( TRAIT )\n" +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        " Entity o = new Entity();\n" +
+                        " insert(o);\n" +
+                        " don( o, D.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule Don when\n" +
+                        " $o : Entity() \n" +
+                        "then \n" +
+                        "end \n" +
+                        "" +
+                        "rule \"Rule 0 >> http://t/x#D\"\n" +
+                        "when\n" +
+                        " $t : org.drools.core.factmodel.traits.Thing( $c : core, top == true, this not isA t.x.E.class, this isA t.x.D.class ) " +
+                        "then\n" +
+                        " list.add( \"E\" ); \n" +
+                        " don( $t, E.class, true ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule React \n" +
+                        "when $x : E() then \n" +
+                        " list.add( \"X\" ); \n" +
+                        "end \n" +
+                        "" +
+                        "rule Shed \n" +
+                        "when \n" +
+                        " $s : String() \n" +
+                        " $d : Entity() \n" +
+                        "then \n" +
+                        " retract( $s ); \n" +
+                        " shed( $d, D.class );\n" +
+                        "end \n" +
+                        ""
+                ;
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES, ks.getKieBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "E" ) );
+        assertTrue( list.contains( "X" ) );
+
+        ks.insert( "shed" );
+        ks.fireAllRules();
+
+        assertEquals( 2, ks.getObjects().size() );
+
+        for ( Object o : ks.getObjects() ) {
+            System.out.println( o );
+        }
+    }
+
+    @Test
+    public void testTraitInitializationTriples() {
+        testTraitInitialization( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+    @Test
+    public void testTraitInitializationMap() {
+        testTraitInitialization( TraitFactory.VirtualPropertyMode.MAP );
+    }
+
+    public void testTraitInitialization( TraitFactory.VirtualPropertyMode mode ) {
+        String source = "package t.x \n" +
+                        "import java.util.*; \n" +
+                        "import org.drools.core.factmodel.traits.Thing \n" +
+                        "import org.drools.core.factmodel.traits.Traitable \n" +
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "\n" +
+                        "declare trait Foo\n" +
+                        " hardList : List = new ArrayList() " +
+                        " softList : List = new ArrayList() " +
+                        " moreList : List = new ArrayList() " +
+                        " otraList : List = new ArrayList() " +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "declare Bar\n" +
+                        " @Traitable()\n" +
+                        " hardList : List \n" +
+                        " moreList : List = Arrays.asList( 1, 2, 3 ) \n" +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        " Bar o = new Bar();\n" +
+                        " insert(o);\n" +
+                        " Thing t = don( o, Thing.class ); \n" +
+                        " t.getFields().put( \"otraList\", Arrays.asList( 42 ) ); \n" +
+                        " don( o, Foo.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule Don when\n" +
+                        " $x : Foo( $h : hardList, $s : softList, $o : otraList, $m : moreList ) \n" +
+                        "then \n" +
+                        " list.add( $h ); \n" +
+                        " list.add( $s ); \n" +
+                        " list.add( $o ); \n" +
+                        " list.add( $m ); \n" +
+                        " System.out.println( $x ); \n" +
+                        "end\n" +
+                        ""
+                ;
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( mode, ks.getKieBase() );
+
+        List<List> list = new ArrayList<List>();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        assertEquals( 4, list.size() );
+        assertFalse( list.contains( null ) );
+
+        List hard = list.get( 0 );
+        List soft = list.get( 1 );
+        List otra = list.get( 2 );
+        List more = list.get( 3 );
+
+        assertTrue( hard.isEmpty() );
+        assertTrue( soft.isEmpty() );
+        assertEquals( more, Arrays.asList( 1, 2, 3 ) );
+        assertEquals( otra, Arrays.asList( 42 ) );
+    }
+
+
 }

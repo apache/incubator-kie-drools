@@ -24,6 +24,7 @@ import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
 import org.kie.api.definition.type.FactField;
+import org.mvel2.MVEL;
 import org.mvel2.asm.*;
 
 import java.beans.IntrospectionException;
@@ -269,6 +270,9 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setTraitMap", "(" + Type.getDescriptor( Map.class ) + ")V" );
             mv.visitLabel( l2 );
 
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitMethodInsn( INVOKESPECIAL, internalProxy, "synchFields", "()V" );
+
             mv.visitInsn( RETURN );
 //            mv.visitMaxs( 5, 3 );
             mv.visitMaxs( 0, 0 );
@@ -310,6 +314,15 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitMethodInsn(INVOKEVIRTUAL, internalProxy, "getCore", "()" + descrCore);
             mv.visitInsn(ARETURN);
 //            mv.visitMaxs( 1, 1 );
+            mv.visitMaxs( 0, 0 );
+            mv.visitEnd();
+        }
+
+        {
+            mv = cw.visitMethod( ACC_PUBLIC, "isTop", "()Z", null, null );
+            mv.visitCode();
+            mv.visitInsn( Thing.class.equals( trait.getDefinedClass() ) ? ICONST_1 : ICONST_0 );
+            mv.visitInsn( IRETURN );
             mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
@@ -419,6 +432,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         }
 
         buildCommonMethods( cw, masterName, core.getClassName() );
+
+        buildExtendedMethods( cw, trait, core );
 
         cw.visitEnd();
 
@@ -1048,5 +1063,46 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         }
     }
 
+    protected void buildExtendedMethods( ClassWriter cw, ClassDefinition trait, ClassDefinition core ) {
+        buildSynchFields( cw, TraitFactory.getProxyName(trait, core), core.getName(), getTrait() );
+    }
 
+    protected void buildSynchFields( ClassWriter cw, String proxyName, String coreName, ClassDefinition def ) {
+        {
+            MethodVisitor mv = cw.visitMethod( ACC_PRIVATE, "synchFields", "()V", null, null );
+            mv.visitCode();
+            for ( FieldDefinition fld : def.getFieldsDefinitions() ) {
+                if ( fld.getInitExpr() != null ) {
+                    synchField( mv, fld, proxyName );
+                }
+            }
+            mv.visitInsn( RETURN );
+            mv.visitMaxs( 0, 0 );
+            mv.visitEnd();
+        }
+    }
+
+
+    protected void synchField( MethodVisitor mv, FieldDefinition fld, String proxyName ) {
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                            BuildUtils.getInternalType( proxyName ),
+                            BuildUtils.getterName( fld.getName(), fld.getTypeName() ),
+                            "()" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) );
+        Label l0 = new Label();
+        mv.visitJumpInsn( IFNONNULL, l0 );
+
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitLdcInsn( fld.getInitExpr() );
+        mv.visitMethodInsn( INVOKESTATIC,
+                            Type.getInternalName( MVEL.class ),
+                            "eval",
+                            Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] { Type.getType( String.class ) } ) );
+        mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( fld.getTypeName() ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                            BuildUtils.getInternalType( proxyName ),
+                            BuildUtils.setterName( fld.getName(), fld.getTypeName() ),
+                            "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")" + Type.getDescriptor( void.class ) );
+        mv.visitLabel(l0);
+    }
 }
