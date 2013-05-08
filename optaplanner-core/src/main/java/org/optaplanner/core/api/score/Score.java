@@ -67,6 +67,17 @@ public interface Score<S extends Score> extends Comparable<S> {
     S divide(double divisor);
 
     /**
+     * Returns a Score whose value is (this ^ exponent).
+     * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
+     * <p>/>
+     * If the implementation has a scale/precision, then the unspecified scale/precision of the double exponent
+     * should have no impact on the returned scale/precision.
+     * @param exponent value by which this Score is to be powered
+     * @return this ^ exponent
+     */
+    S power(double exponent);
+
+    /**
      * Returns an array of doubles representing the Score. Each double represents 1 score level.
      * A greater score level uses a lower array index than a lesser score level.
      * <p/>

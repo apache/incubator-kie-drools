@@ -161,6 +161,18 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return new BendableScore(newHardScores, newSoftScores);
     }
 
+    public BendableScore power(double exponent) {
+        int[] newHardScores = new int[hardScores.length];
+        int[] newSoftScores = new int[softScores.length];
+        for (int i = 0; i < newHardScores.length; i++) {
+            newHardScores[i] = (int) Math.floor(Math.pow(hardScores[i], exponent));
+        }
+        for (int i = 0; i < newSoftScores.length; i++) {
+            newSoftScores[i] = (int) Math.floor(Math.pow(softScores[i], exponent));
+        }
+        return new BendableScore(newHardScores, newSoftScores);
+    }
+
     public double[] toDoubleLevels() {
         double[] doubleLevels = new double[hardScores.length + softScores.length];
         for (int i = 0; i < hardScores.length; i++) {

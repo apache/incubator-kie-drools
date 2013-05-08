@@ -73,6 +73,14 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void power() {
+        assertEquals(HardSoftDoubleScore.valueOf(16.0, 2.25),
+                HardSoftDoubleScore.valueOf(-4.0, 1.5).power(2.0));
+        assertEquals(HardSoftDoubleScore.valueOf(4.0, 1.5),
+                HardSoftDoubleScore.valueOf(16.0, 2.25).power(0.5));
+    }
+
+    @Test
     public void equalsAndHashCode() {
         assertScoresEqualsAndHashCode(
                 HardSoftDoubleScore.valueOf(-10.0, -20.0),

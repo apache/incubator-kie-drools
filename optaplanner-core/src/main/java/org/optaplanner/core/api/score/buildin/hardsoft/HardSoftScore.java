@@ -105,6 +105,11 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> implements
                 (int) Math.floor(softScore / divisor));
     }
 
+    public HardSoftScore power(double exponent) {
+        return new HardSoftScore((int) Math.floor(Math.pow(hardScore, exponent)),
+                (int) Math.floor(Math.pow(softScore, exponent)));
+    }
+
     public double[] toDoubleLevels() {
         return new double[]{hardScore, softScore};
     }

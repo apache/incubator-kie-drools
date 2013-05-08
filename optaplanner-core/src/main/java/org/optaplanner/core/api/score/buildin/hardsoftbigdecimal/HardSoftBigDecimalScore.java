@@ -119,6 +119,18 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
                 softScore.divide(divisorBigDecimal, softScore.scale(), RoundingMode.FLOOR));
     }
 
+    public HardSoftBigDecimalScore power(double exponent) {
+        // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
+        // because together with the floor rounding it gives unwanted behaviour
+        BigDecimal exponentBigDecimal = BigDecimal.valueOf(exponent);
+        // The (unspecified) scale/precision of the exponent should have no impact on the returned scale/precision
+        // TODO FIXME remove .intValue() so non-integer exponents produce correct results
+        // None of the normal Java libraries support BigDecima.pow(BigDecimal)
+        return new HardSoftBigDecimalScore(
+                hardScore.pow(exponentBigDecimal.intValue()).setScale(hardScore.scale()),
+                softScore.pow(exponentBigDecimal.intValue()).setScale(softScore.scale()));
+    }
+
     public double[] toDoubleLevels() {
         return new double[]{hardScore.doubleValue(), softScore.doubleValue()};
     }

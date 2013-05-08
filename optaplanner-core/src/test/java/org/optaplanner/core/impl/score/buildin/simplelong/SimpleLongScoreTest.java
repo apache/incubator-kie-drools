@@ -59,6 +59,14 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void power() {
+        assertEquals(SimpleLongScore.valueOf(25L),
+                SimpleLongScore.valueOf(5L).power(2.0));
+        assertEquals(SimpleLongScore.valueOf(5L),
+                SimpleLongScore.valueOf(25L).power(0.5));
+    }
+
+    @Test
     public void equalsAndHashCode() {
         assertScoresEqualsAndHashCode(
                 SimpleLongScore.valueOf(-10L),

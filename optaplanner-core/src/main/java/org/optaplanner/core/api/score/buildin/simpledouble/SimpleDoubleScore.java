@@ -80,6 +80,10 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
         return new SimpleDoubleScore(score / divisor);
     }
 
+    public SimpleDoubleScore power(double exponent) {
+        return new SimpleDoubleScore(Math.pow(score, exponent));
+    }
+
     public double[] toDoubleLevels() {
         return new double[]{score};
     }

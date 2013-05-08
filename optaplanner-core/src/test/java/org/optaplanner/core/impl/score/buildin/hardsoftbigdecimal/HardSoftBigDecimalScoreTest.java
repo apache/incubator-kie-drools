@@ -75,6 +75,12 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void power() {
+        assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("16.0"), new BigDecimal("25.0")),
+                HardSoftBigDecimalScore.valueOf(new BigDecimal("-4.0"), new BigDecimal("5.0")).power(2.0));
+    }
+
+    @Test
     public void equalsAndHashCode() {
         assertScoresEqualsAndHashCode(
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("-10"), new BigDecimal("-20")),

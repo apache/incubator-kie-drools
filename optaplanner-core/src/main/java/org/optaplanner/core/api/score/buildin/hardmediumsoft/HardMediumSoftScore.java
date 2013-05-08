@@ -136,6 +136,13 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
                 (int) Math.floor(softScore / divisor));
     }
 
+    public HardMediumSoftScore power(double exponent) {
+        return new HardMediumSoftScore(
+                (int) Math.floor(Math.pow(hardScore, exponent)),
+                (int) Math.floor(Math.pow(mediumScore, exponent)),
+                (int) Math.floor(Math.pow(softScore, exponent)));
+    }
+
     public double[] toDoubleLevels() {
         return new double[]{hardScore, mediumScore, softScore};
     }

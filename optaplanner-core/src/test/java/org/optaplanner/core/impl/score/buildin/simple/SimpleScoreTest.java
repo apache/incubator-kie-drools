@@ -59,6 +59,14 @@ public class SimpleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void power() {
+        assertEquals(SimpleScore.valueOf(25),
+                SimpleScore.valueOf(5).power(2.0));
+        assertEquals(SimpleScore.valueOf(5),
+                SimpleScore.valueOf(25).power(0.5));
+    }
+
+    @Test
     public void equalsAndHashCode() {
         assertScoresEqualsAndHashCode(
                 SimpleScore.valueOf(-10),

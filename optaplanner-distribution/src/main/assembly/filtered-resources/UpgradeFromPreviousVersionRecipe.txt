@@ -3213,3 +3213,10 @@ After in *.xml:
 
 From 6.0.0.Beta2 to 6.0.0.CR1
 -----------------------------
+
+[MINOR] If you have a custom ScoreDefinition implementation: the interface Score has a new method power(double).
+After in *Score.java:
+    public HardSoftScore power(double exponent) {
+        return new HardSoftScore((int) Math.floor(Math.pow(hardScore, exponent)),
+                (int) Math.floor(Math.pow(softScore, exponent)));
+    }

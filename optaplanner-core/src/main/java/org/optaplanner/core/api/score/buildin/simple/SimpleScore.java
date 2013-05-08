@@ -75,6 +75,10 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
         return new SimpleScore((int) Math.floor(score / divisor));
     }
 
+    public SimpleScore power(double exponent) {
+        return new SimpleScore((int) Math.floor(Math.pow(score, exponent)));
+    }
+
     public double[] toDoubleLevels() {
         return new double[]{score};
     }

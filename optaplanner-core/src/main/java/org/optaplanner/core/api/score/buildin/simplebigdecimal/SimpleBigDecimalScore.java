@@ -88,6 +88,17 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
                 score.divide(divisorBigDecimal, score.scale(), RoundingMode.FLOOR));
     }
 
+    public SimpleBigDecimalScore power(double exponent) {
+        // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
+        // because together with the floor rounding it gives unwanted behaviour
+        BigDecimal exponentBigDecimal = BigDecimal.valueOf(exponent);
+        // The (unspecified) scale/precision of the exponent should have no impact on the returned scale/precision
+        // TODO FIXME remove .intValue() so non-integer exponents produce correct results
+        // None of the normal Java libraries support BigDecima.pow(BigDecimal)
+        return new SimpleBigDecimalScore(
+                score.pow(exponentBigDecimal.intValue()).setScale(score.scale()));
+    }
+
     public double[] toDoubleLevels() {
         return new double[]{score.doubleValue()};
     }

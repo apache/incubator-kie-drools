@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
 
+import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
 import org.junit.Test;
@@ -58,6 +59,12 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
                 SimpleBigDecimalScore.valueOf(new BigDecimal("21.0")).divide(5.0));
         assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("4.8")),
                 SimpleBigDecimalScore.valueOf(new BigDecimal("24.0")).divide(5.0));
+    }
+
+    @Test
+    public void power() {
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("25.0")),
+                SimpleBigDecimalScore.valueOf(new BigDecimal("5.0")).power(2.0));
     }
 
     @Test

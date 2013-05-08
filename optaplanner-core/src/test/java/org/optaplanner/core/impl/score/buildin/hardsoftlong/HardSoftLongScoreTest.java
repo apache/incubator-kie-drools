@@ -66,6 +66,14 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void power() {
+        assertEquals(HardSoftLongScore.valueOf(16L, 25L),
+                HardSoftLongScore.valueOf(-4L, 5L).power(2.0));
+        assertEquals(HardSoftLongScore.valueOf(4L, 5L),
+                HardSoftLongScore.valueOf(16L, 25L).power(0.5));
+    }
+
+    @Test
     public void equalsAndHashCode() {
         assertScoresEqualsAndHashCode(
                 HardSoftLongScore.valueOf(-10L, -20L),

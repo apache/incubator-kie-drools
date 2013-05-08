@@ -111,6 +111,11 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
                 softScore / divisor);
     }
 
+    public HardSoftDoubleScore power(double exponent) {
+        return new HardSoftDoubleScore(Math.pow(hardScore, exponent),
+                Math.pow(softScore, exponent));
+    }
+
     public double[] toDoubleLevels() {
         return new double[]{hardScore, softScore};
     }
