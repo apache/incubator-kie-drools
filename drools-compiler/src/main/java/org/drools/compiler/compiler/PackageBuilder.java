@@ -798,20 +798,24 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             @SuppressWarnings("unchecked")
             Collection<KnowledgePackage> pkgs = (Collection<KnowledgePackage>) object;             
             for( KnowledgePackage kpkg : pkgs ) {
+                overrideReSource( ((KnowledgePackageImp)kpkg).pkg, resource );
                 addPackage( ((KnowledgePackageImp)kpkg).pkg );
             }
         } else if( object instanceof KnowledgePackageImp ) {
             // KnowledgeBuilder API
             KnowledgePackageImp kpkg = (KnowledgePackageImp) object;
+            overrideReSource( kpkg.pkg, resource );
             addPackage( kpkg.pkg );
         } else if( object instanceof Package ) {
             // Old Drools 4 API
-            Package pkg = (Package) object;             
+            Package pkg = (Package) object;
+            overrideReSource( pkg, resource );
             addPackage( pkg );
         } else if( object instanceof Package[] )  {
             // Old Drools 4 API
             Package[] pkgs = (Package[]) object;             
             for( Package pkg : pkgs ) {
+                overrideReSource( pkg, resource );
                 addPackage( pkg );
             }
         } else {
@@ -826,6 +830,34 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 }
             } );
         }
+    }
+
+    private void overrideReSource( Package pkg, Resource res ) {
+        for ( Rule r : pkg.getRules() ) {
+            if ( isSwappable( r.getResource(), res ) ) {
+                r.setResource( res );
+            }
+        }
+        for ( TypeDeclaration d : pkg.getTypeDeclarations().values() ) {
+            if ( isSwappable( d.getResource(), res ) ) {
+                d.setResource( res );
+            }
+        }
+        for ( Function f : pkg.getFunctions().values() ) {
+            if ( isSwappable( f.getResource(), res ) ) {
+                f.setResource( res );
+            }
+        }
+        for ( Process p : pkg.getRuleFlows().values() ) {
+            if  ( isSwappable( p.getResource(), res ) ) {
+                p.setResource( res );
+            }
+        }
+    }
+
+    private boolean isSwappable( Resource original, Resource source ) {
+        return original == null
+                || ( original instanceof ReaderResource && ((ReaderResource) original).getReader() == null );
     }
 
     /**
