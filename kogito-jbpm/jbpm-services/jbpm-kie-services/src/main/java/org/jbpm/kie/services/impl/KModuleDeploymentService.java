@@ -22,8 +22,6 @@ import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
-import org.jbpm.process.audit.AbstractAuditLogger;
-import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.kie.api.KieBase;
@@ -59,7 +57,13 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
         
         ReleaseId releaseId = ks.newReleaseId(kmoduleUnit.getGroupId(), kmoduleUnit.getArtifactId(), kmoduleUnit.getVersion());
         KieContainer kieContainer = ks.newKieContainer(releaseId);
-        InternalKieModule module = (InternalKieModule) ((KieContainerImpl)kieContainer).getKieModuleForKBase("KBase-test");
+        
+        String kbaseName = kmoduleUnit.getKbaseName();
+        if (kbaseName == null) {
+            kbaseName = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieBaseModel().getName();
+        } 
+        InternalKieModule module = (InternalKieModule) ((KieContainerImpl)kieContainer).getKieModuleForKBase(kbaseName);
+        
         Map<String, String> formsData = new HashMap<String, String>();
         Collection<String> files = module.getFileNames();
         for (String fileName : files) {

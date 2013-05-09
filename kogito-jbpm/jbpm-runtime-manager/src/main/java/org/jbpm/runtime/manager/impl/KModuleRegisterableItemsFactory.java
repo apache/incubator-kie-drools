@@ -53,6 +53,10 @@ public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFac
         else {
             ksessionModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieSession();
         }
+        
+        if (ksessionModel == null) {
+            throw new IllegalStateException("Cannot find ksession with name " + ksessionName);
+        }
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("ksession", runtime.getKieSession());
         parameters.put("taskService", runtime.getKieSession());
