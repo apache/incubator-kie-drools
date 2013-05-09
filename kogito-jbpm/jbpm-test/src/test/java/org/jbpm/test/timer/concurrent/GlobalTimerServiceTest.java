@@ -154,6 +154,13 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
             try {
                 runtime.getTaskService().start(taskId, "john");
                 success = true;
+                
+                if (success) {
+                    runtime.getTaskService().complete(taskId, "john", null);
+                    System.out.println("Completed task " + taskId);
+                    result = true;
+       
+                }
             } catch (PermissionDeniedException e) {
                 // TODO can we avoid these by doing it all in one transaction?
                 System.out.println("Task thread was too late for starting task " + taskId);
@@ -164,12 +171,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
                     throw e;
                 }
             }
-            if (success) {
-                runtime.getTaskService().complete(taskId, "john", null);
-                System.out.println("Completed task " + taskId);
-                result = true;
-   
-            }
+
         }
         
         return result;
