@@ -16,6 +16,7 @@ import javax.persistence.EntityManagerFactory;
 import org.apache.commons.codec.binary.Base64;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.api.DeploymentUnit;
 import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.api.Kjar;
@@ -59,7 +60,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         
         String kbaseName = kmoduleUnit.getKbaseName();
-        if (kbaseName == null) {
+        if (StringUtils.isEmpty(kbaseName)) {
             kbaseName = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieBaseModel().getName();
         } 
         InternalKieModule module = (InternalKieModule) ((KieContainerImpl)kieContainer).getKieModuleForKBase(kbaseName);
@@ -100,10 +101,10 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
         scanner.scanNow();
         
         KieBase kbase = null;
-        if (kmoduleUnit.getKbaseName() != null) {
-            kbase = kieContainer.getKieBase(kmoduleUnit.getKbaseName());
+        if (StringUtils.isEmpty(kmoduleUnit.getKbaseName())) {
+            kbase = kieContainer.getKieBase();            
         } else {
-            kbase = kieContainer.getKieBase();
+            kbase = kieContainer.getKieBase(kmoduleUnit.getKbaseName());
         }
         
         

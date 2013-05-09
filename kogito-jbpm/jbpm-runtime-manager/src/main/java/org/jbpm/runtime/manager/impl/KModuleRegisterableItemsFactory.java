@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.util.CDIHelper;
+import org.drools.core.util.StringUtils;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.process.ProcessEventListener;
@@ -47,11 +48,10 @@ public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFac
     @Override
     public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
         KieSessionModel ksessionModel = null;
-        if(ksessionName != null) {
-            ksessionModel = ((KieContainerImpl)kieContainer).getKieSessionModel(ksessionName);
-        }
-        else {
+        if(StringUtils.isEmpty(ksessionName)) {
             ksessionModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieSession();
+        } else {            
+            ksessionModel = ((KieContainerImpl)kieContainer).getKieSessionModel(ksessionName);
         }
         
         if (ksessionModel == null) {
