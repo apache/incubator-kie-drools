@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -40,7 +41,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     private ExternalTaskEventListener taskListener; 
     
     @Inject
-    private WorkItemHandlerProducer workItemHandlerProducer;
+    private Instance<WorkItemHandlerProducer> workItemHandlerProducer;
     
     @Inject
     private RuntimeFinder finder;
@@ -80,7 +81,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("ksession", runtime.getKieSession());
             params.put("taskClient", runtime.getTaskService());
-            handler.putAll(workItemHandlerProducer.getWorkItemHandlers(manager.getIdentifier(), params));   
+            handler.putAll(workItemHandlerProducer.get().getWorkItemHandlers(manager.getIdentifier(), params));   
         }
         return handler;
     }
