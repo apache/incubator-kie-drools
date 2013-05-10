@@ -125,9 +125,9 @@ public class SerializationHelper {
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
                                                                                  boolean dispose) throws Exception {
-        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
-            return ksession;
-        }
+//        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
+//            return ksession;
+//        }
 
         return getSerialisedStatefulKnowledgeSession( ksession, 
                                                       dispose, 
@@ -139,9 +139,9 @@ public class SerializationHelper {
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
                                                                                  boolean dispose,
                                                                                  boolean testRoundTrip ) throws Exception {
-        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
-            return ksession;
-        }
+//        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
+//            return ksession;
+//        }
         
         ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller( ksession.getKieBase(),
                                                                  (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
@@ -190,10 +190,10 @@ public class SerializationHelper {
             }
 
             // bytes should be the same.
-//            if ( !areByteArraysEqual( b1,
-//                                      b2 ) ) {
-//                throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
-//            }
+            if ( !areByteArraysEqual( b1,
+                                      b2 ) ) {
+                throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
+            }
 
 //            ((StatefulKnowledgeSessionImpl) ksession2).session.getFactHandleFactory().clear( current_id, current_recency );
 //            ((StatefulKnowledgeSessionImpl) ksession2).session.setGlobalResolver( ((StatefulKnowledgeSessionImpl) ksession).session.getGlobalResolver() );
