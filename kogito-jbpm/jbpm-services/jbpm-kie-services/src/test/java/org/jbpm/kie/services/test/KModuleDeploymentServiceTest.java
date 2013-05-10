@@ -322,7 +322,7 @@ public class KModuleDeploymentServiceTest {
     protected KieFileSystem createKieFileSystemWithKProject(KieServices ks) {
         KieModuleModel kproj = ks.newKieModuleModel();
 
-        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase-test").setDefault(true)
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase-test").setDefault(true).addPackage("*")
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 

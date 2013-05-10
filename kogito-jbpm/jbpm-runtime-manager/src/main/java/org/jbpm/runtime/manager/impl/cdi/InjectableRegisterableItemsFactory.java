@@ -13,6 +13,9 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kie.util.CDIHelper;
+import org.drools.core.util.StringUtils;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
@@ -21,8 +24,10 @@ import org.jbpm.services.task.annotations.External;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.services.task.wih.RuntimeFinder;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -42,17 +47,41 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     
     private AbstractAuditLogger auditlogger;
     
+    // to handle kmodule approach
+    private KieContainer kieContainer;
+    private String ksessionName;
+    
 
     @Override
     public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
         Map<String, WorkItemHandler> handler = new HashMap<String, WorkItemHandler>();
         handler.put("Human Task", getHTWorkItemHandler(runtime));
         
-        RuntimeManager manager = ((RuntimeEngineImpl)runtime).getManager();
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ksession", runtime.getKieSession());
-        params.put("taskClient", runtime.getTaskService());
-        handler.putAll(workItemHandlerProducer.getWorkItemHandlers(manager.getIdentifier(), params));
+
+        
+        if (kieContainer != null) {
+            KieSessionModel ksessionModel = null;
+            if(StringUtils.isEmpty(ksessionName)) {
+                ksessionModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieSession();
+            } else {            
+                ksessionModel = ((KieContainerImpl)kieContainer).getKieSessionModel(ksessionName);
+            }
+            
+            if (ksessionModel == null) {
+                throw new IllegalStateException("Cannot find ksession with name " + ksessionName);
+            }
+            Map<String, Object> parameters = new HashMap<String, Object>();
+            parameters.put("ksession", runtime.getKieSession());
+            parameters.put("taskService", runtime.getKieSession());
+            parameters.put("runtimeManager", ((RuntimeEngineImpl)runtime).getManager());
+            CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession(), parameters);
+        } else {
+            RuntimeManager manager = ((RuntimeEngineImpl)runtime).getManager();
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("ksession", runtime.getKieSession());
+            params.put("taskClient", runtime.getTaskService());
+            handler.putAll(workItemHandlerProducer.getWorkItemHandlers(manager.getIdentifier(), params));   
+        }
         return handler;
     }
     
@@ -93,6 +122,14 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         return instance;
     }
     
+    public static RegisterableItemsFactory getFactory(BeanManager beanManager, AbstractAuditLogger auditlogger, KieContainer kieContainer, String ksessionName) {
+        InjectableRegisterableItemsFactory instance = getInstanceByType(beanManager, InjectableRegisterableItemsFactory.class, new Annotation[]{});
+        instance.setAuditlogger(auditlogger);
+        instance.setKieContainer(kieContainer);
+        instance.setKsessionName(ksessionName);
+        return instance;
+    }
+    
     
     protected static <T> T getInstanceByType(BeanManager manager, Class<T> type, Annotation... bindings) {
         final Bean<?> bean = manager.resolve(manager.getBeans(type, bindings));
@@ -109,6 +146,22 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
 
     public void setAuditlogger(AbstractAuditLogger auditlogger) {
         this.auditlogger = auditlogger;
+    }
+
+    public KieContainer getKieContainer() {
+        return kieContainer;
+    }
+
+    public void setKieContainer(KieContainer kieContainer) {
+        this.kieContainer = kieContainer;
+    }
+
+    public String getKsessionName() {
+        return ksessionName;
+    }
+
+    public void setKsessionName(String ksessionName) {
+        this.ksessionName = ksessionName;
     }
 
     

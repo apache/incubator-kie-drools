@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 
@@ -23,11 +24,12 @@ import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
-import org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory;
+import org.jbpm.process.audit.AbstractAuditLogger;
+import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
+import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.scanner.MavenRepository;
@@ -37,6 +39,8 @@ import org.sonatype.aether.artifact.Artifact;
 @Kjar
 public class KModuleDeploymentService extends AbstractDeploymentService {
 
+    @Inject
+    private BeanManager beanManager;
     @Inject
     private EntityManagerFactory emf;
     @Inject
@@ -96,9 +100,6 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 }
             }
         }
-        KieScanner scanner = ks.newKieScanner(kieContainer);
-
-        scanner.scanNow();
         
         KieBase kbase = null;
         if (StringUtils.isEmpty(kmoduleUnit.getKbaseName())) {
@@ -107,20 +108,21 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             kbase = kieContainer.getKieBase(kmoduleUnit.getKbaseName());
         }
         
-        
+        AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance(emf);
         ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
         auditEventBuilder.setIdentityProvider(identityProvider);
         auditEventBuilder.setDeploymentUnitId(unit.getIdentifier());
+        auditLogger.setBuilder(auditEventBuilder);
         
         RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
                 .entityManagerFactory(emf)
-                .knowledgeBase(kbase)
-                .registerableItemsFactory(new KModuleRegisterableItemsFactory(kieContainer, 
-                        kmoduleUnit.getKsessionName(), auditEventBuilder));
-        
+                .knowledgeBase(kbase);
+        if (beanManager != null) {
+            builder.registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger, kieContainer, 
+                    kmoduleUnit.getKsessionName()));
+        }
         
         commonDeploy(unit, deployedUnit, builder.get());
-//        scanner.start(10000);
     }
 
 }

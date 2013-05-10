@@ -20,6 +20,8 @@ public class InMemoryFormProvider implements FormProvider {
         InputStream template = null;
         if (process.getForms().containsKey(process.getId())) {
             template = new ByteArrayInputStream(process.getForms().get(process.getId()).getBytes());
+        } else if (process.getForms().containsKey(process.getId() + "-taskform")) {
+            template = new ByteArrayInputStream(process.getForms().get(process.getId() + "-taskform").getBytes());
         } else if (process.getForms().containsKey(DEFAULT_PROCESS)) {
             template = new ByteArrayInputStream(process.getForms().get(DEFAULT_PROCESS).getBytes());
         }
@@ -32,6 +34,8 @@ public class InMemoryFormProvider implements FormProvider {
         String taskName = task.getNames().get(0).getText();
         if (process.getForms().containsKey(taskName)) {
             template = new ByteArrayInputStream(process.getForms().get(taskName).getBytes());
+        } else if (process.getForms().containsKey(taskName + "-taskform")) {
+            template = new ByteArrayInputStream(process.getForms().get(taskName + "-taskform").getBytes());
         } else if (process.getForms().containsKey(DEFAULT_TASK)) {
             template = new ByteArrayInputStream(process.getForms().get(DEFAULT_TASK).getBytes());
         }
