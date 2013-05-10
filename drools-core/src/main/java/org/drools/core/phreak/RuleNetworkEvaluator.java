@@ -7,17 +7,49 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.*;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.LinkedList;
-import org.drools.core.reteoo.*;
+import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.Memory;
+import org.drools.core.common.NetworkNode;
+import org.drools.core.common.RightTupleSets;
+import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
+import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
+import org.drools.core.reteoo.ExistsNode;
+import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
+import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleMemory;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.LeftTupleSinkNode;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.NotNode;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
+import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.RiaPathMemory;
+import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleMemory;
+import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -528,12 +560,17 @@ public class RuleNetworkEvaluator {
             }
         }
 
+        RiaNodeMemory rnm = (RiaNodeMemory) wm.getNodeMemory( riaNode );
+
         length--; // subtract one, as first is not in the array;
         for (LeftTuple leftTuple = srcTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
             PropagationContext pctx = leftTuple.getPropagationContext();
             InternalFactHandle handle = riaNode.createFactHandle(leftTuple, pctx, wm);
+        
+            // this is required for serialization support
+            rnm.getMap().put( leftTuple, handle );
 
             RightTuple rightTuple = new RightTuple(handle, betaNode);
             leftTuple.setObject(rightTuple);
@@ -556,6 +593,9 @@ public class RuleNetworkEvaluator {
 
         for (LeftTuple leftTuple = srcTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
+
+            // this is required for serialization support
+            rnm.getMap().remove( leftTuple );
 
             RightTuple rightTuple = (RightTuple) leftTuple.getObject();
             RightTupleSets rightTuples = bm.getStagedRightTuples();
