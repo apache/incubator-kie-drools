@@ -17,11 +17,13 @@ package org.jbpm.services.task.impl.model;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  *
@@ -30,6 +32,8 @@ import javax.persistence.Temporal;
 @Entity
 @Table(name="BAMTaskSummary")
 public class BAMTaskSummaryImpl implements Serializable {
+
+    private static final long serialVersionUID = 2793651602463099870L;
 
     @Id
     @GeneratedValue()
@@ -41,11 +45,11 @@ public class BAMTaskSummaryImpl implements Serializable {
     
     private String status;
 
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdDate;
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
     
     private long processInstanceId;
