@@ -15,13 +15,6 @@ public interface Match {
 
     /**
      * 
-     * @return 
-     *     The PropagationContext that created this Match
-     */
-    public PropagationContext getPropagationContext();
-
-    /**
-     * 
      * @return
      *     The matched FactHandles for this Match
      */
@@ -50,13 +43,5 @@ public interface Match {
      * @return
      */
     public Object getDeclarationValue(String declarationId);
-
-    /**
-     * An Match is considered active if it is on the agenda and has not yet fired.
-     * Once an Match has fired it is remove from the Agenda an considered dormant.
-     * However remember that the Match may still be considered "true", i.e. a full match. 
-     * @return
-     */
-    public boolean isActive();
 
 }
