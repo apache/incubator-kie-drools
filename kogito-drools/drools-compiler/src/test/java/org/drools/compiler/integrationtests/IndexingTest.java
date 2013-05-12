@@ -288,8 +288,10 @@ public class IndexingTest extends CommonTestMethodBase {
         Person p = null;
         InternalFactHandle fh = null;
 
+        int max = 100;
+
         // x0 is the blocker
-        for ( int i = 0; i < 100; i++ ) {
+        for ( int i = 0; i < max; i++ ) {
             p = new Person( "x" + i, 100);
             fh = ( InternalFactHandle ) wm.insert( p );
             wm.fireAllRules();
@@ -297,16 +299,17 @@ public class IndexingTest extends CommonTestMethodBase {
         }
 
         // each x is blocker in turn up to x99
-        for ( int i = 0; i < 99; i++ ) {
+        for ( int i = 0; i < (max-1); i++ ) {
             fh = peeps.get("x" + i);
             p = (Person) fh.getObject();
             p.setAge( 90 );
             wm.update( fh, p );
+            wm.fireAllRules();
             assertEquals( "i=" + i, 1, map.get("inserted").intValue() );
         }
 
         // x99 is still the blocker, everything else is just added
-        for ( int i = 0; i < 99; i++ ) {
+        for ( int i = 0; i < (max-1); i++ ) {
             fh = peeps.get("x" + i);
             p = (Person) fh.getObject();
             p.setAge( 102 );
@@ -316,7 +319,7 @@ public class IndexingTest extends CommonTestMethodBase {
         }
 
         // x99 is still the blocker
-        for ( int i = 98; i >= 0; i-- ) {
+        for ( int i = (max-2); i >= 0; i-- ) {
             fh = peeps.get("x" + i);
             p = (Person) fh.getObject();
             p.setAge( 90 );
@@ -326,7 +329,7 @@ public class IndexingTest extends CommonTestMethodBase {
         }
 
         // move x99, should no longer be a blocker
-        fh = peeps.get("x99");
+        fh = peeps.get("x" + (max-1));
         p = (Person) fh.getObject();
         p.setAge( 90 );
         wm.update( fh, p );

@@ -55,7 +55,7 @@ import org.kie.api.io.ResourceType;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
-    @Test
+    @Test(timeout=10000)
     public void testSalienceIntegerAndDepthCrs() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_salienceIntegerRule.drl" ) ) );

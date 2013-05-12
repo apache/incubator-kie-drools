@@ -98,7 +98,7 @@ public class StreamsTest extends CommonTestMethodBase {
         return SerializationHelper.serializeObject(kbase);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventAssertion() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase("test_EntryPoint.drl");
@@ -194,7 +194,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEntryPointReference() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase("test_EntryPointReference.drl");
@@ -247,7 +247,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testModifyRetracOnEntryPointFacts() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase("test_modifyRetractEntryPoint.drl");
@@ -310,7 +310,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testModifyOnEntryPointFacts() throws Exception {
         String str = "package org.drools.compiler\n" +
                      "declare StockTick\n" +
@@ -378,7 +378,7 @@ public class StreamsTest extends CommonTestMethodBase {
                           is("R3"));
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEntryPointWithAccumulateAndMVEL() throws Exception {
         String str = "package org.drools.compiler\n" +
                 "rule R1 dialect 'mvel'\n" +
@@ -415,7 +415,7 @@ public class StreamsTest extends CommonTestMethodBase {
                 is("R1"));
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testGetEntryPointList() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase("test_EntryPointReference.drl");
@@ -435,7 +435,7 @@ public class StreamsTest extends CommonTestMethodBase {
         assertTrue(eps.contains(s3));
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventDoesNotExpireIfNotInPattern() throws Exception {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
@@ -482,7 +482,7 @@ public class StreamsTest extends CommonTestMethodBase {
                 equalTo(0));
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventExpirationSetToZero() throws Exception {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
@@ -536,7 +536,7 @@ public class StreamsTest extends CommonTestMethodBase {
                    equalTo(0));
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventExpirationValue() throws Exception {
         String drl1 = "package org.drools.pkg1\n" +
                       "import org.drools.compiler.StockTick\n" +
@@ -580,7 +580,7 @@ public class StreamsTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDeclaredEntryPoint() {
         final String drl = "package org.jboss.qa.brms.declaredep\n" +
                            "declare entry-point UnusedEntryPoint\n" +
@@ -651,7 +651,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testWindowDeclaration2() throws Exception {
         String drl = "package org.drools.compiler\n" +
                      "declare Double\n" + 
@@ -694,7 +694,7 @@ public class StreamsTest extends CommonTestMethodBase {
                           is(33));
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testMultipleWindows() throws Exception {
         String drl = "package org.drools.compiler\n" +
                      "declare StockTick\n" + 
@@ -733,7 +733,7 @@ public class StreamsTest extends CommonTestMethodBase {
                            is(st2));
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testWindowWithEntryPointCompilationError() {
         String str = "import org.drools.compiler.Cheese;\n" +
                 "declare window X\n" +
@@ -754,7 +754,7 @@ public class StreamsTest extends CommonTestMethodBase {
     }
     
     
-    @Test
+    @Test(timeout=10000)
     public void testAtomicActivationFiring() throws Exception {
         // JBRULES-3383
         String str = "package org.drools.compiler.test\n" +
