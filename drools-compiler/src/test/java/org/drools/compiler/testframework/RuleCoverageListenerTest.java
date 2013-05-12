@@ -191,8 +191,6 @@ class MockActivation
     }
 
     public void setBlocked(LinkedList<LogicalDependency> justified) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void addBlocked(LinkedListNode node) {
@@ -203,16 +201,27 @@ class MockActivation
     }
 
     public boolean isMatched() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void setMatched(boolean matched) {
-        // TODO Auto-generated method stub
     }
 
     public boolean isRuleAgendaItem() {
         return false;
-    }        
+    }
+
+    @Override
+    public void setQueueIndex(int index) {
+    }
+
+    @Override
+    public int getQueueIndex() {
+        return 0;
+    }
+
+    @Override
+    public void dequeue() {
+    }
 
 }

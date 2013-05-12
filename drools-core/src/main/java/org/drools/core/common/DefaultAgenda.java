@@ -21,6 +21,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -203,12 +204,13 @@ public class DefaultAgenda
                                        RuleAgendaItem ruleAgendaItem,
                                        InternalAgendaGroup agendaGroup,
                                        InternalRuleFlowGroup ruleFlowGroup) {
-        return new AgendaItem( activationCounter++,
-                               tuple,
-                               salience,
-                               context,
-                               rtn,
-                               ruleAgendaItem, agendaGroup, ruleFlowGroup);
+        RuleTerminalNodeLeftTuple rtnLeftTuple = (RuleTerminalNodeLeftTuple) tuple;
+        rtnLeftTuple.init(activationCounter++,
+                          salience,
+                          context,
+                          rtn,
+                          ruleAgendaItem, agendaGroup, ruleFlowGroup);
+        return rtnLeftTuple;
     }
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
@@ -216,11 +218,10 @@ public class DefaultAgenda
                                                          final TerminalNode rtn,
                                                          InternalAgendaGroup agendaGroup,
                                                          InternalRuleFlowGroup ruleFlowGroup) {
-        return new ScheduledAgendaItem( activationCounter++,
-                                        tuple,
-                                        this,
-                                        context,
-                                        rtn, agendaGroup, ruleFlowGroup );
+        RuleTerminalNodeLeftTuple rtnLeftTuple = ( RuleTerminalNodeLeftTuple ) tuple;
+        rtnLeftTuple.init(activationCounter++, 0, context,
+                          rtn, null, agendaGroup, ruleFlowGroup );
+        return new ScheduledAgendaItem( rtnLeftTuple, this );
     }
 
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
@@ -518,23 +519,14 @@ public class DefaultAgenda
     public boolean createActivation(final LeftTuple tuple,
                                     final PropagationContext context,
                                     final InternalWorkingMemory workingMemory,
-                                    final TerminalNode rtn,
-                                    final boolean reuseActivation) {
+                                    final TerminalNode rtn) {
         // First process control rules
         // Control rules do increase ActivationCountForEvent and agenda ActivateActivations, they do not currently fire events
         // ControlRules for now re-use the same PropagationContext
         if ( rtn.isFireDirect() ) {
             // Fire RunLevel == 0 straight away. agenda-groups, rule-flow groups, salience are ignored
-            AgendaItem item;
-            if ( reuseActivation ) {
-                item = (AgendaItem) tuple.getObject();
-                item.setPropagationContext( context );
-            } else {
-                item = createAgendaItem( tuple,
-                                         0,
-                                         context,
-                                         rtn, null, null, null );
-            }
+            AgendaItem item = createAgendaItem( tuple, 0, context,
+                                                rtn, null, null, null );
             tuple.setObject( item );
             if ( activationsFilter != null && !activationsFilter.accept( item,
                                                                          context,
@@ -555,16 +547,11 @@ public class DefaultAgenda
         InternalAgendaGroup agendaGroup = (InternalAgendaGroup) getAgendaGroup( rule.getAgendaGroup() );
         InternalRuleFlowGroup  rfg = (InternalRuleFlowGroup) getRuleFlowGroup( rule.getRuleFlowGroup() );
         if ( timer != null ) {
-            if ( reuseActivation ) {
-                item = (AgendaItem) tuple.getObject();
-                item.setPropagationContext( context );
-            } else {
-                item = createScheduledAgendaItem( tuple,
-                                                  context,
-                                                  rtn,
-                                                  agendaGroup,
-                                                  rfg );
-            }
+            item = createScheduledAgendaItem( tuple,
+                                              context,
+                                              rtn,
+                                              agendaGroup,
+                                              rfg );
         } else {
             if ( rule.getCalendars() != null ) {
                 // for normal activations check for Calendar inclusion here, scheduled activations check on each trigger point
@@ -609,24 +596,16 @@ public class DefaultAgenda
                 }
             }
 
-            if ( reuseActivation ) {
-                item = (AgendaItem) tuple.getObject();
-                item.setSalience( rule.getSalience().getValue( new DefaultKnowledgeHelper( item, workingMemory ),
-                                                               rule,
-                                                               workingMemory ) );
-                item.setPropagationContext( context );
-            } else {
-                item = createAgendaItem( tuple,
-                                         0,
-                                         context,
-                                         rtn,
-                                         null,
-                                         agendaGroup,
-                                         rfg );
-                item.setSalience( rule.getSalience().getValue( new DefaultKnowledgeHelper( item, workingMemory ),
-                                                               rule,
-                                                               workingMemory ) );
-            }
+            item = createAgendaItem( tuple,
+                                     0,
+                                     context,
+                                     rtn,
+                                     null,
+                                     agendaGroup,
+                                     rfg );
+            item.setSalience( rule.getSalience().getValue( new DefaultKnowledgeHelper( item, workingMemory ),
+                                                           rule,
+                                                           workingMemory ) );
         }
 
         tuple.setObject( item );

@@ -361,7 +361,7 @@ public abstract class WorkingMemoryLogger
         final StringBuilder result = new StringBuilder( activation.getRule().getName() );
         result.append( " [" );
         final Tuple tuple = activation.getTuple();
-        final FactHandle[] handles = tuple.getFactHandles();
+        final FactHandle[] handles = tuple.toFactHandles();
         for ( int i = 0; i < handles.length; i++ ) {
             result.append( ((InternalFactHandle) handles[i]).getId() );
             if ( i < handles.length - 1 ) {

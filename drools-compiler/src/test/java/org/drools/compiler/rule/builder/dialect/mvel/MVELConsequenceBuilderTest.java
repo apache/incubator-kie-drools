@@ -9,6 +9,7 @@ import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.base.mvel.MVELConsequence;
 import org.drools.core.base.mvel.MVELDebugHandler;
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.PropagationContextImpl;
@@ -113,7 +114,7 @@ public class MVELConsequenceBuilderTest {
                                                true );
         
 
-        final AgendaItem item = new AgendaItem( 0,
+        final AgendaItem item = new AgendaItemImpl( 0,
                                                 tuple,
                                                 10,
                                                 new PropagationContextImpl( 1,
@@ -187,7 +188,7 @@ public class MVELConsequenceBuilderTest {
                                                null,
                                                true );
 
-        final AgendaItem item = new AgendaItem( 0,
+        final AgendaItem item = new AgendaItemImpl( 0,
                                                 tuple,
                                                 10,
                                                 null,

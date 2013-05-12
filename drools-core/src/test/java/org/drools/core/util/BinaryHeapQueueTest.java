@@ -25,7 +25,6 @@ import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.ConflictResolver;
 import org.drools.core.spi.PropagationContext;
 
@@ -87,11 +86,11 @@ public class BinaryHeapQueueTest {
                 group.add( item );
             }
 
-            Queueable[] elems = group.getQueue();
-            for ( Queueable elem : elems ) {
+            Activation[] elems = group.getQueue();
+            for (Activation elem : elems ) {
                 Item item = (Item) elem;
-                //        System.out.print( " " + item.getSalience() + "/"  + item.getActivationNumber() + "/" + item.getIndex() );
-                if ( item.getIndex() % 2 == 0 ) {
+                //        System.out.print( " " + item.getSalience() + "/"  + item.getActivationNumber() + "/" + item.getQueueIndex() );
+                if ( item.getQueueIndex() % 2 == 0 ) {
                     group.remove( item );
                     group.add( item );
                 }
@@ -147,7 +146,7 @@ public class BinaryHeapQueueTest {
         }
 
         public void add(final Item item) {
-            this.queue.enqueue( (Queueable) item );
+            this.queue.enqueue( (Activation) item );
         }
 
         public Item getNext() {
@@ -185,11 +184,11 @@ public class BinaryHeapQueueTest {
         }
 
         public void remove(Item agendaItem) {
-            this.queue.dequeue( agendaItem.getIndex() );
+            this.queue.dequeue( agendaItem.getQueueIndex() );
         }
 
-        public Queueable[] getQueue() {
-            return (Queueable[]) this.queue.toArray( new Queueable[size()] );
+        public Activation[] getQueue() {
+            return (Activation[]) this.queue.toArray(new Activation[size()] );
         }
     }
 
@@ -232,11 +231,8 @@ public class BinaryHeapQueueTest {
     }
 
     public static class Item
-        implements
-        Queueable,
-        Activation {
-
-
+            implements
+            Activation {
 
         private static int actNo = 1;
 
@@ -259,11 +255,11 @@ public class BinaryHeapQueueTest {
             this.index = -1;
         }
 
-        public void setIndex(int index) {
+        public void setQueueIndex(int index) {
             this.index = index;
         }
 
-        public int getIndex() {
+        public int getQueueIndex() {
             return index;
         }
 

@@ -7,6 +7,7 @@ import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.AgendaItemImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
@@ -96,7 +97,7 @@ public class MVELSalienceBuilderTest {
 
         RuleTerminalNode rtn = new RuleTerminalNode();
         rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
-        AgendaItem item = new AgendaItem(0, tuple, 0, null, rtn, null, null, null);
+        AgendaItem item = new AgendaItemImpl(0, tuple, 0, null, rtn, null, null, null);
 
 
         assertEquals( 25,
@@ -177,7 +178,7 @@ public class MVELSalienceBuilderTest {
             
             RuleTerminalNode rtn = new RuleTerminalNode();
             rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
-            item = new AgendaItem(0, tuple, 0, null, rtn, null, null, null);
+            item = new AgendaItemImpl(0, tuple, 0, null, rtn, null, null, null);
         }
 
         public void run() {

@@ -363,7 +363,7 @@ public class BaseLeftTuple
     }
     
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getIndex()
+     * @see org.kie.reteoo.LeftTuple#getQueueIndex()
      */
     public int getIndex() {
         return this.index;
@@ -500,26 +500,12 @@ public class BaseLeftTuple
         return get( declaration.getPattern().getOffset() );
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getFactHandles()
-     */
-    public InternalFactHandle[] getFactHandles() {
-        InternalFactHandle[] handles = new InternalFactHandle[this.index + 1];
-        LeftTuple entry = this;
-        int i = 0;
-        while ( entry != null ) {
-            handles[i++] = entry.getHandle();
-            entry = entry.getParent();
-        }
-        return handles;
-    }
      /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#toFactHandles()
      */
     public InternalFactHandle[] toFactHandles() {
         InternalFactHandle[] handles = new InternalFactHandle[this.index + 1];
         LeftTuple entry = this;
-
         while ( entry != null ) {
             handles[entry.getIndex()] = entry.getHandle();
             entry = entry.getParent();

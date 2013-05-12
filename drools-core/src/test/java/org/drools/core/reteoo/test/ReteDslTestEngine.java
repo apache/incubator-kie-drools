@@ -988,8 +988,8 @@ public class ReteDslTestEngine {
         public int compare(LeftTuple o1,
                            LeftTuple o2) {
 
-            InternalFactHandle[] h1 = o1.getFactHandles();
-            InternalFactHandle[] h2 = o2.getFactHandles();
+            InternalFactHandle[] h1 = o1.toFactHandles();
+            InternalFactHandle[] h2 = o2.toFactHandles();
 
             // Handles have to be compared in the inverse order.
             for ( int i = (h1.length - 1); i >= 0; i-- ) {

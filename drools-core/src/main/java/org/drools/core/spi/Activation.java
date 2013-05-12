@@ -128,5 +128,10 @@ public interface Activation
 
     public boolean isRuleAgendaItem();
 
-    
+
+    void setQueueIndex(int index);
+
+    int getQueueIndex();
+
+    void dequeue();
 }

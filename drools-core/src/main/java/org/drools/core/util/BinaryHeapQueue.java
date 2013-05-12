@@ -54,14 +54,15 @@ public class BinaryHeapQueue
     private Comparator comparator;
 
     /** The number of elements currently in this heap. */
-    private volatile int              size;
+    private volatile int size;
 
     /** The elements in this heap. */
-    private Queueable[]      elements;
+    private Activation[] elements;
 
     public BinaryHeapQueue() {
 
     }
+
     /**
      * Constructs a new <code>BinaryHeap</code> that will use the given
      * comparator to order its elements.
@@ -70,8 +71,8 @@ public class BinaryHeapQueue
      *                   means use natural order
      */
     public BinaryHeapQueue(final Comparator comparator) {
-        this( comparator,
-              BinaryHeapQueue.DEFAULT_CAPACITY );
+        this(comparator,
+             BinaryHeapQueue.DEFAULT_CAPACITY);
     }
 
     /**
@@ -84,20 +85,20 @@ public class BinaryHeapQueue
      */
     public BinaryHeapQueue(final Comparator comparator,
                            final int capacity) {
-        if ( capacity <= 0 ) {
-            throw new IllegalArgumentException( "invalid capacity" );
+        if (capacity <= 0) {
+            throw new IllegalArgumentException("invalid capacity");
         }
 
         //+1 as 0 is noop
-        this.elements = new Queueable[capacity + 1];
+        this.elements = new Activation[capacity + 1];
         this.comparator = comparator;
     }
 
     //-----------------------------------------------------------------------
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        comparator  = (Comparator)in.readObject();
-        elements    = (Queueable[])in.readObject();
-        size        = in.readInt();
+        comparator = (Comparator) in.readObject();
+        elements = (Activation[]) in.readObject();
+        size = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -109,14 +110,14 @@ public class BinaryHeapQueue
     /**
      * Clears all elements from queue.
      */
-    public synchronized  void clear() {
-        this.elements = new Queueable[this.elements.length]; // for gc
+    public synchronized void clear() {
+        this.elements = new Activation[this.elements.length]; // for gc
         this.size = 0;
     }
     
     public Activation[] getAndClear() {
         Activation[] queue = ( Activation[] )this.elements;
-        this.elements = new Queueable[this.elements.length]; // for gc
+        this.elements = new Activation[this.elements.length]; // for gc
         this.size = 0;
         return queue;
     }
@@ -151,7 +152,7 @@ public class BinaryHeapQueue
         return this.size;
     }
     
-    public  synchronized  Queueable peek() {
+    public  synchronized Activation peek() {
         return this.elements[1];
     }
 
@@ -160,7 +161,7 @@ public class BinaryHeapQueue
      *
      * @param element the Queueable to be inserted
      */
-    public  synchronized  void enqueue(final Queueable element) {
+    public  synchronized  void enqueue(final Activation element) {
         //if ( element.get)
         if ( isFull() ) {
             grow();
@@ -176,12 +177,12 @@ public class BinaryHeapQueue
      * @return the Queueable at top of heap
      * @throws NoSuchElementException if <code>isEmpty() == true</code>
      */
-    public synchronized   Queueable dequeue() throws NoSuchElementException {
+    public synchronized Activation dequeue() throws NoSuchElementException {
         if ( isEmpty() ) {
             return null;
         }
 
-        final Queueable result = this.elements[1];
+        final Activation result = this.elements[1];
         result.dequeue();
 
         return result;
@@ -191,13 +192,13 @@ public class BinaryHeapQueue
      *
      * @param index
      */
-    public  synchronized  Queueable dequeue(final int index) {
+    public  synchronized Activation dequeue(final int index) {
         if ( index < 1 || index > this.size ) {
             //throw new NoSuchElementException();
             return null;
         }
 
-        final Queueable result = this.elements[index];
+        final Activation result = this.elements[index];
         setElement( index,
                     this.elements[this.size] );
         this.elements[this.size] = null;
@@ -215,7 +216,7 @@ public class BinaryHeapQueue
             }
         }
 
-        result.setIndex( -1 );
+        result.setQueueIndex(-1);
 
         return result;
     }
@@ -300,7 +301,7 @@ public class BinaryHeapQueue
      * @param index the index of the element
      */
     protected void percolateDownMaxHeap(final int index) {
-        final Queueable element = elements[index];
+        final Activation element = elements[index];
         int hole = index;
 
         while ((hole * 2) <= size) {
@@ -334,7 +335,7 @@ public class BinaryHeapQueue
      */
     protected void percolateUpMaxHeap(final int index) {
         int hole = index;
-        Queueable element = elements[hole];
+        Activation element = elements[hole];
 
         while (hole > 1 && compare(element, elements[hole / 2]) > 0) {
             // save element that is being pushed down
@@ -354,7 +355,7 @@ public class BinaryHeapQueue
      *
      * @param element the element
      */
-    protected void percolateUpMaxHeap(final Queueable element) {
+    protected void percolateUpMaxHeap(final Activation element) {
         setElement( ++size, element );
         percolateUpMaxHeap(size);
     }
@@ -368,8 +369,8 @@ public class BinaryHeapQueue
      * @param b the second object
      * @return -ve if a less than b, 0 if they are equal, +ve if a greater than b
      */
-    private int compare(final Queueable a,
-                        final Queueable b) {
+    private int compare(final Activation a,
+                        final Activation b) {
         return this.comparator.compare( a,
                                         b );
     }
@@ -378,7 +379,7 @@ public class BinaryHeapQueue
      * Increases the size of the heap to support additional elements
      */
     private void grow() {
-        final Queueable[] elements = new Queueable[this.elements.length * 2];
+        final Activation[] elements = new Activation[this.elements.length * 2];
         System.arraycopy( this.elements,
                           0,
                           elements,
@@ -393,9 +394,9 @@ public class BinaryHeapQueue
      * @param element
      */
     private void setElement(final int index,
-                            final Queueable element) {
+                            final Activation element) {
         this.elements[index] = element;
-        element.setIndex(index);
+        element.setQueueIndex(index);
     }
 
     public  synchronized  Object[] toArray(Object a[]) {

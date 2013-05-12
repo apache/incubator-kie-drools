@@ -203,7 +203,7 @@ public class ArrayAgendaGroup
         throw new UnsupportedOperationException();
     }
     
-    public void remove(AgendaItem agendaItem) {
+    public void remove(final Activation activation) {
         throw new UnsupportedOperationException();
     }
     

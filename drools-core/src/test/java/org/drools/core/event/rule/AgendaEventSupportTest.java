@@ -220,10 +220,10 @@ public class AgendaEventSupportTest {
         //cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
         //assertEquals( ActivationCancelledCause.WME_MODIFY, cancelledEvent.getCause() );
 //        assertSame( cheddarHandle,
-//                    cancelledEvent.getActivation().getFactHandles().toArray()[0] );
+//                    cancelledEvent.getActivation().toFactHandles().toArray()[0] );
 //        createdEvent = (ActivationCreatedEvent) agendaList.get( 1 );
 //        assertSame( cheddarHandle,
-//                    createdEvent.getActivation().getFactHandles().toArray()[0] );
+//                    createdEvent.getActivation().toFactHandles().toArray()[0] );
 //        agendaList.clear();
 
         // retract results in a ActivationCancelledEvent, note the object is not resolveable now as it no longer exists

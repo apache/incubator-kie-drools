@@ -56,8 +56,6 @@ public interface Tuple
     /**
      * Returns the fact handles in reverse order
      */
-    InternalFactHandle[] getFactHandles();
-
     InternalFactHandle[] toFactHandles();
 
     /**
