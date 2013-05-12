@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.optaplanner.core.impl.localsearch.decider.acceptor.common.AspirationType;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -27,7 +28,7 @@ public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
 
     public SolutionTabuAcceptor() {
         // Disable aspiration by default because it's useless on solution tabu
-        aspirationEnabled = false;
+        aspirationType = AspirationType.NONE;
     }
 
     // ************************************************************************

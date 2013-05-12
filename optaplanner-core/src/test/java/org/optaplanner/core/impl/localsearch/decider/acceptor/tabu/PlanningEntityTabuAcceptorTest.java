@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.optaplanner.core.impl.localsearch.decider.acceptor.common.AspirationType;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -21,7 +22,7 @@ public class PlanningEntityTabuAcceptorTest {
     public void tabuSize() {
         PlanningEntityTabuAcceptor acceptor = new PlanningEntityTabuAcceptor();
         acceptor.setTabuSize(2);
-        acceptor.setAspirationEnabled(true);
+        acceptor.setAspirationType(AspirationType.BETTER_THAN_BEST_SCORE);
 
         TestdataEntity e0 = new TestdataEntity("e0");
         TestdataEntity e1 = new TestdataEntity("e1");
@@ -101,7 +102,7 @@ public class PlanningEntityTabuAcceptorTest {
     public void tabuSizeMultipleEntitiesPerStep() {
         PlanningEntityTabuAcceptor acceptor = new PlanningEntityTabuAcceptor();
         acceptor.setTabuSize(2);
-        acceptor.setAspirationEnabled(true);
+        acceptor.setAspirationType(AspirationType.BETTER_THAN_BEST_SCORE);
 
         TestdataEntity e0 = new TestdataEntity("e0");
         TestdataEntity e1 = new TestdataEntity("e1");
@@ -198,10 +199,10 @@ public class PlanningEntityTabuAcceptorTest {
     }
 
     @Test
-    public void aspiration() {
+    public void aspirationBetterThanBestScore() {
         PlanningEntityTabuAcceptor acceptor = new PlanningEntityTabuAcceptor();
         acceptor.setTabuSize(2);
-        acceptor.setAspirationEnabled(true);
+        acceptor.setAspirationType(AspirationType.BETTER_THAN_BEST_SCORE);
 
         TestdataEntity e0 = new TestdataEntity("e0");
         TestdataEntity e1 = new TestdataEntity("e1");

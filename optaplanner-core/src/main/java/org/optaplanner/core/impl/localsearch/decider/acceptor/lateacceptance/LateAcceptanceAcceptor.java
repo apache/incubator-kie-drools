@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance;
 
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.common.AspirationType;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -25,12 +26,17 @@ import org.optaplanner.core.api.score.Score;
 public class LateAcceptanceAcceptor extends AbstractAcceptor {
 
     protected int lateAcceptanceSize = -1;
+    protected AspirationType aspirationType = AspirationType.NONE;
 
     protected Score[] previousScores;
     protected int lateScoreIndex = -1;
 
     public void setLateAcceptanceSize(int lateAcceptanceSize) {
         this.lateAcceptanceSize = lateAcceptanceSize;
+    }
+
+    public void setAspirationType(AspirationType aspirationType) {
+        this.aspirationType = aspirationType;
     }
 
     // ************************************************************************
@@ -67,7 +73,15 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
         moveScope.getStepScope().getStepIndex();
         Score score = moveScope.getScore();
         Score lateScore = previousScores[lateScoreIndex];
-        return score.compareTo(lateScore) >= 0;
+        if (score.compareTo(lateScore) >= 0) {
+            return true;
+        }
+        if (aspirationType.isAspired(moveScope)) {
+            logger.trace("        Proposed move ({}) is not late accepted, but is accepted anyway due to aspiration.",
+                    moveScope.getMove());
+            return true;
+        }
+        return false;
     }
 
     @Override
