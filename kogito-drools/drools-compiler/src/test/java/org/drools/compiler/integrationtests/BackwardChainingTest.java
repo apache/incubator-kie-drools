@@ -60,7 +60,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     
     private static Logger logger = LoggerFactory.getLogger(BackwardChainingTest.class);
 
-    @Test //(timeout = 10000)
+    @Test(timeout = 10000)
     public void testQueryPositional() throws Exception {
         String str = "" +
                      "package org.drools.compiler.test  \n" +
@@ -1489,7 +1489,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         l );
     }
 
-    @Test //(timeout = 10000)
+    @Test(timeout = 10000)
     public void testSubNetworksAndQueries() throws Exception {
         if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
             return;  //Disbaled due to phreak, as tests is order specific
@@ -1877,7 +1877,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         list );        
     }
 
-    @Test (timeout = 10000)
+    @Test(timeout = 10000)
     public void testOpenBackwardChain() throws Exception {
         // http://www.amzi.com/AdventureInProlog/advtop.php
 
@@ -1923,16 +1923,16 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "\n" +
                      "rule init when\n" +
                      "then\n" +
-                     "        insert( new Location(\"apple\", \"kitchen\") );\n" +
+//                     "        insert( new Location(\"apple\", \"kitchen\") );\n" +
                      "        insert( new Location(\"desk\", \"office\") );\n" +
-                     "        insert( new Location(\"flashlight\", \"desk\") );\n" +
+//                     "        insert( new Location(\"flashlight\", \"desk\") );\n" +
                      "        insert( new Location(\"envelope\", \"desk\") );\n" +
                      "        insert( new Location(\"key\", \"envelope\") );\n" +
-                     "        insert( new Location(\"washing machine\", \"cellar\") );\n" +
-                     "        insert( new Location(\"nani\", \"washing machine\") );\n" +
-                     "        insert( new Location(\"broccoli\", \"kitchen\") );\n" +
-                     "        insert( new Location(\"crackers\", \"kitchen\") );\n" +
-                     "        insert( new Location(\"computer\", \"office\") );\n" +
+//                     "        insert( new Location(\"washing machine\", \"cellar\") );\n" +
+//                     "        insert( new Location(\"nani\", \"washing machine\") );\n" +
+//                     "        insert( new Location(\"broccoli\", \"kitchen\") );\n" +
+//                     "        insert( new Location(\"crackers\", \"kitchen\") );\n" +
+//                     "        insert( new Location(\"computer\", \"office\") );\n" +
                      "end\n" +
                      "\n" +
                      "rule go1 when \n" +

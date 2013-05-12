@@ -330,7 +330,7 @@ public class RuleNetworkEvaluator {
                     case NodeTypeEnums.QueryElementNode: {
                         boolean exitInnerEval =  evalQueryNode(liaNode, rmem, node, nodeMem, smems, smemIndex, trgTuples, wm, stack, visitedRules, srcTuples, sink);
                         if ( exitInnerEval ) {
-                            return; // RiaNode exists and has placed StackEntry on the Stack
+                            return; // Queries exists and has placed StackEntry on the Stack
                         }
                         break;
                     }
@@ -417,7 +417,7 @@ public class RuleNetworkEvaluator {
             List<PathMemory> qrmems = qsmem.getPathMemories();
 
             // Build the evaluation information for each 'or' branch
-            for (int i = qrmems.size() - 1; i >= 0; i--) {
+            for (int i = 0; i < qrmems.size() ; i++) {
                 PathMemory qrmem = qrmems.get(i);
 
                 rmem = qrmem;
@@ -448,8 +448,11 @@ public class RuleNetworkEvaluator {
                 }
                 stack.add(stackEntry);
             }
+            return true;
+        } else {
+            return false;
         }
-        return true;
+
     }
 
     private boolean evalBetaNode(LeftInputAdapterNode liaNode, PathMemory rmem, NetworkNode node, Memory nodeMem, SegmentMemory[] smems, int smemIndex, LeftTupleSets trgTuples, InternalWorkingMemory wm, LinkedList<StackEntry> stack, LinkedList<StackEntry> outerStack, Set<String> visitedRules, boolean processRian, RuleExecutor executor, LeftTupleSets srcTuples, LeftTupleSets stagedLeftTuples, LeftTupleSinkNode sink) {BetaNode betaNode = (BetaNode) node;

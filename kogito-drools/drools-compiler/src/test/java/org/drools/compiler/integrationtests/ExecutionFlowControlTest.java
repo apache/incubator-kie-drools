@@ -373,8 +373,9 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         str += "    $str : String() \n";
         str += "then \n";
         str += "    list.add( $str ); \n";
-        str += "    if ( list.size() == 2 ) {\n" + "        drools.halt();\n"
-               + "    }";
+        str += "    if ( list.size() == 2 ) {\n";
+        str += "        drools.halt();\n";
+        str += "    }";
         str += "end \n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession =  createKnowledgeSession(kbase);
@@ -433,7 +434,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
         agenda.setFocus( group2 );
 
-        RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) ((AgendaImpl)ksession.getAgenda()).getAgenda().getRuleFlowGroup( "ruleflow2" );
+        RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) ((AgendaImpl)ksession.getAgenda()).getAgenda().getRuleFlowGroup("ruleflow2");
         assertEquals( 3, rfg.size() );
 
         agenda.activateRuleFlowGroup( "ruleflow2" );
@@ -445,17 +446,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testLockOnActiveWithModify2() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActiveWithModify.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final StatefulSession session = ruleBase.newStatefulSession();
-        // WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session
-        // );
-        // logger.setFileName( "conway" );
+        KnowledgeBase kbase = loadKnowledgeBase("test_LockOnActiveWithModify.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
         // populating working memory
         final int size = 3;
@@ -467,98 +459,100 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
             handles[row] = new FactHandle[size];
             for ( int col = 0; col < size; col++ ) {
                 cells[row][col] = new Cell( Cell.DEAD, row, col );
-                handles[row][col] = session.insert( cells[row][col] );
+                handles[row][col] = (FactHandle) ksession.insert( cells[row][col] );
                 if ( row >= 1 && col >= 1 ) {
                     // northwest
-                    session.insert( new Neighbor( cells[row - 1][col - 1],
+                    ksession.insert( new Neighbor( cells[row - 1][col - 1],
                                                   cells[row][col] ) );
-                    session.insert( new Neighbor( cells[row][col],
+                    ksession.insert( new Neighbor( cells[row][col],
                                                   cells[row - 1][col - 1] ) );
                 }
                 if ( row >= 1 ) {
                     // north
-                    session.insert( new Neighbor( cells[row - 1][col],
+                    ksession.insert( new Neighbor( cells[row - 1][col],
                                                   cells[row][col] ) );
-                    session.insert( new Neighbor( cells[row][col],
+                    ksession.insert( new Neighbor( cells[row][col],
                                                   cells[row - 1][col] ) );
                 }
                 if ( row >= 1 && col < (size - 1) ) {
                     // northeast
-                    session.insert( new Neighbor( cells[row - 1][col + 1],
+                    ksession.insert( new Neighbor( cells[row - 1][col + 1],
                                                   cells[row][col] ) );
-                    session.insert( new Neighbor( cells[row][col],
+                    ksession.insert( new Neighbor( cells[row][col],
                                                   cells[row - 1][col + 1] ) );
                 }
                 if ( col >= 1 ) {
                     // west
-                    session.insert( new Neighbor( cells[row][col - 1],
+                    ksession.insert( new Neighbor( cells[row][col - 1],
                                                   cells[row][col] ) );
-                    session.insert( new Neighbor( cells[row][col],
+                    ksession.insert( new Neighbor( cells[row][col],
                                                   cells[row][col - 1] ) );
                 }
             }
         }
 
-        session.clearAgendaGroup( "calculate" );
+        ksession.getAgenda().getAgendaGroup("calculate").clear();
 
         // now, start playing
-        int fired = session.fireAllRules( 100 );
+        int fired = ksession.fireAllRules( 100 );
         assertEquals( 0, fired );
 
-        session.setFocus( "calculate" );
-        fired = session.fireAllRules( 100 );
+        ksession.getAgenda().getAgendaGroup("calculate").setFocus();
+        fired = ksession.fireAllRules( 100 );
         // logger.writeToDisk();
         assertEquals( 0, fired );
-        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+        assertEquals("MAIN", ((AgendaImpl) ksession.getAgenda()).getAgenda().getFocusName());
 
         // on the fifth day God created the birds and sea creatures
         cells[0][0].setState( Cell.LIVE );
-        session.update( handles[0][0], cells[0][0] );
-        session.setFocus( "birth" );
-        session.setFocus( "calculate" );
-        fired = session.fireAllRules( 100 );
+        ksession.update( handles[0][0], cells[0][0] );
+        ksession.getAgenda().getAgendaGroup("birth").setFocus();
+        ksession.getAgenda().getAgendaGroup("calculate").setFocus();
+        fired = ksession.fireAllRules( 100 );
 
         // logger.writeToDisk();
         int[][] expected = new int[][]{{0, 1, 0}, {1, 1, 0}, {0, 0, 0}};
         assertEqualsMatrix( size, cells, expected );
-        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+        assertEquals( "MAIN", ((AgendaImpl)ksession.getAgenda()).getAgenda().getFocusName() );
 
         // on the sixth day God created the animals that walk over the land and
         // the Man
         cells[1][1].setState( Cell.LIVE );
-        session.update( handles[1][1], cells[1][1] );
-        session.setFocus( "calculate" );
-        session.fireAllRules( 100 );
+        ksession.update( handles[1][1], cells[1][1] );
+        ksession.getAgenda().getAgendaGroup("calculate").setFocus();
+        ksession.fireAllRules( 100 );
         // logger.writeToDisk();
 
         expected = new int[][]{{1, 2, 1}, {2, 1, 1}, {1, 1, 1}};
         assertEqualsMatrix( size, cells, expected );
-        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+        assertEquals( "MAIN", ((AgendaImpl)ksession.getAgenda()).getAgenda().getFocusName()  );
 
-        session.setFocus( "birth" );
-        session.fireAllRules( 100 );
+        ksession.getAgenda().getAgendaGroup("birth").setFocus();
+        ksession.fireAllRules( 100 );
         expected = new int[][]{{1, 2, 1}, {2, 1, 1}, {1, 1, 1}};
         assertEqualsMatrix( size, cells, expected );
-        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+        assertEquals( "MAIN", ((AgendaImpl)ksession.getAgenda()).getAgenda().getFocusName()  );
 
-        session.setFocus( "calculate" );
-        session.fireAllRules( 100 );
+        System.out.println( "--------" );
+        ksession.getAgenda().getAgendaGroup("calculate").setFocus();
+        ksession.fireAllRules( 100 );
         // logger.writeToDisk();
         // printMatrix( cells );
 
         expected = new int[][]{{3, 3, 2}, {3, 3, 2}, {2, 2, 1}};
         assertEqualsMatrix( size, cells, expected );
-        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+        assertEquals( "MAIN", ((AgendaImpl)ksession.getAgenda()).getAgenda().getFocusName()  );
+        System.out.println( "--------" );
 
         // on the seventh day, while God rested, man start killing them all
         cells[0][0].setState( Cell.DEAD );
-        session.update( handles[0][0], cells[0][0] );
-        session.setFocus( "calculate" );
-        session.fireAllRules( 100 );
+        ksession.update( handles[0][0], cells[0][0] );
+        ksession.getAgenda().getAgendaGroup("calculate").setFocus();
+        ksession.fireAllRules( 100 );
 
         expected = new int[][]{{3, 2, 2}, {2, 2, 2}, {2, 2, 1}};
         assertEqualsMatrix( size, cells, expected );
-        assertEquals( "MAIN", session.getAgenda().getFocusName() );
+        assertEquals( "MAIN", ((AgendaImpl)ksession.getAgenda()).getAgenda().getFocusName()  );
 
     }
 
@@ -587,24 +581,16 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testAgendaGroups() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_AgendaGroups.drl", getClass() ), ResourceType.DRL );
-
-        assertFalse( kbuilder.hasErrors() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        kbase = SerializationHelper.serializeObject(kbase);
-        final StatefulKnowledgeSession session = createKnowledgeSession( kbase );
+        KnowledgeBase kbase = loadKnowledgeBase("test_AgendaGroups.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
-        session.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
         final Cheese brie = new Cheese( "brie", 12 );
-        session.insert( brie );
+        ksession.insert( brie );
 
-        session.fireAllRules();
+        ksession.fireAllRules();
 
         assertEquals( 7, list.size() );
 
@@ -616,17 +602,17 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( "group1", list.get( 5 ) );
         assertEquals( "MAIN", list.get( 6 ) );
 
-        session.getAgenda().getAgendaGroup( "group2" ).setFocus();
-        session.fireAllRules();
+        ksession.getAgenda().getAgendaGroup( "group2" ).setFocus();
+        ksession.fireAllRules();
 
         assertEquals( 8, list.size() );
         assertEquals( "group2", list.get( 7 ) );
 
         // clear main only the auto focus related ones should fire
         list.clear();
-        session.insert( new Cheese( "cheddar" ) );
-        session.getAgenda().getAgendaGroup( "MAIN" ).clear();
-        session.fireAllRules();
+        ksession.insert( new Cheese( "cheddar" ) );
+        ksession.getAgenda().getAgendaGroup( "MAIN" ).clear();
+        ksession.fireAllRules();
         assertEquals( 3, list.size() );
         assertEquals( "group3", list.get( 0 ) );
         assertEquals( "group4", list.get( 1 ) );
@@ -711,46 +697,41 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                 "    });" +
                 "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                ResourceType.DRL );
-        assertFalse(kbuilder.getErrors().toString(), kbuilder.hasErrors());
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession kSession = createKnowledgeSession(kbase);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = createKnowledgeSession(kbase);
 
-        kSession.setGlobal("totalHolder", new TotalHolder());
+        ksession.setGlobal("totalHolder", new TotalHolder());
         Father abraham = new Father("abraham", null, 100);
         Father homer = new Father("homer", null, 20);
         Father bart = new Father("bart", null, 3);
 
-        org.kie.api.runtime.rule.FactHandle abrahamHandle = kSession.insert(abraham);
-        org.kie.api.runtime.rule.FactHandle bartHandle = kSession.insert(bart);
-        kSession.fireAllRules();
-        assertEquals(0, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
+        org.kie.api.runtime.rule.FactHandle abrahamHandle = ksession.insert(abraham);
+        org.kie.api.runtime.rule.FactHandle bartHandle = ksession.insert(bart);
+        ksession.fireAllRules();
+        assertEquals(0, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
 
         bart.setFather(abraham);
-        kSession.update(bartHandle, bart);
-        kSession.fireAllRules();
-        assertEquals(100, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
+        ksession.update(bartHandle, bart);
+        ksession.fireAllRules();
+        assertEquals(100, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
 
         bart.setFather(null);
-        kSession.update(bartHandle, bart);
-        kSession.fireAllRules();
-        assertEquals(0, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
+        ksession.update(bartHandle, bart);
+        ksession.fireAllRules();
+        assertEquals(0, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
 
         bart.setFather(abraham);
-        kSession.update(bartHandle, bart);
-        kSession.fireAllRules();
-        assertEquals(100, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
+        ksession.update(bartHandle, bart);
+        ksession.fireAllRules();
+        assertEquals(100, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
 
-        org.kie.api.runtime.rule.FactHandle homerHandle = kSession.insert(homer);
+        org.kie.api.runtime.rule.FactHandle homerHandle = ksession.insert(homer);
         homer.setFather(abraham);
-        kSession.update(homerHandle, homer);
+        ksession.update(homerHandle, homer);
         bart.setFather(homer);
-        kSession.update(bartHandle, bart);
-        kSession.fireAllRules();
-        assertEquals(120, ((TotalHolder) kSession.getGlobal("totalHolder")).getTotal());
+        ksession.update(bartHandle, bart);
+        ksession.fireAllRules();
+        assertEquals(120, ((TotalHolder) ksession.getGlobal("totalHolder")).getTotal());
     }    
 
     public static class Holder {
@@ -780,110 +761,95 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     // JBRULES-2398
-            public void
-            testActivationGroupWithTroubledSyntax() {
-        String str = "package BROKEN_TEST;\n" + "import "
-                     + Holder.class.getCanonicalName() + ";\n"
-                     + "rule \"_12\"\n"
-                     + "    \n"
-                     + "    salience 3\n"
-                     + "    activation-group \"BROKEN\"\n"
-                     + "    when\n"
-                     + "        $a : Holder(value in (0))\n"
-                     + "    then\n"
-                     + "        System.out.println(\"setting 0\");\n"
-                     + "        $a.setOutcome(\"setting 0\");\n"
-                     + "end\n" + "\n"
-                     + "rule \"_13\"\n"
-                     + "    \n"
-                     + "    salience 2\n"
-                     + "    activation-group \"BROKEN\"\n"
-                     + "    when\n"
-                     + "        $a : Holder(value in (1))\n"
-                     + "    then\n"
-                     + "        System.out.println(\"setting 1\");\n"
-                     + "        $a.setOutcome(\"setting 1\");\n"
-                     + "end\n" + "\n"
-                     + "rule \"_22\"\n"
-                     + "    \n" + "    salience 1\n"
-                     + "    activation-group \"BROKEN\"\n"
-                     + "    when\n"
-                     + "        $a : Holder(value == null)\n"
-                     + "    then\n"
-                     + "        System.out.println(\"setting null\");\n"
-                     + "        $a.setOutcome(\"setting null\");\n"
-                     + "end\n" + "\n"
-                     + "";
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        if ( kBuilder.hasErrors() ) {
-            System.err.println( "Errors" );
-            KnowledgeBuilderErrors errors = kBuilder.getErrors();
-            for ( KnowledgeBuilderError kbe : errors ) {
-                System.err.println( kbe.getMessage() );
-                for ( int errLine : kbe.getLines() ) {
-                    System.err.println( errLine );
-                }
-            }
-            System.exit( 1 );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        Collection<KnowledgePackage> knowledgePackages = kBuilder.getKnowledgePackages();
-        kbase.addKnowledgePackages( knowledgePackages );
+    public void
+    testActivationGroupWithTroubledSyntax() {
+    String str = "package BROKEN_TEST;\n" + "import "
+                 + Holder.class.getCanonicalName() + ";\n"
+                 + "rule \"_12\"\n"
+                 + "    \n"
+                 + "    salience 3\n"
+                 + "    activation-group \"BROKEN\"\n"
+                 + "    when\n"
+                 + "        $a : Holder(value in (0))\n"
+                 + "    then\n"
+                 + "        System.out.println(\"setting 0\");\n"
+                 + "        $a.setOutcome(\"setting 0\");\n"
+                 + "end\n" + "\n"
+                 + "rule \"_13\"\n"
+                 + "    \n"
+                 + "    salience 2\n"
+                 + "    activation-group \"BROKEN\"\n"
+                 + "    when\n"
+                 + "        $a : Holder(value in (1))\n"
+                 + "    then\n"
+                 + "        System.out.println(\"setting 1\");\n"
+                 + "        $a.setOutcome(\"setting 1\");\n"
+                 + "end\n" + "\n"
+                 + "rule \"_22\"\n"
+                 + "    \n" + "    salience 1\n"
+                 + "    activation-group \"BROKEN\"\n"
+                 + "    when\n"
+                 + "        $a : Holder(value == null)\n"
+                 + "    then\n"
+                 + "        System.out.println(\"setting null\");\n"
+                 + "        $a.setOutcome(\"setting null\");\n"
+                 + "end\n" + "\n"
+                 + "";
 
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = createKnowledgeSession(kbase);
 
         Holder inrec = new Holder( 1 );
         System.out.println( "Holds: " + inrec.getValue() );
-        session.insert( inrec );
-        session.fireAllRules();
-        Assert.assertEquals( 1, session.getFactHandles().size() );
+        ksession.insert( inrec );
+        ksession.fireAllRules();
+        Assert.assertEquals( 1, ksession.getFactHandles().size() );
         Assert.assertEquals( "setting 1", inrec.getOutcome() );
 
-        session.dispose();
-        session = createKnowledgeSession( kbase );
+        ksession.dispose();
+        ksession = createKnowledgeSession(kbase);
         inrec = new Holder( null );
         System.out.println( "Holds: " + inrec.getValue() );
-        session.insert( inrec );
-        session.fireAllRules();
-        Assert.assertEquals( 1, session.getFactHandles().size() );
+        ksession.insert( inrec );
+        ksession.fireAllRules();
+        Assert.assertEquals( 1, ksession.getFactHandles().size() );
         Assert.assertEquals( "setting null", inrec.getOutcome() );
 
-        session.dispose();
-        session = createKnowledgeSession( kbase );
+        ksession.dispose();
+        ksession = createKnowledgeSession(kbase);
         inrec = new Holder( 0 );
         System.out.println( "Holds: " + inrec.getValue() );
-        session.insert( inrec );
-        session.fireAllRules(); // appropriate rule is not fired!
-        Assert.assertEquals( 1, session.getFactHandles().size() );
+        ksession.insert( inrec );
+        ksession.fireAllRules(); // appropriate rule is not fired!
+        Assert.assertEquals( 1, ksession.getFactHandles().size() );
         Assert.assertEquals( "setting 0", inrec.getOutcome() );
     }
 
     @Test
     public void testInsertRetractNoloop() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Insert_Retract_Noloop.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBase kbase = loadKnowledgeBase("test_Insert_Retract_Noloop.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        wm.insert( new Cheese( "stilton", 15 ) );
+        ksession.insert( new Cheese( "stilton", 15 ) );
 
-        wm.fireAllRules();
+        ksession.fireAllRules();
+        assertEquals(0, ksession.getObjects().size());
     }
 
     @Test
     public void testUpdateNoLoop() throws Exception {
         // JBRULES-780, throws a NullPointer or infinite loop if there is an
         // issue
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_UpdateNoloop.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
+        KnowledgeBase kbase = loadKnowledgeBase("test_UpdateNoloop.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory wm = ruleBase.newStatefulSession();
-        wm.insert( new Cheese( "stilton", 15 ) );
+        Cheese cheese = new Cheese( "stilton", 15 );
+        ksession.insert( cheese  );
 
-        wm.fireAllRules();
+        ksession.fireAllRules();
+
+        assertEquals( 14, cheese.getPrice() );
     }
 
     @Test
@@ -893,8 +859,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         RuleBase ruleBase = loadRuleBase( reader );
 
         ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final InternalWorkingMemoryActions wm = (InternalWorkingMemoryActions) ruleBase
-                .newStatefulSession();
+        final InternalWorkingMemoryActions wm = (InternalWorkingMemoryActions) ruleBase.newStatefulSession();
         final List created = new ArrayList();
         final List cancelled = new ArrayList();
         final AgendaEventListener l = new DefaultAgendaEventListener() {
@@ -947,96 +912,77 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testRuleFlowGroup() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflowgroup.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KnowledgeBase kbase = loadKnowledgeBase("ruleflowgroup.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
-        workingMemory.insert( "Test" );
-        workingMemory.fireAllRules();
+        ksession.insert( "Test" );
+        ksession.fireAllRules();
         assertEquals( 0, list.size() );
 
-        workingMemory.getAgenda().activateRuleFlowGroup( "Group1" );
-        workingMemory.fireAllRules();
+        ((AgendaImpl)ksession.getAgenda()).getAgenda().activateRuleFlowGroup( "Group1" );
+        ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
     }
 
     @Test
     public void testRuleFlowGroupDeactivate() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflowgroup2.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        // need to make eager, for cancel to work, (mdp)
+        KnowledgeBase kbase = loadKnowledgeBase("ruleflowgroup2.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
-        workingMemory.insert( "Test" );
-        workingMemory.fireAllRules();
+        ksession.insert( "Test" );
+        ksession.fireAllRules();
         assertEquals( 0, list.size() );
-        assertEquals( 2, workingMemory.getAgenda().getRuleFlowGroup( "Group1" ).size() );
+        assertEquals(2, ((AgendaImpl) ksession.getAgenda()).getAgenda().getRuleFlowGroup("Group1").size());
 
-        workingMemory.getAgenda().activateRuleFlowGroup( "Group1" );
-        workingMemory.fireAllRules();
+        ((AgendaImpl)ksession.getAgenda()).getAgenda().activateRuleFlowGroup( "Group1" );
+        ksession.fireAllRules();
 
         assertEquals( 0, list.size() );
     }
 
     @Test
     public void testRuleFlowGroupInActiveMode() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflowgroup.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KnowledgeBase kbase = loadKnowledgeBase("ruleflowgroup.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-
-        final StatefulSession workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
-        workingMemory.insert( "Test" );
-        workingMemory.fireAllRules();
+        ksession.insert( "Test" );
+        ksession.fireAllRules();
         assertEquals( 0, list.size() );
 
-        workingMemory.getAgenda().activateRuleFlowGroup( "Group1" );
-        workingMemory.fireAllRules();
+        ((AgendaImpl)ksession.getAgenda()).getAgenda().activateRuleFlowGroup("Group1");
+        ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
 
-        workingMemory.halt();
+        ksession.halt();
     }
 
     @Test
     public void testDateEffective() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_EffectiveDate.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
+        KnowledgeBase kbase = loadKnowledgeBase("test_EffectiveDate.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
         // go !
         final Message message = new Message( "hola" );
-        workingMemory.insert( message );
-        workingMemory.fireAllRules();
+        ksession.insert( message );
+        ksession.fireAllRules();
         assertFalse( message.isFired() );
     }
 
@@ -1057,24 +1003,12 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                      + "		modify( $p ) { setAge( 36 ) }; \n"
                      + "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = createKnowledgeSession(kbase);
 
         Person p = new Person( "darth", 36 );
         FactHandle fh = (FactHandle) ksession.insert( p );
 
-        //session.startProcess("fraudAnalysisFlow");			
-        //session.getAgenda().getAgendaGroup("customerActivityLookup").setFocus();
         ksession.getAgenda().getAgendaGroup( "g1" ).setFocus();
 
         ksession.fireAllRules();

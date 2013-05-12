@@ -10,6 +10,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Rule;
+import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.LeftTupleList;
@@ -44,6 +45,7 @@ public class RuleExecutor {
     }
 
     public int evaluateNetwork(InternalWorkingMemory wm,
+                               final AgendaFilter filter,
                                int fireCount,
                                int fireLimit) {
         LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
@@ -65,8 +67,6 @@ public class RuleExecutor {
                 // Network Evaluation can notify meta rules, which should be given a chance to fire first
                 RuleAgendaItem nextRule = agenda.peekNextRule();
                 if ( !isHighestSalience( nextRule, salience ) ) {
-                    // add it back onto the agenda, as the list still needs to be check after the meta rules have evalutated the matches
-                    ((InternalAgenda) wm.getAgenda()).addActivation( ruleAgendaItem );
                     return localFireCount;
                 }
             }
@@ -87,14 +87,6 @@ public class RuleExecutor {
                     continue;
                 }
 
-                if ( pctx.getType() != org.kie.api.runtime.rule.PropagationContext.RULE_ADDITION ) {
-                    long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
-                    InternalAgendaGroup agendaGroup = (InternalAgendaGroup) agenda.getAgendaGroup(rule.getAgendaGroup());
-                    if (blockedByLockOnActive(rule, agenda, pctx, handleRecency, agendaGroup)) {
-                        continue;
-                    }
-                }
-
                 AgendaItem item = ( AgendaItem ) leftTuple.getObject();
                 if ( item == null ) {
                     item = agenda.createAgendaItem( leftTuple, salience, pctx, rtn, ruleAgendaItem, ruleAgendaItem.getAgendaGroup(), ruleAgendaItem.getRuleFlowGroup() );
@@ -109,8 +101,10 @@ public class RuleExecutor {
                     continue;
                 }
                 item.setQueued(true);
-                agenda.fireActivation( item );
-                localFireCount++;
+                if ( filter == null || filter.accept(item) ) {
+                    agenda.fireActivation( item );
+                    localFireCount++;
+                }
 
                 RuleAgendaItem nextRule = agenda.peekNextRule();
                 if ( haltRuleFiring( nextRule, fireCount, fireLimit, localFireCount, agenda, salience ) ) {
@@ -130,6 +124,10 @@ public class RuleExecutor {
                     this.networkEvaluator.evalStackEntry(entry, outerStack, outerStack, this, wm);
                 }
             }
+        }
+
+        if ( !dirty && tupleList.isEmpty() ) {
+            ruleAgendaItem.remove();
         }
 
         return localFireCount;
@@ -159,38 +157,6 @@ public class RuleExecutor {
                     return true;
                 }
             }
-        }
-        return false;
-    }
-
-    private boolean blockedByLockOnActive(Rule rule,
-                                          InternalAgenda agenda,
-                                          PropagationContext pctx,
-                                          long handleRecency,
-                                          InternalAgendaGroup agendaGroup) {
-        if ( rule.isLockOnActive() ) {
-            boolean isActive = false;
-            long activatedForRecency = 0;
-            long clearedForRecency = 0;
-
-            if ( rule.getRuleFlowGroup() == null ) {
-                isActive = agendaGroup.isActive();
-                activatedForRecency = agendaGroup.getActivatedForRecency();
-                clearedForRecency = agendaGroup.getClearedForRecency();
-            } else {
-                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) agenda.getRuleFlowGroup( rule.getRuleFlowGroup() );
-                isActive = rfg.isActive();
-                activatedForRecency = rfg.getActivatedForRecency();
-                clearedForRecency = rfg.getClearedForRecency();
-            }
-
-            if ( isActive && activatedForRecency < handleRecency &&
-                 agendaGroup.getAutoFocusActivator() != pctx ) {
-                return true;
-            } else if ( clearedForRecency != -1 && clearedForRecency >= handleRecency ) {
-                return true;
-            }
-
         }
         return false;
     }
