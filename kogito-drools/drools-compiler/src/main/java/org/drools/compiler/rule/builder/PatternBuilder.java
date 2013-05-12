@@ -24,7 +24,6 @@ import org.drools.core.base.mvel.ActivationPropertyHandler;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
 import org.drools.core.base.mvel.MVELCompileable;
-import org.drools.core.common.AgendaItem;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -36,6 +35,8 @@ import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.core.common.AgendaItemImpl;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
@@ -259,9 +260,9 @@ public class PatternBuilder
         }
 
         if ( ClassObjectType.Match_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
-            PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( AgendaItem.class );
+            PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( RuleTerminalNodeLeftTuple.class );
             if ( handler == null ) {
-                PropertyHandlerFactoryFixer.getPropertyHandlerClass().put( AgendaItem.class,
+                PropertyHandlerFactoryFixer.getPropertyHandlerClass().put( RuleTerminalNodeLeftTuple.class,
                                                                            new ActivationPropertyHandler() );
             }
         }

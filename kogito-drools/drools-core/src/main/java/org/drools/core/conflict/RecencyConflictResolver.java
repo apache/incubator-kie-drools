@@ -67,8 +67,8 @@ public class RecencyConflictResolver extends AbstractConflictResolver {
      */
     public int compare(final Activation lhs,
                        final Activation rhs) {
-        final InternalFactHandle[] lFacts = lhs.getTuple().getFactHandles();
-        final InternalFactHandle[] rFacts = rhs.getTuple().getFactHandles();
+        final InternalFactHandle[] lFacts = lhs.getTuple().toFactHandles();
+        final InternalFactHandle[] rFacts = rhs.getTuple().toFactHandles();
 
         InternalFactHandle leftMostRecent = getMostRecentFact( lFacts );
         InternalFactHandle rightMostRecent = getMostRecentFact( rFacts );

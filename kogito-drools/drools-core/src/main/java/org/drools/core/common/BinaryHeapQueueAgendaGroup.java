@@ -20,7 +20,6 @@ import java.util.PriorityQueue;
 
 import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.util.BinaryHeapQueue;
-import org.drools.core.util.Queueable;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 
@@ -95,7 +94,7 @@ public class BinaryHeapQueueAgendaGroup
     }
 
     public void add(final Activation activation) {
-        this.queue.enqueue( (Queueable) activation );
+        this.queue.enqueue( (Activation) activation );
     }
 
     public Activation getNext() {
@@ -161,8 +160,8 @@ public class BinaryHeapQueueAgendaGroup
         throw new UnsupportedOperationException();
     }
 
-    public void remove(AgendaItem agendaItem) {
-        this.queue.dequeue( agendaItem.getIndex() );
+    public void remove(final Activation activation) {
+        this.queue.dequeue( activation.getQueueIndex() );
     }
 
     public void setActivatedForRecency(long recency) {

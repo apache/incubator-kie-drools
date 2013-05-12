@@ -32,7 +32,7 @@ public interface InternalAgendaGroup extends AgendaGroup {
     
     public Activation[] getAndClear();
 
-    public void remove(AgendaItem agendaItem);
+    public void remove(Activation activation);
 
     public void setActivatedForRecency(long recency);
     

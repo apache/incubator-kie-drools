@@ -28,13 +28,14 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
+import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 
 public class BaseQueueable
-    implements
-    Queueable {
+        implements
+        Activation {
     private Queue queue;
     private int   index;
     
@@ -42,11 +43,11 @@ public class BaseQueueable
         this.queue = queue;
     }
 
-    public void setIndex(final int index) {
+    public void setQueueIndex(final int index) {
         this.index = index;
     }
 
-    public int getIndex() {
+    public int getQueueIndex() {
         return this.index;
     }
 

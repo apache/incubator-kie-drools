@@ -26,7 +26,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.mvel.ActivationPropertyHandler;
 import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
-import org.drools.core.common.AgendaItem;
+import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InstanceNotEqualsConstraint;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
@@ -92,9 +92,9 @@ public class PatternBuilder
         
         // this is needed for Activation patterns, to allow declarations and annotations to be used like field constraints
         if ( ClassObjectType.Match_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
-            PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( AgendaItem.class );
+            PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( AgendaItemImpl.class );
             if ( handler == null ) {
-                PropertyHandlerFactoryFixer.getPropertyHandlerClass().put( AgendaItem.class, new ActivationPropertyHandler() );
+                PropertyHandlerFactoryFixer.getPropertyHandlerClass().put( AgendaItemImpl.class, new ActivationPropertyHandler() );
             }
         }
 

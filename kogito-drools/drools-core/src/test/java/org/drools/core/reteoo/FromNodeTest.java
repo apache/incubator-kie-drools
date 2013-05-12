@@ -146,9 +146,9 @@ public class FromNodeTest {
                       asserted.size() );
         Tuple tuple = (Tuple) ((Object[]) asserted.get( 0 ))[0];
         assertSame( person2,
-                    tuple.getFactHandles()[1].getObject() );
+                    tuple.toFactHandles()[1].getObject() );
         assertSame( cheese1,
-                    tuple.getFactHandles()[0].getObject() );
+                    tuple.toFactHandles()[0].getObject() );
 
         cheese2.setType( "stilton" );
         final Person person3 = new Person( "xxx2",
@@ -165,14 +165,14 @@ public class FromNodeTest {
                       asserted.size() );
         tuple = (Tuple) ((Object[]) asserted.get( 1 ))[0];
         assertSame( person3,
-                    tuple.getFactHandles()[1].getObject() );
+                    tuple.toFactHandles()[1].getObject() );
         assertSame( cheese1,
-                    tuple.getFactHandles()[0].getObject() );
+                    tuple.toFactHandles()[0].getObject() );
         tuple = (Tuple) ((Object[]) asserted.get( 2 ))[0];
         assertSame( person3,
-                    tuple.getFactHandles()[1].getObject() );
+                    tuple.toFactHandles()[1].getObject() );
         assertSame( cheese2,
-                    tuple.getFactHandles()[0].getObject() );
+                    tuple.toFactHandles()[0].getObject() );
 
         assertNotSame( cheese1,
                        cheese2 );
@@ -267,9 +267,9 @@ public class FromNodeTest {
                       asserted.size() );
         Tuple tuple = (Tuple) ((Object[]) asserted.get( 0 ))[0];
         assertSame( person2,
-                    tuple.getFactHandles()[1].getObject() );
+                    tuple.toFactHandles()[1].getObject() );
         assertSame( cheese1,
-                    tuple.getFactHandles()[0].getObject() );
+                    tuple.toFactHandles()[0].getObject() );
 
         cheese2.setPrice( 30 );
         final Person person3 = new Person( "xxx2",
@@ -286,14 +286,14 @@ public class FromNodeTest {
                       asserted.size() );
         tuple = (Tuple) ((Object[]) asserted.get( 1 ))[0];
         assertSame( person3,
-                    tuple.getFactHandles()[1].getObject() );
+                    tuple.toFactHandles()[1].getObject() );
         assertSame( cheese1,
-                    tuple.getFactHandles()[0].getObject() );
+                    tuple.toFactHandles()[0].getObject() );
         tuple = (Tuple) ((Object[]) asserted.get( 2 ))[0];
         assertSame( person3,
-                    tuple.getFactHandles()[1].getObject() );
+                    tuple.toFactHandles()[1].getObject() );
         assertSame( cheese2,
-                    tuple.getFactHandles()[0].getObject() );
+                    tuple.toFactHandles()[0].getObject() );
 
         assertNotSame( cheese1,
                        cheese2 );

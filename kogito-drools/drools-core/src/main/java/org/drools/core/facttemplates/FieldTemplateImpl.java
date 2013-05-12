@@ -59,7 +59,7 @@ public class FieldTemplateImpl
         out.writeObject(valueType);
     }
     /* (non-Javadoc)
-     * @see org.kie.facttemplates.FieldTemplate#getIndex()
+     * @see org.kie.facttemplates.FieldTemplate#getQueueIndex()
      */
     public int getIndex() {
         return this.index;

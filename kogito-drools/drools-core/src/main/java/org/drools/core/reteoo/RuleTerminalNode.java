@@ -263,8 +263,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         boolean fire = agenda.createActivation( leftTuple, 
                                                 context, 
                                                 workingMemory, 
-                                                this, 
-                                                false );
+                                                this );
         if( fire && !fireDirect ) {
             agenda.addActivation( (AgendaItem) leftTuple.getObject() );
         }
@@ -313,14 +312,12 @@ public class RuleTerminalNode extends AbstractTerminalNode {
             return;
         }
 
-        boolean reuseActivation = true;
         // o (AgendaItem) could be null, if this was staged as an insert but not processed, then pushed as a update
         if ( o == null || o  == Boolean.TRUE ) {
         	// set to Boolean.TRUE when lock-on-active stops an Activation being created
-        	reuseActivation = false;
         	leftTuple.setObject( null );
         }
-        boolean fire = agenda.createActivation( leftTuple, context, workingMemory, this, reuseActivation );
+        boolean fire = agenda.createActivation( leftTuple, context, workingMemory, this );
         if ( fire && !isFireDirect() ) {
             agenda.modifyActivation( (AgendaItem) leftTuple.getObject(), false );
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo;
+package org.drools.core.common;
 
 import org.drools.core.FactHandle;
-import org.drools.core.common.ActivationGroupNode;
-import org.drools.core.common.ActivationNode;
-import org.drools.core.common.AgendaItem;
-import org.drools.core.common.DefaultAgenda;
-import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleFlowGroup;
-import org.drools.core.common.LogicalDependency;
-import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
@@ -36,13 +30,28 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
-                                                             AgendaItem {
-    private static final long serialVersionUID = 540l;
+/**
+ * Item entry in the <code>Agenda</code>.
+ */
+public class AgendaItemImpl
+        implements
+        AgendaItem {
+    // ------------------------------------------------------------
+    // Instance members
+    // ------------------------------------------------------------
+
+    private static final long serialVersionUID = 510l;
+    /**
+     * The tuple.
+     */
+    private           LeftTuple                                      tuple;
     /**
      * The salience
      */
@@ -56,10 +65,14 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
      */
     private           TerminalNode                                   rtn;
     /**
+     * The propagation context
+     */
+    private           PropagationContext                             context;
+    /**
      * The activation number
      */
     private           long                                           activationNumber;
-    private volatile  int                                            queueIndex;
+    private volatile  int                                            index;
     private volatile  boolean                                        queued;
     private           LinkedList<LogicalDependency>                  justified;
     private           LinkedList<LogicalDependency>                  blocked;
@@ -74,83 +87,36 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
     private           ActivationUnMatchListener                      activationUnMatchListener;
     private           RuleAgendaItem                                 ruleAgendaItem;
 
-    public RuleTerminalNodeLeftTuple() {
-        // constructor needed for serialisation
-    }
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTupleSink sink,
-                                     final boolean leftTupleMemoryEnabled) {
-        super(factHandle,
-              sink,
-              leftTupleMemoryEnabled);
+
+    public AgendaItemImpl() {
+
     }
 
-    public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTuple leftTuple,
-                                     final LeftTupleSink sink) {
-        super(factHandle, leftTuple, sink);
-    }
-
-    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                                     final LeftTupleSink sink,
-                                     final PropagationContext pctx,
-                                     final boolean leftTupleMemoryEnabled) {
-        super(leftTuple,
-              sink,
-              pctx,
-              leftTupleMemoryEnabled);
-    }
-
-    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                                     RightTuple rightTuple,
-                                     LeftTupleSink sink) {
-        super(leftTuple,
-              rightTuple,
-              sink);
-    }
-
-    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                                     final RightTuple rightTuple,
-                                     final LeftTupleSink sink,
-                                     final boolean leftTupleMemoryEnabled) {
-        this(leftTuple,
-             rightTuple,
-             null,
-             null,
-             sink,
-             leftTupleMemoryEnabled);
-    }
-
-    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                                     final RightTuple rightTuple,
-                                     final LeftTuple currentLeftChild,
-                                     final LeftTuple currentRightChild,
-                                     final LeftTupleSink sink,
-                                     final boolean leftTupleMemoryEnabled) {
-        super(leftTuple,
-              rightTuple,
-              currentLeftChild,
-              currentRightChild,
-              sink,
-              leftTupleMemoryEnabled);
-    }
-
-    public void init(final long activationNumber,
-                     final int salience,
-                     final PropagationContext pctx,
-                     final TerminalNode rtn,
-                     final RuleAgendaItem ruleAgendaItem,
-                     InternalAgendaGroup agendaGroup,
-                     InternalRuleFlowGroup ruleFlowGroup) {
-        setPropagationContext(pctx);
+    /**
+     * Construct.
+     *
+     * @param tuple          The tuple.
+     * @param ruleAgendaItem
+     * @param agendaGroup
+     * @param ruleFlowGroup
+     */
+    public AgendaItemImpl(final long activationNumber,
+                          final LeftTuple tuple,
+                          final int salience,
+                          final PropagationContext context,
+                          final TerminalNode rtn,
+                          final RuleAgendaItem ruleAgendaItem,
+                          InternalAgendaGroup agendaGroup,
+                          InternalRuleFlowGroup ruleFlowGroup) {
+        this.tuple = tuple;
+        this.context = context;
         this.salience = salience;
         this.rtn = rtn;
         this.activationNumber = activationNumber;
-        this.queueIndex = -1;
+        this.index = -1;
         this.matched = true;
         this.ruleAgendaItem = ruleAgendaItem;
         this.agendaGroup = agendaGroup;
@@ -158,15 +124,27 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
 
     }
 
+    @Override
+    public PropagationContext getPropagationContext() {
+        return this.context;
+    }
+
+    @Override
+    public void setPropagationContext(PropagationContext context) {
+        this.context = context;
+    }
+
     /**
      * Retrieve the rule.
      *
      * @return The rule.
      */
+    @Override
     public Rule getRule() {
         return this.rtn.getRule();
     }
 
+    @Override
     public Consequence getConsequence() {
         String consequenceName = ((RuleTerminalNode) rtn).getConsequenceName();
         return consequenceName.equals(Rule.DEFAULT_CONSEQUENCE_NAME) ? rtn.getRule().getConsequence() : rtn.getRule().getNamedConsequence(consequenceName);
@@ -177,34 +155,42 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
      *
      * @return The tuple.
      */
+    @Override
     public LeftTuple getTuple() {
-        return this;
+        return this.tuple;
     }
 
+    @Override
     public int getSalience() {
         return this.salience;
     }
 
+    @Override
     public void setSalience(int salience) {
         this.salience = salience;
     }
 
+    @Override
     public int getSequenence() {
         return sequenence;
     }
 
+    @Override
     public void setSequenence(int sequenence) {
         this.sequenence = sequenence;
     }
 
+    @Override
     public InternalFactHandle getFactHandle() {
         return factHandle;
     }
 
+    @Override
     public void setFactHandle(InternalFactHandle factHandle) {
         this.factHandle = factHandle;
     }
 
+    @Override
     public RuleAgendaItem getRuleAgendaItem() {
         return ruleAgendaItem;
     }
@@ -214,10 +200,12 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
          *
          * @see org.kie.spi.Activation#getActivationNumber()
          */
+    @Override
     public long getActivationNumber() {
         return this.activationNumber;
     }
 
+    @Override
     public void addBlocked(final LogicalDependency dep) {
         // Adds the blocked to the blockers list
         if (this.blocked == null) {
@@ -227,7 +215,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         this.blocked.add(dep);
 
         // now ad the blocker to the blocked's list - we need to check that references are null first
-        RuleTerminalNodeLeftTuple blocked = (RuleTerminalNodeLeftTuple) dep.getJustified();
+        AgendaItemImpl blocked = (AgendaItemImpl) dep.getJustified();
         if (blocked.blockers == null) {
             blocked.blockers = new LinkedList<LinkedListEntry<LogicalDependency>>();
             blocked.blockers.add(dep.getJustifierEntry());
@@ -236,6 +224,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         }
     }
 
+    @Override
     public void removeAllBlockersAndBlocked(DefaultAgenda agenda) {
         if (this.blockers != null) {
             // Iterate and remove this node's logical dependency list from each of it's blockers
@@ -251,7 +240,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
             for (LogicalDependency dep = blocked.getFirst(); dep != null; ) {
                 LogicalDependency tmp = dep.getNext();
                 removeBlocked(dep);
-                RuleTerminalNodeLeftTuple justified = (RuleTerminalNodeLeftTuple) dep.getJustified();
+                AgendaItem justified = (AgendaItem) dep.getJustified();
                 if (justified.getBlockers().isEmpty()) {
                     if (ruleAgendaItem == null) {
                         // the match is no longer blocked, so stage it
@@ -270,25 +259,30 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         this.blocked = null;
     }
 
+    @Override
     public void removeBlocked(final LogicalDependency dep) {
         this.blocked.remove(dep);
 
-        RuleTerminalNodeLeftTuple blocked = (RuleTerminalNodeLeftTuple) dep.getJustified();
+        AgendaItemImpl blocked = (AgendaItemImpl) dep.getJustified();
         blocked.blockers.remove(dep.getJustifierEntry());
     }
 
+    @Override
     public LinkedList<LogicalDependency> getBlocked() {
         return this.blocked;
     }
 
+    @Override
     public void setBlocked(LinkedList<LogicalDependency> justified) {
         this.blocked = justified;
     }
 
+    @Override
     public LinkedList<LinkedListEntry<LogicalDependency>> getBlockers() {
         return this.blockers;
     }
 
+    @Override
     public void addLogicalDependency(final LogicalDependency node) {
         if (this.justified == null) {
             this.justified = new LinkedList<LogicalDependency>();
@@ -297,26 +291,68 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         this.justified.add(node);
     }
 
+    @Override
     public LinkedList<LogicalDependency> getLogicalDependencies() {
         return this.justified;
     }
 
+    @Override
     public void setLogicalDependencies(LinkedList<LogicalDependency> justified) {
         this.justified = justified;
     }
 
+    @Override
     public boolean isQueued() {
         return this.queued;
     }
 
+    @Override
     public void setQueued(final boolean queued) {
         this.queued = queued;
     }
 
-    public void setQueueIndex(final int index) {
-        this.queueIndex = index;
+    @Override
+    public String toString() {
+        return "[Activation rule=" + this.rtn.getRule().getName() + ", act#=" + this.activationNumber + ", salience=" + this.salience + ", tuple=" + this.tuple + "]";
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object object) {
+        if (object == this) {
+            return true;
+        }
+
+        if (!(object instanceof AgendaItemImpl)) {
+            return false;
+        }
+
+        final AgendaItem otherItem = (AgendaItem) object;
+
+        return (this.rtn.getRule().equals(otherItem.getRule()) && this.tuple.equals(otherItem.getTuple()));
+    }
+
+    /**
+     * Return the hashCode of the
+     * <code>TupleKey<code> as the hashCode of the AgendaItem
+     *
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        return this.tuple.hashCode();
+    }
+
+    @Override
+    public void setQueueIndex(final int index) {
+        this.index = index;
+    }
+
+    @Override
     public void dequeue() {
         if (this.agendaGroup != null) {
             this.agendaGroup.remove(this);
@@ -324,60 +360,73 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         this.queued = false;
     }
 
+    @Override
     public int getQueueIndex() {
-        return this.queueIndex;
+        return this.index;
     }
 
+    @Override
     public void remove() {
         dequeue();
     }
 
+    @Override
     public ActivationGroupNode getActivationGroupNode() {
         return this.activationGroupNode;
     }
 
+    @Override
     public void setActivationGroupNode(final ActivationGroupNode activationNode) {
         this.activationGroupNode = activationNode;
     }
 
+    @Override
     public InternalAgendaGroup getAgendaGroup() {
         return this.agendaGroup;
     }
 
+    @Override
     public InternalRuleFlowGroup getRuleFlowGroup() {
         return this.ruleFlowGroup;
     }
 
-    //    public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
-    //        this.agendaGroup = agendaGroup;
-    //    }
+//    public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
+//        this.agendaGroup = agendaGroup;
+//    }
 
+    @Override
     public ActivationNode getActivationNode() {
         return this.activationNode;
     }
 
+    @Override
     public void setActivationNode(final ActivationNode activationNode) {
         this.activationNode = activationNode;
     }
 
+    @Override
     public GroupElement getSubRule() {
         return this.rtn.getSubRule();
     }
 
+    @Override
     public TerminalNode getTerminalNode() {
         return this.rtn;
     }
 
+    @Override
     public ActivationUnMatchListener getActivationUnMatchListener() {
         return activationUnMatchListener;
     }
 
+    @Override
     public void setActivationUnMatchListener(ActivationUnMatchListener activationUnMatchListener) {
         this.activationUnMatchListener = activationUnMatchListener;
     }
 
+    @Override
     public List<FactHandle> getFactHandles() {
-        FactHandle[] factHandles = toFactHandles();
+        FactHandle[] factHandles = this.tuple.toFactHandles();
         List<FactHandle> list = new ArrayList<FactHandle>(factHandles.length);
         for (FactHandle factHandle : factHandles) {
             Object o = ((InternalFactHandle) factHandle).getObject();
@@ -388,12 +437,14 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         return Collections.unmodifiableList(list);
     }
 
+    @Override
     public String toExternalForm() {
         return "[ " + this.getRule().getName() + " active=" + this.queued + " ]";
     }
 
+    @Override
     public List<Object> getObjects() {
-        FactHandle[] factHandles = toFactHandles();
+        FactHandle[] factHandles = this.tuple.toFactHandles();
         List<Object> list = new ArrayList<Object>(factHandles.length);
         for (FactHandle factHandle : factHandles) {
             Object o = ((InternalFactHandle) factHandle).getObject();
@@ -404,15 +455,17 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         return Collections.unmodifiableList(list);
     }
 
+    @Override
     public Object getDeclarationValue(String variableName) {
         Declaration decl = this.rtn.getSubRule().getOuterDeclarations().get(variableName);
-        InternalFactHandle handle = get(decl);
+        InternalFactHandle handle = this.tuple.get(decl);
         // need to double check, but the working memory reference is only used for resolving globals, right?
         return decl.getValue(null, handle.getObject());
     }
 
+    @Override
     public List<String> getDeclarationIds() {
-        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) getLeftTupleSink()).getDeclarations();
+        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) this.tuple.getLeftTupleSink()).getDeclarations();
         List<String> declarations = new ArrayList<String>();
         for (Declaration decl : declArray) {
             declarations.add(decl.getIdentifier());
@@ -420,23 +473,29 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         return Collections.unmodifiableList(declarations);
     }
 
+    @Override
     public boolean isCanceled() {
         return canceled;
     }
 
+    @Override
     public void cancel() {
         this.canceled = true;
     }
 
+    @Override
     public boolean isMatched() {
         return matched;
     }
 
+    @Override
     public void setMatched(boolean matched) {
         this.matched = matched;
     }
 
+    @Override
     public boolean isRuleAgendaItem() {
         return false;
     }
+
 }

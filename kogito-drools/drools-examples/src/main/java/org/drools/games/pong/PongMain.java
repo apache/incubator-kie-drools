@@ -56,16 +56,16 @@ public class PongMain {
         
 //        ksession.addEventListener( new DefaultAgendaEventListener() {
 //            public void beforeMatchFired(BeforeActivationFiredEvent event)  {
-//                System.out.println( "b: " + event.getActivation().getRule().getName() + " : " + event.getActivation().getFactHandles() );
+//                System.out.println( "b: " + event.getActivation().getRule().getName() + " : " + event.getActivation().toFactHandles() );
 //            }        
 //            public void afterMatchFired(AfterActivationFiredEvent event)  {
-//                System.out.println( "a: " + event.getActivation().getRule().getName() + " : " + event.getActivation().getFactHandles() );
+//                System.out.println( "a: " + event.getActivation().getRule().getName() + " : " + event.getActivation().toFactHandles() );
 //            }
 ////            public void matchCreated(ActivationCreatedEvent event)  {
-////                System.out.println( "cr: " + event.getActivation().getRule().getName() + " : " + event.getActivation().getFactHandles() );
+////                System.out.println( "cr: " + event.getActivation().getRule().getName() + " : " + event.getActivation().toFactHandles() );
 ////            }
 ////            public void matchCancelled(ActivationCancelledEvent event)  {
-////                System.out.println( "cl: " + event.getActivation().getRule().getName() + " : " + event.getActivation().getFactHandles() );
+////                System.out.println( "cl: " + event.getActivation().getRule().getName() + " : " + event.getActivation().toFactHandles() );
 ////            }                      
 //            
 //        });

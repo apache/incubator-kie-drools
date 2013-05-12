@@ -62,8 +62,7 @@ public interface InternalAgenda
     public boolean createActivation(final LeftTuple tuple,
                                     final PropagationContext context,
                                     final InternalWorkingMemory workingMemory,
-                                    final TerminalNode rtn,
-                                    final boolean reuseActivation );        
+                                    final TerminalNode rtn );
 
     public void cancelActivation(final LeftTuple leftTuple,
                                  final PropagationContext context,

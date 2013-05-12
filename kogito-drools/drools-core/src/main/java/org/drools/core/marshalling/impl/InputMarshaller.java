@@ -30,6 +30,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BinaryHeapQueueAgendaGroup;
 import org.drools.core.common.DefaultAgenda;
@@ -51,6 +52,7 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.RuleFlowGroupImpl;
 import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.StringUtils;
@@ -1013,23 +1015,21 @@ public class InputMarshaller {
         InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) ( (DefaultAgenda) wm.getAgenda() ).getRuleFlowGroup( rule.getRuleFlowGroup() );
 
         boolean scheduled = false;
+        RuleTerminalNodeLeftTuple rtnLeftTuple = ( RuleTerminalNodeLeftTuple ) leftTuple;
+        rtnLeftTuple.init(activationNumber,
+                          salience,
+                          pc,
+                          ruleTerminalNode, null,
+                          agendaGroup,
+                          rfg );
+        activation = rtnLeftTuple;
+
         if (rule.getTimer() != null) {
-            activation = new ScheduledAgendaItem( activationNumber,
-                                                  leftTuple,
-                                                  (InternalAgenda) wm.getAgenda(),
-                                                  pc,
-                                                  ruleTerminalNode,
-                                                  agendaGroup,
-                                                  rfg);
+            activation = new ScheduledAgendaItem( rtnLeftTuple,
+                                                  (InternalAgenda) wm.getAgenda() );
             scheduled = true;
         } else {
-            activation = new AgendaItem( activationNumber,
-                                         leftTuple,
-                                         salience,
-                                         pc,
-                                         ruleTerminalNode, null,
-                                         agendaGroup,
-                                         rfg );
+
         }
         leftTuple.setObject( activation );
 

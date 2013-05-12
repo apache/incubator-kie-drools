@@ -1,6 +1,6 @@
 package org.drools.core.phreak;
 
-import org.drools.core.common.AgendaItem;
+import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.reteoo.LeftTuple;
@@ -10,7 +10,7 @@ import org.drools.core.spi.PropagationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RuleAgendaItem extends AgendaItem {
+public class RuleAgendaItem extends AgendaItemImpl {
 
     private static final Logger log = LoggerFactory.getLogger(RuleAgendaItem.class);
 

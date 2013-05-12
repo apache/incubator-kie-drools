@@ -233,14 +233,14 @@ public final class GeneratorHelper {
             invokeVirtual(Pattern.class, "getOffset", Integer.TYPE); // declarations[i].getPattern().getOffset()
             mv.visitVarInsn(ISTORE, declarOffsetReg); // declarations[i].getPattern().getOffset()
 
-            // while (tuple.getIndex() > declaration[i].getPattern().getOffset()) tuple = tuple.getParent()
+            // while (tuple.getQueueIndex() > declaration[i].getPattern().getOffset()) tuple = tuple.getParent()
             Label whileStart = new Label();
             Label whileExit = new Label();
             mv.visitLabel(whileStart);
             mv.visitVarInsn(ALOAD, tupleReg);
-            invokeInterface(LeftTuple.class, "getIndex", Integer.TYPE); // tuple.getIndex()
+            invokeInterface(LeftTuple.class, "getQueueIndex", Integer.TYPE); // tuple.getQueueIndex()
             mv.visitVarInsn(ILOAD, declarOffsetReg); // declarations[i].getPattern().getOffset()
-            mv.visitJumpInsn(IF_ICMPLE, whileExit); // if tuple.getIndex() <= declarations[i].getPattern().getOffset() jump to whileExit
+            mv.visitJumpInsn(IF_ICMPLE, whileExit); // if tuple.getQueueIndex() <= declarations[i].getPattern().getOffset() jump to whileExit
             mv.visitVarInsn(ALOAD, tupleReg);
             invokeInterface(LeftTuple.class, "getParent", LeftTuple.class);
             mv.visitVarInsn(ASTORE, tupleReg); // tuple = tuple.getParent()

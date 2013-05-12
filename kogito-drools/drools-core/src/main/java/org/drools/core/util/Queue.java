@@ -16,12 +16,14 @@
 
 package org.drools.core.util;
 
+import org.drools.core.spi.Activation;
+
 public interface Queue {
-    public void enqueue(Queueable queueable);
+    public void enqueue(Activation queueable);
 
-    public Queueable dequeue();
+    public Activation dequeue();
 
-    public Queueable dequeue(int index);
+    public Activation dequeue(int index);
 
     public boolean isEmpty();
 }

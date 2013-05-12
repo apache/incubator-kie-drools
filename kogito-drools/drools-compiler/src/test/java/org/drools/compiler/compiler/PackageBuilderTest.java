@@ -1500,7 +1500,20 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         public boolean isRuleAgendaItem() {
             return false;
-        }            
+        }
+
+        @Override
+        public void setQueueIndex(int index) {
+        }
+
+        @Override
+        public int getQueueIndex() {
+            return 0;
+        }
+
+        @Override
+        public void dequeue() {
+        }
     }
 
     class MockTuple
@@ -1520,7 +1533,7 @@ public class PackageBuilderTest extends DroolsTestCase {
             return (InternalFactHandle) this.declarations.get( declaration );
         }
 
-        public InternalFactHandle[] getFactHandles() {
+        public InternalFactHandle[] toFactHandles() {
             return (InternalFactHandle[]) this.declarations.values().toArray( new FactHandle[0] );
         }
 

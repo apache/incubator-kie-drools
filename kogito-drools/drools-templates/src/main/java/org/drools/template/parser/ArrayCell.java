@@ -68,7 +68,7 @@ public class ArrayCell implements Cell {
     }
 
     public void setIndex(int i) {
-        throw new RuntimeException("You cannot call setIndex on an ArrayCell");
+        throw new RuntimeException("You cannot call setQueueIndex on an ArrayCell");
     }
 
     public int getIndex() {

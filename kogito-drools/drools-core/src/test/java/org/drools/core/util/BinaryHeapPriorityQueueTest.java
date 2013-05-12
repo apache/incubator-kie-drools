@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import org.drools.core.spi.Activation;
 import org.junit.Test;
 
 public class BinaryHeapPriorityQueueTest {
@@ -39,7 +40,7 @@ public class BinaryHeapPriorityQueueTest {
         final long startEnqueue = System.currentTimeMillis();
 
         for ( final Iterator i = items.iterator(); i.hasNext(); ) {
-            queue.enqueue( (Queueable) i.next() );
+            queue.enqueue( (Activation) i.next() );
         }
 
         final long elapsedEnqueue = System.currentTimeMillis() - startEnqueue;
@@ -47,7 +48,7 @@ public class BinaryHeapPriorityQueueTest {
         final long startDequeue = System.currentTimeMillis();
 
         for ( final Iterator i = items.iterator(); i.hasNext(); ) {
-            ((Queueable) i.next()).dequeue();
+            ((Activation) i.next()).dequeue();
         }
 
         //        while (!queue.isEmpty()) {
@@ -75,7 +76,7 @@ public class BinaryHeapPriorityQueueTest {
         final long startEnqueue = System.currentTimeMillis();
 
         for ( final Iterator i = items.iterator(); i.hasNext(); ) {
-            queue.enqueue( (Queueable) i.next() );
+            queue.enqueue( (Activation) i.next() );
         }
 
         final long elapsedEnqueue = System.currentTimeMillis() - startEnqueue;
@@ -83,7 +84,7 @@ public class BinaryHeapPriorityQueueTest {
         final long startDequeue = System.currentTimeMillis();
 
         for ( final Iterator i = items.iterator(); i.hasNext(); ) {
-            queue.enqueue( (Queueable) i.next() );
+            queue.enqueue( (Activation) i.next() );
         }
 
         //        while (!queue.isEmpty()) {
