@@ -426,7 +426,7 @@ public abstract class BetaNode extends LeftTupleSource
         RightTuple updateFirst = memory.getStagedRightTuples().getUpdateFirst();
         if ( !memory.getDequeu().isEmpty() || ( streamMode && updateFirst != null && updateFirst.getPropagationContext() != rightTuple.getPropagationContext() ) ) {
             memory.getDequeu().add( rightTuple );
-        } else {
+        } else if (rightTuple.getStagedType() == LeftTuple.NONE) {
             memory.getStagedRightTuples().addUpdate( rightTuple );
         }
     }
