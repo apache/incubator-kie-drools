@@ -2,11 +2,16 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalAgendaGroup;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.index.LeftTupleList;
 
@@ -52,9 +57,24 @@ public class PhreakRuleTerminalNode {
         LeftTupleList tupleList = executor.getLeftTupleList();
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
+            if (  rtnNode.getRule().isLockOnActive() &&
+                  leftTuple.getPropagationContext().getType() != org.kie.api.runtime.rule.PropagationContext.RULE_ADDITION ) {
+
+                PropagationContext pctx = leftTuple.getPropagationContext();
+                pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple,
+                                                                         pctx);
+                long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
+                InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
+                if (blockedByLockOnActive(rtnNode.getRule(), agenda, pctx, handleRecency, agendaGroup)) {
+                    leftTuple.clearStaged();
+                    leftTuple = next;
+                    continue;
+                }
+            }
+
             tupleList.add(leftTuple);
             leftTuple.increaseActivationCountForEvents(); // increased here, decreased in Agenda's cancelActivation and fireActivation
-            if( declarativeAgendaEnabled ) {
+            if( !rtnNode.isFireDirect() && declarativeAgendaEnabled ) {
                 PropagationContext pctx = leftTuple.getPropagationContext();
 
                 AgendaItem item = agenda.createAgendaItem(leftTuple, salience, pctx,
@@ -87,10 +107,25 @@ public class PhreakRuleTerminalNode {
                }
             }
             if ( reAdd && leftTuple.getMemory() == null ) {
+                if (  rtnNode.getRule().isLockOnActive() &&
+                      leftTuple.getPropagationContext().getType() != org.kie.api.runtime.rule.PropagationContext.RULE_ADDITION ) {
+
+                    PropagationContext pctx = leftTuple.getPropagationContext();
+                    pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple,
+                                                                             pctx);
+                    long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
+                    InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
+                    if (blockedByLockOnActive(rtnNode.getRule(), agenda, pctx, handleRecency, agendaGroup)) {
+                        leftTuple.clearStaged();
+                        leftTuple = next;
+                        continue;
+                    }
+                }
+
                 tupleList.add(leftTuple);
             }
 
-            if( declarativeAgendaEnabled) {
+            if( !rtnNode.isFireDirect() && declarativeAgendaEnabled) {
                 agenda.modifyActivation(item, item.isQueued());
             }
             leftTuple.clearStaged();
@@ -115,5 +150,37 @@ public class PhreakRuleTerminalNode {
             leftTuple.setObject(null);
             leftTuple = next;
         }
+    }
+
+    private boolean blockedByLockOnActive(Rule rule,
+                                          InternalAgenda agenda,
+                                          PropagationContext pctx,
+                                          long handleRecency,
+                                          InternalAgendaGroup agendaGroup) {
+        if ( rule.isLockOnActive() ) {
+            boolean isActive = false;
+            long activatedForRecency = 0;
+            long clearedForRecency = 0;
+
+            if ( rule.getRuleFlowGroup() == null ) {
+                isActive = agendaGroup.isActive();
+                activatedForRecency = agendaGroup.getActivatedForRecency();
+                clearedForRecency = agendaGroup.getClearedForRecency();
+            } else {
+                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) agenda.getRuleFlowGroup( rule.getRuleFlowGroup() );
+                isActive = rfg.isActive();
+                activatedForRecency = rfg.getActivatedForRecency();
+                clearedForRecency = rfg.getClearedForRecency();
+            }
+
+            if ( isActive && activatedForRecency < handleRecency &&
+                 agendaGroup.getAutoFocusActivator() != pctx ) {
+                return true;
+            } else if ( clearedForRecency != -1 && clearedForRecency >= handleRecency ) {
+                return true;
+            }
+
+        }
+        return false;
     }
 }

@@ -819,6 +819,20 @@ public class DefaultAgenda
         while ( true ) {
             agendaGroup = (InternalAgendaGroup) this.focusStack.getLast();
 
+//            while ( !agendaGroup.isEmpty()) {
+//                //
+//                AgendaItem item = (AgendaItem) agendaGroup.peekNext();
+//                if ( item.isRuleAgendaItem() ) {
+//                    if ( !((RuleAgendaItem)item).getRuleExecutor().isDirty() && ((RuleAgendaItem)item).getRuleExecutor().getLeftTupleList().isEmpty() ) {
+//                        item.dequeue();
+//                    } else {
+//                        break;
+//                    }
+//                } else {
+//                    break;
+//                }
+//            }
+
             final boolean empty = agendaGroup.isEmpty();
 
             // No populated queues found so pop the focusStack and repeat
@@ -1333,53 +1347,55 @@ public class DefaultAgenda
                 this.workingMemory.prepareToFireActivation();
                 tryagain = false;
                 final InternalAgendaGroup group = (InternalAgendaGroup) getNextFocus();
+
                 // if there is a group with focus
                 if ( group != null ) {
-                    final AgendaItem item = (AgendaItem) group.getNext();
-                    // if there is an item to fire from that group
-                    if ( item != null ) {
-                        // if that item is allowed to fire
-                        // The routine bellow cleans up ruleflow activations
-                        InternalRuleFlowGroup ruleFlowGroup = null;
-                        if ( item.getActivationNode() != null ) {
-                            ruleFlowGroup = (InternalRuleFlowGroup) item.getActivationNode().getParentContainer();
-                            // it is possible that the ruleflow group is no longer active if it was
-                            // cleared during execution of this activation
-                            ruleFlowGroup.removeActivation( item );
+                    if ( this.unlinkingEnabled ) {
+                        final RuleAgendaItem item = (RuleAgendaItem) group.peekNext();
+                        localFireCount = item.getRuleExecutor().evaluateNetwork( this.workingMemory, filter,
+                                                                                 fireCount, fireLimit );
+                        if ( localFireCount == 0 ) {
+                            // nothing matched
+                            tryagain = true; // will force the next Activation of the agenda, without going to outer loop which checks halt
+                            this.workingMemory.executeQueuedActions(); // There may actions to process, which create new rule matches
                         }
+                    } else {
+                        final AgendaItem item = (AgendaItem) group.getNext();
+                        // if there is an item to fire from that group
+                        if ( item != null ) {
+                            // if that item is allowed to fire
+                            // The routine bellow cleans up ruleflow activations
+                            InternalRuleFlowGroup ruleFlowGroup = null;
+                            if ( item.getActivationNode() != null ) {
+                                ruleFlowGroup = (InternalRuleFlowGroup) item.getActivationNode().getParentContainer();
+                                // it is possible that the ruleflow group is no longer active if it was
+                                // cleared during execution of this activation
+                                ruleFlowGroup.removeActivation( item );
+                            }
 
-                        // if that item is allowed to fire
-                        if ( filter == null || filter.accept( item ) ) {
-                            if ( this.unlinkingEnabled && item.isRuleAgendaItem() ) {
-                                item.setQueued(false);
-                                localFireCount = ((RuleAgendaItem) item).getRuleExecutor().evaluateNetwork( this.workingMemory, fireCount, fireLimit );
-                                if ( localFireCount == 0 ) {
-                                    // nothing matched
-                                    tryagain = true; // will force the next Activation of the agenda, without going to outer loop which checks halt
-                                    this.workingMemory.executeQueuedActions(); // There may actions to process, which create new rule matches
-                                }
-                            } else {
+                            // if that item is allowed to fire
+                            if ( filter == null || filter.accept( item ) ) {
                                 // fire it
                                 fireActivation( item );
                                 localFireCount++;
+                            } else {
+                                // otherwise cancel it and try the next
+
+                                //necessary to perfom queued actions like signal to a next node in a ruleflow/jbpm process
+                                this.workingMemory.executeQueuedActions();
+
+                                final EventSupport eventsupport = (EventSupport) this.workingMemory;
+                                eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
+                                                                                              this.workingMemory,
+                                                                                              MatchCancelledCause.FILTER );
+                                tryagain = true;
                             }
-                        } else {
-                            // otherwise cancel it and try the next
 
-                            //necessary to perfom queued actions like signal to a next node in a ruleflow/jbpm process
-                            this.workingMemory.executeQueuedActions();
-
-                            final EventSupport eventsupport = (EventSupport) this.workingMemory;
-                            eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
-                                                                                          this.workingMemory,
-                                                                                          MatchCancelledCause.FILTER );
-                            tryagain = true;
-                        }
-
-                        // The routine bellow cleans up ruleflow activations
-                        if ( ruleFlowGroup != null ) {
-                            ruleFlowGroup.deactivateIfEmpty();
-                            this.workingMemory.executeQueuedActions();
+                            // The routine bellow cleans up ruleflow activations
+                            if ( ruleFlowGroup != null ) {
+                                ruleFlowGroup.deactivateIfEmpty();
+                                this.workingMemory.executeQueuedActions();
+                            }
                         }
                     }
 
@@ -1393,6 +1409,15 @@ public class DefaultAgenda
             this.workingMemory.activationFired();
         }
         return localFireCount;
+    }
+
+    public void xxx() {
+        InternalAgendaGroup group = (InternalAgendaGroup) getNextFocus();
+        RuleAgendaItem item = (RuleAgendaItem) (AgendaItem) group.peekNext();
+
+
+
+
     }
 
     /**
@@ -1447,7 +1472,7 @@ public class DefaultAgenda
                     throw new RuntimeException( e );
                 }
             } finally {
-                if ( activation.getFactHandle() != null ) {
+                if ( !unlinkingEnabled && activation.getFactHandle() != null ) {
                     // update the Activation in the WM
                     InternalFactHandle factHandle = activation.getFactHandle();
                     workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
