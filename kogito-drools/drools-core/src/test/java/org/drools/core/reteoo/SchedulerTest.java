@@ -96,7 +96,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1,
+        final RuleTerminalNodeLeftTuple tuple = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ), null,
                                                                       true  );
 
@@ -143,9 +143,9 @@ public class SchedulerTest extends DroolsTestCase {
                     final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                                     0,
                                                                                     rule,
-                                                                                    ( LeftTupleImpl ) knowledgeHelper.getTuple(),
+                                                                                    ( RuleTerminalNodeLeftTuple ) knowledgeHelper.getTuple(),
                                                                                     null );
-                    final LeftTupleImpl tuple2 = new LeftTupleImpl( new DefaultFactHandle( 2,
+                    final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 2,
                                                                                    "cheese" ), null,
                                                                                    true  );
                     node.assertLeftTuple( tuple2,
@@ -173,7 +173,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                                         null,
                                                                         null );
 
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( new DefaultFactHandle( 1,
+        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ), null,
                                                                        true  );
         rule.setTimer( new DurationTimer(50) );
@@ -227,9 +227,9 @@ public class SchedulerTest extends DroolsTestCase {
                     final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                                     0,
                                                                                     rule,
-                                                                                    ( LeftTupleImpl ) knowledgeHelper.getTuple(),
+                                                                                    ( RuleTerminalNodeLeftTuple ) knowledgeHelper.getTuple(),
                                                                                     null );
-                    final LeftTupleImpl tuple2 = new LeftTupleImpl( new DefaultFactHandle( 2,
+                    final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 2,
                                                                                    "cheese" ), null,
                                                                                    true  );
                     node.assertLeftTuple( tuple2,
@@ -257,7 +257,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                                         null,
                                                                         null );
 
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( new DefaultFactHandle( 1,
+        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ), null,
                                                                        true  );
         node.assertLeftTuple( tuple1,

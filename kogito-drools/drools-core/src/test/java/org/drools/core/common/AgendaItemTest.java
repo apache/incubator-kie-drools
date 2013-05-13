@@ -4,6 +4,7 @@ import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,9 +16,9 @@ public class AgendaItemTest {
         StatefulSession wm = rbase.newStatefulSession();
         
         DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
-        AgendaItem item1 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
-        AgendaItem item2 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
-        AgendaItem item3 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
+        AgendaItem item1 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
+        AgendaItem item2 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
+        AgendaItem item3 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
         
         DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );
         kcontext.setActivation( item1 );
@@ -51,9 +52,9 @@ public class AgendaItemTest {
         StatefulSession wm = rbase.newStatefulSession();
         
         DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
-        AgendaItem item1 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
-        AgendaItem item2 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
-        AgendaItem item3 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
+        AgendaItem item1 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
+        AgendaItem item2 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
+        AgendaItem item3 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
         
         // use same data structure as testAddition
         DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );
@@ -114,9 +115,9 @@ public class AgendaItemTest {
         StatefulSession wm = rbase.newStatefulSession();
         
         DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
-        AgendaItem item1 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
-        AgendaItem item2 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
-        AgendaItem item3 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
+        AgendaItem item1 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
+        AgendaItem item2 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
+        AgendaItem item3 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
         
         // use same data structure as testAddition
         DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );
@@ -145,10 +146,10 @@ public class AgendaItemTest {
         StatefulSession wm = rbase.newStatefulSession();
         
         DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
-        AgendaItem item1 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
-        AgendaItem item2 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
-        AgendaItem item3 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
-        AgendaItem item4 = agenda.createAgendaItem( null, 0, null, null, null, null, null );
+        AgendaItem item1 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
+        AgendaItem item2 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
+        AgendaItem item3 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
+        AgendaItem item4 = agenda.createAgendaItem( new RuleTerminalNodeLeftTuple(), 0, null, null, null, null, null );
         
         // use same data structure as testAddition
         DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );

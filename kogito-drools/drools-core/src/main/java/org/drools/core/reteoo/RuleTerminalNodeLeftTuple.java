@@ -313,8 +313,8 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         this.queued = queued;
     }
 
-    public void setQueueIndex(final int index) {
-        this.queueIndex = index;
+    public void setQueueIndex(final int queueIndex) {
+        this.queueIndex = queueIndex;
     }
 
     public void dequeue() {

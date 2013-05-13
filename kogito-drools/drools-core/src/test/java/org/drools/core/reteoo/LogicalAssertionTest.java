@@ -130,7 +130,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         rule1.setConsequence( consequence );
 
         final DefaultFactHandle handle1 = (DefaultFactHandle) workingMemory.insert( "o1" );
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
+        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
                                                         null,
                                                         true );
 
@@ -261,7 +261,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
+        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
                                                         null,
                                                         true );
 
@@ -373,7 +373,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
+        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
                                                         null,
                                                         true );
 
@@ -528,7 +528,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
+        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
                                                         null,
                                                         true );
 
@@ -563,7 +563,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
                                                                  "cheese" );
-        final LeftTupleImpl tuple2 = new LeftTupleImpl( handle2,
+        final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple( handle2,
                                                         null,
                                                         true );
 
@@ -660,7 +660,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
+        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
                                                         null,
                                                         true );
 
@@ -686,7 +686,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
                                                                  "cheese" );
-        final LeftTupleImpl tuple2 = new LeftTupleImpl( handle2,
+        final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple( handle2,
                                                         null,
                                                         true );
 
@@ -826,7 +826,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
+        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
                                                         null,
                                                         true );
 
@@ -950,7 +950,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
+        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
                                                         null,
                                                         true );
 
