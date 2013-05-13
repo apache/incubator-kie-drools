@@ -206,6 +206,8 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
             int size = buildConstructorCore( cw, mv, internalProxy, internalWrapper, internalCore, descrCore, mixin, mixinClass );
 
+            initFields( mv, internalProxy );
+
             mv.visitInsn( RETURN );
 //            mv.visitMaxs( 5 + size, 4 );
             mv.visitMaxs( 0, 0 );
@@ -497,10 +499,12 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
         mv.visitLabel( l1 );
 
+        return 3;
+    }
+
+    protected void initFields( MethodVisitor mv, String internalProxy ) {
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitMethodInsn( INVOKESPECIAL, internalProxy, "synchFields", "()V" );
-
-        return 3;
     }
 
     private Class getPossibleConstructor(Class klass, Class arg) throws NoSuchMethodException {
