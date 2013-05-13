@@ -41,6 +41,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class BestScoreProblemStatistic extends AbstractProblemStatistic {
 
@@ -104,7 +105,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                         singleBenchmark.getSingleStatistic(problemStatisticType);
                 for (BestScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
-                    double[] levelValues = point.getScore().toDoubleLevels();
+                    double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesList.size()) {
                             seriesList.add(new XYSeries(
@@ -116,7 +117,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                 // TODO if startingSolution is initialized and no improvement is made, a horizontal line should be shown
                 // Draw a horizontal line from the last new best step to how long the solver actually ran
                 long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
-                double[] bestScoreLevels = singleBenchmark.getScore().toDoubleLevels();
+                double[] bestScoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore());
                 for (int i = 0; i < bestScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                     if (i >= seriesList.size()) {
                         seriesList.add(new XYSeries(

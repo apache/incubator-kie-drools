@@ -131,8 +131,8 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
                 softScore.pow(exponentBigDecimal.intValue()).setScale(softScore.scale()));
     }
 
-    public double[] toDoubleLevels() {
-        return new double[]{hardScore.doubleValue(), softScore.doubleValue()};
+    public Number[] toLevelNumbers() {
+        return new Number[]{hardScore.doubleValue(), softScore.doubleValue()};
     }
 
     public boolean equals(Object o) {

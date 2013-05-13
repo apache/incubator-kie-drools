@@ -23,13 +23,14 @@ import java.util.Locale;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class ScoreDifferencePercentage implements Serializable {
 
     public static <S extends Score> ScoreDifferencePercentage calculateScoreDifferencePercentage(
             Score<S> baseScore, Score<S> valueScore) {
-        double[] baseLevels = baseScore.toDoubleLevels();
-        double[] valueLevels = valueScore.toDoubleLevels();
+        double[] baseLevels = ScoreUtils.extractLevelDoubles(baseScore);
+        double[] valueLevels = ScoreUtils.extractLevelDoubles(valueScore);
         if (baseLevels.length != valueLevels.length) {
             throw new IllegalStateException("The baseScore (" + baseScore + ")'s levelsLength (" + baseLevels.length
                     + ") is different from the valueScore (" + valueScore + ")'s levelsLength (" + valueLevels.length

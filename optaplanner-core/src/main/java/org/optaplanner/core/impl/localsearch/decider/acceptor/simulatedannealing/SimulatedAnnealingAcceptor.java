@@ -21,6 +21,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtils;
 
 /**
  * The time gradient implementation of simulated annealing.
@@ -47,13 +48,13 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
-        for (double startingTemperatureLevel : startingTemperature.toDoubleLevels()) {
+        for (double startingTemperatureLevel : ScoreUtils.extractLevelDoubles(startingTemperature)) {
             if (startingTemperatureLevel < 0.0) {
                 throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
                         + ") cannot have negative level (" + startingTemperatureLevel + ").");
             }
         }
-        startingTemperatureLevels = startingTemperature.toDoubleLevels();
+        startingTemperatureLevels = ScoreUtils.extractLevelDoubles(startingTemperature);
         temperatureLevels = startingTemperatureLevels;
         levelsLength = startingTemperatureLevels.length;
     }
@@ -75,7 +76,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
         }
         Score scoreDifference = lastStepScore.subtract(moveScore);
         double acceptChance = 1.0;
-        double[] scoreDifferenceLevels = scoreDifference.toDoubleLevels();
+        double[] scoreDifferenceLevels = ScoreUtils.extractLevelDoubles(scoreDifference);
         for (int i = 0; i < levelsLength; i++) {
             double scoreDifferenceLevel = scoreDifferenceLevels[i];
             double temperatureLevel = temperatureLevels[i];

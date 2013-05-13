@@ -3220,3 +3220,14 @@ After in *Score.java:
         return new HardSoftScore((int) Math.floor(Math.pow(hardScore, exponent)),
                 (int) Math.floor(Math.pow(softScore, exponent)));
     }
+
+[MINOR] If you have a custom Score implementation: Score's method toDoubleLevels() has been renamed to toLevelNumbers().
+Now it returns an array of Number instead of an array of doubles.
+Before in *Score.java:
+    public double[] toDoubleLevels() {
+        return new double[]{hardScore, softScore};
+    }
+After in *Score.java:
+    public Number[] toLevelNumbers() {
+        return new Number[]{hardScore, softScore};
+    }

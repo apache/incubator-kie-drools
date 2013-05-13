@@ -111,8 +111,8 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
                 (long) Math.floor(Math.pow(softScore, exponent)));
     }
 
-    public double[] toDoubleLevels() {
-        return new double[]{hardScore, softScore};
+    public Number[] toLevelNumbers() {
+        return new Number[]{hardScore, softScore};
     }
 
     public boolean equals(Object o) {

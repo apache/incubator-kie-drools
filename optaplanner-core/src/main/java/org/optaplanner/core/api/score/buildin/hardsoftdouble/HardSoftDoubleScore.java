@@ -116,8 +116,8 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
                 Math.pow(softScore, exponent));
     }
 
-    public double[] toDoubleLevels() {
-        return new double[]{hardScore, softScore};
+    public Number[] toLevelNumbers() {
+        return new Number[]{hardScore, softScore};
     }
 
     public boolean equals(Object o) {

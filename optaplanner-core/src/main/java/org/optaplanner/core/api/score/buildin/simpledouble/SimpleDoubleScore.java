@@ -84,8 +84,8 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
         return new SimpleDoubleScore(Math.pow(score, exponent));
     }
 
-    public double[] toDoubleLevels() {
-        return new double[]{score};
+    public Number[] toLevelNumbers() {
+        return new Number[]{score};
     }
 
     public boolean equals(Object o) {

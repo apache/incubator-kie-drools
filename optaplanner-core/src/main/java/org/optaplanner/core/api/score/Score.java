@@ -87,6 +87,6 @@ public interface Score<S extends Score> extends Comparable<S> {
      * For example: -0hard/-7soft returns new double{-0.0, -7.0}
      * @return never null
      */
-    double[] toDoubleLevels();
+    Number[] toLevelNumbers();
 
 }

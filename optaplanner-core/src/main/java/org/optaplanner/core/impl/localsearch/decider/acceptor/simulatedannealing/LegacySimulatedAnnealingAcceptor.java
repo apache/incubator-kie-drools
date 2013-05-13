@@ -21,6 +21,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtils;
 
 /**
  * TODO this will be removed once the time gradient based {@link SimulatedAnnealingAcceptor} is always better.
@@ -65,7 +66,7 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
             return true;
         }
         Score scoreDifference = lastStepScore.subtract(moveScore);
-        double[] scoreDifferenceLevels = scoreDifference.toDoubleLevels();
+        double[] scoreDifferenceLevels = ScoreUtils.extractLevelDoubles(scoreDifference);
         for (int i = 0; i < scoreDifferenceLevels.length - 1; i++) {
             if (scoreDifferenceLevels[i] != 0) {
                 // more hard constraints broken, ignore it for now
