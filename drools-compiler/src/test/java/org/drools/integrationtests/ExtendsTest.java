@@ -31,6 +31,7 @@ import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.EventFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.type.FactType;
 import org.drools.io.ResourceFactory;
@@ -706,5 +707,57 @@ public class ExtendsTest extends CommonTestMethodBase {
         }
     }
 
+
+
+
+    public static interface A {}
+
+    public static interface B extends A {}
+
+    public static interface C extends B {}
+
+    public static class X implements C {
+        private int x = 1;
+        public int getX() { return x; }
+    }
+
+
+    @Test
+    public void testDeclareInheritance() throws Exception {
+        String s1 = "package org.drools;\n" +
+                    "import org.drools.integrationtests.ExtendsTest.*;\n" +
+                    "\n" +
+                    "declare A \n" +
+                    " @role( event )" +
+                    " @typesafe( false )\n" +
+                    "end\n" +
+                    "" +
+                    "rule R \n" +
+                    "when " +
+                    "   $x : C( this.x == 1 ) \n" +
+                    "then\n" +
+                    "   System.out.println( $x ); \n" +
+                    "end\n" +
+                    "";
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kBuilder.hasErrors() ) {
+            System.err.println( kBuilder.getErrors() );
+        }
+        assertFalse( kBuilder.hasErrors() );
+
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        FactHandle h = knowledgeSession.insert( new X() );
+
+        assertTrue( ( (InternalFactHandle) h ).isEvent() );
+
+    }
+
 }
+
+
 
