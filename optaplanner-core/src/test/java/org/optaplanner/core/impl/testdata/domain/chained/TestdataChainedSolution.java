@@ -25,13 +25,13 @@ import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
-import org.optaplanner.core.impl.testdata.domain.TestdataUtil;
+import org.optaplanner.core.impl.testdata.domain.TestdataUtils;
 
 @PlanningSolution
 public class TestdataChainedSolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return TestdataUtil.buildSolutionDescriptor(TestdataChainedSolution.class, TestdataChainedEntity.class);
+        return TestdataUtils.buildSolutionDescriptor(TestdataChainedSolution.class, TestdataChainedEntity.class);
     }
 
     private List<TestdataChainedAnchor> chainedAnchorList;

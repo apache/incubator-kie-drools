@@ -26,14 +26,14 @@ import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
-import org.optaplanner.core.impl.testdata.domain.TestdataUtil;
+import org.optaplanner.core.impl.testdata.domain.TestdataUtils;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
 public class TestdataMultiEntitySolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return TestdataUtil.buildSolutionDescriptor(TestdataMultiEntitySolution.class,
+        return TestdataUtils.buildSolutionDescriptor(TestdataMultiEntitySolution.class,
                 TestdataLeadEntity.class, TestdataHerdEntity.class);
     }
 

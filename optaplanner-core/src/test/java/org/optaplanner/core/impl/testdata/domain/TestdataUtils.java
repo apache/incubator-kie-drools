@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
-public class TestdataUtil {
+public class TestdataUtils {
 
     public static SolutionDescriptor buildSolutionDescriptor(Class<? extends Solution> solutionClass,
             Class<?> ... entityClasses) {
@@ -35,7 +35,7 @@ public class TestdataUtil {
         return solutionDescriptor;
     }
 
-    private TestdataUtil() {
+    private TestdataUtils() {
     }
 
 }
