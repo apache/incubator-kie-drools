@@ -165,7 +165,7 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
                 scoreDirector.afterVariableChanged(exam, "period");
             }
         }
-        logger.trace("    Exam ({}) initialized.", leader);
+        logger.debug("    Exam ({}) initialized.", leader);
     }
 
     private void scheduleNonLeader(List<Room> roomList, ScoreDirector scoreDirector, Exam exam) {
@@ -203,7 +203,7 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
             exam.setRoom(bestRoom);
             scoreDirector.afterVariableChanged(exam, "room");
         }
-        logger.trace("    Exam ({}) initialized.", exam);
+        logger.debug("    Exam ({}) initialized.", exam);
     }
 
     public static class ExamToHandle {
