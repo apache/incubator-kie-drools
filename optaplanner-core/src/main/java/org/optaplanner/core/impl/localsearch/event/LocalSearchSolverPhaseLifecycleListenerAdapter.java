@@ -23,19 +23,19 @@ import org.optaplanner.core.impl.solver.event.SolverLifecycleListenerAdapter;
 public abstract class LocalSearchSolverPhaseLifecycleListenerAdapter extends SolverLifecycleListenerAdapter
         implements LocalSearchSolverPhaseLifecycleListener {
 
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         // Hook method
     }
 
-    public void stepStarted(LocalSearchStepScope localSearchStepScope) {
+    public void stepStarted(LocalSearchStepScope stepScope) {
         // Hook method
     }
 
-    public void stepEnded(LocalSearchStepScope localSearchStepScope) {
+    public void stepEnded(LocalSearchStepScope stepScope) {
         // Hook method
     }
 
-    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
         // Hook method
     }
 

@@ -22,12 +22,12 @@ import org.optaplanner.core.impl.solver.event.SolverLifecycleListener;
 
 public interface LocalSearchSolverPhaseLifecycleListener extends SolverLifecycleListener {
 
-    void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope);
+    void phaseStarted(LocalSearchSolverPhaseScope phaseScope);
 
-    void stepStarted(LocalSearchStepScope localSearchStepScope);
+    void stepStarted(LocalSearchStepScope stepScope);
 
-    void stepEnded(LocalSearchStepScope localSearchStepScope);
+    void stepEnded(LocalSearchStepScope stepScope);
 
-    void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope);
+    void phaseEnded(LocalSearchSolverPhaseScope phaseScope);
 
 }
