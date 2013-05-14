@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
-import org.optaplanner.core.impl.localsearch.decider.acceptor.common.AspirationType;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -38,7 +37,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     protected int tabuSize = -1;
     protected int fadingTabuSize = 0;
-    protected AspirationType aspirationType = AspirationType.BETTER_THAN_BEST_SCORE;
+    protected boolean aspirationEnabled = true;
 
     protected boolean assertTabuHashCodeCorrectness = false;
 
@@ -53,8 +52,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         this.fadingTabuSize = fadingTabuSize;
     }
 
-    public void setAspirationType(AspirationType aspirationType) {
-        this.aspirationType = aspirationType;
+    public void setAspirationEnabled(boolean aspirationEnabled) {
+        this.aspirationEnabled = aspirationEnabled;
     }
 
     public void setAssertTabuHashCodeCorrectness(boolean assertTabuHashCodeCorrectness) {
@@ -121,10 +120,14 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
             // The move isn't tabu at all
             return true;
         }
-        if (aspirationType.isAspired(moveScope)) {
-            logger.trace("        Proposed move ({}) is tabu, but is accepted anyway due to aspiration.",
-                    moveScope.getMove());
-            return true;
+        if (aspirationEnabled) {
+            // Doesn't use the deciderScoreComparator because shifting penalties don't apply
+            if (moveScope.getScore().compareTo(
+                    moveScope.getStepScope().getPhaseScope().getBestScore()) > 0) {
+                logger.trace("        Proposed move ({}) is tabu, but is accepted anyway due to aspiration.",
+                        moveScope.getMove());
+                return true;
+            }
         }
         int tabuStepCount = moveScope.getStepScope().getStepIndex() - maximumTabuStepIndex; // at least 1
         if (tabuStepCount <= tabuSize) {
