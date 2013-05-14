@@ -3,6 +3,7 @@ package org.jbpm.kie.services.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
@@ -133,6 +134,7 @@ public class KModuleDeploymentServiceTest {
         ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
         List<String> processes = new ArrayList<String>();
         processes.add("repo/processes/general/customtask.bpmn");
+        processes.add("repo/processes/general/humanTask.bpmn");
         
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -178,7 +180,7 @@ public class KModuleDeploymentServiceTest {
         assertNotNull(runtimeDataService);
         Collection<ProcessDesc> processes = runtimeDataService.getProcesses();
         assertNotNull(processes);
-        assertEquals(1, processes.size());
+        assertEquals(2, processes.size());
         
         processes = runtimeDataService.getProcessesByFilter("custom");
         assertNotNull(processes);
@@ -186,7 +188,7 @@ public class KModuleDeploymentServiceTest {
         
         processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier());
         assertNotNull(processes);
-        assertEquals(1, processes.size());
+        assertEquals(2, processes.size());
         
         ProcessDesc process = runtimeDataService.getProcessById("customtask");
         
@@ -223,7 +225,7 @@ public class KModuleDeploymentServiceTest {
         assertNotNull(runtimeDataService);
         Collection<ProcessDesc> processes = runtimeDataService.getProcesses();
         assertNotNull(processes);
-        assertEquals(1, processes.size());
+        assertEquals(2, processes.size());
         
         processes = runtimeDataService.getProcessesByFilter("custom");
         assertNotNull(processes);
@@ -231,7 +233,7 @@ public class KModuleDeploymentServiceTest {
         
         processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier());
         assertNotNull(processes);
-        assertEquals(1, processes.size());
+        assertEquals(2, processes.size());
         
         ProcessDesc process = runtimeDataService.getProcessById("customtask");
         
@@ -264,6 +266,41 @@ public class KModuleDeploymentServiceTest {
         // duplicated deployment of the same deployment unit should fail
         deploymentService.deploy(deploymentUnit);
     }   
+    
+    @Test
+    public void testUnDeploymentWithActiveProcesses() {
+            
+        assertNotNull(deploymentService);
+        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployedGeneral);
+        assertNotNull(deployedGeneral.getDeploymentUnit());
+        assertNotNull(deployedGeneral.getRuntimeManager());
+
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+        
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        ProcessInstance processInstance = engine.getKieSession().startProcess("org.jbpm.writedocument", params);
+        
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        try {
+            // undeploy should fail due to active process instances
+            deploymentService.undeploy(deploymentUnit);
+            fail("Should fail due to active process instance");
+        } catch (IllegalStateException e) {
+            
+        }
+        
+        engine.getKieSession().abortProcessInstance(processInstance.getId());
+    }  
     
     protected String getPom(ReleaseId releaseId, ReleaseId... dependencies) {
         String pom =

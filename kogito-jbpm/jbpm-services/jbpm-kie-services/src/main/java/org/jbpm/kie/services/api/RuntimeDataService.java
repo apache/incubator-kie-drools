@@ -37,7 +37,7 @@ public interface RuntimeDataService {
     
     Collection<ProcessInstanceDesc> getProcessInstancesByProcessName(List<Integer> states, String processName, String initiator);
 
-    Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId);
+    Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId, List<Integer> states);
 
     Collection<ProcessDesc> getProcessesByDeploymentId(String deploymentId);   
     

@@ -22,8 +22,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.KnowledgeAdminDataServiceImpl;
 import org.jbpm.kie.services.impl.MVELWorkItemHandlerProducer;
+import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
 import org.jbpm.kie.services.impl.VFSDeploymentService;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl;
@@ -131,6 +133,8 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
         HumanTaskServiceFactory.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
         taskService = HumanTaskServiceFactory.newTaskService();
 
+        RuntimeDataService runtimeDataService = new RuntimeDataServiceImpl();
+        ((RuntimeDataServiceImpl)runtimeDataService).setPm(pm);
         
         deploymentService = new VFSDeploymentService();
         ((VFSDeploymentService) deploymentService).setBpmn2Service(bpmn2Service);
@@ -139,6 +143,7 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
         ((VFSDeploymentService) deploymentService).setIdentityProvider(identityProvider);
         ((VFSDeploymentService) deploymentService).setManagerFactory(new RuntimeManagerFactoryImpl());
         ((VFSDeploymentService) deploymentService).setPm(pm);
+        ((VFSDeploymentService) deploymentService).setRuntimeDataService(runtimeDataService);
 
     }
 

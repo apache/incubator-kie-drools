@@ -126,9 +126,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, RuntimeFinder
         
     }
 
-    public Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId) {
-        List<ProcessInstanceDesc> processInstances = (List<ProcessInstanceDesc>)pm.queryStringWithParametersInTransaction("getProcessInstancesByDeploymentId",
-                pm.addParametersToMap("externalId", deploymentId));
+    public Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId, List<Integer> states) {
+        List<ProcessInstanceDesc> processInstances = (List<ProcessInstanceDesc>)pm.queryWithParametersInTransaction("getProcessInstancesByDeploymentId",
+                pm.addParametersToMap("externalId", deploymentId, "states", states));
 
         return processInstances;
     }

@@ -1,7 +1,9 @@
 package org.jbpm.kie.services.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,10 +13,14 @@ import javax.inject.Inject;
 import org.jbpm.kie.services.api.DeployedUnit;
 import org.jbpm.kie.services.api.DeploymentService;
 import org.jbpm.kie.services.api.DeploymentUnit;
+import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.event.Deploy;
 import org.jbpm.kie.services.impl.event.DeploymentEvent;
 import org.jbpm.kie.services.impl.event.Undeploy;
+import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.kie.services.impl.model.ProcessInstanceDesc;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 
@@ -22,6 +28,8 @@ public abstract class AbstractDeploymentService implements DeploymentService {
 
     @Inject
     private RuntimeManagerFactory managerFactory; 
+    @Inject
+    private RuntimeDataService runtimeDataService;
     @Inject
     @Deploy
     protected Event<DeploymentEvent> deploymentEvent;
@@ -80,6 +88,15 @@ public abstract class AbstractDeploymentService implements DeploymentService {
     
     @Override
     public void undeploy(DeploymentUnit unit) {
+        List<Integer> states = new ArrayList<Integer>();
+        states.add(ProcessInstance.STATE_ACTIVE);
+        states.add(ProcessInstance.STATE_PENDING);
+        states.add(ProcessInstance.STATE_SUSPENDED);
+        Collection<ProcessInstanceDesc> activeProcesses = runtimeDataService.getProcessInstancesByDeploymentId(unit.getIdentifier(), states);
+        if (!activeProcesses.isEmpty()) {
+            throw new IllegalStateException("Undeploy forbidden - there are active processes instances for deployment " 
+                                            + unit.getIdentifier());
+        }
         synchronized (this) {
             DeployedUnit deployed = deploymentsMap.remove(unit.getIdentifier());
             if (deployed != null) {
@@ -127,6 +144,14 @@ public abstract class AbstractDeploymentService implements DeploymentService {
 
     public void setManagerFactory(RuntimeManagerFactory managerFactory) {
         this.managerFactory = managerFactory;
+    }
+
+    public RuntimeDataService getRuntimeDataService() {
+        return runtimeDataService;
+    }
+
+    public void setRuntimeDataService(RuntimeDataService runtimeDataService) {
+        this.runtimeDataService = runtimeDataService;
     }
 
 }
