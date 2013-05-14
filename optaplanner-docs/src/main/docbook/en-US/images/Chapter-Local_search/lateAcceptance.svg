@@ -11,7 +11,7 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.48.1 r9760"
+   inkscape:version="0.48.3.1 r9886"
    width="1200"
    height="900"
    sodipodi:docname="lateAcceptance.svg"
@@ -33,7 +33,7 @@
             <dc:title>Geoffrey De Smet</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -282,8 +282,8 @@
     </mask>
   </defs>
   <sodipodi:namedview
-     inkscape:window-height="710"
-     inkscape:window-width="1024"
+     inkscape:window-height="991"
+     inkscape:window-width="1680"
      inkscape:pageshadow="2"
      inkscape:pageopacity="1"
      guidetolerance="20"
@@ -293,11 +293,11 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:zoom="0.54777778"
-     inkscape:cx="547.34475"
-     inkscape:cy="427.16774"
+     inkscape:zoom="1.7533333"
+     inkscape:cx="401.27848"
+     inkscape:cy="137.24907"
      inkscape:window-x="0"
-     inkscape:window-y="26"
+     inkscape:window-y="27"
      inkscape:current-layer="svg2"
      inkscape:grid-points="true"
      inkscape:object-nodes="true"
@@ -9468,4 +9468,28 @@
      id="path7819"
      d="m 1127.4493,822.67115 2.0485,4.92203 -10.1765,1.47882 3.0904,-2.47471 c -7.6347,-1.73922 -8.5151,-12.32007 0,-26.72716 l 2.0602,0.49492 c -7.6245,14.38917 -8.2727,23.16021 0,24.74738 l 2.9774,-2.44128 z"
      style="fill:#8ae234;fill-opacity:1;fill-rule:nonzero;stroke:#4e9a06;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1" />
-</svg>
+  <flowRoot
+     transform="translate(833.31316,767.69568)"
+     style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+     id="flowRoot4416"
+     xml:space="preserve"><flowRegion
+       id="flowRegion4418"><rect
+         style="font-size:8px;text-align:start;text-anchor:start;fill:#ce5c00;fill-opacity:1"
+         y="98.518372"
+         x="-610.81317"
+         height="33.78595"
+         width="87.500008"
+         id="rect4420" /></flowRegion><flowPara
+       id="flowPara4424">Accepted if HC enabled</flowPara></flowRoot>  <flowRoot
+     xml:space="preserve"
+     id="flowRoot4428"
+     style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+     transform="translate(1433.3132,767.69568)"><flowRegion
+       id="flowRegion4430"><rect
+         id="rect4432"
+         width="87.500008"
+         height="33.78595"
+         x="-610.81317"
+         y="98.518372"
+         style="font-size:8px;text-align:start;text-anchor:start;fill:#ce5c00;fill-opacity:1" /></flowRegion><flowPara
+       id="flowPara4434">Accepted if HC enabled</flowPara></flowRoot></svg>

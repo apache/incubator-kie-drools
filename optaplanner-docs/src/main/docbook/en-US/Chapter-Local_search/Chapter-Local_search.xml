@@ -106,15 +106,17 @@
     <section>
       <title>Algorithm description</title>
 
-      <para>Late acceptance also evaluates only a few moves per step. A move is accepted if it leads to score that is
-      at least the winning score of a fixed number of steps ago.
-      </para>
+      <para>Late acceptance (also known as Late acceptance hill climbing) also evaluates only a few moves per step. A
+      move is accepted if it leads to a score that is at least the winning score of a fixed number of steps ago.</para>
 
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-Local_search/lateAcceptance.png"/>
         </imageobject>
       </mediaobject>
+
+      <para>By default hill climbing behaviour is enabled, which means that moves that lead to a score of at least the
+      current solution are also accepted.</para>
 
       <para>See Late Acceptance acceptor below.</para>
     </section>
@@ -276,8 +278,8 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
     <para>In the above example the selector generated the moves shown with the blue lines, the acceptor accepted all of
     them and the forager picked the move <emphasis>B0 to B3</emphasis>.</para>
 
-    <para>If we turn on <literal>trace</literal> logging for the category <literal>org.optaplanner</literal>, then
-    the decision making is shown in the log:</para>
+    <para>If we turn on <literal>trace</literal> logging for the category <literal>org.optaplanner</literal>, then the
+    decision making is shown in the log:</para>
 
     <programlisting>INFO  Solver started: time spend (0), score (-6), new best score (-6), random seed (0).
 TRACE         Move index (0) not doable, ignoring move (col0@row0 =&gt; row0).
@@ -448,8 +450,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
         <itemizedlist>
           <listitem>
-            <para>An <literal>acceptedCountLimit</literal> integer, which specifies how many accepted moves should
-            be evaluated during each step. By default, all accepted moves are evaluated at every step.</para>
+            <para>An <literal>acceptedCountLimit</literal> integer, which specifies how many accepted moves should be
+            evaluated during each step. By default, all accepted moves are evaluated at every step.</para>
 
             <programlisting language="xml">  &lt;forager&gt;
     &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
@@ -458,8 +460,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         </itemizedlist>
 
         <para>Unlike the n queens problem, real world problems require the use of subset selection. Start from an
-        <literal>acceptedCountLimit</literal> that takes a step in less then 2 seconds. Turn on INFO logging to
-        see the step times. Use the <literal>Benchmarker</literal> to tweak the value.</para>
+        <literal>acceptedCountLimit</literal> that takes a step in less then 2 seconds. Turn on INFO logging to see the
+        step times. Use the <literal>Benchmarker</literal> to tweak the value.</para>
 
         <important>
           <para>With a low <literal>acceptedCountLimit</literal> it is recommended to avoid using
