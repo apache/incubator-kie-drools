@@ -248,7 +248,18 @@ public abstract class JbpmJUnitTestCase extends Assert {
     }
 
     protected KieSession createKnowledgeSession() {
-        
+        RuntimeEnvironmentBuilder builder = null;
+        if (!setupDataSource){
+            builder = RuntimeEnvironmentBuilder.getEmpty()
+	            .addConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName())
+	            .addConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
+        } else if (sessionPersistence) {
+            builder = RuntimeEnvironmentBuilder.getDefault();
+        } else {
+            builder = RuntimeEnvironmentBuilder.getDefaultInMemory();       
+        }
+        builder.userGroupCallback(new JBossUserGroupCallbackImpl("classpath:/usergroups.properties"));
+        environment = builder.get();
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
         RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
                 
