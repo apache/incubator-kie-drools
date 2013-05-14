@@ -34,8 +34,8 @@ public class InMemoryFormProvider implements FormProvider {
         String taskName = task.getNames().get(0).getText();
         if (process.getForms().containsKey(taskName)) {
             template = new ByteArrayInputStream(process.getForms().get(taskName).getBytes());
-        } else if (process.getForms().containsKey(taskName + "-taskform")) {
-            template = new ByteArrayInputStream(process.getForms().get(taskName + "-taskform").getBytes());
+        } else if (process.getForms().containsKey(taskName.replace(" ", "")+ "-taskform")) {
+            template = new ByteArrayInputStream(process.getForms().get(taskName.replace(" ", "") + "-taskform").getBytes());
         } else if (process.getForms().containsKey(DEFAULT_TASK)) {
             template = new ByteArrayInputStream(process.getForms().get(DEFAULT_TASK).getBytes());
         }
