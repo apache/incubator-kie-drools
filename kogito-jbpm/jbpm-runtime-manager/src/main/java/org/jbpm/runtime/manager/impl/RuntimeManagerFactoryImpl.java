@@ -2,7 +2,6 @@ package org.jbpm.runtime.manager.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.drools.core.time.TimerService;
@@ -17,9 +16,6 @@ import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
-import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
-import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
-import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
 
 @ApplicationScoped
 public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
@@ -28,9 +24,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     private Instance<TaskServiceFactory> taskServiceFactoryInjected;
     
     @Override
-    @Produces
-    @Singleton
-    public RuntimeManager newSingletonRuntimeManager(@Singleton RuntimeEnvironment environment) {
+    public RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment) {
         
         return newSingletonRuntimeManager(environment, "default-singleton");
     }
@@ -46,10 +40,8 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
         return manager;
     }
 
-    @Override
-    @Produces
-    @PerRequest
-    public RuntimeManager newPerRequestRuntimeManager(@PerRequest RuntimeEnvironment environment) {
+    @Override    
+    public RuntimeManager newPerRequestRuntimeManager(RuntimeEnvironment environment) {
 
         return newPerRequestRuntimeManager(environment, "default-per-request");
     }
@@ -64,9 +56,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
     }
 
     @Override
-    @Produces
-    @PerProcessInstance
-    public RuntimeManager newPerProcessInstanceRuntimeManager(@PerProcessInstance RuntimeEnvironment environment) {
+    public RuntimeManager newPerProcessInstanceRuntimeManager(RuntimeEnvironment environment) {
 
         return newPerProcessInstanceRuntimeManager(environment, "default-per-pinstance");
     }

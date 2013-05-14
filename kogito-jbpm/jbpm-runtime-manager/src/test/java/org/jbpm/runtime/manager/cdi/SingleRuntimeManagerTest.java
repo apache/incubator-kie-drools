@@ -53,7 +53,6 @@ public class SingleRuntimeManagerTest {
 //                .addPackage("org.jbpm.task.identity")
                 .addPackage("org.jbpm.task.factories")
                 .addPackage("org.jbpm.task.internals")
-//                .addPackage("org.jbpm.task.internals.lifecycle")
                 .addPackage("org.jbpm.task.lifecycle.listeners")
                 .addPackage("org.jbpm.task.query")
                 .addPackage("org.jbpm.task.util")
@@ -64,6 +63,7 @@ public class SingleRuntimeManagerTest {
                 .addPackage("org.jbpm.shared.services.impl")
                 .addPackage("org.jbpm.runtime.manager")
                 .addPackage("org.jbpm.runtime.manager.impl")
+                .addPackage("org.jbpm.runtime.manager.impl.cdi")
                 .addPackage("org.jbpm.runtime.manager.impl.cdi.qualifier")
                 .addPackage("org.jbpm.runtime.manager.impl.context")
                 .addPackage("org.jbpm.runtime.manager.impl.factory")
@@ -73,6 +73,7 @@ public class SingleRuntimeManagerTest {
                 .addPackage("org.jbpm.runtime.manager.impl.task")
                 .addPackage("org.jbpm.runtime.manager.impl.tx") 
                 .addPackage("org.jbpm.runtime.manager.util") // test utilities
+                .addPackage("org.jbpm.services.task.wih")
                 .addAsResource("jndi.properties","jndi.properties")
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
 //                .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))

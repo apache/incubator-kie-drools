@@ -15,6 +15,7 @@ import javax.persistence.Persistence;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.services.task.wih.RuntimeFinder;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.kie.api.io.ResourceType;
 import org.kie.api.task.TaskService;
@@ -99,5 +100,16 @@ public class CDITestHelper {
                     
         return internalTaskService;
 
+    }
+    
+    @Produces
+    public RuntimeFinder getRuntimeFinder() {
+        return new RuntimeFinder() {
+            
+            @Override
+            public String findName(long id) {
+                return "";
+            }
+        };
     }
 }
