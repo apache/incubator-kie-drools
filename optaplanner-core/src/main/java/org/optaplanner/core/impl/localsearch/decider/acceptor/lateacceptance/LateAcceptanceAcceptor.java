@@ -25,12 +25,17 @@ import org.optaplanner.core.api.score.Score;
 public class LateAcceptanceAcceptor extends AbstractAcceptor {
 
     protected int lateAcceptanceSize = -1;
+    protected boolean hillClimbingEnabled = true;
 
     protected Score[] previousScores;
     protected int lateScoreIndex = -1;
 
     public void setLateAcceptanceSize(int lateAcceptanceSize) {
         this.lateAcceptanceSize = lateAcceptanceSize;
+    }
+
+    public void setHillClimbingEnabled(boolean hillClimbingEnabled) {
+        this.hillClimbingEnabled = hillClimbingEnabled;
     }
 
     // ************************************************************************
@@ -56,18 +61,19 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
         }
     }
 
-    @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
-        super.phaseEnded(phaseScope);
-        previousScores = null;
-        lateScoreIndex = -1;
-    }
-
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
-        moveScope.getStepScope().getStepIndex();
         Score score = moveScope.getScore();
         Score lateScore = previousScores[lateScoreIndex];
-        return score.compareTo(lateScore) >= 0;
+        if (score.compareTo(lateScore) >= 0) {
+            return true;
+        }
+        if (hillClimbingEnabled) {
+            Score lastStepScore = moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore();
+            if (score.compareTo(lastStepScore) >= 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -75,6 +81,13 @@ public class LateAcceptanceAcceptor extends AbstractAcceptor {
         super.stepEnded(stepScope);
         previousScores[lateScoreIndex] = stepScope.getScore();
         lateScoreIndex = (lateScoreIndex + 1) % lateAcceptanceSize;
+    }
+
+    @Override
+    public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
+        previousScores = null;
+        lateScoreIndex = -1;
     }
 
 }
