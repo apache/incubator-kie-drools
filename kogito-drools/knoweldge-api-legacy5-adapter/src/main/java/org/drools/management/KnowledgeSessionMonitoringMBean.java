@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.management;
+package org.drools.management;
 
 import java.util.Date;
 import java.util.Map;

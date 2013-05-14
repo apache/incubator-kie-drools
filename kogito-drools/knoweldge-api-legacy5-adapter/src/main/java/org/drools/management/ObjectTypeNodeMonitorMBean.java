@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.management;
+package org.drools.management;
 
 /**
  * An interface for OTN MBean
