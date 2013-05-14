@@ -3231,3 +3231,6 @@ After in *Score.java:
     public Number[] toLevelNumbers() {
         return new Number[]{hardScore, softScore};
     }
+
+[MINOR] The LateAcceptanceAcceptor now also accepts any move that improves the current solution.
+If you use <lateAcceptanceSize> in your config, this will impact your results (on average in a good way).
