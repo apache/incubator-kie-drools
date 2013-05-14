@@ -51,6 +51,7 @@
     <module>drools-jsr94</module>
     <module>drools-verifier</module>
     <module>drools-persistence-jpa</module>
+    <module>drools-persistence-infinispan</module>
     <module>drools-templates</module>
     <module>drools-decisiontables</module>
     <module>drools-examples</module>

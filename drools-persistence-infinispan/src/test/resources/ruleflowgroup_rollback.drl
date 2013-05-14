@@ -1,0 +1,11 @@
+package org.jbpm;
+
+import java.util.List;
+
+rule "Test Process Rule"
+	ruleflow-group "ruleflow-group"
+	when
+	    $list : List()
+	then 
+	    System.out.println("list size: " + $list.size());
+end

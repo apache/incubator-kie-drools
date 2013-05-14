@@ -1,0 +1,195 @@
+package org.drools.persistence.infinispan.processinstance;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.drools.core.WorkItemHandlerNotFoundException;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.process.instance.WorkItem;
+import org.drools.core.process.instance.WorkItemManager;
+import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.persistence.PersistenceContext;
+import org.drools.persistence.PersistenceContextManager;
+import org.drools.persistence.info.WorkItemInfo;
+import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItemHandler;
+
+public class InfinispanWorkItemManager extends JPAWorkItemManager implements WorkItemManager {
+
+    private InternalKnowledgeRuntime kruntime;
+    private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
+    
+    public InfinispanWorkItemManager(InternalKnowledgeRuntime kruntime) {
+        super(kruntime);
+        this.kruntime = kruntime;
+    }
+    
+    @Override
+    public void internalExecuteWorkItem(WorkItem workItem) {
+        Environment env = this.kruntime.getEnvironment();
+//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+
+        WorkItemInfo workItemInfo = new WorkItemInfo(workItem, env);
+//        em.persist(workItemInfo);
+        
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+        context.persist( workItemInfo );
+
+        ((WorkItemImpl) workItem).setId(workItemInfo.getId());
+        workItemInfo.update();
+        context.merge(workItemInfo);
+        
+        WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
+        if (handler != null) {
+            handler.executeWorkItem(workItem, this);
+        	workItemInfo.update();
+        	context.merge(workItemInfo);
+        } else {
+            throwWorkItemNotFoundException( workItem );
+        }
+    }
+
+    private void throwWorkItemNotFoundException(WorkItem workItem) {
+        throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
+                                                    workItem.getName() );
+    }
+    
+    @Override
+    public WorkItemHandler getWorkItemHandler(String name) {
+    	return this.workItemHandlers.get(name);
+    }
+    
+    @Override
+    public void retryWorkItem(long workItemId) {
+    	WorkItem workItem = getWorkItem(workItemId);
+    	if (workItem != null) {
+            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
+            if (handler != null) {
+                handler.executeWorkItem(workItem, this);
+            } else {
+                throwWorkItemNotFoundException( workItem );
+            }
+    	}
+    }
+
+    @Override
+    public void internalAbortWorkItem(long id) {
+        Environment env = this.kruntime.getEnvironment();
+        //EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+
+        
+        WorkItemInfo workItemInfo = context.findWorkItemInfo( id );
+        // work item may have been aborted
+        if (workItemInfo != null) {
+            WorkItemImpl workItem = (WorkItemImpl) internalGetWorkItem(workItemInfo);
+            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
+            if (handler != null) {
+                handler.abortWorkItem(workItem, this);
+            } else {
+                throwWorkItemNotFoundException( workItem );
+            }
+            context.remove(workItemInfo);
+        }
+    }
+
+    @Override
+    public void internalAddWorkItem(WorkItem workItem) {
+    }
+
+    @Override
+    public void completeWorkItem(long id, Map<String, Object> results) {
+        Environment env = this.kruntime.getEnvironment();
+//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+
+        
+        WorkItemInfo workItemInfo = context.findWorkItemInfo( id );
+        
+        // work item may have been aborted
+        if (workItemInfo != null) {
+            WorkItem workItem = internalGetWorkItem(workItemInfo);
+            workItem.setResults(results);
+            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
+            workItem.setState(WorkItem.COMPLETED);
+            // process instance may have finished already
+            if (processInstance != null) {
+                processInstance.signalEvent("workItemCompleted", workItem);
+            }
+            context.remove(workItemInfo);
+        }
+    }
+
+    @Override
+    public void abortWorkItem(long id) {
+        Environment env = this.kruntime.getEnvironment();
+//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+
+        WorkItemInfo workItemInfo = context.findWorkItemInfo( id );
+        
+        // work item may have been aborted
+        if (workItemInfo != null) {
+            WorkItem workItem = (WorkItemImpl) internalGetWorkItem(workItemInfo);
+            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
+            workItem.setState(WorkItem.ABORTED);
+            // process instance may have finished already
+            if (processInstance != null) {
+                processInstance.signalEvent("workItemAborted", workItem);
+            }
+            context.remove(workItemInfo);
+        }
+    }
+
+    @Override
+    public WorkItem getWorkItem(long id) {
+        Environment env = this.kruntime.getEnvironment();
+//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+        
+        WorkItemInfo workItemInfo = null;
+        
+        if (context != null) {
+            workItemInfo = context.findWorkItemInfo( id );
+        }
+
+        if (workItemInfo == null) {
+            return null;
+        }
+        return internalGetWorkItem(workItemInfo);
+    }
+
+    private WorkItem internalGetWorkItem(WorkItemInfo workItemInfo) { 
+        Environment env = kruntime.getEnvironment();
+        InternalRuleBase ruleBase = (InternalRuleBase) ((KnowledgeBaseImpl) kruntime.getKieBase()).getRuleBase();
+        WorkItem workItem = workItemInfo.getWorkItem(env, ruleBase); 
+        ((WorkItemImpl) workItem).setId(workItemInfo.getId());
+        return workItem;
+    }
+    
+    @Override
+    public Set<WorkItem> getWorkItems() {
+        return new HashSet<WorkItem>();
+    }
+
+    @Override
+    public void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {
+        this.workItemHandlers.put(workItemName, handler);
+    }
+
+    @Override
+    public void clearWorkItems() {
+    }
+
+    @Override
+    public void clear() {
+        clearWorkItems();
+    }
+}
