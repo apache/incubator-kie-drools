@@ -1,4 +1,4 @@
-package org.drools.core.concurrent;
+package org.drools.concurrent;
 
 import org.drools.util.ServiceRegistryImpl;
 
