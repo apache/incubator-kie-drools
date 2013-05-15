@@ -21,7 +21,7 @@ import org.drools.core.command.impl.GenericCommand;
 /**
  *
  */
-public abstract class TaskCommand<T> implements GenericCommand {
+public abstract class TaskCommand<T> implements GenericCommand<T> {
 
     protected long taskId;
     protected String userId;

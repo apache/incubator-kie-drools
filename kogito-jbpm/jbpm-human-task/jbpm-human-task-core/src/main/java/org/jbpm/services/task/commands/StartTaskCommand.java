@@ -45,6 +45,10 @@ public class StartTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().start(taskId, userId);
+        	return null;
+        }
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         User user = context.getTaskIdentityService().getUserById(userId);
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskStartedEvent>() {}).fire(task);

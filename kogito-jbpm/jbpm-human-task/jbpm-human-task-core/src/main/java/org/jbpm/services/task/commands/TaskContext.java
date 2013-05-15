@@ -19,6 +19,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jbpm.services.task.annotations.Internal;
+import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.task.model.Task;
@@ -51,7 +52,17 @@ public class TaskContext implements Context{
     @Inject 
     private UserGroupCallback userGroupCallback;
     
+    private TaskServiceEntryPointImpl taskService;
+    
     public TaskContext() {
+    }
+    
+    public TaskContext(TaskServiceEntryPointImpl taskService) {
+    	this.taskService = taskService;
+    }
+    
+    public TaskServiceEntryPointImpl getTaskService() {
+    	return taskService;
     }
 
     public JbpmServicesPersistenceManager getPm() {

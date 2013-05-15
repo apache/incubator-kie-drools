@@ -15,6 +15,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.services.task.commands.TaskCommand;
+import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
@@ -672,7 +674,7 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
     }
     
     public <T> T execute(Command<T> command) {
-    	return taskInstanceService.execute(command);
+    	return ((TaskCommand<T>) command).execute(new TaskContext(this));
     }   
     
 }
