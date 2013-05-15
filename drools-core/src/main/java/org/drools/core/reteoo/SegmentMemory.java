@@ -133,7 +133,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         // some node unlinking does not unlink the segment, such as nodes after a Branch CE
         boolean linked = isSegmentLinked();
         linkedNodeMask = linkedNodeMask ^ mask;
-        if (linked && !isSegmentLinked()) {
+        if (linked) {
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
                 pathMemories.get(i).unlinkedSegment(segmentPosMaskBit,
