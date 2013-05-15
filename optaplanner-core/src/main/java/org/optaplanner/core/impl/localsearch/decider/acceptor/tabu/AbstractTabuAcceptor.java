@@ -43,12 +43,14 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     protected List<Object> tabuSequenceList;
     
     protected abstract void validate();
-    
-    protected abstract int calculateActualMaximumSize(LocalSearchSolverPhaseScope scope);
-    
-    protected abstract int calculateFadingTabuSize(LocalSearchSolverPhaseScope scope);
 
-    protected abstract int calculateRegularTabuSize(LocalSearchSolverPhaseScope scope);
+    protected int calculateActualMaximumSize(LocalSearchSolverPhaseScope phaseScope) {
+        return calculateFadingTabuSize(phaseScope) + calculateRegularTabuSize(phaseScope);
+    }
+    
+    protected abstract int calculateFadingTabuSize(LocalSearchSolverPhaseScope phaseScope);
+
+    protected abstract int calculateRegularTabuSize(LocalSearchSolverPhaseScope phaseScope);
 
     public void setAspirationEnabled(boolean aspirationEnabled) {
         this.aspirationEnabled = aspirationEnabled;

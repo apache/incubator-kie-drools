@@ -45,11 +45,6 @@ public abstract class AbstractRelativeSizeTabuAcceptor extends AbstractTabuAccep
                     + ") and fadingTabuRatio (" + fadingTabuRatio + ") should be higher than 0.0.");
         }
     }
-
-    @Override
-    protected int calculateActualMaximumSize(LocalSearchSolverPhaseScope phaseScope) {
-        return calculateFadingTabuSize(phaseScope) + calculateRegularTabuSize(phaseScope);
-    }
     
     @Override
     protected int calculateFadingTabuSize(LocalSearchSolverPhaseScope phaseScope) {
