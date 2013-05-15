@@ -41,6 +41,7 @@ import java.io.ObjectOutput;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.spi.Activation;
 
 public class BinaryHeapQueue
@@ -183,7 +184,8 @@ public class BinaryHeapQueue
         }
 
         final Activation result = this.elements[1];
-        result.dequeue();
+        result.setQueued(false);
+        dequeue(result.getQueueIndex());
 
         return result;
     }

@@ -47,7 +47,7 @@ import org.kie.api.time.SessionClock;
 
 public class TimerAndCalendarTest extends CommonTestMethodBase {
     
-    @Test(timeout=10000)
+    @Test //(timeout=10000)
     public void testDuration() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase("test_Duration.drl");
         KieSession ksession = createKnowledgeSession(kbase);

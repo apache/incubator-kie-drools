@@ -767,7 +767,7 @@ public class ProtobufInputMarshaller {
             while ((rnea = rneaToFire.poll()) != null) {
                 rnea.remove();
                 rnea.setQueued(false);
-                rnea.getRuleExecutor().evaluateNetwork(wm, null, 0, -1);
+                rnea.getRuleExecutor().evaluateNetworkAndFire(wm, null, 0, -1);
             }
         }
     }

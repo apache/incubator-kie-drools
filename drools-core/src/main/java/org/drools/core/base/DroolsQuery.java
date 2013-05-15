@@ -44,7 +44,7 @@ public final class DroolsQuery extends ArrayElements {
 
     private LeftTupleSets resultLeftTuples;
 
-    private List<PathMemory> rmems;
+    private List<PathMemory> pmems;
 
     private StackEntry stackEntry;
 
@@ -73,7 +73,7 @@ public final class DroolsQuery extends ArrayElements {
                        final InternalViewChangedEventListener resultsCollector,
                        final boolean open,
                        final StackEntry stackEntry,
-                       final List<PathMemory> rmems,
+                       final List<PathMemory> pmems,
                        final LeftTupleSets resultLeftTuples,
                        final LeftTupleSink sink) {
         setParameters(params);
@@ -81,7 +81,7 @@ public final class DroolsQuery extends ArrayElements {
         this.resultsCollector = resultsCollector;
         this.stackEntry = stackEntry;
         this.open = open;
-        this.rmems = rmems;
+        this.pmems = pmems;
         this.resultLeftTuples = resultLeftTuples;
         this.sink = sink;
     }
@@ -117,7 +117,7 @@ public final class DroolsQuery extends ArrayElements {
     }
 
     public List<PathMemory> getRuleMemories() {
-        return this.rmems;
+        return this.pmems;
     }
 
     public LeftTupleSink getLeftTupleSink() {

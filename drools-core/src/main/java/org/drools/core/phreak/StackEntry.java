@@ -22,7 +22,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
     private LeftInputAdapterNode liaNode;
     private NetworkNode          node;
     private LeftTupleSinkNode    sink;
-    private PathMemory           rmem;
+    private PathMemory           pmem;
     private Memory               nodeMem;
     private SegmentMemory[]      smems;
     private int                  smemIndex;
@@ -34,7 +34,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
     public StackEntry(LeftInputAdapterNode liaNode,
                       NetworkNode node,
                       LeftTupleSinkNode sink,
-                      PathMemory rmem,
+                      PathMemory pmem,
                       Memory nodeMem,
                       SegmentMemory[] smems,
                       int smemIndex,
@@ -44,7 +44,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
         this.liaNode = liaNode;
         this.node = node;
         this.sink = sink;
-        this.rmem = rmem;
+        this.pmem = pmem;
         this.nodeMem = nodeMem;
         this.smems = smems;
         this.smemIndex = smemIndex;
@@ -62,7 +62,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
     }
 
     public PathMemory getRmem() {
-        return rmem;
+        return pmem;
     }
 
     public Memory getNodeMem() {

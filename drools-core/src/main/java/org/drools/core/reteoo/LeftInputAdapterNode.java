@@ -296,17 +296,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // rule activations immediately
             MarshallerReaderContext mrc = (MarshallerReaderContext) context.getReaderContext();
             mrc.filter.fireRNEAs( wm );
-
-//            for( PathMemory pm : sm.getPathMemories() ) {
-//                if( pm.getRuleAgendaItem().isQueued() ) {
-//                    // we need to check if we need to evaluate the network immediately or not
-//                    if( mrc.filter.shouldFire( pm.getRuleAgendaItem() ) ) {
-//                        pm.getRuleAgendaItem().remove();
-//                        pm.getRuleAgendaItem().setQueued( false );
-//                        pm.getRuleAgendaItem().evaluateNetwork( wm, 0, -1 );
-//                    }
-//                }
-//            }
         }
     }
 

@@ -36,6 +36,8 @@ import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.spi.Salience;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
@@ -162,7 +164,7 @@ public class DefaultKnowledgeHelper
                 // it wasn't blocked before, but is now, so we must remove it from all groups, so it cannot be executed.
                 targetMatch.remove();
             } else {
-                targetMatch.getRuleAgendaItem().getRuleExecutor().getLeftTupleList().remove(targetMatch.getTuple());
+                targetMatch.getRuleAgendaItem().getRuleExecutor().removeLeftTuple(targetMatch.getTuple());
             }
 
             if ( targetMatch.getActivationGroupNode() != null ) {
@@ -193,11 +195,17 @@ public class DefaultKnowledgeHelper
                 // the match is no longer blocked, so stage it
                 ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( targetMatch );
             } else {
-                if ( !ruleAgendaItem.isQueued() ) {
-                    // Make sure the rule evaluator is on the agenda, to be evaluated
-                    ((InternalAgenda) workingMemory.getAgenda()).addActivation(ruleAgendaItem);
+                int salienceInt = 0;
+                Salience salience = ruleAgendaItem.getRule().getSalience();
+                RuleTerminalNodeLeftTuple rtnLeftTuple = ( RuleTerminalNodeLeftTuple ) targetMatch;
+                if ( !salience.isDynamic() ) {
+                    salienceInt = ruleAgendaItem.getRule().getSalience().getValue();
+                } else {
+                    salienceInt = salience.getValue( new DefaultKnowledgeHelper(rtnLeftTuple, getWorkingMemory()),
+                                                     null,  getWorkingMemory());
                 }
-                targetMatch.getRuleAgendaItem().getRuleExecutor().getLeftTupleList().add( targetMatch.getTuple() );
+                ((RuleTerminalNodeLeftTuple)targetMatch).update(salienceInt, activation.getPropagationContext());
+                targetMatch.getRuleAgendaItem().getRuleExecutor().addLeftTuple( targetMatch.getTuple() );
             }
         }
     }
@@ -302,7 +310,7 @@ public class DefaultKnowledgeHelper
                             // Make sure the rule evaluator is on the agenda, to be evaluated
                             ((InternalAgenda) workingMemory.getAgenda()).addActivation(ruleAgendaItem);
                         }
-                        ruleAgendaItem.getRuleExecutor().getLeftTupleList().add( justified.getTuple() );
+                        ruleAgendaItem.getRuleExecutor().addLeftTuple( justified.getTuple() );
                     }
                 }
                 dep = tmp;

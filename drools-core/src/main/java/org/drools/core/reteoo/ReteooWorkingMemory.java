@@ -283,12 +283,15 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
             }
             LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
 
-            List<PathMemory> rmems =  lmem.getSegmentMemory().getPathMemories();
-            for ( int i = 0, length = rmems.size(); i < length; i++ ) {
-                PathMemory rm = rmems.get( i );
+            List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
+            for ( int i = 0, length = pmems.size(); i < length; i++ ) {
+                PathMemory rm = pmems.get( i );
+
+
 
                 RuleAgendaItem evaluator = agenda.createRuleAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
-                evaluator.getRuleExecutor().evaluateNetwork(this, null, 0, -1);
+                evaluator.getRuleExecutor().setDirty(true);
+                evaluator.getRuleExecutor().evaluateNetworkAndFire(this, null, 0, -1);
             }
         } else {
             // no need to call retract, as no leftmemory used.
@@ -323,12 +326,13 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                 LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
                 LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, this, lian, false, lmem );
 
-                List<PathMemory> rmems =  lmem.getSegmentMemory().getPathMemories();
-                for ( int i = 0, length = rmems.size(); i < length; i++ ) {
-                    PathMemory rm = rmems.get( i );
+                List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
+                for ( int i = 0, length = pmems.size(); i < length; i++ ) {
+                    PathMemory rm = pmems.get( i );
 
                     RuleAgendaItem evaluator = agenda.createRuleAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
-                    evaluator.getRuleExecutor().evaluateNetwork(this, null, 0, -1);
+                    evaluator.getRuleExecutor().setDirty(true);
+                    evaluator.getRuleExecutor().evaluateNetworkAndFire(this, null, 0, -1);
                 }
             } else {
                 getEntryPointNode().retractQuery( factHandle,

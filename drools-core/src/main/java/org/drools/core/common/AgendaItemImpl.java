@@ -250,7 +250,7 @@ public class AgendaItemImpl
                             // Make sure the rule evaluator is on the agenda, to be evaluated
                             agenda.addActivation(ruleAgendaItem);
                         }
-                        ruleAgendaItem.getRuleExecutor().getLeftTupleList().add(justified.getTuple());
+                        ruleAgendaItem.getRuleExecutor().addLeftTuple(justified.getTuple());
                     }
                 }
                 dep = tmp;

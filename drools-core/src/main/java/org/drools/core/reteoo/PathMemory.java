@@ -1,5 +1,6 @@
 package org.drools.core.reteoo;
 
+import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
@@ -81,13 +82,13 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
             log.trace("    LinkRule name={}", rtn.getRule().getName());
         }
         if (agendaItem == null) {
-            int salience = rtn.getRule().getSalience().getValue(null,
-                                                                rtn.getRule(),
-                                                                wm);
+            int salience = ( rtn.getRule().getSalience() instanceof MVELSalienceExpression)
+                           ? 0
+                           : rtn.getRule().getSalience().getValue(null, rtn.getRule(), wm);
             agendaItem = ((InternalAgenda) wm.getAgenda()).createRuleAgendaItem(salience, this, rtn);
         }
 
-        queueRuleAgendaItem();
+        queueRuleAgendaItem(wm);
     }
 
     public void doUnlinkRule(InternalWorkingMemory wm) {
@@ -96,16 +97,17 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
             log.trace("    UnlinkRule name={}", rtn.getRule().getName());
         }
         if (agendaItem == null) {
-            int salience = rtn.getRule().getSalience().getValue(null,
-                                                                rtn.getRule(),
-                                                                wm);
+            int salience = ( rtn.getRule().getSalience() instanceof MVELSalienceExpression)
+                           ? 0
+                           : rtn.getRule().getSalience().getValue(null, rtn.getRule(), wm);
             agendaItem = ((InternalAgenda) wm.getAgenda()).createRuleAgendaItem(salience, this, rtn);
         }
 
-        queueRuleAgendaItem();
+        queueRuleAgendaItem(wm);
     }
 
-    public void queueRuleAgendaItem() {
+    public void queueRuleAgendaItem(InternalWorkingMemory wm) {
+        agendaItem.getRuleExecutor().setDirty(true);
         if (!agendaItem.isQueued()) {
             InternalRuleFlowGroup rfg = agendaItem.getRuleFlowGroup();
             InternalAgendaGroup ag = agendaItem.getAgendaGroup();
@@ -115,7 +117,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
                 ag.add( agendaItem );
             }
         }
-        agendaItem.getRuleExecutor().setDirty(true);
+        if ( agendaItem.getRule().isEager() ) {
+            // will return if already added
+            ((InternalAgenda)wm.getAgenda()).addEagerRuleAgendaItem( agendaItem );
+        }
     }
 
 

@@ -106,4 +106,13 @@ public class FactA implements Serializable {
         this.enumVal = enumVal;
     }
 
+    public String toString() {
+        return "FactA{" +
+               "field1='" + field1 + '\'' +
+               ", field2=" + field2 +
+               ", field3=" + field3 +
+               ", field4=" + field4 +
+               ", enumVal=" + enumVal +
+               '}';
+    }
 }
