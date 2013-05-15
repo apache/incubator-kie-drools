@@ -25,6 +25,7 @@ import javax.decorator.Delegate;
 import javax.inject.Inject;
 
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.command.Command;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
@@ -288,5 +289,9 @@ public class DeadlinesDecorator implements TaskInstanceService {
     public void setTaskNames(long taskId, List<I18NText> taskNames) {
         instanceService.setTaskNames(taskId, taskNames);
     }
+
+	public <T> T execute(Command<T> command) {
+		return instanceService.execute(command);
+	}
 
 }

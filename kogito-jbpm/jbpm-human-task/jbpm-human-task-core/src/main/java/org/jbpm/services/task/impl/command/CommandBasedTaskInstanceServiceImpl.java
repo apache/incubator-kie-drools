@@ -40,10 +40,11 @@ import org.jbpm.services.task.commands.SkipTaskCommand;
 import org.jbpm.services.task.commands.StartTaskCommand;
 import org.jbpm.services.task.commands.StopTaskCommand;
 import org.jbpm.services.task.commands.SuspendTaskCommand;
+import org.kie.api.command.Command;
+import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
-import org.kie.internal.task.api.TaskCommandExecutor;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
@@ -56,7 +57,7 @@ import org.kie.internal.task.api.model.TaskDef;
 public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
     
     @Inject @CommandBased
-    private TaskCommandExecutor executor;
+    private CommandExecutor executor;
     
     public long newTask(String name, Map<String, Object> params) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -71,19 +72,19 @@ public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
     }
 
     public long addTask(Task task, Map<String, Object> params) {
-        return (Long) executor.executeTaskCommand(new AddTaskCommand(task, params));
+        return (Long) executor.execute(new AddTaskCommand(task, params));
     }
 
     public long addTask(Task task, ContentData data) {
-        return (Long) executor.executeTaskCommand(new AddTaskCommand(task, data));
+        return (Long) executor.execute(new AddTaskCommand(task, data));
     }
 
     public void activate(long taskId, String userId) {
-        executor.executeTaskCommand(new ActivateTaskCommand(taskId, userId));
+        executor.execute(new ActivateTaskCommand(taskId, userId));
     }
 
     public void claim(long taskId, String userId) {
-        executor.executeTaskCommand(new ClaimTaskCommand(taskId, userId));
+        executor.execute(new ClaimTaskCommand(taskId, userId));
     }
 
     public void claim(long taskId, String userId, List<String> groupIds) {
@@ -91,7 +92,7 @@ public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
     }
 
     public void claimNextAvailable(String userId, String language) {
-        executor.executeTaskCommand(new ClaimNextAvailableTaskCommand(userId, language));
+        executor.execute(new ClaimNextAvailableTaskCommand(userId, language));
     }
 
     public void claimNextAvailable(String userId, List<String> groupIds, String language) {
@@ -99,12 +100,12 @@ public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
     }
 
     public void complete(long taskId, String userId, Map<String, Object> data) {
-        executor.executeTaskCommand(new CompleteTaskCommand(taskId, userId, data));        
+        executor.execute(new CompleteTaskCommand(taskId, userId, data));        
     }
 
     public void delegate(long taskId, String userId, String targetUserId) {
-        executor.executeTaskCommand(new DelegateTaskCommand(taskId, userId, targetUserId));        
-        executor.executeTaskCommand(new ClaimTaskCommand(taskId, targetUserId));        
+        executor.execute(new DelegateTaskCommand(taskId, userId, targetUserId));        
+        executor.execute(new ClaimTaskCommand(taskId, targetUserId));        
     }
 
     public void deleteFault(long taskId, String userId) {
@@ -116,19 +117,19 @@ public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
     }
 
     public void exit(long taskId, String userId) {
-        executor.executeTaskCommand(new ExitTaskCommand(taskId, userId));
+        executor.execute(new ExitTaskCommand(taskId, userId));
     }
 
     public void fail(long taskId, String userId, Map<String, Object> faultData) {
-        executor.executeTaskCommand(new FailTaskCommand(taskId, userId, faultData));        
+        executor.execute(new FailTaskCommand(taskId, userId, faultData));        
     }
 
     public void forward(long taskId, String userId, String targetEntityId) {
-        executor.executeTaskCommand(new ForwardTaskCommand(taskId, userId, targetEntityId));        
+        executor.execute(new ForwardTaskCommand(taskId, userId, targetEntityId));        
     }
 
     public void release(long taskId, String userId) {
-        executor.executeTaskCommand(new ReleaseTaskCommand(taskId, userId));        
+        executor.execute(new ReleaseTaskCommand(taskId, userId));        
     }
 
     public void remove(long taskId, String userId) {
@@ -136,7 +137,7 @@ public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
     }
 
     public void resume(long taskId, String userId) {
-        executor.executeTaskCommand(new ResumeTaskCommand(taskId, userId));        
+        executor.execute(new ResumeTaskCommand(taskId, userId));        
     }
 
     public void setFault(long taskId, String userId, FaultData fault) {
@@ -152,23 +153,23 @@ public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
     }
 
     public void skip(long taskId, String userId) {
-        executor.executeTaskCommand(new SkipTaskCommand(taskId, userId));        
+        executor.execute(new SkipTaskCommand(taskId, userId));        
     }
 
     public void start(long taskId, String userId) {
-        executor.executeTaskCommand(new StartTaskCommand(taskId, userId));        
+        executor.execute(new StartTaskCommand(taskId, userId));        
     }
 
     public void stop(long taskId, String userId) {
-        executor.executeTaskCommand(new StopTaskCommand(taskId, userId));        
+        executor.execute(new StopTaskCommand(taskId, userId));        
     }
 
     public void suspend(long taskId, String userId) {
-        executor.executeTaskCommand(new SuspendTaskCommand(taskId, userId));        
+        executor.execute(new SuspendTaskCommand(taskId, userId));        
     }
 
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
-        executor.executeTaskCommand(new NominateTaskCommand(taskId, userId, potentialOwners));        
+        executor.execute(new NominateTaskCommand(taskId, userId, potentialOwners));        
     }
 
     public void setPriority(long taskId, int priority) {
@@ -214,5 +215,10 @@ public class CommandBasedTaskInstanceServiceImpl implements TaskInstanceService{
     public void setTaskNames(long taskId, List<I18NText> taskNames) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+	@Override
+	public <T> T execute(Command<T> command) {
+		return executor.execute(command);
+	}
     
 }

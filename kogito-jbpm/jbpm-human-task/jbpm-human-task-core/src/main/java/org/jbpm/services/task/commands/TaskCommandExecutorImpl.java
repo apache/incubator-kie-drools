@@ -21,20 +21,24 @@ import org.drools.core.command.impl.GenericCommand;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.annotations.CommandBased;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.CommandExecutor;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.TaskCommandExecutor;
 
 
 /**
  *
  */
 @CommandBased @Transactional
-public class TaskCommandExecutorImpl implements TaskCommandExecutor{
+public class TaskCommandExecutorImpl implements CommandExecutor {
     @Inject
     private TaskContext context;
 
-    public <T> T executeTaskCommand(Command<T> command) {
-        return (T)((GenericCommand) command).execute((Context)context);
+    public <T> T execute(Command<T> command) {
+    	if (command instanceof TaskCommand) {
+    		return (T)((GenericCommand) command).execute((Context)context);
+    	} else {
+    		throw new IllegalArgumentException("Task service can only execute task commands");
+    	}
     }
     
 }

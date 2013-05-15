@@ -20,6 +20,7 @@ import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
+import org.kie.api.command.Command;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
@@ -670,5 +671,8 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
         ((JbpmServicesEventImpl)taskNotificationEvents).clearListeners();
     }
     
+    public <T> T execute(Command<T> command) {
+    	return taskInstanceService.execute(command);
+    }   
     
 }

@@ -23,6 +23,7 @@ import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
 
+import org.kie.api.command.Command;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
@@ -235,5 +236,9 @@ public class UserGroupTaskInstanceServiceDecorator extends
     public org.kie.internal.task.api.model.SubTasksStrategy getSubTaskStrategy(long taskId) {
         return delegate.getSubTaskStrategy(taskId);
     }
+
+	public <T> T execute(Command<T> command) {
+		return delegate.execute(command);
+	}
 
 }

@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.command.Command;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
@@ -242,4 +243,8 @@ public class SubTaskDecorator implements TaskInstanceService {
         instanceService.setTaskNames(taskId, taskNames);
     }
     
+	public <T> T execute(Command<T> command) {
+		return instanceService.execute(command);
+	}
+
 }

@@ -15,8 +15,15 @@ import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
+import org.drools.core.command.impl.FixedKnowledgeCommandContext;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.annotations.Mvel;
+import org.jbpm.services.task.commands.TaskCommand;
+import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
 import org.jbpm.services.task.identity.UserGroupLifeCycleManagerDecorator;
 import org.jbpm.services.task.impl.model.ContentDataImpl;
@@ -26,11 +33,14 @@ import org.jbpm.services.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.services.task.internals.lifecycle.MVELLifeCycleManager;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.command.Command;
+import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.command.Context;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.model.ContentData;
@@ -263,5 +273,9 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     public SubTasksStrategy getSubTaskStrategy(long taskId) {
         TaskImpl task = pm.find(TaskImpl.class, taskId);
         return task.getSubTaskStrategy();
+    }
+    
+    public <T> T execute(Command<T> command) {
+        return (T) ((TaskCommand) command).execute( new TaskContext() );
     }
 }

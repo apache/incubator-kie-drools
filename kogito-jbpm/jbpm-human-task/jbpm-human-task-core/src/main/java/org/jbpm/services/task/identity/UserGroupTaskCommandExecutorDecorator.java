@@ -26,9 +26,9 @@ import org.jbpm.services.task.commands.AddTaskCommand;
 import org.jbpm.services.task.commands.NominateTaskCommand;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
-import org.kie.internal.task.api.TaskCommandExecutor;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
@@ -37,14 +37,14 @@ import org.kie.internal.task.api.model.InternalTaskData;
  *
  */
 @Decorator
-public class UserGroupTaskCommandExecutorDecorator extends AbstractUserGroupCallbackDecorator implements TaskCommandExecutor {
+public class UserGroupTaskCommandExecutorDecorator extends AbstractUserGroupCallbackDecorator implements CommandExecutor {
 
     @Inject
     @Delegate
     @CommandBased
-    private TaskCommandExecutor executor;
+    private CommandExecutor executor;
 
-    public <T> T executeTaskCommand(Command<T> cmd) {
+    public <T> T execute(Command<T> cmd) {
         TaskCommand<T> command = (TaskCommand<T>) cmd;
         if (command instanceof AddTaskCommand) {
             Task task = ((AddTaskCommand) command).getTask();
@@ -58,7 +58,7 @@ public class UserGroupTaskCommandExecutorDecorator extends AbstractUserGroupCall
         }
         command.setGroupsIds(doUserGroupCallbackOperation(command.getUserId(), command.getGroupsIds()));
         doCallbackUserOperation(command.getTargetEntityId());
-        return (T) executor.executeTaskCommand(command);
+        return (T) executor.execute(command);
     }
 
 
