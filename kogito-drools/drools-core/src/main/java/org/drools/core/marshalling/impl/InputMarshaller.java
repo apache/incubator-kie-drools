@@ -1016,12 +1016,7 @@ public class InputMarshaller {
 
         boolean scheduled = false;
         RuleTerminalNodeLeftTuple rtnLeftTuple = ( RuleTerminalNodeLeftTuple ) leftTuple;
-        rtnLeftTuple.init(activationNumber,
-                          salience,
-                          pc,
-                          ruleTerminalNode, null,
-                          agendaGroup,
-                          rfg );
+        rtnLeftTuple.init(activationNumber, salience, pc, null, agendaGroup, rfg );
         activation = rtnLeftTuple;
 
         if (rule.getTimer() != null) {

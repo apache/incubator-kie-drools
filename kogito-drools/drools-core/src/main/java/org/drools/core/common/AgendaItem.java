@@ -44,11 +44,6 @@ public interface AgendaItem extends Activation {
 
     RuleAgendaItem getRuleAgendaItem();
 
-    /*
-             * (non-Javadoc)
-             *
-             * @see org.kie.spi.Activation#getActivationNumber()
-             */
     long getActivationNumber();
 
     void addBlocked(LogicalDependency dep);

@@ -195,4 +195,10 @@ public interface InternalAgenda
     void insertAndStageActivation(AgendaItem activation);
 
     void addAgendaItemToGroup(AgendaItem item);
+
+    void addEagerRuleAgendaItem(RuleAgendaItem item);
+
+    void removeEagerRuleAgendaItem(RuleAgendaItem item);
+
+    long getNextActivationCounter();
 }

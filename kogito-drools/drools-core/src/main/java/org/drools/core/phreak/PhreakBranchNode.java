@@ -1,5 +1,7 @@
 package org.drools.core.phreak;
 
+import org.drools.core.base.DefaultKnowledgeHelper;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
@@ -9,6 +11,9 @@ import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Salience;
 import org.drools.core.util.index.LeftTupleList;
 
 /**
@@ -51,7 +56,14 @@ public class PhreakBranchNode {
                               LeftTupleSets trgLeftTuples,
                               RuleExecutor executor) {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
-        LeftTupleList tupleList = executor.getLeftTupleList();
+
+        RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
+        int salienceInt = 0;
+        Salience salience = ruleAgendaItem.getRule().getSalience();
+        if ( !salience.isDynamic() ) {
+            salienceInt = ruleAgendaItem.getRule().getSalience().getValue();
+            salience = null;
+        }
 
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -66,12 +78,8 @@ public class PhreakBranchNode {
                 LeftTuple branchedLeftTuple = rtn.createLeftTuple(leftTuple,
                                                                   rtn,
                                                                   leftTuple.getPropagationContext(), useLeftMemory);
-
-                leftTuple.setObject(branchedLeftTuple);
-
-                //rtn.assertLeftTuple(branchedLeftTuple, leftTuple.getPropagationContext(), wm);
-                tupleList.add(branchedLeftTuple);
-
+                PhreakRuleTerminalNode.doLeftTupleInsert( rtn, executor, (InternalAgenda) wm.getAgenda(),
+                                                          executor.getRuleAgendaItem(), salienceInt, salience, branchedLeftTuple, wm) ;
                 breaking = conditionalExecution.isBreaking();
             }
 
@@ -95,7 +103,13 @@ public class PhreakBranchNode {
                               LeftTupleSets stagedLeftTuples,
                               RuleExecutor executor) {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
-        LeftTupleList tupleList = executor.getLeftTupleList();
+        RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
+        int salienceInt = 0;
+        Salience salience = ruleAgendaItem.getRule().getSalience();
+        if ( !salience.isDynamic() ) {
+            salienceInt = ruleAgendaItem.getRule().getSalience().getValue();
+            salience = null;
+        }
 
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -122,43 +136,34 @@ public class PhreakBranchNode {
                 if (newRtn == null) {
                     // old exits, new does not, so delete
                     if ( rtnLeftTuple.getMemory() != null ) {
-                        tupleList.remove(rtnLeftTuple);
+                        executor.removeLeftTuple(rtnLeftTuple);
                     }
                     oldRtn.retractLeftTuple(rtnLeftTuple, rtnLeftTuple.getPropagationContext(), wm);
 
                 } else if (newRtn == oldRtn) {
                     // old and new on same branch, so update
-                    if ( rtnLeftTuple.getMemory() != null ) {
-                        tupleList.remove(rtnLeftTuple); // must be removed before it can bereadded
-                    }
-                    tupleList.add(rtnLeftTuple);
-                    //oldRtn.modifyLeftTuple(rtnLeftTuple, rtnLeftTuple.getPropagationContext(), wm);
+                    PhreakRuleTerminalNode.doLeftTupleUpdate(newRtn, executor, (InternalAgenda) wm.getAgenda(), salienceInt, salience, leftTuple, wm) ;
 
                 } else {
                     // old and new on different branches, delete one and insert the other
                     if ( rtnLeftTuple.getMemory() != null ) {
-                        tupleList.remove(rtnLeftTuple);
+                        executor.removeLeftTuple(rtnLeftTuple);
                     }
                     oldRtn.retractLeftTuple(rtnLeftTuple, rtnLeftTuple.getPropagationContext(), wm);
 
                     rtnLeftTuple = newRtn.createLeftTuple(leftTuple,
                                                           newRtn,
                                                           leftTuple.getPropagationContext(), true);
-
-                    leftTuple.setObject(rtnLeftTuple);
-                    tupleList.add(rtnLeftTuple);
-                    //newRtn.assertLeftTuple(rtnLeftTuple, rtnLeftTuple.getPropagationContext(), wm);
+                    PhreakRuleTerminalNode.doLeftTupleInsert( newRtn, executor, (InternalAgenda) wm.getAgenda(),
+                                                              executor.getRuleAgendaItem(), salienceInt, salience, rtnLeftTuple, wm) ;
                 }
 
             } else if (newRtn != null) {
                 // old does not exist, new exists, so insert
-                rtnLeftTuple = newRtn.createLeftTuple(leftTuple,
-                                                      newRtn,
-                                                      leftTuple.getPropagationContext(), true);
-
-                leftTuple.setObject(rtnLeftTuple);
-                //newRtn.assertLeftTuple(rtnLeftTuple, rtnLeftTuple.getPropagationContext(), wm);
-                tupleList.add(rtnLeftTuple);
+                rtnLeftTuple = newRtn.createLeftTuple(leftTuple, newRtn,
+                                                                     leftTuple.getPropagationContext(), true);
+                PhreakRuleTerminalNode.doLeftTupleInsert( newRtn, executor, (InternalAgenda) wm.getAgenda(),
+                                                          executor.getRuleAgendaItem(), salienceInt, salience, rtnLeftTuple, wm) ;
             }
 
             // Handle main branch
@@ -199,8 +204,6 @@ public class PhreakBranchNode {
                               LeftTupleSets trgLeftTuples,
                               LeftTupleSets stagedLeftTuples,
                               RuleExecutor executor) {
-        LeftTupleList tupleList = executor.getLeftTupleList();
-
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
@@ -210,7 +213,7 @@ public class PhreakBranchNode {
             if (rtnLeftTuple != null) {
                 RuleTerminalNode rtn = (RuleTerminalNode) rtnLeftTuple.getSink();
                 if ( rtnLeftTuple.getMemory() != null ) {
-                    tupleList.remove(rtnLeftTuple);
+                    executor.removeLeftTuple(rtnLeftTuple);
                 }
                 rtn.retractLeftTuple(rtnLeftTuple,
                                      rtnLeftTuple.getPropagationContext(),

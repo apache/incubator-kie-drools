@@ -52,10 +52,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
      */
     private           int                                            sequenence;
     /**
-     * Rule terminal node, gives access to SubRule *
-     */
-    private           TerminalNode                                   rtn;
-    /**
      * The activation number
      */
     private           long                                           activationNumber;
@@ -142,20 +138,24 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
     public void init(final long activationNumber,
                      final int salience,
                      final PropagationContext pctx,
-                     final TerminalNode rtn,
                      final RuleAgendaItem ruleAgendaItem,
                      InternalAgendaGroup agendaGroup,
                      InternalRuleFlowGroup ruleFlowGroup) {
         setPropagationContext(pctx);
         this.salience = salience;
-        this.rtn = rtn;
         this.activationNumber = activationNumber;
         this.queueIndex = -1;
         this.matched = true;
         this.ruleAgendaItem = ruleAgendaItem;
         this.agendaGroup = agendaGroup;
         this.ruleFlowGroup = ruleFlowGroup;
+    }
 
+    public void update(final int salience,
+                        final PropagationContext pctx) {
+        setPropagationContext(pctx);
+        this.salience = salience;
+        this.matched = true;
     }
 
     /**
@@ -164,12 +164,12 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
      * @return The rule.
      */
     public Rule getRule() {
-        return this.rtn.getRule();
+        return getTerminalNode().getRule();
     }
 
     public Consequence getConsequence() {
-        String consequenceName = ((RuleTerminalNode) rtn).getConsequenceName();
-        return consequenceName.equals(Rule.DEFAULT_CONSEQUENCE_NAME) ? rtn.getRule().getConsequence() : rtn.getRule().getNamedConsequence(consequenceName);
+        String consequenceName = ((RuleTerminalNode) getTerminalNode()).getConsequenceName();
+        return consequenceName.equals(Rule.DEFAULT_CONSEQUENCE_NAME) ? getTerminalNode().getRule().getConsequence() : getTerminalNode().getRule().getNamedConsequence(consequenceName);
     }
 
     /**
@@ -261,7 +261,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
                             // Make sure the rule evaluator is on the agenda, to be evaluated
                             agenda.addActivation(ruleAgendaItem);
                         }
-                        ruleAgendaItem.getRuleExecutor().getLeftTupleList().add(justified.getTuple());
+                        ruleAgendaItem.getRuleExecutor().addLeftTuple(justified.getTuple());
                     }
                 }
                 dep = tmp;
@@ -361,11 +361,11 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
     }
 
     public GroupElement getSubRule() {
-        return this.rtn.getSubRule();
+        return getTerminalNode().getSubRule();
     }
 
     public TerminalNode getTerminalNode() {
-        return this.rtn;
+        return (TerminalNode) getLeftTupleSink();
     }
 
     public ActivationUnMatchListener getActivationUnMatchListener() {
@@ -405,7 +405,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
     }
 
     public Object getDeclarationValue(String variableName) {
-        Declaration decl = this.rtn.getSubRule().getOuterDeclarations().get(variableName);
+        Declaration decl = getTerminalNode().getSubRule().getOuterDeclarations().get(variableName);
         InternalFactHandle handle = get(decl);
         // need to double check, but the working memory reference is only used for resolving globals, right?
         return decl.getValue(null, handle.getObject());

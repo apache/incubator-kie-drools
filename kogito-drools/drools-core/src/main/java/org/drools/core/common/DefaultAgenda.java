@@ -105,6 +105,8 @@ public class DefaultAgenda
 
     private InternalAgendaGroup                                  main;
 
+    private LinkedList<RuleAgendaItem>                           eager;
+
     private AgendaGroupFactory                                   agendaGroupFactory;
 
     protected KnowledgeHelper                                    knowledgeHelper;
@@ -128,6 +130,9 @@ public class DefaultAgenda
     private volatile boolean                                     mustNotifyHalt     = false;
 
     private boolean                                              unlinkingEnabled;
+
+    // @TODO make serialisation work
+    private ActivationGroup stagedActivations;
 
     // ------------------------------------------------------------
     // Constructors
@@ -175,6 +180,8 @@ public class DefaultAgenda
 
             this.focusStack.add( this.main );
         }
+        eager = new LinkedList<RuleAgendaItem>();
+
         Object object = ClassUtils.instantiateObject( rb.getConfiguration().getConsequenceExceptionHandler(),
                                                       rb.getConfiguration().getClassLoader() );
         if ( object instanceof ConsequenceExceptionHandler ) {
@@ -197,6 +204,11 @@ public class DefaultAgenda
         return lazyAgendaItem;
     }
 
+    @Override
+    public long getNextActivationCounter() {
+        return  activationCounter++;
+    }
+
     public AgendaItem createAgendaItem(final LeftTuple tuple,
                                        final int salience,
                                        final PropagationContext context,
@@ -208,8 +220,8 @@ public class DefaultAgenda
         rtnLeftTuple.init(activationCounter++,
                           salience,
                           context,
-                          rtn,
                           ruleAgendaItem, agendaGroup, ruleFlowGroup);
+        rtnLeftTuple.setObject( rtnLeftTuple );
         return rtnLeftTuple;
     }
 
@@ -219,9 +231,10 @@ public class DefaultAgenda
                                                          InternalAgendaGroup agendaGroup,
                                                          InternalRuleFlowGroup ruleFlowGroup) {
         RuleTerminalNodeLeftTuple rtnLeftTuple = ( RuleTerminalNodeLeftTuple ) tuple;
-        rtnLeftTuple.init(activationCounter++, 0, context,
-                          rtn, null, agendaGroup, ruleFlowGroup );
-        return new ScheduledAgendaItem( rtnLeftTuple, this );
+        rtnLeftTuple.init(activationCounter++, 0, context, null, agendaGroup, ruleFlowGroup );
+        ScheduledAgendaItem item =  new ScheduledAgendaItem( rtnLeftTuple, this );
+        tuple.setObject( item );
+        return item;
     }
 
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
@@ -274,6 +287,26 @@ public class DefaultAgenda
         return this.workingMemory;
     }
 
+    @Override
+    public void addEagerRuleAgendaItem(RuleAgendaItem item) {
+        if ( item.isInList() ) {
+            return;
+        }
+
+        log.trace("Added {} to eager evaluation list.", item.getRule().getName() );
+        eager.add( item );
+    }
+
+    @Override
+    public void removeEagerRuleAgendaItem(RuleAgendaItem item) {
+        if ( !item.isInList() ) {
+            return;
+        }
+
+        log.trace("Removed {} from eager evaluation list.", item.getRule().getName() );
+        eager.remove(item);
+    }
+
     /**
      * Schedule an agenda item for delayed firing.
      * 
@@ -293,9 +326,6 @@ public class DefaultAgenda
                                           wm );
         }
     }
-
-    // @TODO make serialisation work
-    private ActivationGroup stagedActivations;
 
     /**
      * If the item belongs to an activation group, add it
@@ -608,8 +638,6 @@ public class DefaultAgenda
                                                            workingMemory ) );
         }
 
-        tuple.setObject( item );
-
         if ( activationsFilter != null && !activationsFilter.accept( item,
                                                                      context,
                                                                      workingMemory,
@@ -672,8 +700,6 @@ public class DefaultAgenda
         item.setSalience( rule.getSalience().getValue( new DefaultKnowledgeHelper( item, workingMemory ),
                                                        rule,
                                                        workingMemory ) );
-
-        tuple.setObject( item );
 
         if ( activationsFilter != null && !activationsFilter.accept( item,
                                                                      context,
@@ -1323,6 +1349,11 @@ public class DefaultAgenda
         int localFireCount = 0;
         try {
             do {
+                while ( !eager.isEmpty() ) {
+                    RuleAgendaItem item = eager.removeFirst();
+                    log.trace("Eager Evaluating rule {}.", item.getRule().getName() );
+                    item.getRuleExecutor().evaluateNetwork(this.workingMemory);
+                }
                 this.workingMemory.prepareToFireActivation();
                 tryagain = false;
                 final InternalAgendaGroup group = (InternalAgendaGroup) getNextFocus();
@@ -1331,8 +1362,8 @@ public class DefaultAgenda
                 if ( group != null ) {
                     if ( this.unlinkingEnabled ) {
                         final RuleAgendaItem item = (RuleAgendaItem) group.peekNext();
-                        localFireCount = item.getRuleExecutor().evaluateNetwork( this.workingMemory, filter,
-                                                                                 fireCount, fireLimit );
+                        localFireCount = item.getRuleExecutor().evaluateNetworkAndFire(this.workingMemory, filter,
+                                                                                       fireCount, fireLimit);
                         if ( localFireCount == 0 ) {
                             // nothing matched
                             tryagain = true; // will force the next Activation of the agenda, without going to outer loop which checks halt

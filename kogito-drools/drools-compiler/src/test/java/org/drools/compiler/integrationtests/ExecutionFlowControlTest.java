@@ -43,36 +43,23 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testSalienceIntegerAndDepthCrs() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_salienceIntegerRule.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
+        KnowledgeBase kbase = loadKnowledgeBase("test_salienceIntegerRule.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
         final PersonInterface person = new Person( "Edson", "cheese" );
-        workingMemory.insert( person );
+        ksession.insert( person );
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
         assertEquals( "Three rules should have been fired", 3, list.size() );
         assertEquals( "Rule 4 should have been fired first", "Rule 4",
@@ -85,28 +72,19 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testSalienceExpression() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_salienceExpressionRule.drl" ) ) );
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
-        }
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBase("test_salienceExpressionRule.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
         final PersonInterface person10 = new Person( "bob", "cheese", 10 );
-        workingMemory.insert( person10 );
+        ksession.insert( person10 );
 
         final PersonInterface person20 = new Person( "mic", "cheese", 20 );
-        workingMemory.insert( person20 );
+        ksession.insert( person20 );
 
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
 
         assertEquals( "Two rules should have been fired", 2, list.size() );
         assertEquals( "Rule 3 should have been fired first", "Rule 3",
@@ -117,8 +95,6 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     
     @Test
     public void testSalienceExpressionWithOr() throws Exception {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        
         String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "import " + FactA.class.getCanonicalName() + "\n"
@@ -134,16 +110,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                       + "    foo.setId( 'xxx' );\n"
                       + "end\n" + "\n";
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( text.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
-        
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
+        KieSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );        
         ksession.insert ( new Foo(null, null) );
@@ -166,6 +134,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         ksession.insert( fact3 );
         
         ksession.fireAllRules();
+        System.out.println( list );
         
         assertEquals( 3, list.size() );
         assertEquals( fact2, list.get( 0 ) );
@@ -175,7 +144,6 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testSalienceMinInteger() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
         String text = "package org.kie.test\n"
                       + "global java.util.List list\n"
                       + "rule a\n"
@@ -192,20 +160,12 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                       + "    list.add( \"c\" );\n"
                       + "end\n";
 
-        builder.addPackageFromDrl( new StringReader( text ) );
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
-        }
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
+        KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
-        workingMemory.fireAllRules();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
 
         assertEquals( "b", list.get( 2 ) );
     }
@@ -228,7 +188,6 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                       + "end\n" + "\n";
         
         KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
-
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );        
@@ -608,15 +567,19 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( 8, list.size() );
         assertEquals( "group2", list.get( 7 ) );
 
-        // clear main only the auto focus related ones should fire
-        list.clear();
-        ksession.insert( new Cheese( "cheddar" ) );
-        ksession.getAgenda().getAgendaGroup( "MAIN" ).clear();
-        ksession.fireAllRules();
-        assertEquals( 3, list.size() );
-        assertEquals( "group3", list.get( 0 ) );
-        assertEquals( "group4", list.get( 1 ) );
-        assertEquals( "group3", list.get( 2 ) );
+        if ( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+            // clear only works for Rete, as while Phreak can be eager, it'll still result in rule firing
+
+            // clear main only the auto focus related ones should fire
+            list.clear();
+            ksession.insert( new Cheese( "cheddar" ) );
+            ksession.getAgenda().getAgendaGroup( "MAIN" ).clear();
+            ksession.fireAllRules();
+            assertEquals( 3, list.size() );
+            assertEquals( "group3", list.get( 0 ) );
+            assertEquals( "group4", list.get( 1 ) );
+            assertEquals( "group3", list.get( 2 ) );
+        }
 
     }
 

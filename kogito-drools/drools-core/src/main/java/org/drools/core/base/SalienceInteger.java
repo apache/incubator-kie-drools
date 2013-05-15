@@ -56,8 +56,16 @@ public class SalienceInteger
         return this.value;
     }
 
+    public int getValue() {
+        return value;
+    }
+
     public String toString() {
         return String.valueOf( this.value );
+    }
+
+    public boolean isDynamic() {
+        return false;
     }
 
 }

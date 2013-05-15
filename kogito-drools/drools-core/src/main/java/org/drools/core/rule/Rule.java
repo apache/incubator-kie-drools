@@ -20,6 +20,7 @@ import org.drools.core.RuntimeDroolsException;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
+import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.CompiledInvoker;
@@ -75,8 +76,6 @@ public class Rule
 
     /** Salience value. */
     private Salience                 salience;
-    
-    private int                      runLevel;
 
     /** The Rule is dirty after patterns have been added */
     private boolean                  dirty;
@@ -128,6 +127,8 @@ public class Rule
     private Enabled                  enabled;
 
     private Resource                 resource;
+
+    private boolean                  eager;
     
     protected String                 activationListener;
 
@@ -138,7 +139,6 @@ public class Rule
         out.writeObject( name );
         out.writeObject( parent );
         out.writeObject( salience );
-        out.writeInt( runLevel );
         out.writeBoolean( dirty );
         out.writeObject( declarations );
         out.writeObject( lhsRoot );
@@ -169,6 +169,7 @@ public class Rule
         out.writeObject( resource );
         out.writeObject( activationListener );
         out.writeObject( consequenceMetaData );
+        out.writeBoolean( eager );
     }
 
     @SuppressWarnings("unchecked")
@@ -178,7 +179,6 @@ public class Rule
         name = (String) in.readObject();
         parent = (Rule) in.readObject();
         salience = (Salience) in.readObject();
-        runLevel = in.readInt();
 
         dirty = in.readBoolean();
         declarations = (Map<String, Declaration>) in.readObject();
@@ -205,6 +205,7 @@ public class Rule
         resource = (Resource) in.readObject();
         activationListener = ( String ) in.readObject();
         consequenceMetaData = ( ConsequenceMetaData ) in.readObject();
+        eager = in.readBoolean();
     }
 
     // ------------------------------------------------------------
@@ -231,7 +232,6 @@ public class Rule
         this.semanticallyValid = true;
         this.enabled = EnabledBoolean.ENABLED_TRUE;
         this.salience = SalienceInteger.DEFAULT_SALIENCE;
-        this.runLevel = 1;
         this.metaAttributes = new HashMap<String, Object>();
         setActivationListener( "agenda" );
 
@@ -350,14 +350,9 @@ public class Rule
      */
     public void setSalience(final Salience salience) {
         this.salience = salience;
-    }
-    
-    public int getRunLevel() {
-        return runLevel;
-    }
-
-    public void setRunLevel(int level) {
-        this.runLevel = level;
+        if ( salience instanceof MVELSalienceExpression ) {
+            this.eager = true;
+        }
     }
 
     public String getAgendaGroup() {
@@ -416,6 +411,7 @@ public class Rule
 
     public void setAutoFocus(final boolean autoFocus) {
         this.autoFocus = autoFocus;
+        this.eager = autoFocus;
     }
 
     public String getActivationGroup() {
@@ -651,6 +647,14 @@ public class Rule
 
     public void setLoadOrder(final long loadOrder) {
         this.loadOrder = loadOrder;
+    }
+
+    public boolean isEager() {
+        return eager;
+    }
+
+    public void setEager(boolean eager) {
+        this.eager = eager;
     }
 
     public String toString() {

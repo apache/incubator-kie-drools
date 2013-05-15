@@ -128,9 +128,9 @@ public class SegmentUtilities {
                         smem.getNodeMemories().add(memory.getRiaPathMemory());
                         memory.getRiaPathMemory().setSegmentMemory(smem);
                     } else if (NodeTypeEnums.isTerminalNode(sink)) {
-                        PathMemory rmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
-                        smem.getNodeMemories().add(rmem);
-                        rmem.setSegmentMemory(smem);
+                        PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
+                        smem.getNodeMemories().add(pmem);
+                        pmem.setSegmentMemory(smem);
                     }
                     smem.setTipNode(sink);
                     break;
@@ -279,15 +279,15 @@ public class SegmentUtilities {
             // RTNS and RiaNode's have their own segment, if they are the child of a split.
             if (memory.getSegmentMemory() == null) {
                 SegmentMemory childSmem = new SegmentMemory(sink);
-                PathMemory rmem;
+                PathMemory pmem;
                 if (NodeTypeEnums.isTerminalNode(sink)) {
-                    rmem = (PathMemory) memory;
+                    pmem = (PathMemory) memory;
                 } else {
-                    rmem = ((RiaNodeMemory) memory).getRiaPathMemory();
+                    pmem = ((RiaNodeMemory) memory).getRiaPathMemory();
                 }
-                rmem.getSegmentMemories()[rmem.getSegmentMemories().length - 1] = childSmem;
-                rmem.setSegmentMemory(childSmem);
-                childSmem.getPathMemories().add(rmem);
+                pmem.getSegmentMemories()[pmem.getSegmentMemories().length - 1] = childSmem;
+                pmem.setSegmentMemory(childSmem);
+                childSmem.getPathMemories().add(pmem);
 
                 childSmem.setTipNode(sink);
                 childSmem.setSinkFactory(sink);
@@ -350,14 +350,14 @@ public class SegmentUtilities {
                 // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork.
                 if (inSubNetwork((RightInputAdapterNode) sink, originalLt)) {
                     RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
-                    PathMemory rmem = (PathMemory) riaMem.getRiaPathMemory();
-                    smem.getPathMemories().add(rmem);
-                    rmem.getSegmentMemories()[smem.getPos()] = smem;
+                    PathMemory pmem = (PathMemory) riaMem.getRiaPathMemory();
+                    smem.getPathMemories().add(pmem);
+                    pmem.getSegmentMemories()[smem.getPos()] = smem;
                 }
             } else if (NodeTypeEnums.isTerminalNode(sink)) {
-                PathMemory rmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
-                smem.getPathMemories().add(rmem);
-                rmem.getSegmentMemories()[smem.getPos()] = smem;
+                PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
+                smem.getPathMemories().add(pmem);
+                pmem.getSegmentMemories()[smem.getPos()] = smem;
                 if (smem.isSegmentLinked()) {
                     // not's can cause segments to be linked, and the rules need to be notified for evaluation
                     smem.notifyRuleLinkSegment(wm);

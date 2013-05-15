@@ -100,10 +100,8 @@ public class AgendaTest extends DroolsTestCase {
                                                              0,
                                                              buildContext );
 
-        final RuleTerminalNodeLeftTuple tuple = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
-                                                                      "cheese" ),
-                                               null,
-                                               true );
+        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1, "cheese" ), null, true );
+        final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 2, "cheese" ), null, true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
@@ -165,11 +163,11 @@ public class AgendaTest extends DroolsTestCase {
         rule1.setNoLoop( false );
         rule2.setTimer( new DurationTimer( 5000 ) );
 
-        node1.assertLeftTuple( tuple,
+        node1.assertLeftTuple( tuple1,
                                context1,
                                workingMemory );
 
-        node2.assertLeftTuple( tuple,
+        node2.assertLeftTuple( tuple2,
                                context1,
                                workingMemory );
         

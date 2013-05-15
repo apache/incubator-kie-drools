@@ -25,4 +25,8 @@ public interface Salience extends Serializable {
     public int getValue(final KnowledgeHelper khelper,
                         final Rule rule,
                         final WorkingMemory workingMemory);
+
+    public int getValue();
+
+    boolean isDynamic();
 }

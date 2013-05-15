@@ -154,14 +154,14 @@ public class PhreakQueryTerminalNode {
                 stack.add(stackEntry);
             } else {
                 // parents is anther rule/query need to notify for agenda to schedule. query is reactive, triggered by right input,
-                List<PathMemory> rmems = dquery.getRuleMemories();
-                if (rmems != null) {
+                List<PathMemory> pmems = dquery.getRuleMemories();
+                if (pmems != null) {
                     // StackEntry is null, when query is called directly from java
 
                     // reactivity comes form within the query, so need to notify parent rules to evaluate the results
-                    for (int i = 0, length = rmems.size(); i < length; i++) {
-                        PathMemory rmem = rmems.get(i);
-                        rmem.doLinkRule(wm); // method already ignores is rule is activated and on agenda
+                    for (int i = 0, length = pmems.size(); i < length; i++) {
+                        PathMemory pmem = pmems.get(i);
+                        pmem.doLinkRule(wm); // method already ignores is rule is activated and on agenda
                     }
                 }
             }

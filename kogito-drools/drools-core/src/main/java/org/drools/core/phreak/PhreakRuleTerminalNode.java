@@ -1,6 +1,8 @@
 package org.drools.core.phreak;
 
+import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
@@ -10,10 +12,11 @@ import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.spi.Salience;
 
 /**
 * Created with IntelliJ IDEA.
@@ -46,45 +49,59 @@ public class PhreakRuleTerminalNode {
                               InternalWorkingMemory wm,
                               LeftTupleSets srcLeftTuples,
                               RuleExecutor executor) {
-        boolean declarativeAgendaEnabled = executor.isDeclarativeAgendaEnabled();
         InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
-        int salience = 0;
-        if( declarativeAgendaEnabled && rtnNode.getType() == NodeTypeEnums.RuleTerminalNode ) {
-            salience = rtnNode.getRule().getSalience().getValue(null, null, null); // currently all branches have the same salience for the same rule
+        RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
+
+        int salienceInt = 0;
+        Salience salience = ruleAgendaItem.getRule().getSalience();
+        if ( !salience.isDynamic() ) {
+            salienceInt = ruleAgendaItem.getRule().getSalience().getValue();
+            salience = null;
         }
 
-        RuleAgendaItem agendaItem = executor.getRuleAgendaItem();
-        LeftTupleList tupleList = executor.getLeftTupleList();
+        if ( rtnNode.getRule().getAutoFocus() && !ruleAgendaItem.getAgendaGroup().isActive() ) {
+            ((DefaultAgenda)wm.getAgenda()).setFocus(ruleAgendaItem.getAgendaGroup());
+        }
+
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            if (  rtnNode.getRule().isLockOnActive() &&
-                  leftTuple.getPropagationContext().getType() != org.kie.api.runtime.rule.PropagationContext.RULE_ADDITION ) {
 
-                PropagationContext pctx = leftTuple.getPropagationContext();
-                pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple,
-                                                                         pctx);
-                long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
-                InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
-                if (blockedByLockOnActive(rtnNode.getRule(), agenda, pctx, handleRecency, agendaGroup)) {
-                    leftTuple.clearStaged();
-                    leftTuple = next;
-                    continue;
-                }
-            }
+            doLeftTupleInsert(rtnNode, executor, agenda, ruleAgendaItem, salienceInt, salience, leftTuple, wm);
 
-            tupleList.add(leftTuple);
-            leftTuple.increaseActivationCountForEvents(); // increased here, decreased in Agenda's cancelActivation and fireActivation
-            if( !rtnNode.isFireDirect() && declarativeAgendaEnabled ) {
-                PropagationContext pctx = leftTuple.getPropagationContext();
-
-                AgendaItem item = agenda.createAgendaItem(leftTuple, salience, pctx,
-                                                          rtnNode, agendaItem, agendaItem.getAgendaGroup(), agendaItem.getRuleFlowGroup() );
-                item.setQueued(true);
-                leftTuple.setObject(item);
-                agenda.insertAndStageActivation(item);
-            }
             leftTuple.clearStaged();
             leftTuple = next;
+        }
+    }
+
+    public static void doLeftTupleInsert(TerminalNode rtnNode, RuleExecutor executor,
+                                         InternalAgenda agenda, RuleAgendaItem ruleAgendaItem, int salienceInt,
+                                         Salience salience, LeftTuple leftTuple, InternalWorkingMemory wm) {
+        PropagationContext pctx = leftTuple.getPropagationContext();
+        pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple,
+                                                                 pctx);
+
+        if ( salience != null ) {
+                salienceInt = salience.getValue(new DefaultKnowledgeHelper((AgendaItem) leftTuple, wm),
+                                                rtnNode.getRule(), wm);
+        }
+
+        RuleTerminalNodeLeftTuple rtnLeftTuple = (RuleTerminalNodeLeftTuple) leftTuple;
+        rtnLeftTuple.init(agenda.getNextActivationCounter(), salienceInt, pctx, ruleAgendaItem, ruleAgendaItem.getAgendaGroup(), ruleAgendaItem.getRuleFlowGroup() );
+        rtnLeftTuple.setObject( rtnLeftTuple );
+
+        if (  rtnNode.getRule().isLockOnActive() &&
+              leftTuple.getPropagationContext().getType() != org.kie.api.runtime.rule.PropagationContext.RULE_ADDITION ) {
+            long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
+            InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
+            if (blockedByLockOnActive(rtnNode.getRule(), agenda, pctx, handleRecency, agendaGroup)) {
+                return;
+            }
+        }
+
+        executor.addLeftTuple(leftTuple);
+        leftTuple.increaseActivationCountForEvents(); // increased here, decreased in Agenda's cancelActivation and fireActivation
+        if( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled() ) {
+            agenda.insertAndStageActivation(rtnLeftTuple);
         }
     }
 
@@ -92,44 +109,78 @@ public class PhreakRuleTerminalNode {
                               InternalWorkingMemory wm,
                               LeftTupleSets srcLeftTuples,
                               RuleExecutor executor) {
-        boolean declarativeAgendaEnabled = executor.isDeclarativeAgendaEnabled();
         InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
 
-        LeftTupleList tupleList = executor.getLeftTupleList();
+        RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
+        if ( rtnNode.getRule().getAutoFocus() && !ruleAgendaItem.getAgendaGroup().isActive() ) {
+            ((DefaultAgenda)wm.getAgenda()).setFocus(ruleAgendaItem.getAgendaGroup());
+        }
+
+        int salienceInt = 0;
+        Salience salience = ruleAgendaItem.getRule().getSalience();
+        if ( !salience.isDynamic() ) {
+            salienceInt = ruleAgendaItem.getRule().getSalience().getValue();
+        } else {
+            salience = null;
+        }
+
+        //Salience salienceInt = ruleAgendaItem.getRule().getSalience();
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            boolean reAdd = true;
-            AgendaItem item = null;
-            if( declarativeAgendaEnabled && leftTuple.getObject() != null ) {
-               item = ( AgendaItem )leftTuple.getObject();
-               if ( item.getBlockers() != null && !item.getBlockers().isEmpty() ) {
-                   reAdd = false; // declarativeAgenda still blocking LeftTuple, so don't add back ot list
-               }
-            }
-            if ( reAdd && leftTuple.getMemory() == null ) {
-                if (  rtnNode.getRule().isLockOnActive() &&
-                      leftTuple.getPropagationContext().getType() != org.kie.api.runtime.rule.PropagationContext.RULE_ADDITION ) {
 
-                    PropagationContext pctx = leftTuple.getPropagationContext();
-                    pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple,
-                                                                             pctx);
-                    long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
-                    InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
-                    if (blockedByLockOnActive(rtnNode.getRule(), agenda, pctx, handleRecency, agendaGroup)) {
-                        leftTuple.clearStaged();
-                        leftTuple = next;
-                        continue;
-                    }
-                }
+            doLeftTupleUpdate(rtnNode, executor, agenda, salienceInt, salience, leftTuple, wm);
 
-                tupleList.add(leftTuple);
-            }
-
-            if( !rtnNode.isFireDirect() && declarativeAgendaEnabled) {
-                agenda.modifyActivation(item, item.isQueued());
-            }
             leftTuple.clearStaged();
             leftTuple = next;
+        }
+    }
+
+    public static void doLeftTupleUpdate(TerminalNode rtnNode, RuleExecutor executor,
+                                         InternalAgenda agenda, int salienceInt, Salience salience,
+                                         LeftTuple leftTuple, InternalWorkingMemory wm) {
+        PropagationContext pctx = leftTuple.getPropagationContext();
+        pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple,
+                                                                 pctx);
+
+        boolean blocked = false;
+        RuleTerminalNodeLeftTuple rtnLeftTuple = (RuleTerminalNodeLeftTuple) leftTuple;
+        if( executor.isDeclarativeAgendaEnabled() ) {
+           if ( rtnLeftTuple.getBlockers() != null && !rtnLeftTuple.getBlockers().isEmpty() ) {
+               blocked = true; // declarativeAgenda still blocking LeftTuple, so don't add back ot list
+           }
+        }
+
+        if ( salience != null ) {
+            salienceInt = salience.getValue( new DefaultKnowledgeHelper(rtnLeftTuple, wm),
+                                             rtnNode.getRule(), wm);
+        }
+        if ( !blocked ) {
+            boolean addToExector = true;
+            if (  rtnNode.getRule().isLockOnActive() &&
+                  pctx.getType() != org.kie.api.runtime.rule.PropagationContext.RULE_ADDITION ) {
+
+                long handleRecency = ((InternalFactHandle) pctx.getFactHandle()).getRecency();
+                InternalAgendaGroup agendaGroup = executor.getRuleAgendaItem().getAgendaGroup();
+                if (blockedByLockOnActive(rtnNode.getRule(), agenda, pctx, handleRecency, agendaGroup)) {
+                    addToExector = false;
+                }
+            }
+            if ( addToExector ) {
+                if (rtnLeftTuple.isQueued() ) {
+                    executor.updateLeftTuple(rtnLeftTuple, salienceInt, pctx);
+                } else {
+                    rtnLeftTuple.update(salienceInt, pctx);
+                    executor.addLeftTuple(leftTuple);
+                }
+            }
+
+        } else {
+            // LeftTuple is blocked, and thus not queued, so just update it's values
+            rtnLeftTuple.update(salienceInt, pctx);
+        }
+
+        if( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled()) {
+            agenda.modifyActivation(rtnLeftTuple, rtnLeftTuple.isQueued());
         }
     }
 
@@ -137,13 +188,13 @@ public class PhreakRuleTerminalNode {
                               InternalWorkingMemory wm,
                               LeftTupleSets srcLeftTuples,
                               RuleExecutor executor) {
-        LeftTupleList tupleList = executor.getLeftTupleList();
+
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
             PropagationContext pctx = leftTuple.getPropagationContext();
             if ( leftTuple.getMemory() != null && !(pctx.getType() == PropagationContext.EXPIRATION && pctx.getFactHandleOrigin() != null ) ) {
                 // Expiration propagations should not be removed from the list, as they still need to fire
-                tupleList.remove(leftTuple);
+                executor.removeLeftTuple(leftTuple);
             }
             rtnNode.retractLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);
             leftTuple.clearStaged();
@@ -152,7 +203,7 @@ public class PhreakRuleTerminalNode {
         }
     }
 
-    private boolean blockedByLockOnActive(Rule rule,
+    private static boolean blockedByLockOnActive(Rule rule,
                                           InternalAgenda agenda,
                                           PropagationContext pctx,
                                           long handleRecency,

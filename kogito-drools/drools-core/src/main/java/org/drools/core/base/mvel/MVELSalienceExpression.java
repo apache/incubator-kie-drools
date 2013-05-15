@@ -91,7 +91,15 @@ public class MVELSalienceExpression
         return ((Number) MVEL.executeExpression( this.expr,
                                                  factory )).intValue();
     }
-    
+
+    public int getValue() {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean isDynamic() {
+        return true;
+    }
+
     public String toString() {
         return this.unit.getExpression();
     }

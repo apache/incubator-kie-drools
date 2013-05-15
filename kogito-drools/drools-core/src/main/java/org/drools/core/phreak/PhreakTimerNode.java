@@ -246,7 +246,7 @@ public class PhreakTimerNode {
                 }
             }
 
-            pmem.queueRuleAgendaItem();
+            pmem.queueRuleAgendaItem(timerJobCtx.getWorkingMemory());
         }
     }
 

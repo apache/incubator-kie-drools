@@ -281,14 +281,19 @@ public class IndexingTest extends CommonTestMethodBase {
 
         System.out.println( "inserted: " + map.get("inserted"));
         System.out.println( "deleted: " + map.get("deleted"));
-        System.out.println( "inserted: " + map.get("updated"));
+        System.out.println( "updated: " + map.get("updated"));
 
         Map<String, InternalFactHandle> peeps = new HashMap<String, InternalFactHandle>();
 
         Person p = null;
         InternalFactHandle fh = null;
 
-        int max = 100;
+        int max = 3;
+
+        // 1 matched, prior to any insertions
+        assertEquals( 1, map.get("inserted").intValue() );
+        assertEquals( 0, map.get("deleted").intValue() );
+        assertEquals( 0, map.get("updated").intValue() );
 
         // x0 is the blocker
         for ( int i = 0; i < max; i++ ) {
@@ -298,6 +303,11 @@ public class IndexingTest extends CommonTestMethodBase {
             peeps.put(p.getName(), fh);
         }
 
+        // insertions case 1 deletion
+        assertEquals( 1, map.get("inserted").intValue() );
+        assertEquals( 1, map.get("deleted").intValue() );
+        assertEquals( 0, map.get("updated").intValue() );
+
         // each x is blocker in turn up to x99
         for ( int i = 0; i < (max-1); i++ ) {
             fh = peeps.get("x" + i);
@@ -305,8 +315,13 @@ public class IndexingTest extends CommonTestMethodBase {
             p.setAge( 90 );
             wm.update( fh, p );
             wm.fireAllRules();
-            assertEquals( "i=" + i, 1, map.get("inserted").intValue() );
+            assertEquals( "i=" + i, 1, map.get("inserted").intValue() ); // make sure this doesn't change
         }
+
+        // no change
+        assertEquals( 1, map.get("inserted").intValue() );
+        assertEquals( 1, map.get("deleted").intValue() );
+        assertEquals( 0, map.get("updated").intValue() );
 
         // x99 is still the blocker, everything else is just added
         for ( int i = 0; i < (max-1); i++ ) {
@@ -315,8 +330,13 @@ public class IndexingTest extends CommonTestMethodBase {
             p.setAge( 102 );
             wm.update( fh, p );
             wm.fireAllRules();
-            assertEquals( "i=" + i, 1, map.get("inserted").intValue() );
+            assertEquals( "i=" + i, 1, map.get("inserted").intValue() ); // make sure this doesn't change
         }
+
+        // no change
+        assertEquals( 1, map.get("inserted").intValue() );
+        assertEquals( 1, map.get("deleted").intValue() );
+        assertEquals( 0, map.get("updated").intValue() );
 
         // x99 is still the blocker
         for ( int i = (max-2); i >= 0; i-- ) {
@@ -325,10 +345,10 @@ public class IndexingTest extends CommonTestMethodBase {
             p.setAge( 90 );
             wm.update( fh, p );
             wm.fireAllRules();
-            assertEquals( "i=" + i, 1, map.get("inserted").intValue() );
+            assertEquals( "i=" + i, 1, map.get("inserted").intValue() ); // make sure this doesn't change
         }
 
-        // move x99, should no longer be a blocker
+        // move x99, should no longer be a blocker, now it can increase
         fh = peeps.get("x" + (max-1));
         p = (Person) fh.getObject();
         p.setAge( 90 );

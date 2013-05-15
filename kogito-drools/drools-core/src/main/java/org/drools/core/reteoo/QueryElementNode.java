@@ -240,7 +240,7 @@ public class QueryElementNode extends LeftTupleSource
     public DroolsQuery createDroolsQuery(LeftTuple leftTuple,
                                          InternalFactHandle handle,
                                          StackEntry stackEntry,
-                                         final List<PathMemory> rmems,
+                                         final List<PathMemory> pmems,
                                          LeftTupleSets trgLeftTuples,
                                          LeftTupleSink sink,
                                          InternalWorkingMemory workingMemory) {
@@ -304,7 +304,7 @@ public class QueryElementNode extends LeftTupleSource
                                                    collector,
                                                    executeAsOpenQuery,
                                                    stackEntry,
-                                                   rmems,
+                                                   pmems,
                                                    trgLeftTuples,
                                                    sink);
 
