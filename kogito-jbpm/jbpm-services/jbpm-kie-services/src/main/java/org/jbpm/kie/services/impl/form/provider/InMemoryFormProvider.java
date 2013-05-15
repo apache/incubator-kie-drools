@@ -31,13 +31,15 @@ public class InMemoryFormProvider implements FormProvider {
     @Override
     public InputStream provideTaskForm(Task task, ProcessDesc process) {
         InputStream template = null;
-        String taskName = task.getNames().get(0).getText();
-        if (process.getForms().containsKey(taskName)) {
-            template = new ByteArrayInputStream(process.getForms().get(taskName).getBytes());
-        } else if (process.getForms().containsKey(taskName.replace(" ", "")+ "-taskform")) {
-            template = new ByteArrayInputStream(process.getForms().get(taskName.replace(" ", "") + "-taskform").getBytes());
-        } else if (process.getForms().containsKey(DEFAULT_TASK)) {
-            template = new ByteArrayInputStream(process.getForms().get(DEFAULT_TASK).getBytes());
+        if(task != null && process != null){
+            String taskName = task.getNames().get(0).getText();
+            if (process.getForms().containsKey(taskName)) {
+                template = new ByteArrayInputStream(process.getForms().get(taskName).getBytes());
+            } else if (process.getForms().containsKey(taskName.replace(" ", "")+ "-taskform")) {
+                template = new ByteArrayInputStream(process.getForms().get(taskName.replace(" ", "") + "-taskform").getBytes());
+            } else if (process.getForms().containsKey(DEFAULT_TASK)) {
+                template = new ByteArrayInputStream(process.getForms().get(DEFAULT_TASK).getBytes());
+            }
         }
         return template;
     }

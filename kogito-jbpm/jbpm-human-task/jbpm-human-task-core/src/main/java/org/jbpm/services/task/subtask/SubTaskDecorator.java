@@ -175,6 +175,9 @@ public class SubTaskDecorator implements TaskInstanceService {
     
     private void checkSubTaskStrategies(long taskId, String userId, Map<String, Object> data){
         Task task = queryService.getTaskInstanceById(taskId);
+        if(task == null){
+            return;
+        }
         Task parentTask = null;
         if (task.getTaskData().getParentId() != -1){
             parentTask = pm.find(TaskImpl.class, task.getTaskData().getParentId());

@@ -52,6 +52,9 @@ public class CompleteTaskCommand extends TaskCommand<Void> {
         
         TaskContext context = (TaskContext) cntxt;
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
+        if(task == null){
+            throw new IllegalStateException("There is no Task with the provided Id = "+taskId);
+        }
         User user = context.getTaskIdentityService().getUserById(userId);
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskCompletedEvent>() {}).fire(task);
         boolean operationAllowed = (task.getTaskData().getActualOwner() != null && task.getTaskData().getActualOwner().equals(user));

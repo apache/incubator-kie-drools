@@ -219,7 +219,7 @@ public class DeadlinesDecorator implements TaskInstanceService {
 
     private void clearDeadlines(final long taskId, boolean removeStart, boolean removeEnd) {
         InternalTask task = (InternalTask) queryService.getTaskInstanceById(taskId);
-        if (task.getDeadlines() == null) {
+        if (task == null || task.getDeadlines() == null) {
             return;
         }
 
