@@ -244,29 +244,49 @@ public class SolutionDescriptor {
         return facts;
     }
 
-    public List<Object> getPlanningEntityList(Solution solution) {
-        List<Object> planningEntityList = new ArrayList<Object>();
+    /**
+     * @param solution never null
+     * @return >= 0
+     */
+    public int getEntityListSize(Solution solution) {
+        int size = 0;
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
             if (entity != null) {
-                planningEntityList.add(entity);
+                size++;
             }
         }
         for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
             Collection<?> entityCollection = extractPlanningEntityCollection(
                     entityCollectionPropertyAccessor, solution);
-            planningEntityList.addAll(entityCollection);
+            size += entityCollection.size();
         }
-        return planningEntityList;
+        return size;
     }
 
-    public List<Object> getPlanningEntityListByPlanningEntityClass(Solution solution, Class<?> planningEntityClass) {
-        List<Object> planningEntityList = new ArrayList<Object>();
+    public List<Object> getEntityList(Solution solution) {
+        List<Object> entityList = new ArrayList<Object>();
+        for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
+            Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
+            if (entity != null) {
+                entityList.add(entity);
+            }
+        }
+        for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
+            Collection<?> entityCollection = extractPlanningEntityCollection(
+                    entityCollectionPropertyAccessor, solution);
+            entityList.addAll(entityCollection);
+        }
+        return entityList;
+    }
+
+    public List<Object> getEntityListByPlanningEntityClass(Solution solution, Class<?> planningEntityClass) {
+        List<Object> entityList = new ArrayList<Object>();
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
             if (entityPropertyAccessor.getPropertyType().isAssignableFrom(planningEntityClass)) {
                 Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
                 if (entity != null && planningEntityClass.isInstance(entity)) {
-                    planningEntityList.add(entity);
+                    entityList.add(entity);
                 }
             }
         }
@@ -276,19 +296,11 @@ public class SolutionDescriptor {
                     entityCollectionPropertyAccessor, solution);
             for (Object entity : entityCollection) {
                 if (planningEntityClass.isInstance(entity)) {
-                    planningEntityList.add(entity);
+                    entityList.add(entity);
                 }
             }
         }
-        return planningEntityList;
-    }
-
-    /**
-     * @param solution never null
-     * @return >= 0
-     */
-    public int getPlanningEntityCount(Solution solution) {
-        return getPlanningEntityList(solution).size();
+        return entityList;
     }
 
     /**

@@ -91,7 +91,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         protected SolutionG cloneSolution(SolutionG originalSolution) {
             unprocessedQueue = new LinkedList<Unprocessed>();
             originalToCloneMap = new IdentityHashMap<Object, Object>(
-                    solutionDescriptor.getPlanningEntityCount(originalSolution) + 1);
+                    solutionDescriptor.getEntityListSize(originalSolution) + 1);
             SolutionG cloneSolution = clone(originalSolution);
             processQueue();
             validateCloneSolution(originalSolution, cloneSolution);

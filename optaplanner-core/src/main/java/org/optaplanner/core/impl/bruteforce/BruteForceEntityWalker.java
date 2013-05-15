@@ -43,7 +43,7 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
     }
 
     public void phaseStarted(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
-        List<Object> workingPlanningEntityList = bruteForceSolverPhaseScope.getWorkingPlanningEntityList();
+        List<Object> workingPlanningEntityList = bruteForceSolverPhaseScope.getWorkingEntityList();
         planningVariableWalkerList = new ArrayList<PlanningVariableWalker>(workingPlanningEntityList.size());
         for (Object planningEntity : workingPlanningEntityList) {
             PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(

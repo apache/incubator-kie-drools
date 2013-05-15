@@ -53,7 +53,7 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
     }
 
     private void initSelectedPlanningEntityList(AbstractSolverPhaseScope phaseScope) {
-        List<Object> workingPlanningEntityList = phaseScope.getWorkingPlanningEntityList();
+        List<Object> workingPlanningEntityList = phaseScope.getWorkingEntityList();
         for (Iterator<Object> it = workingPlanningEntityList.iterator(); it.hasNext(); ) {
             Object planningEntity = it.next();
             if (!planningEntityDescriptor.getPlanningEntityClass().isInstance(planningEntity)) {

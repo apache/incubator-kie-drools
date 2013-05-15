@@ -189,7 +189,7 @@ public class PlanningEntityDescriptor {
     }
 
     public List<Object> extractEntities(Solution solution) {
-        return solutionDescriptor.getPlanningEntityListByPlanningEntityClass(solution, planningEntityClass);
+        return solutionDescriptor.getEntityListByPlanningEntityClass(solution, planningEntityClass);
     }
 
     public long getProblemScale(Solution solution, Object planningEntity) {

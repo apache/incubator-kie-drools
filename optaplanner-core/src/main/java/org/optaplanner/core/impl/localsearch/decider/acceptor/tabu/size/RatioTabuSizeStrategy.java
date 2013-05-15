@@ -31,7 +31,7 @@ public class RatioTabuSizeStrategy implements TabuSizeStrategy {
     }
 
     public int determineTabuSize(LocalSearchStepScope stepScope) {
-        int planningEntityListSize = stepScope.getPhaseScope().getWorkingPlanningEntityList().size();
+        int planningEntityListSize = stepScope.getPhaseScope().getWorkingEntityListSize();
         return (int) Math.round(planningEntityListSize * tabuRatio);
     }
 

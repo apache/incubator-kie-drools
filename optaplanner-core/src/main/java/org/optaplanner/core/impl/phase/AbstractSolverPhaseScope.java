@@ -109,8 +109,12 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getWorkingSolution();
     }
 
-    public List<Object> getWorkingPlanningEntityList() {
-        return solverScope.getWorkingPlanningEntityList();
+    public int getWorkingEntityListSize() {
+        return solverScope.getWorkingEntityListSize();
+    }
+
+    public List<Object> getWorkingEntityList() {
+        return solverScope.getWorkingEntityList();
     }
 
     public Score calculateScore() {

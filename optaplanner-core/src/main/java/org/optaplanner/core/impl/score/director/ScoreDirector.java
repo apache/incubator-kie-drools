@@ -98,11 +98,15 @@ public interface ScoreDirector {
 
     void afterProblemFactRemoved(Object problemFact);
 
+    /**
+     * @return >= 0
+     */
+    int getWorkingEntityListSize();
 
     /**
      * @return never null: an empty list if there are none
      */
-    List<Object> getWorkingPlanningEntityList();
+    List<Object> getWorkingEntityList();
 
     int countWorkingSolutionUninitializedVariables();
 

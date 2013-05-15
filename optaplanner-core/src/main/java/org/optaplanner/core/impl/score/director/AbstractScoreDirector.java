@@ -109,7 +109,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     private void resetTrailingEntityMap() {
         if (hasChainedVariables) {
-            List<Object> entityList = getSolutionDescriptor().getPlanningEntityList(workingSolution);
+            List<Object> entityList = getSolutionDescriptor().getEntityList(workingSolution);
             for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 entry.setValue(new IdentityHashMap<Object, Set<Object>>(entityList.size()));
@@ -226,8 +226,12 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         resetTrailingEntityMap(); // TODO do not nuke it
     }
 
-    public List<Object> getWorkingPlanningEntityList() {
-        return getSolutionDescriptor().getPlanningEntityList(workingSolution);
+    public int getWorkingEntityListSize() {
+        return getSolutionDescriptor().getEntityListSize(workingSolution);
+    }
+
+    public List<Object> getWorkingEntityList() {
+        return getSolutionDescriptor().getEntityList(workingSolution);
     }
 
     public int countWorkingSolutionUninitializedVariables() {

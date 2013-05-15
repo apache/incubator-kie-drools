@@ -85,8 +85,12 @@ public class DefaultSolverScope {
         return scoreDirector.getWorkingSolution();
     }
 
-    public List<Object> getWorkingPlanningEntityList() {
-        return scoreDirector.getWorkingPlanningEntityList();
+    public int getWorkingEntityListSize() {
+        return scoreDirector.getWorkingEntityListSize();
+    }
+
+    public List<Object> getWorkingEntityList() {
+        return scoreDirector.getWorkingEntityList();
     }
 
     public Score calculateScore() {
