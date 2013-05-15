@@ -219,4 +219,12 @@ public class JPAWorkItemManager implements WorkItemManager {
     public void clear() {
         clearWorkItems();
     }
+    
+    public void signalEvent(String type, Object event) { 
+        this.kruntime.signalEvent(type, event);
+    } 
+    
+    public void signalEvent(String type, Object event, long processInstanceId) { 
+        this.kruntime.signalEvent(type, event, processInstanceId);
+    }
 }

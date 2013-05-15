@@ -183,6 +183,18 @@ public class CommandBasedStatefulKnowledgeSession
                 public void internalExecuteWorkItem(WorkItem workItem) {
                     throw new UnsupportedOperationException();
                 }
+
+                @Override
+                public void signalEvent(String type, Object event) {
+                    SignalEventCommand command = new SignalEventCommand(type, event);
+                    commandService.execute(command);
+                }
+
+                @Override
+                public void signalEvent(String type, Object event, long processInstanceId) {
+                    SignalEventCommand command = new SignalEventCommand(processInstanceId, type, event);
+                    commandService.execute(command);
+                }
             };
         }
         return workItemManager;
