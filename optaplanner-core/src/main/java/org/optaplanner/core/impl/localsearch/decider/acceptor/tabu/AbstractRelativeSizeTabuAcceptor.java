@@ -20,8 +20,8 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 
 public abstract class AbstractRelativeSizeTabuAcceptor extends AbstractTabuAcceptor {
 
-    protected double tabuRatio = -1;
-    protected double fadingTabuRatio = 0;
+    protected double tabuRatio = Double.NaN;
+    protected double fadingTabuRatio = 0.0;
 
     public void setTabuSizeToEntityCountRatio(double ratio) {
         this.tabuRatio = ratio;
@@ -32,32 +32,33 @@ public abstract class AbstractRelativeSizeTabuAcceptor extends AbstractTabuAccep
     }
     
     protected void validate() {
-        if (tabuRatio < 0 || tabuRatio > 1) {
+        if (tabuRatio < 0.0 || tabuRatio > 1.0) {
             throw new IllegalArgumentException("The tabuRatio (" + tabuRatio
-                    + ") must fall into <0, 1> range.");
+                    + ") must be between 0.0 and 1.0.");
         }
         if (fadingTabuRatio < 0 || fadingTabuRatio > 1) {
             throw new IllegalArgumentException("The fadingTabuRatio (" + fadingTabuRatio
-                    + ") must fall into <0, 1> range.");
+                    + ") must be between 0.0 and 1.0.");
         }
-        if (tabuRatio + fadingTabuRatio == 0) {
-            throw new IllegalArgumentException("The sum of tabuSize and fadingTabuSize should be at least 1.");
+        if (tabuRatio + fadingTabuRatio <= 0.0) {
+            throw new IllegalArgumentException("The sum of tabuRatio (" + tabuRatio
+                    + ") and fadingTabuRatio (" + fadingTabuRatio + ") should be higher than 0.0.");
         }
     }
 
     @Override
-    protected int calculateActualMaximumSize(LocalSearchSolverPhaseScope scope) {
-        return calculateFadingTabuSize(scope) + calculateRegularTabuSize(scope);
+    protected int calculateActualMaximumSize(LocalSearchSolverPhaseScope phaseScope) {
+        return calculateFadingTabuSize(phaseScope) + calculateRegularTabuSize(phaseScope);
     }
     
     @Override
-    protected int calculateFadingTabuSize(LocalSearchSolverPhaseScope scope) {
-        return (int)Math.round(scope.getWorkingPlanningEntityList().size() * fadingTabuRatio);
+    protected int calculateFadingTabuSize(LocalSearchSolverPhaseScope phaseScope) {
+        return (int) Math.round(phaseScope.getWorkingPlanningEntityList().size() * fadingTabuRatio);
     }
 
     @Override
-    protected int calculateRegularTabuSize(LocalSearchSolverPhaseScope scope) {
-        return (int)Math.round(scope.getWorkingPlanningEntityList().size() * tabuRatio);
+    protected int calculateRegularTabuSize(LocalSearchSolverPhaseScope phaseScope) {
+        return (int) Math.round(phaseScope.getWorkingPlanningEntityList().size() * tabuRatio);
     }
 
 }

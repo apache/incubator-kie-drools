@@ -46,10 +46,10 @@ public class AcceptorConfig {
     @XStreamImplicit(itemFieldName = "acceptorType")
     private List<AcceptorType> acceptorTypeList = null;
 
-    protected Double planningEntityTabuRatio = null;
-    protected Double fadingPlanningEntityTabuRatio = null;
     protected Integer planningEntityTabuSize = null;
+    protected Double planningEntityTabuRatio = null;
     protected Integer fadingPlanningEntityTabuSize = null;
+    protected Double fadingPlanningEntityTabuRatio = null;
     protected Integer planningValueTabuSize = null;
     protected Integer fadingPlanningValueTabuSize = null;
     protected Integer moveTabuSize = null;
@@ -82,14 +82,6 @@ public class AcceptorConfig {
         this.acceptorTypeList = acceptorTypeList;
     }
 
-    public Double getPlanningEntityTabuRatio() {
-        return planningEntityTabuRatio;
-    }
-
-    public void setPlanningEntityTabuRatio(Double planningEntityTabuRatio) {
-        this.planningEntityTabuRatio = planningEntityTabuRatio;
-    }
-
     public Integer getPlanningEntityTabuSize() {
         return planningEntityTabuSize;
     }
@@ -98,12 +90,12 @@ public class AcceptorConfig {
         this.planningEntityTabuSize = planningEntityTabuSize;
     }
 
-    public Double getFadingPlanningEntityTabuRatio() {
-        return fadingPlanningEntityTabuRatio;
+    public Double getPlanningEntityTabuRatio() {
+        return planningEntityTabuRatio;
     }
 
-    public void setFadingPlanningEntityTabuRatio(Double fadingPlanningEntityTabuRatio) {
-        this.fadingPlanningEntityTabuRatio = fadingPlanningEntityTabuRatio;
+    public void setPlanningEntityTabuRatio(Double planningEntityTabuRatio) {
+        this.planningEntityTabuRatio = planningEntityTabuRatio;
     }
 
     public Integer getFadingPlanningEntityTabuSize() {
@@ -112,6 +104,14 @@ public class AcceptorConfig {
 
     public void setFadingPlanningEntityTabuSize(Integer fadingPlanningEntityTabuSize) {
         this.fadingPlanningEntityTabuSize = fadingPlanningEntityTabuSize;
+    }
+
+    public Double getFadingPlanningEntityTabuRatio() {
+        return fadingPlanningEntityTabuRatio;
+    }
+
+    public void setFadingPlanningEntityTabuRatio(Double fadingPlanningEntityTabuRatio) {
+        this.fadingPlanningEntityTabuRatio = fadingPlanningEntityTabuRatio;
     }
 
     public Integer getPlanningValueTabuSize() {

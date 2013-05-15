@@ -40,23 +40,24 @@ public abstract class AbstractAbsoluteSizeTabuAcceptor extends AbstractTabuAccep
             throw new IllegalArgumentException("The fadingTabuSize (" + fadingTabuSize
                     + ") cannot be negative.");
         }
-        if (tabuSize + fadingTabuSize == 0) {
-            throw new IllegalArgumentException("The sum of tabuSize and fadingTabuSize should be at least 1.");
+        if (tabuSize + fadingTabuSize < 1) {
+            throw new IllegalArgumentException("The sum of tabuSize (" + tabuSize
+                    + ") and fadingTabuSize (" + fadingTabuSize + ") should be at least 1.");
         }
     }
 
     @Override
-    protected int calculateActualMaximumSize(LocalSearchSolverPhaseScope scope) {
-        return calculateFadingTabuSize(scope) + calculateRegularTabuSize(scope);
+    protected int calculateActualMaximumSize(LocalSearchSolverPhaseScope phaseScope) {
+        return calculateFadingTabuSize(phaseScope) + calculateRegularTabuSize(phaseScope);
     }
     
     @Override
-    protected int calculateFadingTabuSize(LocalSearchSolverPhaseScope scope) {
+    protected int calculateFadingTabuSize(LocalSearchSolverPhaseScope phaseScope) {
         return fadingTabuSize;
     }
 
     @Override
-    protected int calculateRegularTabuSize(LocalSearchSolverPhaseScope scope) {
+    protected int calculateRegularTabuSize(LocalSearchSolverPhaseScope phaseScope) {
         return tabuSize;
     }
 
