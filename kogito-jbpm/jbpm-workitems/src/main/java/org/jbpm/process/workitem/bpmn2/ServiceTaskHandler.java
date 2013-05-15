@@ -32,7 +32,7 @@ import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.core.Bpmn2Import;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -47,7 +47,7 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
     
     private ConcurrentHashMap<String, Client> clients = new ConcurrentHashMap<String, Client>();
     private JaxWsDynamicClientFactory dcf;
-    private StatefulKnowledgeSession ksession;
+    private KieSession ksession;
     private int asyncTimeout = 10;
     private ClassLoader classLoader;
 
@@ -63,19 +63,19 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
         this.classLoader = this.getClass().getClassLoader();
     }
     
-    public ServiceTaskHandler(StatefulKnowledgeSession ksession) {
+    public ServiceTaskHandler(KieSession ksession) {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
         this.classLoader = this.getClass().getClassLoader();
     }
     
-    public ServiceTaskHandler(StatefulKnowledgeSession ksession, ClassLoader classloader) {
+    public ServiceTaskHandler(KieSession ksession, ClassLoader classloader) {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
         this.classLoader = classloader;
     }
     
-    public ServiceTaskHandler(StatefulKnowledgeSession ksession, int timeout) {
+    public ServiceTaskHandler(KieSession ksession, int timeout) {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
         this.asyncTimeout = timeout;
