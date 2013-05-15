@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.move.Move;
 
-public class MoveTabuAcceptor extends AbstractAbsoluteSizeTabuAcceptor {
+public class MoveTabuAcceptor extends AbstractTabuAcceptor {
 
     protected boolean useUndoMoveAsTabuMove = true;
 

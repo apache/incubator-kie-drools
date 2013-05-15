@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.sizer.TabuSizer;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -35,22 +36,25 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  */
 public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
+    protected TabuSizer tabuSizer = null;
+    protected TabuSizer fadingTabuSizer = null;
     protected boolean aspirationEnabled = true;
 
     protected boolean assertTabuHashCodeCorrectness = false;
 
     protected Map<Object, Integer> tabuToStepIndexMap;
     protected List<Object> tabuSequenceList;
-    
-    protected abstract void validate();
 
-    protected int calculateActualMaximumSize(LocalSearchSolverPhaseScope phaseScope) {
-        return calculateFadingTabuSize(phaseScope) + calculateRegularTabuSize(phaseScope);
+    protected int workingTabuSize = -1;
+    protected int workingFadingTabuSize = -1;
+
+    public void setTabuSizer(TabuSizer tabuSizer) {
+        this.tabuSizer = tabuSizer;
     }
-    
-    protected abstract int calculateFadingTabuSize(LocalSearchSolverPhaseScope phaseScope);
 
-    protected abstract int calculateRegularTabuSize(LocalSearchSolverPhaseScope phaseScope);
+    public void setFadingTabuSizer(TabuSizer fadingTabuSizer) {
+        this.fadingTabuSizer = fadingTabuSizer;
+    }
 
     public void setAspirationEnabled(boolean aspirationEnabled) {
         this.aspirationEnabled = aspirationEnabled;
@@ -67,8 +71,12 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
-        validate();
-        tabuToStepIndexMap = new HashMap<Object, Integer>(calculateActualMaximumSize(phaseScope));
+        LocalSearchStepScope lastCompletedStepScope = phaseScope.getLastCompletedStepScope();
+        // Tabu sizes do not change during stepStarted(), because they must be in sync with the tabuSequenceList.size()
+        workingTabuSize = tabuSizer == null ? 0 : tabuSizer.determineTabuSize(lastCompletedStepScope);
+        workingFadingTabuSize = fadingTabuSizer == null ? 0 : fadingTabuSizer.determineTabuSize(lastCompletedStepScope);
+        int totalTabuListSize = workingTabuSize + workingFadingTabuSize; // is at least 1
+        tabuToStepIndexMap = new HashMap<Object, Integer>(totalTabuListSize);
         tabuSequenceList = new LinkedList<Object>();
     }
 
@@ -77,9 +85,81 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         super.phaseEnded(phaseScope);
         tabuToStepIndexMap = null;
         tabuSequenceList = null;
+        workingTabuSize = -1;
+        workingFadingTabuSize = -1;
+    }
+
+    @Override
+    public void stepEnded(LocalSearchStepScope stepScope) {
+        super.stepEnded(stepScope);
+        // Tabu sizes do not change during stepStarted(), because they must be in sync with the tabuSequenceList.size()
+        workingTabuSize = tabuSizer == null ? 0 : tabuSizer.determineTabuSize(stepScope);
+        workingFadingTabuSize = fadingTabuSizer == null ? 0 : fadingTabuSizer.determineTabuSize(stepScope);
+        adjustTabuList(stepScope.getStepIndex(), findNewTabu(stepScope));
+    }
+
+    protected void adjustTabuList(int tabuStepIndex, Collection<? extends Object> tabus) {
+        int totalTabuListSize = workingTabuSize + workingFadingTabuSize; // is at least 1
+        // Remove the oldest tabu(s)
+        for (Iterator<Object> it = tabuSequenceList.iterator(); it.hasNext();) {
+            Object oldTabu = it.next();
+            Integer oldTabuStepIndexInteger = tabuToStepIndexMap.get(oldTabu);
+            if (oldTabuStepIndexInteger == null) {
+                throw new IllegalStateException("HashCode violation: the hashCode of tabu (" + oldTabu
+                        + ") probably changed since it was inserted in the tabu Map or Set.");
+            }
+            int oldTabuStepCount = tabuStepIndex - oldTabuStepIndexInteger; // at least 1
+            if (oldTabuStepCount < totalTabuListSize) {
+                break;
+            }
+            it.remove();
+            tabuToStepIndexMap.remove(oldTabu);
+        }
+        // Add the new tabu(s)
+        for (Object tabu : tabus) {
+            // Push tabu to the end of the line
+            if (tabuToStepIndexMap.containsKey(tabu)) {
+                tabuToStepIndexMap.remove(tabu);
+                tabuSequenceList.remove(tabu);
+            }
+            tabuToStepIndexMap.put(tabu, tabuStepIndex);
+            tabuSequenceList.add(tabu);
+        }
     }
 
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
+        int maximumTabuStepIndex = locateMaximumTabStepIndex(moveScope);
+        if (maximumTabuStepIndex < 0) {
+            // The move isn't tabu at all
+            return true;
+        }
+        if (aspirationEnabled) {
+            // Doesn't use the deciderScoreComparator because shifting penalties don't apply
+            if (moveScope.getScore().compareTo(
+                    moveScope.getStepScope().getPhaseScope().getBestScore()) > 0) {
+                logger.trace("        Proposed move ({}) is tabu, but is accepted anyway due to aspiration.",
+                        moveScope.getMove());
+                return true;
+            }
+        }
+        int tabuStepCount = moveScope.getStepScope().getStepIndex() - maximumTabuStepIndex; // at least 1
+        if (tabuStepCount <= workingTabuSize) {
+            logger.trace("        Proposed move ({}) is tabu and is therefore not accepted.", moveScope.getMove());
+            return false;
+        }
+        double acceptChance = calculateFadingTabuAcceptChance(tabuStepCount - workingTabuSize);
+        boolean accepted = moveScope.getWorkingRandom().nextDouble() < acceptChance;
+        if (accepted) {
+            logger.trace("        Proposed move ({}) is fading tabu with acceptChance ({}) and is accepted.",
+                    moveScope.getMove(), acceptChance);
+        } else {
+            logger.trace("        Proposed move ({}) is fading tabu with acceptChance ({}) and is not accepted.",
+                    moveScope.getMove(), acceptChance);
+        }
+        return accepted;
+    }
+
+    private int locateMaximumTabStepIndex(LocalSearchMoveScope moveScope) {
         Collection<? extends Object> checkingTabus = findTabu(moveScope);
         int maximumTabuStepIndex = -1;
         for (Object checkingTabu : checkingTabus) {
@@ -102,78 +182,17 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
                 }
             }
         }
-        if (maximumTabuStepIndex < 0) {
-            // The move isn't tabu at all
-            return true;
-        }
-        if (aspirationEnabled) {
-            // Doesn't use the deciderScoreComparator because shifting penalties don't apply
-            if (moveScope.getScore().compareTo(
-                    moveScope.getStepScope().getPhaseScope().getBestScore()) > 0) {
-                logger.trace("        Proposed move ({}) is tabu, but is accepted anyway due to aspiration.",
-                        moveScope.getMove());
-                return true;
-            }
-        }
-        LocalSearchSolverPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
-        int tabuSize = calculateRegularTabuSize(phaseScope);
-        int tabuStepCount = moveScope.getStepScope().getStepIndex() - maximumTabuStepIndex; // at least 1
-        if (tabuStepCount <= tabuSize) {
-            logger.trace("        Proposed move ({}) is tabu and is therefore not accepted.", moveScope.getMove());
-            return false;
-        }
-        double acceptChance = calculateFadingTabuAcceptChance(tabuStepCount - tabuSize, calculateFadingTabuSize(phaseScope));
-        boolean accepted = moveScope.getWorkingRandom().nextDouble() < acceptChance;
-        if (accepted) {
-            logger.trace("        Proposed move ({}) is fading tabu with acceptChance ({}) and is accepted.",
-                    moveScope.getMove(), acceptChance);
-        } else {
-            logger.trace("        Proposed move ({}) is fading tabu with acceptChance ({}) and is not accepted.",
-                    moveScope.getMove(), acceptChance);
-        }
-        return accepted;
+        return maximumTabuStepIndex;
     }
 
     /**
      * @param fadingTabuStepCount 0 < fadingTabuStepCount <= fadingTabuSize
      * @return 0.0 < acceptChance < 1.0
      */
-    protected double calculateFadingTabuAcceptChance(int fadingTabuStepCount, int fadingTabuSize) {
+    protected double calculateFadingTabuAcceptChance(int fadingTabuStepCount) {
         // The + 1's are because acceptChance should not be 0.0 or 1.0
-        // when (fadingTabuStepCount == 0) or (fadingTabuStepCount + 1 == fadingTabuSize)
-        return ((double) (fadingTabuSize - fadingTabuStepCount)) / ((double) (fadingTabuSize + 1));
-    }
-
-    @Override
-    public void stepEnded(LocalSearchStepScope stepScope) {
-        int maximumTabuListSize = calculateActualMaximumSize(stepScope.getPhaseScope()); // is at least 1
-        int tabuStepIndex = stepScope.getStepIndex();
-        // Remove the oldest tabu(s)
-        for (Iterator<Object> it = tabuSequenceList.iterator(); it.hasNext();) {
-            Object oldTabu = it.next();
-            Integer oldTabuStepIndexInteger = tabuToStepIndexMap.get(oldTabu);
-            if (oldTabuStepIndexInteger == null) {
-                throw new IllegalStateException("HashCode violation: the hashCode of tabu (" + oldTabu
-                        + ") probably changed since it was inserted in the tabu Map or Set.");
-            }
-            int oldTabuStepCount = tabuStepIndex - oldTabuStepIndexInteger; // at least 1
-            if (oldTabuStepCount < maximumTabuListSize) {
-                break;
-            }
-            it.remove();
-            tabuToStepIndexMap.remove(oldTabu);
-        }
-        // Add the new tabu(s)
-        Collection<? extends Object> tabus = findNewTabu(stepScope);
-        for (Object tabu : tabus) {
-            // Push tabu to the end of the line
-            if (tabuToStepIndexMap.containsKey(tabu)) {
-                tabuToStepIndexMap.remove(tabu);
-                tabuSequenceList.remove(tabu);
-            }
-            tabuToStepIndexMap.put(tabu, tabuStepIndex);
-            tabuSequenceList.add(tabu);
-        }
+        // when (fadingTabuStepCount == 0) or (fadingTabuStepCount + 1 == workingFadingTabuSize)
+        return ((double) (workingFadingTabuSize - fadingTabuStepCount)) / ((double) (workingFadingTabuSize + 1));
     }
 
     protected abstract Collection<? extends Object> findTabu(LocalSearchMoveScope moveScope);

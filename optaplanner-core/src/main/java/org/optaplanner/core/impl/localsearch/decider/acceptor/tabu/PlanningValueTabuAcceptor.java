@@ -21,7 +21,7 @@ import java.util.Collection;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class PlanningValueTabuAcceptor extends AbstractAbsoluteSizeTabuAcceptor {
+public class PlanningValueTabuAcceptor extends AbstractTabuAcceptor {
 
     // ************************************************************************
     // Worker methods

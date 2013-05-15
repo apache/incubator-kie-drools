@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.sizer.FixedTabuSizer;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -20,7 +21,7 @@ public class PlanningEntityTabuAcceptorTest {
     @Test
     public void tabuSize() {
         PlanningEntityTabuAcceptor acceptor = new PlanningEntityTabuAcceptor();
-        acceptor.setTabuSize(2);
+        acceptor.setTabuSizer(new FixedTabuSizer(2));
         acceptor.setAspirationEnabled(true);
 
         TestdataEntity e0 = new TestdataEntity("e0");
@@ -100,7 +101,7 @@ public class PlanningEntityTabuAcceptorTest {
     @Test
     public void tabuSizeMultipleEntitiesPerStep() {
         PlanningEntityTabuAcceptor acceptor = new PlanningEntityTabuAcceptor();
-        acceptor.setTabuSize(2);
+        acceptor.setTabuSizer(new FixedTabuSizer(2));
         acceptor.setAspirationEnabled(true);
 
         TestdataEntity e0 = new TestdataEntity("e0");
@@ -200,7 +201,7 @@ public class PlanningEntityTabuAcceptorTest {
     @Test
     public void aspiration() {
         PlanningEntityTabuAcceptor acceptor = new PlanningEntityTabuAcceptor();
-        acceptor.setTabuSize(2);
+        acceptor.setTabuSizer(new FixedTabuSizer(2));
         acceptor.setAspirationEnabled(true);
 
         TestdataEntity e0 = new TestdataEntity("e0");

@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class SolutionTabuAcceptor extends AbstractAbsoluteSizeTabuAcceptor {
+public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
 
     public SolutionTabuAcceptor() {
         // Disable aspiration by default because it's useless on solution tabu
