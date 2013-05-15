@@ -3,7 +3,7 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.sizer.FixedTabuSizer;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -21,7 +21,7 @@ public class PlanningValueTabuAcceptorTest {
     @Test
     public void tabuSize() {
         PlanningValueTabuAcceptor acceptor = new PlanningValueTabuAcceptor();
-        acceptor.setTabuSizer(new FixedTabuSizer(2));
+        acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 
         TestdataValue v0 = new TestdataValue("v0");
@@ -101,7 +101,7 @@ public class PlanningValueTabuAcceptorTest {
     @Test
     public void tabuSizeMultipleEntitiesPerStep() {
         PlanningValueTabuAcceptor acceptor = new PlanningValueTabuAcceptor();
-        acceptor.setTabuSizer(new FixedTabuSizer(2));
+        acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 
         TestdataValue v0 = new TestdataValue("v0");
@@ -201,7 +201,7 @@ public class PlanningValueTabuAcceptorTest {
     @Test
     public void aspiration() {
         PlanningValueTabuAcceptor acceptor = new PlanningValueTabuAcceptor();
-        acceptor.setTabuSizer(new FixedTabuSizer(2));
+        acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 
         TestdataValue v0 = new TestdataValue("v0");

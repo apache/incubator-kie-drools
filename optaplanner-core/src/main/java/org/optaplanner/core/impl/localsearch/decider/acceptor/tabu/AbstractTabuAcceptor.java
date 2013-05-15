@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
-import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.sizer.TabuSizer;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.TabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -36,8 +36,8 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  */
 public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
-    protected TabuSizer tabuSizer = null;
-    protected TabuSizer fadingTabuSizer = null;
+    protected TabuSizeStrategy tabuSizeStrategy = null;
+    protected TabuSizeStrategy fadingTabuSizeStrategy = null;
     protected boolean aspirationEnabled = true;
 
     protected boolean assertTabuHashCodeCorrectness = false;
@@ -48,12 +48,12 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     protected int workingTabuSize = -1;
     protected int workingFadingTabuSize = -1;
 
-    public void setTabuSizer(TabuSizer tabuSizer) {
-        this.tabuSizer = tabuSizer;
+    public void setTabuSizeStrategy(TabuSizeStrategy tabuSizeStrategy) {
+        this.tabuSizeStrategy = tabuSizeStrategy;
     }
 
-    public void setFadingTabuSizer(TabuSizer fadingTabuSizer) {
-        this.fadingTabuSizer = fadingTabuSizer;
+    public void setFadingTabuSizeStrategy(TabuSizeStrategy fadingTabuSizeStrategy) {
+        this.fadingTabuSizeStrategy = fadingTabuSizeStrategy;
     }
 
     public void setAspirationEnabled(boolean aspirationEnabled) {
@@ -73,8 +73,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         super.phaseStarted(phaseScope);
         LocalSearchStepScope lastCompletedStepScope = phaseScope.getLastCompletedStepScope();
         // Tabu sizes do not change during stepStarted(), because they must be in sync with the tabuSequenceList.size()
-        workingTabuSize = tabuSizer == null ? 0 : tabuSizer.determineTabuSize(lastCompletedStepScope);
-        workingFadingTabuSize = fadingTabuSizer == null ? 0 : fadingTabuSizer.determineTabuSize(lastCompletedStepScope);
+        workingTabuSize = tabuSizeStrategy == null ? 0 : tabuSizeStrategy.determineTabuSize(lastCompletedStepScope);
+        workingFadingTabuSize = fadingTabuSizeStrategy == null ? 0 : fadingTabuSizeStrategy.determineTabuSize(lastCompletedStepScope);
         int totalTabuListSize = workingTabuSize + workingFadingTabuSize; // is at least 1
         tabuToStepIndexMap = new HashMap<Object, Integer>(totalTabuListSize);
         tabuSequenceList = new LinkedList<Object>();
@@ -93,8 +93,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     public void stepEnded(LocalSearchStepScope stepScope) {
         super.stepEnded(stepScope);
         // Tabu sizes do not change during stepStarted(), because they must be in sync with the tabuSequenceList.size()
-        workingTabuSize = tabuSizer == null ? 0 : tabuSizer.determineTabuSize(stepScope);
-        workingFadingTabuSize = fadingTabuSizer == null ? 0 : fadingTabuSizer.determineTabuSize(stepScope);
+        workingTabuSize = tabuSizeStrategy == null ? 0 : tabuSizeStrategy.determineTabuSize(stepScope);
+        workingFadingTabuSize = fadingTabuSizeStrategy == null ? 0 : fadingTabuSizeStrategy.determineTabuSize(stepScope);
         adjustTabuList(stepScope.getStepIndex(), findNewTabu(stepScope));
     }
 

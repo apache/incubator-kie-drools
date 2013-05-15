@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.sizer;
+package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class FixedTabuSizer implements TabuSizer {
+public class FixedTabuSizeStrategy implements TabuSizeStrategy {
 
     protected final int tabuSize;
 
-    public FixedTabuSizer(int tabuSize) {
+    public FixedTabuSizeStrategy(int tabuSize) {
         this.tabuSize = tabuSize;
         if (tabuSize < 0) {
             throw new IllegalArgumentException("The tabuSize (" + tabuSize

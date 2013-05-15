@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.sizer;
+package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class RatioTabuSizer implements TabuSizer {
+public class RatioTabuSizeStrategy implements TabuSizeStrategy {
 
     protected final double tabuRatio;
 
-    public RatioTabuSizer(double tabuRatio) {
+    public RatioTabuSizeStrategy(double tabuRatio) {
         this.tabuRatio = tabuRatio;
         if (tabuRatio < 0.0 || tabuRatio > 1.0) {
             throw new IllegalArgumentException("The tabuRatio (" + tabuRatio
