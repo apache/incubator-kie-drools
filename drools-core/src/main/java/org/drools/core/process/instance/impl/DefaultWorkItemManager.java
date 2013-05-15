@@ -155,5 +155,14 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     public void clear() {
         this.workItems.clear();
     }
+    
+    public void signalEvent(String type, Object event) { 
+        this.kruntime.signalEvent(type, event);
+    } 
+    
+    public void signalEvent(String type, Object event, long processInstanceId) { 
+        this.kruntime.signalEvent(type, event, processInstanceId);
+    }
+
 
 }
