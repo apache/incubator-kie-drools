@@ -100,6 +100,7 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.type.DateFormats;
 import org.drools.core.type.DateFormatsImpl;
 import org.drools.core.xml.XmlChangeSetReader;
+import org.kie.api.definition.type.Role;
 import org.kie.internal.ChangeSet;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -1573,6 +1574,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                                          cls.isAnnotationPresent(ClassReactive.class));
 
         setPropertyReactive(null, typeDeclaration, propertyReactive);
+
+        Role role = cls.getAnnotation( Role.class );
+        if ( role != null && role.value() == Role.Type.EVENT) {
+            typeDeclaration.setRole(TypeDeclaration.Role.EVENT);
+        }
 
         return typeDeclaration;
     }

@@ -1,5 +1,6 @@
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.StockTickEvent;
 import org.drools.core.ClockType;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.OrderEvent;
@@ -90,11 +91,11 @@ public class CepEspTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Message msg = new Message();
         Properties props = new Properties();
-        props.put( "timestamp",
-                   new Integer( 99 ) );
+        props.put("timestamp",
+                  new Integer(99));
         props.put( "duration",
                    new Integer( 52 ) );
-        msg.setProperties( props );
+        msg.setProperties(props);
 
         EventFactHandle efh = (EventFactHandle) ksession.insert( msg );
         assertEquals( 98,
@@ -129,10 +130,9 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test
     public void testEventAssertion() throws Exception {
-        // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertion.drl" );
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        conf.setOption( ClockTypeOption.get("pseudo") );
         StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
 
         SessionPseudoClock clock = (SessionPseudoClock) session.<SessionClock>getSessionClock();
@@ -186,7 +186,66 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertEquals( 2,
                       ((List) session.getGlobal( "results" )).size() );
+    }
 
+    @Test
+    public void testAnnotatedEventAssertion() throws Exception {
+        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleAnnotatedEventAssertion.drl" );
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get("pseudo") );
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
+
+        SessionPseudoClock clock = (SessionPseudoClock) session.<SessionClock>getSessionClock();
+
+        final List results = new ArrayList();
+
+        session.setGlobal( "results",
+                           results );
+
+        StockTickInterface tick1 = new StockTickEvent( 1,
+                                                      "DROO",
+                                                      50,
+                                                      10000 );
+        StockTickInterface tick2 = new StockTickEvent( 2,
+                                                      "ACME",
+                                                      10,
+                                                      10010 );
+        StockTickInterface tick3 = new StockTickEvent( 3,
+                                                      "ACME",
+                                                      10,
+                                                      10100 );
+        StockTickInterface tick4 = new StockTickEvent( 4,
+                                                      "DROO",
+                                                      50,
+                                                      11000 );
+
+        InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
+        clock.advanceTime( 10,
+                           TimeUnit.SECONDS );
+        InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
+        clock.advanceTime( 30,
+                           TimeUnit.SECONDS );
+        InternalFactHandle handle3 = (InternalFactHandle) session.insert( tick3 );
+        clock.advanceTime( 20,
+                           TimeUnit.SECONDS );
+        InternalFactHandle handle4 = (InternalFactHandle) session.insert( tick4 );
+        clock.advanceTime( 10,
+                           TimeUnit.SECONDS );
+
+        assertNotNull( handle1 );
+        assertNotNull( handle2 );
+        assertNotNull( handle3 );
+        assertNotNull( handle4 );
+
+        assertTrue( handle1.isEvent() );
+        assertTrue( handle2.isEvent() );
+        assertTrue( handle3.isEvent() );
+        assertTrue( handle4.isEvent() );
+
+        session.fireAllRules();
+
+        assertEquals( 2,
+                      ((List) session.getGlobal( "results" )).size() );
     }
 
     @SuppressWarnings("unchecked")
