@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
@@ -41,7 +42,7 @@ import org.kie.internal.task.api.model.TaskEvent;
  *  facade of all the other services, providing a single entry point
  *  to access to all the services
  */
-public interface InternalTaskService extends TaskService {
+public interface InternalTaskService extends TaskService, CommandExecutor {
     
     void addGroup(Group group);
 

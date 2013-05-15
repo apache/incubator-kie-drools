@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
@@ -32,7 +33,7 @@ import org.kie.internal.task.api.model.SubTasksStrategy;
  *  Task Instance. All the operations described in the WS-HT specification
  *  related with the Task Lifecycle are implemented here.
  */
-public interface TaskInstanceService {
+public interface TaskInstanceService extends CommandExecutor {
 
     /**
      * LIFECYCLE METHODS
