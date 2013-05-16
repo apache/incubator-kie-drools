@@ -318,6 +318,9 @@ public final class ClassUtils {
     public static Class<?> findClass(String name, Collection<String> availableImports, ClassLoader cl) {
         Class<?> clazz = null;
         for (String imp : availableImports) {
+            if (imp.endsWith(".*")) {
+                imp = imp.substring(0, imp.length()-2);
+            }
             String className = imp.endsWith(name) ? imp : imp + "." + name;
             clazz = findClass(className, cl);
             if (clazz != null) {
