@@ -188,6 +188,8 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
         String[] classAndField = splitInClassAndField(part2, context);
         if (classAndField == null) {
             return new String[] { "", expr };
+        } else if ( classAndField.length == 1 ) {
+            return new String[] { "", field1 + " instanceof " + classAndField[ 0 ] };
         }
 
         String className = classAndField[0];
@@ -263,7 +265,7 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
     private String[] splitInClassAndField(String expr, MVELDumperContext context) {
         String[] split = expr.split("\\.");
         if (split.length < 2) {
-            return null;
+            return new String[] { expr };
         }
 
         if (split[0].endsWith("!")) {
