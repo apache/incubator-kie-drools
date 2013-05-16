@@ -1,4 +1,4 @@
-package org.jbpm.services.task.query;
+package org.jbpm.services.task.query.xml;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -8,15 +8,15 @@ import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 
-public class OrganizationalEntityAdapter extends XmlAdapter<String, OrganizationalEntity> {
+public class OrganizationalEntityXmlAdapter extends XmlAdapter<String, OrganizationalEntity> {
 
     @Override
     public OrganizationalEntity unmarshal(String v) throws Exception {
         if( v.matches("^g:.*") ) {
-            String id = v.substring(1);
+            String id = v.substring(2);
             return new GroupImpl(id);
         } else if( v.matches("u:.*") )  { 
-            String id = v.substring(1);
+            String id = v.substring(2);
             return new UserImpl(id);
         }
         throw new IllegalArgumentException("Unknown string format for " + OrganizationalEntity.class.getSimpleName() + ": '" + v + "'" );

@@ -30,6 +30,9 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.jbpm.services.task.impl.model.UserImpl;
+import org.jbpm.services.task.query.xml.OrganizationalEntityXmlAdapter;
+import org.jbpm.services.task.query.xml.StatusXmlAdapter;
+import org.jbpm.services.task.query.xml.SubTasksStrategyXmlAdapter;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.InternalTaskSummary;
@@ -37,7 +40,7 @@ import org.kie.internal.task.api.model.SubTasksStrategy;
 
 @XmlRootElement(name="taskSummary")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso(value={Status.class})
+@XmlSeeAlso(value={Status.class, SubTasksStrategy.class})
 public class TaskSummaryImpl implements InternalTaskSummary {
 
     @XmlElement
@@ -57,6 +60,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     private String description;
     
     @XmlElement
+    @XmlJavaTypeAdapter(value=StatusXmlAdapter.class, type=Status.class)
     private Status status;
     
     @XmlElement
@@ -68,11 +72,11 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     private boolean skipable;
     
     @XmlElement
-    @XmlJavaTypeAdapter(value=OrganizationalEntityAdapter.class, type=User.class)
+    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class, type=User.class)
     private User actualOwner;
     
     @XmlElement
-    @XmlJavaTypeAdapter(value=OrganizationalEntityAdapter.class, type=User.class)
+    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class, type=User.class)
     private User createdBy;
     
     @XmlElement
@@ -100,6 +104,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     private int processSessionId;
 
     @XmlElement
+    @XmlJavaTypeAdapter(value=SubTasksStrategyXmlAdapter.class, type=SubTasksStrategy.class)
     private SubTasksStrategy subTaskStrategy;
     
     @XmlElement
