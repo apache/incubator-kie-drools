@@ -30,6 +30,11 @@ public class GreedyFitStepScope extends AbstractStepScope {
     private Move undoStep = null;
 
     public GreedyFitStepScope(GreedyFitSolverPhaseScope phaseScope) {
+        this(phaseScope, phaseScope.getLastCompletedStepScope().getStepIndex() + 1);
+    }
+
+    public GreedyFitStepScope(GreedyFitSolverPhaseScope phaseScope, int stepIndex) {
+        super(stepIndex);
         this.phaseScope = phaseScope;
     }
 

@@ -55,7 +55,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         phaseStarted(phaseScope);
 
-        LocalSearchStepScope stepScope = createNextStepScope(phaseScope, null);
+        LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
         while (!termination.isPhaseTerminated(phaseScope)) {
             stepScope.setTimeGradient(termination.calculatePhaseTimeGradient(phaseScope));
             stepStarted(stepScope);
@@ -87,23 +87,10 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
                 phaseScope.assertExpectedWorkingScore(stepScope.getScore());
             }
             stepEnded(stepScope);
-            stepScope = createNextStepScope(phaseScope, stepScope);
+            phaseScope.setLastCompletedStepScope(stepScope);
+            stepScope = new LocalSearchStepScope(phaseScope);
         }
         phaseEnded(phaseScope);
-    }
-
-    private LocalSearchStepScope createNextStepScope(LocalSearchSolverPhaseScope phaseScope,
-            LocalSearchStepScope completedStepScope) {
-        if (completedStepScope == null) {
-            completedStepScope = new LocalSearchStepScope(phaseScope);
-            completedStepScope.setScore(phaseScope.getStartingScore());
-            completedStepScope.setStepIndex(-1);
-            completedStepScope.setTimeGradient(0.0);
-        }
-        phaseScope.setLastCompletedStepScope(completedStepScope);
-        LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
-        stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
-        return stepScope;
     }
 
     @Override

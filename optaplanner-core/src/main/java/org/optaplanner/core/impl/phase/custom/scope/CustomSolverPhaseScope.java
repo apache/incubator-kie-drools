@@ -25,6 +25,7 @@ public class CustomSolverPhaseScope extends AbstractSolverPhaseScope {
 
     public CustomSolverPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
+        lastCompletedStepScope = new CustomStepScope(this, -1);
     }
 
     public CustomStepScope getLastCompletedStepScope() {

@@ -40,32 +40,20 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
     // ************************************************************************
 
     public void solve(DefaultSolverScope solverScope) {
-        BruteForceSolverPhaseScope bruteForceSolverPhaseScope = new BruteForceSolverPhaseScope(solverScope);
-        phaseStarted(bruteForceSolverPhaseScope);
+        BruteForceSolverPhaseScope phaseScope = new BruteForceSolverPhaseScope(solverScope);
+        phaseStarted(phaseScope);
 
-        BruteForceStepScope stepScope = createNextStepScope(bruteForceSolverPhaseScope, null);
-        while (!termination.isPhaseTerminated(bruteForceSolverPhaseScope) && bruteForceEntityWalker.hasWalk()) {
+        BruteForceStepScope stepScope = new BruteForceStepScope(phaseScope);
+        while (!termination.isPhaseTerminated(phaseScope) && bruteForceEntityWalker.hasWalk()) {
             stepStarted(stepScope);
             bruteForceEntityWalker.walk();
-            Score score = bruteForceSolverPhaseScope.calculateScore();
+            Score score = phaseScope.calculateScore();
             stepScope.setScore(score);
             stepEnded(stepScope);
-            stepScope = createNextStepScope(bruteForceSolverPhaseScope, stepScope);
+            phaseScope.setLastCompletedStepScope(stepScope);
+            stepScope = new BruteForceStepScope(phaseScope);
         }
-        phaseEnded(bruteForceSolverPhaseScope);
-    }
-
-    private BruteForceStepScope createNextStepScope(BruteForceSolverPhaseScope phaseScope,
-            BruteForceStepScope completedStepScope) {
-        if (completedStepScope == null) {
-            completedStepScope = new BruteForceStepScope(phaseScope);
-            completedStepScope.setScore(phaseScope.getStartingScore());
-            completedStepScope.setStepIndex(-1);
-        }
-        phaseScope.setLastCompletedStepScope(completedStepScope);
-        BruteForceStepScope stepScope = new BruteForceStepScope(phaseScope);
-        stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
-        return stepScope;
+        phaseEnded(phaseScope);
     }
 
     @Override

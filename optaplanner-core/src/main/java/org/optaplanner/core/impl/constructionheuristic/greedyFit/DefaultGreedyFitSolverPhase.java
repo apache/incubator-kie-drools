@@ -58,7 +58,7 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         GreedyFitSolverPhaseScope phaseScope = new GreedyFitSolverPhaseScope(solverScope);
         phaseStarted(phaseScope);
 
-        GreedyFitStepScope stepScope = createNextStepScope(phaseScope, null);
+        GreedyFitStepScope stepScope = new GreedyFitStepScope(phaseScope);
         Iterator it = greedyPlanningEntitySelector.iterator();
         while (!termination.isPhaseTerminated(phaseScope) && it.hasNext()) {
             Object planningEntity = it.next();
@@ -80,21 +80,10 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
                 phaseScope.assertExpectedWorkingScore(stepScope.getScore());
             }
             stepEnded(stepScope);
-            stepScope = createNextStepScope(phaseScope, stepScope);
+            phaseScope.setLastCompletedStepScope(stepScope);
+            stepScope = new GreedyFitStepScope(phaseScope);
         }
         phaseEnded(phaseScope);
-    }
-
-    private GreedyFitStepScope createNextStepScope(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope, GreedyFitStepScope completedGreedyFitStepScope) {
-        if (completedGreedyFitStepScope == null) {
-            completedGreedyFitStepScope = new GreedyFitStepScope(greedyFitSolverPhaseScope);
-            completedGreedyFitStepScope.setScore(greedyFitSolverPhaseScope.getStartingScore());
-            completedGreedyFitStepScope.setStepIndex(-1);
-        }
-        greedyFitSolverPhaseScope.setLastCompletedStepScope(completedGreedyFitStepScope);
-        GreedyFitStepScope greedyFitStepScope = new GreedyFitStepScope(greedyFitSolverPhaseScope);
-        greedyFitStepScope.setStepIndex(completedGreedyFitStepScope.getStepIndex() + 1);
-        return greedyFitStepScope;
     }
 
     @Override

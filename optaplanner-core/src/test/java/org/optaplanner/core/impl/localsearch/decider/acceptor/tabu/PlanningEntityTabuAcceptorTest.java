@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTabuSizeStrategy;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.RatioTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -36,7 +37,6 @@ public class PlanningEntityTabuAcceptorTest {
         acceptor.phaseStarted(phaseScope);
 
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
-        stepScope0.setStepIndex(0);
         LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope0, e1);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0)));
         assertEquals(true, acceptor.isAccepted(moveScope1));
@@ -46,9 +46,9 @@ public class PlanningEntityTabuAcceptorTest {
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2))); // repeated call
         stepScope0.setStep(moveScope1.getMove());
         acceptor.stepEnded(stepScope0);
+        phaseScope.setLastCompletedStepScope(stepScope0);
         
         LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
-        stepScope1.setStepIndex(1);
         LocalSearchMoveScope moveScope2 = buildMoveScope(stepScope1, e2);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e0)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e1)));
@@ -58,9 +58,9 @@ public class PlanningEntityTabuAcceptorTest {
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e2))); // repeated call
         stepScope1.setStep(moveScope2.getMove());
         acceptor.stepEnded(stepScope1);
+        phaseScope.setLastCompletedStepScope(stepScope1);
 
         LocalSearchStepScope stepScope2 = new LocalSearchStepScope(phaseScope);
-        stepScope2.setStepIndex(2);
         LocalSearchMoveScope moveScope4 = buildMoveScope(stepScope2, e4);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e0)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1)));
@@ -70,9 +70,9 @@ public class PlanningEntityTabuAcceptorTest {
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2))); // repeated call
         stepScope2.setStep(moveScope4.getMove());
         acceptor.stepEnded(stepScope2);
+        phaseScope.setLastCompletedStepScope(stepScope2);
 
         LocalSearchStepScope stepScope3 = new LocalSearchStepScope(phaseScope);
-        stepScope3.setStepIndex(3);
         LocalSearchMoveScope moveScope3 = buildMoveScope(stepScope3, e3);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e0)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e1)));
@@ -82,9 +82,9 @@ public class PlanningEntityTabuAcceptorTest {
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e2))); // repeated call
         stepScope3.setStep(moveScope3.getMove());
         acceptor.stepEnded(stepScope3);
+        phaseScope.setLastCompletedStepScope(stepScope3);
 
         LocalSearchStepScope stepScope4 = new LocalSearchStepScope(phaseScope);
-        stepScope4.setStepIndex(4);
         LocalSearchMoveScope moveScope1Again = buildMoveScope(stepScope4, e1);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e0)));
         assertEquals(true, acceptor.isAccepted(moveScope1Again));
@@ -94,6 +94,7 @@ public class PlanningEntityTabuAcceptorTest {
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope4, e2))); // repeated call
         stepScope4.setStep(moveScope1Again.getMove());
         acceptor.stepEnded(stepScope4);
+        phaseScope.setLastCompletedStepScope(stepScope4);
         
         acceptor.phaseEnded(phaseScope);
     }
@@ -116,7 +117,6 @@ public class PlanningEntityTabuAcceptorTest {
         acceptor.phaseStarted(phaseScope);
 
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
-        stepScope0.setStepIndex(0);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e0)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e1)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e2)));
@@ -134,9 +134,9 @@ public class PlanningEntityTabuAcceptorTest {
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, e3, e4)));
         stepScope0.setStep(buildMoveScope(stepScope0, e0, e2).getMove());
         acceptor.stepEnded(stepScope0);
+        phaseScope.setLastCompletedStepScope(stepScope0);
 
         LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
-        stepScope1.setStepIndex(1);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e0)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e1)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, e2)));
@@ -154,9 +154,9 @@ public class PlanningEntityTabuAcceptorTest {
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e3, e4)));
         stepScope1.setStep(buildMoveScope(stepScope1, e1).getMove());
         acceptor.stepEnded(stepScope1);
+        phaseScope.setLastCompletedStepScope(stepScope1);
 
         LocalSearchStepScope stepScope2 = new LocalSearchStepScope(phaseScope);
-        stepScope2.setStepIndex(2);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e0)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e1)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, e2)));
@@ -174,9 +174,9 @@ public class PlanningEntityTabuAcceptorTest {
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, e3, e4)));
         stepScope2.setStep(buildMoveScope(stepScope2, e3, e4).getMove());
         acceptor.stepEnded(stepScope2);
+        phaseScope.setLastCompletedStepScope(stepScope2);
 
         LocalSearchStepScope stepScope3 = new LocalSearchStepScope(phaseScope);
-        stepScope3.setStepIndex(3);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e0)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e1)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope3, e2)));
@@ -194,6 +194,7 @@ public class PlanningEntityTabuAcceptorTest {
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope3, e3, e4)));
         stepScope3.setStep(buildMoveScope(stepScope3, e0).getMove());
         acceptor.stepEnded(stepScope3);
+        phaseScope.setLastCompletedStepScope(stepScope3);
 
         acceptor.phaseEnded(phaseScope);
     }
@@ -213,12 +214,11 @@ public class PlanningEntityTabuAcceptorTest {
         acceptor.phaseStarted(phaseScope);
 
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
-        stepScope0.setStepIndex(0);
         stepScope0.setStep(buildMoveScope(stepScope0, e1).getMove());
         acceptor.stepEnded(stepScope0);
+        phaseScope.setLastCompletedStepScope(stepScope0);
 
         LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
-        stepScope1.setStepIndex(1);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -120, e0)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -20, e0)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -120, e1)));
@@ -227,6 +227,7 @@ public class PlanningEntityTabuAcceptorTest {
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -20, e0, e1)));
         stepScope1.setStep(buildMoveScope(stepScope1, -20, e1).getMove());
         acceptor.stepEnded(stepScope1);
+        phaseScope.setLastCompletedStepScope(stepScope1);
 
         acceptor.phaseEnded(phaseScope);
     }

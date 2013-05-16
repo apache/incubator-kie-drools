@@ -82,6 +82,9 @@ public abstract class AbstractSolverPhaseScope {
         bestSolutionStepIndex = -1;
         // TODO Usage of solverScope.getBestScore() would be better performance wise but is null with a uninitialized score
         startingScore = solverScope.calculateScore();
+        if (getLastCompletedStepScope().getStepIndex() < 0) {
+            getLastCompletedStepScope().setScore(startingScore);
+        }
     }
 
     public SolutionDescriptor getSolutionDescriptor() {

@@ -25,6 +25,7 @@ public class ConstructionHeuristicSolverPhaseScope extends AbstractSolverPhaseSc
 
     public ConstructionHeuristicSolverPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
+        lastCompletedStepScope = new ConstructionHeuristicStepScope(this, -1);
     }
 
     public ConstructionHeuristicStepScope getLastCompletedStepScope() {

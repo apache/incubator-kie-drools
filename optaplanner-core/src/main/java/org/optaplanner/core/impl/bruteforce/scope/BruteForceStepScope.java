@@ -23,6 +23,11 @@ public class BruteForceStepScope extends AbstractStepScope {
     private final BruteForceSolverPhaseScope phaseScope;
 
     public BruteForceStepScope(BruteForceSolverPhaseScope phaseScope) {
+        this(phaseScope, phaseScope.getLastCompletedStepScope().getStepIndex() + 1);
+    }
+
+    public BruteForceStepScope(BruteForceSolverPhaseScope phaseScope, int stepIndex) {
+        super(stepIndex);
         this.phaseScope = phaseScope;
     }
 

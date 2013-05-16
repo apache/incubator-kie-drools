@@ -25,6 +25,7 @@ public class GreedyFitSolverPhaseScope extends AbstractSolverPhaseScope {
 
     public GreedyFitSolverPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
+        lastCompletedStepScope = new GreedyFitStepScope(this, -1);
     }
 
     public GreedyFitStepScope getLastCompletedStepScope() {

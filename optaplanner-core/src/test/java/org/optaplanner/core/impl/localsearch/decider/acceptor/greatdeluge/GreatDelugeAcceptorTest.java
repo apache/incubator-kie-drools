@@ -39,37 +39,30 @@ public class GreatDelugeAcceptorTest {
     public void testIsAccepted() {
         // Setup
         Acceptor acceptor = new GreatDelugeAcceptor(1.20, 0.01);
-        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = createLocalSearchSolverPhaseScope();
-        acceptor.phaseStarted(localSearchSolverPhaseScope);
-        LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);
-        localSearchStepScope.setStepIndex(0);
-        acceptor.stepStarted(localSearchStepScope);
+        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
+        acceptor.phaseStarted(phaseScope);
+
+        LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
+        acceptor.stepStarted(stepScope);
         // Pre conditions
-        LocalSearchMoveScope a1 = createMoveScope(localSearchStepScope, SimpleScore.valueOf(-2000));
-        LocalSearchMoveScope a2 = createMoveScope(localSearchStepScope, SimpleScore.valueOf(-1300));
-        LocalSearchMoveScope a3 = createMoveScope(localSearchStepScope, SimpleScore.valueOf(-1200));
-        LocalSearchMoveScope b1 = createMoveScope(localSearchStepScope, SimpleScore.valueOf(-1200));
-        LocalSearchMoveScope b2 = createMoveScope(localSearchStepScope, SimpleScore.valueOf(-100));
-        LocalSearchMoveScope c1 = createMoveScope(localSearchStepScope, SimpleScore.valueOf(-1100));
-        LocalSearchMoveScope c2 = createMoveScope(localSearchStepScope, SimpleScore.valueOf(-120));
+        LocalSearchMoveScope a1 = createMoveScope(stepScope, SimpleScore.valueOf(-2000));
+        LocalSearchMoveScope a2 = createMoveScope(stepScope, SimpleScore.valueOf(-1300));
+        LocalSearchMoveScope a3 = createMoveScope(stepScope, SimpleScore.valueOf(-1200));
+        LocalSearchMoveScope b1 = createMoveScope(stepScope, SimpleScore.valueOf(-1200));
+        LocalSearchMoveScope b2 = createMoveScope(stepScope, SimpleScore.valueOf(-100));
+        LocalSearchMoveScope c1 = createMoveScope(stepScope, SimpleScore.valueOf(-1100));
+        LocalSearchMoveScope c2 = createMoveScope(stepScope, SimpleScore.valueOf(-120));
         // Do stuff
         assertEquals(false, acceptor.isAccepted(a1));
         assertEquals(false, acceptor.isAccepted(a2));
         assertEquals(true, acceptor.isAccepted(a3));
-        // TODO reable a thorough test of great deluge
-//        acceptor.stepEnded(localSearchStepScope);
-//        assertEquals(false, acceptor.isAccepted(b1));
-//        assertEquals(true, acceptor.isAccepted(b2));
-//        acceptor.stepEnded(localSearchStepScope);
-//        assertEquals(false, acceptor.isAccepted(c1));
-//        acceptor.stepEnded(localSearchStepScope);
-//        assertEquals(true, acceptor.isAccepted(c2));
-//        acceptor.stepEnded(localSearchStepScope);
-//        // Post conditions
-//        acceptor.phaseEnded(localSearchSolverPhaseScope);
+        acceptor.stepEnded(stepScope);
+        phaseScope.setLastCompletedStepScope(stepScope);
+        // TODO do a better test of great deluge
+        acceptor.phaseEnded(phaseScope);
     }
 
-    private LocalSearchSolverPhaseScope createLocalSearchSolverPhaseScope() {
+    private LocalSearchSolverPhaseScope createPhaseScope() {
         DefaultSolverScope solverScope = new DefaultSolverScope();
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
@@ -82,9 +75,9 @@ public class GreatDelugeAcceptorTest {
             }
         });
         solverScope.setBestScore(SimpleScore.valueOf(-1000));
-        LocalSearchStepScope lastLocalSearchStepScope = new LocalSearchStepScope(phaseScope);
-        lastLocalSearchStepScope.setScore(SimpleScore.valueOf(-1000));
-        phaseScope.setLastCompletedStepScope(lastLocalSearchStepScope);
+        LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
+        lastCompletedStepScope.setScore(SimpleScore.valueOf(-1000));
+        phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         return phaseScope;
     }
 

@@ -48,36 +48,25 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
     // ************************************************************************
 
     public void solve(DefaultSolverScope solverScope) {
-        CustomSolverPhaseScope customSolverPhaseScope = new CustomSolverPhaseScope(solverScope);
-        phaseStarted(customSolverPhaseScope);
+        CustomSolverPhaseScope phaseScope = new CustomSolverPhaseScope(solverScope);
+        phaseStarted(phaseScope);
 
-        CustomStepScope stepScope = createNextStepScope(customSolverPhaseScope, null);
+        CustomStepScope stepScope = new CustomStepScope(phaseScope);
         Iterator<CustomSolverPhaseCommand> commandIterator = customSolverPhaseCommandList.iterator();
-        while (!termination.isPhaseTerminated(customSolverPhaseScope) && commandIterator.hasNext()) {
+        while (!termination.isPhaseTerminated(phaseScope) && commandIterator.hasNext()) {
             CustomSolverPhaseCommand customSolverPhaseCommand = commandIterator.next();
             stepStarted(stepScope);
             customSolverPhaseCommand.changeWorkingSolution(solverScope.getScoreDirector());
             int uninitializedVariableCount = solverScope.getSolutionDescriptor()
                     .countUninitializedVariables(stepScope.getWorkingSolution());
             stepScope.setUninitializedVariableCount(uninitializedVariableCount);
-            Score score = customSolverPhaseScope.calculateScore();
+            Score score = phaseScope.calculateScore();
             stepScope.setScore(score);
             stepEnded(stepScope);
-            stepScope = createNextStepScope(customSolverPhaseScope, stepScope);
+            phaseScope.setLastCompletedStepScope(stepScope);
+            stepScope = new CustomStepScope(phaseScope);
         }
-        phaseEnded(customSolverPhaseScope);
-    }
-
-    private CustomStepScope createNextStepScope(CustomSolverPhaseScope phaseScope, CustomStepScope completedStepScope) {
-        if (completedStepScope == null) {
-            completedStepScope = new CustomStepScope(phaseScope);
-            completedStepScope.setScore(phaseScope.getStartingScore());
-            completedStepScope.setStepIndex(-1);
-        }
-        phaseScope.setLastCompletedStepScope(completedStepScope);
-        CustomStepScope stepScope = new CustomStepScope(phaseScope);
-        stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
-        return stepScope;
+        phaseEnded(phaseScope);
     }
 
     public void phaseStarted(CustomSolverPhaseScope phaseScope) {

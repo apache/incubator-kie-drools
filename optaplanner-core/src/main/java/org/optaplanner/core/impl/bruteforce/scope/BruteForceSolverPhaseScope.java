@@ -25,6 +25,7 @@ public class BruteForceSolverPhaseScope extends AbstractSolverPhaseScope {
 
     public BruteForceSolverPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
+        lastCompletedStepScope = new BruteForceStepScope(this, -1);
     }
 
     public BruteForceStepScope getLastCompletedStepScope() {

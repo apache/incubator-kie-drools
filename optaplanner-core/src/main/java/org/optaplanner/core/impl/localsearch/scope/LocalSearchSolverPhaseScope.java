@@ -25,6 +25,8 @@ public class LocalSearchSolverPhaseScope extends AbstractSolverPhaseScope {
 
     public LocalSearchSolverPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
+        lastCompletedStepScope = new LocalSearchStepScope(this, -1);
+        lastCompletedStepScope.setTimeGradient(0.0);
     }
 
     public LocalSearchStepScope getLastCompletedStepScope() {

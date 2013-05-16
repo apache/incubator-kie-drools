@@ -52,7 +52,7 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         ConstructionHeuristicSolverPhaseScope phaseScope = new ConstructionHeuristicSolverPhaseScope(solverScope);
         phaseStarted(phaseScope);
 
-        ConstructionHeuristicStepScope stepScope = createNextStepScope(phaseScope, null);
+        ConstructionHeuristicStepScope stepScope = new ConstructionHeuristicStepScope(phaseScope);
         while (!termination.isPhaseTerminated(phaseScope)) {
             stepStarted(stepScope);
             ConstructionHeuristicMoveScope moveScope = entityPlacer.nominateMove(stepScope);
@@ -70,22 +70,10 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
             }
             doStep(stepScope);
             stepEnded(stepScope);
-            stepScope = createNextStepScope(phaseScope, stepScope);
+            phaseScope.setLastCompletedStepScope(stepScope);
+            stepScope = new ConstructionHeuristicStepScope(phaseScope);
         }
         phaseEnded(phaseScope);
-    }
-
-    private ConstructionHeuristicStepScope createNextStepScope(ConstructionHeuristicSolverPhaseScope phaseScope,
-            ConstructionHeuristicStepScope completedStepScope) {
-        if (completedStepScope == null) {
-            completedStepScope = new ConstructionHeuristicStepScope(phaseScope);
-            completedStepScope.setScore(phaseScope.getStartingScore());
-            completedStepScope.setStepIndex(-1);
-        }
-        phaseScope.setLastCompletedStepScope(completedStepScope);
-        ConstructionHeuristicStepScope stepScope = new ConstructionHeuristicStepScope(phaseScope);
-        stepScope.setStepIndex(completedStepScope.getStepIndex() + 1);
-        return stepScope;
     }
 
     private void doStep(ConstructionHeuristicStepScope stepScope) {

@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public abstract class AbstractStepScope {
 
-    protected int stepIndex = -1;
+    protected final int stepIndex;
 
     protected Score score = null;
     protected Boolean bestScoreImproved;
@@ -34,12 +34,12 @@ public abstract class AbstractStepScope {
 
     public abstract AbstractSolverPhaseScope getPhaseScope();
 
-    public int getStepIndex() {
-        return stepIndex;
+    public AbstractStepScope(int stepIndex) {
+        this.stepIndex = stepIndex;
     }
 
-    public void setStepIndex(int stepIndex) {
-        this.stepIndex = stepIndex;
+    public int getStepIndex() {
+        return stepIndex;
     }
 
     public abstract boolean isBestSolutionCloningDelayed();
