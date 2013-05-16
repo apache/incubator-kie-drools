@@ -37,6 +37,8 @@ import org.kie.internal.task.api.model.InternalTaskData;
 @Transactional
 public class StartTaskCommand extends TaskCommand<Void> {
 
+	public StartTaskCommand() {
+	}
 
     public StartTaskCommand(long taskId, String userId) {
         this.taskId = taskId;

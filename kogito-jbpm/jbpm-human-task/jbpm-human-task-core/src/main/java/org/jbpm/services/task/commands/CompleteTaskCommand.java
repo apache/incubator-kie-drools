@@ -41,6 +41,9 @@ import org.kie.internal.task.api.model.InternalTaskData;
 public class CompleteTaskCommand extends TaskCommand<Void> {
 
     private Map<String, Object> data;
+    
+    public CompleteTaskCommand() {
+    }
 
     public CompleteTaskCommand(long taskId, String userId, Map<String, Object> data) {
         this.taskId = taskId;
@@ -49,8 +52,11 @@ public class CompleteTaskCommand extends TaskCommand<Void> {
     }
 
     public Void execute(Context cntxt) {
-        
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().complete(taskId, userId, data);
+        	return null;
+        }
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         if(task == null){
             throw new IllegalStateException("There is no Task with the provided Id = "+taskId);
