@@ -59,8 +59,8 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
-        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getStepScope().getPhaseScope();
-        Score lastStepScore = localSearchSolverPhaseScope.getLastCompletedStepScope().getScore();
+        LocalSearchSolverPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
+        Score lastStepScore = phaseScope.getLastCompletedStepScope().getScore();
         Score moveScore = moveScope.getScore();
         if (moveScore.compareTo(lastStepScore) > 0) {
             return true;
