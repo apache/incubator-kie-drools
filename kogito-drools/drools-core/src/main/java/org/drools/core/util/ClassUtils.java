@@ -538,8 +538,9 @@ public final class ClassUtils {
             if (cls == null) {
                 final byte[] clazzBytes = this.map.get( convertClassToResourcePath( name ) );
                 if (clazzBytes != null) {
-                    String pkgName = name.substring( 0,
-                                                     name.lastIndexOf( '.' ) );
+                    int lastDotPos = name.lastIndexOf( '.' );
+                    String pkgName = lastDotPos > 0 ? name.substring( 0, lastDotPos ) : "";
+
                     if (getPackage( pkgName ) == null) {
                         definePackage( pkgName,
                                        "",

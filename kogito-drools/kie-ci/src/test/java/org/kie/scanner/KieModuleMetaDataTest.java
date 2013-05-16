@@ -54,7 +54,6 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
     }
 
     @Test
-    @Ignore("Java Beans currently have to have an explicit package")
     public void testKieModuleMetaDataInMemoryWithJavaClassDefaultPackage() throws Exception {
         final KieServices ks = KieServices.Factory.get();
         final ReleaseId releaseId = ks.newReleaseId( "org.kie", "javaDefaultPackage", "1.0-SNAPSHOT" );

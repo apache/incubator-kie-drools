@@ -86,7 +86,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     public Class<?> getClass(String pkgName, String className) {
         try {
-            return Class.forName(pkgName + "." + className, false, getClassLoader());
+            return Class.forName((pkgName == null || pkgName.trim().length() == 0) ? className : pkgName + "." + className, false, getClassLoader());
         } catch (ClassNotFoundException e) {
             return null;
         }
