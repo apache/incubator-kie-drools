@@ -694,13 +694,13 @@ public class StatefulKnowledgeSessionImpl
 
         public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
                                                  WorkingMemory workingMemory) {
-            listener.afterRuleFlowGroupActivated( new RuleFlowGroupActivatedEventImpl( event.getRuleFlowGroup(),  
+            listener.beforeRuleFlowGroupActivated( new RuleFlowGroupActivatedEventImpl( event.getRuleFlowGroup(),  
                                                                                        ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()  ) );            
         }
 
         public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
                                                    WorkingMemory workingMemory) {
-            listener.afterRuleFlowGroupDeactivated( new RuleFlowGroupDeactivatedEventImpl( event.getRuleFlowGroup(),  
+            listener.beforeRuleFlowGroupDeactivated( new RuleFlowGroupDeactivatedEventImpl( event.getRuleFlowGroup(),  
                                                                                            ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()  ) );            
         }
 
