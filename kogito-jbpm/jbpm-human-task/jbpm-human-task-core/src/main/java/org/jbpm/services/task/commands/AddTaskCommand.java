@@ -42,6 +42,9 @@ public class AddTaskCommand extends TaskCommand<Long> {
     private Task task;
     private Map<String, Object> params;
     private ContentData data;
+    
+    public AddTaskCommand() {
+    }
 
     public AddTaskCommand(Task task, Map<String, Object> params) {
         this.task = task;
@@ -54,8 +57,14 @@ public class AddTaskCommand extends TaskCommand<Long> {
     }
 
     public Long execute(Context cntxt) {
-        
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	if (data != null) {
+        		return context.getTaskService().addTask(task, data);
+        	} else {
+        		return context.getTaskService().addTask(task, params);
+        	}
+        }
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskAddedEvent>() {
         }).fire(task);
         if (params != null) {

@@ -41,6 +41,9 @@ public class FailTaskCommand extends TaskCommand<Void> {
 
     private Map<String, Object> data;
 
+    public FailTaskCommand() {
+    }
+    
     public FailTaskCommand(long taskId, String userId, Map<String, Object> data) {
         this.taskId = taskId;
         this.userId = userId;
@@ -49,6 +52,10 @@ public class FailTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().fail(taskId, userId, data);
+        	return null;
+        }
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         User user = context.getTaskIdentityService().getUserById(userId);
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskFailedEvent>() {

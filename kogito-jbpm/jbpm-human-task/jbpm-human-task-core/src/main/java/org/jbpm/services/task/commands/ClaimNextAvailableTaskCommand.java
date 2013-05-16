@@ -28,6 +28,10 @@ import org.kie.internal.command.Context;
 public class ClaimNextAvailableTaskCommand extends TaskCommand<Void> {
 
     private String language;
+    
+    public ClaimNextAvailableTaskCommand() {
+    }
+    
     public ClaimNextAvailableTaskCommand(String userId, String language) {
         this.userId = userId;
         this.language = language;
@@ -35,6 +39,10 @@ public class ClaimNextAvailableTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().claimNextAvailable(userId, language);
+        	return null;
+        }
         List<TaskSummary> tasks = context.getTaskQueryService().getTasksAssignedAsPotentialOwner(userId, language);
         if(tasks.size() > 0){
             new ClaimTaskCommand(tasks.get(0).getId(), userId).execute(cntxt);

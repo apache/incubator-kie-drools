@@ -45,6 +45,10 @@ import org.kie.internal.task.api.model.InternalTaskData;
 public class NominateTaskCommand extends TaskCommand<Void> {
 
     private List<OrganizationalEntity> potentialOwners;
+    
+    public NominateTaskCommand() {
+    }
+    
     public NominateTaskCommand(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
         this.taskId = taskId;
         this.userId = userId;
@@ -53,6 +57,10 @@ public class NominateTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().nominate(taskId, userId, potentialOwners);
+        	return null;
+        }
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         User user = context.getTaskIdentityService().getUserById(userId);
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskNominatedEvent>() {

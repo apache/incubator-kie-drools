@@ -48,8 +48,9 @@ import org.kie.internal.task.api.model.InternalTaskData;
 @Transactional
 public class DelegateTaskCommand extends TaskCommand<Void> {
 
-   
-
+	public DelegateTaskCommand() {
+	}
+	
     public DelegateTaskCommand(long taskId, String userId, String targetEntityId) {
         this.taskId = taskId;
         this.userId = userId;
@@ -58,6 +59,10 @@ public class DelegateTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().delegate(taskId, userId, targetEntityId);
+        	return null;
+        }
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         User user = context.getTaskIdentityService().getUserById(userId);
         OrganizationalEntity targetEntity = context.getTaskIdentityService()

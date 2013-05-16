@@ -38,6 +38,8 @@ import org.kie.internal.task.api.model.InternalTaskData;
 @Transactional
 public class ExitTaskCommand extends TaskCommand<Void> {
 
+	public ExitTaskCommand() {
+	}
 
     public ExitTaskCommand(long taskId, String userId) {
         this.taskId = taskId;
@@ -46,6 +48,10 @@ public class ExitTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().exit(taskId, userId);
+        	return null;
+        }
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         User user = context.getTaskIdentityService().getUserById(userId);
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskExitedEvent>() {

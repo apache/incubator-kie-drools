@@ -38,6 +38,9 @@ import org.kie.internal.task.api.model.InternalTaskData;
 
 @Transactional
 public class StopTaskCommand extends TaskCommand<Void> {
+	
+	public StopTaskCommand() {
+	}
 
     public StopTaskCommand(long taskId, String userId) {
         this.taskId = taskId;
@@ -46,6 +49,10 @@ public class StopTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().stop(taskId, userId);
+        	return null;
+        }
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         User user = context.getTaskIdentityService().getUserById(userId);
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskStoppedEvent>() {}).fire(task);

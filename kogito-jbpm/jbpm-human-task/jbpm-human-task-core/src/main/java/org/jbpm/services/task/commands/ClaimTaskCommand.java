@@ -43,13 +43,20 @@ import org.kie.internal.task.api.model.InternalTaskData;
 @Transactional
 public class ClaimTaskCommand extends TaskCommand<Void> {
 
-    public ClaimTaskCommand(long taskId, String userId) {
+	public ClaimTaskCommand() {
+	}
+	
+	public ClaimTaskCommand(long taskId, String userId) {
         this.taskId = taskId;
         this.userId = userId;
     }
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().claim(taskId, userId);
+        	return null;
+        }
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         User user = context.getTaskIdentityService().getUserById(userId);
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskClaimedEvent>() {}).fire(task);

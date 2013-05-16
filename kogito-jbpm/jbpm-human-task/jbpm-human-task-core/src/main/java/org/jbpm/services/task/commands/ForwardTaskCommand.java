@@ -51,6 +51,9 @@ import org.kie.internal.task.api.model.InternalTaskData;
  */
 @Transactional
 public class ForwardTaskCommand extends TaskCommand<Void> {
+	
+	public ForwardTaskCommand() {
+	}
 
     public ForwardTaskCommand(long taskId, String userId, String targetEntityId) {
         this.taskId = taskId;
@@ -60,6 +63,10 @@ public class ForwardTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().forward(taskId, userId, targetEntityId);
+        	return null;
+        }
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         User user = context.getTaskIdentityService().getUserById(userId);
         OrganizationalEntity targetEntity = context.getTaskIdentityService().getOrganizationalEntityById(targetEntityId);

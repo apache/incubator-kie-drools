@@ -41,9 +41,9 @@ import org.kie.internal.task.api.model.InternalTaskData;
  */
 @Transactional
 public class ResumeTaskCommand extends TaskCommand<Void> {
-
-    private long taskId;
-    private String userId;
+	
+	public ResumeTaskCommand() {
+	}
 
     public ResumeTaskCommand(long taskId, String userId) {
         this.taskId = taskId;
@@ -52,6 +52,10 @@ public class ResumeTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().resume(taskId, userId);
+        	return null;
+        }
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         User user = context.getTaskIdentityService().getUserById(userId);
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskResumedEvent>() {

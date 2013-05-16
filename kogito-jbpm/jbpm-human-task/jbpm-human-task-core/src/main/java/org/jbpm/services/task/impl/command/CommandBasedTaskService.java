@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.services.task.commands.ActivateTaskCommand;
+import org.jbpm.services.task.commands.AddTaskCommand;
 import org.jbpm.services.task.commands.ClaimNextAvailableTaskCommand;
 import org.jbpm.services.task.commands.ClaimTaskCommand;
 import org.jbpm.services.task.commands.CompleteTaskCommand;
@@ -11,6 +12,15 @@ import org.jbpm.services.task.commands.DelegateTaskCommand;
 import org.jbpm.services.task.commands.ExitTaskCommand;
 import org.jbpm.services.task.commands.FailTaskCommand;
 import org.jbpm.services.task.commands.ForwardTaskCommand;
+import org.jbpm.services.task.commands.GetAttachmentCommand;
+import org.jbpm.services.task.commands.GetContentCommand;
+import org.jbpm.services.task.commands.GetTaskAssignedAsBusinessAdminCommand;
+import org.jbpm.services.task.commands.GetTaskAssignedAsPotentialOwnerCommand;
+import org.jbpm.services.task.commands.GetTaskByWorkItemIdCommand;
+import org.jbpm.services.task.commands.GetTaskCommand;
+import org.jbpm.services.task.commands.GetTasksByProcessInstanceIdCommand;
+import org.jbpm.services.task.commands.GetTasksByStatusByProcessInstanceIdCommand;
+import org.jbpm.services.task.commands.GetTasksOwnedCommand;
 import org.jbpm.services.task.commands.NominateTaskCommand;
 import org.jbpm.services.task.commands.ReleaseTaskCommand;
 import org.jbpm.services.task.commands.ResumeTaskCommand;
@@ -68,48 +78,47 @@ public class CommandBasedTaskService implements TaskService {
 	}
 
 	public Task getTaskByWorkItemId(long workItemId) {
-		throw new UnsupportedOperationException();
+		return executor.execute(new GetTaskByWorkItemIdCommand(workItemId));
 	}
 
 	public Task getTaskById(long taskId) {
-		throw new UnsupportedOperationException();
+		return executor.execute(new GetTaskCommand(taskId));
 	}
 
 	public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(
 			String userId, String language) {
-		throw new UnsupportedOperationException();
+		return executor.execute(new GetTaskAssignedAsBusinessAdminCommand(userId, language));
 	}
 
-	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId,
-			String language) {
-		throw new UnsupportedOperationException();
+	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language) {
+		return executor.execute(new GetTaskAssignedAsPotentialOwnerCommand(userId, language));
 	}
 
 	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(
 			String userId, List<Status> status, String language) {
-		throw new UnsupportedOperationException();
+		return executor.execute(new GetTaskAssignedAsPotentialOwnerCommand(userId, language, status));
 	}
 
 	public List<TaskSummary> getTasksOwned(String userId, String language) {
-		throw new UnsupportedOperationException();
+		return executor.execute(new GetTasksOwnedCommand(userId, language));
 	}
 
 	public List<TaskSummary> getTasksOwnedByStatus(String userId,
 			List<Status> status, String language) {
-		throw new UnsupportedOperationException();
+		return executor.execute(new GetTasksOwnedCommand(userId, language, status));
 	}
 
 	public List<TaskSummary> getTasksByStatusByProcessInstanceId(
 			long processInstanceId, List<Status> status, String language) {
-		throw new UnsupportedOperationException();
+		return executor.execute(new GetTasksByStatusByProcessInstanceIdCommand(processInstanceId, language, status));
 	}
 
 	public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
-		throw new UnsupportedOperationException();
+		return executor.execute(new GetTasksByProcessInstanceIdCommand(processInstanceId));
 	}
 
 	public long addTask(Task task, Map<String, Object> params) {
-		throw new UnsupportedOperationException();
+		return executor.execute(new AddTaskCommand(task, params));
 	}
 
 	public void release(long taskId, String userId) {
@@ -142,11 +151,11 @@ public class CommandBasedTaskService implements TaskService {
 	}
 
 	public Content getContentById(long contentId) {
-		throw new UnsupportedOperationException();
+		return executor.execute(new GetContentCommand(contentId));
 	}
 
 	public Attachment getAttachmentById(long attachId) {
-		throw new UnsupportedOperationException();
+		return executor.execute(new GetAttachmentCommand(attachId));
 	}
 
 }

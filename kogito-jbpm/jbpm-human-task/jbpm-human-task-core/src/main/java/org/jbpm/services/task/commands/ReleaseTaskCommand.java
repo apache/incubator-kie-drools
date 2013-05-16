@@ -43,7 +43,9 @@ import org.kie.internal.task.api.model.InternalTaskData;
 
 @Transactional
 public class ReleaseTaskCommand extends TaskCommand<Void> {
-
+	
+	public ReleaseTaskCommand() {
+	}
 
     public ReleaseTaskCommand(long taskId, String userId) {
         this.taskId = taskId;
@@ -52,6 +54,10 @@ public class ReleaseTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
+        if (context.getTaskService() != null) {
+        	context.getTaskService().release(taskId, userId);
+        	return null;
+        }
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
         User user = context.getTaskIdentityService().getUserById(userId);
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskReleasedEvent>() {}).fire(task);

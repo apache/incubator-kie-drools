@@ -25,6 +25,7 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.World;
+import org.kie.internal.task.api.TaskAttachmentService;
 import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.TaskDefService;
 import org.kie.internal.task.api.TaskIdentityService;
@@ -45,6 +46,8 @@ public class TaskContext implements Context{
     private TaskIdentityService taskIdentityService;
     @Inject
     private TaskContentService taskContentService;
+    @Inject
+    private TaskAttachmentService taskAttachmentService;
     @Inject 
     private Event<Task> taskEvents;
     @Inject @Internal
@@ -91,6 +94,14 @@ public class TaskContext implements Context{
 
     public void setTaskContentService(TaskContentService taskContentService) {
         this.taskContentService = taskContentService;
+    }
+    
+    public TaskAttachmentService getTaskAttachmentService() {
+        return taskAttachmentService;
+    }
+
+    public void setTaskAttachmentService(TaskAttachmentService taskAttachmentService) {
+        this.taskAttachmentService = taskAttachmentService;
     }
     
     public void setTaskQueryService(TaskQueryService taskQueryService) {
