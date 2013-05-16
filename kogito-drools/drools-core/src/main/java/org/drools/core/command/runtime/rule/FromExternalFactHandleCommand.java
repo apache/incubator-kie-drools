@@ -13,6 +13,9 @@ public class FromExternalFactHandleCommand implements GenericCommand<FactHandle>
 
     private String factHandleExternalForm;
     private boolean disconnected;
+    
+    public FromExternalFactHandleCommand() {
+    }
 
     public FromExternalFactHandleCommand(String factHandleExternalForm) {
         this(factHandleExternalForm, false);

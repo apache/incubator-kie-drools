@@ -30,6 +30,9 @@ public class RegisterChannelCommand
 
     private String  name;
     private Channel channel;
+    
+    public RegisterChannelCommand() {
+    }
 
     public RegisterChannelCommand(String name,
                                   Channel channel) {

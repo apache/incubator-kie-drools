@@ -29,6 +29,9 @@ public class GetFactHandleCommand
 
     private Object object;
     private boolean disconnected;
+    
+    public GetFactHandleCommand() {
+    }
 
     public GetFactHandleCommand(Object object) {
         this.object = object;

@@ -16,6 +16,9 @@
 
 package org.drools.core.command.runtime.rule;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DisconnectedFactHandle;
@@ -23,6 +26,7 @@ import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class UpdateCommand
         implements GenericCommand<Object> {
 
@@ -31,6 +35,9 @@ public class UpdateCommand
     private DisconnectedFactHandle handle;
     private Object     object;
     private String     entryPoint;
+    
+    public UpdateCommand() {
+    }
 
     public UpdateCommand(FactHandle handle,
                          Object object) {

@@ -24,18 +24,20 @@ import org.kie.internal.command.Context;
  *
  * @author salaboy
  */
-public class KBuilderSetPropertyCommand implements GenericCommand<Void>{
+public class KBuilderSetPropertyCommand implements GenericCommand<Void> {
+	
     private String kbuilderConfId;
     private String name;
     private String value;
 
+    public KBuilderSetPropertyCommand() {
+    }
+    
     public KBuilderSetPropertyCommand(String kbuilderConfId, String name, String value) {
         this.kbuilderConfId = kbuilderConfId;
         this.name = name;
         this.value = value;
     }
-    
-    
     
     public Void execute(Context context) {
        KnowledgeBuilderConfiguration kconf = (KnowledgeBuilderConfiguration) context.get(kbuilderConfId);
