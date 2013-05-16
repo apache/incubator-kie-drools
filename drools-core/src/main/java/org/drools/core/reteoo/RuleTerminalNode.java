@@ -345,6 +345,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                                  workingMemory, 
                                  activation, 
                                  this );
+
+        ((RuleTerminalNodeLeftTuple)leftTuple).setActivationUnMatchListener(null);
     }
 
 
