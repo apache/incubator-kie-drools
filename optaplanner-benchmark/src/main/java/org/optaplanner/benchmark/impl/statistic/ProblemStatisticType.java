@@ -17,6 +17,7 @@
 package org.optaplanner.benchmark.impl.statistic;
 
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.statistic.acceptedselectedmovecount.AcceptedSelectedMoveCountProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
@@ -30,7 +31,8 @@ public enum ProblemStatisticType implements StatisticType {
     CALCULATE_COUNT_PER_SECOND,
     BEST_SOLUTION_MUTATION,
     @Deprecated IMPROVING_STEP_PERCENTAGE,
-    MEMORY_USE;
+    MEMORY_USE,
+    ACCEPTED_SELECTED_MOVE_COUNT;
 
     public ProblemStatistic create(ProblemBenchmark problemBenchmark) {
         switch (this) {
@@ -46,6 +48,8 @@ public enum ProblemStatisticType implements StatisticType {
                 return new ImprovingStepPercentageProblemStatistic(problemBenchmark);
             case MEMORY_USE:
                 return new MemoryUseProblemStatistic(problemBenchmark);
+            case ACCEPTED_SELECTED_MOVE_COUNT:
+                return new AcceptedSelectedMoveCountProblemStatistic(problemBenchmark); 
             default:
                 throw new IllegalStateException("The problemStatisticType (" + this + ") is not implemented.");
         }
