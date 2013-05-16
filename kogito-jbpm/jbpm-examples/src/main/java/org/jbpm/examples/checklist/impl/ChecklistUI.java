@@ -68,7 +68,7 @@ public class ChecklistUI extends JFrame {
     private ChecklistManager checklistManager;
 	List<ChecklistItem> items = null;
     
-    private JComboBox<String> contexts;
+    private JComboBox contexts;
     private JTable itemTable;
     private JTextField userNameTextField;
     
@@ -119,7 +119,7 @@ public class ChecklistUI extends JFrame {
         c.anchor = GridBagConstraints.WEST;
         panel.add(createButton, c);
         
-        contexts = new JComboBox<String>();
+        contexts = new JComboBox();
         contexts.setPreferredSize(new Dimension(80, 24));
         contexts.setSize(new Dimension(80, 24));
         c = new GridBagConstraints();
