@@ -21,31 +21,92 @@ import java.io.ObjectOutput;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.InternalTaskSummary;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 
+@XmlRootElement(name="taskSummary")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso(value={Status.class})
 public class TaskSummaryImpl implements InternalTaskSummary {
 
+    @XmlElement
+    @XmlSchemaType(name="long")
     private long id;
+    
+    @XmlElement
+    @XmlSchemaType(name="string")
     private String name;
+    
+    @XmlElement
+    @XmlSchemaType(name="string")
     private String subject;
+    
+    @XmlElement
+    @XmlSchemaType(name="string")
     private String description;
+    
+    @XmlElement
     private Status status;
+    
+    @XmlElement
+    @XmlSchemaType(name="int")
     private int priority;
+    
+    @XmlElement
+    @XmlSchemaType(name="boolean")
     private boolean skipable;
+    
+    @XmlElement
+    @XmlJavaTypeAdapter(value=OrganizationalEntityAdapter.class, type=User.class)
     private User actualOwner;
+    
+    @XmlElement
+    @XmlJavaTypeAdapter(value=OrganizationalEntityAdapter.class, type=User.class)
     private User createdBy;
+    
+    @XmlElement
+    @XmlSchemaType(name="dateTime")
     private Date createdOn;
+    
+    @XmlElement
+    @XmlSchemaType(name="dateTime")
     private Date activationTime;
+    
+    @XmlElement
+    @XmlSchemaType(name="dateTime")
     private Date expirationTime;
+    
+    @XmlElement
+    @XmlSchemaType(name="long")
     private long processInstanceId;
+    
+    @XmlElement
+    @XmlSchemaType(name="string")
     private String processId;
+    
+    @XmlElement
+    @XmlSchemaType(name="int")
     private int processSessionId;
+
+    @XmlElement
     private SubTasksStrategy subTaskStrategy;
+    
+    @XmlElement
+    @XmlSchemaType(name="long")
     private long parentId;
+    
+    @XmlElement(name="potentialOwner")
     private List<String> potentialOwners;
 
     public TaskSummaryImpl(long id,
