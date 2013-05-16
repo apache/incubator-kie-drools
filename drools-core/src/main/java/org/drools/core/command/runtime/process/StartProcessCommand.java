@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.command.IdentifiableResult;
@@ -32,9 +33,9 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.command.Context;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class StartProcessCommand implements GenericCommand<ProcessInstance>, IdentifiableResult {

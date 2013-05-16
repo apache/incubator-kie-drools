@@ -32,6 +32,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
@@ -43,7 +44,9 @@ public class StartCorrelatedProcessCommand implements GenericCommand<ProcessInst
 
     @XmlAttribute(required = true)
     private String processId;
-    @XmlAttribute(required = true)
+
+    @XmlElement
+    @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
     private CorrelationKey correlationKey;
 
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)

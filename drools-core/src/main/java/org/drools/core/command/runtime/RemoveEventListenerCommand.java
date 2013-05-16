@@ -31,6 +31,9 @@ public class RemoveEventListenerCommand
     private WorkingMemoryEventListener workingMemoryEventListener = null;
     private AgendaEventListener        agendaEventListener        = null;
     private ProcessEventListener       processEventListener       = null;
+    
+    public RemoveEventListenerCommand() {
+    }
 
     public RemoveEventListenerCommand(WorkingMemoryEventListener listener) {
         this.workingMemoryEventListener = listener;

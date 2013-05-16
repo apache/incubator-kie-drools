@@ -27,6 +27,9 @@ public class GetEntryPointCommand
     GenericCommand<SessionEntryPoint> {
 
     private String name;
+    
+    public GetEntryPointCommand() {
+    }
 
     public GetEntryPointCommand(String name) {
         this.name = name;

@@ -28,6 +28,9 @@ public class UnregisterChannelCommand
     private static final long serialVersionUID = 510l;
     
     private String name;
+    
+    public UnregisterChannelCommand() {
+    }
 
     public UnregisterChannelCommand(String name) {
         this.name = name;
