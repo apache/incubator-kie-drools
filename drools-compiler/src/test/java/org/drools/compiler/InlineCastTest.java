@@ -170,4 +170,31 @@ public class InlineCastTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
+
+    @Test
+    public void testInlineTypeCast() throws Exception {
+        // DROOLS-136
+        String str = "import org.drools.compiler.*;\n" +
+                     "rule R1 when\n" +
+                     " Person( name == \"mark\", address#LongAddress )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person mark1 = new Person("mark");
+        mark1.setAddress(new LongAddress("uk"));
+        ksession.insert(mark1);
+
+        Person mark2 = new Person("mark");
+        ksession.insert(mark2);
+
+        Person mark3 = new Person("mark");
+        mark3.setAddress(new Address());
+        ksession.insert(mark3);
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
 }
