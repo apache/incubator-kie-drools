@@ -16,7 +16,31 @@
 
 package org.kie.internal.task.api.model;
 
+import javax.xml.bind.annotation.XmlEnum;
 
+@XmlEnum
 public enum SubTasksStrategy{
-    NoAction, EndParentOnAllSubTasksEnd, SkipAllSubTasksOnParentSkip
+    NoAction, EndParentOnAllSubTasksEnd, SkipAllSubTasksOnParentSkip;
+    
+    private final String value;
+
+    private SubTasksStrategy() {
+        value = this.name();
+    }
+
+    public String value() {
+        return value;
+    }
+
+    public static SubTasksStrategy fromValue(String newValue) {
+        if (newValue == null) {
+            throw new IllegalArgumentException(newValue);
+        }
+        for (SubTasksStrategy value : SubTasksStrategy.values()) {
+            if (value.value.toLowerCase().equals(newValue.toLowerCase())) {
+                return value;
+            }
+        }
+        throw new IllegalArgumentException(newValue);
+    }
 }
