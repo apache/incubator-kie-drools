@@ -8,15 +8,15 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class RatioTabuSizeStrategyTest {
+public class EntityRatioTabuSizeStrategyTest {
 
     @Test
     public void tabuSize() {
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(mock(DefaultSolverScope.class));
-        when(phaseScope.getWorkingEntityListSize()).thenReturn(20);
+        when(phaseScope.getWorkingEntityCount()).thenReturn(20);
         LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
-        assertEquals(2, new RatioTabuSizeStrategy(0.1).determineTabuSize(stepScope));
-        assertEquals(10, new RatioTabuSizeStrategy(0.5).determineTabuSize(stepScope));
+        assertEquals(2, new EntityRatioTabuSizeStrategy(0.1).determineTabuSize(stepScope));
+        assertEquals(10, new EntityRatioTabuSizeStrategy(0.5).determineTabuSize(stepScope));
     }
 
 }

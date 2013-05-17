@@ -34,8 +34,8 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.EntityTabuAcc
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.ValueTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.EntityRatioTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTabuSizeStrategy;
-import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.RatioTabuSizeStrategy;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 @XStreamAlias("acceptor")
@@ -235,7 +235,7 @@ public class AcceptorConfig {
                 }
                 entityTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(entityTabuSize));
             } else if (entityTabuRatio != null) {
-                entityTabuAcceptor.setTabuSizeStrategy(new RatioTabuSizeStrategy(entityTabuRatio));
+                entityTabuAcceptor.setTabuSizeStrategy(new EntityRatioTabuSizeStrategy(entityTabuRatio));
             }
             if (fadingEntityTabuSize != null) {
                 if (fadingEntityTabuRatio != null) {
@@ -245,7 +245,7 @@ public class AcceptorConfig {
                 }
                 entityTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingEntityTabuSize));
             } else if (fadingEntityTabuRatio != null) {
-                entityTabuAcceptor.setFadingTabuSizeStrategy(new RatioTabuSizeStrategy(fadingEntityTabuRatio));
+                entityTabuAcceptor.setFadingTabuSizeStrategy(new EntityRatioTabuSizeStrategy(fadingEntityTabuRatio));
             }
             if (environmentMode == EnvironmentMode.FULL_ASSERT) {
                 entityTabuAcceptor.setAssertTabuHashCodeCorrectness(true);

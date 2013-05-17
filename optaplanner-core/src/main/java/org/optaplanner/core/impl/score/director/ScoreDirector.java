@@ -101,7 +101,7 @@ public interface ScoreDirector {
     /**
      * @return >= 0
      */
-    int getWorkingEntityListSize();
+    int getWorkingEntityCount();
 
     /**
      * @return never null: an empty list if there are none

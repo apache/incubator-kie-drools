@@ -112,8 +112,8 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getWorkingSolution();
     }
 
-    public int getWorkingEntityListSize() {
-        return solverScope.getWorkingEntityListSize();
+    public int getWorkingEntityCount() {
+        return solverScope.getWorkingEntityCount();
     }
 
     public List<Object> getWorkingEntityList() {

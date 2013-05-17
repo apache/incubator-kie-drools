@@ -226,8 +226,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         resetTrailingEntityMap(); // TODO do not nuke it
     }
 
-    public int getWorkingEntityListSize() {
-        return getSolutionDescriptor().getEntityListSize(workingSolution);
+    public int getWorkingEntityCount() {
+        return getSolutionDescriptor().getEntityCount(workingSolution);
     }
 
     public List<Object> getWorkingEntityList() {

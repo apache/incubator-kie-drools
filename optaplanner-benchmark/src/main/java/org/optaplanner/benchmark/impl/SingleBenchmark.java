@@ -174,7 +174,7 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         calculateCount = solverScope.getCalculateCount();
         score = outputSolution.getScore();
         SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
-        planningEntityCount = solutionDescriptor.getEntityListSize(outputSolution);
+        planningEntityCount = solutionDescriptor.getEntityCount(outputSolution);
         problemBenchmark.registerProblemScale(solutionDescriptor.getProblemScale(outputSolution));
 
         for (SingleStatistic singleStatistic : singleStatisticMap.values()) {

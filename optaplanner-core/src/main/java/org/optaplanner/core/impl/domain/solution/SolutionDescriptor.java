@@ -248,7 +248,7 @@ public class SolutionDescriptor {
      * @param solution never null
      * @return >= 0
      */
-    public int getEntityListSize(Solution solution) {
+    public int getEntityCount(Solution solution) {
         int size = 0;
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
