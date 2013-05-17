@@ -797,7 +797,7 @@ public class StreamsTest extends CommonTestMethodBase {
         KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kBaseConfig.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kBaseConfig, str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         FactType eventType = kbase.getFactType("org.drools.compiler.test", "Event");
 

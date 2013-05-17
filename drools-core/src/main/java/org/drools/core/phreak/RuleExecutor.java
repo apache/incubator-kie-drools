@@ -1,7 +1,7 @@
 package org.drools.core.phreak;
 
-import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -15,6 +15,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.LeftTupleList;
+import org.kie.api.event.rule.MatchCancelledCause;
 
 import java.util.Comparator;
 
@@ -251,6 +252,17 @@ public class RuleExecutor {
         if ( !ruleAgendaItem.isQueued() ) {
             ruleAgendaItem.setSalience(newSalience);
             ruleAgendaItem.getAgendaGroup().add(ruleAgendaItem);
+        }
+    }
+
+    public void cancel(InternalWorkingMemory wm, EventSupport es) {
+        while ( !tupleList.isEmpty() ) {
+            RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) tupleList.removeFirst();
+            if ( queue != null ) {
+                queue.dequeue(rtnLt.getQueueIndex());
+            }
+
+            es.getAgendaEventSupport().fireActivationCancelled( rtnLt, wm, MatchCancelledCause.CLEAR );
         }
     }
 

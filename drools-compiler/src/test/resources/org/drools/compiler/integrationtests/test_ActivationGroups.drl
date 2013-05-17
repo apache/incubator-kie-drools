@@ -21,7 +21,7 @@ rule "rule1"
         list.add( "rule1" );
 end  
 
-rule "rul2"
+rule "rule2"
     when
         Cheese( )
     then
