@@ -979,7 +979,7 @@ public class DefaultAgenda
         }
         RuleFlowGroup ruleFlowGroup = this.ruleFlowGroups.get( name );
         if ( ruleFlowGroup == null ) {
-            ruleFlowGroup = new RuleFlowGroupImpl( name );
+            ruleFlowGroup = new RuleFlowGroupImpl( name, (InternalRuleBase) workingMemory.getRuleBase() );
             ((InternalRuleFlowGroup) ruleFlowGroup).setWorkingMemory( (InternalWorkingMemory) getWorkingMemory() );
             this.ruleFlowGroups.put( name,
                                      ruleFlowGroup );
@@ -988,15 +988,24 @@ public class DefaultAgenda
     }
 
     public void activateRuleFlowGroup(final String name) {
-        ((InternalRuleFlowGroup) getRuleFlowGroup( name )).setActive( true );
+        InternalRuleFlowGroup group =  (InternalRuleFlowGroup) getRuleFlowGroup( name );
+        activateRuleFlowGroup(group, -1, null);
     }
 
     public void activateRuleFlowGroup(final String name,
                                       long processInstanceId,
                                       String nodeInstanceId) {
         InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) getRuleFlowGroup( name );
-        ruleFlowGroup.addNodeInstance( processInstanceId, nodeInstanceId );
-        ruleFlowGroup.setActive( true );
+        activateRuleFlowGroup(ruleFlowGroup, processInstanceId, nodeInstanceId);
+    }
+
+    public void activateRuleFlowGroup(final InternalRuleFlowGroup group, long processInstanceId, String nodeInstanceId) {
+        group.setActive( true );
+        if ( StringUtils.isEmpty( nodeInstanceId ) ) {
+            group.addNodeInstance( processInstanceId, nodeInstanceId );
+            group.setActive( true );
+        }
+        setFocus( (InternalAgendaGroup)  group);
     }
 
     public void deactivateRuleFlowGroup(final String name) {
