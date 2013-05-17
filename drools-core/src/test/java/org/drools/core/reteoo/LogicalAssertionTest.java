@@ -131,8 +131,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = (DefaultFactHandle) workingMemory.insert( "o1" );
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
-                                                        null,
-                                                        true );
+                                                                                node,
+                                                                                true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
@@ -262,8 +262,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
-                                                        null,
-                                                        true );
+                                                                                node,
+                                                                                true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
@@ -374,8 +374,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
-                                                        null,
-                                                        true );
+                                                                                node,
+                                                                                true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
@@ -529,8 +529,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
-                                                        null,
-                                                        true );
+                                                                                node,
+                                                                                true );
 
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.INSERTION,
@@ -564,8 +564,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
                                                                  "cheese" );
         final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple( handle2,
-                                                        null,
-                                                        true );
+                                                                                node2,
+                                                                                true );
 
         node.assertLeftTuple( tuple2,
                               context,
@@ -661,8 +661,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
-                                                        null,
-                                                        true );
+                                                                                node,
+                                                                                true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
@@ -687,8 +687,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
                                                                  "cheese" );
         final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple( handle2,
-                                                        null,
-                                                        true );
+                                                                                node2,
+                                                                                true );
 
         final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
@@ -827,8 +827,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
-                                                        null,
-                                                        true );
+                                                                                node,
+                                                                                true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
@@ -951,8 +951,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( handle1,
-                                                        null,
-                                                        true );
+                                                                                node,
+                                                                                true );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
