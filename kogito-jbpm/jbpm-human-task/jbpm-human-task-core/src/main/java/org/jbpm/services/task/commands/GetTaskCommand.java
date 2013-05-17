@@ -26,8 +26,7 @@ public class GetTaskCommand extends TaskCommand<Task> {
     public Task execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
-        	context.getTaskService().getTaskById(taskId);
-        	return null;
+        	return context.getTaskService().getTaskById(taskId);
         }
         return context.getTaskQueryService().getTaskInstanceById(taskId);
     }

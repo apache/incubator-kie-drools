@@ -17,8 +17,7 @@ public class GetContentCommand extends TaskCommand<Content> {
     public Content execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
-        	context.getTaskService().getContentById(contentId);
-        	return null;
+        	return context.getTaskService().getContentById(contentId);
         }
         return context.getTaskContentService().getContentById(contentId);
     }

@@ -17,8 +17,7 @@ public class GetTaskByWorkItemIdCommand extends TaskCommand<Task> {
     public Task execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
-        	context.getTaskService().getTaskByWorkItemId(workItemId);
-        	return null;
+        	return context.getTaskService().getTaskByWorkItemId(workItemId);
         }
         return context.getTaskQueryService().getTaskByWorkItemId(workItemId);
     }

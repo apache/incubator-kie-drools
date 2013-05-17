@@ -17,8 +17,7 @@ public class GetAttachmentCommand extends TaskCommand<Attachment> {
     public Attachment execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
-        	context.getTaskService().getAttachmentById(attachmentId);
-        	return null;
+        	return context.getTaskService().getAttachmentById(attachmentId);
         }
         return context.getTaskAttachmentService().getAttachmentById(attachmentId);
     }
