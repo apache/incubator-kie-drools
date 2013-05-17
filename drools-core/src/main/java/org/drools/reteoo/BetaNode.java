@@ -703,11 +703,9 @@ public abstract class BetaNode extends LeftTupleSource
                 return new RightTuple( handle,
                                        sink );
             } else {
-                WindowTuple tuple = new WindowTuple( handle,
+                return new WindowTuple( handle,
                                         sink,
                                         context.getActiveWindowTupleList() );
-                context.setActiveWindowTupleList( null );
-                return tuple;
             }
         } else {
             return new ConcurrentRightTuple( handle,
