@@ -3201,11 +3201,11 @@ After in *.java:
             benchmarkConfigTemplate);
 
 [MAJOR] The forager property minimalAcceptedSelection has been renamed to acceptedCountLimit.
-Before in *.xml:
+Before in *Config.xml:
     <forager>
       <minimalAcceptedSelection>1000</minimalAcceptedSelection>
     </forager>
-After in *.xml:
+After in *Config.xml:
     <forager>
       <acceptedCountLimit>1000</acceptedCountLimit>
     </forager>
@@ -3233,4 +3233,24 @@ After in *Score.java:
     }
 
 [MINOR] The LateAcceptanceAcceptor now also accepts any move that improves the current solution.
-If you use <lateAcceptanceSize> in your config, this will impact your results (on average in a good way).
+If you use <lateAcceptanceSize> in your config, this will impact your results (normally in a good way).
+
+[MAJOR] The tabu search acceptor properties planningEntityTabuSize and planningValueTabuSize have been renamed
+to entityTabuSize and valueTabuSize.
+Before in *Config.xml:
+    <acceptor>
+      <planningEntityTabuSize>...</planningEntityTabuSize>
+      <fadingPlanningEntityTabuSize>...</fadingPlanningEntityTabuSize>
+      <planningValueTabuSize>...</planningValueTabuSize>
+      <fadingPlanningValueTabuSize>...</fadingPlanningValueTabuSize>
+    </acceptor>
+After in *Config.xml:
+    <acceptor>
+      <entityTabuSize>...</entityTabuSize>
+      <fadingEntityTabuSize>...</fadingEntityTabuSize>
+      <valueTabuSize>...</valueTabuSize>
+      <fadingValueTabuSize>...</fadingValueTabuSize>
+    </acceptor>
+
+[MINOR] The implementation classes PlanningEntityTabuAcceptor and PlanningValueTabuAcceptor have been renamed
+to EntityTabuAcceptor and ValueTabuAcceptor

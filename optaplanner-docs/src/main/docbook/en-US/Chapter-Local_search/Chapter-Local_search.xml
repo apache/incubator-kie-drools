@@ -347,7 +347,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
             example, for N queens it makes the recently moved queens tabu.</para>
 
             <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;planningEntityTabuSize&gt;7&lt;/planningEntityTabuSize&gt;
+        &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
           </listitem>
 
@@ -356,7 +356,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
             for N queens it makes the recently moved to rows tabu.</para>
 
             <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;planningValueTabuSize&gt;7&lt;/planningValueTabuSize&gt;
+        &lt;valueTabuSize&gt;7&lt;/valueTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
           </listitem>
         </itemizedlist>
@@ -407,7 +407,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
         <programlisting language="xml">    &lt;acceptor&gt;
       &lt;simulatedAnnealingStartingTemperature&gt;10.0&lt;/simulatedAnnealingStartingTemperature&gt;
-      &lt;planningEntityTabuSize&gt;5&lt;/planningEntityTabuSize&gt;
+      &lt;entityTabuSize&gt;5&lt;/entityTabuSize&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
         &lt;acceptedCountLimit&gt;4&lt;/acceptedCountLimit&gt;

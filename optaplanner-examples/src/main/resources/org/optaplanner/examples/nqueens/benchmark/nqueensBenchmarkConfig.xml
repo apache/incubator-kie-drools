@@ -75,7 +75,7 @@
           <selectionOrder>ORIGINAL</selectionOrder>
         </changeMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
+          <entityTabuSize>5</entityTabuSize>
         </acceptor>
         <forager>
         </forager>

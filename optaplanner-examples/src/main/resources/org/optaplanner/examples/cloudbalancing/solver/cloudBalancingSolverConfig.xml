@@ -28,7 +28,7 @@
   </constructionHeuristic>
   <localSearch>
     <acceptor>
-      <planningEntityTabuSize>7</planningEntityTabuSize>
+      <entityTabuSize>7</entityTabuSize>
     </acceptor>
     <forager>
       <acceptedCountLimit>1000</acceptedCountLimit>

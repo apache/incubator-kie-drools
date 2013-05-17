@@ -28,7 +28,7 @@
       <!--<moveListFactoryClass>org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>-->
     <!--</moveListFactory>-->
     <acceptor>
-      <planningEntityTabuSize>5</planningEntityTabuSize>
+      <entityTabuSize>5</entityTabuSize>
     </acceptor>
     <forager>
       <!-- Real world problems require to use of <acceptedCountLimit> -->
@@ -41,7 +41,7 @@
       <!--<swapMoveSelector/>-->
     <!--</unionMoveSelector>-->
     <!--<acceptor>-->
-      <!--<planningEntityTabuSize>11</planningEntityTabuSize>-->
+      <!--<entityTabuSize>11</entityTabuSize>-->
     <!--</acceptor>-->
     <!--<forager>-->
       <!--<acceptedCountLimit>2000</acceptedCountLimit>-->

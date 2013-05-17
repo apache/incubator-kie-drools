@@ -71,7 +71,7 @@
         </unionMoveSelector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
-          <planningEntityTabuSize>11</planningEntityTabuSize>
+          <entityTabuSize>11</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>1100</acceptedCountLimit>

@@ -42,7 +42,7 @@
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>10</planningEntityTabuSize>
+          <entityTabuSize>10</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->

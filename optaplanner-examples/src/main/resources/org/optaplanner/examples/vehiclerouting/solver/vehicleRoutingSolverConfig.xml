@@ -30,7 +30,7 @@
       </subChainSwapMoveSelector>
     </unionMoveSelector>
     <acceptor>
-      <planningEntityTabuSize>9</planningEntityTabuSize>
+      <entityTabuSize>9</entityTabuSize>
     </acceptor>
     <forager>
       <acceptedCountLimit>2000</acceptedCountLimit>

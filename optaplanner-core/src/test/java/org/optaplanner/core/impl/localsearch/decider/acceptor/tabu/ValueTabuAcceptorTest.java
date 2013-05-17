@@ -16,11 +16,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class PlanningValueTabuAcceptorTest {
+public class ValueTabuAcceptorTest {
 
     @Test
     public void tabuSize() {
-        PlanningValueTabuAcceptor acceptor = new PlanningValueTabuAcceptor();
+        ValueTabuAcceptor acceptor = new ValueTabuAcceptor();
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 
@@ -100,7 +100,7 @@ public class PlanningValueTabuAcceptorTest {
 
     @Test
     public void tabuSizeMultipleEntitiesPerStep() {
-        PlanningValueTabuAcceptor acceptor = new PlanningValueTabuAcceptor();
+        ValueTabuAcceptor acceptor = new ValueTabuAcceptor();
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 
@@ -200,7 +200,7 @@ public class PlanningValueTabuAcceptorTest {
 
     @Test
     public void aspiration() {
-        PlanningValueTabuAcceptor acceptor = new PlanningValueTabuAcceptor();
+        ValueTabuAcceptor acceptor = new ValueTabuAcceptor();
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 

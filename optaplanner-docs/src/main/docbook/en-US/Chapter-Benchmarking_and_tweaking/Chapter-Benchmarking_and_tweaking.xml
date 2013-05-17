@@ -93,7 +93,7 @@
           &lt;selectionOrder&gt;ORIGINAL&lt;/selectionOrder&gt;
         &lt;/changeMoveSelector&gt;
         &lt;acceptor&gt;
-          &lt;planningEntityTabuSize&gt;5&lt;/planningEntityTabuSize&gt;
+          &lt;entityTabuSize&gt;5&lt;/entityTabuSize&gt;
         &lt;/acceptor&gt;
         &lt;forager&gt;
           &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
@@ -109,7 +109,7 @@
           &lt;selectionOrder&gt;ORIGINAL&lt;/selectionOrder&gt;
         &lt;/changeMoveSelector&gt;
         &lt;acceptor&gt;
-          &lt;planningValueTabuSize&gt;5&lt;/planningValueTabuSize&gt;
+          &lt;valueTabuSize&gt;5&lt;/valueTabuSize&gt;
         &lt;/acceptor&gt;
         &lt;forager&gt;
           &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
@@ -535,7 +535,7 @@
       <title>Template based benchmarking and matrix benchmarking</title>
 
       <para>Matrix benchmarking is benchmarking a combination of value sets. For example: benchmark 4
-      <literal>planningEntityTabuSize</literal> values (<literal>5</literal>, <literal>7</literal>,
+      <literal>entityTabuSize</literal> values (<literal>5</literal>, <literal>7</literal>,
       <literal>11</literal> and <literal>13</literal>) combined with 3 <literal>acceptedCountLimit</literal>
       values (<literal>500</literal>, <literal>1000</literal> and <literal>2000</literal>), resulting in 12 solver
       configurations.</para>
@@ -551,10 +551,10 @@
     ...
   &lt;/inheritedSolverBenchmark&gt;
 
-&lt;#list [5, 7, 11, 13] as planningEntityTabuSize&gt;
+&lt;#list [5, 7, 11, 13] as entityTabuSize&gt;
 &lt;#list [500, 1000, 2000] as acceptedCountLimit&gt;
   &lt;solverBenchmark&gt;
-    &lt;name&gt;planningEntityTabuSize ${planningEntityTabuSize} acceptedCountLimit ${acceptedCountLimit}&lt;/name&gt;
+    &lt;name&gt;entityTabuSize ${entityTabuSize} acceptedCountLimit ${acceptedCountLimit}&lt;/name&gt;
     &lt;solver&gt;
       &lt;localSearch&gt;
         &lt;unionMoveSelector&gt;
@@ -562,7 +562,7 @@
           &lt;swapMoveSelector/&gt;
         &lt;/unionMoveSelector&gt;
         &lt;acceptor&gt;
-          &lt;planningEntityTabuSize&gt;${planningEntityTabuSize}&lt;/planningEntityTabuSize&gt;
+          &lt;entityTabuSize&gt;${entityTabuSize}&lt;/entityTabuSize&gt;
         &lt;/acceptor&gt;
         &lt;forager&gt;
           &lt;acceptedCountLimit&gt;${acceptedCountLimit}&lt;/acceptedCountLimit&gt;

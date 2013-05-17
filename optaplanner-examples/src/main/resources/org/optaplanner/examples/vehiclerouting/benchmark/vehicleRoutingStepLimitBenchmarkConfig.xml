@@ -36,7 +36,7 @@
           <!-- TODO could use a GenericChainedSwapPartMoveFactory -->
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>9</planningEntityTabuSize>
+          <entityTabuSize>9</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>20000</acceptedCountLimit>

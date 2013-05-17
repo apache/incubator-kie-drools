@@ -84,7 +84,7 @@
           </moveListFactory>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>10</planningEntityTabuSize>
+          <entityTabuSize>10</entityTabuSize>
           <solutionTabuSize>1500</solutionTabuSize>
         </acceptor>
         <forager>
@@ -129,7 +129,7 @@
         </unionMoveSelector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
-          <planningEntityTabuSize>10</planningEntityTabuSize>
+          <entityTabuSize>10</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>1400</acceptedCountLimit>
@@ -206,7 +206,7 @@
         </unionMoveSelector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
-          <planningEntityTabuSize>11</planningEntityTabuSize>
+          <entityTabuSize>11</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>800</acceptedCountLimit>
@@ -250,7 +250,7 @@
         </unionMoveSelector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
+          <entityTabuSize>5</entityTabuSize>
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->

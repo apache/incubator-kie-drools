@@ -26,7 +26,7 @@
       <swapMoveSelector/>
     </unionMoveSelector>
     <acceptor>
-      <planningEntityTabuSize>7</planningEntityTabuSize>
+      <entityTabuSize>7</entityTabuSize>
       <!--<lateAcceptanceSize>2000</lateAcceptanceSize>-->
     </acceptor>
     <forager>

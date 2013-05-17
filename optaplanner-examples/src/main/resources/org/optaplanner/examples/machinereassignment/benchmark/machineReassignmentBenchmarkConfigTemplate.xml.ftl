@@ -57,9 +57,9 @@
     </solver>
   </solverBenchmark>
 <#list [500, 1000, 2000, 4000] as acceptedCountLimit>
-<#list [5, 7, 9, 11] as planningEntityTabuSize>
+<#list [5, 7, 9, 11] as entityTabuSize>
     <solverBenchmark>
-    <name>entityTabu${planningEntityTabuSize}-mas${acceptedCountLimit}</name>
+    <name>entityTabu${entityTabuSize}-mas${acceptedCountLimit}</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
@@ -70,7 +70,7 @@
           <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <planningEntityTabuSize>${planningEntityTabuSize}</planningEntityTabuSize>
+          <entityTabuSize>${entityTabuSize}</entityTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
