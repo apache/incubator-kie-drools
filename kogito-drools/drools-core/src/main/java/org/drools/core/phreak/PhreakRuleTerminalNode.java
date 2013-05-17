@@ -98,6 +98,8 @@ public class PhreakRuleTerminalNode {
             }
         }
 
+        ((DefaultAgenda)wm.getAgenda()).addItemToActivationGroup( rtnLeftTuple );
+
         executor.addLeftTuple(leftTuple);
         leftTuple.increaseActivationCountForEvents(); // increased here, decreased in Agenda's cancelActivation and fireActivation
         if( !rtnNode.isFireDirect() && executor.isDeclarativeAgendaEnabled() ) {

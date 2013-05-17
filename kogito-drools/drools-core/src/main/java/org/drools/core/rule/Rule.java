@@ -31,6 +31,7 @@ import org.drools.core.spi.Salience;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.drools.core.time.impl.Timer;
+import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
 
 import java.io.Externalizable;
@@ -420,6 +421,7 @@ public class Rule
 
     public void setActivationGroup(final String activationGroup) {
         this.activationGroup = activationGroup;
+        this.eager = StringUtils.isEmpty( activationGroup ) ? false : true;
     }
 
     public String getRuleFlowGroup() {

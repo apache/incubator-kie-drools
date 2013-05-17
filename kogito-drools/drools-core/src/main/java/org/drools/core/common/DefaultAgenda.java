@@ -21,6 +21,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.reteoo.LeftTuple;
@@ -332,7 +333,7 @@ public class DefaultAgenda
      * 
      * @param item
      */
-    private void addItemToActivationGroup(final AgendaItem item) {
+    public void addItemToActivationGroup(final AgendaItem item) {
         if ( item.isRuleAgendaItem() ) {
             return;
         }
@@ -567,7 +568,7 @@ public class DefaultAgenda
 
             item.setQueued(true);
             tuple.increaseActivationCountForEvents();
-            fireActivation( item ); // Control rules fire straight away.       
+            fireActivation( item); // Control rules fire straight away.
             return true;
         }
 
@@ -1163,7 +1164,7 @@ public class DefaultAgenda
 
         // cancel all activation groups.
         for ( ActivationGroup group : this.activationGroups.values() ) {
-            clearAndCancelActivationGroup( group );
+            clearAndCancelActivationGroup( group);
         }
 
     }
@@ -1241,7 +1242,7 @@ public class DefaultAgenda
     public void clearAndCancelActivationGroup(final String name) {
         final ActivationGroup activationGroup = this.activationGroups.get( name );
         if ( activationGroup != null ) {
-            clearAndCancelActivationGroup( activationGroup );
+            clearAndCancelActivationGroup( activationGroup);
         }
     }
 
@@ -1264,11 +1265,15 @@ public class DefaultAgenda
                 activation.setQueued(false);
                 activation.remove();
 
-                if ( activation.getActivationNode() != null ) {
-                    final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
-                    ruleFlowGroup.removeActivation( activation );
+                if ( unlinkingEnabled ) {
+                    RuleExecutor ruleExec = ((RuleTerminalNodeLeftTuple)activation).getRuleAgendaItem().getRuleExecutor();
+                    ruleExec.removeLeftTuple((LeftTuple) activation);
+                } else {
+                    if ( activation.getActivationNode() != null ) {
+                        final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
+                        ruleFlowGroup.removeActivation( activation );
+                    }
                 }
-
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( activation,
                                                                               this.workingMemory,
                                                                               MatchCancelledCause.CLEAR );
@@ -1386,7 +1391,7 @@ public class DefaultAgenda
                             // if that item is allowed to fire
                             if ( filter == null || filter.accept( item ) ) {
                                 // fire it
-                                fireActivation( item );
+                                fireActivation( item);
                                 localFireCount++;
                             } else {
                                 // otherwise cancel it and try the next
@@ -1433,9 +1438,11 @@ public class DefaultAgenda
     /**
      * Fire this item.
      * 
+     *
+     *
      * @param activation
      *            The activation to fire
-     * 
+     *
      * @throws ConsequenceException
      *             If an error occurs while attempting to fire the consequence.
      */
@@ -1456,7 +1463,7 @@ public class DefaultAgenda
                 // so lets remove the information now, before the consequence fires
                 final ActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();
                 activationGroup.removeActivation( activation );
-                clearAndCancelActivationGroup( activationGroup );
+                clearAndCancelActivationGroup( activationGroup);
             }
             activation.setQueued(false);
 
@@ -1523,7 +1530,7 @@ public class DefaultAgenda
                                                     boolean saveForLater) throws ConsequenceException {
         //TODO : "save for later" : put activation in queue if halted, then dispatch again on next fire
         if ( !this.halt.get() ) {
-            fireActivation( activation );
+            fireActivation( activation);
             return !this.halt.get();
         } else {
             return false;

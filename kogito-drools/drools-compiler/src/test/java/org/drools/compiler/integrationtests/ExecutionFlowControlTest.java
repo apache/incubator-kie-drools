@@ -29,7 +29,6 @@ import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.RuleFlowGroupImpl;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.event.ActivationCancelledEvent;
 import org.drools.core.event.ActivationCreatedEvent;
 import org.drools.core.event.AgendaEventListener;
@@ -43,7 +42,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -585,41 +583,17 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testActivationGroups() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ActivationGroups.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KnowledgeBase kbase = loadKnowledgeBase("test_ActivationGroups.drl");
+        KieSession ksession = createKnowledgeSession(kbase);
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
         final Cheese brie = new Cheese( "brie", 12 );
-        workingMemory.insert( brie );        
+        ksession.insert( brie );
 
-        DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
-        final ActivationGroup activationGroup0 = agenda.getActivationGroup( "activation-group-0" );
-        assertEquals( 2, activationGroup0.size() );
-
-        final ActivationGroup activationGroup3 = agenda.getActivationGroup( "activation-group-3" );
-        assertEquals( 1, activationGroup3.size() );
-
-        final AgendaGroup agendaGroup3 = agenda.getAgendaGroup( "agenda-group-3" );
-        assertEquals( 1, agendaGroup3.size() );
-
-        final AgendaGroup agendaGroupMain = agenda.getAgendaGroup( "MAIN" );
-        assertEquals( 3, agendaGroupMain.size() );
-
-        workingMemory.clearAgendaGroup( "agenda-group-3" );
-        assertEquals( 0, activationGroup3.size() );
-        assertEquals( 0, agendaGroup3.size() );
-
-        workingMemory.fireAllRules();
-
-        assertEquals( 0, activationGroup0.size() );
+        ksession.fireAllRules();
 
         assertEquals( 2, list.size() );
         assertEquals( "rule0", list.get( 0 ) );

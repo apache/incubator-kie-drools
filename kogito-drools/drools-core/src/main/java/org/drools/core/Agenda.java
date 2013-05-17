@@ -16,6 +16,7 @@
 
 package org.drools.core;
 
+import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ActivationGroup;
 import org.drools.core.spi.AgendaGroup;
@@ -122,8 +123,9 @@ public interface Agenda extends org.kie.api.runtime.rule.Agenda {
     /**
      * Clears all Activations from an Activation Group. Any Activations that are also in an Agenda Group are removed
      * from the Agenda Group.
-     * 
+     *
      * @param activationGroup
+     *
      */
     public void clearAndCancelActivationGroup(ActivationGroup activationGroup);
     
