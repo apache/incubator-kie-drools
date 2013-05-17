@@ -52,7 +52,9 @@ public class AcceptorConfig {
     protected Integer fadingEntityTabuSize = null;
     protected Double fadingEntityTabuRatio = null;
     protected Integer valueTabuSize = null;
+    protected Integer valueTabuRatio = null;
     protected Integer fadingValueTabuSize = null;
+    protected Integer fadingValueTabuRatio = null;
     protected Integer moveTabuSize = null;
     protected Integer fadingMoveTabuSize = null;
     protected Integer undoMoveTabuSize = null;
@@ -123,12 +125,28 @@ public class AcceptorConfig {
         this.valueTabuSize = valueTabuSize;
     }
 
+    public Integer getValueTabuRatio() {
+        return valueTabuRatio;
+    }
+
+    public void setValueTabuRatio(Integer valueTabuRatio) {
+        this.valueTabuRatio = valueTabuRatio;
+    }
+
     public Integer getFadingValueTabuSize() {
         return fadingValueTabuSize;
     }
 
     public void setFadingValueTabuSize(Integer fadingValueTabuSize) {
         this.fadingValueTabuSize = fadingValueTabuSize;
+    }
+
+    public Integer getFadingValueTabuRatio() {
+        return fadingValueTabuRatio;
+    }
+
+    public void setFadingValueTabuRatio(Integer fadingValueTabuRatio) {
+        this.fadingValueTabuRatio = fadingValueTabuRatio;
     }
 
     public Integer getMoveTabuSize() {
@@ -361,48 +379,37 @@ public class AcceptorConfig {
                 }
             }
         }
-        if (entityTabuSize == null) {
-            entityTabuSize = inheritedConfig.getEntityTabuSize();
-        }
-        if (fadingEntityTabuSize == null) {
-            fadingEntityTabuSize = inheritedConfig.getFadingEntityTabuSize();
-        }
-        if (valueTabuSize == null) {
-            valueTabuSize = inheritedConfig.getValueTabuSize();
-        }
-        if (fadingValueTabuSize == null) {
-            fadingValueTabuSize = inheritedConfig.getFadingValueTabuSize();
-        }
-        if (moveTabuSize == null) {
-            moveTabuSize = inheritedConfig.getMoveTabuSize();
-        }
-        if (fadingMoveTabuSize == null) {
-            fadingMoveTabuSize = inheritedConfig.getFadingMoveTabuSize();
-        }
-        if (undoMoveTabuSize == null) {
-            undoMoveTabuSize = inheritedConfig.getUndoMoveTabuSize();
-        }
-        if (fadingUndoMoveTabuSize == null) {
-            fadingUndoMoveTabuSize = inheritedConfig.getFadingUndoMoveTabuSize();
-        }
-        if (solutionTabuSize == null) {
-            solutionTabuSize = inheritedConfig.getSolutionTabuSize();
-        }
-        if (fadingSolutionTabuSize == null) {
-            fadingSolutionTabuSize = inheritedConfig.getFadingSolutionTabuSize();
-        }
-        if (simulatedAnnealingStartingTemperature == null) {
-            simulatedAnnealingStartingTemperature = inheritedConfig.getSimulatedAnnealingStartingTemperature();
-        }
-        if (greatDelugeWaterLevelUpperBoundRate == null) {
-            greatDelugeWaterLevelUpperBoundRate = inheritedConfig.getGreatDelugeWaterLevelUpperBoundRate();
-        }
-        if (greatDelugeWaterRisingRate == null) {
-            greatDelugeWaterRisingRate = inheritedConfig.getGreatDelugeWaterRisingRate();
-        }
-        if (lateAcceptanceSize == null) {
-            lateAcceptanceSize = inheritedConfig.getLateAcceptanceSize();
-        }
+        entityTabuSize = ConfigUtils.inheritOverwritableProperty(entityTabuSize, inheritedConfig.getEntityTabuSize());
+        entityTabuRatio = ConfigUtils.inheritOverwritableProperty(entityTabuRatio, inheritedConfig.getEntityTabuRatio());
+        fadingEntityTabuSize = ConfigUtils.inheritOverwritableProperty(fadingEntityTabuSize,
+                inheritedConfig.getFadingEntityTabuSize());
+        fadingEntityTabuRatio = ConfigUtils.inheritOverwritableProperty(fadingEntityTabuRatio,
+                inheritedConfig.getFadingEntityTabuRatio());
+        valueTabuSize = ConfigUtils.inheritOverwritableProperty(valueTabuSize, inheritedConfig.getValueTabuSize());
+        valueTabuRatio = ConfigUtils.inheritOverwritableProperty(valueTabuRatio, inheritedConfig.getValueTabuRatio());
+        fadingValueTabuSize = ConfigUtils.inheritOverwritableProperty(fadingValueTabuSize,
+                inheritedConfig.getFadingValueTabuSize());
+        fadingValueTabuRatio = ConfigUtils.inheritOverwritableProperty(fadingValueTabuRatio,
+                inheritedConfig.getFadingValueTabuRatio());
+        moveTabuSize = ConfigUtils.inheritOverwritableProperty(moveTabuSize, inheritedConfig.getMoveTabuSize());
+        fadingMoveTabuSize = ConfigUtils.inheritOverwritableProperty(fadingMoveTabuSize,
+                inheritedConfig.getFadingMoveTabuSize());
+        undoMoveTabuSize = ConfigUtils.inheritOverwritableProperty(undoMoveTabuSize,
+                inheritedConfig.getUndoMoveTabuSize());
+        fadingUndoMoveTabuSize = ConfigUtils.inheritOverwritableProperty(fadingUndoMoveTabuSize,
+                inheritedConfig.getFadingUndoMoveTabuSize());
+        solutionTabuSize = ConfigUtils.inheritOverwritableProperty(solutionTabuSize,
+                inheritedConfig.getSolutionTabuSize());
+        fadingSolutionTabuSize = ConfigUtils.inheritOverwritableProperty(fadingSolutionTabuSize,
+                inheritedConfig.getFadingSolutionTabuSize());
+        simulatedAnnealingStartingTemperature = ConfigUtils.inheritOverwritableProperty(
+                simulatedAnnealingStartingTemperature, inheritedConfig.getSimulatedAnnealingStartingTemperature());
+        greatDelugeWaterLevelUpperBoundRate = ConfigUtils.inheritOverwritableProperty(
+                greatDelugeWaterLevelUpperBoundRate, inheritedConfig.getGreatDelugeWaterLevelUpperBoundRate());
+        greatDelugeWaterRisingRate = ConfigUtils.inheritOverwritableProperty(greatDelugeWaterRisingRate,
+                inheritedConfig.getGreatDelugeWaterRisingRate());
+        lateAcceptanceSize = ConfigUtils.inheritOverwritableProperty(lateAcceptanceSize,
+                inheritedConfig.getLateAcceptanceSize());
     }
 
     public static enum AcceptorType {
