@@ -29,7 +29,7 @@ public class GetTasksOwnedCommand extends TaskCommand<List<TaskSummary>> {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
         	if (status == null) {
-        		return context.getTaskService().getTasksOwned(language, language);
+        		return context.getTaskService().getTasksOwned(userId, language);
         	} else {
         		return context.getTaskService().getTasksOwnedByStatus(userId, status, language);
         	}

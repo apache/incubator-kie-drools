@@ -29,7 +29,7 @@ public class GetTaskAssignedAsPotentialOwnerCommand extends TaskCommand<List<Tas
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
         	if (status == null) {
-        		return context.getTaskService().getTasksAssignedAsPotentialOwner(language, language);
+        		return context.getTaskService().getTasksAssignedAsPotentialOwner(userId, language);
         	} else {
         		return context.getTaskService().getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
         	}
