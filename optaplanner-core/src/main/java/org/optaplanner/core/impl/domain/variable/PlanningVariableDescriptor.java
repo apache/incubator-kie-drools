@@ -264,8 +264,8 @@ public class PlanningVariableDescriptor {
         return valueSorter;
     }
 
-    public long getProblemScale(Solution solution, Object entity) {
-        return valueRangeDescriptor.getProblemScale(solution, entity);
+    public long getValueCount(Solution solution, Object entity) {
+        return valueRangeDescriptor.getValueCount(solution, entity);
     }
 
     @Override

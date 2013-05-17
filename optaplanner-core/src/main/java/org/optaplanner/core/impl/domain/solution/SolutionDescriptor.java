@@ -249,19 +249,19 @@ public class SolutionDescriptor {
      * @return >= 0
      */
     public int getEntityCount(Solution solution) {
-        int size = 0;
+        int entityCount = 0;
         for (PropertyAccessor entityPropertyAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extractPlanningEntity(entityPropertyAccessor, solution);
             if (entity != null) {
-                size++;
+                entityCount++;
             }
         }
         for (PropertyAccessor entityCollectionPropertyAccessor : entityCollectionPropertyAccessorMap.values()) {
             Collection<?> entityCollection = extractPlanningEntityCollection(
                     entityCollectionPropertyAccessor, solution);
-            size += entityCollection.size();
+            entityCount += entityCollection.size();
         }
-        return size;
+        return entityCount;
     }
 
     public List<Object> getEntityList(Solution solution) {
@@ -301,6 +301,17 @@ public class SolutionDescriptor {
             }
         }
         return entityList;
+    }
+
+    /**
+     * @param solution never null
+     * @return >= 0
+     */
+    public int getValueCount(Solution solution) {
+        int valueCount = 0;
+        // TODO FIXME
+        throw new UnsupportedOperationException("getValueCount not yet supported");
+        // return valueCount;
     }
 
     /**

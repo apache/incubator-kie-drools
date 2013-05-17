@@ -28,7 +28,7 @@ public interface PlanningValueRangeDescriptor {
 
     Collection<?> extractValuesWithFiltering(Solution solution, Object planningEntity);
 
-    long getProblemScale(Solution solution, Object planningEntity);
+    long getValueCount(Solution solution, Object planningEntity);
 
     boolean isValuesCacheable();
 

@@ -108,6 +108,11 @@ public interface ScoreDirector {
      */
     List<Object> getWorkingEntityList();
 
+    /**
+     * @return >= 0
+     */
+    int getWorkingValueCount();
+
     int countWorkingSolutionUninitializedVariables();
 
     /**

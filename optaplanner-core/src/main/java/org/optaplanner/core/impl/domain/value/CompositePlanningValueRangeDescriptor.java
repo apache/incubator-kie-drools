@@ -71,10 +71,10 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
         return values;
     }
 
-    public long getProblemScale(Solution solution, Object planningEntity) {
+    public long getValueCount(Solution solution, Object planningEntity) {
         long problemScale = 0L;
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            problemScale += valueRangeDescriptor.getProblemScale(solution, planningEntity);
+            problemScale += valueRangeDescriptor.getValueCount(solution, planningEntity);
         }
         return problemScale;
     }

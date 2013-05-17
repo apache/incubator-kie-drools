@@ -75,7 +75,7 @@ public class UndefinedPlanningValueRangeDescriptor extends AbstractPlanningValue
                 + ") which uses a @ValueRangeUndefined.");
     }
 
-    public long getProblemScale(Solution solution, Object planningEntity) {
+    public long getValueCount(Solution solution, Object planningEntity) {
         // Return 1, so the problem scale becomes the planning entity count. This is not perfect.
         return 1L;
     }

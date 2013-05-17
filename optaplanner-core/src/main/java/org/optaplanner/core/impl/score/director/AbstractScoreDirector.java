@@ -234,6 +234,10 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return getSolutionDescriptor().getEntityList(workingSolution);
     }
 
+    public int getWorkingValueCount() {
+        return getSolutionDescriptor().getValueCount(workingSolution);
+    }
+
     public int countWorkingSolutionUninitializedVariables() {
         return getSolutionDescriptor().countUninitializedVariables(workingSolution);
     }

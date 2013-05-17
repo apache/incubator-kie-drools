@@ -195,7 +195,7 @@ public class PlanningEntityDescriptor {
     public long getProblemScale(Solution solution, Object planningEntity) {
         long problemScale = 1L;
         for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptorMap.values()) {
-            problemScale *= variableDescriptor.getProblemScale(solution, planningEntity);
+            problemScale *= variableDescriptor.getValueCount(solution, planningEntity);
         }
         return problemScale;
     }

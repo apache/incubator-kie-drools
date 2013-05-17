@@ -107,7 +107,7 @@ public class FromSolutionPropertyPlanningValueRangeDescriptor extends AbstractPl
         return (Collection<?>) rangePropertyAccessor.executeGetter(solution);
     }
 
-    public long getProblemScale(Solution solution, Object planningEntity) {
+    public long getValueCount(Solution solution, Object planningEntity) {
         return extractValuesWithoutFiltering(solution).size();
     }
 

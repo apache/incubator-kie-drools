@@ -36,6 +36,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.ValueTabuAcce
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.EntityRatioTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTabuSizeStrategy;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.ValueRatioTabuSizeStrategy;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 @XStreamAlias("acceptor")
@@ -248,8 +249,7 @@ public class AcceptorConfig {
             if (entityTabuSize != null) {
                 if (entityTabuRatio != null) {
                     throw new IllegalArgumentException("The acceptor cannot have both entityTabuSize ("
-                            + entityTabuSize + ") and entityTabuRatio ("
-                            + entityTabuRatio + ").");
+                            + entityTabuSize + ") and entityTabuRatio (" + entityTabuRatio + ").");
                 }
                 entityTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(entityTabuSize));
             } else if (entityTabuRatio != null) {
@@ -271,8 +271,29 @@ public class AcceptorConfig {
             acceptorList.add(entityTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_VALUE_TABU))
-                || valueTabuSize != null || fadingValueTabuSize != null) {
+                || valueTabuSize != null || valueTabuRatio != null
+                || fadingValueTabuSize != null  || fadingValueTabuRatio != null) {
             ValueTabuAcceptor valueTabuAcceptor = new ValueTabuAcceptor();
+            if (valueTabuSize != null) {
+                if (valueTabuRatio != null) {
+                    throw new IllegalArgumentException("The acceptor cannot have both valueTabuSize ("
+                            + valueTabuSize + ") and valueTabuRatio (" + valueTabuRatio + ").");
+                }
+                valueTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(valueTabuSize));
+            } else if (valueTabuRatio != null) {
+                valueTabuAcceptor.setTabuSizeStrategy(new ValueRatioTabuSizeStrategy(valueTabuRatio));
+            }
+            if (fadingValueTabuSize != null) {
+                if (fadingValueTabuRatio != null) {
+                    throw new IllegalArgumentException("The acceptor cannot have both fadingValueTabuSize ("
+                            + fadingValueTabuSize + ") and fadingValueTabuRatio ("
+                            + fadingValueTabuRatio + ").");
+                }
+                valueTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingValueTabuSize));
+            } else if (fadingValueTabuRatio != null) {
+                valueTabuAcceptor.setFadingTabuSizeStrategy(new ValueRatioTabuSizeStrategy(fadingValueTabuRatio));
+            }
+
             if (valueTabuSize != null) {
                 valueTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(valueTabuSize));
             }

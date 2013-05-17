@@ -120,6 +120,10 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getWorkingEntityList();
     }
 
+    public int getWorkingValueCount() {
+        return solverScope.getWorkingValueCount();
+    }
+
     public Score calculateScore() {
         return solverScope.calculateScore();
     }

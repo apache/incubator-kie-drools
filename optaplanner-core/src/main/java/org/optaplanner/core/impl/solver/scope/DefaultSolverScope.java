@@ -93,6 +93,10 @@ public class DefaultSolverScope {
         return scoreDirector.getWorkingEntityList();
     }
 
+    public int getWorkingValueCount() {
+        return scoreDirector.getWorkingValueCount();
+    }
+
     public Score calculateScore() {
         return scoreDirector.calculateScore();
     }
