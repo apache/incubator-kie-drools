@@ -489,4 +489,97 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertTrue(list.contains(new BigDecimal(5)));
     }
 
+    @Test
+    public void testPRWithCollections() {
+        // DROOLS-135
+        String str1 = "package org.test;\n" +
+                      "import java.util.*\n" +
+                      "\n" +
+                      "global List list;\n" +
+                      "" +
+                      "declare java.util.ArrayList end \n" +
+                      "" +
+                      "declare MyList extends java.util.ArrayList \n" +
+                      "end\n" +
+                      "\n" +
+                      "declare Bean\n" +
+                      "@propertyReactive\n" +
+                      " id : int\n" +
+                      " num : int\n" +
+                      " values : MyList \n" +
+                      " checks : Map \n" +
+                      " str : String\n" +
+                      "end\n" +
+                      "\n" +
+                      "\n" +
+                      "rule Init\n" +
+                      "when\n" +
+                      "then\n" +
+                      " insert( new Bean( 42, 0, new MyList(), new HashMap(), \"\" ) );\n" +
+                      "end\n" +
+                      "\n" +
+                      "rule M1\n" +
+                      "when\n" +
+                      " $b : Bean( id == 42 )\n" +
+                      "then\n" +
+                      " System.out.println( 1 ); \n" +
+                      " list.add( 1 ); \n" +
+                      " modify ( $b ) { setNum( 1 ); }\n" +
+                      "end\n" +
+                      "\n" +
+                      "rule M2\n" +
+                      "when\n" +
+                      " $b : Bean( num == 1 )\n" +
+                      "then\n" +
+                      " System.out.println( 2 ); \n" +
+                      " list.add( 2 ); \n" +
+                      " modify ( $b ) { getValues().add( \"foo\" ); }\n" +
+                      "end\n" +
+                      "\n" +
+                      "rule M3\n" +
+                      "when\n" +
+                      " $b : Bean( values contains \"foo\" )\n" +
+                      "then\n" +
+                      " System.out.println( 3 ); \n" +
+                      " list.add( 3 ); \n" +
+                      " modify ( $b ) { setStr( \"x\" ); }\n" +
+                      "end\n" +
+                      " \n " +
+                      "rule M4\n" +
+                      "when\n" +
+                      " $b : Bean( str == \"x\" )\n" +
+                      "then\n" +
+                      " System.out.println( 4 ); \n" +
+                      " list.add( 4 ); \n" +
+                      " modify ( $b ) { getChecks().put( \"x\", 13 ); }\n" +
+                      "end\n" +
+                      "\n" +
+                      "rule M5\n" +
+                      "when\n" +
+                      " $b : Bean( checks[ \"x\" ] > 10 )\n" +
+                      "then\n" +
+                      " System.out.println( 5 ); \n" +
+                      " list.add( 5 ); \n" +
+                      " modify ( $b ) { getChecks().clear(); }\n" +
+                      "end\n" +
+                      "\n" +
+                      "rule Log\n" +
+                      "salience 1\n" +
+                      "when\n" +
+                      " $b : Bean() @watch( values, checks ) \n" +
+                      "then\n" +
+                      " System.out.println( \"Log >> \" + $b );\n" +
+                      " list.add( 0 );\n" +
+                      "end";
+
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 0, 1, 2, 0, 3, 4, 0, 5, 0 ), list );
+
+    }
 }
