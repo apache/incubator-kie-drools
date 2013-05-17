@@ -52,10 +52,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.drools.core.util.ClassUtils.findClass;
+import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
-import static org.drools.core.util.StringUtils.extractFirstIdentifier;
-import static org.drools.core.util.StringUtils.splitArgumentsList;
-import static org.drools.core.util.StringUtils.splitStatements;
+import static org.drools.core.util.StringUtils.*;
 
 public final class DialectUtil {
 
@@ -713,9 +712,14 @@ public final class DialectUtil {
             String methodName = exprStr.substring(0, endMethodName).trim();
             String propertyName = setter2property(methodName);
 
-            String methodParams = exprStr.substring(endMethodName+1, exprStr.lastIndexOf(')')).trim();
+            int endMethodArgs = findEndMethodArgs(exprStr, endMethodName);
+            String methodParams = exprStr.substring(endMethodName+1, endMethodArgs).trim();
             List<String> args = splitArgumentsList(methodParams);
             int argsNr = args.size();
+
+            if (propertyName == null && exprStr.length() > endMethodArgs+1 && exprStr.substring(endMethodArgs+1).trim().startsWith(".")) {
+                propertyName = getter2property(methodName);
+            }
 
             if (propertyName != null) {
                 modificationMask = updateModificationMask(settableProperties, propertyReactive, modificationMask, propertyName);
