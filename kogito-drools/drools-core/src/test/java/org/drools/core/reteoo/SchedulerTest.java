@@ -97,8 +97,9 @@ public class SchedulerTest extends DroolsTestCase {
                                                                        null );
 
         final RuleTerminalNodeLeftTuple tuple = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
-                                                                      "cheese" ), null,
-                                                                      true  );
+                                                                                                      "cheese" ),
+                                                                               node,
+                                                                               true  );
 
         assertEquals( 0,
                       data.size() );
@@ -146,8 +147,9 @@ public class SchedulerTest extends DroolsTestCase {
                                                                                     ( RuleTerminalNodeLeftTuple ) knowledgeHelper.getTuple(),
                                                                                     null );
                     final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 2,
-                                                                                   "cheese" ), null,
-                                                                                   true  );
+                                                                                                                   "cheese" ),
+                                                                                            node,
+                                                                                            true  );
                     node.assertLeftTuple( tuple2,
                                       context2,
                                       (ReteooWorkingMemory) workingMemory );
@@ -174,8 +176,9 @@ public class SchedulerTest extends DroolsTestCase {
                                                                         null );
 
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ), null,
-                                                                       true  );
+                                                                                                       "cheese" ),
+                                                                                node,
+                                                                                true  );
         rule.setTimer( new DurationTimer(50) );
 
         node.assertLeftTuple( tuple1,
@@ -230,8 +233,9 @@ public class SchedulerTest extends DroolsTestCase {
                                                                                     ( RuleTerminalNodeLeftTuple ) knowledgeHelper.getTuple(),
                                                                                     null );
                     final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 2,
-                                                                                   "cheese" ), null,
-                                                                                   true  );
+                                                                                                                   "cheese" ),
+                                                                                            node,
+                                                                                            true  );
                     node.assertLeftTuple( tuple2,
                                       context2,
                                       (ReteooWorkingMemory) workingMemory );
@@ -258,8 +262,9 @@ public class SchedulerTest extends DroolsTestCase {
                                                                         null );
 
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
-                                                                       "cheese" ), null,
-                                                                       true  );
+                                                                                                       "cheese" ),
+                                                                                node,
+                                                                                true  );
         node.assertLeftTuple( tuple1,
                           context1,
                           workingMemory );
