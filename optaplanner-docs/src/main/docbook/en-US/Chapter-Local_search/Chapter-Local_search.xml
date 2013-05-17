@@ -370,8 +370,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
         <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
         with the exception of solution tabu, if you pick a too large tabu size, your solver can get stuck by bouncing of
-        the walls. Use the benchmarker to fine tweak your configuration. Experiments teach us that it is generally best
-        to use a prime number for the move tabu, undo move tabu, entity tabu or value tabu size.</para>
+        the walls. Use the benchmarker to fine tweak your configuration.</para>
 
         <para>A tabu search acceptor should be combined with a high <literal>acceptedCountLimit</literal>,
         such as <literal>1000</literal>.</para>
