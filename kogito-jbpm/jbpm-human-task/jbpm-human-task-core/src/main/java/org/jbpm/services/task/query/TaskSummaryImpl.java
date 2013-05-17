@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.services.task.query.xml.OrganizationalEntityXmlAdapter;
+import org.jbpm.services.task.query.xml.UserXmlAdapter;
 import org.jbpm.services.task.query.xml.StatusXmlAdapter;
 import org.jbpm.services.task.query.xml.SubTasksStrategyXmlAdapter;
 import org.kie.api.task.model.Status;
@@ -72,11 +72,11 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     private boolean skipable;
     
     @XmlElement
-    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class, type=User.class)
+    @XmlJavaTypeAdapter(value=UserXmlAdapter.class, type=User.class)
     private User actualOwner;
     
     @XmlElement
-    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class, type=User.class)
+    @XmlJavaTypeAdapter(value=UserXmlAdapter.class, type=User.class)
     private User createdBy;
     
     @XmlElement
