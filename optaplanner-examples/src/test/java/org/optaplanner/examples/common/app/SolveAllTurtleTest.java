@@ -30,7 +30,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.termination.TerminationConfig;
 import org.optaplanner.core.impl.solution.Solution;
@@ -104,12 +106,23 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         bestSolution = buildAndSolve(solverFactory, EnvironmentMode.FULL_ASSERT, bestSolution);
     }
 
-    private Solution buildAndSolve(SolverFactory solverFactory, EnvironmentMode environmentMode, Solution solution) {
-        solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
+    protected Solution buildAndSolve(SolverFactory solverFactory, EnvironmentMode environmentMode, Solution solution) {
+        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        solverConfig.setEnvironmentMode(environmentMode);
+        ScoreDirectorFactoryConfig assertionScoreDirectorFactory = createOverwritingAssertionScoreDirectorFactory();
+        if (assertionScoreDirectorFactory != null
+                && (environmentMode == EnvironmentMode.FULL_ASSERT || environmentMode == EnvironmentMode.FAST_ASSERT)) {
+            solverConfig.getScoreDirectorFactoryConfig().setAssertionScoreDirectorFactory(
+                    assertionScoreDirectorFactory);
+        }
         Solver solver = solverFactory.buildSolver();
         solver.setPlanningProblem(solution);
         solver.solve();
         return solver.getBestSolution();
+    }
+
+    protected ScoreDirectorFactoryConfig createOverwritingAssertionScoreDirectorFactory()  {
+        return null;
     }
 
     protected SolverFactory buildSolverFactory() {

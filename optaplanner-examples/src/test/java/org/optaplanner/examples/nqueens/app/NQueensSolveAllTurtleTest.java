@@ -20,9 +20,11 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.examples.common.app.SolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
+import org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator;
 
 public class NQueensSolveAllTurtleTest extends SolveAllTurtleTest {
 
@@ -38,6 +40,13 @@ public class NQueensSolveAllTurtleTest extends SolveAllTurtleTest {
     @Override
     protected String createSolverConfigResource() {
         return "/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
+    }
+
+    @Override
+    protected ScoreDirectorFactoryConfig createOverwritingAssertionScoreDirectorFactory() {
+        ScoreDirectorFactoryConfig assertionScoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        assertionScoreDirectorFactoryConfig.setSimpleScoreCalculatorClass(NQueensSimpleScoreCalculator.class);
+        return assertionScoreDirectorFactoryConfig;
     }
 
     @Override

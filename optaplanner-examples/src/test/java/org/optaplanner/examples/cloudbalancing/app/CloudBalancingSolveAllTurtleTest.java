@@ -20,9 +20,12 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
+import org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingMapBasedSimpleScoreCalculator;
 import org.optaplanner.examples.common.app.SolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator;
 
 public class CloudBalancingSolveAllTurtleTest extends SolveAllTurtleTest {
 
@@ -38,6 +41,14 @@ public class CloudBalancingSolveAllTurtleTest extends SolveAllTurtleTest {
     @Override
     protected String createSolverConfigResource() {
         return "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml";
+    }
+
+    @Override
+    protected ScoreDirectorFactoryConfig createOverwritingAssertionScoreDirectorFactory() {
+        ScoreDirectorFactoryConfig assertionScoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        assertionScoreDirectorFactoryConfig.setSimpleScoreCalculatorClass(
+                CloudBalancingMapBasedSimpleScoreCalculator.class);
+        return assertionScoreDirectorFactoryConfig;
     }
 
     @Override
