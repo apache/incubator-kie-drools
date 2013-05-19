@@ -1,4 +1,4 @@
-package org.jbpm.services.task.query.xml;
+package org.jbpm.services.task.impl.model.xml.adapter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -8,12 +8,18 @@ public class SubTasksStrategyXmlAdapter extends XmlAdapter<String, SubTasksStrat
 
     @Override
     public String marshal(SubTasksStrategy v) throws Exception {
+        if( v != null ) { 
         return v.name();
+        }
+        return null;
     }
 
     @Override
     public SubTasksStrategy unmarshal(String v) throws Exception {
-        return SubTasksStrategy.valueOf(SubTasksStrategy.class, v);
+        if( v != null ) { 
+            return SubTasksStrategy.valueOf(SubTasksStrategy.class, v);
+        } 
+        return null;
     }
 
 }

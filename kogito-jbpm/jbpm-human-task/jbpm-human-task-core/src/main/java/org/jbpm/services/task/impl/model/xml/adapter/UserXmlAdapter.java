@@ -1,11 +1,8 @@
-package org.jbpm.services.task.query.xml;
+package org.jbpm.services.task.impl.model.xml.adapter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.kie.api.task.model.Group;
-import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 
 public class UserXmlAdapter extends XmlAdapter<String, User> {
