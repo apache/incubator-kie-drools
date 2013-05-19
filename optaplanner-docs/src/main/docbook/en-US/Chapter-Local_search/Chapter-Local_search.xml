@@ -344,10 +344,18 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
           <listitem>
             <para><emphasis>Planning entity tabu</emphasis> makes the planning entities of recent steps tabu. For
-            example, for N queens it makes the recently moved queens tabu.</para>
+            example, for N queens it makes the recently moved queens tabu. It's recommended to start with this tabu
+            type.</para>
 
             <programlisting language="xml">    &lt;acceptor&gt;
         &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+
+            <para>To avoid hard coding the tabu size, configure a tabu ratio, relative to the number of entities, for
+            example 2%:</para>
+
+            <programlisting language="xml">    &lt;acceptor&gt;
+        &lt;entityTabuRatio&gt;0.02&lt;/entityTabuRatio&gt;
     &lt;/acceptor&gt;</programlisting>
           </listitem>
 
@@ -358,22 +366,29 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
             <programlisting language="xml">    &lt;acceptor&gt;
         &lt;valueTabuSize&gt;7&lt;/valueTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
+
+            <para>To avoid hard coding the tabu size, configure a tabu ratio, relative to the number of values, for
+            example 2%:</para>
+
+            <programlisting language="xml">    &lt;acceptor&gt;
+        &lt;valueTabuRatio&gt;0.02&lt;/valueTabuRatio&gt;
+    &lt;/acceptor&gt;</programlisting>
           </listitem>
         </itemizedlist>
 
         <para>You can even combine tabu types:</para>
 
         <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;solutionTabuSize&gt;1000&lt;/solutionTabuSize&gt;
-        &lt;moveTabuSize&gt;7&lt;/moveTabuSize&gt;
+        &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
+        &lt;valueTabuSize&gt;3&lt;/valueTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
 
         <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
         with the exception of solution tabu, if you pick a too large tabu size, your solver can get stuck by bouncing of
         the walls. Use the benchmarker to fine tweak your configuration.</para>
 
-        <para>A tabu search acceptor should be combined with a high <literal>acceptedCountLimit</literal>,
-        such as <literal>1000</literal>.</para>
+        <para>A tabu search acceptor should be combined with a high <literal>acceptedCountLimit</literal>, such as
+        <literal>1000</literal>.</para>
       </section>
 
       <section>
@@ -397,9 +412,9 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         &lt;acceptedCountLimit&gt;4&lt;/acceptedCountLimit&gt;
     &lt;/forager&gt;</programlisting>
 
-        <para>A simulated annealing acceptor should be combined with a low <literal>acceptedCountLimit</literal>.
-        The classic algorithm uses an <literal>acceptedCountLimit</literal> of <literal>1</literal>,
-        but often <literal>4</literal> performs better.</para>
+        <para>A simulated annealing acceptor should be combined with a low <literal>acceptedCountLimit</literal>. The
+        classic algorithm uses an <literal>acceptedCountLimit</literal> of <literal>1</literal>, but often
+        <literal>4</literal> performs better.</para>
 
         <para>You can even combine it with a tabu acceptor at the same time. Use a lower tabu size than in a pure tabu
         search configuration.</para>
@@ -459,8 +474,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         </itemizedlist>
 
         <para>Unlike the n queens problem, real world problems require the use of <literal>acceptedCountLimit</literal>.
-        Start from an <literal>acceptedCountLimit</literal> that takes a step in less then 2 seconds.
-        Turn on INFO logging to see the step times. Use the <literal>Benchmarker</literal> to tweak the value.</para>
+        Start from an <literal>acceptedCountLimit</literal> that takes a step in less then 2 seconds. Turn on INFO
+        logging to see the step times. Use the <literal>Benchmarker</literal> to tweak the value.</para>
 
         <important>
           <para>With a low <literal>acceptedCountLimit</literal> it is recommended to avoid using
