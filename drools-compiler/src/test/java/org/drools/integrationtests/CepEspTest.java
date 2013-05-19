@@ -63,6 +63,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.runtime.Channel;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
@@ -3069,5 +3070,114 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( eventLimit, list.size() );
         assertEquals( 0, session.getWorkingMemoryEntryPoint( "ep01" ).getObjects().size() );
     }
+
+
+
+
+
+
+
+
+
+
+
+    public static class IntEvent {
+        private int data;
+        public IntEvent( int j ) { data = j; }
+        public int getData() { return data; }
+        public void setData( int data ) { this.data = data; }
+    }
+
+    public class Server {
+        public int currentTemp;
+        public double avgTemp;
+        public String hostname;
+        public int readingCount;
+
+        public Server( String hiwaesdk ) { hostname = hiwaesdk; }
+
+        public String toString() {
+            return "Server{" +
+                   "currentTemp=" + currentTemp +
+                   ", avgTemp=" + avgTemp +
+                   ", hostname='" + hostname + '\'' +
+                   '}';
+        }
+    }
+
+
+
+    @Test
+    public void testRaceOnAccumulateNodeSimple() throws InterruptedException {
+
+        String drl = "package org.drools.integrationtests;\n" +
+                     "" +
+                     "import org.drools.integrationtests.CepEspTest.IntEvent; \n" +
+                     "import org.drools.integrationtests.CepEspTest.Server; \n" +
+                     "" +
+                     "declare IntEvent\n" +
+                     "  @role ( event )\n" +
+                     "  @expires( 15s )\n" +
+                     "end\n" +
+                     "\n" +
+                     "" +
+                     "rule \"average temperature\"\n" +
+                     "when\n" +
+                     "  accumulate (\n" +
+                     "      IntEvent ( $temp : data ) over window:length(10) from entry-point ep01, " +
+                     "      $avg : average ($temp)\n" +
+                     "  )\n" +
+                     "  $s : Server (hostname == \"hiwaesdk\")\n" +
+                     "then\n" +
+                     "  $s.avgTemp = $avg.intValue();\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBaseConfiguration kbconfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconfig.setOption(EventProcessingOption.STREAM);
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbconfig);
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        WorkingMemoryEntryPoint ep01 = session.getWorkingMemoryEntryPoint("ep01");
+
+
+        Thread t = new Thread() {
+            public void run()
+            { session.fireUntilHalt(); }
+
+        };
+        t.start();
+
+        Server hiwaesdk = new Server ("hiwaesdk");
+        session.insert( hiwaesdk );
+        long LIMIT = 200;
+
+        for ( long i = LIMIT; i > 0; i-- ) {
+            ep01.insert ( new IntEvent ( (int) i ) ); //Thread.sleep (0x1); }
+        }
+
+        try {
+            Thread.sleep( 1000 );
+            System.out.println( "Halting .." );
+            session.halt();
+            t.join();
+        } catch ( Exception e ) {
+            fail( e.getMessage() );
+        }
+    }
+
+
+
+
+
 }
 
