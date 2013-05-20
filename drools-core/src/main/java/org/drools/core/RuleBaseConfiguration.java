@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.core.common.AgendaGroupFactory;
-import org.drools.core.common.ArrayAgendaGroupFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
@@ -419,52 +418,37 @@ public class RuleBaseConfiguration
             this.chainedProperties.addProperties( properties );
         }
 
-        setSequentialAgenda(SequentialAgenda.determineSequentialAgenda(this.chainedProperties.getProperty(SequentialAgendaOption.PROPERTY_NAME,
-                "sequential")));
+        setRemoveIdentities(Boolean.valueOf(this.chainedProperties.getProperty("drools.removeIdentities", "false")).booleanValue());
 
-        setSequential(Boolean.valueOf(this.chainedProperties.getProperty(SequentialOption.PROPERTY_NAME,
-                "false")).booleanValue());
+        setShareAlphaNodes(Boolean.valueOf(this.chainedProperties.getProperty(ShareAlphaNodesOption.PROPERTY_NAME, "true")).booleanValue());
 
-        setRemoveIdentities(Boolean.valueOf(this.chainedProperties.getProperty("drools.removeIdentities",
-                                                                               "false")).booleanValue());
+        setShareBetaNodes(Boolean.valueOf(this.chainedProperties.getProperty(ShareBetaNodesOption.PROPERTY_NAME, "true")).booleanValue());
 
-        setShareAlphaNodes(Boolean.valueOf(this.chainedProperties.getProperty(ShareAlphaNodesOption.PROPERTY_NAME,
-                                                                              "true")).booleanValue());
+        setPermGenThreshold(Integer.parseInt(this.chainedProperties.getProperty(PermGenThresholdOption.PROPERTY_NAME, "" + PermGenThresholdOption.DEFAULT_VALUE)));
 
-        setShareBetaNodes(Boolean.valueOf(this.chainedProperties.getProperty(ShareBetaNodesOption.PROPERTY_NAME,
-                                                                             "true")).booleanValue());
+        setAlphaNodeHashingThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaThresholdOption.PROPERTY_NAME, "3")));
 
-        setPermGenThreshold(Integer.parseInt(this.chainedProperties.getProperty(PermGenThresholdOption.PROPERTY_NAME,
-                                                                                "" + PermGenThresholdOption.DEFAULT_VALUE)));
+        setCompositeKeyDepth( Integer.parseInt( this.chainedProperties.getProperty( CompositeKeyDepthOption.PROPERTY_NAME, "3" ) ) );
 
-        setAlphaNodeHashingThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaThresholdOption.PROPERTY_NAME,
-                                                                                         "3")));
+        setIndexLeftBetaMemory( Boolean.valueOf( this.chainedProperties.getProperty( IndexLeftBetaMemoryOption.PROPERTY_NAME, "true" ) ).booleanValue() );
 
-        setCompositeKeyDepth( Integer.parseInt( this.chainedProperties.getProperty( CompositeKeyDepthOption.PROPERTY_NAME,
-                                                                                    "3" ) ) );
+        setIndexRightBetaMemory( Boolean.valueOf( this.chainedProperties.getProperty( IndexRightBetaMemoryOption.PROPERTY_NAME, "true" ) ).booleanValue() );
 
-        setIndexLeftBetaMemory( Boolean.valueOf( this.chainedProperties.getProperty( IndexLeftBetaMemoryOption.PROPERTY_NAME,
-                                                                                     "true" ) ).booleanValue() );
-        setIndexRightBetaMemory( Boolean.valueOf( this.chainedProperties.getProperty( IndexRightBetaMemoryOption.PROPERTY_NAME,
-                                                                                      "true" ) ).booleanValue() );
+        setIndexPrecedenceOption( IndexPrecedenceOption.determineIndexPrecedence( this.chainedProperties.getProperty( IndexPrecedenceOption.PROPERTY_NAME, "equality" ) ) );
 
-        setIndexPrecedenceOption( IndexPrecedenceOption.determineIndexPrecedence( this.chainedProperties.getProperty( IndexPrecedenceOption.PROPERTY_NAME,
-                                                                                                                      "equality" ) ) );
+        setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( this.chainedProperties.getProperty( EqualityBehaviorOption.PROPERTY_NAME, "identity" ) ) );
 
-        setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( this.chainedProperties.getProperty( EqualityBehaviorOption.PROPERTY_NAME,
-                                                                                                          "identity" ) ) );
+        setExecutorService( this.chainedProperties.getProperty( "drools.executorService", "org.drools.core.concurrent.DefaultExecutorService" ) );
 
-        setExecutorService( this.chainedProperties.getProperty( "drools.executorService",
-                                                                "org.drools.core.concurrent.DefaultExecutorService" ) );
+        setConsequenceExceptionHandler( this.chainedProperties.getProperty( ConsequenceExceptionHandlerOption.PROPERTY_NAME, "org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
 
-        setConsequenceExceptionHandler( this.chainedProperties.getProperty( ConsequenceExceptionHandlerOption.PROPERTY_NAME,
-                                                                            "org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
+        setRuleBaseUpdateHandler( this.chainedProperties.getProperty( "drools.ruleBaseUpdateHandler", "" ) );
 
-        setRuleBaseUpdateHandler( this.chainedProperties.getProperty( "drools.ruleBaseUpdateHandler",
-                                                                      "" ) );
+        setSequentialAgenda(SequentialAgenda.determineSequentialAgenda(this.chainedProperties.getProperty(SequentialAgendaOption.PROPERTY_NAME, "sequential")));
 
-        setConflictResolver( determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
-                                                        "org.drools.core.conflict.DepthConflictResolver" ) ) );
+        setSequential(Boolean.valueOf(this.chainedProperties.getProperty(SequentialOption.PROPERTY_NAME, "false")).booleanValue());
+
+        setConflictResolver( determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver", "org.drools.core.conflict.DepthConflictResolver" ) ) );
 
         setAdvancedProcessRuleIntegration( Boolean.valueOf( this.chainedProperties.getProperty( "drools.advancedProcessRuleIntegration",
                                                                                                 "false" ) ).booleanValue() );
@@ -672,15 +656,7 @@ public class RuleBaseConfiguration
     }
 
     public AgendaGroupFactory getAgendaGroupFactory() {
-        if ( isSequential() ) {
-            if ( this.sequentialAgenda == SequentialAgenda.SEQUENTIAL ) {
-                return ArrayAgendaGroupFactory.getInstance();
-            } else {
-                return PriorityQueueAgendaGroupFactory.getInstance();
-            }
-        } else {
-            return PriorityQueueAgendaGroupFactory.getInstance();
-        }
+        return PriorityQueueAgendaGroupFactory.getInstance();
     }
 
     public SequentialAgenda getSequentialAgenda() {
@@ -770,14 +746,6 @@ public class RuleBaseConfiguration
     public void setPhreakEnabled(boolean enabled) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.phreakEnabled = enabled;
-
-        if ( enabled && isSequential() ) {
-            throw new IllegalArgumentException( "Sequential mode cannot be used when Left & Right Unlinking is enabled." );
-        }
-        
-        if ( enabled && isMultithreadEvaluation() ) {
-            throw new IllegalArgumentException( "Multithread evaluation cannot be used when Left & Right Unlinking is enabled." );
-        }
     }
 
     

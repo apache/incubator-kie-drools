@@ -234,9 +234,9 @@ public class ProtobufInputMarshaller {
         }
 
         // RuleFlowGroups need to reference the session
-        for ( RuleFlowGroup group : agenda.getRuleFlowGroupsMap().values() ) {
-            ((RuleFlowGroupImpl) group).setWorkingMemory( session );
-        }
+//        for ( InternalAgendaGroup group : agenda.getAgendaGroupsMap().values() ) {
+//            ((RuleFlowGroupImpl) group).setWorkingMemory( session );
+//        }
 
         context.wm = session;
 
@@ -399,21 +399,21 @@ public class ProtobufInputMarshaller {
             agenda.addAgendaGroupOnStack( agenda.getAgendaGroup( _groupName ) );
         }
 
-        for ( ProtobufMessages.Agenda.RuleFlowGroup _ruleFlowGroup : _agenda.getRuleFlowGroupList() ) {
-            RuleFlowGroupImpl rfgi = new RuleFlowGroupImpl( _ruleFlowGroup.getName(),
-                                                            _ruleFlowGroup.getIsActive(),
-                                                            _ruleFlowGroup.getIsAutoDeactivate() );
-            agenda.getRuleFlowGroupsMap().put( _ruleFlowGroup.getName(),
-                                               rfgi );
-
-            //            readActivations( context, 
-            //                             _ruleFlowGroup.getActivationList() );
-
-            for ( NodeInstance _nodeInstance : _ruleFlowGroup.getNodeInstanceList() ) {
-                rfgi.addNodeInstance( _nodeInstance.getProcessInstanceId(),
-                                      _nodeInstance.getNodeInstanceId() );
-            }
-        }
+//        for ( ProtobufMessages.Agenda.RuleFlowGroup _ruleFlowGroup : _agenda.getRuleFlowGroupList() ) {
+//            RuleFlowGroupImpl rfgi = new RuleFlowGroupImpl( _ruleFlowGroup.getName(),
+//                                                            _ruleFlowGroup.getIsActive(),
+//                                                            _ruleFlowGroup.getIsAutoDeactivate() );
+//            agenda.getRuleFlowGroupsMap().put( _ruleFlowGroup.getName(),
+//                                               rfgi );
+//
+//            //            readActivations( context,
+//            //                             _ruleFlowGroup.getActivationList() );
+//
+//            for ( NodeInstance _nodeInstance : _ruleFlowGroup.getNodeInstanceList() ) {
+//                rfgi.addNodeInstance( _nodeInstance.getProcessInstanceId(),
+//                                      _nodeInstance.getNodeInstanceId() );
+//            }
+//        }
 
         readActivations( context,
                          _agenda.getActivationList(),

@@ -30,7 +30,6 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BinaryHeapQueueAgendaGroup;
 import org.drools.core.common.DefaultAgenda;
@@ -228,7 +227,7 @@ public class InputMarshaller {
         }
 
         // RuleFlowGroups need to reference the session
-        for (RuleFlowGroup group : agenda.getRuleFlowGroupsMap().values()) {
+        for (AgendaGroup group : agenda.getAgendaGroupsMap().values()) {
             ( (RuleFlowGroupImpl) group ).setWorkingMemory( session );
         }
 
@@ -350,24 +349,6 @@ public class InputMarshaller {
         while (stream.readShort() == PersisterEnums.AGENDA_GROUP) {
             String agendaGroupName = stream.readUTF();
             agenda.addAgendaGroupOnStack( agenda.getAgendaGroup( agendaGroupName ) );
-        }
-
-        while (stream.readShort() == PersisterEnums.RULE_FLOW_GROUP) {
-            String rfgName = stream.readUTF();
-            boolean active = stream.readBoolean();
-            boolean autoDeactivate = stream.readBoolean();
-            RuleFlowGroupImpl rfg = new RuleFlowGroupImpl( rfgName,
-                                                           active,
-                                                           autoDeactivate );
-            agenda.getRuleFlowGroupsMap().put( rfgName,
-                                               rfg );
-            int nbNodeInstances = stream.readInt();
-            for (int i = 0; i < nbNodeInstances; i++) {
-                Long processInstanceId = stream.readLong();
-                String nodeInstanceId = stream.readUTF();
-                rfg.addNodeInstance( processInstanceId,
-                                     nodeInstanceId );
-            }
         }
 
     }
@@ -1016,7 +997,7 @@ public class InputMarshaller {
 
         boolean scheduled = false;
         RuleTerminalNodeLeftTuple rtnLeftTuple = ( RuleTerminalNodeLeftTuple ) leftTuple;
-        rtnLeftTuple.init(activationNumber, salience, pc, null, agendaGroup, rfg );
+        rtnLeftTuple.init(activationNumber, salience, pc, null, agendaGroup);
         activation = rtnLeftTuple;
 
         if (rule.getTimer() != null) {

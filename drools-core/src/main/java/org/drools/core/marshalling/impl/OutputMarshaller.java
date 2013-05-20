@@ -202,24 +202,24 @@ public class OutputMarshaller {
             context.writeUTF( group.getName() );
         }
         context.writeShort( PersisterEnums.END );
-
-        RuleFlowGroupImpl[] ruleFlowGroups = (RuleFlowGroupImpl[]) agenda.getRuleFlowGroupsMap().values().toArray( new RuleFlowGroupImpl[agenda.getRuleFlowGroupsMap().size()] );
-        Arrays.sort( ruleFlowGroups,
-                     RuleFlowGroupSorter.instance );
-
-        for ( RuleFlowGroupImpl group : ruleFlowGroups ) {
-            context.writeShort( PersisterEnums.RULE_FLOW_GROUP );
-            //group.write( context );
-            context.writeUTF( group.getName() );
-            context.writeBoolean( group.isActive() );
-            context.writeBoolean( group.isAutoDeactivate() );
-            Map<Long, String> nodeInstances = group.getNodeInstances();
-            context.writeInt( nodeInstances.size() );
-            for ( Map.Entry<Long, String> entry : nodeInstances.entrySet() ) {
-                context.writeLong( entry.getKey() );
-                context.writeUTF( entry.getValue() );
-            }
-        }
+//
+//        RuleFlowGroupImpl[] ruleFlowGroups = (RuleFlowGroupImpl[]) agenda.getRuleFlowGroupsMap().values().toArray( new RuleFlowGroupImpl[agenda.getRuleFlowGroupsMap().size()] );
+//        Arrays.sort( ruleFlowGroups,
+//                     RuleFlowGroupSorter.instance );
+//
+//        for ( RuleFlowGroupImpl group : ruleFlowGroups ) {
+//            context.writeShort( PersisterEnums.RULE_FLOW_GROUP );
+//            //group.write( context );
+//            context.writeUTF( group.getName() );
+//            context.writeBoolean( group.isActive() );
+//            context.writeBoolean( group.isAutoDeactivate() );
+//            Map<Long, String> nodeInstances = group.getNodeInstances();
+//            context.writeInt( nodeInstances.size() );
+//            for ( Map.Entry<Long, String> entry : nodeInstances.entrySet() ) {
+//                context.writeLong( entry.getKey() );
+//                context.writeUTF( entry.getValue() );
+//            }
+//        }
         context.writeShort( PersisterEnums.END );
     }
 

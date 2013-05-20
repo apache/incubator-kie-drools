@@ -352,10 +352,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public int getSequence() {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
     public Declaration[] getTimerPeriodDeclarations() {

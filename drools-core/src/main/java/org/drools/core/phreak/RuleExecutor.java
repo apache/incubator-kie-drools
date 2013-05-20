@@ -202,6 +202,10 @@ public class RuleExecutor {
         return (nextRule == null) || nextRule.getSalience() <= currentSalience;
     }
 
+    public LeftTupleList getLeftTupleList() {
+        return tupleList;
+    }
+
     public void addLeftTuple(LeftTuple leftTuple) {
         ((AgendaItem)leftTuple).setQueued(true);
         this.tupleList.add(leftTuple);

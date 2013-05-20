@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -44,7 +45,8 @@ import org.drools.core.spi.Activation;
  */
 public class RuleFlowGroupImpl
     implements
-    InternalRuleFlowGroup {
+    InternalRuleFlowGroup,
+    InternalAgendaGroup {
 
     private static final long           serialVersionUID = 510l;
 
@@ -99,6 +101,14 @@ public class RuleFlowGroupImpl
         return this.workingMemory;
     }
 
+    public Activation getNext() {
+        return agendaGroup.getNext();
+    }
+
+    public Activation peekNext() {
+        return agendaGroup.peekNext();
+    }
+
     public void setActive(final boolean active) {
         this.agendaGroup.setActive( active );
 //        if ( this.active == active ) {
@@ -147,6 +157,16 @@ public class RuleFlowGroupImpl
         return agendaGroup.isActive();
     }
 
+    @Override
+    public void setAutoFocusActivator(PropagationContext ctx) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public PropagationContext getAutoFocusActivator() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public boolean isAutoDeactivate() {
         return this.autoDeactivate;
     }
@@ -181,11 +201,21 @@ public class RuleFlowGroupImpl
         }
     }
 
-    public int size() {
-        synchronized ( agendaGroup ) {
-            return agendaGroup.size();
-        }
+    @Override
+    public void setFocus() {
+        //agendaGroup.getAgenda().setFocus(this);
     }
+
+    @Override
+    public Activation[] getAndClear() {
+        return new Activation[0];  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void add(Activation activation) {
+        addActivation( activation );
+    }
+
 
     public void addActivation(final Activation activation) {
         synchronized ( agendaGroup ) {
@@ -202,6 +232,11 @@ public class RuleFlowGroupImpl
 //        if ( this.active ) {
 //            ((InternalAgendaGroup) activation.getAgendaGroup()).add( activation );
 //        }
+    }
+
+    @Override
+    public void remove(Activation activation) {
+        removeActivation( activation );
     }
 
     public void removeActivation(final Activation activation) {
@@ -298,10 +333,16 @@ public class RuleFlowGroupImpl
 
     public long getClearedForRecency() {
         return agendaGroup.getClearedForRecency();
-    }       
+    }
 
     public String toString() {
         return "RuleFlowGroup '" + this.agendaGroup.getNext() + "'";
+    }
+
+    public int size() {
+        synchronized ( agendaGroup ) {
+            return agendaGroup.size();
+        }
     }
 
     public boolean equals(final Object object) {

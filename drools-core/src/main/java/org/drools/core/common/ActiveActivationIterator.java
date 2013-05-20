@@ -11,7 +11,6 @@ public class ActiveActivationIterator
     private DefaultAgenda      agenda;
 
     private static final int   AGENDA_GROUPS   = 0;
-    private static final int   RULEFLOW_GROUPS = 1;
 
     private java.util.Iterator groupsIter;
 
@@ -40,20 +39,7 @@ public class ActiveActivationIterator
                 }
             }
         }
-        
-        if ( !agenda.getRuleFlowGroupsMap().isEmpty() ) {
-            groupsIter = agenda.getRuleFlowGroupsMap().values().iterator();
-            group = RULEFLOW_GROUPS;
 
-            RuleFlowGroupImpl group = null;
-            for ( ; groupsIter.hasNext();) {
-                group = (RuleFlowGroupImpl) groupsIter.next() ;
-                if ( !group.isEmpty() ) {
-                    activations = (Activation[]) group.getActivations();
-                    return;
-                }
-            }
-        }        
     }
 
     public static ActiveActivationIterator iterator(InternalWorkingMemory wm) {
@@ -84,8 +70,6 @@ public class ActiveActivationIterator
                         return act;
                     }
                 }
-                groupsIter = agenda.getRuleFlowGroupsMap().values().iterator();
-                group = RULEFLOW_GROUPS;                
             }            
 
             RuleFlowGroupImpl ruleflowGroup = null;

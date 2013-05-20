@@ -71,8 +71,6 @@ public class ReteooBuilder
 
     private IdGenerator                 idGenerator;
 
-    private boolean                     ordered;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -140,99 +138,6 @@ public class ReteooBuilder
 
     public IdGenerator getIdGenerator() {
         return this.idGenerator;
-    }
-
-    protected void setOrdered(boolean ordered) {
-        this.ordered = ordered;
-    }
-
-    public synchronized void order() {
-        if ( ordered ) {
-            // we should only do this on first call, its expected the RuleBase should not change afterwards.
-            return;
-        }
-
-        Map<String, List<RuleTerminalNode>> map = new HashMap<String, List<RuleTerminalNode>>();
-
-        for ( BaseNode[] nodes : this.rules.values() ) {
-            for ( BaseNode node : nodes ) {
-                if ( node.getType() == NodeTypeEnums.RuleTerminalNode ) {
-                    RuleTerminalNode terminalNode = (RuleTerminalNode) node;
-                    String agendaGroup = terminalNode.getRule().getAgendaGroup();
-                    if ( "".equals(agendaGroup) ) {
-                        agendaGroup = "MAIN";
-                    }
-                    List<RuleTerminalNode> rules = map.get( agendaGroup );
-                    if ( rules == null ) {
-                        rules = new ArrayList<RuleTerminalNode>();
-                        map.put( agendaGroup,
-                                 rules );
-                    }
-                    rules.add( terminalNode );
-                }
-            }
-        }
-
-        for ( Map.Entry<String, List<RuleTerminalNode>> entry : map.entrySet()) {
-            String agendaGroup = entry.getKey();
-            List<RuleTerminalNode> rules = entry.getValue();
-            Collections.sort( rules,
-                              RuleSequenceComparator.INSTANCE );
-
-            int i = 0;
-            for ( RuleTerminalNode node : rules ) {
-                node.setSequence( i++ );
-            }
-
-            ruleBase.getAgendaGroupRuleTotals().put( agendaGroup, i );
-        }
-        ordered = true;
-    }
-
-    public static class RuleSequenceComparator
-        implements
-        Comparator {
-        public final static RuleSequenceComparator INSTANCE = new RuleSequenceComparator();
-
-        public int compare(Object o1,
-                           Object o2) {
-            RuleTerminalNode r1 = (RuleTerminalNode) o1;
-            RuleTerminalNode r2 = (RuleTerminalNode) o2;
-
-            Salience so1 = r1.getRule().getSalience();
-            if ( so1 != null && !(so1 instanceof SalienceInteger) ) {
-                throw new RuntimeException( r1.getRule().getName() + "must not have a dynamic salience" );
-            }
-            Salience so2 = r2.getRule().getSalience();
-            if ( so2 != null && !(so2 instanceof SalienceInteger) ) {
-                throw new RuntimeException( r2.getRule().getName() + "must not have a dynamic salience" );
-            }
-
-            int s1 = so1.getValue( null,
-                                   null,
-                                   null );
-            int s2 = so2.getValue( null,
-                                   null,
-                                   null );
-
-            if ( s1 > s2 ) {
-                return -1;
-            } else if ( s1 < s2 ) {
-                return 1;
-            }
-
-            int id1 = r1.getId();
-            int id2 = r2.getId();
-
-            if ( id1 < id2 ) {
-                return -1;
-            } else if ( id1 > id2 ) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
     }
 
     public synchronized BaseNode[] getTerminalNodes(final Rule rule) {
@@ -447,7 +352,6 @@ public class ReteooBuilder
         droolsStream.writeObject( rules );
         droolsStream.writeObject( namedWindows );
         droolsStream.writeObject( idGenerator );
-        droolsStream.writeBoolean( ordered );
         if ( !isDrools ) {
             droolsStream.flush();
             droolsStream.close();
@@ -474,7 +378,6 @@ public class ReteooBuilder
         this.rules = (Map<String, BaseNode[]>) droolsStream.readObject();
         this.namedWindows = (Map<String, WindowNode>) droolsStream.readObject();
         this.idGenerator = (IdGenerator) droolsStream.readObject();
-        this.ordered = droolsStream.readBoolean();
         if ( !isDrools ) {
             droolsStream.close();
             bytes.close();

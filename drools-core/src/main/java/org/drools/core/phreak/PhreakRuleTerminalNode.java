@@ -10,7 +10,6 @@ import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
@@ -86,7 +85,7 @@ public class PhreakRuleTerminalNode {
         }
 
         RuleTerminalNodeLeftTuple rtnLeftTuple = (RuleTerminalNodeLeftTuple) leftTuple;
-        rtnLeftTuple.init(agenda.getNextActivationCounter(), salienceInt, pctx, ruleAgendaItem, ruleAgendaItem.getAgendaGroup(), ruleAgendaItem.getRuleFlowGroup() );
+        rtnLeftTuple.init(agenda.getNextActivationCounter(), salienceInt, pctx, ruleAgendaItem, ruleAgendaItem.getAgendaGroup());
         rtnLeftTuple.setObject( rtnLeftTuple );
 
         if (  rtnNode.getRule().isLockOnActive() &&
@@ -211,20 +210,9 @@ public class PhreakRuleTerminalNode {
                                           long handleRecency,
                                           InternalAgendaGroup agendaGroup) {
         if ( rule.isLockOnActive() ) {
-            boolean isActive = false;
-            long activatedForRecency = 0;
-            long clearedForRecency = 0;
-
-            if ( rule.getRuleFlowGroup() == null ) {
-                isActive = agendaGroup.isActive();
-                activatedForRecency = agendaGroup.getActivatedForRecency();
-                clearedForRecency = agendaGroup.getClearedForRecency();
-            } else {
-                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) agenda.getRuleFlowGroup( rule.getRuleFlowGroup() );
-                isActive = rfg.isActive();
-                activatedForRecency = rfg.getActivatedForRecency();
-                clearedForRecency = rfg.getClearedForRecency();
-            }
+            boolean isActive = agendaGroup.isActive();
+            long activatedForRecency = agendaGroup.getActivatedForRecency();
+            long clearedForRecency = agendaGroup.getClearedForRecency();
 
             if ( isActive && activatedForRecency < handleRecency &&
                  agendaGroup.getAutoFocusActivator() != pctx ) {

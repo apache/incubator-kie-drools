@@ -90,8 +90,6 @@ abstract public class AbstractRuleBase
 
     private Map<String, Process>                          processes;
 
-    private Map<String, Integer>                          agendaGroupRuleTotals;
-
     private transient CompositeClassLoader                rootClassLoader;
 
     /**
@@ -157,10 +155,6 @@ abstract public class AbstractRuleBase
         this.config.makeImmutable();
         createRulebaseId( id );
         this.factHandleFactory = factHandleFactory;
-
-        if (this.config.isSequential()) {
-            this.agendaGroupRuleTotals = new HashMap<String, Integer>();
-        }
 
         this.rootClassLoader = this.config.getClassLoader();
         this.rootClassLoader.addClassLoader( getClass().getClassLoader() );
@@ -236,7 +230,6 @@ abstract public class AbstractRuleBase
         droolsStream.writeObject( this.id );
         droolsStream.writeInt( this.workingMemoryCounter.get() );
         droolsStream.writeObject( this.processes );
-        droolsStream.writeObject( this.agendaGroupRuleTotals );
         droolsStream.writeUTF( this.factHandleFactory.getClass().getName() );
         droolsStream.writeObject( buildGlobalMapForSerialization() );
         droolsStream.writeObject( this.partitionIDs );
@@ -310,7 +303,6 @@ abstract public class AbstractRuleBase
         this.workingMemoryCounter.set( droolsStream.readInt() );
 
         this.processes = (Map) droolsStream.readObject();
-        this.agendaGroupRuleTotals = (Map) droolsStream.readObject();
         Class cls = null;
         try {
             cls = droolsStream.getParentClassLoader().loadClass( droolsStream.readUTF() );
@@ -453,10 +445,6 @@ abstract public class AbstractRuleBase
 
     public Map<String, Class<?>> getGlobals() {
         return this.globals;
-    }
-
-    public Map<String, Integer> getAgendaGroupRuleTotals() {
-        return this.agendaGroupRuleTotals;
     }
 
     public int getAdditionsSinceLock() {

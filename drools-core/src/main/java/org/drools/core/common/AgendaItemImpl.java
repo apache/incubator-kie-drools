@@ -57,10 +57,6 @@ public class AgendaItemImpl
      */
     private           int                                            salience;
     /**
-     * Used for sequential mode
-     */
-    private           int                                            sequenence;
-    /**
      * Rule terminal node, gives access to SubRule *
      */
     private           TerminalNode                                   rtn;
@@ -101,7 +97,6 @@ public class AgendaItemImpl
      * @param tuple          The tuple.
      * @param ruleAgendaItem
      * @param agendaGroup
-     * @param ruleFlowGroup
      */
     public AgendaItemImpl(final long activationNumber,
                           final LeftTuple tuple,
@@ -109,8 +104,7 @@ public class AgendaItemImpl
                           final PropagationContext context,
                           final TerminalNode rtn,
                           final RuleAgendaItem ruleAgendaItem,
-                          InternalAgendaGroup agendaGroup,
-                          InternalRuleFlowGroup ruleFlowGroup) {
+                          final InternalAgendaGroup agendaGroup) {
         this.tuple = tuple;
         this.context = context;
         this.salience = salience;
@@ -168,16 +162,6 @@ public class AgendaItemImpl
     @Override
     public void setSalience(int salience) {
         this.salience = salience;
-    }
-
-    @Override
-    public int getSequenence() {
-        return sequenence;
-    }
-
-    @Override
-    public void setSequenence(int sequenence) {
-        this.sequenence = sequenence;
     }
 
     @Override
@@ -384,15 +368,6 @@ public class AgendaItemImpl
     public InternalAgendaGroup getAgendaGroup() {
         return this.agendaGroup;
     }
-
-    @Override
-    public InternalRuleFlowGroup getRuleFlowGroup() {
-        return this.ruleFlowGroup;
-    }
-
-//    public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
-//        this.agendaGroup = agendaGroup;
-//    }
 
     @Override
     public ActivationNode getActivationNode() {

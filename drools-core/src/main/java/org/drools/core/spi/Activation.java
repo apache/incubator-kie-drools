@@ -110,8 +110,6 @@ public interface Activation
 
     public InternalAgendaGroup getAgendaGroup();
 
-    public InternalRuleFlowGroup getRuleFlowGroup();
-
     public ActivationGroupNode getActivationGroupNode();
 
     public void setActivationGroupNode(ActivationGroupNode activationGroupNode);

@@ -125,8 +125,10 @@ public class ReteooRuleBuilder implements RuleBuilder {
             }
 
             if (rulebase.getConfiguration().isSequential()) {
-                context.setTupleMemoryEnabled( false );
-                context.setObjectTypeNodeMemoryEnabled( false );
+//                context.setTupleMemoryEnabled( false );
+//                context.setObjectTypeNodeMemoryEnabled( false );
+                context.setTupleMemoryEnabled( true );
+                context.setObjectTypeNodeMemoryEnabled( true );
             } else {
                 context.setTupleMemoryEnabled( true );
                 context.setObjectTypeNodeMemoryEnabled( true );

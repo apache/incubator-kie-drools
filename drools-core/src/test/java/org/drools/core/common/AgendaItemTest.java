@@ -20,9 +20,9 @@ public class AgendaItemTest {
         AgendaItem item1 = new RuleTerminalNodeLeftTuple();
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();
-        agenda.createAgendaItem((LeftTuple)item1, 0, null, null, null, null, null);
-        agenda.createAgendaItem((LeftTuple)item2, 0, null, null, null, null, null);
-        agenda.createAgendaItem((LeftTuple)item3, 0, null, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item1, 0, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item2, 0, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item3, 0, null, null, null, null);
         
         DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );
         kcontext.setActivation( item1 );
@@ -59,9 +59,9 @@ public class AgendaItemTest {
         AgendaItem item1 = new RuleTerminalNodeLeftTuple();
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();
-        agenda.createAgendaItem((LeftTuple)item1, 0, null, null, null, null, null);
-        agenda.createAgendaItem((LeftTuple)item2, 0, null, null, null, null, null);
-        agenda.createAgendaItem((LeftTuple)item3, 0, null, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item1, 0, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item2, 0, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item3, 0, null, null, null, null);
         
         // use same data structure as testAddition
         DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );
@@ -125,9 +125,9 @@ public class AgendaItemTest {
         AgendaItem item1 = new RuleTerminalNodeLeftTuple();
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();
-        agenda.createAgendaItem((LeftTuple)item1, 0, null, null, null, null, null);
-        agenda.createAgendaItem((LeftTuple)item2, 0, null, null, null, null, null);
-        agenda.createAgendaItem((LeftTuple)item3, 0, null, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item1, 0, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item2, 0, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item3, 0, null, null, null, null);
         
         // use same data structure as testAddition
         DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );
@@ -160,10 +160,10 @@ public class AgendaItemTest {
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();
         AgendaItem item4 = new RuleTerminalNodeLeftTuple();
-        agenda.createAgendaItem((LeftTuple)item1, 0, null, null, null, null, null);
-        agenda.createAgendaItem((LeftTuple)item2, 0, null, null, null, null, null);
-        agenda.createAgendaItem((LeftTuple)item3, 0, null, null, null, null, null);
-        agenda.createAgendaItem((LeftTuple)item4, 0, null, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item1, 0, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item2, 0, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item3, 0, null, null, null, null);
+        agenda.createAgendaItem((LeftTuple)item4, 0, null, null, null, null);
         
         // use same data structure as testAddition
         DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );

@@ -87,18 +87,6 @@ public class StatelessKnowledgeSessionImpl
         this.kagent = kagent;
         this.conf = (conf != null) ? conf : SessionConfiguration.getDefaultInstance();
         this.environment = EnvironmentFactory.newEnvironment();
-
-        if ( this.ruleBase != null ) {
-            // FIXME: this same code exists in ReteooRuleBase#newStatelessSession()
-            this.ruleBase.lock();
-            try {
-                if ( ruleBase.getConfiguration().isSequential() ) {
-                    this.ruleBase.getReteooBuilder().order();
-                }
-            } finally {
-                this.ruleBase.unlock();
-            }
-        }
     }
 
     public InternalRuleBase getRuleBase() {

@@ -209,25 +209,6 @@ public class ProtobufOutputMarshaller {
         }
         _ab.setFocusStack( _fsb.build() );
 
-        RuleFlowGroupImpl[] ruleFlowGroups = (RuleFlowGroupImpl[]) agenda.getRuleFlowGroupsMap().values().toArray( new RuleFlowGroupImpl[agenda.getRuleFlowGroupsMap().size()] );
-        Arrays.sort( ruleFlowGroups,
-                     RuleFlowGroupSorter.instance );
-        for ( RuleFlowGroupImpl group : ruleFlowGroups ) {
-            org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.Builder _rfgb = ProtobufMessages.Agenda.RuleFlowGroup.newBuilder();
-            _rfgb.setName( group.getName() );
-            _rfgb.setIsActive( group.isActive() );
-            _rfgb.setIsAutoDeactivate( group.isAutoDeactivate() );
-
-            Map<Long, String> nodeInstances = group.getNodeInstances();
-            for ( Map.Entry<Long, String> entry : nodeInstances.entrySet() ) {
-                org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder _nib = ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.newBuilder();
-                _nib.setProcessInstanceId( entry.getKey() );
-                _nib.setNodeInstanceId( entry.getValue() );
-                _rfgb.addNodeInstance( _nib.build() );
-            }
-            _ab.addRuleFlowGroup( _rfgb.build() );
-        }
-
         // serialize all dormant activations
         ActivationIterator it = ActivationIterator.iterator( wm );
         List<org.drools.core.spi.Activation> dormant = new ArrayList<org.drools.core.spi.Activation>();
