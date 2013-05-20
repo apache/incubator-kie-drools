@@ -1322,6 +1322,7 @@ public class StringUtils {
                         nestedParam--;
                         break;
                     case '"':
+                    case '\'':
                         isQuoted = !isQuoted;
                         break;
                     case '\\':
@@ -1338,6 +1339,33 @@ public class StringUtils {
             args.add(lastArg);
         }
         return args;
+    }
+
+    public static int findEndMethodArgs(CharSequence string, int startMethodArgs) {
+        boolean isQuoted = false;
+        int nestingLevel = 0;
+        for (int i = startMethodArgs; i < string.length(); i++) {
+            switch (string.charAt(i)) {
+                case '(':
+                    if (!isQuoted) {
+                        nestingLevel++;
+                    }
+                    break;
+                case ')':
+                    if (!isQuoted) {
+                        nestingLevel--;
+                        if (nestingLevel == 0) {
+                            return i;
+                        }
+                    }
+                    break;
+                case '"':
+                case '\'':
+                    isQuoted = !isQuoted;
+                    break;
+            }
+        }
+        return -1;
     }
 
     public static int indexOfOutOfQuotes(String str, String searched) {
