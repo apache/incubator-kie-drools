@@ -27,12 +27,15 @@ import org.drools.compiler.TotalHolder;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.RuleFlowGroupImpl;
 import org.drools.core.event.ActivationCancelledEvent;
 import org.drools.core.event.ActivationCreatedEvent;
 import org.drools.core.event.AgendaEventListener;
 import org.drools.core.event.DefaultAgendaEventListener;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.rule.Package;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.spi.Activation;
@@ -377,24 +380,58 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         ksession.insert( mic );
         ksession.insert( mark );
 
+        InternalWorkingMemory wm = ( InternalWorkingMemory )((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory();
+
         final DefaultAgenda agenda = (DefaultAgenda) ((AgendaImpl)ksession.getAgenda()).getAgenda();
         final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
-        agenda.setFocus( group1 );
-        assertEquals( 3, group1.size() );
-        agenda.fireNextItem( null, 0, 0 );
-        assertEquals( 2, group1.size() );
-        ksession.update( brieHandle, brie );
-        assertEquals( 2, group1.size() );
+        if ( preak == PhreakOption.DISABLED ) {
+            agenda.setFocus( group1 );
+            assertEquals( 3, group1.size() );
+            agenda.fireNextItem( null, 0, 0 );
+            assertEquals( 2, group1.size() );
+            ksession.update( brieHandle, brie );
+            assertEquals( 2, group1.size() );
 
-        AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
-        assertEquals( 3, group2.size() );
-        agenda.setFocus( group2 );
+            AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
+            assertEquals( 3, group2.size() );
+            agenda.setFocus( group2 );
 
-        agenda.activateRuleFlowGroup( "ruleflow2" );
-        agenda.fireNextItem( null, 0, 0 );
-        assertEquals( 2, group2.size() );
-        ksession.update( brieHandle, brie );
-        assertEquals( 2, group2.size() );
+            agenda.activateRuleFlowGroup( "ruleflow2" );
+            agenda.fireNextItem( null, 0, 0 );
+            assertEquals( 2, group2.size() );
+            ksession.update( brieHandle, brie );
+            assertEquals( 2, group2.size() );
+        } else {
+            agenda.setFocus( group1 );
+            assertEquals( 1, group1.size() );
+            RuleAgendaItem ruleItem1 = (RuleAgendaItem) group1.getActivations()[0];
+            ruleItem1.getRuleExecutor().evaluateNetwork(wm);
+            assertEquals(3, ruleItem1.getRuleExecutor().getLeftTupleList().size());
+
+            agenda.fireNextItem( null, 0, 0 );
+            assertEquals( 1, group1.size() );
+            assertEquals( 2, ruleItem1.getRuleExecutor().getLeftTupleList().size() );
+
+            ksession.update( brieHandle, brie );
+            assertEquals( 1, group1.size() );
+            ruleItem1.getRuleExecutor().evaluateNetwork(wm);
+            assertEquals(2, ruleItem1.getRuleExecutor().getLeftTupleList().size());
+
+            AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
+            agenda.setFocus( group2);
+            assertEquals( 1, group2.size() );
+            RuleAgendaItem ruleItem2 = (RuleAgendaItem) group2.getActivations()[0];
+            ruleItem2.getRuleExecutor().evaluateNetwork(wm);
+            assertEquals(3, ruleItem2.getRuleExecutor().getLeftTupleList().size());
+
+            agenda.fireNextItem( null, 0, 0 );
+            assertEquals( 1, group2.size() );
+            assertEquals( 2, ruleItem2.getRuleExecutor().getLeftTupleList().size() );
+
+            ksession.update( brieHandle, brie );
+            assertEquals( 1, group2.size() );
+            assertEquals( 2, ruleItem2.getRuleExecutor().getLeftTupleList().size() );
+        }
     }
 
     @Test

@@ -406,7 +406,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "global java.util.List list \n";
         str += "dialect 'mvel' \n";
 
-        str += "rule rule0 @department(sales) \n";
+        str += "rule rule0 @eager(true) @department(sales) \n";
         str += "when \n";
         str += "     $s : String( this == 'go0' ) \n";
         str += "then \n";
@@ -473,6 +473,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         FactHandle go4 = ksession.insert( "go4" );
         ksession.fireAllRules();
+        System.out.println( list );
         assertEquals( 5,
                       list.size() );
 

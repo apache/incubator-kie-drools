@@ -47,20 +47,17 @@ public class CommonTestMethodBase extends Assert {
     // METHODS TO BE REMOVED FOR 6.0.0
 
     protected RuleBase getRuleBase() throws Exception {
-        return RuleBaseFactory.newRuleBase(RuleBase.RETEOO,
-                                           null);
+        return RuleBaseFactory.newRuleBase(RuleBase.RETEOO, null);
     }
 
     protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-        return RuleBaseFactory.newRuleBase(RuleBase.RETEOO,
-                                           config);
+        return RuleBaseFactory.newRuleBase(RuleBase.RETEOO, config);
     }
 
     protected RuleBase getSinglethreadRuleBase() throws Exception {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setMultithreadEvaluation(false);
-        return RuleBaseFactory.newRuleBase(RuleBase.RETEOO,
-                                           config);
+        return RuleBaseFactory.newRuleBase(RuleBase.RETEOO, config);
     }
 
     protected org.drools.core.rule.Package loadPackage(final String classPathResource) throws DroolsParserException,

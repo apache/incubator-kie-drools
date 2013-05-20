@@ -1417,7 +1417,7 @@ public class DefaultAgenda
                     throw new RuntimeException( e );
                 }
             } finally {
-                if ( !unlinkingEnabled && activation.getFactHandle() != null ) {
+                if ( activation.getFactHandle() != null ) {
                     // update the Activation in the WM
                     InternalFactHandle factHandle = activation.getFactHandle();
                     workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
