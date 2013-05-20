@@ -23,15 +23,20 @@ import org.drools.core.WorkingMemory;
 public interface AgendaEventListener
     extends
     EventListener {
+
+    @Deprecated
     void activationCreated(ActivationCreatedEvent event,
                            WorkingMemory workingMemory);
 
+    @Deprecated
     void activationCancelled(ActivationCancelledEvent event,
                              WorkingMemory workingMemory);
 
+    @Deprecated
     void beforeActivationFired(BeforeActivationFiredEvent event,
                                WorkingMemory workingMemory);
 
+    @Deprecated
     void afterActivationFired(AfterActivationFiredEvent event,
                               WorkingMemory workingMemory);
 

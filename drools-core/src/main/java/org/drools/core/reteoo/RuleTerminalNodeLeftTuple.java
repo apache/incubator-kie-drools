@@ -294,6 +294,10 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         return this.queued;
     }
 
+    public boolean isActive() {
+        return this.queued;
+    }
+
     public void setQueued(final boolean queued) {
         this.queued = queued;
     }

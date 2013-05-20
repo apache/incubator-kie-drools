@@ -206,6 +206,9 @@ public class DefaultKnowledgeHelper
                 }
                 ((RuleTerminalNodeLeftTuple)targetMatch).update(salienceInt, activation.getPropagationContext());
                 targetMatch.getRuleAgendaItem().getRuleExecutor().addLeftTuple( targetMatch.getTuple() );
+                if ( !targetMatch.getRuleAgendaItem().isQueued() ) {
+                    targetMatch.getRuleAgendaItem().getAgendaGroup().add(targetMatch.getRuleAgendaItem());
+                }
             }
         }
     }

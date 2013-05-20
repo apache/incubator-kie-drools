@@ -92,21 +92,18 @@ public class RuleExecutor {
 
                 //check if the rule is not effective or
                 // if the current Rule is no-loop and the origin rule is the same then return
-                if (isNotEffective(wm, rtn, rule, leftTuple, pctx)) {
+                if (cancelAndContinue(wm, rtn, rule, leftTuple, pctx, filter)) {
                     continue;
                 }
 
                 AgendaItem item = (AgendaItem) leftTuple;
-                if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept(item,
-                                                                                                   pctx,
-                                                                                                   wm,
-                                                                                                   rtn)) {
+                if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept(item, pctx, wm, rtn)) {
+                    // only relevant for seralization, to not refire Matches already fired
                     continue;
                 }
-                if (filter == null || filter.accept(item)) {
-                    agenda.fireActivation(item);
-                    localFireCount++;
-                }
+
+                agenda.fireActivation(item);
+                localFireCount++;
 
                 salience = ruleAgendaItem.getSalience(); // dyanmic salience may have updated it, so get again.
                 if ( queue != null && !queue.isEmpty() && salience != queue.peek().getSalience() ) {
@@ -161,11 +158,11 @@ public class RuleExecutor {
         return ruleAgendaItem;
     }
 
-    private boolean isNotEffective(InternalWorkingMemory wm,
-                                   RuleTerminalNode rtn,
-                                   Rule rule,
-                                   LeftTuple leftTuple,
-                                   PropagationContext pctx) {
+    private boolean cancelAndContinue(InternalWorkingMemory wm,
+                                      RuleTerminalNode rtn,
+                                      Rule rule,
+                                      LeftTuple leftTuple,
+                                      PropagationContext pctx, AgendaFilter filter) {
         // NB. stopped setting the LT.object to Boolean.TRUE, that Reteoo did.
         if ((!rule.isEffective(leftTuple,
                                rtn,
@@ -181,6 +178,10 @@ public class RuleExecutor {
                     return true;
                 }
             }
+        }
+
+        if ( filter != null && !filter.accept((Activation)leftTuple) ) {
+            return true;
         }
         return false;
     }

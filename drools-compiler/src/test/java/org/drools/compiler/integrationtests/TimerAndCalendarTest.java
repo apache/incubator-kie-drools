@@ -961,11 +961,11 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             ksession.setGlobal( "latch", latch );            
             
             ksession.fireAllRules();           
-            Thread.sleep(200); // this makes sure it actually enters a rule
+            Thread.sleep(500); // this makes sure it actually enters a rule
             kbase.removeRule("org.drools.compiler.test", "TimerRule");
             ksession.fireAllRules();
             latch.countDown();
-            Thread.sleep(100); // allow the last rule, if we were in the middle of one to actually fire, before clearing
+            Thread.sleep(500); // allow the last rule, if we were in the middle of one to actually fire, before clearing
             ksession.fireAllRules();
             list.clear();
             Thread.sleep(500); // now wait to see if any more fire, they shouldn't

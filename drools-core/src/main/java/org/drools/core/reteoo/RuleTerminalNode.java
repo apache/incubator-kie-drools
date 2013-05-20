@@ -244,10 +244,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();        
 
-        boolean fire = agenda.createActivation( leftTuple, 
-                                                context, 
-                                                workingMemory, 
-                                                this );
+        boolean fire = agenda.createActivation( leftTuple,  context,
+                                                workingMemory,  this );
         if( fire && !fireDirect ) {
             agenda.addActivation( (AgendaItem) leftTuple.getObject() );
         }
