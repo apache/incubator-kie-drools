@@ -17,11 +17,24 @@
 package org.drools.core.common;
 
 import org.drools.core.conflict.PhreakConflictResolver;
+import org.drools.core.conflict.SequentialConflictResolver;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.BinaryHeapQueue;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -33,7 +46,8 @@ import java.util.PriorityQueue;
  */
 public class BinaryHeapQueueAgendaGroup
         implements
-        InternalAgendaGroup {
+        InternalAgendaGroup,
+        InternalRuleFlowGroup {
 
     private static final long serialVersionUID = 510l;
     private String             name;
@@ -45,6 +59,10 @@ public class BinaryHeapQueueAgendaGroup
     private PropagationContext autoFocusActivator;
     private long               activatedForRecency;
     private long               clearedForRecency;
+
+    private InternalWorkingMemory workingMemory;
+    private boolean autoDeactivate = true;
+    private Map<Long, String> nodeInstances = new HashMap<Long, String>();
 
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
@@ -60,6 +78,8 @@ public class BinaryHeapQueueAgendaGroup
         this.name = name;
         if (ruleBase.getConfiguration().isPhreakEnabled()) {
             this.queue = new BinaryHeapQueue(new PhreakConflictResolver());
+        } if (ruleBase.getConfiguration().isSequential() ) {
+            this.queue = new BinaryHeapQueue(new SequentialConflictResolver() );
         } else {
             this.queue = new BinaryHeapQueue(ruleBase.getConfiguration().getConflictResolver());
         }
@@ -72,6 +92,26 @@ public class BinaryHeapQueueAgendaGroup
      */
     public String getName() {
         return this.name;
+    }
+
+    @Override
+    public void setWorkingMemory(InternalWorkingMemory workingMemory) {
+        this.workingMemory = workingMemory;
+    }
+
+    @Override
+    public InternalWorkingMemory getWorkingMemory() {
+        return workingMemory;
+    }
+
+    @Override
+    public void addActivation(Activation activation) {
+       add(activation);
+    }
+
+    @Override
+    public void removeActivation(Activation activation) {
+        remove(activation);
     }
 
     public void clear() {
@@ -106,6 +146,33 @@ public class BinaryHeapQueueAgendaGroup
         return this.active;
     }
 
+    @Override
+    public void deactivateIfEmpty() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isAutoDeactivate() {
+        return autoDeactivate;
+    }
+
+    @Override
+    public void setAutoDeactivate(boolean autoDeactivate) {
+        this.autoDeactivate = autoDeactivate;
+    }
+
+    public void addNodeInstance(Long processInstanceId,
+                                String nodeInstanceId) {
+        nodeInstances.put( processInstanceId,
+                           nodeInstanceId );
+    }
+
+    public void removeNodeInstance(Long processInstanceId,
+                                   String nodeInstanceId) {
+        nodeInstances.put( processInstanceId,
+                           nodeInstanceId );
+    }
+
     public void setActive(final boolean activate) {
         this.active = activate;
     }
@@ -125,6 +192,11 @@ public class BinaryHeapQueueAgendaGroup
 
     public Activation[] getActivations() {
         return (Activation[]) this.queue.toArray(new AgendaItem[this.queue.size()]);
+    }
+
+    @Override
+    public Map<Long, String> getNodeInstances() {
+        return nodeInstances;
     }
 
     public String toString() {
@@ -170,4 +242,61 @@ public class BinaryHeapQueueAgendaGroup
     public void setClearedForRecency(long recency) {
         this.clearedForRecency = recency;
     }
+
+    public static class DeactivateCallback
+            implements
+            WorkingMemoryAction {
+
+        private static final long     serialVersionUID = 510l;
+
+        private InternalRuleFlowGroup ruleFlowGroup;
+
+        public DeactivateCallback(InternalRuleFlowGroup ruleFlowGroup) {
+            this.ruleFlowGroup = ruleFlowGroup;
+        }
+
+        public DeactivateCallback(MarshallerReaderContext context) throws IOException {
+            this.ruleFlowGroup = (InternalRuleFlowGroup) context.wm.getAgenda().getRuleFlowGroup( context.readUTF() );
+        }
+
+        public DeactivateCallback(MarshallerReaderContext context,
+                                  ProtobufMessages.ActionQueue.Action _action) {
+            this.ruleFlowGroup = (InternalRuleFlowGroup) context.wm.getAgenda().getRuleFlowGroup( _action.getDeactivateCallback().getRuleflowGroup() );
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            context.writeShort( WorkingMemoryAction.DeactivateCallback );
+            context.writeUTF( ruleFlowGroup.getName() );
+        }
+
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
+            return ProtobufMessages.ActionQueue.Action.newBuilder()
+                                               .setType( ProtobufMessages.ActionQueue.ActionType.DEACTIVATE_CALLBACK )
+                                               .setDeactivateCallback( ProtobufMessages.ActionQueue.DeactivateCallback.newBuilder()
+                                                                                                   .setRuleflowGroup( ruleFlowGroup.getName() )
+                                                                                                   .build() )
+                                               .build();
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                ClassNotFoundException {
+            ruleFlowGroup = (InternalRuleFlowGroup) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( ruleFlowGroup );
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            // check whether ruleflow group is still empty first
+            if ( this.ruleFlowGroup.isEmpty() ) {
+                // deactivate ruleflow group
+                this.ruleFlowGroup.setActive( false );
+            }
+        }
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+        }
+    }
+
 }

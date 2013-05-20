@@ -108,14 +108,9 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void queueRuleAgendaItem(InternalWorkingMemory wm) {
         agendaItem.getRuleExecutor().setDirty(true);
-        if (!agendaItem.isQueued()) {
-            InternalRuleFlowGroup rfg = agendaItem.getRuleFlowGroup();
+        if (!agendaItem.isQueued() && !agendaItem.isBlocked()) {
             InternalAgendaGroup ag = agendaItem.getAgendaGroup();
-            if ( rfg != null ) {
-                rfg.addActivation( agendaItem );
-            } else {
-                ag.add( agendaItem );
-            }
+            ag.add( agendaItem );
         }
         if ( agendaItem.getRule().isEager() ) {
             // will return if already added

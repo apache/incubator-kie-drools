@@ -99,10 +99,6 @@ public class ScheduledAgendaItem
         agendaItem.setFactHandle(factHandle);
     }
 
-    public InternalRuleFlowGroup getRuleFlowGroup() {
-        return agendaItem.getRuleFlowGroup();
-    }
-
     public ActivationGroupNode getActivationGroupNode() {
         return agendaItem.getActivationGroupNode();
     }
@@ -229,14 +225,6 @@ public class ScheduledAgendaItem
 
     public List<FactHandle> getFactHandles() {
         return agendaItem.getFactHandles();
-    }
-
-    public int getSequenence() {
-        return agendaItem.getSequenence();
-    }
-
-    public void setSequenence(int sequenence) {
-        agendaItem.setSequenence(sequenence);
     }
 
     public ScheduledAgendaItem getNext() {

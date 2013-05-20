@@ -343,8 +343,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
                 
                 Environment environment = EnvironmentFactory.newEnvironment();
                 KieSession ksession = marshaller.unmarshall( bais,
-                                                                           conf,
-                                                                           environment );
+                                                             conf,
+                                                             environment );
                 session = (StatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session;
     
                 if ( keepReference ) {
@@ -419,12 +419,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
     }
 
     public StatelessSession newStatelessSession() {
-
-        //orders the rules
-        if ( this.getConfiguration().isSequential() ) {
-            this.reteooBuilder.order();
-        }
-
         synchronized ( this.pkgs ) {
             return new ReteooStatelessSession( this );
         }
@@ -460,9 +454,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     public void addPackages(Collection<Package> pkgs) {
         super.addPackages( pkgs );
-        if ( this.getConfiguration().isSequential() ) {
-            this.reteooBuilder.setOrdered( false );
-        }
     }
 
     public void addPackage(final Package newPkg) {

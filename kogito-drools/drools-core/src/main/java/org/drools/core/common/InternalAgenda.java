@@ -51,14 +51,12 @@ public interface InternalAgenda
                                        final PropagationContext context,
                                        final TerminalNode rtn,
                                        RuleAgendaItem ruleAgendaItem,
-                                       InternalAgendaGroup agendaGroup,
-                                       InternalRuleFlowGroup ruleFlowGroup);
+                                       InternalAgendaGroup agendaGroup);
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
                                                          final TerminalNode rtn,
-                                                         InternalAgendaGroup agendaGroup,
-                                                         InternalRuleFlowGroup ruleFlowGroup);
+                                                         InternalAgendaGroup agendaGroup);
     
     public boolean createActivation(final LeftTuple tuple,
                                     final PropagationContext context,
@@ -102,24 +100,6 @@ public interface InternalAgenda
     public boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
                                             String ruleName,
                                             long processInstanceId);
-
-    /**
-     * Adds a RuleFlowGroupListerner to the named RuleFlowGroup
-     *
-     * @param ruleFlowGroup
-     * @param listener
-     */
-    public void addRuleFlowGroupListener(String ruleFlowGroup,
-                                         RuleFlowGroupListener listener);
-
-    /**
-     * Removes the given RuleFlowGroupListener from the list of listeners of the named RuleFlowGroup
-     * 
-     * @param ruleFlowGroup
-     * @param listener
-     */
-    public void removeRuleFlowGroupListener(String ruleFlowGroup,
-                                            RuleFlowGroupListener listener);
 
     public void clear();
 
@@ -202,4 +182,11 @@ public interface InternalAgenda
     void removeEagerRuleAgendaItem(RuleAgendaItem item);
 
     long getNextActivationCounter();
+
+    /*
+         * (non-Javadoc)
+         *
+         * @see org.kie.common.AgendaI#setFocus(org.kie.spi.AgendaGroup)
+         */
+    boolean setFocus(AgendaGroup agendaGroup);
 }

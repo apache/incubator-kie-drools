@@ -143,11 +143,14 @@ public class RuleBuilder {
                 rule.setAutoFocus( getBooleanValue( attributeDescr,
                                                     true ) );
             } else if ( name.equals( "agenda-group" ) ) {
-                rule.setAgendaGroup( attributeDescr.getValue() );
+                if ( StringUtils.isEmpty(rule.getRuleFlowGroup())) {
+                    rule.setAgendaGroup( attributeDescr.getValue() ); // don't override if RFG has already set this
+                }
             } else if ( name.equals( "activation-group" ) ) {
                 rule.setActivationGroup( attributeDescr.getValue() );
             } else if ( name.equals( "ruleflow-group" ) ) {
                 rule.setRuleFlowGroup( attributeDescr.getValue() );
+                rule.setAgendaGroup( attributeDescr.getValue() ); // assign AG to the same name as AG, as they are aliased to AGs anyway
             } else if ( name.equals( "lock-on-active" ) ) {
                 rule.setLockOnActive( getBooleanValue( attributeDescr,
                                                        true ) );
@@ -176,6 +179,11 @@ public class RuleBuilder {
         AnnotationDescr ann = ruleDescr.getAnnotation( "activationListener" );
         if ( ann != null && !StringUtils.isEmpty( (String) ann.getValue() ) ) {
             rule.setActivationListener( MVEL.evalToString( (String) ann.getValue() ) );
+        }
+
+        ann = ruleDescr.getAnnotation( "Eager" );
+        if ( ann != null && !StringUtils.isEmpty( (String) ann.getValue() ) ) {
+            rule.setEager( true );
         }
 
         //        buildDuration( context );

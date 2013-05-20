@@ -54,8 +54,7 @@ public interface InternalRuleBase
     FactHandleFactory newFactHandleFactory(int id, long counter) throws IOException ;
 
     Map<String, Class<?>> getGlobals();
-    
-    Map<String, Integer> getAgendaGroupRuleTotals();
+
     
     RuleBaseConfiguration getConfiguration();
     

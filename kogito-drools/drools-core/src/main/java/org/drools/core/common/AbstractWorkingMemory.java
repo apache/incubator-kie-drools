@@ -637,10 +637,8 @@ public abstract class AbstractWorkingMemory
                 startOperation();
                 ruleBase.readLock();
                 
-                // If we're already firing a rule, then it'll pick up
-                // the firing for any other assertObject(..) that get
-                // nested inside, avoiding concurrent-modification
-                // exceptions, depending on code paths of the actions.
+                // If we're already firing a rule, then it'll pick up the firing for any other assertObject(..) that get
+                // nested inside, avoiding concurrent-modification exceptions, depending on code paths of the actions.
                 if ( liaPropagations != null && isSequential() ) {
                     for ( Iterator it = liaPropagations.iterator(); it.hasNext(); ) {
                         ((LIANodePropagation) it.next()).doPropagation( this );

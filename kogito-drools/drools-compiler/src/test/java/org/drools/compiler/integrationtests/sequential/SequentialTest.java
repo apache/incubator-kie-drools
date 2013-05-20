@@ -11,12 +11,14 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.integrationtests.DynamicRulesTest;
 import org.drools.core.rule.Package;
+import org.drools.core.util.IoUtils;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.command.CommandFactory;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -32,6 +34,7 @@ import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.api.io.ResourceType;
 
@@ -43,26 +46,14 @@ import java.util.List;
 import java.util.Properties;
 
 public class SequentialTest extends CommonTestMethodBase {
-    //  FIXME lots of XXX tests here, need to find out why.
-    
+
     @Test
     public void testBasicOperation() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource("simpleSequential.drl", getClass()), ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( SequentialOption.YES );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        kbase    = org.drools.compiler.integrationtests.SerializationHelper.serializeObject(kbase);
-        final StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
-
+        KnowledgeBase kbase = loadKnowledgeBase(kconf, "simpleSequential.drl");
+        StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
         final List list = new ArrayList();
         ksession.setGlobal( "list",
                            list );
@@ -79,7 +70,8 @@ public class SequentialTest extends CommonTestMethodBase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            15 );
 
-        ksession.execute( Arrays.asList( new Object[]{p1, stilton, p2, cheddar, p3} ) );
+
+        ksession.execute( CommandFactory.newInsertElements(Arrays.asList( new Object[]{p1, stilton, p2, cheddar, p3} )) );
 
         assertEquals( 3,
                       list.size() );
@@ -87,21 +79,10 @@ public class SequentialTest extends CommonTestMethodBase {
     
     @Test
     public void testSalience() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "simpleSalience.drl", getClass() ), ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( SequentialOption.YES );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        kbase    = org.drools.compiler.integrationtests.SerializationHelper.serializeObject(kbase);
-        final StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+        kconf.setOption(SequentialOption.YES);
+        KnowledgeBase kbase = loadKnowledgeBase(kconf, "simpleSalience.drl");
+        StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -128,22 +109,11 @@ public class SequentialTest extends CommonTestMethodBase {
         str +="then\n";
         str +="    System.out.println( drools.getKieRuntime() );\n";
         str +="end\n";
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes()), ResourceType.DRL );
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( SequentialOption.YES );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        kbase    = org.drools.compiler.integrationtests.SerializationHelper.serializeObject(kbase);
-        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, str);
+        StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
         
         ksession.execute( new Message( "help" ) );
     }
@@ -159,22 +129,11 @@ public class SequentialTest extends CommonTestMethodBase {
         str +="then\n";
         str +="    System.out.println( drools.getKieRuntime() );\n";
         str +="end\n";
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes()), ResourceType.DRL );
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( SequentialOption.YES );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        kbase    = org.drools.compiler.integrationtests.SerializationHelper.serializeObject(kbase);
-        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+        kconf.setOption(SequentialOption.YES);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, str);
+        StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
         
         final List list = new ArrayList();
         
@@ -260,40 +219,24 @@ public class SequentialTest extends CommonTestMethodBase {
     // JBRULES-1567 - ArrayIndexOutOfBoundsException in sequential execution after calling RuleBase.addPackage(..)
     @Test
     public void testSequentialWithRulebaseUpdate() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "simpleSalience.drl", getClass() ), ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( SequentialOption.YES );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        kbase    = org.drools.compiler.integrationtests.SerializationHelper.serializeObject(kbase);
-        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+        kconf.setOption(SequentialOption.YES);
+        KnowledgeBase kbase = loadKnowledgeBase(kconf, "simpleSalience.drl");
+        StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
 
         final List list = new ArrayList();
-        ksession.setGlobal( "list",
-                           list );
+        ksession.setGlobal( "list", list );
 
         ksession.execute(new Person("pob"));
 
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_Dynamic3.drl", DynamicRulesTest.class ), ResourceType.DRL );
+        kbase.addKnowledgePackages(loadKnowledgePackagesFromString( new String( IoUtils.readBytesFromInputStream( DynamicRulesTest.class.getResource("test_Dynamic3.drl").openStream() ) ) ) );
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         ksession = kbase.newStatelessKnowledgeSession();
-        ksession.setGlobal( "list",
-                           list );
-        Person  person  = new Person("bop");
+        ksession.setGlobal( "list", list );
+        Person person  = new Person("bop");
         ksession.execute(person);
 
-        assertEquals( 7,
-                      list.size() );
+        assertEquals( 7, list.size() );
 
         assertEquals( "rule 3", list.get( 0 ));
         assertEquals( "rule 2", list.get( 1 ));
@@ -307,12 +250,8 @@ public class SequentialTest extends CommonTestMethodBase {
     @Test
     public void testProfileSequential() throws Exception {
 
-        runTestProfileManyRulesAndFacts( true,
-                                         "Sequential mode",
-                                         0, "sequentialProfile.drl"  );
-        runTestProfileManyRulesAndFacts( true,
-                                         "Sequential mode",
-                                         0, "sequentialProfile.drl"  );
+        runTestProfileManyRulesAndFacts( true, "Sequential mode", 0, "sequentialProfile.drl"  );
+        runTestProfileManyRulesAndFacts( true, "Sequential mode", 0, "sequentialProfile.drl"  );
 
         System.gc();
         Thread.sleep( 100 );
@@ -320,12 +259,8 @@ public class SequentialTest extends CommonTestMethodBase {
 
     @Test
     public void testProfileRETE() throws Exception {
-        runTestProfileManyRulesAndFacts( false,
-                                         "Normal RETE mode",
-                                         0, "sequentialProfile.drl"  );
-        runTestProfileManyRulesAndFacts( false,
-                                         "Normal RETE mode",
-                                         0, "sequentialProfile.drl"  );
+        runTestProfileManyRulesAndFacts( false, "Normal RETE mode", 0, "sequentialProfile.drl"  );
+        runTestProfileManyRulesAndFacts( false, "Normal RETE mode", 0, "sequentialProfile.drl"  );
 
         System.gc();
         Thread.sleep( 100 );
@@ -367,31 +302,20 @@ public class SequentialTest extends CommonTestMethodBase {
 
     private void runTestProfileManyRulesAndFacts(boolean sequentialMode,
                                                  String message,
-                                                 int timetoMeasureIterations, String file) throws DroolsParserException,
-                                                                             IOException,
-                                                                             Exception {
-        // postponed while I sort out KnowledgeHelperFixer
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( file ) ) );
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
+                                                 int timetoMeasureIterations,
+                                                 String file) throws DroolsParserException, IOException, Exception {
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        if ( sequentialMode ) {
+            kconf.setOption( SequentialOption.YES );
+        }   else {
+            kconf.setOption( SequentialOption.NO );
         }
-        final Package pkg = builder.getPackage();
 
-        Properties properties = new Properties();
-        properties.setProperty( "drools.shadowProxyExcludes",
-                                "org.drools.compiler.*" );
-
-        RuleBaseConfiguration conf = new RuleBaseConfiguration( properties );
-        conf.setSequential( sequentialMode );
-
-        RuleBase ruleBase = getRuleBase( conf );
-        ruleBase.addPackage( pkg );
-        ruleBase    = org.drools.compiler.integrationtests.SerializationHelper.serializeObject(ruleBase);
-        final StatelessSession session = ruleBase.newStatelessSession();
+        KnowledgeBase kbase = loadKnowledgeBase(kconf, file);
+        StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
 
         final List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
 
         Object[] data = new Object[50000];
@@ -410,7 +334,7 @@ public class SequentialTest extends CommonTestMethodBase {
         if ( timetoMeasureIterations == 0 ) {
             //one shot measure
             long start = System.currentTimeMillis();
-            session.execute( data );
+            ksession.execute( CommandFactory.newInsertElements(Arrays.asList(data)));
             System.out.println( "Time for " + message + ":" + (System.currentTimeMillis() - start) );
             assertTrue( list.size() > 0 );
 
@@ -421,12 +345,12 @@ public class SequentialTest extends CommonTestMethodBase {
             long end = start + timetoMeasureIterations;
             int count = 0;
             while ( System.currentTimeMillis() < end ) {
-                StatelessSession sess2 = ruleBase.newStatelessSession();
+                StatelessKnowledgeSession sess2 = createStatelessKnowledgeSession( kbase );
                 List list2 = new ArrayList();
                 sess2.setGlobal( "list",
                                  list2 );
 
-                sess2.execute( data );
+                sess2.execute( CommandFactory.newInsertElements(Arrays.asList(data)));
                 //session.execute( data );
                 count++;
             }

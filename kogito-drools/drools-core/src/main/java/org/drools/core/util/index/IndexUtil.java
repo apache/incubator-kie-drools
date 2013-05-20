@@ -244,7 +244,7 @@ public class IndexUtil {
         public static BetaMemory createBetaMemory(RuleBaseConfiguration config, short nodeType, BetaNodeFieldConstraint... constraints) {
             int keyDepth = config.getCompositeKeyDepth();
             if (config.getCompositeKeyDepth() < 1) {
-                return new BetaMemory( config.isSequential() ? null : new LeftTupleList(),
+                return new BetaMemory( new LeftTupleList(), //config.isSequential() ? null : new LeftTupleList(),
                                        new RightTupleList(),
                                        createContext(constraints),
                                        nodeType );
@@ -280,9 +280,9 @@ public class IndexUtil {
         }
 
         private static LeftTupleMemory createLeftMemory(RuleBaseConfiguration config, IndexSpec indexSpec) {
-            if (config.isSequential()) {
-                return null;
-            }
+//            if (config.isSequential()) {
+//                return null;
+//            }
             if ( !config.isIndexLeftBetaMemory() || !indexSpec.constraintType.isIndexable() ) {
                 return new LeftTupleList();
             }

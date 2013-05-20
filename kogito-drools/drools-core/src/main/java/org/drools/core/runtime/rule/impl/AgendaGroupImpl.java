@@ -60,6 +60,10 @@ public class AgendaGroupImpl implements AgendaGroup, Externalizable {
         this.agenda.setFocus( this.name );
     }
 
+    public InternalAgenda getAgenda() {
+        return this.agenda;
+    }
+
 //    public Collection<Activation> getActivations() {
 //        return this.agenda.getAgendaGroup( this.name ).getActivations();
 //    }

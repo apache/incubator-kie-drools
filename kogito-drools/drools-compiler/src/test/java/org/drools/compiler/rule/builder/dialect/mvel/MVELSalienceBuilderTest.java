@@ -97,7 +97,7 @@ public class MVELSalienceBuilderTest {
 
         RuleTerminalNode rtn = new RuleTerminalNode();
         rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
-        AgendaItem item = new AgendaItemImpl(0, tuple, 0, null, rtn, null, null, null);
+        AgendaItem item = new AgendaItemImpl(0, tuple, 0, null, rtn, null, null);
 
 
         assertEquals( 25,
@@ -178,7 +178,7 @@ public class MVELSalienceBuilderTest {
             
             RuleTerminalNode rtn = new RuleTerminalNode();
             rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
-            item = new AgendaItemImpl(0, tuple, 0, null, rtn, null, null, null);
+            item = new AgendaItemImpl(0, tuple, 0, null, rtn, null, null);
         }
 
         public void run() {

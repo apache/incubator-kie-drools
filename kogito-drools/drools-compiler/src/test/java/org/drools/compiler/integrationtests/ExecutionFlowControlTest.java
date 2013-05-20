@@ -268,8 +268,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( 1, group1.size() );
 
         ksession.getAgenda().getAgendaGroup("group1").setFocus( );
-        // AgendaqGroup "group1" is now active, so should not receive
-        // activations
+        // AgendaqGroup "group1" is now active, so should not receive activations
         final Cheese brie10 = new Cheese( "brie", 10 );
         ksession.insert( brie10 );
         assertEquals( 1, group1.size() );
@@ -279,8 +278,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         final AgendaGroup group2 = agenda.getAgendaGroup( "group1" );
         assertEquals( 1, group2.size() );
 
-        final RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "ruleflow2" );
-        rfg.setActive( true );
+        agenda.setFocus(group2);
         final Cheese cheddar17 = new Cheese( "cheddar", 17 );
         ksession.insert( cheddar17 );
         assertEquals( 1, group2.size() );
@@ -389,14 +387,12 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( 2, group1.size() );
 
         AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
+        assertEquals( 3, group2.size() );
         agenda.setFocus( group2 );
-
-        RuleFlowGroupImpl rfg = (RuleFlowGroupImpl) ((AgendaImpl)ksession.getAgenda()).getAgenda().getRuleFlowGroup("ruleflow2");
-        assertEquals( 3, rfg.size() );
 
         agenda.activateRuleFlowGroup( "ruleflow2" );
         agenda.fireNextItem( null, 0, 0 );
-        assertEquals( 2, rfg.size() );
+        assertEquals( 2, group2.size() );
         ksession.update( brieHandle, brie );
         assertEquals( 2, group2.size() );
     }
@@ -889,19 +885,28 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     @Test
     public void testRuleFlowGroupInActiveMode() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase("ruleflowgroup.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        final KieSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+        ksession.setGlobal( "list",
+                                 list );
+
+        new Thread(new Runnable() {
+            public void run() {
+                ksession.fireUntilHalt();
+            }
+        }).start();
 
         ksession.insert( "Test" );
-        ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+        assertEquals( 0,
+                      list.size() );
 
-        ((AgendaImpl)ksession.getAgenda()).getAgenda().activateRuleFlowGroup("Group1");
-        ksession.fireAllRules();
+        ((DefaultAgenda)((AgendaImpl)ksession.getAgenda()).getAgenda()).activateRuleFlowGroup( "Group1" );
 
-        assertEquals( 1, list.size() );
+        Thread.sleep(1000);
+
+        assertEquals( 1,
+                      list.size() );
 
         ksession.halt();
     }

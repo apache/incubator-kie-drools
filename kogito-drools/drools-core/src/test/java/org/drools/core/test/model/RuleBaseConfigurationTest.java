@@ -19,7 +19,6 @@ package org.drools.core.test.model;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.RuleBaseConfiguration.SequentialAgenda;
-import org.drools.core.common.ArrayAgendaGroupFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.junit.Test;
 
@@ -95,7 +94,6 @@ public class RuleBaseConfigurationTest {
         
         assertTrue( cfg.isSequential() );
         assertEquals( SequentialAgenda.SEQUENTIAL, cfg.getSequentialAgenda() );
-        assertTrue( cfg.getAgendaGroupFactory() instanceof ArrayAgendaGroupFactory );
         
         properties = new Properties();
         properties.setProperty( "drools.sequential.agenda", "dynamic" );

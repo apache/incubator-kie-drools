@@ -53,10 +53,6 @@ public interface InternalRuleFlowGroup extends RuleFlowGroup {
     void setActive(boolean active);
 
     boolean isActive();
-
-    void addRuleFlowGroupListener(RuleFlowGroupListener listener);
-    
-    void removeRuleFlowGroupListener(RuleFlowGroupListener listener);
     
     void addNodeInstance(Long processInstanceId, String nodeInstanceId);
 

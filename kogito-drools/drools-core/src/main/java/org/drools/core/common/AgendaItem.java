@@ -34,10 +34,6 @@ public interface AgendaItem extends Activation {
 
     void setSalience(int salience);
 
-    int getSequenence();
-
-    void setSequenence(int sequenence);
-
     InternalFactHandle getFactHandle();
 
     void setFactHandle(InternalFactHandle factHandle);
@@ -92,8 +88,6 @@ public interface AgendaItem extends Activation {
     void setActivationGroupNode(ActivationGroupNode activationNode);
 
     InternalAgendaGroup getAgendaGroup();
-
-    InternalRuleFlowGroup getRuleFlowGroup();
 
     ActivationNode getActivationNode();
 

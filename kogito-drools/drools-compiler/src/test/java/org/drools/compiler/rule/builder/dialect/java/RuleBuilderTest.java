@@ -126,8 +126,6 @@ public class RuleBuilderTest {
                                                     "my agenda" ) );
         ruleDescr.addAttribute( new AttributeDescr( "activation-group",
                                                     "my activation" ) );
-        ruleDescr.addAttribute( new AttributeDescr( "ruleflow-group",
-                                                    "mygroup" ) );
         ruleDescr.addAttribute( new AttributeDescr( "lock-on-active",
                                                     "" ) );
         ruleDescr.addAttribute( new AttributeDescr( "enabled",
@@ -163,7 +161,6 @@ public class RuleBuilderTest {
         verify( rule ).setAutoFocus( false );
         verify( rule ).setAgendaGroup( "my agenda" );
         verify( rule ).setActivationGroup( "my activation" );
-        verify( rule ).setRuleFlowGroup( "mygroup" );
         verify( rule ).setLockOnActive( true );
         verify( rule ).setEnabled( EnabledBoolean.ENABLED_FALSE );
         verify( rule ).setTimer( new IntervalTimer( null,

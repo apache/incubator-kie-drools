@@ -321,21 +321,6 @@ public class BuildContext {
         this.betaconstraints = betaconstraints;
     }
 
-    @SuppressWarnings("unchecked")
-    public int getNextSequence(String groupName) {
-        //List list = new ArrayList();
-
-        Integer seq = (Integer) this.rulebase.getAgendaGroupRuleTotals().get(groupName);
-        if (seq == null) {
-            seq = new Integer(0);
-        }
-        Integer newSeq = new Integer(seq.intValue() + 1);
-        this.rulebase.getAgendaGroupRuleTotals().put(groupName,
-                                                     newSeq);
-
-        return newSeq.intValue();
-    }
-
     /**
      * @return
      */

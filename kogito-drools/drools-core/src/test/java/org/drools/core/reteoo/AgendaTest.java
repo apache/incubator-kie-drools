@@ -30,7 +30,6 @@ import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.ArrayAgendaGroup;
 import org.drools.core.common.BinaryHeapQueueAgendaGroup;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
@@ -1877,7 +1876,7 @@ public class AgendaTest extends DroolsTestCase {
                       ruleFlowGroup.size() );
     }
 
-    @Test @Ignore
+    @Test
     public void testSequentialAgenda() {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential( true );
@@ -1915,7 +1914,6 @@ public class AgendaTest extends DroolsTestCase {
                                                              0,
                                                              buildContext );
 
-        node0.setSequence( 72 );
         rule0.setConsequence( consequence );
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
@@ -1931,7 +1929,6 @@ public class AgendaTest extends DroolsTestCase {
                                                              rule1.getLhs(),
                                                              0,
                                                              buildContext );
-        node1.setSequence( 10 );
         rule1.setConsequence( consequence );
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
@@ -1947,7 +1944,6 @@ public class AgendaTest extends DroolsTestCase {
                                                              rule2.getLhs(),
                                                              0,
                                                              buildContext );
-        node2.setSequence( 7 );
         rule2.setConsequence( consequence );
         final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
@@ -1963,7 +1959,6 @@ public class AgendaTest extends DroolsTestCase {
                                                              rule3.getLhs(),
                                                              0,
                                                              buildContext );
-        node3.setSequence( 0 );
         rule3.setConsequence( consequence );
         final PropagationContext context3 = new PropagationContextImpl( 0,
                                                                         PropagationContext.INSERTION,
@@ -1971,35 +1966,24 @@ public class AgendaTest extends DroolsTestCase {
                                                                         null,
                                                                         new DefaultFactHandle() );
 
-        final RuleTerminalNodeLeftTuple tuple = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
-                                                                                                      "cheese" ),
-                                                                               node0,
-                                                                               true );
-        ruleBase.getAgendaGroupRuleTotals().put( "MAIN",
-                                                 new Integer( 100 ) );
-        ruleBase.getAgendaGroupRuleTotals().put( "agendaGroup1",
-                                                 new Integer( 10 ) );
-        ruleBase.getAgendaGroupRuleTotals().put( "agendaGroup2",
-                                                 new Integer( 1 ) );
+        final RuleTerminalNodeLeftTuple tuple0 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1, "cheese" ), node0, true );
+        final RuleTerminalNodeLeftTuple tuple2_1 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 2, "cheese" ), node2, true );
+        final RuleTerminalNodeLeftTuple tuple2_2 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 3, "cheese" ), node2, true );
+        final RuleTerminalNodeLeftTuple tuple3_1 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 4, "cheese" ), node3, true );
+        final RuleTerminalNodeLeftTuple tuple3_2 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 5, "cheese" ), node3, true );
 
         InternalWorkingMemory workingMemory = new ReteooWorkingMemory( 0,
                                                                        ruleBase );
 
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
 
-        final AgendaGroup agendaGroup1 = new ArrayAgendaGroup( "agendaGroup1",
-                                                               ruleBase );
-        agenda.addAgendaGroup( agendaGroup1 );
-
-        final AgendaGroup agendaGroup2 = new ArrayAgendaGroup( "agendaGroup2",
-                                                               ruleBase );
-        agenda.addAgendaGroup( agendaGroup2 );
+        final AgendaGroup agendaGroup1 =  agenda.getAgendaGroup( "agendaGroup1");
+        final AgendaGroup agendaGroup2 =  agenda.getAgendaGroup( "agendaGroup2");
 
         // focus at this point is MAIN
-        assertEquals( 0,
-                      agenda.focusStackSize() );
+        assertEquals( 0, agenda.focusStackSize() );
 
-        node0.assertLeftTuple( tuple,
+        node0.assertLeftTuple( tuple0,
                                context0,
                                workingMemory );
         
@@ -2007,30 +1991,23 @@ public class AgendaTest extends DroolsTestCase {
 
         // check focus is main
         final AgendaGroup main = agenda.getAgendaGroup( AgendaGroup.MAIN );
-        assertEquals( agenda.getFocus(),
-                      main );
+        assertEquals( agenda.getFocus(), main );
         // check main got the tuple
-        assertEquals( 1,
-                      agenda.getFocus().size() );
-        node2.assertLeftTuple( tuple,
-                               context2,
-                               workingMemory );
+        assertEquals( 1, agenda.getFocus().size() );
+        node2.assertLeftTuple( tuple2_1, context2, workingMemory );
         agenda.unstageActivations();
 
         // main is still focus and this tuple went to agendaGroup1
-        assertEquals( 1,
-                      agenda.getFocus().size() );
+        assertEquals( 1, agenda.getFocus().size() );
 
         // check agendaGroup1 still got the tuple
-        assertEquals( 1,
-                      agendaGroup1.size() );
+        assertEquals( 1, agendaGroup1.size() );
 
         // make sure total agenda size reflects this
-        assertEquals( 2,
-                      agenda.agendaSize() );
+        assertEquals( 2, agenda.agendaSize() );
 
         // put another one on agendaGroup 1
-        node2.assertLeftTuple( tuple,
+        node2.assertLeftTuple( tuple2_2,
                                context2,
                                workingMemory );
         agenda.unstageActivations();
@@ -2057,7 +2034,7 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.getFocus().size() );
 
         // add to agendaGroup2
-        node3.assertLeftTuple( tuple,
+        node3.assertLeftTuple( tuple3_1,
                                context3,
                                workingMemory );
         agenda.unstageActivations();
@@ -2065,7 +2042,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 1,
                       agenda.getFocus().size() );
 
-        node3.assertLeftTuple( tuple,
+        node3.assertLeftTuple( tuple3_2,
                                context3,
                                workingMemory );
         agenda.unstageActivations();

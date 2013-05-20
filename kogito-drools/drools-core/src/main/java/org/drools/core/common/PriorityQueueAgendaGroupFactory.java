@@ -36,8 +36,6 @@ public class PriorityQueueAgendaGroupFactory implements AgendaGroupFactory, Exte
     }
 
     public InternalAgendaGroup createAgendaGroup(String name, InternalRuleBase ruleBase) {
-//        return new SimpleAgendaGroup(name, ruleBase);
-        return new BinaryHeapQueueAgendaGroup( name,
-                                    ruleBase );
+        return new BinaryHeapQueueAgendaGroup( name, ruleBase );
     }
 }

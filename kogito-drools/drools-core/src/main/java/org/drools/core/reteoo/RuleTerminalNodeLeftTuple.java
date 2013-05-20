@@ -48,10 +48,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
      */
     private           int                                            salience;
     /**
-     * Used for sequential mode
-     */
-    private           int                                            sequenence;
-    /**
      * The activation number
      */
     private           long                                           activationNumber;
@@ -61,7 +57,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
     private           LinkedList<LogicalDependency>                  blocked;
     private           LinkedList<LinkedListEntry<LogicalDependency>> blockers;
     private           InternalAgendaGroup                            agendaGroup;
-    private           InternalRuleFlowGroup                          ruleFlowGroup;
     private           ActivationGroupNode                            activationGroupNode;
     private           ActivationNode                                 activationNode;
     private           InternalFactHandle                             factHandle;
@@ -139,8 +134,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
                      final int salience,
                      final PropagationContext pctx,
                      final RuleAgendaItem ruleAgendaItem,
-                     InternalAgendaGroup agendaGroup,
-                     InternalRuleFlowGroup ruleFlowGroup) {
+                     InternalAgendaGroup agendaGroup) {
         setPropagationContext(pctx);
         this.salience = salience;
         this.activationNumber = activationNumber;
@@ -148,7 +142,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         this.matched = true;
         this.ruleAgendaItem = ruleAgendaItem;
         this.agendaGroup = agendaGroup;
-        this.ruleFlowGroup = ruleFlowGroup;
     }
 
     public void update(final int salience,
@@ -187,14 +180,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
 
     public void setSalience(int salience) {
         this.salience = salience;
-    }
-
-    public int getSequenence() {
-        return sequenence;
-    }
-
-    public void setSequenence(int sequenence) {
-        this.sequenence = sequenence;
     }
 
     public InternalFactHandle getFactHandle() {
@@ -344,13 +329,6 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         return this.agendaGroup;
     }
 
-    public InternalRuleFlowGroup getRuleFlowGroup() {
-        return this.ruleFlowGroup;
-    }
-
-    //    public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
-    //        this.agendaGroup = agendaGroup;
-    //    }
 
     public ActivationNode getActivationNode() {
         return this.activationNode;

@@ -95,8 +95,10 @@ public class ClassObjectTypeConf
                 context.setObjectTypeNodeMemoryEnabled( false );
             } else if ( context.getRuleBase().getConfiguration().isSequential() ) {
                 // We are in sequential mode, so no nodes should have memory
-                context.setTupleMemoryEnabled( false );
-                context.setObjectTypeNodeMemoryEnabled( false );
+//                context.setTupleMemoryEnabled( false );
+//                context.setObjectTypeNodeMemoryEnabled( false );
+                  context.setTupleMemoryEnabled( true );
+                  context.setObjectTypeNodeMemoryEnabled( true );
             } else {
                 context.setTupleMemoryEnabled( true );
                 context.setObjectTypeNodeMemoryEnabled( true );

@@ -40,5 +40,5 @@ public interface InternalAgendaGroup extends AgendaGroup {
     
     public void setClearedForRecency(long recency);
     
-    public long getClearedForRecency();    
+    public long getClearedForRecency();
 }

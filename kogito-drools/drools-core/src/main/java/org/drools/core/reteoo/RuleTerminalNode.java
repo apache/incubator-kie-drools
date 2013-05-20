@@ -52,12 +52,6 @@ import java.util.Map;
  * @see org.kie.rule.Rule
  */
 public class RuleTerminalNode extends AbstractTerminalNode {
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
-
-    private int                           sequence         = -1;  // -1 means not set
-
     private static final long             serialVersionUID = 510l;
 
     /** The rule to invoke upon match. */
@@ -183,7 +177,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal(in);
-        sequence = in.readInt();
         rule = (Rule) in.readObject();
         subrule = (GroupElement) in.readObject();
         subruleIndex = in.readInt();
@@ -203,7 +196,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeInt( sequence );
         out.writeObject( rule );
         out.writeObject( subrule );
         out.writeInt( subruleIndex );
@@ -230,14 +222,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public GroupElement getSubRule() {
         return this.subrule;
-    }
-
-    public void setSequence(int seq) {
-        this.sequence = seq;
-    }
-
-    public int getSequence() {
-        return this.sequence;
     }
 
     public void assertLeftTuple(final LeftTuple leftTuple,
