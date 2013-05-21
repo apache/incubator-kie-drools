@@ -68,10 +68,10 @@ public class ValuePlacerConfig extends PlacerConfig {
         ValuePlacer valuePlacer = new ValuePlacer(phaseTermination, valueSelector,
                 selectedCountLimit == null ? Integer.MAX_VALUE : selectedCountLimit);
         if (environmentMode == EnvironmentMode.FULL_ASSERT) {
-            valuePlacer.setAssertMoveScoreIsUncorrupted(true);
+            valuePlacer.setAssertMoveScoreFromScratch(true);
         }
         if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
-            valuePlacer.setAssertUndoMoveIsUncorrupted(true);
+            valuePlacer.setAssertExpectedUndoMoveScore(true);
         }
         return valuePlacer;
     }

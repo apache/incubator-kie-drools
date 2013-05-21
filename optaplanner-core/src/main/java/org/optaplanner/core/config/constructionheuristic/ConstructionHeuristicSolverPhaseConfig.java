@@ -23,7 +23,6 @@ import java.util.Set;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
-import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.constructionheuristic.placer.entity.EntityPlacerConfig;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
@@ -46,7 +45,6 @@ import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelect
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueWalker;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningVariableWalker;
-import org.optaplanner.core.impl.phase.SolverPhase;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 
@@ -100,8 +98,11 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
             configureSolverPhase(greedySolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
             greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
             greedySolverPhase.setGreedyDecider(buildGreedyDecider(solutionDescriptor, environmentMode));
+            if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+                greedySolverPhase.setAssertStepScoreFromScratch(true);
+            }
             if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
-                greedySolverPhase.setAssertStepScoreIsUncorrupted(true);
+                greedySolverPhase.setAssertExpectedStepScore(true);
             }
             return greedySolverPhase;
         } else if (!CollectionUtils.isEmpty(entityPlacerConfigList)) {
@@ -125,8 +126,11 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                         + " elements to initialize multiple entity classes.");
             }
             phase.setEntityPlacer(entityPlacer);
+            if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+                phase.setAssertStepScoreFromScratch(true);
+            }
             if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
-                phase.setAssertStepScoreIsUncorrupted(true);
+                phase.setAssertExpectedStepScore(true);
             }
             return phase;
         } else {
@@ -182,10 +186,10 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         
         greedyDecider.setForager(buildGreedyForager());
         if (environmentMode == EnvironmentMode.FULL_ASSERT) {
-            greedyDecider.setAssertMoveScoreIsUncorrupted(true);
+            greedyDecider.setAssertMoveScoreFromScratch(true);
         }
         if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
-            greedyDecider.setAssertUndoMoveIsUncorrupted(true);
+            greedyDecider.setAssertExpectedUndoMoveScore(true);
         }
         return greedyDecider;
     }

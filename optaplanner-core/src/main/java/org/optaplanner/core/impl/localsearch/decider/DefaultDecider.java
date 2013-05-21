@@ -45,8 +45,8 @@ public class DefaultDecider implements Decider {
     protected Acceptor acceptor;
     protected Forager forager;
 
-    protected boolean assertMoveScoreIsUncorrupted = false;
-    protected boolean assertUndoMoveIsUncorrupted = false;
+    protected boolean assertMoveScoreFromScratch = false;
+    protected boolean assertExpectedUndoMoveScore = false;
 
     public void setLocalSearchSolverPhase(LocalSearchSolverPhase localSearchSolverPhase) {
         this.localSearchSolverPhase = localSearchSolverPhase;
@@ -72,12 +72,12 @@ public class DefaultDecider implements Decider {
         this.forager = forager;
     }
 
-    public void setAssertMoveScoreIsUncorrupted(boolean assertMoveScoreIsUncorrupted) {
-        this.assertMoveScoreIsUncorrupted = assertMoveScoreIsUncorrupted;
+    public void setAssertMoveScoreFromScratch(boolean assertMoveScoreFromScratch) {
+        this.assertMoveScoreFromScratch = assertMoveScoreFromScratch;
     }
 
-    public void setAssertUndoMoveIsUncorrupted(boolean assertUndoMoveIsUncorrupted) {
-        this.assertUndoMoveIsUncorrupted = assertUndoMoveIsUncorrupted;
+    public void setAssertExpectedUndoMoveScore(boolean assertExpectedUndoMoveScore) {
+        this.assertExpectedUndoMoveScore = assertExpectedUndoMoveScore;
     }
 
     // ************************************************************************
@@ -143,10 +143,10 @@ public class DefaultDecider implements Decider {
         move.doMove(scoreDirector);
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
-        if (assertUndoMoveIsUncorrupted) {
+        if (assertExpectedUndoMoveScore) {
             LocalSearchSolverPhaseScope phaseScope = moveScope.getStepScope()
                     .getPhaseScope();
-            phaseScope.assertUndoMoveIsUncorrupted(move, undoMove);
+            phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
         logger.trace("        Move index ({}), score ({}), accepted ({}) for move ({}).",
                 moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getAccepted(),
@@ -155,7 +155,7 @@ public class DefaultDecider implements Decider {
 
     private void processMove(LocalSearchMoveScope moveScope) {
         Score score = moveScope.getStepScope().getPhaseScope().calculateScore();
-        if (assertMoveScoreIsUncorrupted) {
+        if (assertMoveScoreFromScratch) {
             moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score);
         }
         moveScope.setScore(score);

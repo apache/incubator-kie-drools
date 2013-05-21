@@ -22,8 +22,8 @@ public class ValuePlacer extends AbstractPlacer {
     protected final PlanningVariableDescriptor variableDescriptor;
     protected final int selectedCountLimit;
 
-    protected boolean assertMoveScoreIsUncorrupted = false;
-    protected boolean assertUndoMoveIsUncorrupted = false;
+    protected boolean assertMoveScoreFromScratch = false;
+    protected boolean assertExpectedUndoMoveScore = false;
 
     public ValuePlacer(Termination termination, ValueSelector valueSelector, int selectedCountLimit) {
         this.termination = termination;
@@ -43,12 +43,12 @@ public class ValuePlacer extends AbstractPlacer {
         return variableDescriptor;
     }
 
-    public void setAssertMoveScoreIsUncorrupted(boolean assertMoveScoreIsUncorrupted) {
-        this.assertMoveScoreIsUncorrupted = assertMoveScoreIsUncorrupted;
+    public void setAssertMoveScoreFromScratch(boolean assertMoveScoreFromScratch) {
+        this.assertMoveScoreFromScratch = assertMoveScoreFromScratch;
     }
 
-    public void setAssertUndoMoveIsUncorrupted(boolean assertUndoMoveIsUncorrupted) {
-        this.assertUndoMoveIsUncorrupted = assertUndoMoveIsUncorrupted;
+    public void setAssertExpectedUndoMoveScore(boolean assertExpectedUndoMoveScore) {
+        this.assertExpectedUndoMoveScore = assertExpectedUndoMoveScore;
     }
 
     public ConstructionHeuristicMoveScope nominateMove(ConstructionHeuristicStepScope stepScope) {
@@ -103,9 +103,9 @@ public class ValuePlacer extends AbstractPlacer {
         move.doMove(scoreDirector);
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
-        if (assertUndoMoveIsUncorrupted) {
+        if (assertExpectedUndoMoveScore) {
             ConstructionHeuristicSolverPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
-            phaseScope.assertUndoMoveIsUncorrupted(move, undoMove);
+            phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
         logger.trace("        Move index ({}), score ({}) for move ({}).",
                 moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getMove());
@@ -113,7 +113,7 @@ public class ValuePlacer extends AbstractPlacer {
 
     private void processMove(ConstructionHeuristicMoveScope moveScope) {
         Score score = moveScope.getStepScope().getPhaseScope().calculateScore();
-        if (assertMoveScoreIsUncorrupted) {
+        if (assertMoveScoreFromScratch) {
             moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score);
         }
         moveScope.setScore(score);

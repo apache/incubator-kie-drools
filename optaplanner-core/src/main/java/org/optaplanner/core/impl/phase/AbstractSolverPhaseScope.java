@@ -136,7 +136,7 @@ public abstract class AbstractSolverPhaseScope {
         solverScope.assertWorkingScoreFromScratch(workingScore);
     }
 
-    public void assertUndoMoveIsUncorrupted(Move move, Move undoMove) {
+    public void assertExpectedUndoMoveScore(Move move, Move undoMove) {
         Score undoScore = calculateScore();
         Score lastCompletedStepScore = getLastCompletedStepScope().getScore();
         if (!undoScore.equals(lastCompletedStepScore)) {

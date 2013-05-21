@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.constructionheuristic.greedyFit.decider;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
@@ -36,8 +35,8 @@ public class DefaultGreedyDecider implements GreedyDecider {
     private PlanningVariableWalker planningVariableWalker;
     private GreedyForager forager;
 
-    protected boolean assertMoveScoreIsUncorrupted = false;
-    protected boolean assertUndoMoveIsUncorrupted = false;
+    protected boolean assertMoveScoreFromScratch = false;
+    protected boolean assertExpectedUndoMoveScore = false;
 
     public void setPlanningVariableWalker(PlanningVariableWalker planningVariableWalker) {
         this.planningVariableWalker = planningVariableWalker;
@@ -47,12 +46,12 @@ public class DefaultGreedyDecider implements GreedyDecider {
         this.forager = forager;
     }
 
-    public void setAssertMoveScoreIsUncorrupted(boolean assertMoveScoreIsUncorrupted) {
-        this.assertMoveScoreIsUncorrupted = assertMoveScoreIsUncorrupted;
+    public void setAssertMoveScoreFromScratch(boolean assertMoveScoreFromScratch) {
+        this.assertMoveScoreFromScratch = assertMoveScoreFromScratch;
     }
 
-    public void setAssertUndoMoveIsUncorrupted(boolean assertUndoMoveIsUncorrupted) {
-        this.assertUndoMoveIsUncorrupted = assertUndoMoveIsUncorrupted;
+    public void setAssertExpectedUndoMoveScore(boolean assertExpectedUndoMoveScore) {
+        this.assertExpectedUndoMoveScore = assertExpectedUndoMoveScore;
     }
 
     // ************************************************************************
@@ -110,10 +109,10 @@ public class DefaultGreedyDecider implements GreedyDecider {
         move.doMove(scoreDirector);
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
-        if (assertUndoMoveIsUncorrupted) {
+        if (assertExpectedUndoMoveScore) {
             GreedyFitSolverPhaseScope phaseScope = moveScope.getGreedyFitStepScope()
                     .getPhaseScope();
-            phaseScope.assertUndoMoveIsUncorrupted(move, undoMove);
+            phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
         logger.trace("        Move index ({}), score ({}) for move ({}).",
                 moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getMove());
@@ -121,7 +120,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
 
     private void processMove(GreedyMoveScope moveScope) {
         Score score = moveScope.getGreedyFitStepScope().getPhaseScope().calculateScore();
-        if (assertMoveScoreIsUncorrupted) {
+        if (assertMoveScoreFromScratch) {
             moveScope.getGreedyFitStepScope().getPhaseScope().assertWorkingScoreFromScratch(score);
         }
         moveScope.setScore(score);

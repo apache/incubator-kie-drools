@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.move.Move;
  */
 public enum EnvironmentMode {
     /**
-     * This mode does a few more assertions (such as {@link DefaultDecider#assertMoveScoreIsUncorrupted})
+     * This mode does a few more assertions (such as {@link DefaultDecider#assertMoveScoreFromScratch})
      * than the {@link #FAST_ASSERT} mode at a horrible performance cost.
      * <p/>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
@@ -42,7 +42,7 @@ public enum EnvironmentMode {
      */
     FULL_ASSERT,
     /**
-     * This mode turns on most assertions (such as {@link DefaultDecider#assertUndoMoveIsUncorrupted})
+     * This mode turns on most assertions (such as {@link DefaultDecider#assertExpectedUndoMoveScore})
      * to fail-fast on a bug in a {@link Move} implementation, in a score rule or something else.
      * <p/>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).

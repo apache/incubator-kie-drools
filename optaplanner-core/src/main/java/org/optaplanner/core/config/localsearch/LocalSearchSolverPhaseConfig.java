@@ -92,8 +92,11 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         configureSolverPhase(localSearchSolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
         localSearchSolverPhase.setDecider(buildDecider(environmentMode, solutionDescriptor, scoreDefinition,
                 localSearchSolverPhase.getTermination()));
+        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+            localSearchSolverPhase.setAssertStepScoreFromScratch(true);
+        }
         if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
-            localSearchSolverPhase.setAssertStepScoreIsUncorrupted(true);
+            localSearchSolverPhase.setAssertExpectedStepScore(true);
         }
         return localSearchSolverPhase;
     }
@@ -119,10 +122,10 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
                     + " Configure the <forager> with <acceptedCountLimit>.");
         }
         if (environmentMode == EnvironmentMode.FULL_ASSERT) {
-            decider.setAssertMoveScoreIsUncorrupted(true);
+            decider.setAssertMoveScoreFromScratch(true);
         }
-        if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
-            decider.setAssertUndoMoveIsUncorrupted(true);
+        if (environmentMode == EnvironmentMode.FAST_ASSERT) {
+            decider.setAssertExpectedUndoMoveScore(true);
         }
         return decider;
     }

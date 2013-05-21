@@ -36,8 +36,9 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
     protected GreedyPlanningEntitySelector greedyPlanningEntitySelector;
     protected GreedyDecider greedyDecider;
 
-    protected boolean assertStepScoreIsUncorrupted = false;
-    
+    protected boolean assertStepScoreFromScratch = false;
+    protected boolean assertExpectedStepScore = false;
+
     public void setGreedyPlanningEntitySelector(GreedyPlanningEntitySelector greedyPlanningEntitySelector) {
         this.greedyPlanningEntitySelector = greedyPlanningEntitySelector;
     }
@@ -46,8 +47,12 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         this.greedyDecider = greedyDecider;
     }
 
-    public void setAssertStepScoreIsUncorrupted(boolean assertStepScoreIsUncorrupted) {
-        this.assertStepScoreIsUncorrupted = assertStepScoreIsUncorrupted;
+    public void setAssertExpectedStepScore(boolean assertExpectedStepScore) {
+        this.assertExpectedStepScore = assertExpectedStepScore;
+    }
+
+    public void setAssertStepScoreFromScratch(boolean assertStepScoreFromScratch) {
+        this.assertStepScoreFromScratch = assertStepScoreFromScratch;
     }
 
     // ************************************************************************
@@ -75,8 +80,10 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
             nextStep.doMove(stepScope.getScoreDirector());
             // there is no need to recalculate the score, but we still need to set it
             phaseScope.getWorkingSolution().setScore(stepScope.getScore());
-            if (assertStepScoreIsUncorrupted) {
+            if (assertStepScoreFromScratch) {
                 phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
+            }
+            if (assertExpectedStepScore) {
                 phaseScope.assertExpectedWorkingScore(stepScope.getScore());
             }
             stepEnded(stepScope);

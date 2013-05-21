@@ -32,7 +32,8 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
 
     protected Decider decider;
 
-    protected boolean assertStepScoreIsUncorrupted = false;
+    protected boolean assertStepScoreFromScratch = false;
+    protected boolean assertExpectedStepScore = false;
     
     public Decider getDecider() {
         return this.decider;
@@ -43,8 +44,12 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         this.decider.setLocalSearchSolverPhase(this);
     }
 
-    public void setAssertStepScoreIsUncorrupted(boolean assertStepScoreIsUncorrupted) {
-        this.assertStepScoreIsUncorrupted = assertStepScoreIsUncorrupted;
+    public void setAssertStepScoreFromScratch(boolean assertStepScoreFromScratch) {
+        this.assertStepScoreFromScratch = assertStepScoreFromScratch;
+    }
+
+    public void setAssertExpectedStepScore(boolean assertExpectedStepScore) {
+        this.assertExpectedStepScore = assertExpectedStepScore;
     }
 
     // ************************************************************************
@@ -82,8 +87,10 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
             nextStep.doMove(stepScope.getScoreDirector());
             // there is no need to recalculate the score, but we still need to set it
             phaseScope.getWorkingSolution().setScore(stepScope.getScore());
-            if (assertStepScoreIsUncorrupted) {
+            if (assertStepScoreFromScratch) {
                 phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
+            }
+            if (assertExpectedStepScore) {
                 phaseScope.assertExpectedWorkingScore(stepScope.getScore());
             }
             stepEnded(stepScope);
