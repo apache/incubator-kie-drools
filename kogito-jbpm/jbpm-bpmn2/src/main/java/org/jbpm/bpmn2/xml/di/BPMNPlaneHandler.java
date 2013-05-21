@@ -72,7 +72,7 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
         List<Process> processes = ((ProcessBuildData) parser.getData()).getProcesses();
         RuleFlowProcess process = null;
         for (Process p : processes) {
-            if (p.getId().equals(processInfo.getProcessRef())) {
+            if (p.getId() != null && p.getId().equals(processInfo.getProcessRef())) {
                 process = (RuleFlowProcess) p;
                 break;
             }
