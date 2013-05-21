@@ -24,10 +24,27 @@ public class GetTaskAssignedAsPotentialOwnerCommand extends TaskCommand<List<Tas
 		this.language = language;
 		this.status = status;
     }
+	
+	public String getLanguage() {
+		return language;
+	}
+	
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+	
+	public List<Status> getStatuses() {
+		return status;
+	}
+	
+	public void setStatuses(List<Status> status) {
+		this.status = status;
+	}
 
     public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
+        	System.out.println("GetTaskAssignedAsPotentialOwnerCommand " + userId + " " + language + " " + status);
         	if (status == null) {
         		return context.getTaskService().getTasksAssignedAsPotentialOwner(userId, language);
         	} else {

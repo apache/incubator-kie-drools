@@ -32,10 +32,18 @@ public class ClaimNextAvailableTaskCommand extends TaskCommand<Void> {
     public ClaimNextAvailableTaskCommand() {
     }
     
-    public ClaimNextAvailableTaskCommand(String userId, String language) {
+	public ClaimNextAvailableTaskCommand(String userId, String language) {
         this.userId = userId;
         this.language = language;
     }
+
+    public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;

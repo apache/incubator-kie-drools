@@ -55,7 +55,11 @@ public class NominateTaskCommand extends TaskCommand<Void> {
         this.potentialOwners = potentialOwners;
     }
 
-    public Void execute(Context cntxt) {
+    public void setPotentialOwners(List<OrganizationalEntity> potentialOwners) {
+		this.potentialOwners = potentialOwners;
+	}
+
+	public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
         	context.getTaskService().nominate(taskId, userId, potentialOwners);

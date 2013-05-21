@@ -14,7 +14,15 @@ public class GetTaskByWorkItemIdCommand extends TaskCommand<Task> {
 		this.workItemId = workItemId;
     }
 	
-    public Task execute(Context cntxt) {
+    public long getWorkItemId() {
+		return workItemId;
+	}
+
+	public void setWorkItemId(long workItemId) {
+		this.workItemId = workItemId;
+	}
+
+	public Task execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
         	return context.getTaskService().getTaskByWorkItemId(workItemId);

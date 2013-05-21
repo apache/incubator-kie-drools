@@ -14,7 +14,15 @@ public class GetAttachmentCommand extends TaskCommand<Attachment> {
 		this.attachmentId = attachmentId;
     }
 
-    public Attachment execute(Context cntxt) {
+    public long getAttachmentId() {
+		return attachmentId;
+	}
+
+	public void setAttachmentId(long attachmentId) {
+		this.attachmentId = attachmentId;
+	}
+
+	public Attachment execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
         	return context.getTaskService().getAttachmentById(attachmentId);

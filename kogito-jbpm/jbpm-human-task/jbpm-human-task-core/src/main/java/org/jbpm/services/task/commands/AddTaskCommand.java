@@ -88,16 +88,24 @@ public class AddTaskCommand extends TaskCommand<Long> {
     public Task getTask() {
         return task;
     }
+    
+    public void setTask(Task task) {
+    	this.task = task;
+    }
 
     public Map<String, Object> getParams() {
         return params;
+    }
+    
+    public void setParams(Map<String, Object> params) {
+    	this.params = params;
     }
 
     public ContentData getData() {
         return data;
     }
     
-    
-    
-    
+    public void setData(ContentData data) {
+    	this.data = data;
+    }
 }

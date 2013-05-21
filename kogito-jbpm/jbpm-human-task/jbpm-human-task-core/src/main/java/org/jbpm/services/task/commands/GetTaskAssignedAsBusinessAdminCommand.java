@@ -18,7 +18,15 @@ public class GetTaskAssignedAsBusinessAdminCommand extends TaskCommand<List<Task
 		this.language = language;
     }
 
-    public List<TaskSummary> execute(Context cntxt) {
+    public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
         	return context.getTaskService().getTasksAssignedAsBusinessAdministrator(userId, language);

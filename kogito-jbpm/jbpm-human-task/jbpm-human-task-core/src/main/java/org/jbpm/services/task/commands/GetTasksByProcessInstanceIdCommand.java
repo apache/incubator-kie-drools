@@ -17,7 +17,15 @@ public class GetTasksByProcessInstanceIdCommand extends TaskCommand<List<Long>> 
 		this.processInstanceId = processInstanceId;
     }
 
-    public List<Long> execute(Context cntxt) {
+    public long getProcessInstanceId() {
+		return processInstanceId;
+	}
+
+	public void setProcessInstanceId(long processInstanceId) {
+		this.processInstanceId = processInstanceId;
+	}
+
+	public List<Long> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
     		return context.getTaskService().getTasksByProcessInstanceId(processInstanceId);

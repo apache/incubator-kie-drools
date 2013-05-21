@@ -25,7 +25,23 @@ public class GetTasksOwnedCommand extends TaskCommand<List<TaskSummary>> {
 		this.status = status;
     }
 
-    public List<TaskSummary> execute(Context cntxt) {
+    public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public List<Status> getStatus() {
+		return status;
+	}
+
+	public void setStatus(List<Status> status) {
+		this.status = status;
+	}
+
+	public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
         	if (status == null) {

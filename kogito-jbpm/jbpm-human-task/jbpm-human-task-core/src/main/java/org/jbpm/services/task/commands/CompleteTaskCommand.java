@@ -51,7 +51,15 @@ public class CompleteTaskCommand extends TaskCommand<Void> {
         this.data = data;
     }
 
-    public Void execute(Context cntxt) {
+    public Map<String, Object> getData() {
+		return data;
+	}
+
+	public void setData(Map<String, Object> data) {
+		this.data = data;
+	}
+
+	public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
         	context.getTaskService().complete(taskId, userId, data);

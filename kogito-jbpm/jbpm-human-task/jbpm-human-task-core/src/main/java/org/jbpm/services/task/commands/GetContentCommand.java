@@ -14,7 +14,15 @@ public class GetContentCommand extends TaskCommand<Content> {
 		this.contentId = contentId;
     }
 
-    public Content execute(Context cntxt) {
+    public long getContentId() {
+		return contentId;
+	}
+
+	public void setContentId(long contentId) {
+		this.contentId = contentId;
+	}
+
+	public Content execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
         	return context.getTaskService().getContentById(contentId);

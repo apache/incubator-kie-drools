@@ -21,7 +21,31 @@ public class GetTasksByStatusByProcessInstanceIdCommand extends TaskCommand<List
 		this.status = status;
     }
 
-    public List<TaskSummary> execute(Context cntxt) {
+    public long getProcessInstanceId() {
+		return processInstanceId;
+	}
+
+	public void setProcessInstanceId(long processInstanceId) {
+		this.processInstanceId = processInstanceId;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public List<Status> getStatus() {
+		return status;
+	}
+
+	public void setStatus(List<Status> status) {
+		this.status = status;
+	}
+
+	public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
     		return context.getTaskService().getTasksByStatusByProcessInstanceId(processInstanceId, status, language);
