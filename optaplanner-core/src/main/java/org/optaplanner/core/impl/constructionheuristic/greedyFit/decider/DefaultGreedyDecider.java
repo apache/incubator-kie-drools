@@ -111,24 +111,9 @@ public class DefaultGreedyDecider implements GreedyDecider {
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
         if (assertUndoMoveIsUncorrupted) {
-            GreedyFitSolverPhaseScope greedyFitSolverPhaseScope = moveScope.getGreedyFitStepScope()
+            GreedyFitSolverPhaseScope phaseScope = moveScope.getGreedyFitStepScope()
                     .getPhaseScope();
-            Score undoScore = greedyFitSolverPhaseScope.calculateScore();
-            Score lastCompletedStepScore = greedyFitSolverPhaseScope.getLastCompletedStepScope().getScore();
-            if (!undoScore.equals(lastCompletedStepScore)) {
-                // First assert that are probably no corrupted score rules.
-                greedyFitSolverPhaseScope.getSolverScope().getScoreDirector()
-                        .assertWorkingScoreFromScratch(undoScore);
-                throw new IllegalStateException(
-                        "The moveClass (" + move.getClass() + ")'s move (" + move
-                                + ") probably has a corrupted undoMove (" + undoMove + ")." +
-                                " Or maybe there are corrupted score rules.\n"
-                                + "Check the Move.createUndoMove(...) method of that Move class" +
-                                " and enable EnvironmentMode " + EnvironmentMode.FULL_ASSERT
-                                + " to fail-faster on corrupted score rules.\n"
-                                + "Score corruption: the lastCompletedStepScore (" + lastCompletedStepScore
-                                + ") is not the undoScore (" + undoScore + ").");
-            }
+            phaseScope.assertUndoMoveIsUncorrupted(move, undoMove);
         }
         logger.trace("        Move index ({}), score ({}) for move ({}).",
                 moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getMove());
