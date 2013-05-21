@@ -29,8 +29,8 @@ global SimpleScoreHolder scoreHolder;
 
 rule "multipleQueensHorizontal"
     when
-        $q1 : Queen($id : id, $i : rowIndex)
-        $q2 : Queen(id > $id, rowIndex == $i)
+        Queen($id : id, row != null, $i : rowIndex)
+        Queen(id > $id, rowIndex == $i)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end
@@ -39,16 +39,16 @@ end
 
 rule "multipleQueensAscendingDiagonal"
     when
-        $q1 : Queen($id : id, $i : ascendingDiagonalIndex)
-        $q2 : Queen(id > $id, ascendingDiagonalIndex == $i)
+        Queen($id : id, row != null, $i : ascendingDiagonalIndex)
+        Queen(id > $id, ascendingDiagonalIndex == $i)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end
 
 rule "multipleQueensDescendingDiagonal"
     when
-        $q1 : Queen($id : id, $i : descendingDiagonalIndex)
-        $q2 : Queen(id > $id, descendingDiagonalIndex == $i)
+        Queen($id : id, row != null, $i : descendingDiagonalIndex)
+        Queen(id > $id, descendingDiagonalIndex == $i)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end

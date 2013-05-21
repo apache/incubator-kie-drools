@@ -814,15 +814,16 @@
 
         <programlisting>rule "multipleQueensHorizontal"
     when
-        $q1 : Queen($id : id, $y : y);
-        $q2 : Queen(id &gt; $id, y == $y);
+        Queen($id : id, row != null, $i : rowIndex)
+        Queen(id &gt; $id, rowIndex == $i)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end</programlisting>
 
-        <para>This score rule will fire once for every 2 queens with the same <literal>y</literal>. The <literal>(id
-        &gt; $id)</literal> condition is needed to assure that for 2 queens A and B, it can only fire for (A, B) and not
-        for (B, A), (A, A) or (B, B). Let's take a closer look at this score rule on this solution of 4 queens:</para>
+        <para>This score rule will fire once for every 2 queens with the same <literal>rowIndex</literal>. The
+        <literal>(id &gt; $id)</literal> condition is needed to assure that for 2 queens A and B, it can only fire for
+        (A, B) and not for (B, A), (A, A) or (B, B). Let's take a closer look at this score rule on this solution of 4
+        queens:</para>
 
         <mediaobject>
           <imageobject>
@@ -861,8 +862,8 @@ end</programlisting>
 
 rule "multipleQueensHorizontal"
     when
-        $q1 : Queen($id : id, $y : y);
-        $q2 : Queen(id &gt; $id, y == $y);
+        Queen($id : id, row != null, $i : rowIndex)
+        Queen(id &gt; $id, rowIndex == $i)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end
@@ -871,16 +872,16 @@ end
 
 rule "multipleQueensAscendingDiagonal"
     when
-        $q1 : Queen($id : id, $ascendingD : ascendingD);
-        $q2 : Queen(id &gt; $id, ascendingD == $ascendingD);
+        Queen($id : id, row != null, $i : ascendingDiagonalIndex)
+        Queen(id &gt; $id, ascendingDiagonalIndex == $i)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end
 
 rule "multipleQueensDescendingDiagonal"
     when
-        $q1 : Queen($id : id, $descendingD : descendingD);
-        $q2 : Queen(id &gt; $id, descendingD == $descendingD);
+        Queen($id : id, row != null, $i : descendingDiagonalIndex)
+        Queen(id &gt; $id, descendingDiagonalIndex == $i)
     then
         scoreHolder.addConstraintMatch(kcontext, -1);
 end</programlisting>

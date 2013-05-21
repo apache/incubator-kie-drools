@@ -31,7 +31,7 @@ global SimpleScoreHolder scoreHolder;
 
 rule "multipleQueensHorizontal"
     when
-        $q1 : Queen($id : id, $i : rowIndex)
+        $q1 : Queen($id : id, row != null, $i : rowIndex)
         $q2 : Queen(id > $id, rowIndex == $i)
     then
         insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
@@ -41,7 +41,7 @@ end
 
 rule "multipleQueensAscendingDiagonal"
     when
-        $q1 : Queen($id : id, $i : ascendingDiagonalIndex)
+        $q1 : Queen($id : id, row != null, $i : ascendingDiagonalIndex)
         $q2 : Queen(id > $id, ascendingDiagonalIndex == $i)
     then
         insertLogical(new UnweightedConstraintOccurrence("multipleQueensAscendingDiagonal", $q1, $q2));
@@ -49,7 +49,7 @@ end
 
 rule "multipleQueensDescendingDiagonal"
     when
-        $q1 : Queen($id : id, $i : descendingDiagonalIndex)
+        $q1 : Queen($id : id, row != null, $i : descendingDiagonalIndex)
         $q2 : Queen(id > $id, descendingDiagonalIndex == $i)
     then
         insertLogical(new UnweightedConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
