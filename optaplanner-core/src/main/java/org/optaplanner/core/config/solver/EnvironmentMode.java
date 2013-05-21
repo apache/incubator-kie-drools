@@ -21,6 +21,7 @@ import java.util.Random;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.decider.DefaultDecider;
 import org.optaplanner.core.impl.move.Move;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * The environment mode also allows you to detect common bugs in your implementation.
@@ -33,19 +34,39 @@ import org.optaplanner.core.impl.move.Move;
  */
 public enum EnvironmentMode {
     /**
-     * This mode does a few more assertions (such as {@link DefaultDecider#assertMoveScoreFromScratch})
-     * than the {@link #FAST_ASSERT} mode at a horrible performance cost.
+     * This mode turns on all assertions
+     * to fail-fast on a bug in a {@link Move} implementation, a score rule, the rule engine itself or something else
+     * at a horrible performance cost.
      * <p/>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
+     * <p/>
+     * This mode is intrusive because it calls the {@link ScoreDirector#calculateScore()} more frequently
+     * than a non assert mode.
      * <p/>
      * This mode is horribly slow.
      */
     FULL_ASSERT,
     /**
-     * This mode turns on most assertions (such as {@link DefaultDecider#assertExpectedUndoMoveScore})
-     * to fail-fast on a bug in a {@link Move} implementation, in a score rule or something else.
+     * This mode turns on several assertions (but not all of them)
+     * to fail-fast on a bug in a {@link Move} implementation, a score rule, the rule engine itself or something else
+     * at a horrible performance cost.
      * <p/>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
+     * <p/>
+     * This mode is non-intrusive, unlike {@link #FULL_ASSERT} and {@link #FAST_ASSERT}.
+     * <p/>
+     * This mode is horribly slow.
+     */
+    NON_INTRUSIVE_FULL_ASSERT,
+    /**
+     * This mode turns on several assertions (but not all of them)
+     * to fail-fast on a bug in a {@link Move} implementation, a score rule, the rule engine itself or something else
+     * at a reasonable performance cost (in development at least).
+     * <p/>
+     * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
+     * <p/>
+     * This mode is intrusive because it calls the {@link ScoreDirector#calculateScore()} more frequently
+     * than a non assert mode.
      * <p/>
      * This mode is slow.
      */
@@ -56,17 +77,19 @@ public enum EnvironmentMode {
      * They will also yield the same result, except if they use a time based termination
      * and they have a sufficiently large difference in allocated CPU time.
      * This allows you to benchmark new optimizations (such as a new Move implementation) fairly.
-     * <p>
-     * The reproducible mode is not much slower than the production mode.
-     * </p>
+     * <p/>
+     * Warning: some code can disrupt reproducibility regardless of this mode. See the reference manual for more info.
+     * <p/>
+     * The reproducible mode is slightly slower than the production mode.
+     * <p/>
      * In practice, this mode uses the default random seed,
      * and it also disables certain concurrency optimizations (such as work stealing).
      * TODO: JBRULES-681 Multi-threaded support which implement those concurrency optimizations
      */
     REPRODUCIBLE,
     /**
-     * The production mode is the fastest and the most robust, but not reproducible.
-     * It is recommended for a production environment.
+     * The production mode is the fastest, but not reproducible.
+     * It is recommended for a production environment, unless reproducibility is required.
      * <p/>
      * The random seed is different on every run, which makes it more robust against an unlucky random seed.
      * An unlucky random seed gives a bad result on a certain data set with a certain solver configuration.
@@ -74,4 +97,47 @@ public enum EnvironmentMode {
      * An occasional bad result is far more likely to be caused by another issue (such as a score trap).
      */
     PRODUCTION;
+
+    public boolean isAsserted() {
+        switch (this) {
+            case FULL_ASSERT:
+            case NON_INTRUSIVE_FULL_ASSERT:
+            case FAST_ASSERT:
+                return true;
+            case REPRODUCIBLE:
+            case PRODUCTION:
+                return false;
+            default:
+                throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
+        }
+    }
+
+    public boolean isNonIntrusiveFullAsserted() {
+        switch (this) {
+            case FULL_ASSERT:
+            case NON_INTRUSIVE_FULL_ASSERT:
+                return true;
+            case FAST_ASSERT:
+            case REPRODUCIBLE:
+            case PRODUCTION:
+                return false;
+            default:
+                throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
+        }
+    }
+
+    public boolean isIntrusiveFastAsserted() {
+        switch (this) {
+            case FULL_ASSERT:
+            case FAST_ASSERT:
+                return false;
+            case NON_INTRUSIVE_FULL_ASSERT:
+            case REPRODUCIBLE:
+            case PRODUCTION:
+                return false;
+            default:
+                throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
+        }
+    }
+
 }

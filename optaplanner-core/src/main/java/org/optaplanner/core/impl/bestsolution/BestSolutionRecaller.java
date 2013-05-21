@@ -87,7 +87,7 @@ public class BestSolutionRecaller extends SolverPhaseLifecycleListenerAdapter {
             Solution newBestSolution = stepScope.createOrGetClonedSolution();
             updateBestSolution(solverScope, newBestSolution, newUninitializedVariableCount);
         } else if (assertBestScoreIsUnmodified) {
-            solverScope.assertScore(solverScope.getBestSolution());
+            solverScope.assertScoreFromScratch(solverScope.getBestSolution());
         }
     }
 

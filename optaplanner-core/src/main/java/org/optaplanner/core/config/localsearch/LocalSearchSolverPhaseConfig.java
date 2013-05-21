@@ -92,10 +92,10 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         configureSolverPhase(localSearchSolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
         localSearchSolverPhase.setDecider(buildDecider(environmentMode, solutionDescriptor, scoreDefinition,
                 localSearchSolverPhase.getTermination()));
-        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
             localSearchSolverPhase.setAssertStepScoreFromScratch(true);
         }
-        if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
+        if (environmentMode.isIntrusiveFastAsserted()) {
             localSearchSolverPhase.setAssertExpectedStepScore(true);
         }
         return localSearchSolverPhase;
@@ -121,10 +121,10 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
                     + ") does not support it."
                     + " Configure the <forager> with <acceptedCountLimit>.");
         }
-        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
             decider.setAssertMoveScoreFromScratch(true);
         }
-        if (environmentMode == EnvironmentMode.FAST_ASSERT) {
+        if (environmentMode.isIntrusiveFastAsserted()) {
             decider.setAssertExpectedUndoMoveScore(true);
         }
         return decider;

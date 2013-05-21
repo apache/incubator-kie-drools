@@ -79,10 +79,10 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         configureSolverPhase(greedySolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
         greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
         greedySolverPhase.setGreedyDecider(buildGreedyDecider(solutionDescriptor, environmentMode));
-        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
             greedySolverPhase.setAssertStepScoreFromScratch(true);
         }
-        if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
+        if (environmentMode.isIntrusiveFastAsserted()) {
             greedySolverPhase.setAssertExpectedStepScore(true);
         }
         return greedySolverPhase;
@@ -125,7 +125,7 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         greedyDecider.setPlanningVariableWalker(planningVariableWalker);
         
         // TODO greedyDecider.setConstructionHeuristicPickEarlyType(constructionHeuristicPickEarlyType);
-        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
             greedyDecider.setAssertMoveScoreFromScratch(true);
         }
         return greedyDecider;

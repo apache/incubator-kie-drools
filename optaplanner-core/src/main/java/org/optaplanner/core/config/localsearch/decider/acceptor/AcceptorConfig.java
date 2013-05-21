@@ -265,7 +265,7 @@ public class AcceptorConfig {
             } else if (fadingEntityTabuRatio != null) {
                 entityTabuAcceptor.setFadingTabuSizeStrategy(new EntityRatioTabuSizeStrategy(fadingEntityTabuRatio));
             }
-            if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
                 entityTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
             }
             acceptorList.add(entityTabuAcceptor);
@@ -300,7 +300,7 @@ public class AcceptorConfig {
             if (fadingValueTabuSize != null) {
                 valueTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingValueTabuSize));
             }
-            if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
                 valueTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
             }
             acceptorList.add(valueTabuAcceptor);
@@ -315,7 +315,7 @@ public class AcceptorConfig {
             if (fadingMoveTabuSize != null) {
                 moveTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingMoveTabuSize));
             }
-            if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
                 moveTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
             }
             acceptorList.add(moveTabuAcceptor);
@@ -330,7 +330,7 @@ public class AcceptorConfig {
             if (fadingUndoMoveTabuSize != null) {
                 undoMoveTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingUndoMoveTabuSize));
             }
-            if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
                 undoMoveTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
             }
             acceptorList.add(undoMoveTabuAcceptor);
@@ -344,7 +344,7 @@ public class AcceptorConfig {
             if (fadingSolutionTabuSize != null) {
                 solutionTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingSolutionTabuSize));
             }
-            if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
                 solutionTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
             }
             acceptorList.add(solutionTabuAcceptor);
@@ -378,7 +378,7 @@ public class AcceptorConfig {
         } else {
             EntityTabuAcceptor entityTabuAcceptor = new EntityTabuAcceptor();
             entityTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(5)); // TODO number pulled out of thin air
-            if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
                 entityTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
             }
             return entityTabuAcceptor;

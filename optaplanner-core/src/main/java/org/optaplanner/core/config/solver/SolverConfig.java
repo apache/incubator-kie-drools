@@ -170,7 +170,7 @@ public class SolverConfig {
 
     protected BestSolutionRecaller buildBestSolutionRecaller(EnvironmentMode environmentMode) {
         BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
-        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
             bestSolutionRecaller.setAssertBestScoreIsUnmodified(true);
         }
         return bestSolutionRecaller;

@@ -1253,18 +1253,38 @@ public class Visit ... implements Appearance {
       <section>
         <title>FULL_ASSERT</title>
 
-        <para>The FULL_ASSERT mode is reproducible (see the reproducible mode) and also turns on all assertions (such as
-        assert that the incremental score calculation is uncorrupted) to fail-fast on rule engine bugs.</para>
+        <para>The FULL_ASSERT mode turns on all assertions (such as
+        assert that the incremental score calculation is uncorrupted for each move) to fail-fast on a bug in a Move
+        implementation, a score rule, the rule engine itself, ...</para>
 
-        <para>The FULL_ASSERT mode is very slow (because it doesn't rely on delta based score calculation).</para>
+        <para>This mode is reproducible (see the reproducible mode). It is also intrusive because it calls the method
+        <literal>calculateScore()</literal> more frequently than a non assert mode.</para>
+
+        <para>The FULL_ASSERT mode is horribly slow (because it doesn't rely on delta based score calculation).</para>
+      </section>
+
+      <section>
+        <title>NON_INTRUSIVE_FULL_ASSERT</title>
+
+        <para>The NON_INTRUSIVE_FULL_ASSERT turns on several
+        assertions to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself, ...</para>
+
+        <para>This mode is reproducible (see the reproducible mode). It is non-intrusive because it does not call the
+        method <literal>calculateScore()</literal> more frequently than a non assert mode.</para>
+
+        <para>The NON_INTRUSIVE_FULL_ASSERT mode is horribly slow (because it doesn't rely on delta based score
+        calculation).</para>
       </section>
 
       <section>
         <title>FAST_ASSERT</title>
 
-        <para>The FAST_ASSERT mode is reproducible (see the reproducible mode) and also turns on most assertions (such
-        as assert that an undo Move's score is the same as before the Move) to fail-fast on a bug in your Move
-        implementation, your score rule, ...</para>
+        <para>The FAST_ASSERT mode turns on most assertions (such
+        as assert that an undo Move's score is the same as before the Move) to fail-fast on a bug in a Move
+        implementation, a score rule, the rule engine itself, ...</para>
+
+        <para>This mode is reproducible (see the reproducible mode). It is also intrusive because it calls the method
+        <literal>calculateScore()</literal> more frequently than a non assert mode.</para>
 
         <para>The FAST_ASSERT mode is slow.</para>
 
@@ -1277,7 +1297,7 @@ public class Visit ... implements Appearance {
 
         <para>The reproducible mode is the default mode because it is recommended during development. In this mode, 2
         runs in the same Planner version will execute the same code in the same order. <emphasis role="bold">Those 2
-        runs will have the same result</emphasis>, except if the note below applies . This allows you to consistently
+        runs will have the same result</emphasis>, except if the note below applies. This allows you to consistently
         reproduce bugs. It also allows you to benchmark certain refactorings (such as a score constraint optimization)
         fairly across runs.</para>
 
@@ -1301,7 +1321,7 @@ public class Visit ... implements Appearance {
           </itemizedlist>
         </note>
 
-        <para>The reproducible mode is not much slower than the production mode. If your production environment requires
+        <para>The reproducible mode is slightly slower than the production mode. If your production environment requires
         reproducibility, use it in production too.</para>
 
         <para>In practice, this mode uses the default random seed, and it also disables certain concurrency
@@ -1311,8 +1331,8 @@ public class Visit ... implements Appearance {
       <section>
         <title>PRODUCTION</title>
 
-        <para>The production mode is the fastest and the most robust, but not reproducible. It is recommended for a
-        production environment.</para>
+        <para>The production mode is the fastest, but not reproducible. It is recommended for a
+        production environment, unless reproducibility is required.</para>
 
         <para>The random seed is different on every run, which makes it more robust against an unlucky random seed. An
         unlucky random seed gives a bad result on a certain data set with a certain solver configuration. Note that in

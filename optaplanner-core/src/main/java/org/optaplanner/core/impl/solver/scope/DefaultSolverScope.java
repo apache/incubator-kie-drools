@@ -109,7 +109,7 @@ public class DefaultSolverScope {
         scoreDirector.assertWorkingScoreFromScratch(workingScore);
     }
 
-    public void assertScore(Solution solution) {
+    public void assertScoreFromScratch(Solution solution) {
         scoreDirector.getScoreDirectorFactory().assertScoreFromScratch(solution);
     }
 

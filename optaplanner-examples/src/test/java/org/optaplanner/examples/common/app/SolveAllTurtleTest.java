@@ -103,15 +103,15 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
             // Solver didn't make it past initialization // TODO remove me once getBestSolution() never returns null
             bestSolution = planningProblem;
         }
-        bestSolution = buildAndSolve(solverFactory, EnvironmentMode.FULL_ASSERT, bestSolution);
+        // Specifically use NON_INTRUSIVE_FULL_ASSERT instead of FULL_ASSERT to flush out bugs hidden by intrusiveness
+        bestSolution = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, bestSolution);
     }
 
     protected Solution buildAndSolve(SolverFactory solverFactory, EnvironmentMode environmentMode, Solution solution) {
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.setEnvironmentMode(environmentMode);
         ScoreDirectorFactoryConfig assertionScoreDirectorFactory = createOverwritingAssertionScoreDirectorFactory();
-        if (assertionScoreDirectorFactory != null
-                && (environmentMode == EnvironmentMode.FULL_ASSERT || environmentMode == EnvironmentMode.FAST_ASSERT)) {
+        if (assertionScoreDirectorFactory != null && environmentMode.isAsserted()) {
             solverConfig.getScoreDirectorFactoryConfig().setAssertionScoreDirectorFactory(
                     assertionScoreDirectorFactory);
         }

@@ -98,10 +98,10 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
             configureSolverPhase(greedySolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
             greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
             greedySolverPhase.setGreedyDecider(buildGreedyDecider(solutionDescriptor, environmentMode));
-            if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
                 greedySolverPhase.setAssertStepScoreFromScratch(true);
             }
-            if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
+            if (environmentMode.isIntrusiveFastAsserted()) {
                 greedySolverPhase.setAssertExpectedStepScore(true);
             }
             return greedySolverPhase;
@@ -126,10 +126,10 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                         + " elements to initialize multiple entity classes.");
             }
             phase.setEntityPlacer(entityPlacer);
-            if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
                 phase.setAssertStepScoreFromScratch(true);
             }
-            if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
+            if (environmentMode.isIntrusiveFastAsserted()) {
                 phase.setAssertExpectedStepScore(true);
             }
             return phase;
@@ -185,10 +185,10 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         greedyDecider.setPlanningVariableWalker(planningVariableWalker);
         
         greedyDecider.setForager(buildGreedyForager());
-        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
             greedyDecider.setAssertMoveScoreFromScratch(true);
         }
-        if (environmentMode == EnvironmentMode.FAST_ASSERT || environmentMode == EnvironmentMode.FULL_ASSERT) {
+        if (environmentMode.isIntrusiveFastAsserted()) {
             greedyDecider.setAssertExpectedUndoMoveScore(true);
         }
         return greedyDecider;
