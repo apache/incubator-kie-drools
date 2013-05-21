@@ -17,6 +17,7 @@
 package org.jbpm.services.task;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
@@ -126,10 +127,8 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         assertEquals("Bobba Fet", tasks.get(0).getActualOwner().getId());
     }
     
-    @Ignore("requires fix - returns two tasks, only one should be returned")
     @Test
     public void testGetTasksAssignedAsPotentialOwnerWithUserGroupsLangOneTaskOneGroup() {
-        // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new Group('Crusaders'), ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
@@ -139,7 +138,26 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         groupIds.add("Crusaders");
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", groupIds, "en-UK");
         assertEquals(1, tasks.size());
-        assertEquals("Darth Vader", tasks.get(0).getActualOwner().getId());
+        assertNull(tasks.get(0).getActualOwner());
+        assertEquals(Status.Ready, tasks.get(0).getStatus());
+    }
+    
+    @Test
+    public void testGetTasksAssignedAsPotentialOwnerWithUserGroupsLangStatus() {
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new Group('Crusaders'), ], }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        TaskImpl task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        List<String> groupIds = new ArrayList<String>();
+        groupIds.add("Crusaders");
+        
+        List<Status> status = new ArrayList<Status>();
+        status.add(Status.Ready);
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup("Bobba Fet", groupIds, status, "en-UK");
+        assertEquals(1, tasks.size());
+        assertNull(tasks.get(0).getActualOwner());
+        assertEquals(Status.Ready, tasks.get(0).getStatus());
     }
     
     

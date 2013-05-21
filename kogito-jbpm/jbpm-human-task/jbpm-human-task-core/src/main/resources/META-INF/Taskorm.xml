@@ -5,7 +5,7 @@
                version="2.0">
       <named-query name="TasksAssignedAsBusinessAdministrator">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -51,13 +51,12 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
-              group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
       <named-query name="TasksAssignedAsExcludedOwner">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -103,13 +102,12 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
-              group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
       <named-query name="TasksAssignedAsPotentialOwner">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -157,13 +155,12 @@ where
     ) and
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-              group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
       <named-query name="TasksAssignedAsPotentialOwnerByStatus">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -211,13 +208,12 @@ where
     ) and
 
     t.taskData.status in (:status) 
-              group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
             <named-query name="TasksAssignedAsPotentialOwnerByStatusByGroup">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -265,14 +261,13 @@ where
     ) and
 
     t.taskData.status in (:status) 
-     group by t.id
     
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
             <named-query name="TasksAssignedAsPotentialOwnerWithGroups">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -320,13 +315,12 @@ where
     ) and
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-              group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
  <named-query name="TasksAssignedAsPotentialOwnerByStatusWithGroups">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -374,13 +368,12 @@ where
     ) and
 
     t.taskData.status in (:status) 
-              group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
        <named-query name="TasksAssignedAsPotentialOwnerByGroup">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -429,7 +422,7 @@ where
     ) and
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-              group by t.id
+ 
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -522,7 +515,7 @@ where
  
       <named-query name="SubTasksAssignedAsPotentialOwner">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -571,14 +564,13 @@ where
     ) and
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-              group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
 
 <named-query name="GetSubTasksByParentTaskId">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -624,7 +616,7 @@ where
     ) and
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-              group by t.id
+
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -632,7 +624,7 @@ where
 
       <named-query name="TasksAssignedAsRecipient">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -678,13 +670,12 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
-              group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
       <named-query name="TasksAssignedAsTaskInitiator">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -730,13 +721,12 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
-              group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
       <named-query name="TasksAssignedAsTaskStakeholder">
           <query>
-select
+select distinct 
      new org.jbpm.services.task.query.TaskSummaryImpl(
      t.id,
      t.taskData.processInstanceId,
@@ -782,13 +772,12 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
-              group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
       <named-query name="TasksOwned">
           <query>
-select
+select distinct 
     new org.jbpm.services.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
@@ -832,7 +821,6 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
-              group by t.id
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -998,7 +986,7 @@ where
       </named-query>
     <named-query name="TasksByStatus">
         <query>
-            select
+            select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
@@ -1041,7 +1029,7 @@ where
             (
             description.language = :language
             or t.descriptions.size = 0
-            )  group by t.id
+            ) 
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
@@ -1099,7 +1087,7 @@ where
       
     <named-query name="ArchivedTasks">
         <query>
-            select
+            select distinct 
             new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
@@ -1141,7 +1129,7 @@ where
             (
             description.language = :language
             or t.descriptions.size = 0
-            ) group by t.id
+            )
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
@@ -1149,7 +1137,7 @@ where
       
       <named-query name="TasksOwnedWithParticularStatus">
           <query>
-select
+select distinct 
     new org.jbpm.services.task.query.TaskSummaryImpl(
     t.id,
     t.taskData.processInstanceId,
@@ -1194,7 +1182,7 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
-              group by t.id
+              
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -1328,7 +1316,7 @@ where
       </named-query>
       <named-query name="TasksByStatusByProcessId">
         <query>
-            select
+            select distinct
             new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
@@ -1373,13 +1361,12 @@ where
             ) and
 
             t.taskData.status in (:status) 
-            group by t.id
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
     <named-query name="TasksByStatusByProcessIdByTaskName">
         <query>
-            select
+            select distinct
             new org.jbpm.services.task.query.TaskSummaryImpl(
             t.id,
             t.taskData.processInstanceId,
@@ -1425,7 +1412,6 @@ where
             ) and
 
             t.taskData.status in (:status) 
-            group by t.id
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
