@@ -73,8 +73,8 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildException = null;
         pkgBuilder.registerBuildResources(getResources());
         registerDSL();
-        buildPackages();
         buildResources();
+        buildPackages();
         buildOthers();
         resourcesByType.clear();
         if (buildException != null) {
