@@ -29,10 +29,16 @@ public class ValueRatioTabuSizeStrategyTest {
     @Test
     public void tabuSize() {
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(mock(DefaultSolverScope.class));
-        when(phaseScope.getWorkingValueCount()).thenReturn(20);
+        when(phaseScope.getWorkingValueCount()).thenReturn(100);
         LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
-        assertEquals(2, new ValueRatioTabuSizeStrategy(0.1).determineTabuSize(stepScope));
-        assertEquals(10, new ValueRatioTabuSizeStrategy(0.5).determineTabuSize(stepScope));
+        assertEquals(10, new ValueRatioTabuSizeStrategy(0.1).determineTabuSize(stepScope));
+        assertEquals(50, new ValueRatioTabuSizeStrategy(0.5).determineTabuSize(stepScope));
+        // Rounding
+        assertEquals(11, new ValueRatioTabuSizeStrategy(0.1051).determineTabuSize(stepScope));
+        assertEquals(10, new ValueRatioTabuSizeStrategy(0.1049).determineTabuSize(stepScope));
+        // Corner cases
+        assertEquals(1, new ValueRatioTabuSizeStrategy(0.0000001).determineTabuSize(stepScope));
+        assertEquals(99, new ValueRatioTabuSizeStrategy(0.9999999).determineTabuSize(stepScope));
     }
 
 }

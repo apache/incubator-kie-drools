@@ -18,13 +18,13 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
-public class ValueRatioTabuSizeStrategy implements TabuSizeStrategy {
+public class ValueRatioTabuSizeStrategy extends AbstractTabuSizeStrategy {
 
     protected final double tabuRatio;
 
     public ValueRatioTabuSizeStrategy(double tabuRatio) {
         this.tabuRatio = tabuRatio;
-        if (tabuRatio < 0.0 || tabuRatio > 1.0) {
+        if (tabuRatio <= 0.0 || tabuRatio >= 1.0) {
             throw new IllegalArgumentException("The tabuRatio (" + tabuRatio
                     + ") must be between 0.0 and 1.0.");
         }
@@ -33,7 +33,8 @@ public class ValueRatioTabuSizeStrategy implements TabuSizeStrategy {
     public int determineTabuSize(LocalSearchStepScope stepScope) {
         // TODO we might want to cache the valueCount if and only if moves don't add/remove entities
         int valueCount = stepScope.getPhaseScope().getWorkingValueCount();
-        return (int) Math.round(valueCount * tabuRatio);
+        int tabuSize = (int) Math.round(valueCount * tabuRatio);
+        return protectTabuSizeCornerCases(valueCount, tabuSize);
     }
 
 }

@@ -16,21 +16,17 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size;
 
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
+public abstract class AbstractTabuSizeStrategy implements TabuSizeStrategy {
 
-public class FixedTabuSizeStrategy extends AbstractTabuSizeStrategy {
-
-    protected final int tabuSize;
-
-    public FixedTabuSizeStrategy(int tabuSize) {
-        this.tabuSize = tabuSize;
-        if (tabuSize < 0) {
-            throw new IllegalArgumentException("The tabuSize (" + tabuSize
-                    + ") cannot be negative.");
+    protected int protectTabuSizeCornerCases(int totalSize, int tabuSize) {
+        if (tabuSize < 1) {
+            // At least one object should be tabu
+            tabuSize = 1;
         }
-    }
-
-    public int determineTabuSize(LocalSearchStepScope stepScope) {
+        if (tabuSize > totalSize - 1) {
+            // At least one object should not be tabu
+            tabuSize = totalSize - 1;
+        }
         return tabuSize;
     }
 
