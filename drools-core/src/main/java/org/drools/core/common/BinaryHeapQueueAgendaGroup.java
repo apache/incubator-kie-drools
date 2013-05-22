@@ -55,7 +55,7 @@ public class BinaryHeapQueueAgendaGroup
      * Items in the agenda.
      */
     private BinaryHeapQueue    queue;
-    private boolean            active;
+    private volatile boolean            active;
     private PropagationContext autoFocusActivator;
     private long               activatedForRecency;
     private long               clearedForRecency;

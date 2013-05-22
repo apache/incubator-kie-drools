@@ -3,6 +3,7 @@ package org.drools.core.phreak;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AlphaNode;
@@ -61,8 +62,12 @@ public class SegmentUtilities {
      *
      * @param wm
      */
-    public static SegmentMemory createSegmentMemory(LeftTupleSource tupleSource,
-                                                    final InternalWorkingMemory wm) {
+    public static synchronized  SegmentMemory createSegmentMemory(LeftTupleSource tupleSource,
+                                                                  final InternalWorkingMemory wm) {
+        SegmentMemory smem = wm.getNodeMemory((MemoryFactory) tupleSource).getSegmentMemory();
+        if (  smem != null ) {
+            return smem;
+        }
         boolean initRtn = false;
         if (tupleSource.getType() == NodeTypeEnums.LeftInputAdapterNode) {
             initRtn = true;
@@ -80,7 +85,7 @@ public class SegmentUtilities {
             initialiseRtnMemory(segmentRoot, wm);
         }
 
-        SegmentMemory smem = new SegmentMemory(segmentRoot);
+        smem = new SegmentMemory(segmentRoot);
 
         // Iterate all nodes on the same segment, assigning their position as a bit mask value
         // allLinkedTestMask is the resulting mask used to test if all nodes are linked in
@@ -201,6 +206,7 @@ public class SegmentUtilities {
 
     private static long processLiaNode(LeftInputAdapterNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask, long allLinkedTestMask) {
         LiaNodeMemory liaMemory = (LiaNodeMemory) smem.createNodeMemory((LeftInputAdapterNode) tupleSource, wm);
+        smem.setStagedTuples( new SynchronizedLeftTupleSets() ); // LiaNode SegmentMemory must have Synchronized LeftTupleSets
         liaMemory.setSegmentMemory(smem);
         liaMemory.setNodePosMaskBit(nodePosMask);
         allLinkedTestMask = allLinkedTestMask | nodePosMask;

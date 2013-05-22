@@ -1532,13 +1532,14 @@ public class DefaultAgenda
                             !((AbstractWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
             this.workingMemory.executeQueuedActions();
             if ( !fired ) {
-                try {
-                    synchronized ( this.halt ) {
-                        if ( !this.halt.get() ) this.halt.wait();
-                    }
-                } catch ( InterruptedException e ) {
-                    this.halt.set( true );
-                }
+                Thread.yield();
+//                try {
+//                    synchronized ( this.halt ) {
+//                        if ( !this.halt.get() ) this.halt.wait();
+//                    }
+//                } catch ( InterruptedException e ) {
+//                    this.halt.set( true );
+//                }
             } else {
                 this.workingMemory.executeQueuedActions();
             }

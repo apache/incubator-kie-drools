@@ -2,6 +2,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
@@ -18,25 +19,24 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         LinkedListNode<SegmentMemory> {
 
     protected static transient Logger log = LoggerFactory.getLogger(SegmentMemory.class);
-    private NetworkNode        rootNode;
-    private NetworkNode        tipNode;
-    private LinkedList<Memory> nodeMemories;
-    private long               linkedNodeMask;
-    private long               allLinkedMaskTest;
-    private List<PathMemory>   pathMemories;
-    private long               segmentPosMaskBit;
-    private int                pos;
+    private          NetworkNode        rootNode;
+    private          NetworkNode        tipNode;
+    private          LinkedList<Memory> nodeMemories;
+    private          long               linkedNodeMask;
+    private          long               allLinkedMaskTest;
+    private          List<PathMemory>   pathMemories;
+    private          long               segmentPosMaskBit;
+    private          int                pos;
     private volatile LeftTupleSets      stagedLeftTuples;
-    private boolean            active;
-    private SegmentMemory      previous;
-    private SegmentMemory      next;
+    private          boolean            active;
+    private          SegmentMemory      previous;
+    private          SegmentMemory      next;
 
     public SegmentMemory(NetworkNode rootNode) {
         this.rootNode = rootNode;
         this.pathMemories = new ArrayList<PathMemory>(1);
         this.nodeMemories = new LinkedList<Memory>();
-
-        this.stagedLeftTuples = new LeftTupleSets();
+        this.stagedLeftTuples = new LeftTupleSetsImpl();
     }
 
     public NetworkNode getRootNode() {

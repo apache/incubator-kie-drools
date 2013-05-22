@@ -8,7 +8,9 @@ import java.util.List;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.SynchronizedRightTupleSets;
 import org.drools.core.util.FastIterator;
 import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.phreak.PhreakNotNode;
@@ -29,7 +31,7 @@ import org.junit.Assert;
 
 public class Scenario {
     /**
-     * 
+     *
      */
     Class                 phreakNode;
     BetaNode              betaNode;
@@ -37,24 +39,24 @@ public class Scenario {
     BetaMemory            bm;
     InternalWorkingMemory wm;
 
-    LeftTupleSets      leftTuples;
-    RightTupleSets     rightRuples;
-    
-    StagedBuilder         expectedResultBuilder;
-    
-    LeftTupleSets      actualResultLeftTuples;
-    
-    LeftTupleSets      previousResultTuples;
+    LeftTupleSets              leftTuples;
+    SynchronizedRightTupleSets rightRuples;
 
-    List<StagedBuilder>   preStagedBuilders;
-    List<StagedBuilder>   postStagedBuilders;
-    
-    List<LeftTuple>       leftMemory;
-    List<RightTuple>      rightMemory;
-    
-    private boolean       testLeftMemory;
-    private boolean       testRightMemory;
-    
+    StagedBuilder expectedResultBuilder;
+
+    LeftTupleSetsImpl actualResultLeftTuples;
+
+    LeftTupleSets previousResultTuples;
+
+    List<StagedBuilder> preStagedBuilders;
+    List<StagedBuilder> postStagedBuilders;
+
+    List<LeftTuple>  leftMemory;
+    List<RightTuple> rightMemory;
+
+    private boolean testLeftMemory;
+    private boolean testRightMemory;
+
     public Scenario(Class phreakNode,
                     BetaNode betaNode,
                     LeftTupleSink sinkNode,
@@ -65,12 +67,12 @@ public class Scenario {
         this.sinkNode = sinkNode;
         this.bm = bm;
         this.wm = wm;
-        this.leftTuples = new LeftTupleSets();
-        this.rightRuples = new RightTupleSets();
+        this.leftTuples = new LeftTupleSetsImpl();
+        this.rightRuples = new SynchronizedRightTupleSets();
         this.preStagedBuilders = new ArrayList<StagedBuilder>();
         this.postStagedBuilders = new ArrayList<StagedBuilder>();
-        
-        this.bm.setStagedRightTuples( rightRuples );
+
+        this.bm.setStagedRightTuples(rightRuples);
         this.leftMemory = new ArrayList<LeftTuple>();
         this.rightMemory = new ArrayList<RightTuple>();
     }
@@ -144,7 +146,7 @@ public class Scenario {
         return leftTuples;
     }
 
-    public RightTupleSets getRightTuples() {
+    public SynchronizedRightTupleSets getRightTuples() {
         return rightRuples;
     }
 
@@ -158,7 +160,7 @@ public class Scenario {
 
     public Scenario run() {
         previousResultTuples = ( LeftTupleSets ) ((SegmentMemory) bm.getSegmentMemory().getFirst()).getStagedLeftTuples();
-        actualResultLeftTuples = new LeftTupleSets();
+        actualResultLeftTuples = new LeftTupleSetsImpl();
         
         if ( phreakNode == PhreakJoinNode.class ) {
             new PhreakJoinNode().doNode( (JoinNode) betaNode, sinkNode,

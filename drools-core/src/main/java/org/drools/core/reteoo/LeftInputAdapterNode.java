@@ -33,6 +33,7 @@ import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.SegmentUtilities;

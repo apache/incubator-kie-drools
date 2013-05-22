@@ -1,6 +1,7 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;

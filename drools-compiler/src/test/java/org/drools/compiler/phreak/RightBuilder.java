@@ -4,27 +4,28 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.SynchronizedRightTupleSets;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.reteoo.SegmentMemory;
 
 public class RightBuilder {
-    private InternalWorkingMemory wm;
-    private RightTupleSink    sink;
-    private RightTupleSets rightTuples;
-    private Scenario      scenario;
+    private InternalWorkingMemory      wm;
+    private RightTupleSink             sink;
+    private SynchronizedRightTupleSets rightTuples;
+    private Scenario                   scenario;
 
     public RightBuilder(Scenario scenario) {
         this.wm = scenario.getWorkingMemory();
         this.scenario = scenario;
         this.sink = scenario.getBetaNode();
-        this.rightTuples = scenario.getRightTuples();            
+        this.rightTuples = scenario.getRightTuples();
     }
 
     public RightBuilder insert(Object... objects) {
-        for ( Object object : objects ) {
-            InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
-            RightTuple rightTuple =  new RightTuple( fh, sink );
+        for (Object object : objects) {
+            InternalFactHandle fh = (InternalFactHandle) wm.insert(object);
+            RightTuple rightTuple = new RightTuple( fh, sink );
             rightTuple.setPropagationContext( new PropagationContextImpl() );
             rightTuples.addInsert( rightTuple );
         }
