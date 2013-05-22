@@ -128,6 +128,11 @@
       <version>${cxf.version}</version>
       <scope>test</scope>
     </dependency>
+    <!-- REST -->
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+    </dependency>
   </dependencies>
 
 </project>
