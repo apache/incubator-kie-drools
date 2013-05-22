@@ -162,7 +162,7 @@ rule "periodSpread"
         $institutionParametrization : InstitutionParametrization(periodSpreadPenalty != 0)
         $topicConflict : TopicConflict($leftTopic : leftTopic, $rightTopic : rightTopic)
         $leftExam : Exam(topic == $leftTopic, $leftPeriodIndex : periodIndex, period != null)
-        $rightExam : Exam(topic == $rightTopic,
+        $rightExam : Exam(topic == $rightTopic, period != null,
             Math.abs($leftPeriodIndex - periodIndex) < ($institutionParametrization.getPeriodSpreadLength() + 1))
     then
         scoreHolder.addSoftConstraintMatch(kcontext,
