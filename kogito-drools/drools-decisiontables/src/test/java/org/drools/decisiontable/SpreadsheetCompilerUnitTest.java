@@ -401,6 +401,15 @@ public class SpreadsheetCompilerUnitTest {
         ksession.insert( i2 );
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testOOXMLParseCellValue() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        String drl = converter.compile( "/data/BZ963584.xls",
+                                        InputType.XLS );
+
+        assertNotNull( drl );
+    }
     
     public static class IntHolder {
         private int value;
