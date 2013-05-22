@@ -121,7 +121,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
     private void processMove(GreedyMoveScope moveScope) {
         Score score = moveScope.getGreedyFitStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreFromScratch) {
-            moveScope.getGreedyFitStepScope().getPhaseScope().assertWorkingScoreFromScratch(score);
+            moveScope.getGreedyFitStepScope().getPhaseScope().assertWorkingScoreFromScratch(score, moveScope.getMove());
         }
         moveScope.setScore(score);
         forager.addMove(moveScope);

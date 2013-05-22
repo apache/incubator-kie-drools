@@ -101,12 +101,12 @@ public class DefaultSolverScope {
         return scoreDirector.calculateScore();
     }
 
-    public void assertExpectedWorkingScore(Score expectedWorkingScore) {
-        scoreDirector.assertExpectedWorkingScore(expectedWorkingScore);
+    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object cause) {
+        scoreDirector.assertExpectedWorkingScore(expectedWorkingScore, cause);
     }
 
-    public void assertWorkingScoreFromScratch(Score workingScore) {
-        scoreDirector.assertWorkingScoreFromScratch(workingScore);
+    public void assertWorkingScoreFromScratch(Score workingScore, Object cause) {
+        scoreDirector.assertWorkingScoreFromScratch(workingScore, cause);
     }
 
     public void assertScoreFromScratch(Solution solution) {

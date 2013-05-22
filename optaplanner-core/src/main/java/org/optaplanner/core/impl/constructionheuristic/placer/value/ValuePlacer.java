@@ -114,7 +114,7 @@ public class ValuePlacer extends AbstractPlacer {
     private void processMove(ConstructionHeuristicMoveScope moveScope) {
         Score score = moveScope.getStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreFromScratch) {
-            moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score);
+            moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score, moveScope.getMove());
         }
         moveScope.setScore(score);
         // TODO work with forager

@@ -83,14 +83,15 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
 
     private void doStep(ConstructionHeuristicStepScope stepScope) {
         ConstructionHeuristicSolverPhaseScope phaseScope = stepScope.getPhaseScope();
-        stepScope.getStep().doMove(stepScope.getScoreDirector());
+        Move step = stepScope.getStep();
+        step.doMove(stepScope.getScoreDirector());
         // there is no need to recalculate the score, but we still need to set it
         phaseScope.getWorkingSolution().setScore(stepScope.getScore());
         if (assertStepScoreFromScratch) {
-            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore());
+            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), step);
         }
         if (assertExpectedStepScore) {
-            phaseScope.assertExpectedWorkingScore(stepScope.getScore());
+            phaseScope.assertExpectedWorkingScore(stepScope.getScore(), step);
         }
     }
 

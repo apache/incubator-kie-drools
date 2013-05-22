@@ -128,12 +128,12 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.calculateScore();
     }
 
-    public void assertExpectedWorkingScore(Score expectedWorkingScore) {
-        solverScope.assertExpectedWorkingScore(expectedWorkingScore);
+    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object cause) {
+        solverScope.assertExpectedWorkingScore(expectedWorkingScore, cause);
     }
 
-    public void assertWorkingScoreFromScratch(Score workingScore) {
-        solverScope.assertWorkingScoreFromScratch(workingScore);
+    public void assertWorkingScoreFromScratch(Score workingScore, Object cause) {
+        solverScope.assertWorkingScoreFromScratch(workingScore, cause);
     }
 
     public void assertExpectedUndoMoveScore(Move move, Move undoMove) {
@@ -141,7 +141,7 @@ public abstract class AbstractSolverPhaseScope {
         Score lastCompletedStepScore = getLastCompletedStepScope().getScore();
         if (!undoScore.equals(lastCompletedStepScore)) {
             // First assert that are probably no corrupted score rules.
-            getScoreDirector().assertWorkingScoreFromScratch(undoScore);
+            getScoreDirector().assertWorkingScoreFromScratch(undoScore, undoMove);
             throw new IllegalStateException(
                     "The moveClass (" + move.getClass() + ")'s move (" + move
                             + ") probably has a corrupted undoMove (" + undoMove + ")." +
