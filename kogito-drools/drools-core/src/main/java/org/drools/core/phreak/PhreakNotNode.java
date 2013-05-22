@@ -3,7 +3,7 @@ package org.drools.core.phreak;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.SynchronizedRightTupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleMemory;
@@ -30,7 +30,7 @@ public class PhreakNotNode {
                        LeftTupleSets srcLeftTuples,
                        LeftTupleSets trgLeftTuples,
                        LeftTupleSets stagedLeftTuples) {
-        RightTupleSets srcRightTuples = bm.getStagedRightTuples();
+        SynchronizedRightTupleSets srcRightTuples = bm.getStagedRightTuples();
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             // left deletes must come before right deletes. Otherwise right deletes could
@@ -126,7 +126,7 @@ public class PhreakNotNode {
                                LeftTupleSink sink,
                                BetaMemory bm,
                                InternalWorkingMemory wm,
-                               RightTupleSets srcRightTuples,
+                               SynchronizedRightTupleSets srcRightTuples,
                                LeftTupleSets trgLeftTuples) {
 
         LeftTupleMemory ltm = bm.getLeftTupleMemory();
@@ -307,7 +307,7 @@ public class PhreakNotNode {
                                LeftTupleSink sink,
                                BetaMemory bm,
                                InternalWorkingMemory wm,
-                               RightTupleSets srcRightTuples,
+                               SynchronizedRightTupleSets srcRightTuples,
                                LeftTupleSets trgLeftTuples,
                                LeftTupleSets stagedLeftTuples) {
         LeftTupleMemory ltm = bm.getLeftTupleMemory();
@@ -463,7 +463,7 @@ public class PhreakNotNode {
                                LeftTupleSink sink,
                                BetaMemory bm,
                                InternalWorkingMemory wm,
-                               RightTupleSets srcRightTuples,
+                               SynchronizedRightTupleSets srcRightTuples,
                                LeftTupleSets trgLeftTuples) {
         LeftTupleMemory ltm = bm.getLeftTupleMemory();
         RightTupleMemory rtm = bm.getRightTupleMemory();

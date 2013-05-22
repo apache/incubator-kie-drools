@@ -1916,6 +1916,13 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         Thread.sleep( 5000 );
         ks.halt();
+        if ( list.size() != N ) {
+            for ( int j = 0; j < N; j++ ) {
+               if ( !list.contains( new Integer( j ) ) ) {
+                System.out.println( "missed: " + j );
+               }
+            }
+        }
 
         assertEquals( N, list.size() );
     }

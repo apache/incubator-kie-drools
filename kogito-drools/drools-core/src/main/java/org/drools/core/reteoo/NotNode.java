@@ -24,7 +24,7 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.SynchronizedRightTupleSets;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.RightTupleList;
@@ -214,7 +214,7 @@ public class NotNode extends BetaNode {
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( isUnlinkingEnabled() ) {
-            RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+            SynchronizedRightTupleSets stagedRightTuples = memory.getStagedRightTuples();
             switch ( rightTuple.getStagedType() ) {
                 // handle clash with already staged entries
                 case LeftTuple.INSERT:

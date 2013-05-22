@@ -2,6 +2,7 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -19,7 +20,7 @@ public class SegmentPropagator {
         processPeers(sourceSegment, stagedLeftTuples);
     }    
     
-    public static void processPeers(SegmentMemory sourceSegment, LeftTupleSets leftTuples) {    
+    public static void processPeers(SegmentMemory sourceSegment, LeftTupleSets leftTuples) {
         
         // Process Deletes
         SegmentMemory firstSmem = sourceSegment.getFirst();

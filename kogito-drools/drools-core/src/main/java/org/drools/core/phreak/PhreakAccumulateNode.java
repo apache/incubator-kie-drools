@@ -4,7 +4,8 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
+import org.drools.core.common.SynchronizedRightTupleSets;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -36,13 +37,13 @@ public class PhreakAccumulateNode {
                        LeftTupleSets trgLeftTuples,
                        LeftTupleSets stagedLeftTuples) {
         boolean useLeftMemory = true;
-        RightTupleSets srcRightTuples = am.getBetaMemory().getStagedRightTuples();
+        SynchronizedRightTupleSets srcRightTuples = am.getBetaMemory().getStagedRightTuples();
 
         // order of left and right operations is to minimise wasted of innefficient joins.
 
         // We need to collect which leftTuple where updated, so that we can
         // add their result tuple to the real target tuples later
-        LeftTupleSets tempLeftTuples = new LeftTupleSets();
+        LeftTupleSets tempLeftTuples = new LeftTupleSetsImpl();
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             // use the real target here, as dealing direct with left tuples
@@ -193,7 +194,7 @@ public class PhreakAccumulateNode {
                                LeftTupleSink sink,
                                AccumulateMemory am,
                                InternalWorkingMemory wm,
-                               RightTupleSets srcRightTuples,
+                               SynchronizedRightTupleSets srcRightTuples,
                                LeftTupleSets trgLeftTuples) {
         Accumulate accumulate = accNode.getAccumulate();
 
@@ -405,7 +406,7 @@ public class PhreakAccumulateNode {
                                LeftTupleSink sink,
                                AccumulateMemory am,
                                InternalWorkingMemory wm,
-                               RightTupleSets srcRightTuples,
+                               SynchronizedRightTupleSets srcRightTuples,
                                LeftTupleSets trgLeftTuples) {
         BetaMemory bm = am.getBetaMemory();
         LeftTupleMemory ltm = bm.getLeftTupleMemory();
@@ -607,7 +608,7 @@ public class PhreakAccumulateNode {
     public void doRightDeletes(AccumulateNode accNode,
                                AccumulateMemory am,
                                InternalWorkingMemory wm,
-                               RightTupleSets srcRightTuples,
+                               SynchronizedRightTupleSets srcRightTuples,
                                LeftTupleSets trgLeftTuples) {
         RightTupleMemory rtm = am.getBetaMemory().getRightTupleMemory();
         Accumulate accumulate = accNode.getAccumulate();

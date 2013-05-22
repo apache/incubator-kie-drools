@@ -24,6 +24,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleIterator;
 import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextImpl;
@@ -792,30 +793,30 @@ public class QueryElementNode extends LeftTupleSource
     
     public static class QueryElementNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory {
         private QueryElementNode node;
-        
+
         private SegmentMemory smem;
-        
+
         private SegmentMemory querySegmentMemory;
 
         private LeftTupleSets resultLeftTuples;
-        
+
         public QueryElementNodeMemory(QueryElementNode node) {
             this.node = node;
-            this.resultLeftTuples = new LeftTupleSets();
+            this.resultLeftTuples = new LeftTupleSetsImpl();
         }
-        
+
         public QueryElementNode getNode() {
             return this.node;
         }
-        
+
         public short getNodeType() {
             return NodeTypeEnums.QueryElementNode;
         }
-        
+
         public void setSegmentMemory(SegmentMemory smem) {
             this.smem = smem;
-        }        
-        
+        }
+
         public SegmentMemory getSegmentMemory() {
             return smem;
         }
@@ -831,7 +832,7 @@ public class QueryElementNode extends LeftTupleSource
         public LeftTupleSets getResultLeftTuples() {
             return resultLeftTuples;
         }
-                
+
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
@@ -841,8 +842,8 @@ public class QueryElementNode extends LeftTupleSource
     @Override
     public LeftTuple createPeer(LeftTuple original) {
         QueryElementNodeLeftTuple peer = new QueryElementNodeLeftTuple();
-        peer.initPeer( (BaseLeftTuple) original, this );
-        original.setPeer( peer );
+        peer.initPeer((BaseLeftTuple) original, this);
+        original.setPeer(peer);
         return peer;
     }
 

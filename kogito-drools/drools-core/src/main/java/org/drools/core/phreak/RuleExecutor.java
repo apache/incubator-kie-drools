@@ -21,12 +21,12 @@ import java.util.Comparator;
 
 public class RuleExecutor {
     private static RuleNetworkEvaluator networkEvaluator = new RuleNetworkEvaluator();
-    private PathMemory      pmem;
-    private RuleAgendaItem  ruleAgendaItem;
-    private LeftTupleList   tupleList;
-    private BinaryHeapQueue queue;
-    private boolean         dirty;
-    private boolean         declarativeAgendaEnabled;
+    private          PathMemory      pmem;
+    private          RuleAgendaItem  ruleAgendaItem;
+    private          LeftTupleList   tupleList;
+    private          BinaryHeapQueue queue;
+    private volatile boolean         dirty;
+    private          boolean         declarativeAgendaEnabled;
 
     public RuleExecutor(final PathMemory pmem,
                         RuleAgendaItem ruleAgendaItem,
@@ -35,7 +35,7 @@ public class RuleExecutor {
         this.ruleAgendaItem = ruleAgendaItem;
         this.tupleList = new LeftTupleList();
         this.declarativeAgendaEnabled = declarativeAgendaEnabled;
-        if (ruleAgendaItem.getRule().getSalience().isDynamic() ) {
+        if (ruleAgendaItem.getRule().getSalience().isDynamic()) {
             queue = new BinaryHeapQueue(SalienceComparator.INSTANCE);
         }
     }
@@ -76,8 +76,8 @@ public class RuleExecutor {
 
             while (!tupleList.isEmpty()) {
                 LeftTuple leftTuple;
-                if ( queue != null ) {
-                    leftTuple = (LeftTuple)  queue.dequeue();
+                if (queue != null) {
+                    leftTuple = (LeftTuple) queue.dequeue();
                     tupleList.remove(leftTuple);
                 } else {
                     leftTuple = tupleList.removeFirst();
@@ -106,10 +106,10 @@ public class RuleExecutor {
                 localFireCount++;
 
                 salience = ruleAgendaItem.getSalience(); // dyanmic salience may have updated it, so get again.
-                if ( queue != null && !queue.isEmpty() && salience != queue.peek().getSalience() ) {
+                if (queue != null && !queue.isEmpty() && salience != queue.peek().getSalience()) {
                     ruleAgendaItem.dequeue();
-                    ruleAgendaItem.setSalience( queue.peek().getSalience() );
-                    ruleAgendaItem.getAgendaGroup().add( ruleAgendaItem );
+                    ruleAgendaItem.setSalience(queue.peek().getSalience());
+                    ruleAgendaItem.getAgendaGroup().add(ruleAgendaItem);
                     salience = ruleAgendaItem.getSalience();
                 }
 
@@ -144,9 +144,9 @@ public class RuleExecutor {
 
     public RuleTerminalNodeLeftTuple removeFirstLeftTuple() {
         RuleTerminalNodeLeftTuple lt;
-        if ( queue == null ) {
+        if (queue == null) {
             lt = (RuleTerminalNodeLeftTuple) tupleList.removeFirst();
-        }   else {
+        } else {
             lt = (RuleTerminalNodeLeftTuple) queue.dequeue();
             removeQueuedLeftTuple(lt);
 
@@ -180,7 +180,7 @@ public class RuleExecutor {
             }
         }
 
-        if ( filter != null && !filter.accept((Activation)leftTuple) ) {
+        if (filter != null && !filter.accept((Activation) leftTuple)) {
             return true;
         }
         return false;
@@ -208,38 +208,38 @@ public class RuleExecutor {
     }
 
     public void addLeftTuple(LeftTuple leftTuple) {
-        ((AgendaItem)leftTuple).setQueued(true);
+        ((AgendaItem) leftTuple).setQueued(true);
         this.tupleList.add(leftTuple);
-        if ( queue != null ) {
+        if (queue != null) {
             addQueuedLeftTuple(leftTuple);
         }
     }
 
     public void addQueuedLeftTuple(LeftTuple leftTuple) {
-        int currentSalience = queue.isEmpty() ? 0 : ((Activation)queue.peek()).getSalience();
-        queue.enqueue( (Activation) leftTuple );
+        int currentSalience = queue.isEmpty() ? 0 : ((Activation) queue.peek()).getSalience();
+        queue.enqueue((Activation) leftTuple);
         updateSalience(currentSalience);
     }
 
     public void removeLeftTuple(LeftTuple leftTuple) {
-        ((AgendaItem)leftTuple).setQueued(false);
+        ((AgendaItem) leftTuple).setQueued(false);
         this.tupleList.remove(leftTuple);
-        if ( queue != null ) {
+        if (queue != null) {
             removeQueuedLeftTuple(leftTuple);
         }
     }
 
     public void removeQueuedLeftTuple(LeftTuple leftTuple) {
-        int currentSalience = queue.isEmpty() ? 0 : ((Activation)queue.peek()).getSalience();
-        queue.dequeue( ((Activation) leftTuple).getQueueIndex() );
+        int currentSalience = queue.isEmpty() ? 0 : ((Activation) queue.peek()).getSalience();
+        queue.dequeue(((Activation) leftTuple).getQueueIndex());
         updateSalience(currentSalience);
     }
 
     public void updateLeftTuple(RuleTerminalNodeLeftTuple leftTuple, int salience, PropagationContext pctx) {
         // this method is only call when dynamic salience is on for the current rule and the salience for the LeftTuple has changed
-        if (salience != leftTuple.getSalience() ) {
+        if (salience != leftTuple.getSalience()) {
             // saliences are different, so it must be dynamic and thus the queue is not null
-            int currentSalience = queue.isEmpty() ? 0 : ((Activation)queue.peek()).getSalience();
+            int currentSalience = queue.isEmpty() ? 0 : ((Activation) queue.peek()).getSalience();
 
             leftTuple.dequeue();
             queue.enqueue(leftTuple);
@@ -249,25 +249,25 @@ public class RuleExecutor {
     }
 
     private void updateSalience(int currentSalience) {
-        int newSalience = ((Activation)queue.peek()).getSalience();
-        if ( currentSalience != newSalience ) {
+        int newSalience = ((Activation) queue.peek()).getSalience();
+        if (currentSalience != newSalience) {
             // salience changed, so the RuleAgendaItem needs to be removed and re-added, for sorting
             ruleAgendaItem.remove();
         }
-        if ( !ruleAgendaItem.isQueued() ) {
+        if (!ruleAgendaItem.isQueued()) {
             ruleAgendaItem.setSalience(newSalience);
             ruleAgendaItem.getAgendaGroup().add(ruleAgendaItem);
         }
     }
 
     public void cancel(InternalWorkingMemory wm, EventSupport es) {
-        while ( !tupleList.isEmpty() ) {
-            RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) tupleList.removeFirst();
-            if ( queue != null ) {
+        while (!tupleList.isEmpty()) {
+            RuleTerminalNodeLeftTuple rtnLt = (RuleTerminalNodeLeftTuple) tupleList.removeFirst();
+            if (queue != null) {
                 queue.dequeue(rtnLt.getQueueIndex());
             }
 
-            es.getAgendaEventSupport().fireActivationCancelled( rtnLt, wm, MatchCancelledCause.CLEAR );
+            es.getAgendaEventSupport().fireActivationCancelled(rtnLt, wm, MatchCancelledCause.CLEAR);
         }
     }
 

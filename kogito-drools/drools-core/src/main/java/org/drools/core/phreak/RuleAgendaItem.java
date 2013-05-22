@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory;
 public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<RuleAgendaItem> {
 
     private static final Logger log = LoggerFactory.getLogger(RuleAgendaItem.class);
-    public  RuleExecutor   executor;
-    private RuleAgendaItem previous;
-    private RuleAgendaItem next;
-    private boolean        blocked;
+    public           RuleExecutor   executor;
+    private          RuleAgendaItem previous;
+    private          RuleAgendaItem next;
+    private volatile boolean        blocked;
 
     public RuleAgendaItem() {
 

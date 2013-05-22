@@ -16,37 +16,32 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.Memory;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
 import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.SynchronizedRightTupleSets;
+import org.drools.core.rule.ContextEntry;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.rule.ContextEntry;import java.util.ArrayDeque;import java.util.Deque;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         implements
         Memory {
 
     private static final long serialVersionUID = 510l;
-
-    private LeftTupleMemory  leftTupleMemory;
-    private RightTupleMemory rightTupleMemory;
-
-    private RightTupleSets stagedRightTuples;
-
-    private ContextEntry[] context;
-
+    private LeftTupleMemory            leftTupleMemory;
+    private RightTupleMemory           rightTupleMemory;
+    private SynchronizedRightTupleSets stagedRightTuples;
+    private ContextEntry[]             context;
     // the node type this memory belongs to
-    private short nodeType;
-
-    private SegmentMemory segmentMemory;
-
-    private long nodePosMaskBit;
-
-    private int counter;
-
-    private RiaPathMemory riaRuleMemory;
-
-    private Deque<RightTuple>  dequeu;
+    private short                      nodeType;
+    private SegmentMemory              segmentMemory;
+    private long                       nodePosMaskBit;
+    private int                        counter;
+    private RiaPathMemory              riaRuleMemory;
+    private Deque<RightTuple>          dequeu;
 
     public BetaMemory() {
     }
@@ -57,7 +52,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
                       final short nodeType) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
-        this.stagedRightTuples = new RightTupleSets();
+        this.stagedRightTuples = new SynchronizedRightTupleSets();
         this.context = context;
         this.nodeType = nodeType;
         this.dequeu = new ArrayDeque<RightTuple>();
@@ -71,7 +66,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return stagedRightTuples;
     }
 
-    public void setStagedRightTuples(RightTupleSets stagedRightTuples) {
+    public void setStagedRightTuples(SynchronizedRightTupleSets stagedRightTuples) {
         this.stagedRightTuples = stagedRightTuples;
     }
 
@@ -99,11 +94,11 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void linkNode(InternalWorkingMemory wm) {
-        segmentMemory.linkNode( nodePosMaskBit, wm );
+        segmentMemory.linkNode(nodePosMaskBit, wm);
     }
 
     public void unlinkNode(InternalWorkingMemory wm) {
-        segmentMemory.unlinkNode( nodePosMaskBit, wm );
+        segmentMemory.unlinkNode(nodePosMaskBit, wm);
     }
 
     public short getNodeType() {

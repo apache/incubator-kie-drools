@@ -327,14 +327,14 @@ public class PatternBuilder
 
         buildAlphaNodeChain( context, utils, pattern, alphaConstraints );
         
-        if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT && context.isAttachPQN() ) {
-            context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                      new PropagationQueuingNode( context.getNextId(),
-                                                                                                  context.getObjectSource(),
-                                                                                                  context ) ) );
-            // the entry-point specific network nodes are attached, so, set context to default entry-point 
-            context.setCurrentEntryPoint( EntryPoint.DEFAULT );
-        }
+//        if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT && context.isAttachPQN() ) {
+//            context.setObjectSource( (ObjectSource) utils.attachNode( context,
+//                                                                      new PropagationQueuingNode( context.getNextId(),
+//                                                                                                  context.getObjectSource(),
+//                                                                                                  context ) ) );
+//            // the entry-point specific network nodes are attached, so, set context to default entry-point
+//            context.setCurrentEntryPoint( EntryPoint.DEFAULT );
+//        }
     }
 
     protected void buildAlphaNodeChain( BuildContext context, BuildUtils utils, Pattern pattern, List<AlphaNodeFieldConstraint> alphaConstraints ) {

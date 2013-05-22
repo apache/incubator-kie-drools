@@ -11,6 +11,7 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.RightTupleSets;
@@ -52,8 +53,6 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +100,7 @@ public class RuleNetworkEvaluator {
             nodeMem = smem.getNodeMemories().getFirst().getNext(); // skip the liaNode memory
         }
 
-        LeftTupleSets srcTuples = smem.getStagedLeftTuples();
+        LeftTupleSets srcTuples = smem.getStagedLeftTuples().takeAll(); // need to takeAll, as this is taken alpha network
 
         if (log.isTraceEnabled()) {
             log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getNetworkNode()).getRule().getName(), smems.length, srcTuples.toStringSizes());
@@ -292,7 +291,7 @@ public class RuleNetworkEvaluator {
 
             LeftTupleSinkNode sink = ((LeftTupleSource) node).getSinkPropagator().getFirstLeftTupleSink();
 
-            trgTuples = new LeftTupleSets();
+            trgTuples = new LeftTupleSetsImpl();
 
 
             if (NodeTypeEnums.isBetaNode(node)) {
@@ -371,7 +370,7 @@ public class RuleNetworkEvaluator {
                                                 trgTuples,
                                                 wm);
                     smem = smems[++smemIndex];
-                    trgTuples = smem.getStagedLeftTuples().cloneAndReset();
+                    trgTuples = smem.getStagedLeftTuples().takeAll();
                 }
 
                 if (log.isTraceEnabled()) {
@@ -455,7 +454,8 @@ public class RuleNetworkEvaluator {
 
     }
 
-    private boolean evalBetaNode(LeftInputAdapterNode liaNode, PathMemory pmem, NetworkNode node, Memory nodeMem, SegmentMemory[] smems, int smemIndex, LeftTupleSets trgTuples, InternalWorkingMemory wm, LinkedList<StackEntry> stack, LinkedList<StackEntry> outerStack, Set<String> visitedRules, boolean processRian, RuleExecutor executor, LeftTupleSets srcTuples, LeftTupleSets stagedLeftTuples, LeftTupleSinkNode sink) {BetaNode betaNode = (BetaNode) node;
+    private boolean evalBetaNode(LeftInputAdapterNode liaNode, PathMemory pmem, NetworkNode node, Memory nodeMem, SegmentMemory[] smems, int smemIndex, LeftTupleSets trgTuples, InternalWorkingMemory wm, LinkedList<StackEntry> stack, LinkedList<StackEntry> outerStack, Set<String> visitedRules, boolean processRian, RuleExecutor executor,
+                                 LeftTupleSets srcTuples, LeftTupleSets stagedLeftTuples, LeftTupleSinkNode sink) {BetaNode betaNode = (BetaNode) node;
 
         BetaMemory bm = null;
         AccumulateMemory am = null;
