@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import com.sun.tools.xjc.Language;
 import org.kie.internal.builder.JaxbConfiguration;
 import org.kie.api.io.ResourceConfiguration;
 import org.slf4j.Logger;
@@ -39,7 +40,9 @@ public class JaxbConfigurationImpl implements JaxbConfiguration {
     private String systemId;
     
     private List<String> classes;
-    
+
+    public JaxbConfigurationImpl() { }
+
     public JaxbConfigurationImpl(Options xjcOpts,
                                  String systemId) {
         this.xjcOpts = xjcOpts;
@@ -97,15 +100,19 @@ public class JaxbConfigurationImpl implements JaxbConfiguration {
 
     public Properties toProperties() {
         Properties prop = new Properties();
-        // how to serialize Options to a property file???
-        // prop.setProperty( "drools.jaxb.conf.options",  );
         prop.setProperty( "drools.jaxb.conf.systemId", systemId );
         prop.setProperty( "drools.jaxb.conf.classes", classes.toString() );
+        if (xjcOpts != null) {
+            // how to serialize Options to a property file???
+            prop.setProperty( "drools.jaxb.conf.opts.class", xjcOpts.getClass().getName() );
+            if (xjcOpts.getSchemaLanguage() != null) {
+                prop.setProperty( "drools.jaxb.conf.opts.lang", xjcOpts.getSchemaLanguage().toString() );
+            }
+        }
         return prop;
     }
 
     public ResourceConfiguration fromProperties(Properties prop) {
-        // how to deserialize Options from a properties file?
         systemId = prop.getProperty( "drools.jaxb.conf.systemId", null );
         String classesStr = prop.getProperty( "drools.jaxb.conf.classes", "[]" );
         classesStr = classesStr.substring( 1, classesStr.length()-1 ).trim();
@@ -116,6 +123,21 @@ public class JaxbConfigurationImpl implements JaxbConfiguration {
                 classes.add( clz.trim() );
             }
         }
+
+        // how to deserialize Options from a properties file?
+        String optsClass = prop.getProperty( "drools.jaxb.conf.opts.class", null );
+        if (optsClass != null) {
+            try {
+                xjcOpts = (Options) Class.forName( optsClass ).newInstance();
+                String optsLang = prop.getProperty( "drools.jaxb.conf.opts.lang", null );
+                if (optsLang != null) {
+                    xjcOpts.setSchemaLanguage( Language.valueOf(optsLang) );
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         return this;
     }
 }
