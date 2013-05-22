@@ -16,7 +16,9 @@
 package org.jbpm.process.instance.impl;
 
 import java.io.Serializable;
+import java.util.Collection;
 
+import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
@@ -25,23 +27,38 @@ public class CancelNodeInstanceAction implements Action, Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Long attachedToNodeId;
+	private String attachedToNodeId;
 	
-	public CancelNodeInstanceAction(Long attachedToNodeId) {
+	public CancelNodeInstanceAction(String attachedToNodeId) {
 		super();
 		this.attachedToNodeId = attachedToNodeId;
 	}
 	
 	public void execute(ProcessContext context) throws Exception {
 		WorkflowProcessInstance pi = context.getNodeInstance().getProcessInstance();
-		long nodeInstanceId = -1;
-		for (NodeInstance nodeInstance : pi.getNodeInstances()) {
-			if (attachedToNodeId == nodeInstance.getNodeId()) {
-				nodeInstanceId = nodeInstance.getId();
-				break;
-			}
+		NodeInstance nodeInstance = findNodeByUniqueId(pi.getNodeInstances(), attachedToNodeId);
+		if (nodeInstance != null) {
+		    ((org.jbpm.workflow.instance.NodeInstance)nodeInstance).cancel();
 		}
-		((org.jbpm.workflow.instance.NodeInstance)context.getNodeInstance().getProcessInstance().getNodeInstance(nodeInstanceId)).cancel();
 	}
+	
+	private NodeInstance findNodeByUniqueId(Collection<NodeInstance> nodeInstances, String uniqueId) {
+
+        if (nodeInstances != null && !nodeInstances.isEmpty()) {
+            for (NodeInstance nInstance : nodeInstances) {
+                String nodeUniqueId = (String) nInstance.getNode().getMetaData().get("UniqueId");
+                if (uniqueId.equals(nodeUniqueId)) {
+                    return nInstance;
+                }
+                if (nInstance instanceof CompositeNodeInstance) {
+                    NodeInstance nodeInstance = findNodeByUniqueId(((CompositeNodeInstance) nInstance).getNodeInstances(), uniqueId);
+                    if (nodeInstance != null) {
+                        return nodeInstance;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
 }

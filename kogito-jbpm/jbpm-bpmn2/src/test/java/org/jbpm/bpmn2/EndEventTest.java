@@ -104,7 +104,8 @@ public class EndEventTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("CompensateEndEvent");
         assertProcessInstanceCompleted(processInstance);
-        assertNodeTriggered(processInstance.getId(), "StartProcess", "Task", "CompensateEvent", "CompensateEvent2", "Compensate", "EndEvent");
+        // boundary event can only be triggered when node that it is attached to is active
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "Task", "CompensateEvent");
         
     }
 

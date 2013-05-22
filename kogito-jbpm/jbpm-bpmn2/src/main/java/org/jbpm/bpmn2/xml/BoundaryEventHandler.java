@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
@@ -29,6 +30,7 @@ import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -38,12 +40,12 @@ import org.xml.sax.SAXException;
 public class BoundaryEventHandler extends AbstractNodeHandler {
     
     protected Node createNode(Attributes attrs) {
-        return new EventNode();
+        return new BoundaryEventNode();
     }
     
     @SuppressWarnings("unchecked")
 	public Class generateNodeFor() {
-        return EventNode.class;
+        return BoundaryEventNode.class;
     }
 
     public Object end(final String uri, final String localName,
@@ -100,9 +102,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             final String localName, final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
-        EventNode eventNode = (EventNode) node;
+        BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
         eventNode.setMetaData("CancelActivity", cancelActivity);
+        eventNode.setAttachedToNodeId(attachedTo);
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
@@ -136,8 +139,9 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             final String localName, final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
-        EventNode eventNode = (EventNode) node;
+        BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
+        eventNode.setAttachedToNodeId(attachedTo);
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
@@ -170,9 +174,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             final String localName, final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
-        EventNode eventNode = (EventNode) node;
+        BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
         eventNode.setMetaData("CancelActivity", cancelActivity);
+        eventNode.setAttachedToNodeId(attachedTo);
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
@@ -226,7 +231,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             final String localName, final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
-        EventNode eventNode = (EventNode) node;
+        BoundaryEventNode eventNode = (BoundaryEventNode) node;
         NodeList childs = element.getChildNodes();
         for (int i = 0; i < childs.getLength(); i++) {
             if (childs.item(i) instanceof Element) {
@@ -240,6 +245,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             }
         }
         eventNode.setMetaData("AttachedTo", attachedTo);
+        eventNode.setAttachedToNodeId(attachedTo);
         List<EventFilter> eventFilters = new ArrayList<EventFilter>();
         EventTypeFilter eventFilter = new EventTypeFilter();
         String eventType = "Compensate-";
@@ -253,9 +259,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
-        EventNode eventNode = (EventNode) node;
+        BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
         eventNode.setMetaData("CancelActivity", cancelActivity);
+        eventNode.setAttachedToNodeId(attachedTo);
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
@@ -282,9 +289,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
-        EventNode eventNode = (EventNode) node;
+        BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
         eventNode.setMetaData("CancelActivity", cancelActivity);
+        eventNode.setAttachedToNodeId(attachedTo);
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
@@ -314,9 +322,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
-        EventNode eventNode = (EventNode) node;
+        BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
         eventNode.setMetaData("CancelActivity", cancelActivity);
+        eventNode.setAttachedToNodeId(attachedTo);
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
@@ -353,8 +362,100 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         String to = subNode.getTextContent();
         eventNode.setVariableName(to);
     }
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
-	    throw new IllegalArgumentException("Writing out should be handled by specific handlers");
+
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+        EventNode eventNode = (EventNode) node;
+        String attachedTo = (String) eventNode.getMetaData("AttachedTo");
+        if (attachedTo != null) {
+            String type = ((EventTypeFilter) eventNode.getEventFilters().get(0)).getType();
+            if (type.startsWith("Escalation-")) {
+                type = type.substring(attachedTo.length() + 12);
+                boolean cancelActivity = (Boolean) eventNode.getMetaData("CancelActivity");
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
+                xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
+                if (!cancelActivity) {
+                    xmlDump.append("cancelActivity=\"false\" ");
+                }
+                xmlDump.append(">" + EOL);
+                xmlDump.append("      <escalationEventDefinition escalationRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" />" + EOL);
+                endNode("boundaryEvent", xmlDump);
+            } else if (type.startsWith("Error-")) {
+                type = type.substring(attachedTo.length() + 7);
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
+                xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
+                xmlDump.append(">" + EOL);
+                xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" />" + EOL);
+                endNode("boundaryEvent", xmlDump);
+            } else if (type.startsWith("Timer-")) {
+                type = type.substring(attachedTo.length() + 7);
+                boolean cancelActivity = (Boolean) eventNode.getMetaData("CancelActivity");
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
+                xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
+                if (!cancelActivity) {
+                    xmlDump.append("cancelActivity=\"false\" ");
+                }
+                xmlDump.append(">" + EOL);
+                String duration = (String) eventNode.getMetaData("TimeDuration");
+                String cycle = (String) eventNode.getMetaData("TimeCycle");
+                
+                if (duration != null && cycle != null) {
+                    xmlDump.append(
+                            "      <timerEventDefinition>" + EOL +
+                            "        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(duration) + "</timeDuration>" + EOL +
+                            "        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(cycle) + "</timeCycle>" + EOL +
+                            "      </timerEventDefinition>" + EOL);
+                } else if (duration != null) {
+                    xmlDump.append(
+                            "      <timerEventDefinition>" + EOL +
+                            "        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(duration) + "</timeDuration>" + EOL +
+                            "      </timerEventDefinition>" + EOL);
+                } else {
+                    xmlDump.append(
+                            "      <timerEventDefinition>" + EOL +
+                            "        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(cycle) + "</timeCycle>" + EOL +
+                            "      </timerEventDefinition>" + EOL);
+                }
+                endNode("boundaryEvent", xmlDump);
+            } else if (type.startsWith("Compensate-")) {
+                type = type.substring(attachedTo.length() + 7);
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
+                xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
+                xmlDump.append(">" + EOL);
+                xmlDump.append("      <compensateEventDefinition/>" + EOL);
+                endNode("boundaryEvent", xmlDump);
+            }  else if (node.getMetaData().get("SignalName") != null) {
+                
+                boolean cancelActivity = (Boolean) eventNode.getMetaData("CancelActivity");
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
+                xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
+                if (!cancelActivity) {
+                    xmlDump.append("cancelActivity=\"false\" ");
+                }
+                xmlDump.append(">" + EOL);
+                xmlDump.append("      <signalEventDefinition signalRef=\"" + type + "\"/>"+ EOL);
+                endNode("boundaryEvent", xmlDump);
+            }  else if (node.getMetaData().get("Condition") != null) {
+                
+                boolean cancelActivity = (Boolean) eventNode.getMetaData("CancelActivity");
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
+                xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
+                if (!cancelActivity) {
+                    xmlDump.append("cancelActivity=\"false\" ");
+                }
+                xmlDump.append(">" + EOL);
+                xmlDump.append("      <conditionalEventDefinition>"+ EOL);
+                xmlDump.append("        <condition xsi:type=\"tFormalExpression\" language=\"http://www.jboss.org/drools/rule\">" + eventNode.getMetaData("Condition") +"</condition>"+ EOL);
+                xmlDump.append("      </conditionalEventDefinition>"+ EOL);
+                endNode("boundaryEvent", xmlDump);
+            } else if (type.startsWith("Message-")) {
+                type = type.substring(8);
+                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
+                xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
+                xmlDump.append(">" + EOL);
+                xmlDump.append("      <messageEventDefinition messageRef=\"" + type + "\"/>" + EOL);
+                endNode("boundaryEvent", xmlDump);
+            }
+        }
     }
 
 }

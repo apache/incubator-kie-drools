@@ -59,7 +59,7 @@
         </resourceAssignmentExpression>
       </potentialOwner>
     </userTask>
-    <boundaryEvent id="BoundaryEvent_2" name="Boundary event" attachedToRef="UserTask_2" cancelActivity="false">
+    <boundaryEvent id="BoundaryEvent_2" name="Boundary event" attachedToRef="UserTask_1" cancelActivity="false">
       <outgoing>SequenceFlow_5</outgoing>
       <dataOutput id="_4_Output" name="event"/>
       <dataOutputAssociation id="DataOutputAssociation_1">

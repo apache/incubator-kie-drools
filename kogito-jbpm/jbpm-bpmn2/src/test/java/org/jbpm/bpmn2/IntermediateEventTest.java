@@ -1708,12 +1708,12 @@ public class IntermediateEventTest extends JbpmTestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new TestWorkItemHandler());
 
+        ProcessInstance processInstance = ksession
+                .startProcess("BoundarySignalOnTask");
         Person person = new Person();
         person.setName("john");
         ksession.insert(person);
-        ProcessInstance processInstance = ksession
-                .startProcess("BoundarySignalOnTask");
-
+        
         assertProcessInstanceCompleted(processInstance);
         assertNodeTriggered(processInstance.getId(), "StartProcess",
                 "User Task", "Boundary event", "Condition met", "End2");
@@ -1818,6 +1818,31 @@ public class IntermediateEventTest extends JbpmTestCase {
         if( processInstance != null ) { 
             assertEquals( "Process instance is not completed.", ProcessInstance.STATE_COMPLETED, processInstance.getState() );
         } // otherwise, persistence use => processInstance == null => process is completed
+    }
+    
+    @Test
+    public void testSignalBoundaryEventOnSubprocessTakingDifferentPaths() throws Exception {
+        KieBase kbase = createKnowledgeBase(
+                "BPMN2-SignalBoundaryOnSubProcess.bpmn");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        ProcessInstance processInstance = ksession.startProcess("jbpm.testing.signal");
+        assertProcessInstanceActive(processInstance);
+        
+        ksession.signalEvent("continue", null, processInstance.getId());
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        ksession.dispose();
+        
+        ksession = createKnowledgeSession(kbase);
+
+        processInstance = ksession.startProcess("jbpm.testing.signal");
+        assertProcessInstanceActive(processInstance);
+        
+        ksession.signalEvent("forward", null);
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        ksession.dispose();
     }
 
 }
