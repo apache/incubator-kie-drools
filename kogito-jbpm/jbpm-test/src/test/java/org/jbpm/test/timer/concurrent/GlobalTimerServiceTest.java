@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,6 +106,9 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
         //active
         List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findActiveProcessInstances("IntermediateCatchEvent");
         assertNotNull(logs);
+        for (ProcessInstanceLog log : logs) {
+            System.out.println("Left over " + log.getProcessInstanceId());
+        }
         assertEquals(0, logs.size());
         
         // completed
@@ -127,7 +131,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
 			DateTime now = new DateTime();
 		    now.plus(1000);
 
-			params.put("x", "R" + wait + "/PT1S");
+			params.put("x", "R2/" + wait + "/PT1S");
 			ProcessInstance processInstance = runtime.getKieSession().startProcess("IntermediateCatchEvent", params);
 			System.out.println("Started process instance " + processInstance.getId() + " on ksession " + runtime.getKieSession().getId());			
 			ut.commit();
@@ -137,7 +141,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
 	}
 
 	
-	private boolean testCompleteTaskByProcessInstance(RuntimeEngine runtime, long piId) throws InterruptedException, Exception {
+	private boolean testCompleteTaskByProcessInstance(RuntimeManager manager, RuntimeEngine runtime, long piId) throws InterruptedException, Exception {
         boolean result = false;
         List<Status> statusses = new ArrayList<Status>();
         statusses.add(Status.Reserved);
@@ -145,11 +149,11 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
         List<TaskSummary> tasks = null;
         tasks = runtime.getTaskService().getTasksByStatusByProcessInstanceId(piId, statusses, "en-UK");
         if (tasks.isEmpty()) {
-            System.out.println("Task thread found no tasks");
+            System.out.println("Task thread found no tasks for piId " + piId);
             Thread.sleep(1000);
         } else {
             long taskId = tasks.get(0).getId();
-            System.out.println("Completing task " + taskId);
+            System.out.println("Completing task " + taskId + " piId " + piId);
             boolean success = false;
             try {
                 runtime.getTaskService().start(taskId, "john");
@@ -157,25 +161,54 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
                 
                 if (success) {
                     runtime.getTaskService().complete(taskId, "john", null);
-                    System.out.println("Completed task " + taskId);
+                    System.out.println("Completed task " + taskId + " piId " + piId);
                     result = true;
        
                 }
             } catch (PermissionDeniedException e) {
                 // TODO can we avoid these by doing it all in one transaction?
-                System.out.println("Task thread was too late for starting task " + taskId);
-            } catch (RuntimeException e) {
-                if (e.getCause() instanceof OptimisticLockException || e.getCause() instanceof StaleObjectStateException) {
-                    System.out.println("Task thread got in conflict when starting task " + taskId);
-                } else {
-                    throw e;
-                }
+                System.out.println("Task thread was too late for starting task " + taskId + " piId " + piId);
+            } catch (Throwable e) {     
+                throw new RuntimeException(e);
+      
             }
 
         }
         
         return result;
     }
+	
+	   private boolean testRetryCompleteTaskByProcessInstance(RuntimeManager manager, RuntimeEngine runtime, long piId) throws InterruptedException, Exception {
+	        boolean result = false;
+	        List<Status> statusses = new ArrayList<Status>();
+	        statusses.add(Status.InProgress);
+	        
+	        List<TaskSummary> tasks = null;
+	        tasks = runtime.getTaskService().getTasksByStatusByProcessInstanceId(piId, statusses, "en-UK");
+	        if (tasks.isEmpty()) {
+	            System.out.println("Retry : Task thread found no tasks for piId " + piId);
+	            Thread.sleep(1000);
+	        } else {
+	            long taskId = tasks.get(0).getId();
+	            System.out.println("Retry : Completing task " + taskId + " piId " + piId);
+	            try {
+	                
+                    runtime.getTaskService().complete(taskId, "john", null);
+                    System.out.println("Retry : Completed task " + taskId + " piId " + piId);
+                    result = true;
+       
+	                
+	            } catch (PermissionDeniedException e) {
+	                // TODO can we avoid these by doing it all in one transaction?
+	                System.out.println("Task thread was too late for starting task " + taskId + " piId " + piId);
+	            } catch (Exception e) {
+	                throw e;
+	            }
+
+	        }
+	        
+	        return result;
+	    }
 	
     public class StartProcessPerProcessInstanceRunnable implements Runnable {
         private RuntimeManager manager;
@@ -211,16 +244,42 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
                 RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
 
                 for (int y = 0; y<wait; y++) {
-                    testCompleteTaskByProcessInstance(runtime, processInstanceId);
+                    try {
+                        testCompleteTaskByProcessInstance(manager, runtime, processInstanceId);
+                    } catch (Throwable e) {
+                        if (checkOptimiticLockException(e)) {
+                            System.out.println(counter + " retrying for process instance " + processInstanceId);
+                            manager.disposeRuntimeEngine(runtime);
+                            runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+                            testRetryCompleteTaskByProcessInstance(manager, runtime, processInstanceId);
+                        } else {
+                            throw e;
+                        }
+                    }
                 }
                 manager.disposeRuntimeEngine(runtime);
 
-                
-                
                 completedTask++;
             } catch (Throwable t) {
                 t.printStackTrace();
             }
         }
     }
+   
+   public static boolean checkOptimiticLockException(Throwable e) {
+       Throwable rootCause = e.getCause();
+       while (rootCause != null) {
+           if ((rootCause instanceof OptimisticLockException || rootCause instanceof StaleObjectStateException) ){               
+               return true;
+           }
+           
+           rootCause = rootCause.getCause();
+       }
+       
+       if (e instanceof InvocationTargetException) {
+           return checkOptimiticLockException(((InvocationTargetException) e).getTargetException());
+       }
+       
+       return false;
+   }
 }
