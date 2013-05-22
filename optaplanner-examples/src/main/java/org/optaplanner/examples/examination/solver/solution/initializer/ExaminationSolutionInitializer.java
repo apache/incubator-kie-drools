@@ -209,7 +209,7 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
     public static class ExamToHandle {
 
         private Exam exam;
-        private boolean added = false;
+        private boolean added = true;
 
         public ExamToHandle(Exam exam) {
             this.exam = exam;
@@ -247,14 +247,10 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
 
     public List<Exam> createExamList(Examination examination) {
         List<Topic> topicList = examination.getTopicList();
-        List<Exam> examList = new ArrayList<Exam>(topicList.size());
+        List<Exam> examList = examination.getExamList();
         Map<Topic, Exam> topicToExamMap = new HashMap<Topic, Exam>(topicList.size());
-        for (Topic topic : topicList) {
-            Exam exam = new Exam();
-            exam.setId(topic.getId());
-            exam.setTopic(topic);
-            examList.add(exam);
-            topicToExamMap.put(topic, exam);
+        for (Exam exam : examList) {
+            topicToExamMap.put(exam.getTopic(), exam);
         }
         for (PeriodPenalty periodPenalty : examination.getPeriodPenaltyList()) {
             if (periodPenalty.getPeriodPenaltyType() == PeriodPenaltyType.EXAM_COINCIDENCE) {
