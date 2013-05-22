@@ -237,8 +237,13 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
         List<Exam> examList = createExamList(examination);
         List<ExamInitializationWeight> examInitialWeightList = new ArrayList<ExamInitializationWeight>(examList.size());
         for (Exam exam : examList) {
-            if (exam.isCoincidenceLeader()) {
-                examInitialWeightList.add(new ExamInitializationWeight(exam));
+            // HACK to avoid resetting initialized entities.
+            // Bug 1 for semi-initialized solutions: if one variable is initialized and other is not
+            // Bug 2 for semi-initialized solutions: if leads is initialized and coincidence is not
+            if (exam.getPeriod() == null || exam.getRoom() == null) {
+                if (exam.isCoincidenceLeader()) {
+                    examInitialWeightList.add(new ExamInitializationWeight(exam));
+                }
             }
         }
         Collections.sort(examInitialWeightList);
