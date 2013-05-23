@@ -21,14 +21,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.bpmn2.JbpmTestCase;
+import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.handler.LoggingTaskHandlerDecorator.InputParameter;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-public class LoggingTaskHandlerWrapperTest extends JbpmTestCase {
+public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
     
     private StatefulKnowledgeSession ksession;
     

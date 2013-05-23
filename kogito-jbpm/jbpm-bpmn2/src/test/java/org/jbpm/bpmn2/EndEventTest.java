@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RunWith(Parameterized.class)
-public class EndEventTest extends JbpmTestCase {
+public class EndEventTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
@@ -135,7 +135,7 @@ public class EndEventTest extends JbpmTestCase {
 
     @Test
     public void testOnEntryExitScript() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-OnEntryExitScriptProcess.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-OnEntryExitScriptProcess.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());
@@ -150,7 +150,7 @@ public class EndEventTest extends JbpmTestCase {
 
     @Test
     public void testOnEntryExitNamespacedScript() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-OnEntryExitNamespacedScriptProcess.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-OnEntryExitNamespacedScriptProcess.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());
@@ -165,7 +165,7 @@ public class EndEventTest extends JbpmTestCase {
 
     @Test
     public void testOnEntryExitMixedNamespacedScript() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-OnEntryExitMixedNamespacedScriptProcess.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-OnEntryExitMixedNamespacedScriptProcess.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());
@@ -180,7 +180,7 @@ public class EndEventTest extends JbpmTestCase {
     
     @Test
     public void testOnEntryExitScriptDesigner() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-OnEntryExitDesignerScriptProcess.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-OnEntryExitDesignerScriptProcess.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());

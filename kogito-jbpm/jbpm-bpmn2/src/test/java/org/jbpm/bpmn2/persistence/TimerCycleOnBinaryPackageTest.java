@@ -16,7 +16,7 @@ import org.drools.core.event.BeforeActivationFiredEvent;
 import org.drools.core.event.RuleFlowGroupActivatedEvent;
 import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.jbpm.bpmn2.JbpmTestCase;
+import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.junit.After;
@@ -30,7 +30,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
 
-public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
+public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
 
     private StatefulKnowledgeSession ksession;
 
@@ -197,7 +197,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmTestCase {
 
     @Test
     public void testStartTimerCycleFromClasspathDRL() throws Exception {
-        KieBase kbase = createKnowledgeBase("rules-timer.drl");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("rules-timer.drl");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         int sessionId = ksession.getId();

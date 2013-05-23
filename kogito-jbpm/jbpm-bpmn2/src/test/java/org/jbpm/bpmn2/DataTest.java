@@ -49,7 +49,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 @RunWith(Parameterized.class)
-public class DataTest extends JbpmTestCase {
+public class DataTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
@@ -80,7 +80,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testImport() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-Import.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-Import.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("Import");
         assertProcessInstanceCompleted(processInstance);
@@ -198,7 +198,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataInputAssociations() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataInputAssociations.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {
@@ -227,7 +227,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataInputAssociationsWithStringObject() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataInputAssociations-string-object.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-string-object.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {
@@ -348,7 +348,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataInputAssociationsWithXMLLiteral() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataInputAssociations-xml-literal.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-xml-literal.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {
@@ -417,7 +417,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataOutputAssociationsforHumanTask() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataOutputAssociations-HumanTask.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations-HumanTask.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {
@@ -466,7 +466,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataOutputAssociations() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataOutputAssociations.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {
@@ -502,7 +502,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataOutputAssociationsXmlNode() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataOutputAssociations-xml-node.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations-xml-node.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {

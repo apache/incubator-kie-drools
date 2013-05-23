@@ -64,6 +64,7 @@ import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
@@ -73,7 +74,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RunWith(Parameterized.class)
-public class ActivityTest extends JbpmTestCase {
+public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
@@ -83,8 +84,8 @@ public class ActivityTest extends JbpmTestCase {
 
     private Logger logger = LoggerFactory.getLogger(ActivityTest.class);
 
-    private StatefulKnowledgeSession ksession;
-    private StatefulKnowledgeSession ksession2;
+    private KieSession ksession;
+    private KieSession ksession2;
 
     public ActivityTest(boolean persistence) throws Exception {
         super(persistence);
@@ -186,7 +187,7 @@ public class ActivityTest extends JbpmTestCase {
 
     @Test
     public void testRuleTask() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-RuleTask.bpmn2",
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTask.bpmn2",
                 "BPMN2-RuleTask.drl");
         ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
@@ -202,7 +203,7 @@ public class ActivityTest extends JbpmTestCase {
 
     @Test
     public void testRuleTask2() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-RuleTask2.bpmn2",
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTask2.bpmn2",
                 "BPMN2-RuleTask2.drl");
         ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
@@ -221,7 +222,7 @@ public class ActivityTest extends JbpmTestCase {
     @Test
     @RequirePersistence(false)
     public void testRuleTaskWithFacts() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-RuleTaskWithFact.bpmn2",
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTaskWithFact.bpmn2",
                 "BPMN2-RuleTask3.drl");
         ksession = createKnowledgeSession(kbase);
 
@@ -291,7 +292,7 @@ public class ActivityTest extends JbpmTestCase {
     @Test
     @RequirePersistence
     public void testRuleTaskWithFactsWithPersistence() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-RuleTaskWithFact.bpmn2",
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTaskWithFact.bpmn2",
                 "BPMN2-RuleTask3.drl");
         ksession = createKnowledgeSession(kbase);
 
@@ -370,7 +371,7 @@ public class ActivityTest extends JbpmTestCase {
 
     @Test
     public void testRuleTaskAcrossSessions() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-RuleTask.bpmn2",
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTask.bpmn2",
                 "BPMN2-RuleTask.drl");
         ksession = createKnowledgeSession(kbase);
         ksession2 = createKnowledgeSession(kbase);
@@ -400,7 +401,7 @@ public class ActivityTest extends JbpmTestCase {
     @Test
     public void testUserTask() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-UserTask.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -485,7 +486,7 @@ public class ActivityTest extends JbpmTestCase {
 
     @Test
     public void testCallActivityByName() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-CallActivityByName.bpmn2",
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-CallActivityByName.bpmn2",
                 "BPMN2-CallActivitySubProcess.bpmn2",
                 "BPMN2-CallActivitySubProcessV2.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -612,7 +613,7 @@ public class ActivityTest extends JbpmTestCase {
 
     @Test
     public void testAdHocSubProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-AdHocSubProcess.bpmn2",
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-AdHocSubProcess.bpmn2",
                 "BPMN2-AdHocSubProcess.drl");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
@@ -639,7 +640,7 @@ public class ActivityTest extends JbpmTestCase {
 
     @Test
     public void testAdHocSubProcessAutoComplete() throws Exception {
-        KieBase kbase = createKnowledgeBase(
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "BPMN2-AdHocSubProcessAutoComplete.bpmn2",
                 "BPMN2-AdHocSubProcess.drl");
         ksession = createKnowledgeSession(kbase);
@@ -666,7 +667,7 @@ public class ActivityTest extends JbpmTestCase {
 
     @Test
     public void testAdHocSubProcessAutoCompleteDynamicTask() throws Exception {
-        KieBase kbase = createKnowledgeBase(
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "BPMN2-AdHocSubProcessAutoComplete.bpmn2",
                 "BPMN2-AdHocSubProcess.drl");
         ksession = createKnowledgeSession(kbase);
@@ -705,7 +706,7 @@ public class ActivityTest extends JbpmTestCase {
     @Test
     public void testAdHocSubProcessAutoCompleteDynamicSubProcess()
             throws Exception {
-        KieBase kbase = createKnowledgeBase(
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "BPMN2-AdHocSubProcessAutoComplete.bpmn2",
                 "BPMN2-AdHocSubProcess.drl", "BPMN2-MinimalProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -738,7 +739,7 @@ public class ActivityTest extends JbpmTestCase {
     @Test
     public void testAdHocSubProcessAutoCompleteDynamicSubProcess2()
             throws Exception {
-        KieBase kbase = createKnowledgeBase(
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "BPMN2-AdHocSubProcessAutoComplete.bpmn2",
                 "BPMN2-AdHocSubProcess.drl", "BPMN2-ServiceProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
@@ -887,7 +888,7 @@ public class ActivityTest extends JbpmTestCase {
     @Test
     @RequirePersistence(false)
     public void testBusinessRuleTask() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-BusinessRuleTask.bpmn2",
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BusinessRuleTask.bpmn2",
                 "BPMN2-BusinessRuleTask.drl");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(new RuleAwareProcessEventLister());
@@ -902,7 +903,7 @@ public class ActivityTest extends JbpmTestCase {
     @Test
     @RequirePersistence(true)
     public void testBusinessRuleTaskWithPersistence() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-BusinessRuleTask.bpmn2",
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-BusinessRuleTask.bpmn2",
                 "BPMN2-BusinessRuleTask.drl");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(new RuleAwareProcessEventLister());
@@ -920,7 +921,7 @@ public class ActivityTest extends JbpmTestCase {
 
     @Test
     public void testBusinessRuleTaskDynamic() throws Exception {
-        KieBase kbase = createKnowledgeBase(
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "BPMN2-BusinessRuleTaskDynamic.bpmn2",
                 "BPMN2-BusinessRuleTask.drl");
         ksession = createKnowledgeSession(kbase);
@@ -939,7 +940,7 @@ public class ActivityTest extends JbpmTestCase {
     @Test
     public void testBusinessRuleTaskWithDataInputsWithPersistence()
             throws Exception {
-        KieBase kbase = createKnowledgeBase(
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
                 "BPMN2-BusinessRuleTaskWithDataInputs.bpmn2",
                 "BPMN2-BusinessRuleTaskWithDataInput.drl");
         ksession = createKnowledgeSession(kbase);

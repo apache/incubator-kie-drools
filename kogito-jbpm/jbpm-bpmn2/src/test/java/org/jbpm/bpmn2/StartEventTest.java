@@ -33,6 +33,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -40,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RunWith(Parameterized.class)
-public class StartEventTest extends JbpmTestCase {
+public class StartEventTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
@@ -50,7 +51,7 @@ public class StartEventTest extends JbpmTestCase {
 
     private Logger logger = LoggerFactory.getLogger(StartEventTest.class);
 
-    private StatefulKnowledgeSession ksession;
+    private KieSession ksession;
     
     public StartEventTest(boolean persistence) {
         super(persistence);
@@ -76,7 +77,7 @@ public class StartEventTest extends JbpmTestCase {
 
     @Test
     public void testConditionalStart() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ConditionalStart.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ConditionalStart.bpmn2");
         ksession = createKnowledgeSession(kbase);
         Person person = new Person();
         person.setName("jack");

@@ -3,7 +3,7 @@ package org.jbpm.bpmn2.persistence;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.jbpm.bpmn2.JbpmTestCase;
+import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
@@ -30,7 +30,7 @@ import org.kie.api.io.Resource;
 /**
  * This is a sample file to launch a process.
  */
-public class DynamicProcessTest extends JbpmTestCase {
+public class DynamicProcessTest extends JbpmBpmn2TestCase {
 
     @BeforeClass
     public static void setup() throws Exception {

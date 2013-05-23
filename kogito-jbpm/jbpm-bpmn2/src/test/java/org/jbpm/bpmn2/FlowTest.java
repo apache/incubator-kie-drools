@@ -60,7 +60,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 @RunWith(Parameterized.class)
-public class FlowTest extends JbpmTestCase {
+public class FlowTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
@@ -70,7 +70,7 @@ public class FlowTest extends JbpmTestCase {
 
     private Logger logger = LoggerFactory.getLogger(FlowTest.class);
 
-    private StatefulKnowledgeSession ksession;
+    private KieSession ksession;
 
     public FlowTest(boolean persistence) {
         super(persistence);
@@ -504,7 +504,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsProcessWithORGateway()
             throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcessWithORgateway.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsProcessWithORgateway.bpmn2");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
@@ -604,7 +604,7 @@ public class FlowTest extends JbpmTestCase {
     
     @Test
     public void testMultiInstanceLoopCharacteristicsProcess2() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceProcessWithOutputOnTask.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceProcessWithOutputOnTask.bpmn2");
         ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler handler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
@@ -650,7 +650,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsProcessWithOutput()
             throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutput.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutput.bpmn2");
         ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         List<String> myList = new ArrayList<String>();
@@ -670,7 +670,7 @@ public class FlowTest extends JbpmTestCase {
     @Test
     public void testMultiInstanceLoopCharacteristicsTaskWithOutput()
             throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutput.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutput.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new SystemOutWorkItemHandler());
@@ -691,7 +691,7 @@ public class FlowTest extends JbpmTestCase {
 
     @Test
     public void testMultiInstanceLoopCharacteristicsTask() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsTask.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTask.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new SystemOutWorkItemHandler());
@@ -821,7 +821,7 @@ public class FlowTest extends JbpmTestCase {
     
     @Test
     public void testExclusiveSplitDefaultNoCondition() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefaultNoCondition.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ExclusiveSplitDefaultNoCondition.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("com.sample.test");
         assertProcessInstanceFinished(processInstance, ksession);
