@@ -487,6 +487,15 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return false;
     }
 
+    @Override
+    public MvelConstraint cloneIfInUse() {
+        MvelConstraint clone = (MvelConstraint)super.cloneIfInUse();
+        if ( clone != this) {
+            clone.conditionEvaluator = null;
+        }
+        return clone;
+    }
+
     public MvelConstraint clone() {
         Declaration[] clonedDeclarations = new Declaration[declarations.length];
         System.arraycopy(declarations, 0, clonedDeclarations, 0, declarations.length);

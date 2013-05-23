@@ -46,6 +46,10 @@ public class EmptyBetaConstraints
     public EmptyBetaConstraints() {
     }
 
+    public EmptyBetaConstraints cloneIfInUse() {
+        return this;
+    }
+
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     }
 

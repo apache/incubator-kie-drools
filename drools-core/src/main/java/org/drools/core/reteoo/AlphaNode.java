@@ -82,7 +82,7 @@ public class AlphaNode extends ObjectSource
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
-        this.constraint = constraint;
+        this.constraint = constraint.cloneIfInUse();
 
         initDeclaredMask(context);
     }

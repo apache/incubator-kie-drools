@@ -26,6 +26,7 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 
@@ -40,7 +41,14 @@ public class SingleNonIndexSkipBetaConstraints
     public SingleNonIndexSkipBetaConstraints() {
 
     }
-    
+
+    public SingleNonIndexSkipBetaConstraints cloneIfInUse() {
+        if (constraint instanceof MutableTypeConstraint && ((MutableTypeConstraint)constraint).setInUse()) {
+            return new SingleNonIndexSkipBetaConstraints(constraints.cloneIfInUse());
+        }
+        return this;
+    }
+
     public SingleNonIndexSkipBetaConstraints(SingleBetaConstraints constraints) {
         this.constraints = constraints;
         this.constraint = constraints.getConstraint();

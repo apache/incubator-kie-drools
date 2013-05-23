@@ -26,6 +26,7 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 
@@ -50,6 +51,13 @@ public class QuadroupleNonIndexSkipBetaConstraints
         this.constraint1 = constraint[1];
         this.constraint2 = constraint[2];
         this.constraint3 = constraint[3];
+    }
+
+    public QuadroupleNonIndexSkipBetaConstraints cloneIfInUse() {
+        if (constraint0 instanceof MutableTypeConstraint && ((MutableTypeConstraint)constraint0).setInUse()) {
+            return new QuadroupleNonIndexSkipBetaConstraints(constraints.cloneIfInUse());
+        }
+        return this;
     }
 
     public void init(BuildContext context, short betaNodeType) {

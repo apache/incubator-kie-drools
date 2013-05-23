@@ -24,12 +24,16 @@ public interface BetaNodeFieldConstraint
     extends
     Constraint {
 
-    public boolean isAllowedCachedLeft(ContextEntry context,
-                                       InternalFactHandle handle);
+    boolean isAllowedCachedLeft(ContextEntry context,
+                                InternalFactHandle handle);
 
-    public boolean isAllowedCachedRight(LeftTuple tuple,
-                                        ContextEntry context);
+    boolean isAllowedCachedRight(LeftTuple tuple,
+                                 ContextEntry context);
 
-    public ContextEntry createContextEntry();
+    ContextEntry createContextEntry();
 
+    /**
+     * Clone this constraints only if it is already used by a different node, otherwise returns this
+     */
+    BetaNodeFieldConstraint cloneIfInUse();
 }

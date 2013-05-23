@@ -109,6 +109,11 @@ public class QueryNameConstraint implements
     }
 
     @Override
+    public QueryNameConstraint cloneIfInUse() {
+        return this;
+    }
+
+    @Override
     public int hashCode() {
         return queryName.hashCode();
     }

@@ -181,4 +181,8 @@ public class TupleStartEqualsConstraint
     public ConstraintType getType() {
         return ConstraintType.BETA;
     }
+
+    public BetaNodeFieldConstraint cloneIfInUse() {
+        return this;
+    }
 }

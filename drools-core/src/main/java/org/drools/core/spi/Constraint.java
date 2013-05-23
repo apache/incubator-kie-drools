@@ -52,7 +52,7 @@ public interface Constraint
      * Clones the constraint
      * @return
      */
-    public Constraint clone();
+    Constraint clone();
 
     /**
      * Returns the type of the constraint, either ALPHA, BETA or UNKNOWN

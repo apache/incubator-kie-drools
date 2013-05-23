@@ -1,6 +1,7 @@
 package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -18,17 +19,23 @@ import static org.drools.core.util.index.IndexUtil.isIndexableForNode;
 public abstract class MultipleBetaConstraint implements BetaConstraints {
     protected BetaNodeFieldConstraint[] constraints;
     protected boolean[]                 indexed;
-    private IndexPrecedenceOption       indexPrecedenceOption;
-    private transient boolean           disableIndexing;
+    protected IndexPrecedenceOption     indexPrecedenceOption;
+    protected transient boolean         disableIndexing;
 
     public MultipleBetaConstraint() { }
 
     public MultipleBetaConstraint( BetaNodeFieldConstraint[] constraints,
                                    RuleBaseConfiguration conf,
                                    boolean disableIndexing) {
+        this(constraints, conf.getIndexPrecedenceOption(), disableIndexing);
+    }
+
+    protected MultipleBetaConstraint( BetaNodeFieldConstraint[] constraints,
+                                      IndexPrecedenceOption indexPrecedenceOption,
+                                      boolean disableIndexing) {
         this.constraints = constraints;
+        this.indexPrecedenceOption = indexPrecedenceOption;
         this.disableIndexing = disableIndexing;
-        this.indexPrecedenceOption = conf.getIndexPrecedenceOption();
     }
 
     public final void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

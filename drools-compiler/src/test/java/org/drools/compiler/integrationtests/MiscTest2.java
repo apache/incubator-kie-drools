@@ -31,8 +31,12 @@ import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
@@ -1897,5 +1901,44 @@ public class MiscTest2 extends CommonTestMethodBase {
         ks.halt();
 
         assertEquals( N, list.size() );
+    }
+
+    @Test
+    public void testHelloWorld() throws Exception {
+        // DROOLS-145
+        String drl = "package org.drools.test\n" +
+                     "declare Message\n" +
+                     "   message : String\n" +
+                     "end\n" +
+                     "rule R1 when\n" +
+                     "   $m : Message( message == \"Hello World\" )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", drl);
+
+        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals(0, builder.getResults().getMessages().size());
+        ks.getRepository().addKieModule(builder.getKieModule());
+
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+
+        FactType messageType = ksession.getKieBase().getFactType("org.drools.test", "Message");
+        Object message = messageType.newInstance();
+        messageType.set(message, "message", "Hello World");
+
+        ksession.insert(message);
+        assertEquals( 1, ksession.fireAllRules() );
+
+        KieSession ksession2 = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+
+        FactType messageType2 = ksession2.getKieBase().getFactType("org.drools.test", "Message");
+        Object message2 = messageType2.newInstance();
+        messageType.set(message2, "message", "Hello World");
+
+        ksession2.insert(message2);
+        assertEquals( 1, ksession2.fireAllRules() );
     }
 }

@@ -21,8 +21,10 @@ import java.util.List;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.kie.internal.conf.IndexPrecedenceOption;
 
 import static org.drools.core.util.index.IndexUtil.isIndexableForNode;
 
@@ -45,6 +47,24 @@ public class DoubleBetaConstraints extends MultipleBetaConstraint {
         super(constraints, conf, disableIndexing);
     }
 
+    private DoubleBetaConstraints( BetaNodeFieldConstraint[] constraints,
+                                   IndexPrecedenceOption indexPrecedenceOption,
+                                   boolean disableIndexing) {
+        super(constraints, indexPrecedenceOption, disableIndexing);
+    }
+
+    public DoubleBetaConstraints cloneIfInUse() {
+        if (constraints[0] instanceof MutableTypeConstraint && ((MutableTypeConstraint)constraints[0]).setInUse()) {
+            BetaNodeFieldConstraint[] clonedConstraints = new BetaNodeFieldConstraint[constraints.length];
+            for (int i = 0; i < constraints.length; i++) {
+                clonedConstraints[i] = constraints[i].cloneIfInUse();
+            }
+            DoubleBetaConstraints clone = new DoubleBetaConstraints(clonedConstraints, indexPrecedenceOption, disableIndexing);
+            clone.indexed = indexed;
+            return clone;
+        }
+        return this;
+    }
 
     /* (non-Javadoc)
      * @see org.kie.common.BetaNodeConstraints#updateFromTuple(org.kie.reteoo.ReteTuple)
