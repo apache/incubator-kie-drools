@@ -47,7 +47,11 @@ public class MessageImpl implements Message {
                 level = Level.INFO;
         }
         path = result.getResource().getSourcePath();
-        line = result.getLines()[0];
+        if( result.getLines().length > 0 ) { 
+            line = result.getLines()[0];
+        } else {
+            line = -1;
+        }
         column = 0;
         text = result.getMessage();
     }
