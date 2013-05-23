@@ -27,7 +27,7 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
-import org.jbpm.bpmn2.handler.SignallingTaskHandlerWrapper;
+import org.jbpm.bpmn2.handler.SignallingTaskHandlerDecorator;
 import org.jbpm.bpmn2.objects.ExceptionService;
 import org.jbpm.bpmn2.objects.MyError;
 import org.jbpm.bpmn2.objects.Person;
@@ -47,6 +47,7 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -59,7 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RunWith(Parameterized.class)
-public class IntermediateEventTest extends JbpmTestCase {
+public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
@@ -70,7 +71,7 @@ public class IntermediateEventTest extends JbpmTestCase {
     private Logger logger = LoggerFactory
             .getLogger(IntermediateEventTest.class);
 
-    private StatefulKnowledgeSession ksession;
+    private KieSession ksession;
     
     public IntermediateEventTest(boolean persistence) {
         super(persistence);
@@ -1173,7 +1174,7 @@ public class IntermediateEventTest extends JbpmTestCase {
 
     @Test
     public void testTimerBoundaryEventDateISO() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDateISO.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-TimerBoundaryEventDateISO.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
                 new DoNothingWorkItemHandler());
@@ -1376,7 +1377,7 @@ public class IntermediateEventTest extends JbpmTestCase {
 
     @Test
     public void testIntermediateCatchEventTimerDateISO() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDateISO.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-IntermediateCatchEventTimerDateISO.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new DoNothingWorkItemHandler());
@@ -1746,40 +1747,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-ExceptionServiceProcess-ErrorSignalling.bpmn2");
         ksession = createKnowledgeSession(kbase);
 
-        // Setup
-        String eventType = "Error-code";
-        SignallingTaskHandlerWrapper signallingTaskWrapper = new SignallingTaskHandlerWrapper(
-                ServiceTaskHandler.class, eventType, ksession);
-        signallingTaskWrapper
-                .setWorkItemExceptionParameterName(ExceptionService.exceptionParameterName);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
-                signallingTaskWrapper);
-
-        Object[] caughtEventObjectHolder = new Object[1];
-        caughtEventObjectHolder[0] = null;
-        ExceptionService.setCaughtEventObjectHolder(caughtEventObjectHolder);
-
-        // Start process
-        Map<String, Object> params = new HashMap<String, Object>();
-        String input = "this is my service input";
-        params.put("serviceInputItem", input);
-        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession
-                .startProcess("ServiceProcess", params);
-
-        // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
-        assertTrue("Event was not passed to Event Subprocess",
-                caughtEventObjectHolder[0] != null
-                        && caughtEventObjectHolder[0] instanceof WorkItem);
-        WorkItem workItem = (WorkItem) caughtEventObjectHolder[0];
-        Object throwObj = workItem
-                .getParameter(ExceptionService.exceptionParameterName);
-        assertTrue("WorkItem doesn't contain Throwable",
-                throwObj instanceof Throwable);
-        assertTrue("Exception message does not match service input.",
-                ((Throwable) throwObj).getMessage().endsWith(input));
-
-        // Complete process
-        assertProcessInstanceAborted(processInstance);
+        StandaloneBPMNProcessTest.runTestErrorSignallingExceptionServiceTask(ksession);
     }
 
     @Test
@@ -1787,37 +1755,7 @@ public class IntermediateEventTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-ExceptionServiceProcess-Signalling.bpmn2");
         ksession = createKnowledgeSession(kbase);
 
-        // Setup
-        String eventType = "exception-signal";
-        SignallingTaskHandlerWrapper signallingTaskWrapper = new SignallingTaskHandlerWrapper(ServiceTaskHandler.class, eventType, ksession);
-        signallingTaskWrapper.setWorkItemExceptionParameterName(ExceptionService.exceptionParameterName);
-        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", signallingTaskWrapper);
-       
-        Object [] caughtEventObjectHolder = new Object[1];
-        caughtEventObjectHolder[0] = null;
-        ExceptionService.setCaughtEventObjectHolder(caughtEventObjectHolder);
-        
-        // Start process
-        Map<String, Object> params = new HashMap<String, Object>();
-        String input = "this is my service input";
-        params.put("serviceInputItem", input );
-        ProcessInstance processInstance = ksession.startProcess("ServiceProcess", params);
-
-        // Check that event was passed to Event SubProcess (and grabbed by WorkItemHandler);
-        assertTrue( "Event was not passed to Event Subprocess", caughtEventObjectHolder[0] != null && caughtEventObjectHolder[0] instanceof WorkItem );
-        WorkItem workItem = (WorkItem) caughtEventObjectHolder[0];
-        Object throwObj = workItem.getParameter(ExceptionService.exceptionParameterName);
-        assertTrue( "WorkItem doesn't contain Throwable", throwObj instanceof Throwable );
-        assertTrue("Exception message does not match service input.", ((Throwable) throwObj).getMessage().endsWith(input) );
-
-        // Complete process
-        assertEquals( "Process instance is not active.", ProcessInstance.STATE_ACTIVE, processInstance.getState() );
-        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-        
-        processInstance = ksession.getProcessInstance(processInstance.getId());
-        if( processInstance != null ) { 
-            assertEquals( "Process instance is not completed.", ProcessInstance.STATE_COMPLETED, processInstance.getState() );
-        } // otherwise, persistence use => processInstance == null => process is completed
+        StandaloneBPMNProcessTest.runTestSignallingExceptionServiceTask(ksession);
     }
     
     @Test

@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +35,7 @@ import javax.transaction.Transaction;
 
 import junit.framework.Assert;
 
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.LogEvent;
@@ -43,6 +45,11 @@ import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.util.DroolsStreamUtils;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
+import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
+import org.jbpm.bpmn2.xml.BPMNSemanticModule;
+import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
+import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.process.ProcessBaseFactoryService;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.audit.event.ExtendedRuleFlowLogEvent;
@@ -51,6 +58,7 @@ import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.AfterClass;
 import org.junit.Assume;
@@ -67,6 +75,7 @@ import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Node;
+import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -78,6 +87,9 @@ import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -85,6 +97,7 @@ import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -253,14 +266,39 @@ public abstract class JbpmTestCase extends Assert {
     }
 
     protected KieBase createKnowledgeBase(String... process) throws Exception {
-        Resource[] resources = new Resource[process.length];
+        List<Resource> resources = new ArrayList<Resource>();
         for (int i = 0; i < process.length; ++i) {
             String p = process[i];
-            resources[i] = (ResourceFactory.newClassPathResource(p));
+            resources.addAll(buildAndDumpBPMN2Process(process[i]));
         }
-        return createKnowledgeBaseFromResources(resources);
+        return createKnowledgeBaseFromResources(resources.toArray(new Resource[resources.size()]));
     }
 
+    // Important to test this since persistence relies on this
+    protected List<Resource> buildAndDumpBPMN2Process(String process) throws SAXException, IOException { 
+        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new ProcessBaseFactoryService());
+        KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        ((PackageBuilderConfiguration) conf).initSemanticModules();
+        ((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
+        ((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
+        
+        Resource classpathResource = ResourceFactory.newClassPathResource(process);
+        // Dump and reread
+        XmlProcessReader processReader 
+            = new XmlProcessReader(((PackageBuilderConfiguration) conf).getSemanticModules(), getClass().getClassLoader());
+        List<Process> processes = processReader.read(NewJbpmBpmn2TestBase.class.getResourceAsStream("/" + process));
+        List<Resource> resources = new ArrayList<Resource>();
+        for (Process p : processes) {
+            RuleFlowProcess ruleFlowProcess = (RuleFlowProcess) p;
+            String dumpedString = XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess);
+            Resource resource = ResourceFactory.newReaderResource(new StringReader(dumpedString));
+            resource.setSourcePath(classpathResource.getSourcePath());
+            resource.setTargetPath(classpathResource.getTargetPath());
+            resources.add(resource);
+        }
+        return resources;
+    }
+    
     protected KieBase createKnowledgeBaseFromResources(Resource... process)
             throws Exception {
 

@@ -11,10 +11,9 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_stringItem" structureRef="String" />
+  <itemDefinition id="_stringItem" structureRef="java.lang.String" />
   
-  <itemDefinition id="_messageType" structureRef="java.lang.String"/>
-  <message id="_message" itemRef="_messageType" />
+  <message id="_message" itemRef="_stringItem" />
   <interface id="_serviceInterface" name="org.jbpm.bpmn2.objects.ExceptionService">
     <operation id="_serviceOperation" name="throwException">
       <inMessageRef>_message</inMessageRef>
