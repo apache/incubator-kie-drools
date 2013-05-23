@@ -19,13 +19,13 @@ import org.slf4j.LoggerFactory;
  * <ul>
  * <li>See the {@link WorkItemExceptionInfo} class for more information.</li>
  * <li>The list of {@link WorkItemExceptionInfo} classes is available via the
- * {@link LoggingTaskHandlerWrapper#getWorkItemExceptionInfoList()} method.</li>
+ * {@link LoggingTaskHandlerDecorator#getWorkItemExceptionInfoList()} method.</li>
  * </ul>
  * 
  * </p>After the exception info has been saved, this class then logs a message
  * the appropriate information via {@link Logger#warn(String)}. The message
  * logged is configurable: see
- * {@link LoggingTaskHandlerWrapper#setLoggedMessageFormat(String)} for more
+ * {@link LoggingTaskHandlerDecorator#setLoggedMessageFormat(String)} for more
  * information.
  * 
  * </p>This class is thread-safe, although it does not take any responsibility
@@ -33,9 +33,9 @@ import org.slf4j.LoggerFactory;
  * multiple threads, please make sure the the {@link WorkItemHandler} instance
  * wrapped is also thread-safe.
  */
-public class LoggingTaskHandlerWrapper extends AbstractExceptionHandlingTaskHandler {
+public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(LoggingTaskHandlerWrapper.class);
+    private static Logger logger = LoggerFactory.getLogger(LoggingTaskHandlerDecorator.class);
     private int loggedExceptionsLimit = 100;
     private Queue<WorkItemExceptionInfo> exceptionInfoList = new ArrayDeque<WorkItemExceptionInfo>(loggedExceptionsLimit);
 
@@ -44,7 +44,7 @@ public class LoggingTaskHandlerWrapper extends AbstractExceptionHandlingTaskHand
     private boolean printStackTrace = true;
 
     /**
-     * Constructs an {@link LoggingTaskHandlerWrapper} instance that wraps a
+     * Constructs an {@link LoggingTaskHandlerDecorator} instance that wraps a
      * created instance of the {@link WorkItemHandler} class given. This
      * instance will only keep the given number of {@link WorkItemExceptionInfo}
      * instances instead of the default 100.
@@ -52,39 +52,39 @@ public class LoggingTaskHandlerWrapper extends AbstractExceptionHandlingTaskHand
      * @param originalTaskHandlerClass
      * @param logLimit
      */
-    public LoggingTaskHandlerWrapper(Class<? extends WorkItemHandler> originalTaskHandlerClass, int logLimit) {
+    public LoggingTaskHandlerDecorator(Class<? extends WorkItemHandler> originalTaskHandlerClass, int logLimit) {
         super(originalTaskHandlerClass);
         initializeExceptionInfoList(logLimit);
     }
 
     /**
-     * Constructs an {@link LoggingTaskHandlerWrapper} instance that wraps a
+     * Constructs an {@link LoggingTaskHandlerDecorator} instance that wraps a
      * created instance of the {@link WorkItemHandler} class given. Only
      * information about the last 100 exceptions will be held in the list
      * available from
-     * {@link LoggingTaskHandlerWrapper#getWorkItemExceptionInfoList()};
+     * {@link LoggingTaskHandlerDecorator#getWorkItemExceptionInfoList()};
      * 
      * @param originalTaskHandlerClass
      */
-    public LoggingTaskHandlerWrapper(Class<? extends WorkItemHandler> originalTaskHandlerClass) {
+    public LoggingTaskHandlerDecorator(Class<? extends WorkItemHandler> originalTaskHandlerClass) {
         super(originalTaskHandlerClass);
     }
 
     /**
-     * Constructs a {@link LoggingTaskHandlerWrapper} instance that wraps the
+     * Constructs a {@link LoggingTaskHandlerDecorator} instance that wraps the
      * given {@link WorkItemHandler} instance. This instance will only keep a
      * refere
      * 
      * @param originalTaskHandler
      */
-    public LoggingTaskHandlerWrapper(WorkItemHandler originalTaskHandler) {
+    public LoggingTaskHandlerDecorator(WorkItemHandler originalTaskHandler) {
         super(originalTaskHandler);
     }
 
     /**
      * Sets the {@link MessageFormat} string to be used to format the log
      * messages. If this method is used, it's a good idea to also use the
-     * {@link LoggingTaskHandlerWrapper#setLoggedMessageInput(List)} method.
+     * {@link LoggingTaskHandlerDecorator#setLoggedMessageInput(List)} method.
      * 
      * </p>The default {@link MessageFormat} string used is one of the
      * following:
@@ -125,10 +125,10 @@ public class LoggingTaskHandlerWrapper extends AbstractExceptionHandlingTaskHand
 
     /**
      * Sets the list of parameter types used for the log message format that is set in 
-     * {@link LoggingTaskHandlerWrapper#setLoggedMessageFormat(String)}. 
+     * {@link LoggingTaskHandlerDecorator#setLoggedMessageFormat(String)}. 
      * 
      * </p>The order of the {@link InputParameter} value in the list corresponds to the {@link MessageFormat} number 
-     * used in the String given to {@link LoggingTaskHandlerWrapper#setLoggedMessageFormat(String)}. 
+     * used in the String given to {@link LoggingTaskHandlerDecorator#setLoggedMessageFormat(String)}. 
      * 
      * </p>See {@link InputParameter} for more information.
      * 
@@ -307,7 +307,7 @@ public class LoggingTaskHandlerWrapper extends AbstractExceptionHandlingTaskHand
 
     /**
      * Type of input parameter that will be used in the {@link MessageFormat} string set in 
-     * {@link LoggingTaskHandlerWrapper#setLoggedMessageFormat(String)}.
+     * {@link LoggingTaskHandlerDecorator#setLoggedMessageFormat(String)}.
      * 
      * <p>Work items are referred to in the following table, are {@link WorkItem} instances
      * that were being processed when the exception was thrown. 
