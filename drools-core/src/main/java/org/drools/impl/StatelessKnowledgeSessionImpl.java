@@ -286,6 +286,7 @@ public class StatelessKnowledgeSessionImpl
         } finally {
             ((StatefulKnowledgeSessionImpl) ksession).session.endBatchExecution();
             ksession.dispose();
+            initialized = false;
         }
     }
 
@@ -296,6 +297,7 @@ public class StatelessKnowledgeSessionImpl
             ksession.fireAllRules( );
         } finally {
             ksession.dispose();
+            initialized = false;
         }
     }
 
@@ -308,6 +310,7 @@ public class StatelessKnowledgeSessionImpl
             ksession.fireAllRules( );
         } finally {
             ksession.dispose();
+            initialized = false;
         }
     }
     
