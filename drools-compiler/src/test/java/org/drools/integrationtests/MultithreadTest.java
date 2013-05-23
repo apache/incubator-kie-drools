@@ -30,7 +30,11 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.StockTick;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.conf.EventProcessingOption;
+import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -212,6 +216,59 @@ public class MultithreadTest extends CommonTestMethodBase {
         assertTrue(success);
         ksession.dispose();
     }
+
+
+    @Test( timeout = 10000 )
+    public void testClassLoaderRace() throws InterruptedException {
+
+        String drl = "package org.drools.integrationtests;\n" +
+                     "" +
+                     "rule \"average temperature\"\n" +
+                     "when\n" +
+                     " $avg := Number( ) from accumulate ( " +
+                     "      $x : Integer ( ) " +
+                     "      average ($x) )\n" +
+                     "then\n" +
+                     "  System.out.println( $avg );\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBaseConfiguration kbconfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        Thread t = new Thread() {
+            public void run()
+            { session.fireUntilHalt(); }
+
+        };
+        t.start();
+
+        session.fireAllRules();
+
+
+        for ( int j = 0; j < 100; j++ ) {
+            session.insert( j );
+        }
+
+        try {
+            Thread.sleep( 1000 );
+            System.out.println( "Halting .." );
+            session.halt();
+        } catch ( Exception e ) {
+            fail( e.getMessage() );
+        }
+    }
+
 
     // FIXME
 //    

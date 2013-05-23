@@ -42,9 +42,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassFieldAccessorStore;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.spi.Constraint;
@@ -565,6 +566,7 @@ public class JavaDialectRuntimeData
 
         protected JavaDialectRuntimeData store;
         CompositeClassLoader             rootClassLoader;
+        protected Lock                   lock = new ReentrantLock();
 
         public PackageClassLoader(JavaDialectRuntimeData store,
                 CompositeClassLoader rootClassLoader) {
@@ -574,14 +576,14 @@ public class JavaDialectRuntimeData
         }
 
         public Class<?> loadClass( final String name,
-                final boolean resolve ) throws ClassNotFoundException {
+                                   final boolean resolve ) throws ClassNotFoundException {
             Class<?> cls = fastFindClass( name );
 
             if (cls == null) {
                 final CompositeClassLoader parent = (CompositeClassLoader) getParent();
                 cls = parent.loadClass( name,
-                                        resolve,
-                                        this );
+                        resolve,
+                        this );
             }
 
             if (cls == null) {
@@ -592,36 +594,39 @@ public class JavaDialectRuntimeData
         }
 
         public Class<?> fastFindClass( final String name ) {
+            lock.lock();
             Class<?> cls = findLoadedClass( name );
 
             if (cls == null) {
-                final byte[] clazzBytes = this.store.read( convertClassToResourcePath( name ) );
-                if (clazzBytes != null) {
-                    String pkgName = name.substring( 0,
-                                                     name.lastIndexOf( '.' ) );
-                    if (getPackage( pkgName ) == null) {
-                        definePackage( pkgName,
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       null );
+                    final byte[] clazzBytes = this.store.read( convertClassToResourcePath( name ) );
+                    if (clazzBytes != null) {
+                        String pkgName = name.substring( 0,
+                                                         name.lastIndexOf( '.' ) );
+                        if ( getPackage( pkgName ) == null ) {
+                            definePackage( pkgName,
+                                           "",
+                                           "",
+                                           "",
+                                           "",
+                                           "",
+                                           "",
+                                           null );
+                        }
+
+                        cls = defineClass( name,
+                                           clazzBytes,
+                                           0,
+                                           clazzBytes.length,
+                                           PROTECTION_DOMAIN );
                     }
 
-                    cls = defineClass( name,
-                                       clazzBytes,
-                                       0,
-                                       clazzBytes.length,
-                                       PROTECTION_DOMAIN );
+                    if (cls != null) {
+                        resolveClass( cls );
+                    }
                 }
 
-                if (cls != null) {
-                    resolveClass( cls );
-                }
-            }
 
+            lock.unlock();
             return cls;
         }
 
