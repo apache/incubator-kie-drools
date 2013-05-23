@@ -285,8 +285,7 @@ public class StatelessKnowledgeSessionImpl
             }
         } finally {
             ((StatefulKnowledgeSessionImpl) ksession).session.endBatchExecution();
-            ksession.dispose();
-            initialized = false;
+            dispose( ksession );
         }
     }
 
@@ -296,8 +295,7 @@ public class StatelessKnowledgeSessionImpl
             ksession.insert( object );
             ksession.fireAllRules( );
         } finally {
-            ksession.dispose();
-            initialized = false;
+            dispose( ksession );
         }
     }
 
@@ -309,13 +307,33 @@ public class StatelessKnowledgeSessionImpl
             }
             ksession.fireAllRules( );
         } finally {
-            ksession.dispose();
-            initialized = false;
+            dispose( ksession );
         }
     }
     
     public Environment getEnvironment() {
         return environment;
     }
+
+    protected void dispose( StatefulKnowledgeSession ksession ) {
+        ReteooWorkingMemory wm = (ReteooWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory();
+
+        for ( org.drools.event.AgendaEventListener listener: wm.getAgendaEventSupport().getEventListeners() ) {
+            this.agendaEventSupport.removeEventListener( listener );
+        }
+        for ( org.drools.event.WorkingMemoryEventListener listener: wm.getWorkingMemoryEventSupport().getEventListeners() ) {
+            this.workingMemoryEventSupport.removeEventListener( listener );
+        }
+        InternalProcessRuntime processRuntime = wm.getProcessRuntime();
+        if ( processRuntime != null ) {
+            for ( ProcessEventListener listener: processRuntime.getProcessEventListeners() ) {
+                this.processEventSupport.removeEventListener( listener );
+            }
+        }
+        initialized = false;
+    }
+
+
+
 
 }
