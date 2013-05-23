@@ -159,7 +159,7 @@ public abstract class BetaNode extends LeftTupleSource
             rightInputIsRiaNode = false;
         }
 
-        this.constraints = constraints;
+        setConstraints( constraints );
 
         if ( this.constraints == null ) {
             throw new RuntimeException( "cannot have null constraints, must at least be an instance of EmptyBetaConstraints" );
@@ -294,7 +294,7 @@ public abstract class BetaNode extends LeftTupleSource
         if ( betaCconstraints.length > 0 ) {
             BetaNodeFieldConstraint c = betaCconstraints[0];
             if ( IndexUtil.isIndexable(c, getType()) && ((IndexableConstraint) c).isUnification() ) {
-                this.constraints = this.constraints.getOriginalConstraint();
+                setConstraints( this.constraints.getOriginalConstraint() );
             }
         }
 
@@ -322,13 +322,13 @@ public abstract class BetaNode extends LeftTupleSource
             BetaNodeFieldConstraint c = betaCconstraints[0];
             if ( IndexUtil.isIndexable(c, getType()) && ((IndexableConstraint) c).isUnification() ) {
                 if ( this.constraints instanceof SingleBetaConstraints ) {
-                    this.constraints = new SingleNonIndexSkipBetaConstraints( (SingleBetaConstraints) this.constraints );
+                    setConstraints( new SingleNonIndexSkipBetaConstraints( (SingleBetaConstraints) this.constraints ) );
                 } else if ( this.constraints instanceof DoubleBetaConstraints ) {
-                    this.constraints = new DoubleNonIndexSkipBetaConstraints( (DoubleBetaConstraints) this.constraints );
+                    setConstraints( new DoubleNonIndexSkipBetaConstraints( (DoubleBetaConstraints) this.constraints ) );
                 } else if ( this.constraints instanceof TripleBetaConstraints ) {
-                    this.constraints = new TripleNonIndexSkipBetaConstraints( (TripleBetaConstraints) this.constraints );
+                    setConstraints( new TripleNonIndexSkipBetaConstraints( (TripleBetaConstraints) this.constraints ) );
                 } else if ( this.constraints instanceof QuadroupleBetaConstraints ) {
-                    this.constraints = new QuadroupleNonIndexSkipBetaConstraints( (QuadroupleBetaConstraints) this.constraints );
+                    setConstraints( new QuadroupleNonIndexSkipBetaConstraints( (QuadroupleBetaConstraints) this.constraints ) );
                 }
 
                 this.indexedUnificationJoin = true;
@@ -516,7 +516,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
     
     public void setConstraints(BetaConstraints constraints) {
-        this.constraints = constraints;
+        this.constraints = constraints.cloneIfInUse();
     }
     
 

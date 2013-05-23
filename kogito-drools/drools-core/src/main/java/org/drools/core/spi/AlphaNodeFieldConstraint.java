@@ -24,9 +24,13 @@ public interface AlphaNodeFieldConstraint
     extends
     Constraint {
     
-    public ContextEntry createContextEntry();
+    ContextEntry createContextEntry();
 
-    public boolean isAllowed(InternalFactHandle handle,
+    boolean isAllowed(InternalFactHandle handle,
                              InternalWorkingMemory workingMemory,
                              ContextEntry context);
+    /**
+     * Clone this constraints only if it is already used by a different node, otherwise returns this
+     */
+    AlphaNodeFieldConstraint cloneIfInUse();
 }

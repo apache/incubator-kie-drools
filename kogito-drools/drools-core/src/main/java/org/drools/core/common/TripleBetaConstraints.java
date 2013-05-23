@@ -19,8 +19,10 @@ package org.drools.core.common;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.kie.internal.conf.IndexPrecedenceOption;
 
 import java.util.List;
 
@@ -41,6 +43,25 @@ public class TripleBetaConstraints extends MultipleBetaConstraint {
                                  final RuleBaseConfiguration conf,
                                  final boolean disableIndexing) {
         super(constraints, conf, disableIndexing);
+    }
+
+    private TripleBetaConstraints( BetaNodeFieldConstraint[] constraints,
+                                   IndexPrecedenceOption indexPrecedenceOption,
+                                   boolean disableIndexing) {
+        super(constraints, indexPrecedenceOption, disableIndexing);
+    }
+
+    public TripleBetaConstraints cloneIfInUse() {
+        if (constraints[0] instanceof MutableTypeConstraint && ((MutableTypeConstraint)constraints[0]).setInUse()) {
+            BetaNodeFieldConstraint[] clonedConstraints = new BetaNodeFieldConstraint[constraints.length];
+            for (int i = 0; i < constraints.length; i++) {
+                clonedConstraints[i] = constraints[i].cloneIfInUse();
+            }
+            TripleBetaConstraints clone = new TripleBetaConstraints(clonedConstraints, indexPrecedenceOption, disableIndexing);
+            clone.indexed = indexed;
+            return clone;
+        }
+        return this;
     }
 
     /* (non-Javadoc)

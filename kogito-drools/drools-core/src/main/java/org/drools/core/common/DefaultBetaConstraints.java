@@ -17,6 +17,7 @@
 package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -44,11 +45,11 @@ public class DefaultBetaConstraints
 
     private transient boolean           disableIndexing;
 
-    private BetaNodeFieldConstraint[] constraints;
+    private BetaNodeFieldConstraint[]   constraints;
 
-    private IndexPrecedenceOption indexPrecedenceOption;
+    private IndexPrecedenceOption       indexPrecedenceOption;
 
-    private int               indexed;
+    private int                         indexed;
 
     public DefaultBetaConstraints() {
 
@@ -67,6 +68,22 @@ public class DefaultBetaConstraints
         this.constraints = constraints;
         this.disableIndexing = disableIndexing;
         this.indexPrecedenceOption = conf.getIndexPrecedenceOption();
+    }
+
+    public DefaultBetaConstraints cloneIfInUse() {
+        if (constraints[0] instanceof MutableTypeConstraint && ((MutableTypeConstraint)constraints[0]).setInUse()) {
+            BetaNodeFieldConstraint[] clonedConstraints = new BetaNodeFieldConstraint[constraints.length];
+            for (int i = 0; i < constraints.length; i++) {
+                clonedConstraints[i] = constraints[i].cloneIfInUse();
+            }
+            DefaultBetaConstraints clone = new DefaultBetaConstraints();
+            clone.constraints = clonedConstraints;
+            clone.disableIndexing = disableIndexing;
+            clone.indexPrecedenceOption = indexPrecedenceOption;
+            clone.indexed = indexed;
+            return clone;
+        }
+        return this;
     }
 
     public void init(BuildContext context, short betaNodeType) {

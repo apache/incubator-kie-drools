@@ -17,6 +17,7 @@
 package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -90,6 +91,15 @@ public class SingleBetaConstraints
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(constraint);
         out.writeBoolean(indexed);
+    }
+
+    public SingleBetaConstraints cloneIfInUse() {
+        if (constraint instanceof MutableTypeConstraint && ((MutableTypeConstraint)constraint).setInUse()) {
+            SingleBetaConstraints clone = new SingleBetaConstraints(constraint.cloneIfInUse(), null, disableIndex);
+            clone.indexed = indexed;
+            return clone;
+        }
+        return this;
     }
 
     public ContextEntry[] createContext() {

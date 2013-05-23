@@ -178,4 +178,7 @@ public class InstanceNotEqualsConstraint
         }
     }
 
+    public BetaNodeFieldConstraint cloneIfInUse() {
+        return this;
+    }
 }
