@@ -58,13 +58,18 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     protected RuntimeEnvironment environment;
    
     protected abstract RuntimeManager getManager(RuntimeEnvironment environment);
+      
     
     @After
     public void cleanup() {
-        manager.close();
-        EntityManagerFactory emf = ((SimpleRuntimeEnvironment) environment).getEmf();
-        if (emf != null) {
-            emf.close();
+        if (manager != null) {
+            manager.close();
+        }
+        if (environment != null) {
+            EntityManagerFactory emf = ((SimpleRuntimeEnvironment) environment).getEmf();
+            if (emf != null) {
+                emf.close();
+            }
         }
     }
 
@@ -469,6 +474,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             manager.disposeRuntimeEngine(runtime);
         }
     }
+    
     
     
     public static void cleanupSingletonSessionId() {

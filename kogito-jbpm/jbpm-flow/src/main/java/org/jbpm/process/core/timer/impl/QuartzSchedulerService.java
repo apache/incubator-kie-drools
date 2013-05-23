@@ -18,6 +18,7 @@ package org.jbpm.process.core.timer.impl;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.time.AcceptsTimerJobFactoryManager;
@@ -41,7 +42,6 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerMetaData;
 import org.quartz.SimpleTrigger;
-import org.quartz.impl.StdScheduler;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.jdbcjobstore.JobStoreCMT;
 
@@ -56,8 +56,10 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
 
     private AtomicLong idCounter = new AtomicLong();
     private TimerService globalTimerService;
-    private Scheduler scheduler;
     
+    // global data shared across all scheduler service instances
+    private static Scheduler scheduler;    
+    private static AtomicInteger timerServiceCounter = new AtomicInteger();
  
     public QuartzSchedulerService() {
         
@@ -109,7 +111,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
         
         try {
             
-            boolean removed =  this.scheduler.deleteJob(quartzJobHandle.getJobName(), quartzJobHandle.getJobGroup());            
+            boolean removed =  scheduler.deleteJob(quartzJobHandle.getJobName(), quartzJobHandle.getJobGroup());            
             return removed;
         } catch (SchedulerException e) {     
             
@@ -117,7 +119,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
         } catch (RuntimeException e) {
             SchedulerMetaData metadata;
             try {
-                metadata = this.scheduler.getMetaData();
+                metadata = scheduler.getMetaData();
                 if (metadata.getJobStoreClass().isAssignableFrom(JobStoreCMT.class)) {
                     return true;
                 }
@@ -166,25 +168,31 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
     }
 
     @Override
-    public void initScheduler(TimerService timerService) {
+    public synchronized void initScheduler(TimerService timerService) {
         this.globalTimerService = timerService;
+        timerServiceCounter.incrementAndGet();
         
-        try {
-            this.scheduler = StdSchedulerFactory.getDefaultScheduler();            
-            this.scheduler.start();
-        } catch (SchedulerException e) {
-            throw new RuntimeException("Exception when initializing QuartzSchedulerService", e);
+        if (scheduler == null) {            
+            try {
+                scheduler = StdSchedulerFactory.getDefaultScheduler();            
+                scheduler.start();
+            } catch (SchedulerException e) {
+                throw new RuntimeException("Exception when initializing QuartzSchedulerService", e);
+            }
+        
         }
     }
 
     @Override
     public void shutdown() {
-        if (scheduler != null) {
+        int current = timerServiceCounter.decrementAndGet();
+        if (scheduler != null && current == 0) {
             try {
-                this.scheduler.shutdown();
+                scheduler.shutdown();
             } catch (SchedulerException e) {
 //                e.printStackTrace();
             }
+            scheduler = null;
         }
     }
 

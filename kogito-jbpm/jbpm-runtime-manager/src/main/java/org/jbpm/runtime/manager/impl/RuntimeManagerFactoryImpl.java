@@ -35,7 +35,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
         
         RuntimeManager manager = new SingletonRuntimeManager(environment, factory, taskServiceFactory, identifier);
         initTimerService(environment, manager);
-        ((SingletonRuntimeManager) manager).init();
+        ((AbstractRuntimeManager) manager).init();
 
         return manager;
     }
@@ -52,6 +52,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
 
         RuntimeManager manager = new PerRequestRuntimeManager(environment, factory, taskServiceFactory, identifier);
         initTimerService(environment, manager);
+        ((AbstractRuntimeManager) manager).init();
         return manager;
     }
 

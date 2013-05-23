@@ -208,5 +208,17 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             map.remove(keyToRemove);
         }
     }
+    
+    @Override
+    public void init() {
+        // need to init one session to bootstrap all case - such as start timers
+        RuntimeEngine engine = getRuntimeEngine(EmptyContext.get());
+        try {
+            engine.getKieSession().destroy();
+        } finally {
+            disposeRuntimeEngine(engine);
+        }
+        
+    }
 
 }

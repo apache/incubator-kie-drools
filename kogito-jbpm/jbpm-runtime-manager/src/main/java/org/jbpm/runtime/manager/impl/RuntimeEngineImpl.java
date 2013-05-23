@@ -54,6 +54,8 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
             }
             try {
                 ksession.dispose();
+            } catch(IllegalStateException e){
+                // do nothing most likely ksession was already disposed
             } catch (Exception e) {
                 e.printStackTrace();
             }

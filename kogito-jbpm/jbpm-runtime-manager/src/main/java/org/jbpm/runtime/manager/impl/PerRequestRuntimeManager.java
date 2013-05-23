@@ -9,6 +9,7 @@ import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
 
 public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 
@@ -81,6 +82,12 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 
     public void setTaskServiceFactory(TaskServiceFactory taskServiceFactory) {
         this.taskServiceFactory = taskServiceFactory;
+    }
+
+    @Override
+    public void init() {
+        // currently nothing to do
+        
     }
 
 

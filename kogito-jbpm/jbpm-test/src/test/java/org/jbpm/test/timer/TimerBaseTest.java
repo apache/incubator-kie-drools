@@ -1,6 +1,12 @@
 package org.jbpm.test.timer;
 
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.List;
+import java.util.Scanner;
+
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.junit.AfterClass;
@@ -30,12 +36,34 @@ public abstract class TimerBaseTest {
     
     @BeforeClass
     public static void setUpOnce() {
-        pds = setupPoolingDataSource();
+        if (pds == null) {
+            pds = setupPoolingDataSource();
+        }
     }
     
     @AfterClass
     public static void tearDownOnce() {
-        pds.close();
+        if (pds != null) {
+            pds.close();
+            pds = null;
+        }
+    }
+    
+
+    protected void testCreateQuartzSchema() {
+        Scanner scanner = new Scanner(this.getClass().getResourceAsStream("/quartz_tables_h2.sql")).useDelimiter(";");
+        try {
+            Connection connection = ((DataSource)InitialContext.doLookup("jdbc/jbpm-ds")).getConnection();
+            Statement stmt = connection.createStatement();
+            while (scanner.hasNext()) {
+                String sql = scanner.next();
+                stmt.executeUpdate(sql);
+            }
+            stmt.close();
+            connection.close();
+        } catch (Exception e) {
+            
+        }
     }
     
     protected class TestRegisterableItemsFactory extends DefaultRegisterableItemsFactory {

@@ -4,6 +4,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.jbpm.process.core.timer.GlobalSchedulerService;
+import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
 import org.jbpm.runtime.manager.impl.mapper.JPAMapper;
@@ -13,7 +14,7 @@ import org.kie.api.runtime.EnvironmentName;
 public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
 
     public DefaultRuntimeEnvironment() {
-        this(null, new ThreadPoolSchedulerService(3));
+        this(null, discoverSchedulerService());
     }
     
     public DefaultRuntimeEnvironment(EntityManagerFactory emf) {
@@ -49,6 +50,14 @@ public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
                 this.mapper = new InMemoryMapper();
             }
         }
+    }
+    
+    protected static GlobalSchedulerService discoverSchedulerService() {
+        if (System.getProperty("org.quartz.properties") != null) {
+            return new QuartzSchedulerService();
+        } 
+        return new ThreadPoolSchedulerService(3);
+        
     }
 
 }

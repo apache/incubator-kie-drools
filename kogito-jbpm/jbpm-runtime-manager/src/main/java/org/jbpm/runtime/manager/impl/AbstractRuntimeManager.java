@@ -37,6 +37,8 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         
     }
     
+    public abstract void init();
+    
     protected void registerItems(RuntimeEngine runtime) {
         RegisterableItemsFactory factory = environment.getRegisterableItemsFactory();
         // process handlers
