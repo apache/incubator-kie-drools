@@ -167,10 +167,10 @@ public interface ScoreDirector {
      * <p/>
      * Used to assert that skipping {@link #calculateScore()} (when the score is otherwise determined) is correct,
      * @param expectedWorkingScore never null
-     * @param cause sometimes null, when assertion fails then the cause's {@link Object#toString()} is included
-     * in the exception message
+     * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
+     * is included in the exception message
      */
-    void assertExpectedWorkingScore(Score expectedWorkingScore, Object cause);
+    void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}
@@ -179,11 +179,11 @@ public interface ScoreDirector {
      * <p/>
      * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
      * @param workingScore never null
-     * @param cause sometimes null, when assertion fails then the cause's {@link Object#toString()} is included
-     * in the exception message
+     * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
+     * is included* in the exception message
      * @see ScoreDirectorFactory#assertScoreFromScratch(Solution)
      */
-    void assertWorkingScoreFromScratch(Score workingScore, Object cause);
+    void assertWorkingScoreFromScratch(Score workingScore, Object completedAction);
 
     /**
      * Needs to be called after use because some implementations needs to clean up their resources.

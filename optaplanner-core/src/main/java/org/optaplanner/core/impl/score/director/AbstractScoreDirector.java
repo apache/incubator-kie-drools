@@ -290,16 +290,17 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return trailingEntities.iterator().next();
     }
 
-    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object cause) {
+    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
         Score workingScore = calculateScore();
         if (!expectedWorkingScore.equals(workingScore)) {
             throw new IllegalStateException(
                     "Score corruption: the expectedWorkingScore (" + expectedWorkingScore
-                            + ") is not the workingScore  (" + workingScore + ") due to cause(" + cause + ").");
+                            + ") is not the workingScore  (" + workingScore
+                            + ") after completedAction (" + completedAction + ").");
         }
     }
 
-    public void assertWorkingScoreFromScratch(Score workingScore, Object cause) {
+    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
         ScoreDirectorFactory assertionScoreDirectorFactory
                 = scoreDirectorFactory.getAssertionScoreDirectorFactory();
         if (assertionScoreDirectorFactory == null) {
@@ -313,7 +314,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             uncorruptedScoreDirector.dispose();
             throw new IllegalStateException(
                     "Score corruption: the workingScore (" + workingScore + ") is not the uncorruptedScore ("
-                            + uncorruptedScore + ") due to cause (" + cause + "):\n" + scoreCorruptionAnalysis);
+                            + uncorruptedScore + ") after completedAction (" + completedAction
+                            + "):\n" + scoreCorruptionAnalysis);
         } else {
             uncorruptedScoreDirector.dispose();
         }

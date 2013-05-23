@@ -128,12 +128,12 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.calculateScore();
     }
 
-    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object cause) {
-        solverScope.assertExpectedWorkingScore(expectedWorkingScore, cause);
+    public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
+        solverScope.assertExpectedWorkingScore(expectedWorkingScore, completedAction);
     }
 
-    public void assertWorkingScoreFromScratch(Score workingScore, Object cause) {
-        solverScope.assertWorkingScoreFromScratch(workingScore, cause);
+    public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
+        solverScope.assertWorkingScoreFromScratch(workingScore, completedAction);
     }
 
     public void assertExpectedUndoMoveScore(Move move, Move undoMove) {
