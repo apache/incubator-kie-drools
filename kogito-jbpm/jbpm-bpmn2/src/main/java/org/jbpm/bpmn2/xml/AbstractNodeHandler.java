@@ -34,11 +34,14 @@ import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.Association;
+import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -414,6 +417,28 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             
         }
         return dataType;
+    }
+    
+    protected String getErrorIdForErrorCode(String errorCode, Node node) { 
+        org.kie.api.definition.process.NodeContainer parent = node.getNodeContainer();
+        while( ! (parent instanceof RuleFlowProcess) && parent instanceof Node ) { 
+            parent = ((Node) parent).getNodeContainer();
+        }
+        if( ! (parent instanceof RuleFlowProcess) ) { 
+           throw new RuntimeException( "This should never happen: !(parent instanceof RuleFlowProcess): parent is " + parent.getClass().getSimpleName() );
+        }
+        List<Error> errors = ((Definitions) ((RuleFlowProcess) parent).getMetaData("Definitions")).getErrors();
+        Error error = null;
+        for( Error listError : errors ) { 
+            if( errorCode.equals(listError.getErrorCode()) ) {
+                error = listError;
+                break;
+            }
+        }
+        if (error == null) {
+            throw new IllegalArgumentException("Could not find error with errorCode " + errorCode);
+        }
+        return error.getId();
     }
     
 }

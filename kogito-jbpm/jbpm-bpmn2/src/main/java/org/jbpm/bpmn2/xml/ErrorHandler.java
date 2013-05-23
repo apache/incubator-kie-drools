@@ -16,8 +16,10 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.xml.BaseAbstractHandler;
@@ -29,7 +31,7 @@ import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
+import org.kie.api.definition.process.Process;
 public class ErrorHandler extends BaseAbstractHandler implements Handler {
 	
 	@SuppressWarnings("unchecked")
@@ -63,14 +65,16 @@ public class ErrorHandler extends BaseAbstractHandler implements Handler {
 		String errorCode = attrs.getValue("errorCode");
 		String structureRef = attrs.getValue("structureRef");
 
-		ProcessBuildData buildData = (ProcessBuildData) parser.getData();
-		Map<String, Error> errors = (Map<String, Error>) buildData.getMetaData("Errors");
+		Definitions definitions = (Definitions) parser.getParent();
+
+		List<Error> errors = definitions.getErrors();
         if (errors == null) {
-        	errors = new HashMap<String, Error>();
-            buildData.setMetaData("Errors", errors);
+        	errors = new ArrayList<Error>();
+            definitions.setErrors(errors);
+            ((ProcessBuildData) parser.getData()).setMetaData("Errors", errors);
         }
         Error e = new Error(id, errorCode, structureRef); 
-        errors.put(id, e);
+        errors.add(e);
         
 		return e;
 	}

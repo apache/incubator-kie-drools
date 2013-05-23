@@ -18,30 +18,19 @@ package org.jbpm.bpmn2.core;
 
 import java.io.Serializable;
 
-public class Error implements Serializable {
+public class Error extends Signal implements Serializable {
     
 	private static final long serialVersionUID = 510l;
 	
-    private String id;
     private String errorCode;
-    private String structureRef;
     
     public Error(String id, String errorCode, String itemRef) {
-        this.id = id;
+        super(id, itemRef);
         this.errorCode = errorCode;
-        this.structureRef = itemRef;
     }
     
-    public String getId() {
-        return id;
-    }
-
     public String getErrorCode() {
         return errorCode;
-    }
-
-    public String getStructureRef() {
-        return structureRef;
     }
 
 }

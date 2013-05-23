@@ -198,12 +198,17 @@ public class EndEventHandler extends AbstractNodeHandler {
             } else if ("errorEventDefinition".equals(nodeName)) {
                 String errorRef = ((Element) xmlNode).getAttribute("errorRef");
                 if (errorRef != null && errorRef.trim().length() > 0) {
-                    Map<String, Error> errors = (Map<String, Error>)
-		                ((ProcessBuildData) parser.getData()).getMetaData("Errors");
+                    List<Error> errors = (List<Error>) ((ProcessBuildData) parser.getData()).getMetaData("Errors");
 		            if (errors == null) {
 		                throw new IllegalArgumentException("No errors found");
 		            }
-		            Error error = errors.get(errorRef);
+		            Error error = null;
+		            for( Error listError: errors ) { 
+		                if( errorRef.equals(listError.getId()) ) { 
+		                    error = listError;
+		                    break;
+		                } 
+		            }
 		            if (error == null) {
 		                throw new IllegalArgumentException("Could not find error " + errorRef);
 		            }

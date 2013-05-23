@@ -21,19 +21,23 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.impl.NodeContainerImpl;
 import org.jbpm.workflow.core.node.ConstraintTrigger;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.Trigger;
+import org.kie.api.definition.process.NodeContainer;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -128,13 +132,16 @@ public class StartEventHandler extends AbstractNodeHandler {
                 }
                 String errorRef = ((Element) xmlNode).getAttribute("errorRef");
                 if (errorRef != null && errorRef.trim().length() > 0) {
-                    Map<String, Error> errors = (Map<String, Error>)
-                        ((ProcessBuildData) parser.getData()).getMetaData("Errors");
+                    List<Error> errors = (List<Error>) ((ProcessBuildData) parser.getData()).getMetaData("Errors");
                     if (errors == null) {
                         throw new IllegalArgumentException("No errors found");
                     }
-                    Error error = errors.get(errorRef);
-                    
+                    Error error = null;
+                    for( Error listError : errors ) { 
+                        if( errorRef.equals(listError.getId()) ) { 
+                            error = listError;
+                        }
+                    }
                     if (error == null) {
                         throw new IllegalArgumentException("Could not find error " + errorRef);
                     }
@@ -264,7 +271,8 @@ public class StartEventHandler extends AbstractNodeHandler {
                     xmlDump.append("      <messageEventDefinition messageRef=\"" + type + "\"/>" + EOL);
                 } else if (type.startsWith("Error-")) {
                     type = type.substring(6);
-                    xmlDump.append("      <errorEventDefinition errorRef=\"" + type + "\"/>" + EOL);
+                    String errorId = getErrorIdForErrorCode(type, startNode);
+                    xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(errorId) + "\"/>" + EOL);
                 } else if (type.startsWith("Escalation-")) {
                     type = type.substring(11);
                     xmlDump.append("      <escalationEventDefinition escalationRef=\"" + type + "\"/>" + EOL);
