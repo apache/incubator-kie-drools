@@ -1,4 +1,4 @@
-package org.drools.games.wumpus.view
+package org.drools.games.wumpus.server.view
 
 import org.drools.games.wumpus.Reset
 import org.drools.games.wumpus.Play
@@ -10,11 +10,8 @@ import org.drools.games.wumpus.Score
 import org.drools.games.wumpus.WumpusDeath
 import org.drools.games.wumpus.PitDeath
 import org.drools.games.wumpus.GoldWin
-
-
-import org.kie.runtime.StatefulKnowledgeSession
-import org.kie.logger.KnowledgeRuntimeLogger
-import org.kie.logger.KnowledgeRuntimeLoggerFactory
+import org.drools.games.wumpus.view.GameView
+import org.drools.games.wumpus.view.GameUI
 
 import javax.swing.JOptionPane
 
@@ -48,7 +45,7 @@ then
     GameView $gv = new GameView();
     $gv.init(50, 50, 3, 20, 5, 5);
     $gv.setKsession( (StatefulKnowledgeSession) kcontext.knowledgeRuntime );
-    $gv.setKbase( ((StatefulKnowledgeSession) kcontext.knowledgeRuntime).knowledgeBase );
+    $gv.setKbase( ((StatefulKnowledgeSession) kcontext.knowledgeRuntime).getKieBase() );
     
     new java.io.File("log").mkdir();
     KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus", 500);

@@ -1,4 +1,21 @@
-package org.drools.games.wumpus
+package org.drools.games.wumpus.server;
+
+import org.drools.games.wumpus.Init;
+import org.drools.games.wumpus.Score;
+import org.drools.games.wumpus.Cell;
+import org.drools.games.wumpus.Pit;
+import org.drools.games.wumpus.Wumpus;
+import org.drools.games.wumpus.Gold;
+import org.drools.games.wumpus.Hero;
+
+import org.drools.games.wumpus.Reset;
+import org.drools.games.wumpus.PitDeath;
+import org.drools.games.wumpus.GoldWin;
+import org.drools.games.wumpus.WumpusDeath;
+
+import org.drools.games.wumpus.Play;
+import org.drools.games.wumpus.SensorArray;
+
 
 global java.util.Random randomInteger;
 
@@ -37,7 +54,7 @@ rule "Create Pitt" when
     $c : Cell( row != 0, col != 0 )
     Number( this > 0 && <= 20 ) from randomInteger.nextInt( 100 )
 then
-    Pit pit = new Pit( $c.row, $c.col )    
+    Pit pit = new Pit( $c.row, $c.col );
     insert( pit );
 end    
 

@@ -1,4 +1,12 @@
-package org.drools.games.wumpus
+package org.drools.games.wumpus.server;
+
+import org.drools.games.wumpus.ShootCommand;
+import org.drools.games.wumpus.Hero;
+import org.drools.games.wumpus.Arrow;
+import org.drools.games.wumpus.Direction;
+import org.drools.games.wumpus.Wumpus;
+import org.drools.games.wumpus.Cell;
+import org.drools.games.wumpus.HearScream;
 
 dialect "mvel"
 

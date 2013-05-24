@@ -1,4 +1,11 @@
-package org.drools.games.wumpus
+package org.drools.games.wumpus.server;
+
+import org.drools.games.wumpus.SensorArray;
+import org.drools.games.wumpus.HearScream;
+import org.drools.games.wumpus.FeelBreeze;
+import org.drools.games.wumpus.SmellStench;
+import org.drools.games.wumpus.FeelBump;
+import org.drools.games.wumpus.SeeGlitter;
 
 dialect "mvel"
 

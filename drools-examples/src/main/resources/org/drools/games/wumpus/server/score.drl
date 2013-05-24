@@ -1,5 +1,10 @@
-package org.drools.games.wumpus
+package org.drools.games.wumpus.server;
 
+import org.drools.games.wumpus.MoveCommand;
+import org.drools.games.wumpus.ShootCommand;
+import org.drools.games.wumpus.GoldWin;
+import org.drools.games.wumpus.PitDeath;
+import org.drools.games.wumpus.WumpusDeath;
 
 dialect "mvel"
 
