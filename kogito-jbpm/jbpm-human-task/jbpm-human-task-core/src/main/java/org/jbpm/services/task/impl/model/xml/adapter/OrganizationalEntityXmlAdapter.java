@@ -4,6 +4,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 
@@ -28,7 +29,7 @@ public class OrganizationalEntityXmlAdapter extends XmlAdapter<String, Organizat
         StringBuffer out = new StringBuffer();
         if( v instanceof User ) { 
             out.append(USER_PREFIX);
-        } else if( v instanceof User ) { 
+        } else if( v instanceof Group ) { 
             out.append(GROUP_PREFIX);
         } else { 
             throw new IllegalStateException("Unknown " + OrganizationalEntity.class.getSimpleName() + " type : " + v.getClass().getName() );
