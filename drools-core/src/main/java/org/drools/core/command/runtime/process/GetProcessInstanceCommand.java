@@ -18,6 +18,7 @@ package org.drools.core.command.runtime.process;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -28,7 +29,9 @@ import org.kie.api.runtime.process.ProcessInstance;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessInstanceCommand implements GenericCommand<ProcessInstance> {
 
+    @XmlAttribute(required = true)
     private Long processInstanceId;
+    @XmlAttribute
     private boolean readOnly = false;
 
     public GetProcessInstanceCommand() {}
