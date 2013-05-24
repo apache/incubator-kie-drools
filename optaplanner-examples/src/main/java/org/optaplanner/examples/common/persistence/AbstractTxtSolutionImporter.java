@@ -140,6 +140,19 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             } while (!value.equals(constantValue));
         }
 
+        public void readRegexConstantLine(String regex) throws IOException {
+            String line = bufferedReader.readLine();
+            if (line == null) {
+                throw new IllegalArgumentException("File ends before a line is expected to be a regex ("
+                        + regex + ").");
+            }
+            String value = line.trim();
+            if (!value.matches(regex)) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to be a regex ("
+                        + regex + ").");
+            }
+        }
+
         public int readIntegerValue() throws IOException {
             return readIntegerValue("");
         }

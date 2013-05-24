@@ -57,6 +57,7 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
         private VrpSchedule schedule;
 
         private int locationListSize;
+        private int vehicleListSize;
         private int capacity;
         private Map<Long, VrpLocation> locationMap;
         private List<VrpDepot> depotList;
@@ -64,12 +65,14 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
         public Solution readSolution() throws IOException {
             schedule = new VrpSchedule();
             schedule.setId(0L);
-            readHeaders();
-            readLocationList();
-            readCustomerList();
-            readDepotList();
-            createVehicleList();
-            readConstantLine("EOF");
+            String nameLine = readStringValue();
+            if (nameLine.startsWith("NAME :")) {
+                schedule.setName(removePrefixSuffixFromLine(nameLine, "NAME :", ""));
+                readBasicSolution();
+            } else {
+                schedule.setName(nameLine);
+                readTimeWindowedSolution();
+            }
             // TODO search space does not take different vehicles into account
             BigInteger possibleSolutionSize = factorial(schedule.getLocationList().size() - 1);
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
@@ -82,8 +85,16 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
             return schedule;
         }
 
-        private void readHeaders() throws IOException {
-            schedule.setName(readStringValue("NAME :"));
+        public void readBasicSolution() throws IOException {
+            readBasicHeaders();
+            readBasicLocationList();
+            readBasicCustomerList();
+            readBasicDepotList();
+            createBasicVehicleList();
+            readConstantLine("EOF");
+        }
+
+        private void readBasicHeaders() throws IOException {
             readUntilConstantLine("TYPE : CVRP");
             locationListSize = readIntegerValue("DIMENSION :");
             String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE :");
@@ -94,7 +105,7 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
             capacity = readIntegerValue("CAPACITY :");
         }
 
-        private void readLocationList() throws IOException {
+        private void readBasicLocationList() throws IOException {
             readConstantLine("NODE_COORD_SECTION");
             List<VrpLocation> locationList = new ArrayList<VrpLocation>(locationListSize);
             locationMap = new HashMap<Long, VrpLocation>(locationListSize);
@@ -114,7 +125,7 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
             schedule.setLocationList(locationList);
         }
 
-        private void readCustomerList() throws IOException {
+        private void readBasicCustomerList() throws IOException {
             readConstantLine("DEMAND_SECTION");
             List<VrpCustomer> customerList = new ArrayList<VrpCustomer>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
@@ -140,7 +151,7 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
             schedule.setCustomerList(customerList);
         }
 
-        private void readDepotList() throws IOException {
+        private void readBasicDepotList() throws IOException {
             readConstantLine("DEPOT_SECTION");
             depotList = new ArrayList<VrpDepot>(locationListSize);
             long id = readLongValue();
@@ -159,7 +170,7 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
             schedule.setDepotList(depotList);
         }
 
-        private void createVehicleList() throws IOException {
+        private void createBasicVehicleList() throws IOException {
             String inputFileName = inputFile.getName();
             String inputFileNameRegex = "^.+\\-k(\\d+)\\.vrp$";
             if (!inputFileName.matches(inputFileNameRegex)) {
@@ -167,13 +178,16 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                         + ") does not match the inputFileNameRegex (" + inputFileNameRegex + ").");
             }
             String vehicleListSizeString = inputFileName.replaceAll(inputFileNameRegex, "$1");
-            int vehicleListSize;
             try {
                 vehicleListSize = Integer.parseInt(vehicleListSizeString);
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("The inputFileName (" + inputFileName
                         + ") has a vehicleListSizeString (" + vehicleListSizeString + ") that is not a number.", e);
             }
+            createVehicleList();
+        }
+
+        private void createVehicleList() {
             List<VrpVehicle> vehicleList = new ArrayList<VrpVehicle>(vehicleListSize);
             long id = 0;
             for (int i = 0; i < vehicleListSize; i++) {
@@ -185,6 +199,73 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                 vehicleList.add(vehicle);
             }
             schedule.setVehicleList(vehicleList);
+        }
+
+        public void readTimeWindowedSolution() throws IOException {
+            readTimeWindowedHeaders();
+            readTimeWindowedDepotAndCustomers();
+            createVehicleList();
+        }
+
+        private void readTimeWindowedHeaders() throws IOException {
+            readEmptyLine();
+            readConstantLine("VEHICLE");
+            readConstantLine("NUMBER     CAPACITY");
+            String[] lineTokens = splitBySpacesOrTabs(readStringValue(), 2);
+            vehicleListSize = Integer.parseInt(lineTokens[0]);
+            capacity = Integer.parseInt(lineTokens[1]);
+            readEmptyLine();
+            readConstantLine("CUSTOMER");
+            readRegexConstantLine("CUST\\s+NO\\.\\s+XCOORD\\.\\s+YCOORD\\.\\s+DEMAND\\s+READY\\s+TIME\\s+DUE\\s+DATE\\s+SERVICE\\s+TIME");
+            readEmptyLine();
+        }
+
+        private void readTimeWindowedDepotAndCustomers() throws IOException {
+            String line = bufferedReader.readLine();
+            int locationListSizeEstimation = 25;
+            List<VrpLocation> locationList = new ArrayList<VrpLocation>(locationListSizeEstimation);
+            depotList = new ArrayList<VrpDepot>(1);
+            List<VrpCustomer> customerList = new ArrayList<VrpCustomer>(locationListSizeEstimation);
+            boolean first = true;
+            while (line != null && !line.trim().isEmpty()) {
+                String[] lineTokens = splitBySpacesOrTabs(line.trim(), 7);
+                long id = Long.parseLong(lineTokens[0]);
+
+                VrpLocation location = new VrpLocation();
+                location.setId(id);
+                location.setLatitude(Double.parseDouble(lineTokens[1]));
+                location.setLongitude(Double.parseDouble(lineTokens[2]));
+                locationList.add(location);
+                if (first) {
+                    VrpDepot depot = new VrpDepot();
+                    depot.setId(id);
+                    depot.setLocation(location);
+                    int demand = Integer.parseInt(lineTokens[3]);
+                    if (demand != 0) {
+                        throw new IllegalArgumentException("The depot with id (" + id
+                                + ") has a demand (" + demand + ").");
+                    }
+                    depotList.add(depot);
+                    // TODO lineTokens 4-6
+                    first = false;
+                } else {
+                    VrpCustomer customer = new VrpCustomer();
+                    customer.setId(id);
+                    customer.setLocation(location);
+                    int demand = Integer.parseInt(lineTokens[3]);
+                    customer.setDemand(demand);
+                    // Notice that we leave the PlanningVariable properties on null
+                    // Do not add a customer that has no demand
+                    if (demand != 0) {
+                        customerList.add(customer);
+                    }
+                    // TODO lineTokens 4-6
+                }
+                line = bufferedReader.readLine();
+            }
+            schedule.setLocationList(locationList);
+            schedule.setDepotList(depotList);
+            schedule.setCustomerList(customerList);
         }
 
     }
