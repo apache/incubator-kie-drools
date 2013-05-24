@@ -12,9 +12,6 @@ import org.drools.games.pong.CollisionType
 
 import java.lang.Math
 
-import org.kie.runtime.StatefulKnowledgeSession
-import org.kie.logger.KnowledgeRuntimeLogger
-
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.event.KeyEvent
@@ -105,5 +102,5 @@ rule "Increase Ball Speed"  when
     c : Collision( )
     ball : Ball( speed-3 >= 20 ) @watch( !speed) // but make sure it never goes below 20
 then
-    modify( ball ) { speed = ball.speed - 3 };
+    modify( ball ) { speed = ball.speed - 6 };
 end

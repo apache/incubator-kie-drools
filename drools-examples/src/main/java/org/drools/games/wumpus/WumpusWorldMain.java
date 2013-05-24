@@ -1,6 +1,9 @@
 package org.drools.games.wumpus;
 
 import org.drools.games.wumpus.view.GameView;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -21,44 +24,21 @@ public class WumpusWorldMain {
     }
 
     public void init(boolean exitOnClose) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        System.out.println(kc.verify().getMessages().toString());
+        final KieSession serverKsession = kc.newKieSession( "WumpusMainKS");
+        final KieSession clientKsession = kc.newKieSession("WumpusClientKS");
 
-        kbuilder.batch().add( newClassPathResource( "init.drl", getClass() ), DRL )
-                        .add( newClassPathResource( "commands.drl", getClass() ), DRL )
-                        .add( newClassPathResource( "shoot.drl", getClass() ), DRL)
-                        .add( newClassPathResource( "ui.drl", GameView.class ), DRL )
-                        .add( newClassPathResource( "paintCave.drl", GameView.class ), DRL )
-                        .add( newClassPathResource( "paintSensor.drl", GameView.class ), DRL )
-                        .add(  newClassPathResource( "score.drl", getClass() ), DRL )
-                        .add( newClassPathResource( "sensorArray.drl", getClass() ), DRL ).build();   
-        if ( kbuilder.hasErrors() ) {
-            throw new RuntimeException( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase serverKBase = KnowledgeBaseFactory.newKnowledgeBase( );
-        serverKBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.batch().add( newClassPathResource( "client.drl", getClass() ), DRL ).build();     
-        if ( kbuilder.hasErrors() ) {
-            throw new RuntimeException( kbuilder.getErrors().toString() );
-        }
-        
-        KnowledgeBase clientKBase = KnowledgeBaseFactory.newKnowledgeBase();
-        clientKBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );        
-
-        final StatefulKnowledgeSession serverKsession = serverKBase.newStatefulKnowledgeSession();        
-        final StatefulKnowledgeSession clientKsession = clientKBase.newStatefulKnowledgeSession();
-        
-        serverKsession.getChannels().put( "sensors", new Channel() {            
+        serverKsession.getChannels().put( "sensors", new Channel() {
             public void send(Object object) {
                 clientKsession.insert( object );
                 clientKsession.fireAllRules();
             }
         } );
-        
-        clientKsession.getChannels().put( "commands", new Channel() {            
+
+        clientKsession.getChannels().put( "commands", new Channel() {
             public void send(Object object) {
-                serverKsession.insert( object ); 
+                serverKsession.insert( object );
                 serverKsession.fireAllRules();
             }
         } );
@@ -67,10 +47,8 @@ public class WumpusWorldMain {
         wumpusWorldConfiguration.setExitOnClose(exitOnClose);
         serverKsession.setGlobal("wumpusWorldConfiguration", wumpusWorldConfiguration);
         serverKsession.setGlobal("randomInteger",new java.util.Random() );
-        serverKsession.fireAllRules();        
+        serverKsession.fireAllRules();
         clientKsession.fireAllRules();
-        
-
     }
     
 

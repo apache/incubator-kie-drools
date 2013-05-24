@@ -12,8 +12,6 @@ import org.drools.games.pong.CollisionType
 
 import java.lang.Math
 
-import org.kie.runtime.StatefulKnowledgeSession
-import org.kie.logger.KnowledgeRuntimeLogger
 
 import java.awt.Color
 import java.awt.Graphics
@@ -51,9 +49,9 @@ end
  */ 
 rule "Create Ball" when
      not Ball()
-     ( PointWin(player.id == PlayerId.PlayerOne ) and dx : Number() from 2 ) or 
-     ( PointWin(player.id == PlayerId.PlayerTwo ) and dx : Number() from -2 ) or 
-     ( not PointWin( ) and dx : Number() from -2 )           
+     ( PointWin(player.id == PlayerId.PlayerOne ) and dx : Number() from 4 ) or
+     ( PointWin(player.id == PlayerId.PlayerTwo ) and dx : Number() from -4 ) or
+     ( not PointWin( ) and dx : Number() from -4 )
 
 then
     ball = new Ball( (pconf.tableWidth/2)-(pconf.ballWidth/2), 

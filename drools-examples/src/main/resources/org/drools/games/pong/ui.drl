@@ -12,9 +12,6 @@ import org.drools.games.pong.CollisionType
 
 import java.lang.Math
 
-import org.kie.runtime.StatefulKnowledgeSession
-import org.kie.logger.KnowledgeRuntimeLogger
-
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -90,7 +87,7 @@ then
                      copyX, copyY );    
                           
     tableG.setColor( Color.WHITE ); // background                      
-    tableG.fillOval( ball.x, ball.y, ball.width, ball.width );                          
+    tableG.fillOval( ball.x, ball.y, ball.width-1, ball.width-1 );
 end
 
 rule "Draw Bat" when

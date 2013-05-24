@@ -1,0 +1,30 @@
+package org.drools.examples.cashflow;
+dialect  "mvel"
+
+rule "Increase balance for AccountPeriod Credits"
+when
+   ap : AccountPeriod( )
+   acc : Account( )
+   cf : CashFlow( type == CashFlowType.CREDIT,
+             accountNo == acc.accountNo,
+             date >= ap.start && <= ap.end )
+then
+   acc.balance = acc.balance + cf.amount;
+end
+
+rule "Decrease balance for AccountPeriod Debits"
+when
+   ap : AccountPeriod( )
+   acc : Account( )
+   cf : CashFlow( type == CashFlowType.DEBIT, accountNo == acc.accountNo, date >= ap.start && <= ap.end )
+then
+   acc.balance = acc.balance - cf.amount;
+end
+
+rule "Print blance for AccountPeriod" salience -50
+when
+       ap : AccountPeriod()
+       acc : Account( )
+then
+       System.out.println( "Account Number " + acc.accountNo + " balance " + acc.balance );
+end
