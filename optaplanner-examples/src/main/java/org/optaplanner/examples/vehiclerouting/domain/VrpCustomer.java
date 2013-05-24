@@ -17,6 +17,7 @@
 package org.optaplanner.examples.vehiclerouting.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -25,17 +26,22 @@ import org.optaplanner.core.api.domain.value.ValueRangeType;
 import org.optaplanner.core.api.domain.value.ValueRanges;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.nurserostering.domain.contract.BooleanContractLine;
+import org.optaplanner.examples.nurserostering.domain.contract.MinMaxContractLine;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VrpCustomerDifficultyComparator;
 
 @PlanningEntity(difficultyComparatorClass = VrpCustomerDifficultyComparator.class)
 @XStreamAlias("VrpCustomer")
+@XStreamInclude({
+        VrpTimeWindowedCustomer.class
+})
 public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
 
-    private VrpLocation location;
-    private int demand;
-    
+    protected VrpLocation location;
+    protected int demand;
+
     // Planning variables: changes during planning, between score calculations.
-    private VrpAppearance previousAppearance;
+    protected VrpAppearance previousAppearance;
 
     public VrpLocation getLocation() {
         return location;

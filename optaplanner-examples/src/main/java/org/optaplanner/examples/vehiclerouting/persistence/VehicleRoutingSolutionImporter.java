@@ -29,6 +29,7 @@ import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
 import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.VrpTimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
 
 public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter {
@@ -245,21 +246,28 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                         throw new IllegalArgumentException("The depot with id (" + id
                                 + ") has a demand (" + demand + ").");
                     }
+                    // TODO lineTokens 4-5
+                    int serviceTime = Integer.parseInt(lineTokens[6]);
+                    if (serviceTime != 0) {
+                        throw new IllegalArgumentException("The depot with id (" + id
+                                + ") has a serviceTime (" + serviceTime + ").");
+                    }
                     depotList.add(depot);
-                    // TODO lineTokens 4-6
                     first = false;
                 } else {
-                    VrpCustomer customer = new VrpCustomer();
+                    VrpTimeWindowedCustomer customer = new VrpTimeWindowedCustomer();
                     customer.setId(id);
                     customer.setLocation(location);
                     int demand = Integer.parseInt(lineTokens[3]);
                     customer.setDemand(demand);
                     // Notice that we leave the PlanningVariable properties on null
+                    customer.setReadyTime(Integer.parseInt(lineTokens[4]));
+                    customer.setDueTime(Integer.parseInt(lineTokens[5]));
+                    customer.setServiceTime(Integer.parseInt(lineTokens[6]));
                     // Do not add a customer that has no demand
                     if (demand != 0) {
                         customerList.add(customer);
                     }
-                    // TODO lineTokens 4-6
                 }
                 line = bufferedReader.readLine();
             }
