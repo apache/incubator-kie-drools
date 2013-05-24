@@ -18,11 +18,16 @@ package org.jbpm.services.task.commands;
 import java.util.List;
 
 import javax.enterprise.util.AnnotationLiteral;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskNominatedEvent;
 import org.jbpm.services.task.events.BeforeTaskNominatedEvent;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.jbpm.services.task.impl.model.xml.adapter.OrganizationalEntityXmlAdapter;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
@@ -42,8 +47,11 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * Status.Obsolete, skipable = true } ],
  */
 @Transactional
+@XmlAccessorType(XmlAccessType.FIELD)
 public class NominateTaskCommand extends TaskCommand<Void> {
 
+    @XmlElement(name="potential-owner")
+    @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
     private List<OrganizationalEntity> potentialOwners;
     
     public NominateTaskCommand() {

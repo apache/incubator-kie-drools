@@ -72,4 +72,8 @@ public class ActivateTaskCommand extends TaskCommand<Void> {
 
         return null;
     }
+    
+    public String toString() {
+    	return "taskService.activate(" + taskId + ", " + userId + ");";
+    }
 }
