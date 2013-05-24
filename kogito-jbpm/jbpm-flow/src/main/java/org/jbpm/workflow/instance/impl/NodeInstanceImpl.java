@@ -144,7 +144,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
             throw e;
         }
         catch (Exception e) {
-            throw new WorkflowRuntimeException(this, e);
+            throw new WorkflowRuntimeException(this, getProcessInstance(), e);
         }
         if (!hidden) {
         	((InternalProcessRuntime) kruntime.getProcessRuntime())
@@ -171,7 +171,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
             ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
                 resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
             if (exceptionScopeInstance == null) {
-                throw new WorkflowRuntimeException(this, "Unable to execute Action: " + e.getMessage(), e);
+                throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Action: " + e.getMessage(), e);
             }
             exceptionScopeInstance.handleException(exceptionName, e);
         }

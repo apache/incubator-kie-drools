@@ -52,7 +52,7 @@ public class ActionNodeInstance extends NodeInstanceImpl {
 		    // for the case that one of the following throws an exception
 		    // - the ProcessContext() constructor 
 		    // - or context.setNodeInstance(this) 
-		    throw new WorkflowRuntimeException(this, "Unable to execute Action: " + e.getMessage(), e);
+		    throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Action: " + e.getMessage(), e);
 		} 
     	triggerCompleted();
     }
