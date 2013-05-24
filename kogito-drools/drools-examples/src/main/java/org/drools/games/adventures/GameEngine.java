@@ -3,6 +3,9 @@ package org.drools.games.adventures;
 import org.apache.commons.io.IOUtils;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -30,67 +33,15 @@ public class GameEngine {
 
     public void createGame() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        
-        
+
         kbuilder.batch().add( newClassPathResource( "Model.drl", getClass()  ), DRL )
-        .add( newClassPathResource( "Queries.drl",  getClass()  ), DRL )
-        .add( newClassPathResource( "General.drl",  getClass()  ), DRL )
-        .add( newClassPathResource( "Response.drl",  getClass()  ), DRL )
-        .add( newClassPathResource( "Events.drl",  getClass()  ), DRL )
-        .add( newClassPathResource( "UiView.drl", getClass() ), DRL )
-        .add( newClassPathResource( "Commands.drl", getClass() ), DRL ).build();   
-        
-//        kbuilder.add( ResourceFactory.newClassPathResource( "Model.drl",
-//                                                            getClass() ),
-//                      ResourceType.DRL );
-//        if ( kbuilder.hasErrors() ) {
-//            System.out.println( kbuilder.getErrors().toString() );
-//            System.exit( 1 );
-//        }
-//
-//        kbuilder.add( ResourceFactory.newClassPathResource( "Queries.drl",
-//                                                            getClass() ),
-//                      ResourceType.DRL );
-//        if ( kbuilder.hasErrors() ) {
-//            System.out.println( kbuilder.getErrors().toString() );
-//            System.exit( 1 );
-//        }
-//
-//        kbuilder.add( ResourceFactory.newClassPathResource( "General.drl",
-//                                                            getClass() ),
-//                      ResourceType.DRL );
-//        if ( kbuilder.hasErrors() ) {
-//            System.out.println( kbuilder.getErrors().toString() );
-//            System.exit( 1 );
-//        }
-//
-//        kbuilder.add( ResourceFactory.newClassPathResource( "Response.drl",
-//                                                            getClass() ),
-//                      ResourceType.DRL );
-//        if ( kbuilder.hasErrors() ) {
-//            System.out.println( kbuilder.getErrors().toString() );
-//            System.exit( 1 );
-//        }
-//
-//        kbuilder.add( ResourceFactory.newClassPathResource( "Events.drl",
-//                                                            getClass() ),
-//                      ResourceType.DRL );
-//        if ( kbuilder.hasErrors() ) {
-//            System.out.println( kbuilder.getErrors().toString() );
-//            System.exit( 1 );
-//        }
-//
-//        kbuilder.add( ResourceFactory.newClassPathResource( "UiView.drl",
-//                                                            getClass() ),
-//                      ResourceType.DRL );
-//        if ( kbuilder.hasErrors() ) {
-//            System.out.println( kbuilder.getErrors().toString() );
-//            System.exit( 1 );
-//        }
-//
-//        kbuilder.add( ResourceFactory.newClassPathResource( "Commands.drl",
-//                                                            getClass() ),
-//                      ResourceType.DRL );
+                        .add( newClassPathResource( "Queries.drl",  getClass()  ), DRL )
+                        .add( newClassPathResource( "General.drl",  getClass()  ), DRL )
+                        .add( newClassPathResource( "Response.drl",  getClass()  ), DRL )
+                        .add( newClassPathResource( "Events.drl",  getClass()  ), DRL )
+                        .add( newClassPathResource( "UiView.drl", getClass() ), DRL )
+                        .add( newClassPathResource( "Commands.drl", getClass() ), DRL ).build();
+
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors().toString() );
             System.exit( 1 );
@@ -104,9 +55,6 @@ public class GameEngine {
 
         Counter c = new Counter();
         ksession = kbase.newStatefulKnowledgeSession();
-
-        //      final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
-        //      logger.setFileName( "log/ta.log" );
 
         ksession.setGlobal( "counter",
                             c );

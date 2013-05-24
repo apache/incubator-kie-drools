@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://jboss.org/kie/6.0.0/kmodule">
+
+    <kbase name="WumpusMainKB" packages="org.drools.games.wumpus.server, org.drools.games.wumpus.server.view">
+        <ksession name="WumpusMainKS" />
+    </kbase>
+
+    <kbase name="WumpusClientKB" packages="org.drools.games.wumpus.client">
+        <ksession name="WumpusClientKS"/>
+    </kbase>
+
+    <kbase name="HouseOfDoomKB" packages="org.drools.examples.backwardchaining">
+        <ksession name="HouseOfDoomKS"/>
+    </kbase>
+
+
+    <kbase name="PongKB" packages="org.drools.games.pong">
+        <ksession name="PongKS"/>
+    </kbase>
+
+    <!--kbase name="TextAdventureKB" packages="org.drools.games.adventures">
+        <ksession name="TextAdventureKS"/>
+    </kbase-->
+
+    <kbase name="CashFlowKB" packages="org.drools.examples.cashflow">
+        <ksession name="CashFlowKS"/>
+    </kbase>
+
+</kmodule>
