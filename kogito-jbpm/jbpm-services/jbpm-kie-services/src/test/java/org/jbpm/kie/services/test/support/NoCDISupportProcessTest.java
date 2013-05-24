@@ -24,7 +24,7 @@ import javax.persistence.Persistence;
 
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.KnowledgeAdminDataServiceImpl;
-import org.jbpm.kie.services.impl.MVELWorkItemHandlerProducer;
+import org.jbpm.kie.services.impl.VfsMVELWorkItemHandlerProducer;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
 import org.jbpm.kie.services.impl.VFSDeploymentService;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
@@ -91,7 +91,7 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
         this.fs = new TestVFSFileServiceImpl();
         fs.init();
                
-        MVELWorkItemHandlerProducer workItemProducer = new MVELWorkItemHandlerProducer();
+        VfsMVELWorkItemHandlerProducer workItemProducer = new VfsMVELWorkItemHandlerProducer();
         workItemProducer.setFs(fs);
 
         
