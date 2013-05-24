@@ -1,4 +1,4 @@
-package org.drools.games.wumpus.view
+package org.drools.games.wumpus.server.view
 
 import org.drools.games.wumpus.Cell
 import org.drools.games.wumpus.Direction
@@ -12,6 +12,8 @@ import org.drools.games.wumpus.SeeGlitter
 import org.drools.games.wumpus.FeelBump
 import org.drools.games.wumpus.SmellStench
 import org.drools.games.wumpus.HearScream
+import org.drools.games.wumpus.view.GameView
+import org.drools.games.wumpus.view.GameUI
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
