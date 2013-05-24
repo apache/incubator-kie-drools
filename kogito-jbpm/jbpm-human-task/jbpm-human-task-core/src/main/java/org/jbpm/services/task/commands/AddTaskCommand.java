@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.jboss.seam.transaction.Transactional;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
 import org.jbpm.services.task.events.BeforeTaskAddedEvent;
 import org.jbpm.services.task.impl.model.ContentDataImpl;
