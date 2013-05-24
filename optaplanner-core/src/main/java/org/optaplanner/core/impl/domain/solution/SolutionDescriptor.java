@@ -309,8 +309,9 @@ public class SolutionDescriptor {
      */
     public int getValueCount(Solution solution) {
         int valueCount = 0;
-        // TODO FIXME
-        throw new UnsupportedOperationException("getValueCount not yet supported");
+        // TODO FIXME for ValueRatioTabuSizeStrategy
+        throw new UnsupportedOperationException(
+                "getValueCount is not yet supported - this blocks ValueRatioTabuSizeStrategy");
         // return valueCount;
     }
 
