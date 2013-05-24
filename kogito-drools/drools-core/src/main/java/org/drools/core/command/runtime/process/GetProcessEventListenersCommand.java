@@ -18,12 +18,16 @@ package org.drools.core.command.runtime.process;
 
 import java.util.Collection;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.command.Context;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.runtime.KieSession;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessEventListenersCommand
     implements
     GenericCommand<Collection<ProcessEventListener> > {

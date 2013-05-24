@@ -16,16 +16,24 @@
 
 package org.drools.core.command.runtime.process;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessInstanceByCorrelationKeyCommand implements GenericCommand<ProcessInstance> {
 
+    @XmlElement(name = "correlation-key", required = true)
+    @XmlJavaTypeAdapter(value = CorrelationKeyXmlAdapter.class)
     private CorrelationKey correlationKey;
 
     public GetProcessInstanceByCorrelationKeyCommand() {}

@@ -32,19 +32,19 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class CreateCorrelatedProcessInstanceCommand implements GenericCommand<ProcessInstance>, IdentifiableResult {
 
     @XmlAttribute(required = true)
     private String processId;
-    @XmlAttribute(required = true)
+    @XmlElement(name = "correlation-key", required = true)
+    @XmlJavaTypeAdapter(value = CorrelationKeyXmlAdapter.class)
     private CorrelationKey correlationKey;
 
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
@@ -146,7 +146,7 @@ public class CreateCorrelatedProcessInstanceCommand implements GenericCommand<Pr
     }
 
     public String toString() {
-        String result = "session.createProcessInstance(" + processId + ", " + correlationKey + " [";
+        String result = "session.createProcessInstance(" + processId + ", " + correlationKey + ", [";
         if (parameters != null) {
             int i = 0;
             for (Map.Entry<String, Object> entry: parameters.entrySet()) {

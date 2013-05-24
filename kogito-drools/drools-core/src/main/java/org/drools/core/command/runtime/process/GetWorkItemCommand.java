@@ -17,6 +17,10 @@
 package org.drools.core.command.runtime.process;
 
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.process.instance.WorkItem;
@@ -24,8 +28,10 @@ import org.drools.core.process.instance.WorkItemManager;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 
+@XmlAccessorType(XmlAccessType.NONE)
 public class GetWorkItemCommand implements GenericCommand<WorkItem> {
 
+    @XmlAttribute(required = true)
     private long workItemId;
 
     public GetWorkItemCommand() {
@@ -49,7 +55,7 @@ public class GetWorkItemCommand implements GenericCommand<WorkItem> {
     }
 
     public String toString() {
-        return "((org.kie.internal.process.instance.WorkItemManager) session.getWorkItemManager()).getWorkItem("
+        return "((org.drools.core.process.instance.WorkItemManager) session.getWorkItemManager()).getWorkItem("
             + workItemId +  ");";
     }
 

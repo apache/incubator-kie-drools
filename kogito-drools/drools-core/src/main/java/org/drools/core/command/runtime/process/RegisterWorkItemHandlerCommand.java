@@ -36,15 +36,16 @@ public class RegisterWorkItemHandlerCommand implements GenericCommand<Object> {
     @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
     private WorkItemHandler handler;
 
+    @XmlElement
     private String workItemName;
 
-        public RegisterWorkItemHandlerCommand() {
-        }
+    public RegisterWorkItemHandlerCommand() {
+    }
 
-        public RegisterWorkItemHandlerCommand(String workItemName, WorkItemHandler handler) {
-            this.handler = handler;
-            this.workItemName = workItemName;
-        }
+    public RegisterWorkItemHandlerCommand(String workItemName, WorkItemHandler handler) {
+        this.handler = handler;
+        this.workItemName = workItemName;
+    }
         
     public WorkItemHandler getHandler() {
         return handler;
