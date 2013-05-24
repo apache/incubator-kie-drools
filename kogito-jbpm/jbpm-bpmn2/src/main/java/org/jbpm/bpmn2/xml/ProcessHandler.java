@@ -208,41 +208,37 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 	            }
 
 	        }
-	    }
-	 
-	 
-	  private static Node findNodeByIdOrUniqueIdInMetadata(
-	            NodeContainer nodeContainer, String targetRef) {
+	 }
 
-	        try {
-	            // remove starting _
-	            String targetId = targetRef.substring(1);
-	            // remove ids of parent nodes
-	            targetId = targetId.substring(targetId.lastIndexOf("-") + 1);
-	            return nodeContainer.getNode(new Integer(targetId));
-	        } catch (NumberFormatException e) {
-	            // try looking for a node with same "UniqueId" (in metadata)
-	            Node targetNode = null;
-	            for (Node node : nodeContainer.getNodes()) {
-	                if (targetRef.equals(node.getMetaData().get("UniqueId"))) {
-	                    targetNode = node;
-	                    break;
-	                }
-	            }
+	 private static Node findNodeByIdOrUniqueIdInMetadata(
+	         NodeContainer nodeContainer, String targetRef) {
+	     return findNodeByIdOrUniqueIdInMetadata(nodeContainer, targetRef, "Could not find target node for connection:" + targetRef);
+	 }
 
-	            if (targetNode != null) {
-	                return targetNode;
-	            } else {
-	                throw new IllegalArgumentException(
-	                        "Could not find target node for connection:"
-	                                + targetRef);
-	            }
-	        }
+	 private static Node findNodeByIdOrUniqueIdInMetadata(NodeContainer nodeContainer, final String nodeRef, String errorMsg) { 
+	     Node node = null;
+	     try {
+	         // remove starting _
+	         String numNodeRef = nodeRef.substring(1);
+	         // remove ids of parent nodes
+	         numNodeRef = numNodeRef.substring(numNodeRef.lastIndexOf("-") + 1);
+	         node = nodeContainer.getNode(new Integer(numNodeRef));
+	     } catch (NumberFormatException e) {
+	         // try looking for a node with same "UniqueId" (in metadata)
+	         for (Node containerNode: nodeContainer.getNodes()) {
+	             if (nodeRef.equals(containerNode.getMetaData().get("UniqueId"))) {
+	                 node = containerNode;
+	                 break;
+	             }
+	         }
+	         if (node == null) {
+	             throw new IllegalArgumentException(errorMsg);
+	         }
+	     }
+	     return node;
+	 }
 
-	    }
-
-
-	public Class<?> generateNodeFor() {
+	 public Class<?> generateNodeFor() {
 		return RuleFlowProcess.class;
 	}
 	
@@ -250,45 +246,25 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		if (connections != null) {
 			for (SequenceFlow connection: connections) {
 				String sourceRef = connection.getSourceRef();
-				String targetRef = connection.getTargetRef();
-				Node source = null;
-				Node target = null;
-				try {
-    				// remove starting _
-    				sourceRef = sourceRef.substring(1);
-    				// remove ids of parent nodes
-    				sourceRef = sourceRef.substring(sourceRef.lastIndexOf("-") + 1);
-    				source = nodeContainer.getNode(new Integer(sourceRef));
-				} catch (NumberFormatException e) {
-				    // try looking for a node with same "UniqueId" (in metadata)
-				    for (Node node: nodeContainer.getNodes()) {
-				        if (connection.getSourceRef().equals(node.getMetaData().get("UniqueId"))) {
-				            source = node;
-				            break;
-				        }
-				    }
-                    if (source == null) {
-                        throw new IllegalArgumentException("Could not find source node for connection:" + connection.getSourceRef());
-                    }
-				}
-				try {
-    				// remove starting _
-    				targetRef = targetRef.substring(1);
-    		        // remove ids of parent nodes
-    				targetRef = targetRef.substring(targetRef.lastIndexOf("-") + 1);
-    				target = nodeContainer.getNode(new Integer(targetRef));
-				} catch (NumberFormatException e) {
-				    // try looking for a node with same "UniqueId" (in metadata)
-                    for (Node node: nodeContainer.getNodes()) {
-                        if (connection.getTargetRef().equals(node.getMetaData().get("UniqueId"))) {
-                            target = node;
-                            break;
+                Node source = findNodeByIdOrUniqueIdInMetadata(nodeContainer, sourceRef, "Could not find source node for connection:" + sourceRef);
+                
+                if (source instanceof EventNode) {
+                    for (EventFilter eventFilter : ((EventNode) source).getEventFilters()) {
+                        if (eventFilter instanceof EventTypeFilter) {
+                            if ("Compensate-".equals(((EventTypeFilter) eventFilter).getType())) {
+                                // While this isn't explicitly stated in the spec,
+                                // BPMN Method & Style, 2nd Ed. (Silver), states this on P. 131
+                                throw new IllegalArgumentException(
+                                        "A Compensation Boundary Event can only be *associated* with a compensation activity via an Association, not via a Sequence Flow element.");
+                            }
                         }
                     }
-                    if (target == null) {
-                        throw new IllegalArgumentException("Could not find target node for connection:" + connection.getTargetRef());
-                    }
-				}
+                }
+                
+                String targetRef = connection.getTargetRef();
+                Node target = findNodeByIdOrUniqueIdInMetadata(nodeContainer, targetRef, "Could not find target node for connection:" + targetRef);
+
+				
 				Connection result = new ConnectionImpl(
 					source, NodeImpl.CONNECTION_DEFAULT_TYPE, 
 					target, NodeImpl.CONNECTION_DEFAULT_TYPE);
@@ -313,7 +289,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 			}
 		}
 	}
-	
+
+	   
     public static void linkBoundaryEvents(NodeContainer nodeContainer) {
         for (Node node: nodeContainer.getNodes()) {
             if (node instanceof EventNode) {
@@ -321,25 +298,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 if (attachedTo != null) {
                 	String type = ((EventTypeFilter)
                         ((EventNode) node).getEventFilters().get(0)).getType();
-                    Node attachedNode = null;
-                    try {
-                        // remove starting _
-                        String attachedToString = attachedTo.substring(1);
-                        // remove ids of parent nodes
-                        attachedToString = attachedToString.substring(attachedToString.lastIndexOf("-") + 1);
-                        attachedNode = nodeContainer.getNode(new Integer(attachedToString));
-                    } catch (NumberFormatException e) {
-                        // try looking for a node with same "UniqueId" (in metadata)
-                        for (Node subnode: nodeContainer.getNodes()) {
-                            if (attachedTo.equals(subnode.getMetaData().get("UniqueId"))) {
-                                attachedNode = subnode;
-                                break;
-                            }
-                        }
-                        if (attachedNode == null) {
-                            throw new IllegalArgumentException("Could not find node to attach to: " + attachedTo);
-                        }
-                    }
+                    Node attachedNode = findNodeByIdOrUniqueIdInMetadata(nodeContainer, attachedTo, "Could not find node to attach to: " + attachedTo);
+
                     // 
                     if (!(attachedNode instanceof StateBasedNode) && !type.startsWith("Compensate-")) {
                         throw new IllegalArgumentException("Boundary events are supported only on StateBasedNode, found node: " + 
@@ -444,12 +404,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             ((EventNode)node).setActions(EndNode.EVENT_NODE_EXIT, actions);
                         }
                     } else if (type.startsWith("Compensate-")) {
-                    	String activityRef = (String) node.getMetaData().get("ActivityRef");
-                    	if (activityRef == null) {
-                    	    activityRef = attachedTo;
-                    	}
-            	        String eventType = "Compensate-" + activityRef;
-            	        ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).setType(eventType);
+                        linkBoundaryCompensationEvent(nodeContainer, node, attachedTo, attachedNode);
                     } else if (node.getMetaData().get("SignalName") != null || type.startsWith("Message-")) {
                         boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
                         if (cancelActivity) {
@@ -484,6 +439,19 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 }
             }
         }
+    }
+    
+    private static void linkBoundaryCompensationEvent(NodeContainer nodeContainer, Node node, String attachedTo, Node attachedNode) {
+        // BPMN2 Spec, p. 264: 
+        // "For an Intermediate event attached to the boundary of an activity:"
+        // ...
+        // "The Activity the Event is attached to will provide the Id necessary
+        //  to match the Compensation Event with the Event that threw the compensation"
+        // 
+        // In other words: "activityRef" is IGNORED 
+        String eventType = "Compensate-" + attachedTo; 
+        ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).setType(eventType);
+        throw new IllegalArgumentException("Compensation is not supported yet (Boundary Compensation event on node " + attachedTo);
     }
     
 	private void assignLanes(RuleFlowProcess process, List<Lane> lanes) {

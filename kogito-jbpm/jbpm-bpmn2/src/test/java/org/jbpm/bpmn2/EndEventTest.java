@@ -26,6 +26,7 @@ import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -98,6 +99,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Ignore(value="This test tested an incorrect implemenation of compensation")
     public void testCompensateEndEventProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-CompensateEndEvent.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
