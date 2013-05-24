@@ -20,8 +20,6 @@ public class DefaultKieSessionExampleTest {
         String expected = "" +
                           "Dave: Hello, HAL. Do you read me, HAL?\n" +
                           "HAL: Dave. I read you.\n";
-        System.out.println( expected );
-        System.out.println( actual );
         assertEquals(expected, actual);
     }
 }
