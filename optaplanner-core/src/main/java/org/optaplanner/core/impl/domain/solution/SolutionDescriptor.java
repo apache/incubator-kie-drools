@@ -171,15 +171,13 @@ public class SolutionDescriptor {
         return planningEntityDescriptorMap.get(planningEntityClass);
     }
 
-    public boolean hasPlanningEntityDescriptor(Class<?> planningEntitySubclass) {
-        PlanningEntityDescriptor entityDescriptor = null;
-        Class<?> planningEntityClass = planningEntitySubclass;
-        while (planningEntityClass != null) {
-            entityDescriptor = planningEntityDescriptorMap.get(planningEntityClass);
-            if (entityDescriptor != null) {
+    public boolean hasPlanningEntityDescriptor(Class<?> entitySubclass) {
+        Class<?> entityClass = entitySubclass;
+        while (entityClass != null) {
+            if (planningEntityDescriptorMap.containsKey(entityClass)) {
                 return true;
             }
-            planningEntityClass = planningEntityClass.getSuperclass();
+            entityClass = entityClass.getSuperclass();
         }
         return false;
     }
