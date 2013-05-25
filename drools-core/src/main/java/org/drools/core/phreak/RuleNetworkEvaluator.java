@@ -855,13 +855,17 @@ public class RuleNetworkEvaluator {
 
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            if ( leftTuple.getBlocker() == null ) {
+            RightTuple blocker = leftTuple.getBlocker();
+            if ( blocker == null ) {
                 ltm.add(leftTuple);
                 for (LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; ) {
                     LeftTuple childNext = childLeftTuple.getLeftParentNext();
                     childLeftTuple.reAddRight();
                     childLeftTuple = childNext;
                 }
+            } else if ( blocker.getStagedType() != LeftTuple.NONE ) {
+                // it's blocker is also being updated, so remove to force it to start from the beginning
+                blocker.removeBlocked( leftTuple );
             }
             leftTuple = next;
         }
