@@ -80,6 +80,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.Arrays.asList;
+
 /**
  * Run all the tests with the ReteOO engine implementation
  */
@@ -498,7 +500,7 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals(Arrays.asList(1, 2, 4, 5, 6), list);
+        assertEquals(asList(1, 2, 4, 5, 6), list);
     }
 
     @Test
@@ -532,7 +534,7 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals(Arrays.asList(7, 6, 5, 4, 3, 2, 1), list);
+        assertEquals(asList(7, 6, 5, 4, 3, 2, 1), list);
     }
 
     @Test(timeout = 5000)
@@ -1940,5 +1942,96 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         ksession2.insert(message2);
         assertEquals( 1, ksession2.fireAllRules() );
+    }
+
+    public static class Lecture {
+        private final String id;
+        private int day;
+        private int index;
+
+        public Lecture(String id, int day, int index) {
+            this.id = id;
+            this.day = day;
+            this.index = index;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public int getDay() {
+            return day;
+        }
+
+        public Lecture setDay(int day) {
+            this.day = day;
+            return this;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public Lecture setIndex(int index) {
+            this.index = index;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return id + " - " + "day = " + getDay() + "; index = " + getIndex();
+        }
+    }
+
+    @Test
+    public void testPhreakInnerJoinNot() {
+        // DROOLS-7
+        String str =
+                "import org.drools.compiler.integrationtests.MiscTest2.Lecture\n" +
+                "global java.util.List list;\n" +
+                "rule \"curriculumCompactness\"\n" +
+                "    when\n" +
+                "        $lecture : Lecture(\n" +
+                "            $day : day, $index : index\n" +
+                "        )\n" +
+                "        not Lecture(\n" +
+                "            day == $day, index == ($index + 1)\n" +
+                "        )\n" +
+                "    then\n" +
+                "        list.add($lecture.getId());\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Lecture lA = new Lecture("A", 0, 4);
+        Lecture lB = new Lecture("B", 2, 2);
+        Lecture lC = new Lecture("C", 2, 1);
+
+        FactHandle fhA = ksession.insert(lA);
+        FactHandle fhB = ksession.insert(lB);
+        FactHandle fhC = ksession.insert(lC);
+
+        ksession.fireAllRules(); // C gets blocked by B
+
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll(asList("A", "B")));
+        list.clear();
+
+        ksession.update(fhB, lB.setDay(0).setIndex(4));
+        ksession.update(fhC, lC.setDay(0).setIndex(3));
+        ksession.fireAllRules(); // B is still a valid blocker for C
+
+        assertEquals(1, list.size());
+        assertTrue(list.contains("B"));
+        list.clear();
+
+        ksession.update(fhB, lB.setDay(2).setIndex(2));
+        ksession.fireAllRules(); // C doesn't find A as blocker
+
+        assertEquals(1, list.size());
+        assertTrue(list.contains("B"));
     }
 }
