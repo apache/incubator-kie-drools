@@ -44,7 +44,6 @@ public class GetTaskAssignedAsPotentialOwnerCommand extends TaskCommand<List<Tas
     public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
-        	System.out.println("GetTaskAssignedAsPotentialOwnerCommand " + userId + " " + language + " " + status);
         	if (status == null) {
         		return context.getTaskService().getTasksAssignedAsPotentialOwner(userId, language);
         	} else {
