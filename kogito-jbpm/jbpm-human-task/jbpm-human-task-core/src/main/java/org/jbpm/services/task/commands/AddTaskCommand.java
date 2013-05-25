@@ -15,6 +15,8 @@
  */
 package org.jbpm.services.task.commands;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.util.AnnotationLiteral;
@@ -29,9 +31,19 @@ import org.jbpm.services.task.events.AfterTaskAddedEvent;
 import org.jbpm.services.task.events.BeforeTaskAddedEvent;
 import org.jbpm.services.task.impl.model.ContentDataImpl;
 import org.jbpm.services.task.impl.model.ContentImpl;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.I18NTextImpl;
+import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
+import org.jbpm.services.task.impl.model.TaskDataImpl;
+import org.jbpm.services.task.impl.model.TaskImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.InternalTaskData;
@@ -67,7 +79,61 @@ public class AddTaskCommand extends TaskCommand<Long> {
     public Long execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
-    		return context.getTaskService().addTask(task, params);
+        	if (task instanceof JaxbTask) {
+        		TaskImpl taskImpl = new TaskImpl();
+    			List<I18NText> names = new ArrayList<I18NText>();
+        		for (I18NText n: task.getNames()) {
+    				names.add(new I18NTextImpl(n.getLanguage(), n.getText()));
+        		}
+        		taskImpl.setNames(names);
+                List<I18NText> descriptions = new ArrayList<I18NText>();
+        		for (I18NText n: task.getDescriptions()) {
+    				descriptions.add(new I18NTextImpl(n.getLanguage(), n.getText()));
+        		}
+                taskImpl.setDescriptions(descriptions);
+                List<I18NText> subjects = new ArrayList<I18NText>();
+        		for (I18NText n: task.getSubjects()) {
+    				subjects.add(new I18NTextImpl(n.getLanguage(), n.getText()));
+        		}
+                taskImpl.setSubjects(subjects);
+                taskImpl.setPriority(task.getPriority());
+                InternalTaskData taskData = new TaskDataImpl();
+                taskData.setWorkItemId(task.getTaskData().getWorkItemId());
+                taskData.setProcessInstanceId(task.getTaskData().getProcessInstanceId());
+                taskData.setProcessId(task.getTaskData().getProcessId());
+                taskData.setProcessSessionId(task.getTaskData().getProcessSessionId());
+                taskData.setSkipable(task.getTaskData().isSkipable());
+                PeopleAssignmentsImpl peopleAssignments = new PeopleAssignmentsImpl();
+                List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
+                for (OrganizationalEntity e: task.getPeopleAssignments().getPotentialOwners()) {
+                	if (e instanceof User) {
+                		potentialOwners.add(new UserImpl(e.getId()));
+                	} else if (e instanceof Group) {
+                		potentialOwners.add(new GroupImpl(e.getId()));
+                	}
+                }
+            	peopleAssignments.setPotentialOwners(potentialOwners);
+            	List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
+                for (OrganizationalEntity e: task.getPeopleAssignments().getBusinessAdministrators()) {
+                	if (e instanceof User) {
+                		businessAdmins.add(new UserImpl(e.getId()));
+                	} else if (e instanceof Group) {
+                		businessAdmins.add(new GroupImpl(e.getId()));
+                	}
+                }
+                if (task.getPeopleAssignments().getTaskInitiator() != null) {
+                	peopleAssignments.setTaskInitiator(new UserImpl(task.getPeopleAssignments().getTaskInitiator().getId()));
+                }
+            	peopleAssignments.setBusinessAdministrators(businessAdmins);
+            	peopleAssignments.setExcludedOwners(new ArrayList<OrganizationalEntity>());
+            	peopleAssignments.setRecipients(new ArrayList<OrganizationalEntity>());
+            	peopleAssignments.setTaskStakeholders(new ArrayList<OrganizationalEntity>());
+            	taskImpl.setPeopleAssignments(peopleAssignments);        
+            	taskImpl.setTaskData(taskData);
+        		return context.getTaskService().addTask(taskImpl, params);
+        	} else {
+        		return context.getTaskService().addTask(task, params);
+        	}
         }
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskAddedEvent>() {
         }).fire(task);
