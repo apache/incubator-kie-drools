@@ -59,26 +59,33 @@ import org.kie.internal.task.api.model.InternalTaskData;
 public class AddTaskCommand extends TaskCommand<Long> {
 
     @XmlElement
-    private JaxbTask task;
+    private JaxbTask jaxbTask;
+    private Task task;
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     @XmlElement(name="parameter")
     private Map<String, Object> params;
+    // TODO support ContentData marshalling
+    private ContentData data;
     
     public AddTaskCommand() {
     }
 
     public AddTaskCommand(Task task, Map<String, Object> params) {
-        this.task = new JaxbTask(task);
+        setTask(task);
         this.params = params;
     }
 
     public AddTaskCommand(Task task, ContentData data) {
-        throw new UnsupportedOperationException();
+    	setTask(task);
+        this.data = data;
     }
 
     public Long execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         if (context.getTaskService() != null) {
+        	if (task == null) {
+        		task = jaxbTask;
+        	}
         	if (task instanceof JaxbTask) {
         		TaskImpl taskImpl = new TaskImpl();
     			List<I18NText> names = new ArrayList<I18NText>();
@@ -130,9 +137,17 @@ public class AddTaskCommand extends TaskCommand<Long> {
             	peopleAssignments.setTaskStakeholders(new ArrayList<OrganizationalEntity>());
             	taskImpl.setPeopleAssignments(peopleAssignments);        
             	taskImpl.setTaskData(taskData);
-        		return context.getTaskService().addTask(taskImpl, params);
+            	if (data != null) {
+            		return context.getTaskService().addTask(taskImpl, data);
+            	} else {
+            		return context.getTaskService().addTask(taskImpl, params);
+            	}
         	} else {
-        		return context.getTaskService().addTask(task, params);
+        		if (data != null) {
+        			return context.getTaskService().addTask(task, data);
+        		} else {
+        			return context.getTaskService().addTask(task, params);
+        		}
         	}
         }
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskAddedEvent>() {
@@ -142,6 +157,12 @@ public class AddTaskCommand extends TaskCommand<Long> {
             ContentImpl content = new ContentImpl(contentData.getContent());
             context.getPm().persist(content);
             ((InternalTaskData) task.getTaskData()).setDocument(content.getId(), contentData);
+        } else if (data != null) {
+        	if (data != null) {
+	            ContentImpl content = new ContentImpl(data.getContent());
+	            context.getPm().persist(content);
+	            ((InternalTaskData) task.getTaskData()).setDocument(content.getId(), data);
+	        } 
         }
         
         context.getPm().persist(task);
@@ -155,7 +176,12 @@ public class AddTaskCommand extends TaskCommand<Long> {
     }
     
     public void setTask(Task task) {
-    	this.task = new JaxbTask(task);
+    	this.task = task;
+        if (task instanceof JaxbTask) {
+        	this.jaxbTask = (JaxbTask) task;
+        } else {
+        	this.jaxbTask = new JaxbTask(task);
+        }
     }
 
     public Map<String, Object> getParams() {
