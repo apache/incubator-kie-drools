@@ -157,7 +157,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             if (isFieldAnEntityPropertyOnSolution(field)) {
                 return true;
             }
-            if (isValueAnEntity(originalValue)) {
+            if (isValueAnEntityOrSolution(originalValue)) {
                 return true;
             }
             return false;
@@ -181,9 +181,9 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             return false;
         }
 
-        protected boolean isValueAnEntity(Object originalValue) {
+        protected boolean isValueAnEntityOrSolution(Object originalValue) {
             Class valueClass = originalValue.getClass();
-            if (solutionDescriptor.getPlanningEntityClassSet().contains(valueClass)
+            if (solutionDescriptor.hasPlanningEntityDescriptor(valueClass)
                     || valueClass == ((Class) solutionDescriptor.getSolutionClass())) {
                 return true;
             }
