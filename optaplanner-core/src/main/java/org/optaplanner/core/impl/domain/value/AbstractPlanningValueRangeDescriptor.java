@@ -23,6 +23,7 @@ import java.util.Set;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 
 public abstract class AbstractPlanningValueRangeDescriptor implements PlanningValueRangeDescriptor {
@@ -69,21 +70,10 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
         // TODO HACK remove me and replace by SelectionFilter
         Collection<Object> filteredValues = new ArrayList<Object>(values.size());
         for (Object value : values) {
-            if (value.getClass().isAnnotationPresent(PlanningEntity.class)) {
-                PlanningEntityDescriptor entityDescriptor = variableDescriptor.getPlanningEntityDescriptor()
-                        .getSolutionDescriptor().getPlanningEntityDescriptor(value.getClass());
-                if (entityDescriptor == null) {
-                    throw new IllegalArgumentException("The planningEntityClass ("
-                            + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
-                            + ") has a PlanningVariable annotated property ("
-                            + variableDescriptor.getVariableName()
-                            + ") with excludeUninitializedPlanningEntity (true),"
-                            + " but a planning value class (" + value.getClass()
-                            + ") annotated with PlanningEntity is a non configured as a planning entity.");
-                }
-                if (variableDescriptor.isInitialized(value)) {
-                    filteredValues.add(value);
-                }
+            Class<?> entityClass = variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass();
+            if (!entityClass.isAssignableFrom(value.getClass())
+                    || variableDescriptor.isInitialized(value)) {
+                filteredValues.add(value);
             }
         }
         return filteredValues;
