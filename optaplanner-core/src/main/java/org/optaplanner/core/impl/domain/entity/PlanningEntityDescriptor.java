@@ -152,7 +152,7 @@ public class PlanningEntityDescriptor {
     }
     
     public boolean appliesToPlanningEntity(Object entity) {
-        return entity.getClass().isAssignableFrom(planningEntityClass);
+        return planningEntityClass.isAssignableFrom(entity.getClass());
     }
 
     public boolean hasMovableEntitySelectionFilter() {
