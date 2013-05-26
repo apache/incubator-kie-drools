@@ -42,6 +42,7 @@ import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.runtime.ClassObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -723,6 +724,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
 
     @Test
+    @Ignore
     public void testDeclareInheritance() throws Exception {
         String s1 = "package org.drools;\n" +
                     "import org.drools.integrationtests.ExtendsTest.*;\n" +
