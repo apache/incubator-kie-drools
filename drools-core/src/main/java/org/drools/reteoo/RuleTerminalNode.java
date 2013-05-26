@@ -246,7 +246,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
-        boolean fire = agenda.createActivation( leftTuple, 
+        boolean fire = agenda.createActivation( leftTuple,
                                                 context, 
                                                 workingMemory, 
                                                 this, 
@@ -260,12 +260,12 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
     	InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
-    	
+
         // we need the inserted facthandle so we can update the network with new Activation
     	Object o = leftTuple.getObject();
     	if ( o != Boolean.TRUE) {  // would be true due to lock-on-active blocking activation creation
-    		AgendaItem match = (AgendaItem) o;       
-	        if ( match != null && match.isActivated() ) {
+    		AgendaItem match = (AgendaItem) o;
+	        if ( match != null && ( match.isActivated() || match.isPendingReactivation() ) ) {
 	            // already activated, do nothing
 	            // although we need to notify the inserted Activation, as it's declarations may have changed.
 	            agenda.modifyActivation( match, true );

@@ -442,5 +442,9 @@ public class AgendaItem
     public void setMatched(boolean matched) {
         this.matched = matched;
     }
+
+    public boolean isPendingReactivation() {
+        return false;
+    }
     
 }
