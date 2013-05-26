@@ -1193,7 +1193,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
             mv.visitCode();
             for ( FieldDefinition fld : def.getFieldsDefinitions() ) {
                 if ( fld.getInitExpr() != null ) {
-                        synchField( mv, fld, proxyName );
+                    synchField( mv, fld, proxyName );
                 }
             }
             mv.visitInsn( RETURN );
@@ -1209,8 +1209,12 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                             BuildUtils.getInternalType( proxyName ),
                             BuildUtils.getterName( fld.getName(), fld.getTypeName() ),
                             "()" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) );
-        Label l0 = new Label();
-        mv.visitJumpInsn( IFNONNULL, l0 );
+
+        Label l0 = null;
+        if ( ! BuildUtils.isPrimitive( fld.getTypeName() ) ) {
+            l0 = new Label();
+            mv.visitJumpInsn( IFNONNULL, l0 );
+        }
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitLdcInsn( fld.getInitExpr() );
@@ -1218,12 +1222,22 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                             Type.getInternalName( MVEL.class ),
                             "eval",
                             Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] { Type.getType( String.class ) } ) );
-        mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( fld.getTypeName() ) );
+        if ( BuildUtils.isPrimitive( fld.getTypeName() ) ) {
+            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( BuildUtils.box( fld.getTypeName() ) ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL,
+                                BuildUtils.getInternalType( BuildUtils.box( fld.getTypeName() ) ),
+                                BuildUtils.numericMorph( BuildUtils.box( fld.getTypeName() ) ),
+                                "()" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) );
+        } else {
+            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( fld.getTypeName() ) );
+        }
         mv.visitMethodInsn( INVOKEVIRTUAL,
                             BuildUtils.getInternalType( proxyName ),
                             BuildUtils.setterName( fld.getName(), fld.getTypeName() ),
                             "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")" + Type.getDescriptor( void.class ) );
-        mv.visitLabel(l0);
+        if ( ! BuildUtils.isPrimitive( fld.getTypeName() ) ) {
+            mv.visitLabel( l0 );
+        }
     }
 
 
