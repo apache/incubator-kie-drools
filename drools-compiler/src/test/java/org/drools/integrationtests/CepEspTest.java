@@ -69,6 +69,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.time.SessionClock;
@@ -3072,112 +3073,70 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
 
-
-
-
-
-
-
-
-
-
-    public static class IntEvent {
-        private int data;
-        public IntEvent( int j ) { data = j; }
-        public int getData() { return data; }
-        public void setData( int data ) { this.data = data; }
-    }
-
-    public class Server {
-        public int currentTemp;
-        public double avgTemp;
-        public String hostname;
-        public int readingCount;
-
-        public Server( String hiwaesdk ) { hostname = hiwaesdk; }
-
-        public String toString() {
-            return "Server{" +
-                   "currentTemp=" + currentTemp +
-                   ", avgTemp=" + avgTemp +
-                   ", hostname='" + hostname + '\'' +
-                   '}';
-        }
-    }
-
-
-
     @Test
-    public void testRaceOnAccumulateNodeSimple() throws InterruptedException {
+    public void AfterOperatorInCEPQueryTest() {
 
-        String drl = "package org.drools.integrationtests;\n" +
-                     "" +
-                     "import org.drools.integrationtests.CepEspTest.IntEvent; \n" +
-                     "import org.drools.integrationtests.CepEspTest.Server; \n" +
-                     "" +
-                     "declare IntEvent\n" +
-                     "  @role ( event )\n" +
-                     "  @expires( 15s )\n" +
+        String drl = "package org.drools;\n" +
+                     "\n" +
+                     "declare StockTick\n" +
+                     "    @role( event )\n" +
                      "end\n" +
                      "\n" +
-                     "" +
-                     "rule \"average temperature\"\n" +
-                     "when\n" +
-                     "  accumulate (\n" +
-                     "      IntEvent ( $temp : data ) over window:length(10) from entry-point ep01, " +
-                     "      $avg : average ($temp)\n" +
-                     "  )\n" +
-                     "  $s : Server (hostname == \"hiwaesdk\")\n" +
-                     "then\n" +
-                     "  $s.avgTemp = $avg.intValue();\n" +
+                     "query EventsBeforeNineSeconds\n" +
+                     "   $event : StockTick() from entry-point EStream\n" +
+                     "   $result : StockTick ( this after [0s, 9s] $event) from entry-point EventStream\n" +
                      "end\n" +
-                     "\n";
+                     "\n" +
+                     "query EventsBeforeNineteenSeconds\n" +
+                     "   $event : StockTick() from entry-point EStream\n" +
+                     "   $result : StockTick ( this after [0s, 19s] $event) from entry-point EventStream\n" +
+                     "end\n" +
+                     "\n" +
+                     "query EventsBeforeHundredSeconds\n" +
+                     "   $event : StockTick() from entry-point EStream\n" +
+                     "   $result : StockTick ( this after [0s, 100s] $event) from entry-point EventStream\n" +
+                     "end\n";
 
-        KnowledgeBaseConfiguration kbconfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbconfig.setOption(EventProcessingOption.STREAM);
+        final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf,  drl );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbconfig);
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
 
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
-        WorkingMemoryEntryPoint ep01 = session.getWorkingMemoryEntryPoint("ep01");
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+        WorkingMemoryEntryPoint ePoint = ksession.getWorkingMemoryEntryPoint( "EStream" );
+        WorkingMemoryEntryPoint entryPoint = ksession.getWorkingMemoryEntryPoint( "EventStream" );
 
 
-        Thread t = new Thread() {
-            public void run()
-            { session.fireUntilHalt(); }
+        ePoint.insert(new StockTick(0L, "zero", 0.0, 0));
 
-        };
-        t.start();
+        entryPoint.insert(new StockTick(1L, "one", 0.0, 0));
 
-        Server hiwaesdk = new Server ("hiwaesdk");
-        session.insert( hiwaesdk );
-        long LIMIT = 200;
+        clock.advanceTime( 10, TimeUnit.SECONDS );
 
-        for ( long i = LIMIT; i > 0; i-- ) {
-            ep01.insert ( new IntEvent ( (int) i ) ); //Thread.sleep (0x1); }
-        }
+        entryPoint.insert(new StockTick(2L, "two",0.0,  0));
 
-        try {
-            Thread.sleep( 1000 );
-            System.out.println( "Halting .." );
-            session.halt();
-            t.join();
-        } catch ( Exception e ) {
-            fail( e.getMessage() );
-        }
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+
+        entryPoint.insert(new StockTick(3L, "three", 0.0, 0));
+
+        QueryResults results = ksession.getQueryResults("EventsBeforeNineSeconds");
+
+        assertEquals( 1, results.size());
+
+        results = ksession.getQueryResults("EventsBeforeNineteenSeconds");
+
+        assertEquals( 2, results.size() );
+
+        results = ksession.getQueryResults("EventsBeforeHundredSeconds");
+
+        assertEquals( 3, results.size() );
+
+        ksession.dispose();
     }
-
-
-
-
 
 }
 
