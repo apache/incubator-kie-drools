@@ -54,13 +54,8 @@ public class UserTaskHandler extends TaskHandler {
     	org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
         	String nodeName = xmlNode.getNodeName();
-        	if ("ioSpecification".equals(nodeName)) {
-        		readIoSpecification(xmlNode, dataInputs, dataOutputs);
-//        	} else if ("dataInputAssociation".equals(nodeName)) {
- //       		readDataInputAssociation(xmlNode, humanTaskNode, dataInputs);
-  //      	} else if ("dataOutputAssociation".equals(nodeName)) {
-   //     		readDataOutputAssociation(xmlNode, humanTaskNode, dataOutputs);
-        	} else if ("potentialOwner".equals(nodeName)) {
+        	// ioSpec and data{Input,Output}Spec handled in super.handleNode(...)
+        	if ("potentialOwner".equals(nodeName)) {
         		String owner = readPotentialOwner(xmlNode, humanTaskNode);
         		if (owner != null) {
         			owners.add(owner);

@@ -45,8 +45,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
-	
-	public static final String CONNECTIONS = "BPMN.Connections";
 
 	@SuppressWarnings("unchecked")
 	public DefinitionsHandler() {

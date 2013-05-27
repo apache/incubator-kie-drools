@@ -22,14 +22,13 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
-import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.process.core.event.BroadcastEventTypeFilter;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
@@ -236,8 +235,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
     protected void handleCompensationNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
+       
+        BoundaryEventNode eventNode = (BoundaryEventNode) parser.getCurrent();
+        
         super.handleNode(node, element, uri, localName, parser);
-        BoundaryEventNode eventNode = (BoundaryEventNode) node;
         NodeList childs = element.getChildNodes();
         for (int i = 0; i < childs.getLength(); i++) {
             if (childs.item(i) instanceof Element) {
@@ -250,13 +251,17 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 }
             }
         }
+        
         eventNode.setMetaData("AttachedTo", attachedTo);
         eventNode.setAttachedToNodeId(attachedTo);
+        
         List<EventFilter> eventFilters = new ArrayList<EventFilter>();
-        EventTypeFilter eventFilter = new EventTypeFilter();
-        String eventType = "Compensate-";
-        eventFilter.setType(eventType);
+        
+        // Specfic (broadcast-capable) compensate event
+        EventTypeFilter eventFilter = new BroadcastEventTypeFilter();
+        eventFilter.setType("Compensate-" + attachedTo);
         eventFilters.add(eventFilter);
+        
         ((EventNode) node).setEventFilters(eventFilters);
     }
     

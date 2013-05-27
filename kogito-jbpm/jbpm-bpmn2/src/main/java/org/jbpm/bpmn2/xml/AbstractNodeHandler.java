@@ -49,6 +49,8 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
@@ -57,6 +59,8 @@ import org.xml.sax.SAXParseException;
 
 public abstract class AbstractNodeHandler extends BaseAbstractHandler implements Handler {
 
+    protected static Logger logger = LoggerFactory.getLogger(AbstractNodeHandler.class);
+    
     protected final static String EOL = System.getProperty( "line.separator" );
     protected Map<String, String> dataInputs = new HashMap<String, String>();
     protected Map<String, String> dataOutputs = new HashMap<String, String>();

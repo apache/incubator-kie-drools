@@ -16,17 +16,13 @@
 
 package org.jbpm.bpmn2.xml;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.core.process.core.Work;
-import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.core.impl.WorkImpl;
 import org.drools.core.xml.ExtensibleXmlParser;
-import org.jbpm.bpmn2.core.ItemDefinition;
-import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.NodeImpl;
@@ -73,6 +69,11 @@ public class TaskHandler extends AbstractNodeHandler {
         }
         handleScript(workItemNode, element, "onEntry");
         handleScript(workItemNode, element, "onExit");
+        
+        String compensation = element.getAttribute("isForCompensation");
+        if( compensation != null ) {
+            workItemNode.setMetaData("isForCompensation", Boolean.parseBoolean(compensation) );
+        }
 	}
     
     protected String getTaskName(final Element element) {

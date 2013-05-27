@@ -49,6 +49,9 @@ public class CompositeContextNodeHandler extends AbstractNodeHandler {
 		if (compositeNode instanceof EventSubProcessNode) {
 		    xmlDump.append(" triggeredByEvent=\"true\" ");
 		}
+        if( (Boolean) compositeNode.getMetaData("isForCompensation") ) { 
+            xmlDump.append("isForCompensation=\"true\" ");
+        }
 		xmlDump.append(" >" + EOL);
         // variables
 		VariableScope variableScope = (VariableScope) 

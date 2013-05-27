@@ -70,8 +70,7 @@ public class DataStoreHandler extends BaseAbstractHandler implements Handler {
 		Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
 			((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
 		// retrieve type from item definition
-		//FIXME we bypass namespace resolving here. That's not a good idea
-		// when we start having several documents, with imports.
+		//FIXME we bypass namespace resolving here. That's not a good idea when we start having several documents, with imports.
 		String localItemSubjectRef = itemSubjectRef.substring(
 				itemSubjectRef.indexOf(":") +1);
 		DataType dataType = new ObjectDataType();

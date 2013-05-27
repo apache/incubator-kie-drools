@@ -42,6 +42,7 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
         ActionNode actionNode = (ActionNode) node;
+        node.setMetaData("NodeType", "ScriptTask");
         DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
         if (action == null) {
         	action = new DroolsConsequenceAction();
@@ -58,6 +59,11 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
         		action.setConsequence(xmlNode.getTextContent());
         	}
         	xmlNode = xmlNode.getNextSibling();
+        }
+        
+        String compensation = element.getAttribute("isForCompensation");
+        if( compensation != null ) {
+            actionNode.setMetaData("isForCompensation", Boolean.parseBoolean(compensation));
         }
 	}
 
