@@ -41,6 +41,9 @@ public class VfsMVELWorkItemHandlerProducer implements WorkItemHandlerProducer {
                 return handlers;
             }
             DeployedUnit deployedUnit = deploymentService.get().getDeployedUnit(identifier);
+            if (deployedUnit == null) {
+                return handlers;
+            }
             VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) deployedUnit.getDeploymentUnit();
             Path assetFolder = fs.getPath(vfsUnit.getRepository() + vfsUnit.getRepositoryFolder());
             if (identifier == null || !fs.exists(assetFolder)) {
