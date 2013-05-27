@@ -327,7 +327,21 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
             providerURL = "ldap://localhost:"+ ((protocol != null && protocol.equals("ssl")) ? "636" : "389");
             this.config.setProperty(Context.PROVIDER_URL, providerURL);
         }
+        
+        String binduser = this.config.getProperty(BIND_USER); 
 
+        if (binduser == null) {
+
+            this.config.setProperty(Context.SECURITY_PRINCIPAL, binduser);
+        }
+
+        String bindpwd = this.config.getProperty(BIND_PWD); 
+
+        if (binduser == null) {
+
+            this.config.setProperty(Context.SECURITY_CREDENTIALS, bindpwd);
+        }
+        
         if (logger.isDebugEnabled()) {
             logger.debug("Using following InitialLdapContext properties:");
             logger.debug("Factory " + this.config.getProperty(Context.INITIAL_CONTEXT_FACTORY));
