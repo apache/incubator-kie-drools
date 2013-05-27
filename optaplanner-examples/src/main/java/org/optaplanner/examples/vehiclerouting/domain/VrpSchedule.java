@@ -36,15 +36,15 @@ import org.optaplanner.persistence.xstream.XStreamScoreConverter;
 @XStreamAlias("VrpSchedule")
 public class VrpSchedule extends AbstractPersistable implements Solution<HardSoftScore> {
 
-    private String name;
-    private List<VrpLocation> locationList;
-    private List<VrpDepot> depotList;
-    private List<VrpVehicle> vehicleList;
+    protected String name;
+    protected List<VrpLocation> locationList;
+    protected List<VrpDepot> depotList;
+    protected List<VrpVehicle> vehicleList;
 
-    private List<VrpCustomer> customerList;
+    protected List<VrpCustomer> customerList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
-    private HardSoftScore score;
+    protected HardSoftScore score;
 
     public String getName() {
         return name;

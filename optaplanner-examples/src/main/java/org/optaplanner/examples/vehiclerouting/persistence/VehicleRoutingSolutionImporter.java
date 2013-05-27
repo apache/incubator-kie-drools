@@ -29,8 +29,9 @@ import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
 import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
-import org.optaplanner.examples.vehiclerouting.domain.VrpTimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
 
 public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter {
 
@@ -64,10 +65,11 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
         private List<VrpDepot> depotList;
 
         public Solution readSolution() throws IOException {
-            schedule = new VrpSchedule();
-            schedule.setId(0L);
             String nameLine = readStringValue();
-            if (nameLine.startsWith("NAME :")) {
+            boolean basic = nameLine.startsWith("NAME :");
+            schedule = basic ? new VrpSchedule() : new VrpTimeWindowedSchedule();
+            schedule.setId(0L);
+            if (basic) {
                 schedule.setName(removePrefixSuffixFromLine(nameLine, "NAME :", ""));
                 readBasicSolution();
             } else {

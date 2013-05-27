@@ -26,9 +26,8 @@ import org.optaplanner.core.api.domain.value.ValueRangeType;
 import org.optaplanner.core.api.domain.value.ValueRanges;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.nurserostering.domain.contract.BooleanContractLine;
-import org.optaplanner.examples.nurserostering.domain.contract.MinMaxContractLine;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VrpCustomerDifficultyComparator;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
 
 @PlanningEntity(difficultyComparatorClass = VrpCustomerDifficultyComparator.class)
 @XStreamAlias("VrpCustomer")

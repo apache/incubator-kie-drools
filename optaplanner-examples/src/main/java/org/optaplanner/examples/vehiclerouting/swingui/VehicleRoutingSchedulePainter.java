@@ -32,11 +32,14 @@ import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
 import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
 
 public class VehicleRoutingSchedulePainter {
 
     private static final int TEXT_SIZE = 12;
+    private static final int TEXT_SPACING_SIZE = 4;
 
     private static final String IMAGE_PATH_PREFIX = "/org/optaplanner/examples/vehiclerouting/swingui/";
 
@@ -90,6 +93,10 @@ public class VehicleRoutingSchedulePainter {
             int y = translator.translateLatitudeToY(location.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
             g.drawString(Integer.toString(customer.getDemand()), x + 3, y - 3);
+            if (customer instanceof VrpTimeWindowedCustomer) {
+                VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
+                g.drawString(timeWindowedCustomer.getTimeWindowLabel(), x + 3, y - 3 + TEXT_SIZE + TEXT_SPACING_SIZE);
+            }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         for (VrpDepot depot : schedule.getDepotList()) {
@@ -171,7 +178,8 @@ public class VehicleRoutingSchedulePainter {
         g.drawString("Depot", 15, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColorFactory.ORANGE_2);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
-        g.drawString("Customer demand", 15, (int) height - 5);
+        g.drawString((schedule instanceof VrpTimeWindowedSchedule)
+                ? "Customer demand and time window" : "Customer demand", 15, (int) height - 5);
         // Show soft score
         g.setColor(TangoColorFactory.SCARLET_2);
         HardSoftScore score = schedule.getScore();

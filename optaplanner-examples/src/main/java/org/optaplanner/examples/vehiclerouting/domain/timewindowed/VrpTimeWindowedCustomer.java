@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.vehiclerouting.domain;
+package org.optaplanner.examples.vehiclerouting.domain.timewindowed;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -25,6 +25,7 @@ import org.optaplanner.core.api.domain.value.ValueRangeType;
 import org.optaplanner.core.api.domain.value.ValueRanges;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VrpCustomerDifficultyComparator;
 
 @XStreamAlias("VrpTimeWindowedCustomer")
@@ -61,5 +62,9 @@ public class VrpTimeWindowedCustomer extends VrpCustomer {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    public String getTimeWindowLabel() {
+        return readyTime + "-" + dueTime;
+    }
 
 }
