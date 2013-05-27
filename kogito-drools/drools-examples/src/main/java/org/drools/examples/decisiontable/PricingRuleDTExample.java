@@ -16,15 +16,9 @@
 
 package org.drools.examples.decisiontable;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.DecisionTableConfiguration;
-import org.kie.internal.builder.DecisionTableInputType;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.StatelessKieSession;
 
 import java.util.Arrays;
 
@@ -40,26 +34,9 @@ public class PricingRuleDTExample {
 
     public int executeExample() {
 
-        DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-        dtableconfiguration.setInputType( DecisionTableInputType.XLS );
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newClassPathResource("org/drools/examples/decisiontable/ExamplePolicyPricing.xls",
-                getClass()),
-                      ResourceType.DTABLE,
-                      dtableconfiguration );
-
-        if ( kbuilder.hasErrors() ) {
-            System.err.print( kbuilder.getErrors() );
-            return -1;
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        // typical decision tables are used statelessly
-        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        System.out.println(kc.verify().getMessages().toString());
+        StatelessKieSession ksession = kc.newStatelessKieSession( "DecisionTableKS");
 
         //now create some test data
         Driver driver = new Driver();

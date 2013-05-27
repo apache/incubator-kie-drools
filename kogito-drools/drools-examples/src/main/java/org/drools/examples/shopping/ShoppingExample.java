@@ -16,26 +16,17 @@
 
 package org.drools.examples.shopping;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class ShoppingExample {
 
     public static final void main(String[] args) {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "Shopping.drl", ShoppingExample.class ),
-                              ResourceType.DRL );
-
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        System.out.println(kc.verify().getMessages().toString());
+        KieSession ksession = kc.newKieSession("ShoppingKS");
 
         Customer mark = new Customer( "mark",
                                       0 );
@@ -57,7 +48,7 @@ public class ShoppingExample {
 
         ksession.fireAllRules();
 
-        ksession.retract( hatPurchaseHandle );
+        ksession.delete( hatPurchaseHandle );
         System.out.println( "Customer mark has returned the hat" );
         ksession.fireAllRules();
     }

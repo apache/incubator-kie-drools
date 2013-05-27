@@ -27,4 +27,24 @@
         <ksession name="CashFlowKS"/>
     </kbase>
 
+    <kbase name="DecisionTableKB" packages="org.drools.examples.decisiontable">
+        <ksession name="DecisionTableKS" type="stateless"/>
+    </kbase>
+
+    <kbase name="FibonacciKB" packages="org.drools.examples.fibonacci">
+        <ksession name="FibonacciKS"/>
+    </kbase>
+
+    <kbase name="GolfingKB" packages="org.drools.examples.golfing">
+        <ksession name="GolfingKS"/>
+    </kbase>
+
+    <kbase name="HonestPoliticianKB" packages="org.drools.examples.honestpolitician">
+        <ksession name="HonestPoliticianKS"/>
+    </kbase>
+
+    <kbase name="ShoppingKB" packages="org.drools.examples.shopping">
+        <ksession name="ShoppingKS"/>
+    </kbase>
+
 </kmodule>

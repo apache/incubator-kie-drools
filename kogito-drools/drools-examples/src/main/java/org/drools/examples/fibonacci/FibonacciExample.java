@@ -16,31 +16,18 @@
 
 package org.drools.examples.fibonacci;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 public class FibonacciExample {
 
     public static void main(final String[] args) {
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "Fibonacci.drl",
-                                                                    FibonacciExample.class ),
-                              ResourceType.DRL );
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        if (kbuilder.hasErrors()) {
-            throw new RuntimeException("Compilation error.\n" + kbuilder.getErrors().toString());
-        }
-
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        System.out.println(kc.verify().getMessages().toString());
+        KieSession ksession = kc.newKieSession("FibonacciKS");
 
 //        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/fibonacci.log");
 
