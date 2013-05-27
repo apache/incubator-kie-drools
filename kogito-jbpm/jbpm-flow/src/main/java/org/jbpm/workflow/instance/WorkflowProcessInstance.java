@@ -24,5 +24,5 @@ public interface WorkflowProcessInstance extends ProcessInstance, org.kie.api.ru
     void addEventListener(String type, EventListener eventListener, boolean external);
     
     void removeEventListener(String type, EventListener eventListener, boolean external);
-    
+
 }

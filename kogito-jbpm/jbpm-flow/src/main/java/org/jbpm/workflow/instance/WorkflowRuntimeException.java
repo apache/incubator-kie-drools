@@ -43,11 +43,13 @@ public class WorkflowRuntimeException extends RuntimeException {
     }
     
     private void initialize(NodeInstance nodeInstance, ProcessInstance processInstance) {
-        this.processInstanceId = nodeInstance.getProcessInstance().getId();
-        this.processId = nodeInstance.getProcessInstance().getProcessId();
-        this.nodeInstanceId = nodeInstance.getId();
-        this.nodeId = nodeInstance.getNodeId();
-        this.nodeName = nodeInstance.getNodeName();
+        this.processInstanceId = processInstance.getId();
+        this.processId = processInstance.getProcessId();
+        if( nodeInstance != null ) { 
+            this.nodeInstanceId = nodeInstance.getId();
+            this.nodeId = nodeInstance.getNodeId();
+            this.nodeName = nodeInstance.getNodeName();
+        }
         
         VariableScopeInstance variableScope =  (VariableScopeInstance) 
                 ((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance( 

@@ -139,6 +139,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
     }
     
     private void validateNodes(Node[] nodes, List<ProcessValidationError> errors, RuleFlowProcess process) {
+        String isForCompensation = "isForCompensation";
         for ( int i = 0; i < nodes.length; i++ ) {
             final Node node = nodes[i];
             if (node instanceof StartNode) {
@@ -259,8 +260,11 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         "SubProcess node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection."));
                 }
                 if (subProcess.getTo() == null && !acceptsNoOutgoingConnections(node)) {
-                    errors.add(new ProcessValidationErrorImpl(process,
-                        "SubProcess node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection."));
+                    Object compensationObj = subProcess.getMetaData(isForCompensation);
+                    if( compensationObj == null || ! ((Boolean) compensationObj) ) {
+                      errors.add(new ProcessValidationErrorImpl(process,
+                          "SubProcess node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection."));
+                    }
                 }
                 if (subProcess.getProcessId() == null && subProcess.getProcessName() == null) {
                     errors.add(new ProcessValidationErrorImpl(process,
@@ -283,8 +287,11 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         "Action node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection."));
                 }
                 if (actionNode.getTo() == null && !acceptsNoOutgoingConnections(node)) {
-                    errors.add(new ProcessValidationErrorImpl(process,
-                        "Action node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection."));
+                    Object compensationObj = actionNode.getMetaData(isForCompensation);
+                    if( compensationObj == null || ! ((Boolean) compensationObj) ) {
+                      errors.add(new ProcessValidationErrorImpl(process,
+                          "Action node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection."));
+                    }
                 }
                 if (actionNode.getAction() == null) {
                     errors.add(new ProcessValidationErrorImpl(process,
@@ -325,8 +332,11 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         "WorkItem node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection."));
                 }
                 if (workItemNode.getTo() == null && !acceptsNoOutgoingConnections(node)) {
-                    errors.add(new ProcessValidationErrorImpl(process,
-                        "WorkItem node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection."));
+                    Object compensationObj = workItemNode.getMetaData(isForCompensation);
+                    if( compensationObj == null || ! ((Boolean) compensationObj) ) {
+                      errors.add(new ProcessValidationErrorImpl(process,
+                          "WorkItem node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection."));
+                    }
                 }
                 if (workItemNode.getWork() == null) {
                     errors.add(new ProcessValidationErrorImpl(process,

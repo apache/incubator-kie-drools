@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.runtime.process.NodeInstance;
 
 public class BoundaryEventNodeInstance extends EventNodeInstance {
@@ -28,18 +29,26 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
     @Override
     public void signalEvent(String type, Object event) {
         BoundaryEventNode boundaryNode = (BoundaryEventNode) getEventNode();
-        
         String attachedTo = boundaryNode.getAttachedToNodeId();
         Collection<NodeInstance> nodeInstances = ((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstances();
-        if (isAttachedToNodeActive(nodeInstances, attachedTo)) {
-            super.signalEvent(type, event);
-        } else {
-            cancel();
+        if( type != null && type.startsWith("Compensate-") ) { 
+            // if not active && completed, signal
+            if( ! isAttachedToNodeActive(nodeInstances, attachedTo) && isAttachedToNodeCompleted(attachedTo)) {
+                super.signalEvent(type, event);
+            } 
+            else {
+                cancel();
+            }
+        } else { 
+            if (isAttachedToNodeActive(nodeInstances, attachedTo)) {
+                super.signalEvent(type, event);
+            } else {
+                cancel();
+            }
         }
     }
 
     private boolean isAttachedToNodeActive(Collection<NodeInstance> nodeInstances, String attachedTo) {
-
         if (nodeInstances != null && !nodeInstances.isEmpty()) {
             for (NodeInstance nInstance : nodeInstances) {
                 String nodeUniqueId = (String) nInstance.getNode().getMetaData().get("UniqueId");
@@ -57,6 +66,10 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
         return false;
     }
     
+    private boolean isAttachedToNodeCompleted(String attachedTo) {
+        WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl) getProcessInstance();
+        return processInstance.getCompletedNodeIds().contains(attachedTo);
+    }
     
 
 }
