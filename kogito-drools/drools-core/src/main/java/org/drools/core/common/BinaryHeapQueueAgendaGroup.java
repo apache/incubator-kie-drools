@@ -25,6 +25,8 @@ import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.BinaryHeapQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -48,21 +50,20 @@ public class BinaryHeapQueueAgendaGroup
         implements
         InternalAgendaGroup,
         InternalRuleFlowGroup {
-
     private static final long serialVersionUID = 510l;
-    private String             name;
+    private          String             name;
     /**
      * Items in the agenda.
      */
-    private BinaryHeapQueue    queue;
+    private          BinaryHeapQueue    queue;
     private volatile boolean            active;
-    private PropagationContext autoFocusActivator;
-    private long               activatedForRecency;
-    private long               clearedForRecency;
+    private          PropagationContext autoFocusActivator;
+    private          long               activatedForRecency;
+    private          long               clearedForRecency;
 
     private InternalWorkingMemory workingMemory;
-    private boolean autoDeactivate = true;
-    private Map<Long, String> nodeInstances = new HashMap<Long, String>();
+    private boolean           autoDeactivate = true;
+    private Map<Long, String> nodeInstances  = new HashMap<Long, String>();
 
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
@@ -78,13 +79,18 @@ public class BinaryHeapQueueAgendaGroup
         this.name = name;
         if (ruleBase.getConfiguration().isPhreakEnabled()) {
             this.queue = new BinaryHeapQueue(new PhreakConflictResolver());
-        } if (ruleBase.getConfiguration().isSequential() ) {
-            this.queue = new BinaryHeapQueue(new SequentialConflictResolver() );
+        }
+        if (ruleBase.getConfiguration().isSequential()) {
+            this.queue = new BinaryHeapQueue(new SequentialConflictResolver());
         } else {
             this.queue = new BinaryHeapQueue(ruleBase.getConfiguration().getConflictResolver());
         }
 
         this.clearedForRecency = -1;
+    }
+
+    public BinaryHeapQueue getBinaryHeapQueue() {
+        return this.queue;
     }
 
     /* (non-Javadoc)
@@ -106,7 +112,7 @@ public class BinaryHeapQueueAgendaGroup
 
     @Override
     public void addActivation(Activation activation) {
-       add(activation);
+        add(activation);
     }
 
     @Override

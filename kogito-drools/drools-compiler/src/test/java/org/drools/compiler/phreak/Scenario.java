@@ -40,7 +40,7 @@ public class Scenario {
     InternalWorkingMemory wm;
 
     LeftTupleSets              leftTuples;
-    SynchronizedRightTupleSets rightRuples;
+    RightTupleSets rightRuples;
 
     StagedBuilder expectedResultBuilder;
 
@@ -146,7 +146,7 @@ public class Scenario {
         return leftTuples;
     }
 
-    public SynchronizedRightTupleSets getRightTuples() {
+    public RightTupleSets getRightTuples() {
         return rightRuples;
     }
 

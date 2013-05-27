@@ -9,40 +9,26 @@ import org.drools.core.reteoo.RightTuple;
 public class SynchronizedRightTupleSets extends RightTupleSetsImpl implements RightTupleSets {
     private final Object lock = new Object();
 
-    public int addInsert(RightTuple rightTuple) {
+    public Object getLock() {
+        return lock;
+    }
+
+    public boolean addInsert(RightTuple rightTuple) {
         synchronized (lock) {
             return super.addInsert(rightTuple);
         }
     }
 
-    public int addDelete(RightTuple rightTuple) {
+    public boolean addDelete(RightTuple rightTuple) {
         synchronized (lock) {
             return super.addDelete(rightTuple);
         }
     }
 
 
-    public int addUpdate(RightTuple rightTuple) {
+    public boolean addUpdate(RightTuple rightTuple) {
         synchronized (lock) {
             return super.addUpdate(rightTuple);
-        }
-    }
-
-    public int removeInsert(RightTuple rightTuple) {
-        synchronized (lock) {
-            return super.removeInsert(rightTuple);
-        }
-    }
-
-    public int removeDelete(RightTuple rightTuple) {
-        synchronized (lock) {
-            return super.removeDelete(rightTuple);
-        }
-    }
-
-    public int removeUpdate(RightTuple rightTuple) {
-        synchronized (lock) {
-            return super.removeUpdate(rightTuple);
         }
     }
 

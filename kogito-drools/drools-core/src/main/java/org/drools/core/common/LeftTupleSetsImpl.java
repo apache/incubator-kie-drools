@@ -17,63 +17,52 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
 
     }
 
-    @Override
     public LeftTuple getInsertFirst() {
         return this.insertFirst;
     }
 
-    @Override
     public LeftTuple getDeleteFirst() {
         return this.deleteFirst;
     }
 
-    @Override
     public LeftTuple getUpdateFirst() {
         return this.updateFirst;
     }
 
-    @Override
     public void resetInsert() {
         insertFirst = null;
         insertSize = 0;
     }
 
-    @Override
     public void resetDelete() {
         deleteFirst = null;
         deleteSize = 0;
     }
 
-    @Override
     public void resetUpdate() {
         updateFirst = null;
         updateSize = 0;
     }
 
-    @Override
     public void resetAll() {
         resetInsert();
         resetDelete();
         resetUpdate();
     }
 
-    @Override
     public int insertSize() {
         return this.insertSize;
     }
 
-    @Override
     public int deleteSize() {
         return this.insertSize;
     }
 
-    @Override
     public int updateSize() {
         return this.updateSize;
     }
 
-    @Override
-    public void addInsert(LeftTuple leftTuple) {
+    public boolean addInsert(LeftTuple leftTuple) {
         leftTuple.setStagedType( LeftTuple.INSERT );
         if ( insertFirst == null ) {
             insertFirst = leftTuple;
@@ -82,11 +71,20 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
             insertFirst.setStagePrevious( leftTuple );
             insertFirst = leftTuple;
         }
-        insertSize++;
+        return (insertSize++ == 0);
     }
 
-    @Override
-    public void addDelete(LeftTuple leftTuple) {
+    public boolean addDelete(LeftTuple leftTuple) {
+        switch ( leftTuple.getStagedType() ) {
+            // handle clash with already staged entries
+            case LeftTuple.INSERT:
+                removeInsert( leftTuple );
+                break;
+            case LeftTuple.UPDATE:
+                removeUpdate( leftTuple );
+                break;
+        }
+
         leftTuple.setStagedType( LeftTuple.DELETE );
         if ( deleteFirst == null ) {
             deleteFirst = leftTuple;
@@ -95,12 +93,16 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
             deleteFirst.setStagePrevious( leftTuple );
             deleteFirst = leftTuple;
         }
-        deleteSize++;
+        return (deleteSize++ == 0);
     }
 
 
-    @Override
-    public void addUpdate(LeftTuple leftTuple) {
+    public boolean addUpdate(LeftTuple leftTuple) {
+        if (leftTuple.getStagedType() == LeftTuple.INSERT) {
+            // do nothing, it's already staged as insert, which means it's already scheduled for eval too.
+            return false;
+        }
+
         leftTuple.setStagedType( LeftTuple.UPDATE );
         if ( updateFirst == null ) {
             updateFirst = leftTuple;
@@ -109,10 +111,9 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
             updateFirst.setStagePrevious( leftTuple );
             updateFirst = leftTuple;
         }
-        updateSize++;
+        return (updateSize++ == 0);
     }
 
-    @Override
     public void removeInsert(LeftTuple leftTuple) {
         leftTuple.setStagedType( LeftTuple.NONE );
         if ( leftTuple == insertFirst ) {
@@ -133,7 +134,6 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
         leftTuple.clearStaged();
     }
 
-    @Override
     public void removeDelete(LeftTuple leftTuple) {
         leftTuple.setStagedType( LeftTuple.NONE );
         if ( leftTuple == deleteFirst ) {
@@ -155,7 +155,6 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
         leftTuple.clearStaged();
     }
 
-    @Override
     public void removeUpdate(LeftTuple leftTuple) {
         leftTuple.setStagedType( LeftTuple.NONE );
         if ( leftTuple == updateFirst ) {
@@ -296,7 +295,6 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
      * clear also ensures all contained LeftTuples are cleared
      * reset does not touch any contained tuples
      */
-    @Override
     public void clear() {
         for ( LeftTuple leftTuple = getInsertFirst(); leftTuple != null; ) {
             LeftTuple next =  leftTuple.getStagedNext();

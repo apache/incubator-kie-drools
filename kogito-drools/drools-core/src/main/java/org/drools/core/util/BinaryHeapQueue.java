@@ -43,11 +43,15 @@ import java.util.NoSuchElementException;
 
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.spi.Activation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BinaryHeapQueue
     implements
     Queue,
     Externalizable {
+    protected static transient Logger log = LoggerFactory.getLogger(BinaryHeapQueue.class);
+
     /** The default capacity for a binary heap. */
     private final static int DEFAULT_CAPACITY = 13;
 
@@ -115,7 +119,7 @@ public class BinaryHeapQueue
         this.elements = new Activation[this.elements.length]; // for gc
         this.size = 0;
     }
-    
+
     public Activation[] getAndClear() {
         Activation[] queue = ( Activation[] )this.elements;
         this.elements = new Activation[this.elements.length]; // for gc
@@ -149,7 +153,7 @@ public class BinaryHeapQueue
      *
      * @return the number of elements in this heap
      */
-    public int size() {
+    public synchronized int size() {
         return this.size;
     }
     
@@ -170,6 +174,10 @@ public class BinaryHeapQueue
 
         percolateUpMaxHeap( element );
         element.setQueued(true);
+
+        if ( log.isTraceEnabled() ) {
+            log.trace( "Queue Added {} {}", element.getQueueIndex(), element);
+        }
     }
 
     /**
@@ -184,7 +192,6 @@ public class BinaryHeapQueue
         }
 
         final Activation result = this.elements[1];
-        result.setQueued(false);
         dequeue(result.getQueueIndex());
 
         return result;
@@ -201,6 +208,10 @@ public class BinaryHeapQueue
         }
 
         final Activation result = this.elements[index];
+        if ( log.isTraceEnabled() ) {
+            log.trace( "Queue Removed {} {}", result.getQueueIndex(), result);
+        }
+
         setElement( index,
                     this.elements[this.size] );
         this.elements[this.size] = null;
@@ -218,6 +229,7 @@ public class BinaryHeapQueue
             }
         }
 
+        result.setQueued(false);
         result.setQueueIndex(-1);
 
         return result;

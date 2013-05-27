@@ -33,7 +33,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
     private static final long serialVersionUID = 510l;
     private LeftTupleMemory            leftTupleMemory;
     private RightTupleMemory           rightTupleMemory;
-    private SynchronizedRightTupleSets stagedRightTuples;
+    private RightTupleSets             stagedRightTuples;
     private ContextEntry[]             context;
     // the node type this memory belongs to
     private short                      nodeType;
@@ -66,7 +66,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return stagedRightTuples;
     }
 
-    public void setStagedRightTuples(SynchronizedRightTupleSets stagedRightTuples) {
+    public void setStagedRightTuples(RightTupleSets stagedRightTuples) {
         this.stagedRightTuples = stagedRightTuples;
     }
 

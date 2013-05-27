@@ -86,14 +86,14 @@ public class PhreakJoinNodeTest {
                                   t(a0, b1) )
                 .left( a0, a1 )
                 .right( b0, b1 )
-                .run().getActualResultLeftTuples().clear();
+                .run().getActualResultLeftTuples().resetAll();
 
         test().right().insert( b3 )
                 .result().insert( t(a1, b3),
                                   t(a0, b3) )
                 .left( a0, a1 )
                 .right( b0, b1, b3 )
-                .run().getActualResultLeftTuples().clear();
+                .run().getActualResultLeftTuples().resetAll();
 
         test().left().insert( a2 )
                 .delete( a1 )
@@ -109,7 +109,7 @@ public class PhreakJoinNodeTest {
 
                 .left( a0, a2 )
                 .right( b1, b3, b4 )
-                .run().getActualResultLeftTuples().clear();
+                .run().getActualResultLeftTuples().resetAll();
         // @formatter:on        
 
     }

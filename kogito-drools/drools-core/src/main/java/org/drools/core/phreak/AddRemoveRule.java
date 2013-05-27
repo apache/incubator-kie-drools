@@ -6,6 +6,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.Memory;
  import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.reteoo.AbstractTerminalNode;
  import org.drools.core.reteoo.AccumulateNode;
  import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -283,6 +284,12 @@ public class AddRemoveRule {
          Memory memory = wm.getNodeMemory((MemoryFactory) peerLts);
          SegmentMemory newSmem = SegmentUtilities.createChildSegment(wm, peerLts, memory);
          sm.add(newSmem);
+
+
+         if ( sm.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
+             // If LiaNode is in it's own segment, then the segment first after that must use SynchronizedLeftTupleSets
+             newSmem.setStagedTuples( new SynchronizedLeftTupleSets() );
+         }
 
          processLeftTuples((LeftTupleSource) sm.getTipNode(), peerLts, newSmem, wm, true);
      }
@@ -775,10 +782,12 @@ public class AddRemoveRule {
          sm2.setTipNode(sm1.getTipNode());
          sm1.setTipNode( splitNode ); // splitNode is now tip of original segment
 
-         if ( sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode && !sm1.getStagedLeftTuples().isEmpty() ) {
-            // Segments with only LiaNode's cannot have staged LeftTuples, so move them down to the new Segment
-             sm2.getStagedLeftTuples().addAll(sm1.getStagedLeftTuples());
-
+         if ( sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
+             sm2.setStagedTuples( new SynchronizedLeftTupleSets() ); // and the LeftTuples must be Synchronized, for thread safety
+             if (  !sm1.getStagedLeftTuples().isEmpty() ) {
+                 // Segments with only LiaNode's cannot have staged LeftTuples, so move them down to the new Segment
+                sm2.getStagedLeftTuples().addAll(sm1.getStagedLeftTuples());
+             }
          }
 
          // find the pos of the node in the segment

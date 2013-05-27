@@ -528,6 +528,11 @@ public class RuleNetworkEvaluator {
     }
 
     private void switchOnDoBetaNode(NetworkNode node, LeftTupleSets trgTuples, InternalWorkingMemory wm, LeftTupleSets srcTuples, LeftTupleSets stagedLeftTuples, LeftTupleSinkNode sink, BetaMemory bm, AccumulateMemory am) {
+        if (log.isTraceEnabled()) {
+            int offset = getOffset(node);
+            log.trace("{} {} rightTuples {}", indent(offset), ++cycle, bm.getStagedRightTuples().toStringSizes());
+        }
+
         switch (node.getType()) {
             case NodeTypeEnums.JoinNode: {
                 pJoinNode.doNode((JoinNode) node, sink, bm,
@@ -663,16 +668,6 @@ public class RuleNetworkEvaluator {
 
             RightTuple rightTuple = (RightTuple) leftTuple.getObject();
             RightTupleSets rightTuples = bm.getStagedRightTuples();
-            switch (rightTuple.getStagedType()) {
-                case LeftTuple.INSERT: {
-                    rightTuples.removeInsert(rightTuple);
-                    break;
-                }
-                case LeftTuple.UPDATE: {
-                    rightTuples.removeUpdate(rightTuple);
-                    break;
-                }
-            }
             rightTuples.addDelete(rightTuple);
 
             if (bns != null) {
@@ -680,16 +675,6 @@ public class RuleNetworkEvaluator {
                 for (int i = 0; i < length; i++) {
                     rightTuple = rightTuple.getHandleNext();
                     rightTuples = bms[i].getStagedRightTuples();
-                    switch (rightTuple.getStagedType()) {
-                        case LeftTuple.INSERT: {
-                            rightTuples.removeInsert(rightTuple);
-                            break;
-                        }
-                        case LeftTuple.UPDATE: {
-                            rightTuples.removeUpdate(rightTuple);
-                            break;
-                        }
-                    }
                     rightTuples.addDelete(rightTuple);
                 }
             }
@@ -703,16 +688,6 @@ public class RuleNetworkEvaluator {
 
             RightTuple rightTuple = (RightTuple) leftTuple.getObject();
             RightTupleSets rightTuples = bm.getStagedRightTuples();
-            switch (rightTuple.getStagedType()) {
-                case LeftTuple.INSERT: {
-                    rightTuples.removeInsert(rightTuple);
-                    break;
-                }
-                case LeftTuple.UPDATE: {
-                    rightTuples.removeUpdate(rightTuple);
-                    break;
-                }
-            }
             rightTuples.addUpdate(rightTuple);
 
             if (bns != null) {
@@ -720,16 +695,6 @@ public class RuleNetworkEvaluator {
                 for (int i = 0; i < length; i++) {
                     rightTuple = rightTuple.getHandleNext();
                     rightTuples = bms[i].getStagedRightTuples();
-                    switch (rightTuple.getStagedType()) {
-                        case LeftTuple.INSERT: {
-                            rightTuples.removeInsert(rightTuple);
-                            break;
-                        }
-                        case LeftTuple.UPDATE: {
-                            rightTuples.removeUpdate(rightTuple);
-                            break;
-                        }
-                    }
                     rightTuples.addUpdate(rightTuple);
                 }
             }

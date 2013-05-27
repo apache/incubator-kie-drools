@@ -65,7 +65,7 @@ public class BaseLeftTuple
     protected Entry              next;
     protected Entry              previous;    
     
-    protected short              stagedType;
+    protected volatile short     stagedType;
     protected LeftTuple          stagedNext;
     protected LeftTuple          stagedPrevious;        
 

@@ -9,11 +9,11 @@ public interface LeftTupleSets {
 
     LeftTuple getUpdateFirst();
 
-    void resetInsert();
-
-    void resetDelete();
-
-    void resetUpdate();
+//    void resetInsert();
+//
+//    void resetDelete();
+//
+//    void resetUpdate();
 
     void resetAll();
 
@@ -23,11 +23,11 @@ public interface LeftTupleSets {
 
     int updateSize();
 
-    void addInsert(LeftTuple leftTuple);
+    boolean addInsert(LeftTuple leftTuple);
 
-    void addDelete(LeftTuple leftTuple);
+    boolean addDelete(LeftTuple leftTuple);
 
-    void addUpdate(LeftTuple leftTuple);
+    boolean addUpdate(LeftTuple leftTuple);
 
     void removeInsert(LeftTuple leftTuple);
 
@@ -45,7 +45,7 @@ public interface LeftTupleSets {
 
     LeftTupleSets takeAll();
 
-    void clear();
+//    void clear();
 
     boolean isEmpty();
 

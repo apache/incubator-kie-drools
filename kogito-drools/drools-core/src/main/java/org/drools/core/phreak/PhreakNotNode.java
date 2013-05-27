@@ -3,6 +3,7 @@ package org.drools.core.phreak;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.RightTupleSets;
 import org.drools.core.common.SynchronizedRightTupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -15,13 +16,6 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 
-/**
-* Created with IntelliJ IDEA.
-* User: mdproctor
-* Date: 03/05/2013
-* Time: 15:46
-* To change this template use File | Settings | File Templates.
-*/
 public class PhreakNotNode {
     public void doNode(NotNode notNode,
                        LeftTupleSink sink,
@@ -30,7 +24,7 @@ public class PhreakNotNode {
                        LeftTupleSets srcLeftTuples,
                        LeftTupleSets trgLeftTuples,
                        LeftTupleSets stagedLeftTuples) {
-        SynchronizedRightTupleSets srcRightTuples = bm.getStagedRightTuples();
+        RightTupleSets srcRightTuples = bm.getStagedRightTuples().takeAll();
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             // left deletes must come before right deletes. Otherwise right deletes could
@@ -126,7 +120,7 @@ public class PhreakNotNode {
                                LeftTupleSink sink,
                                BetaMemory bm,
                                InternalWorkingMemory wm,
-                               SynchronizedRightTupleSets srcRightTuples,
+                               RightTupleSets srcRightTuples,
                                LeftTupleSets trgLeftTuples) {
 
         LeftTupleMemory ltm = bm.getLeftTupleMemory();
@@ -307,7 +301,7 @@ public class PhreakNotNode {
                                LeftTupleSink sink,
                                BetaMemory bm,
                                InternalWorkingMemory wm,
-                               SynchronizedRightTupleSets srcRightTuples,
+                               RightTupleSets srcRightTuples,
                                LeftTupleSets trgLeftTuples,
                                LeftTupleSets stagedLeftTuples) {
         LeftTupleMemory ltm = bm.getLeftTupleMemory();
@@ -463,7 +457,7 @@ public class PhreakNotNode {
                                LeftTupleSink sink,
                                BetaMemory bm,
                                InternalWorkingMemory wm,
-                               SynchronizedRightTupleSets srcRightTuples,
+                               RightTupleSets srcRightTuples,
                                LeftTupleSets trgLeftTuples) {
         LeftTupleMemory ltm = bm.getLeftTupleMemory();
         RightTupleMemory rtm = bm.getRightTupleMemory();

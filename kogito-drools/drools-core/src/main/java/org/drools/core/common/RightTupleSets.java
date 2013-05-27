@@ -12,41 +12,41 @@ public interface RightTupleSets {
 
     public RightTuple getUpdateFirst();
 
-    public void resetInsert();
-
-    public void resetDelete() ;
-
-    public void resetUpdate() ;
+//    public void resetInsert();
+//
+//    public void resetDelete() ;
+//
+//    public void resetUpdate() ;
 
     public void resetAll();
 
-//    public int insertSize();
+    public int insertSize();
+
+    public int deleteSize();
+
+    public int updateSize();
+
+    public boolean addInsert(RightTuple rightTuple);
+
+    public boolean addDelete(RightTuple rightTuple);
+
+    public boolean addUpdate(RightTuple rightTuple);
+
+//    public void removeInsert(RightTuple rightTuple);
 //
-//    public int deleteSize();
+//    public void removeDelete(RightTuple rightTuple);
 //
-//    public int updateSize();
+//    public void removeUpdate(RightTuple rightTuple);
 
-    public int addInsert(RightTuple rightTuple);
+//    public void addAllInserts(RightTupleSets tupleSets);
+//
+//    public void addAllDeletes(RightTupleSets tupleSets);
+//
+//    public void addAllUpdates(RightTupleSets tupleSets);
+//
+//    public void addAll(RightTupleSets source);
 
-    public int addDelete(RightTuple rightTuple);
-
-    public int addUpdate(RightTuple rightTuple);
-
-    public int removeInsert(RightTuple rightTuple);
-
-    public int removeDelete(RightTuple rightTuple);
-
-    public int removeUpdate(RightTuple rightTuple);
-
-    public void addAllInserts(RightTupleSets tupleSets);
-
-    public void addAllDeletes(RightTupleSets tupleSets);
-
-    public void addAllUpdates(RightTupleSets tupleSets);
-
-    public void addAll(RightTupleSets source);
-
-    public void clear();
+//    public void clear();
 
     public RightTupleSets takeAll();
 

@@ -15,13 +15,6 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 
-/**
-* Created with IntelliJ IDEA.
-* User: mdproctor
-* Date: 03/05/2013
-* Time: 15:41
-* To change this template use File | Settings | File Templates.
-*/
 public class PhreakJoinNode {
     public void doNode(JoinNode joinNode,
                        LeftTupleSink sink,

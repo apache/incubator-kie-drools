@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         implements
         Memory {
-    protected static transient Logger log = LoggerFactory.getLogger(SegmentMemory.class);
+    protected static transient Logger log = LoggerFactory.getLogger(PathMemory.class);
     private          long            linkedSegmentMask;
     private          long            allLinkedMaskTest;
     private          NetworkNode     networkNode;
@@ -107,10 +107,15 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void queueRuleAgendaItem(InternalWorkingMemory wm) {
-        agendaItem.getRuleExecutor().setDirty(true);
-        if (!agendaItem.isQueued() && !agendaItem.isBlocked()) {
-            InternalAgendaGroup ag = agendaItem.getAgendaGroup();
-            ag.add( agendaItem );
+        synchronized ( agendaItem ) {
+            agendaItem.getRuleExecutor().setDirty(true);
+            if (!agendaItem.isQueued() && !agendaItem.isBlocked()) {
+                if ( log.isTraceEnabled() ) {
+                    log.trace("Queue RuleAgendaItem {}", agendaItem);
+                }
+                InternalAgendaGroup ag = agendaItem.getAgendaGroup();
+                ag.add( agendaItem );
+            }
         }
         if ( agendaItem.getRule().isEager() ) {
             // will return if already added

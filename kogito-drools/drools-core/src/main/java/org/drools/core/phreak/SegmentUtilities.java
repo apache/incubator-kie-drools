@@ -128,15 +128,15 @@ public class SegmentUtilities {
                     // rtn or rian
                     // While not technically in a segment, we want to be able to iterate easily from the last node memory to the ria/rtn memory
                     // we don't use createNodeMemory, as these may already have been created by, but not added, by the method updateRiaAndTerminalMemory
+                    Memory memory = null;
                     if (sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
-                        RiaNodeMemory memory = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
-                        smem.getNodeMemories().add(memory.getRiaPathMemory());
-                        memory.getRiaPathMemory().setSegmentMemory(smem);
+                        memory =  wm.getNodeMemory((MemoryFactory) sink);
+                        smem.getNodeMemories().add(((RiaNodeMemory)memory).getRiaPathMemory());
                     } else if (NodeTypeEnums.isTerminalNode(sink)) {
-                        PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
-                        smem.getNodeMemories().add(pmem);
-                        pmem.setSegmentMemory(smem);
+                        memory = wm.getNodeMemory((MemoryFactory) sink);
+                        smem.getNodeMemories().add((PathMemory)memory);
                     }
+                    memory.setSegmentMemory(smem);
                     smem.setTipNode(sink);
                     break;
                 }
@@ -162,6 +162,12 @@ public class SegmentUtilities {
         }
         smem.setSegmentPosMaskBit(ruleSegmentPosMask);
         smem.setPos(counter);
+
+        if (smem.getRootNode().getType() != NodeTypeEnums.LeftInputAdapterNode &&
+            ((LeftTupleSource)smem.getRootNode()).getLeftTupleSource().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
+                // If LiaNode is in it's own segment, then the segment first after that must use SynchronizedLeftTupleSets
+                smem.setStagedTuples( new SynchronizedLeftTupleSets() );
+        }
 
         updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, wm);
         return smem;
@@ -285,6 +291,11 @@ public class SegmentUtilities {
             // RTNS and RiaNode's have their own segment, if they are the child of a split.
             if (memory.getSegmentMemory() == null) {
                 SegmentMemory childSmem = new SegmentMemory(sink);
+                if ( sink.getLeftTupleSource().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
+                    // If LiaNode is in it's own segment, then the segment first after that must use SynchronizedLeftTupleSets
+                    childSmem.setStagedTuples( new SynchronizedLeftTupleSets() );
+                }
+
                 PathMemory pmem;
                 if (NodeTypeEnums.isTerminalNode(sink)) {
                     pmem = (PathMemory) memory;

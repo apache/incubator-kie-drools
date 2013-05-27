@@ -12,7 +12,7 @@ import org.drools.core.reteoo.SegmentMemory;
 public class RightBuilder {
     private InternalWorkingMemory      wm;
     private RightTupleSink             sink;
-    private SynchronizedRightTupleSets rightTuples;
+    private RightTupleSets rightTuples;
     private Scenario                   scenario;
 
     public RightBuilder(Scenario scenario) {

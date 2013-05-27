@@ -1286,13 +1286,11 @@ public class DefaultAgenda
             do {
                 while ( !eager.isEmpty() ) {
                     RuleAgendaItem item = eager.removeFirst();
-                    log.trace("Eager Evaluating rule {}.", item.getRule().getName() );
                     item.getRuleExecutor().evaluateNetwork(this.workingMemory);
                 }
                 this.workingMemory.prepareToFireActivation();
                 tryagain = false;
                 final InternalAgendaGroup group = (InternalAgendaGroup) getNextFocus();
-
                 // if there is a group with focus
                 if ( group != null ) {
                     if ( this.unlinkingEnabled ) {
@@ -1532,7 +1530,7 @@ public class DefaultAgenda
                             !((AbstractWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
             this.workingMemory.executeQueuedActions();
             if ( !fired ) {
-                Thread.yield();
+//                Thread.yield();
 //                try {
 //                    synchronized ( this.halt ) {
 //                        if ( !this.halt.get() ) this.halt.wait();

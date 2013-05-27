@@ -30,15 +30,6 @@ public class SegmentPropagator {
                 if ( smem != null ) {
                     for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
                         LeftTupleSets stagedLeftTuples = smem.getStagedLeftTuples();
-                        switch ( peer.getStagedType() ) {
-                            // handle clash with already staged entries
-                            case LeftTuple.INSERT:
-                                stagedLeftTuples.removeInsert( peer );
-                                break;
-                            case LeftTuple.UPDATE:
-                                stagedLeftTuples.removeUpdate( peer );
-                                break;
-                        }  
                         stagedLeftTuples.addDelete( peer );
                         smem = smem.getNext();
                     }
