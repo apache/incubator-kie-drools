@@ -31,6 +31,7 @@ import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
 
 public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter {
@@ -240,7 +241,7 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
                 locationList.add(location);
                 if (first) {
-                    VrpDepot depot = new VrpDepot();
+                    VrpTimeWindowedDepot depot = new VrpTimeWindowedDepot();
                     depot.setId(id);
                     depot.setLocation(location);
                     int demand = Integer.parseInt(lineTokens[3]);
@@ -248,7 +249,8 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                         throw new IllegalArgumentException("The depot with id (" + id
                                 + ") has a demand (" + demand + ").");
                     }
-                    // TODO lineTokens 4-5
+                    depot.setReadyTime(Integer.parseInt(lineTokens[4]));
+                    depot.setDueTime(Integer.parseInt(lineTokens[5]));
                     int serviceTime = Integer.parseInt(lineTokens[6]);
                     if (serviceTime != 0) {
                         throw new IllegalArgumentException("The depot with id (" + id
@@ -262,10 +264,10 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                     customer.setLocation(location);
                     int demand = Integer.parseInt(lineTokens[3]);
                     customer.setDemand(demand);
-                    // Notice that we leave the PlanningVariable properties on null
                     customer.setReadyTime(Integer.parseInt(lineTokens[4]));
                     customer.setDueTime(Integer.parseInt(lineTokens[5]));
                     customer.setServiceTime(Integer.parseInt(lineTokens[6]));
+                    // Notice that we leave the PlanningVariable properties on null
                     // Do not add a customer that has no demand
                     if (demand != 0) {
                         customerList.add(customer);

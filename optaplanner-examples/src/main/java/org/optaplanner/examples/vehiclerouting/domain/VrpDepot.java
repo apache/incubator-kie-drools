@@ -22,7 +22,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("VrpDepot")
 public class VrpDepot extends AbstractPersistable {
 
-    private VrpLocation location;
+    protected VrpLocation location;
 
     public VrpLocation getLocation() {
         return location;
