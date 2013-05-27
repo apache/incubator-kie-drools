@@ -16,14 +16,9 @@
 
 package org.drools.examples.honestpolitician;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 public class HonestPoliticianExample {
 
@@ -32,22 +27,9 @@ public class HonestPoliticianExample {
      */
     public static void main(final String[] args) {
 
-        KnowledgeBuilderConfiguration kbuilderconfiguration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        // Note: target dir doesn't exist when downloading the examples
-//        kbuilderconfiguration.setProperty( "drools.dump.dir",
-//                                           "target" );
-
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource("HonestPolitician.drl",
-                HonestPoliticianExample.class),
-                              ResourceType.DRL );
-
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-//        KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/honest-politician.log");
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        System.out.println(kc.verify().getMessages().toString());
+        KieSession ksession = kc.newKieSession("HonestPoliticianKS");
 
         final Politician p1 = new Politician( "President of Umpa Lumpa", true );
         final Politician p2 = new Politician( "Prime Minster of Cheeseland", true );
@@ -60,8 +42,6 @@ public class HonestPoliticianExample {
         ksession.insert( p4 );
 
         ksession.fireAllRules();
-
-//        klogger.close();
 
         ksession.dispose();
     }
