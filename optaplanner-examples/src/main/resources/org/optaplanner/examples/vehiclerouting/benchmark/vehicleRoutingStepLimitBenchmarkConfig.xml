@@ -32,14 +32,18 @@
         <unionMoveSelector>
           <changeMoveSelector/>
           <swapMoveSelector/>
-          <subChainChangeMoveSelector/>
-          <!-- TODO could use a GenericChainedSwapPartMoveFactory -->
+          <subChainChangeMoveSelector>
+            <selectReversingMoveToo>false</selectReversingMoveToo>
+          </subChainChangeMoveSelector>
+          <subChainSwapMoveSelector>
+            <selectReversingMoveToo>false</selectReversingMoveToo>
+          </subChainSwapMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>9</entityTabuSize>
         </acceptor>
         <forager>
-          <acceptedCountLimit>20000</acceptedCountLimit>
+          <acceptedCountLimit>2000</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
