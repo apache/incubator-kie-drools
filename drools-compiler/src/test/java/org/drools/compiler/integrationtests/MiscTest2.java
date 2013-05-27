@@ -77,6 +77,8 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1887,22 +1889,34 @@ public class MiscTest2 extends CommonTestMethodBase {
 
     @Test
     public void testFactLeak() throws InterruptedException {
+        for ( int i = 0; i < 100; i++ ) {
+            // repeat this 100 times, to try and better detect thread issues
+            doFactLeak();
+            System.gc();
+            Thread.sleep(200);
+            logger.trace("-----");
+        }
+    }
+
+    public void doFactLeak() throws InterruptedException {
         //DROOLS-131
         String drl = "package org.drools.test; \n" +
-                     "global java.util.List list; \n" +
-                     "" +
+                     "global " + ConcurrentLinkedQueue.class.getCanonicalName() + " list; \n" +
+                     //"global " + AtomicInteger.class.getCanonicalName() + "counter; \n" +
                      "" +
                      "rule Intx when\n" +
                      " $x : Integer() from entry-point \"x\" \n" +
                      "then\n" +
-                     " list.add( $x ); \n" +
+                     " list.add( $x );" +
                      "end";
         int N = 1100;
 
         KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
         final StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
-        ArrayList list = new ArrayList();
+        ConcurrentLinkedQueue list = new ConcurrentLinkedQueue<Integer>();
+        AtomicInteger counter = new AtomicInteger(0);
         ks.setGlobal( "list", list );
+        //ks.setGlobal( "counter", counter );
 
         new Thread () {
             public void run () {
@@ -1914,7 +1928,11 @@ public class MiscTest2 extends CommonTestMethodBase {
             ks.getEntryPoint( "x" ).insert( new Integer( j ) );
         }
 
-        Thread.sleep( 5000 );
+        int count = 0;
+        while ( list.size() != N && count++ != 1000) {
+            Thread.sleep( 200 );
+        }
+
         ks.halt();
         if ( list.size() != N ) {
             for ( int j = 0; j < N; j++ ) {

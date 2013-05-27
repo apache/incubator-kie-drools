@@ -7,13 +7,13 @@ public class RightTupleSetsImpl implements RightTupleSets {
 
 
     protected RightTuple        insertFirst;
-    protected int              insertSize;
+    protected volatile int              insertSize;
 
     protected RightTuple        deleteFirst;
-    protected int              deleteSize;
+    protected volatile int              deleteSize;
 
     protected RightTuple        updateFirst;
-    protected int              updateSize;
+    protected volatile int              updateSize;
 
     public RightTupleSetsImpl() {
 
@@ -64,7 +64,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
         return this.updateSize;
     }
 
-    public int addInsert(RightTuple rightTuple) {
+    public boolean addInsert(RightTuple rightTuple) {
         rightTuple.setStagedType( LeftTuple.INSERT );
         if ( insertFirst == null ) {
             insertFirst = rightTuple;
@@ -73,10 +73,20 @@ public class RightTupleSetsImpl implements RightTupleSets {
             insertFirst.setStagePrevious( rightTuple );
             insertFirst = rightTuple;
         }
-        return insertSize++;
+        return (insertSize++ == 0);
     }
 
-    public int addDelete(RightTuple rightTuple) {
+    public boolean addDelete(RightTuple rightTuple) {
+        switch ( rightTuple.getStagedType() ) {
+            // handle clash with already staged entries
+            case LeftTuple.INSERT:
+                removeInsert( rightTuple );
+                break;
+            case LeftTuple.UPDATE:
+                removeUpdate( rightTuple );
+                break;
+        }
+
         rightTuple.setStagedType( LeftTuple.DELETE );
         if ( deleteFirst == null ) {
             deleteFirst = rightTuple;
@@ -85,11 +95,16 @@ public class RightTupleSetsImpl implements RightTupleSets {
             deleteFirst.setStagePrevious( rightTuple );
             deleteFirst = rightTuple;
         }
-        return deleteSize++;
+        return (deleteSize++ == 0);
     }
 
 
-    public int addUpdate(RightTuple rightTuple) {
+    public boolean addUpdate(RightTuple rightTuple) {
+        if (rightTuple.getStagedType() != LeftTuple.NONE) {
+            // do nothing, it's already staged as insert or an update, which means it's already scheduled for eval too.
+            return false;
+        }
+
         rightTuple.setStagedType( LeftTuple.UPDATE );
         if ( updateFirst == null ) {
             updateFirst = rightTuple;
@@ -98,10 +113,10 @@ public class RightTupleSetsImpl implements RightTupleSets {
             updateFirst.setStagePrevious( rightTuple );
             updateFirst = rightTuple;
         }
-        return updateSize++;
+        return (updateSize++ == 0);
     }
 
-    public int removeInsert(RightTuple rightTuple) {
+    public void removeInsert(RightTuple rightTuple) {
         rightTuple.setStagedType( LeftTuple.NONE );
         if ( rightTuple == insertFirst ) {
             RightTuple next = rightTuple.getStagedNext();
@@ -118,10 +133,9 @@ public class RightTupleSetsImpl implements RightTupleSets {
             previous.setStagedNext( next );
         }
         rightTuple.clearStaged();
-        return insertSize--;
     }
 
-    public int removeDelete(RightTuple rightTuple) {
+    public void removeDelete(RightTuple rightTuple) {
         rightTuple.setStagedType( LeftTuple.NONE );
         if ( rightTuple == deleteFirst ) {
             RightTuple next = rightTuple.getStagedNext();
@@ -139,10 +153,9 @@ public class RightTupleSetsImpl implements RightTupleSets {
 
         }
         rightTuple.clearStaged();
-        return deleteSize--;
     }
 
-    public int removeUpdate(RightTuple rightTuple) {
+    public void removeUpdate(RightTuple rightTuple) {
         rightTuple.setStagedType( LeftTuple.NONE );
         if ( rightTuple == updateFirst ) {
             RightTuple next = rightTuple.getStagedNext();
@@ -159,7 +172,6 @@ public class RightTupleSetsImpl implements RightTupleSets {
             previous.setStagedNext( next );
         }
         rightTuple.clearStaged();
-        return updateSize--;
     }
 
     public void addAllInserts(RightTupleSets tupleSets) {

@@ -77,7 +77,7 @@ import static org.mockito.Mockito.verify;
 
 public class CepEspTest extends CommonTestMethodBase {
     
-    @Test
+    @Test(timeout=10000)
     public void testComplexTimestamp() {
         String rule = "";
         rule += "package " + Message.class.getPackage().getName() + "\n" +
@@ -105,7 +105,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testJavaSqlTimestamp() {
         String rule = "";
         rule += "package " + Message.class.getPackage().getName() + "\n" +
@@ -128,7 +128,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       efh.getDuration() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventAssertion() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertion.drl" );
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
@@ -188,7 +188,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       ((List) session.getGlobal( "results" )).size() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testAnnotatedEventAssertion() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleAnnotatedEventAssertion.drl" );
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
@@ -249,7 +249,7 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @SuppressWarnings("unchecked")
-    @Test
+    @Test(timeout=10000)
     public void testPackageSerializationWithEvents() throws Exception {
         // read in the source
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -305,7 +305,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventAssertionWithDuration() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertionWithDuration.drl" );
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
@@ -383,7 +383,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventAssertionWithDateTimestamp() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_SimpleEventAssertionWithDateTimestamp.drl" );
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
@@ -452,7 +452,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventExpiration() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_EventExpiration.drl" );
 
@@ -464,7 +464,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       factType.getExpirationOffset() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventExpiration2() throws Exception {
         // read in the source
         KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -484,7 +484,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       node.getExpirationOffset() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventExpiration3() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -504,7 +504,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       node.getExpirationOffset() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventExpiration4() throws Exception {
         // read in the source
         final KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -545,7 +545,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertFalse( ksession.getFactHandles().contains( handle1 ) );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTimeRelationalOperators() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -752,7 +752,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testBeforeOperator() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -806,7 +806,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertSame( tick2, stocks[1]);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testComplexOperator() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -852,7 +852,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertSame( tick2, stocks[1]);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testMetByOperator() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -905,7 +905,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertSame( tick2, stocks[1]);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testAfterOnArbitraryDates() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -957,7 +957,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       results.get( 3 ) );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testBeforeOnArbitraryDates() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -1008,7 +1008,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       results.get( 3 ) );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testCoincidesOnArbitraryDates() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -1059,7 +1059,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       results.get( 3 ) );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testSimpleTimeWindow() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -1191,7 +1191,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testSimpleLengthWindow() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -1275,7 +1275,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test @Ignore
+    @Test(timeout=10000) @Ignore
     public void testSimpleLengthWindowWithQueue() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -1346,7 +1346,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
 
 
-    @Test
+    @Test //(timeout=10000)
     public void testDelayingNot() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -1414,7 +1414,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDelayingNot2() throws Exception {
         String str = "package org.drools.compiler\n" +
                 "declare A @role(event) symbol : String end\n" +
@@ -1440,7 +1440,7 @@ public class CepEspTest extends CommonTestMethodBase {
         
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testDelayingNotWithPreEpochClock() throws Exception {
         String str = "package org.drools.compiler\n" +
                 "declare A @role(event) symbol : String end\n" +
@@ -1477,7 +1477,7 @@ public class CepEspTest extends CommonTestMethodBase {
         
     }
     
-    //    @Test @Ignore
+    //    @Test(timeout=10000) @Ignore
     //    public void testTransactionCorrelation() throws Exception {
     //        // read in the source
     //        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_TransactionCorrelation.drl" ) );
@@ -1492,7 +1492,7 @@ public class CepEspTest extends CommonTestMethodBase {
     //
     //    }
 
-    @Test
+    @Test(timeout=10000)
     public void testIdleTime() throws Exception {
         // read in the source
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -1578,7 +1578,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testIdleTimeAndTimeToNextJob() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -1697,7 +1697,7 @@ public class CepEspTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testCollectWithWindows() throws Exception {
         final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
@@ -1815,7 +1815,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testPseudoSchedulerRemoveJobTest() {
         String str = "import " + CepEspTest.class.getName() + ".A\n";
         str += "declare A\n";
@@ -1883,7 +1883,7 @@ public class CepEspTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testStreamModeNoSerialization() throws IOException,
                                                ClassNotFoundException {
         final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -1964,7 +1964,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession2.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testIdentityAssertBehaviorOnEntryPoints() throws IOException,
                                                          ClassNotFoundException {
         StockTickInterface st1 = new StockTick( 1,
@@ -2012,7 +2012,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEqualityAssertBehaviorOnEntryPoints() throws IOException,
                                                          ClassNotFoundException {
         StockTickInterface st1 = new StockTick( 1,
@@ -2058,7 +2058,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession1.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventDeclarationForInterfaces() throws Exception {
         // read in the source
         final KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_EventInterfaces.drl" );
@@ -2093,7 +2093,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertTrue( handle4.isEvent() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTemporalOperators() throws Exception {
         // read in the source
         final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
@@ -2108,7 +2108,7 @@ public class CepEspTest extends CommonTestMethodBase {
                                         1000 ) );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTemporalOperators2() throws Exception {
         // read in the source
         final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
@@ -2151,7 +2151,7 @@ public class CepEspTest extends CommonTestMethodBase {
 //        assertSame( tick2, stocks[1]);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTemporalOperatorsInfinity() throws Exception {
         // read in the source
         final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
@@ -2192,7 +2192,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       rules );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testMultipleSlidingWindows() throws IOException,
                                             ClassNotFoundException {
         String str = "declare A\n" +
@@ -2304,7 +2304,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testCloudModeExpiration() throws IOException,
                                             ClassNotFoundException,
                                          InstantiationException,
@@ -2370,7 +2370,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       ep.getFactCount() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testSalienceWithEventsPseudoClock() throws IOException,
                                                    ClassNotFoundException {
         String str = "package org.drools.compiler\n" +
@@ -2454,7 +2454,7 @@ public class CepEspTest extends CommonTestMethodBase {
                            is( "R3" ) );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testSalienceWithEventsRealtimeClock() throws IOException,
                                                      ClassNotFoundException, InterruptedException {
         String str = "package org.drools.compiler\n" +
@@ -2530,7 +2530,7 @@ public class CepEspTest extends CommonTestMethodBase {
                            is( "R3" ) );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testExpireEventOnEndTimestamp() throws Exception {
         // DROOLS-40
         String str =
@@ -2579,7 +2579,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals(1, resultsAfter.size());
     }
 
-    @Test @Ignore
+    @Test(timeout=10000) @Ignore
     public void testEventExpirationDuringAccumulate() throws Exception {
         // DROOLS-70
         String str =
@@ -2691,7 +2691,7 @@ public class CepEspTest extends CommonTestMethodBase {
         }
     }
 
-    @Test 
+    @Test(timeout=10000)
     public void testEventExpirationInSlidingWindow() throws Exception {
         // DROOLS-70
         String str =
@@ -2742,7 +2742,7 @@ public class CepEspTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testSlidingWindowsAccumulateExternalJoin() throws Exception {
         // DROOLS-106
         // The logic may not be optimal, but was used to detect a WM corruption
@@ -2811,7 +2811,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTimeAndLengthWindowConflict() throws Exception {
         // JBRULES-3671
         String drl = "package org.drools.compiler;\n" +
@@ -2889,7 +2889,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTimeWindowWithPastEvents() throws Exception {
         // JBRULES-2258 
         String drl = "package org.drools.compiler;\n" +
@@ -2961,8 +2961,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test
-    @Ignore()
+    @Test(timeout=10000)    @Ignore()
     public void testLeakingActivationsWithDetachedExpiredNonCancelling() throws Exception {
         // JBRULES-3558
         String drl = "package org.drools;\n" +

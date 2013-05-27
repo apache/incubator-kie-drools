@@ -24,6 +24,7 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RightTupleSets;
 import org.drools.core.common.SynchronizedRightTupleSets;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
@@ -151,15 +152,15 @@ public class NotNode extends BetaNode {
             // strangely we link here, this is actually just to force a network evaluation
             // The assert is then processed and the rule unlinks then. 
             // This is because we need the first RightTuple to link with it's blocked
+            boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
             if (  memory.getAndIncCounter() == 0 && isEmptyBetaConstraints()  ) {
                 // NotNodes can only be unlinked, if they have no variable constraints
                 memory.linkNode( wm ); 
-            } else if ( memory.getStagedRightTuples().deleteSize() == 0 ) {
+            } else if ( stagedInsertWasEmpty ) {
                 // nothing staged before, notify rule, so it can evaluate network
                 memory.getSegmentMemory().notifyRuleLinkSegment( wm );
             } 
-            
-            memory.getStagedRightTuples().addInsert( rightTuple );   
+
             return;
         }     
         
@@ -214,26 +215,16 @@ public class NotNode extends BetaNode {
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( isUnlinkingEnabled() ) {
-            SynchronizedRightTupleSets stagedRightTuples = memory.getStagedRightTuples();
-            switch ( rightTuple.getStagedType() ) {
-                // handle clash with already staged entries
-                case LeftTuple.INSERT:
-                    stagedRightTuples.removeInsert( rightTuple );
-                    break;
-                case LeftTuple.UPDATE:
-                    stagedRightTuples.removeUpdate( rightTuple );
-                    break;
-            } 
+            RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+            boolean  stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
             
             if (  memory.getAndDecCounter() == 1 && isEmptyBetaConstraints()  ) {
                 // NotNodes can only be unlinked, if they have no variable constraints
                 memory.linkNode( workingMemory ); 
-            }  else if ( stagedRightTuples.deleteSize() == 0 ) {
+            }  else if ( stagedDeleteWasEmpty ) {
                 // nothing staged before, notify rule, so it can evaluate network
                 memory.getSegmentMemory().notifyRuleLinkSegment( workingMemory );
-            } 
-            
-            stagedRightTuples.addDelete( rightTuple );
+            }
             return;
         }
 

@@ -306,11 +306,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 intersect( context.getModificationMask(),  mask) ) {
                 // mask check is necessary if insert is a result of a modify
 
-            if ( linkOrNotify &&  sm.getStagedLeftTuples().insertSize() == 0 ) {
+            if ( sm.getStagedLeftTuples().addInsert( leftTuple ) && linkOrNotify  ) {
                 // staged is empty, so notify rule, to force re-evaluation.
                 sm.notifyRuleLinkSegment(wm);
             }
-            sm.getStagedLeftTuples().addInsert( leftTuple );
         }
     }
 
@@ -358,22 +357,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private static void doDeleteSegmentMemory(LeftTuple leftTuple, PropagationContext context, SegmentMemory sm, InternalWorkingMemory wm, boolean linkOrNotify) {
         LeftTupleSets leftTuples = sm.getStagedLeftTuples();
-        switch ( leftTuple.getStagedType() ) {
-        // handle clash with already staged entries
-            case LeftTuple.INSERT :
-                leftTuples.removeInsert( leftTuple );
-                break;
-            case LeftTuple.UPDATE :
-                leftTuples.removeUpdate( leftTuple );
-                break;
-        }
-
-        if ( linkOrNotify && sm.getStagedLeftTuples().deleteSize() == 0 ) {
+        if ( leftTuples.addDelete(leftTuple) && linkOrNotify ) {
             // staged is empty, so notify rule, to force re-evaluation
             sm.notifyRuleLinkSegment( wm );
         }
         leftTuple.setPropagationContext( context );
-        leftTuples.addDelete(leftTuple);
+
     }
 
     public static void doUpdateObject(LeftTuple leftTuple,
@@ -419,19 +408,21 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // things staged as inserts, are left as inserts and use the pctx associated from the time of insertion
             leftTuple.setPropagationContext( context );
         }
-        if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
-            // if LeftTuple is already staged, leave it there
-            long mask = sink.getLeftInferredMask();
+        synchronized ( ((SynchronizedLeftTupleSets)leftTuples).getLock() ) {
+            // @TODO I synchronized this, as I'm not 100% of the thread interactions here, it might be possible to remove this later.
+            if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
+                // if LeftTuple is already staged, leave it there
+                long mask = sink.getLeftInferredMask();
 
-            if ( mask == Long.MAX_VALUE ||
-                 intersect( context.getModificationMask(),  mask) ) {
-                // only add to staging if masks match
+                if ( mask == Long.MAX_VALUE ||
+                     intersect( context.getModificationMask(),  mask) ) {
+                    // only add to staging if masks match
 
-                if ( linkOrNotify && sm.getStagedLeftTuples().updateSize() == 0 ) {
-                    // staged is empty, so notify rule, to force re-evaluation
-                    sm.notifyRuleLinkSegment(wm);
+                    if ( leftTuples.addUpdate( leftTuple )  && linkOrNotify ) {
+                        // staged is empty, so notify rule, to force re-evaluation
+                        sm.notifyRuleLinkSegment(wm);
+                    }
                 }
-                leftTuples.addUpdate( leftTuple );
             }
         }
     }

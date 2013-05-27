@@ -16,11 +16,14 @@ import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.event.rule.MatchCancelledCause;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 
 public class RuleExecutor {
-    private static RuleNetworkEvaluator networkEvaluator = new RuleNetworkEvaluator();
+    protected static transient Logger               log              = LoggerFactory.getLogger(RuleExecutor.class);
+    private static             RuleNetworkEvaluator networkEvaluator = new RuleNetworkEvaluator();
     private          PathMemory      pmem;
     private          RuleAgendaItem  ruleAgendaItem;
     private          LeftTupleList   tupleList;
@@ -53,8 +56,8 @@ public class RuleExecutor {
         LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
 
         if (dirty) {
-            this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
             setDirty(false);
+            this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
             wm.executeQueuedActions();
         }
 
@@ -133,9 +136,17 @@ public class RuleExecutor {
         }
 
         if (!dirty && tupleList.isEmpty()) {
-            ruleAgendaItem.remove();
-            if (ruleAgendaItem.getRule().isEager()) {
-                ((InternalAgenda) wm.getAgenda()).removeEagerRuleAgendaItem(ruleAgendaItem);
+            // dirty check, before doing the synced check and removal
+            synchronized ( ruleAgendaItem ) {
+                if (!dirty && tupleList.isEmpty()) {
+                    if ( log.isTraceEnabled() ) {
+                        log.trace("Removing RuleAgendaItem");
+                    }
+                    ruleAgendaItem.remove();
+                    if (ruleAgendaItem.getRule().isEager()) {
+                        ((InternalAgenda) wm.getAgenda()).removeEagerRuleAgendaItem(ruleAgendaItem);
+                    }
+                }
             }
         }
 

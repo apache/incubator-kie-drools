@@ -5,40 +5,26 @@ import org.drools.core.reteoo.LeftTuple;
 public class SynchronizedLeftTupleSets extends LeftTupleSetsImpl implements LeftTupleSets {
     private final Object lock = new Object();
 
-    public void addInsert(LeftTuple leftTuple) {
+    public Object getLock() {
+        return lock;
+    }
+
+    public boolean addInsert(LeftTuple leftTuple) {
         synchronized (lock) {
-            super.addInsert(leftTuple);
+            return super.addInsert(leftTuple);
         }
     }
 
-    public void addDelete(LeftTuple leftTuple) {
+    public boolean addDelete(LeftTuple leftTuple) {
         synchronized (lock) {
-            super.addDelete(leftTuple);
+            return super.addDelete(leftTuple);
         }
     }
 
 
-    public void addUpdate(LeftTuple leftTuple) {
+    public boolean addUpdate(LeftTuple leftTuple) {
         synchronized (lock) {
-            super.addUpdate(leftTuple);
-        }
-    }
-
-    public void removeInsert(LeftTuple leftTuple) {
-        synchronized (lock) {
-            super.removeInsert(leftTuple);
-        }
-    }
-
-    public void removeDelete(LeftTuple leftTuple) {
-        synchronized (lock) {
-            super.removeDelete(leftTuple);
-        }
-    }
-
-    public void removeUpdate(LeftTuple leftTuple) {
-        synchronized (lock) {
-            super.removeUpdate(leftTuple);
+            return super.addUpdate(leftTuple);
         }
     }
 

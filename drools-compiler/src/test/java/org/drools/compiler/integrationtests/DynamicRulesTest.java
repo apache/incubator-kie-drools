@@ -85,7 +85,7 @@ import org.mockito.ArgumentCaptor;
 
 public class DynamicRulesTest extends CommonTestMethodBase {
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicRuleAdditions() throws Exception {
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_Dynamic1.drl" ) );
         StatefulKnowledgeSession workingMemory = createKnowledgeSession( kbase );
@@ -169,7 +169,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicRuleRemovals() throws Exception {
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_Dynamic1.drl", "test_Dynamic3.drl", "test_Dynamic4.drl" ) );
 
@@ -242,7 +242,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         list.clear();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicRuleRemovalsUnusedWorkingMemory() throws Exception {
 
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_Dynamic1.drl", 
@@ -272,7 +272,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       kbase.getKnowledgePackages().size() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicFunction() throws Exception {
         //FIXME JBRULES-1258 serialising a package breaks function removal -- left the serialisation commented out for now
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_DynamicFunction1.drl" ) );
@@ -337,7 +337,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       list.get( 2 ) );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testRemovePackage() throws Exception {
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_RemovePackage.drl" ) );
         final String packageName = kpkgs.iterator().next().getName();
@@ -370,7 +370,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         ruleBaseWM.addKnowledgePackages( SerializationHelper.serializeObject( kpkgs ) );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicRules() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( );
         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
@@ -394,7 +394,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         session.fireAllRules();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicRules2() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( );
         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
@@ -419,7 +419,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         session.fireAllRules();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testRuleBaseAddRemove() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( );
 
@@ -438,7 +438,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         kbase = SerializationHelper.serializeObject( kbase );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testClassLoaderSwitchsUsingConf() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
@@ -486,7 +486,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testClassLoaderSwitchsUsingContext() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
@@ -531,7 +531,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testCollectDynamicRules() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_CollectDynamicRules1.drl" );
         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
@@ -562,7 +562,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicNotNode() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_CollectDynamicRules1.drl" );
         kbase = SerializationHelper.serializeObject( kbase );
@@ -616,7 +616,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       results.size() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicRulesAddRemove() {
         try {
             KnowledgeBase kbase = loadKnowledgeBase( "test_DynamicRulesTom.drl" );
@@ -690,7 +690,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicRuleRemovalsSubNetwork() throws Exception {
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages( "test_DynamicRulesWithSubnetwork1.drl",
                                                                                                          "test_DynamicRulesWithSubnetwork.drl" ) );
@@ -787,7 +787,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 0, list.size() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicRuleRemovalsUnusedWorkingMemorySubNetwork() throws Exception {
         InternalKnowledgeBase kbase = (InternalKnowledgeBase) loadKnowledgeBase( "test_DynamicRulesWithSubnetwork1.drl",
                                                                                  "test_DynamicRulesWithSubnetwork2.drl",
@@ -810,7 +810,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       kbase.getKnowledgePackages().size() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testRemovePackageSubNetwork() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_DynamicRulesWithSubnetwork.drl" );
         String packageName = kbase.getKnowledgePackages().iterator().next().getName();
@@ -896,7 +896,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         results.clear();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testRuleBaseAddRemoveSubNetworks() throws Exception {
         try {
             RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -920,7 +920,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicRuleAdditionsWithEntryPoints() throws Exception {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_DynamicWithEntryPoint.drl" ) );
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -960,7 +960,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testIsolatedClassLoaderWithEnumsPkgBuilder() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
@@ -1013,7 +1013,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testIsolatedClassLoaderWithEnumsContextClassloader() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
@@ -1066,7 +1066,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicRuleRemovalsSubNetworkAndNot() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_DynamicRulesWithNotSubnetwork.drl" ) ),
@@ -1116,7 +1116,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testSharedLIANodeRemoval() throws IOException,
             DroolsParserException {
         String str = "global java.util.List list;\n";
@@ -1157,7 +1157,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       list.size() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testDynamicRulesWithTypeDeclarations() {
         String type = "package com.sample\n" +
                       "declare type Foo\n" +
@@ -1214,7 +1214,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testJBRULES_2206() {
         KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );

@@ -39,7 +39,7 @@ import org.kie.api.io.ResourceType;
 
 public class IndexingTest extends CommonTestMethodBase {
 
-    @Test
+    @Test(timeout=10000)
     public void testBuildsIndexedAlphaNodes() {
         String drl = "";
         drl += "package org.drools.compiler.test\n";
@@ -69,7 +69,7 @@ public class IndexingTest extends CommonTestMethodBase {
         assertSame(hashableSinks.getLast(), alphaNode3);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testBuildsIndexedMemory() {
         // tests indexes are correctly built        
         String drl = "";
@@ -181,7 +181,7 @@ public class IndexingTest extends CommonTestMethodBase {
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleList );          
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testIndexingOnQueryUnification() throws Exception {
         String str = "";
         str += "package org.drools.compiler.test  \n";
@@ -215,7 +215,7 @@ public class IndexingTest extends CommonTestMethodBase {
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );        
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testIndexingOnQueryUnificationWithNot() throws Exception {
         String str = "";
         str += "package org.drools.compiler.test  \n";
@@ -357,7 +357,7 @@ public class IndexingTest extends CommonTestMethodBase {
         assertEquals( 2, map.get("inserted").intValue() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testFullFastIteratorResume() throws Exception {
         String str = "";
         str += "package org.drools.compiler.test  \n";
@@ -454,7 +454,7 @@ public class IndexingTest extends CommonTestMethodBase {
         }
         return null;
     }
-    @Test
+    @Test(timeout=10000)
     public void testRangeIndex() {
         String str = "import org.drools.compiler.*;\n" +
                 "rule R1\n" +
@@ -476,7 +476,7 @@ public class IndexingTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testRangeIndex2() {
         String str = "import org.drools.compiler.*;\n" +
                 "rule R1\n" +
@@ -498,7 +498,7 @@ public class IndexingTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testNotNode() {
         String str = "import org.drools.compiler.*;\n" +
                 "rule R1 salience 10\n" +
@@ -524,7 +524,7 @@ public class IndexingTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testNotNodeModifyRight() {
         String str = "import org.drools.compiler.*;\n" +
                 "rule R1 salience 10 when\n" +
@@ -549,7 +549,7 @@ public class IndexingTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testRange() {
         String str = "import org.drools.compiler.*;\n" +
                 "rule R1 salience 10 when\n" +
@@ -575,7 +575,7 @@ public class IndexingTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testRange2() throws Exception {
         String rule = "package org.drools.compiler.test\n" +
                 "declare A\n" +
