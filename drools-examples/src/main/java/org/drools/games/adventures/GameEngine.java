@@ -3,16 +3,10 @@ package org.drools.games.adventures;
 import org.apache.commons.io.IOUtils;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.mvel2.MVEL;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
@@ -22,40 +16,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.kie.internal.io.ResourceFactory.newClassPathResource;
-import static org.kie.api.io.ResourceType.DRL;
-
 public class GameEngine {
 
-    StatefulKnowledgeSession ksession;
+    KieSession ksession;
 
     ClassLoader              classLoader;
 
     public void createGame() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.batch().add( newClassPathResource( "Model.drl", getClass()  ), DRL )
-                        .add( newClassPathResource( "Queries.drl",  getClass()  ), DRL )
-                        .add( newClassPathResource( "General.drl",  getClass()  ), DRL )
-                        .add( newClassPathResource( "Response.drl",  getClass()  ), DRL )
-                        .add( newClassPathResource( "Events.drl",  getClass()  ), DRL )
-                        .add( newClassPathResource( "UiView.drl", getClass() ), DRL )
-                        .add( newClassPathResource( "Commands.drl", getClass() ), DRL ).build();
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        System.out.println(kc.verify().getMessages().toString());
+        ksession = kc.newKieSession( "TextAdventureKS");
 
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors().toString() );
-            System.exit( 1 );
-        }
-
-        KieBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbaseConf.setOption( EqualityBehaviorOption.EQUALITY );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = ksession.getKieBase();
 
         Counter c = new Counter();
-        ksession = kbase.newStatefulKnowledgeSession();
-
         ksession.setGlobal( "counter",
                             c );
 

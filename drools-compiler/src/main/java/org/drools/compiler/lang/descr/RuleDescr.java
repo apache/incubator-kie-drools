@@ -222,6 +222,7 @@ public class RuleDescr extends AnnotatedBaseDescr
         return errors != null;
     }
 
+    @Override
     public String toString() {
         return "[Rule name='" + this.name + "']";
     }

@@ -1,7 +1,6 @@
 package org.drools.compiler.compiler;
 
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
-import org.drools.core.io.impl.BaseResource;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -44,8 +43,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     public CompositeKnowledgeBuilder add(Resource resource, ResourceType type) {
-        ResourceConfiguration configuration = resource instanceof BaseResource ? ((BaseResource) resource).getConfiguration() : null;
-        return add(resource, type, configuration);
+        return add(resource, type, resource.getConfiguration());
     }
 
     public CompositeKnowledgeBuilder add(Resource resource, ResourceType type, ResourceConfiguration configuration) {

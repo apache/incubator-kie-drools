@@ -66,5 +66,8 @@ public class QueryDescr extends RuleDescr {
     public boolean isQuery() {
         return true;
     }
-    
+
+    public String toString() {
+        return "[Query name='" + getName() + "']";
+    }
 }
