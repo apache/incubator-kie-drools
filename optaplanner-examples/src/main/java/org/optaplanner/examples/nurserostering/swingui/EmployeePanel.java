@@ -45,7 +45,7 @@ import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
 
 public class EmployeePanel extends JPanel {
 
-    public static final int WEST_HEADER_WIDTH = 150;
+    public static final int WEST_HEADER_WIDTH = 160;
     public static final int EAST_HEADER_WIDTH = 130;
 
     private final NurseRosteringPanel nurseRosteringPanel;
