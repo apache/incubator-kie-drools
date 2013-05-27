@@ -34,6 +34,7 @@ import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
 
 public class VehicleRoutingSchedulePainter {
@@ -105,6 +106,10 @@ public class VehicleRoutingSchedulePainter {
             g.fillRect(x - 2, y - 2, 5, 5);
             g.drawImage(depotImageIcon.getImage(),
                     x - depotImageIcon.getIconWidth() / 2, y - 2 - depotImageIcon.getIconHeight(), imageObserver);
+            if (depot instanceof VrpTimeWindowedDepot) {
+                VrpTimeWindowedDepot timeWindowedDepot = (VrpTimeWindowedDepot) depot;
+                g.drawString(timeWindowedDepot.getTimeWindowLabel(), x + 3, y - 3 + TEXT_SIZE + TEXT_SPACING_SIZE);
+            }
         }
         int colorIndex = 0;
         // TODO Too many nested for loops
@@ -175,11 +180,12 @@ public class VehicleRoutingSchedulePainter {
         // Legend
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         g.fillRect(5, (int) height - 12 - TEXT_SIZE - (TEXT_SIZE / 2), 5, 5);
-        g.drawString("Depot", 15, (int) height - 10 - TEXT_SIZE);
+        g.drawString((schedule instanceof VrpTimeWindowedSchedule)
+                ? "Depot: time window" : "Depot", 15, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColorFactory.ORANGE_2);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
         g.drawString((schedule instanceof VrpTimeWindowedSchedule)
-                ? "Customer demand and time window" : "Customer demand", 15, (int) height - 5);
+                ? "Customer: demand and time window" : "Customer: demand", 15, (int) height - 5);
         // Show soft score
         g.setColor(TangoColorFactory.SCARLET_2);
         HardSoftScore score = schedule.getScore();
