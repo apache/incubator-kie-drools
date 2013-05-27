@@ -32,7 +32,7 @@ public class PhreakTimerNode {
                        LeftTupleSets stagedLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(timerNode, tm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+            doLeftDeletes(timerNode, tm, pmem, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
@@ -101,6 +101,8 @@ public class PhreakTimerNode {
 
     public void doLeftDeletes(TimerNode timerNode,
                               TimerNodeMemory tm,
+                              PathMemory pmem,
+                              LeftTupleSink sink,
                               InternalWorkingMemory wm,
                               LeftTupleSets srcLeftTuples,
                               LeftTupleSets trgLeftTuples,
@@ -108,8 +110,14 @@ public class PhreakTimerNode {
         TimerService timerService = wm.getTimerService();
 
 
-        LeftTupleList leftTuples = tm.getLeftTuples();
+        LeftTupleList leftTuples = tm.getInsertOrUpdateLeftTuples();
         synchronized ( leftTuples ) {
+            LeftTupleList deletes = tm.getDeleteLeftTuples();
+            if ( !deletes.isEmpty() ) {
+                for ( LeftTuple leftTuple = deletes.removeFirst(); leftTuple != null; leftTuple =  deletes.removeFirst()  ) {
+                    srcLeftTuples.addDelete(leftTuple);
+                }
+            }
             for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();
 
@@ -118,23 +126,27 @@ public class PhreakTimerNode {
                 timerService.removeJob( jobHandle );
 
                 if ( leftTuple.getMemory() != null ) {
+                    // a delete clashes with insert or update, allow it to propagate once, will handle the deletes the second time around
                     leftTuples.remove( leftTuple );
-                }
+                    doPropagateChildLeftTuple(sink, trgLeftTuples, stagedLeftTuples, leftTuple);
+                    tm.getDeleteLeftTuples().add(leftTuple);
+                    pmem.doLinkRule(wm); // make sure it's dirty, so it'll evaluate again
+                } else {
+                    LeftTuple childLeftTuple = leftTuple.getFirstChild(); // only has one child
 
-                LeftTuple childLeftTuple = leftTuple.getFirstChild(); // only has one child
+                    if ( childLeftTuple != null ) {
+                        switch (childLeftTuple.getStagedType()) {
+                            // handle clash with already staged entries
+                            case LeftTuple.INSERT:
+                                stagedLeftTuples.removeInsert(childLeftTuple);
+                                break;
+                            case LeftTuple.UPDATE:
+                                stagedLeftTuples.removeUpdate(childLeftTuple);
+                                break;
+                        }
 
-                if ( childLeftTuple != null ) {
-                    switch (childLeftTuple.getStagedType()) {
-                        // handle clash with already staged entries
-                        case LeftTuple.INSERT:
-                            stagedLeftTuples.removeInsert(childLeftTuple);
-                            break;
-                        case LeftTuple.UPDATE:
-                            stagedLeftTuples.removeUpdate(childLeftTuple);
-                            break;
+                        trgLeftTuples.addDelete( childLeftTuple );
                     }
-
-                    trgLeftTuples.addDelete( childLeftTuple );
                 }
 
                 leftTuple.clearStaged();
@@ -154,22 +166,7 @@ public class PhreakTimerNode {
         if ( trigger.hasNextFireTime().getTime() <= timestamp ) {
             // first execution is straight away, so void Scheduling
 
-            LeftTuple childLeftTuple = leftTuple.getFirstChild();
-            if ( childLeftTuple == null ) {
-                childLeftTuple = sink.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), true);
-                trgLeftTuples.addInsert( childLeftTuple );
-            } else {
-                switch (childLeftTuple.getStagedType()) {
-                    // handle clash with already staged entries
-                    case LeftTuple.INSERT:
-                        stagedLeftTuples.removeInsert(childLeftTuple);
-                        break;
-                    case LeftTuple.UPDATE:
-                        stagedLeftTuples.removeUpdate( childLeftTuple );
-                        break;
-                }
-                trgLeftTuples.addUpdate( childLeftTuple );
-            }
+            doPropagateChildLeftTuple(sink, trgLeftTuples, stagedLeftTuples, leftTuple);
 
             trigger.nextFireTime();
 
@@ -192,27 +189,12 @@ public class PhreakTimerNode {
                                            LeftTupleSets srcLeftTuples,
                                            LeftTupleSets trgLeftTuples,
                                            LeftTupleSets stagedLeftTuples) {
-        LeftTupleList leftTuples = tm.getLeftTuples();
+        LeftTupleList leftTuples = tm.getInsertOrUpdateLeftTuples();
         synchronized ( leftTuples ) {
             for ( LeftTuple leftTuple = leftTuples.getFirst(); leftTuple != null; ) {
                 LeftTuple next = ( LeftTuple ) leftTuple.getNext();
 
-                LeftTuple childLeftTuple = leftTuple.getFirstChild();
-                if ( childLeftTuple == null ) {
-                    childLeftTuple = sink.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), true);
-                    trgLeftTuples.addInsert( childLeftTuple );
-                } else {
-                    switch (childLeftTuple.getStagedType()) {
-                        // handle clash with already staged entries
-                        case LeftTuple.INSERT:
-                            stagedLeftTuples.removeInsert(childLeftTuple);
-                            break;
-                        case LeftTuple.UPDATE:
-                            stagedLeftTuples.removeUpdate( childLeftTuple );
-                            break;
-                    }
-                    trgLeftTuples.addUpdate( childLeftTuple );
-                }
+                doPropagateChildLeftTuple(sink, trgLeftTuples, stagedLeftTuples, leftTuple);
 
                 leftTuple.clear();
                 leftTuple = next;
@@ -223,7 +205,24 @@ public class PhreakTimerNode {
         }
     }
 
-
+    private void doPropagateChildLeftTuple(LeftTupleSink sink, LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples, LeftTuple leftTuple) {
+        LeftTuple childLeftTuple = leftTuple.getFirstChild();
+        if ( childLeftTuple == null ) {
+            childLeftTuple = sink.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), true);
+            trgLeftTuples.addInsert( childLeftTuple );
+        } else {
+            switch (childLeftTuple.getStagedType()) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT:
+                    stagedLeftTuples.removeInsert(childLeftTuple);
+                    break;
+                case LeftTuple.UPDATE:
+                    stagedLeftTuples.removeUpdate( childLeftTuple );
+                    break;
+            }
+            trgLeftTuples.addUpdate( childLeftTuple );
+        }
+    }
 
 
     public static class TimerNodeJob implements Job {
@@ -234,7 +233,7 @@ public class PhreakTimerNode {
             PathMemory pmem = timerJobCtx.getPathMemory();
             pmem.doLinkRule(timerJobCtx.getWorkingMemory());
 
-            LeftTupleList leftTuples = timerJobCtx.getTimerNodeMemory().getLeftTuples();
+            LeftTupleList leftTuples = timerJobCtx.getTimerNodeMemory().getInsertOrUpdateLeftTuples();
             LeftTuple lt = timerJobCtx.getLeftTuple();
 
             log.trace("Timer Executor {} {}", timerJobCtx.getTrigger(), lt);

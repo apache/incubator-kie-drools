@@ -20,7 +20,6 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleIterator;
-import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
@@ -344,16 +343,22 @@ public class TimerNode extends LeftTupleSource
             Memory {
 
         private static final long serialVersionUID = 510l;
-        private LeftTupleList leftTuples;
+        private LeftTupleList insertOrUpdateLeftTuples;
+        private LeftTupleList deleteLeftTuples;
         private SegmentMemory memory;
 
 
         public TimerNodeMemory() {
-            this.leftTuples = new LeftTupleList();
+            this.insertOrUpdateLeftTuples = new LeftTupleList();
+            this.deleteLeftTuples = new LeftTupleList();
         }
 
-        public LeftTupleList getLeftTuples() {
-            return this.leftTuples;
+        public LeftTupleList getInsertOrUpdateLeftTuples() {
+            return this.insertOrUpdateLeftTuples;
+        }
+
+        public LeftTupleList getDeleteLeftTuples() {
+            return this.deleteLeftTuples;
         }
 
         public short getNodeType() {
