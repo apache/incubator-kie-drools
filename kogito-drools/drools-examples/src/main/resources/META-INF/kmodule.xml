@@ -19,9 +19,9 @@
         <ksession name="PongKS"/>
     </kbase>
 
-    <!--kbase name="TextAdventureKB" packages="org.drools.games.adventures">
+    <kbase name="TextAdventureKB" packages="org.drools.games.adventures" equalsBehavior="equality">
         <ksession name="TextAdventureKS"/>
-    </kbase-->
+    </kbase>
 
     <kbase name="CashFlowKB" packages="org.drools.examples.cashflow">
         <ksession name="CashFlowKS"/>

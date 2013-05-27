@@ -992,9 +992,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         List<RuleDescr> roots = new LinkedList<RuleDescr>();
         Map<String, List<RuleDescr>> children = new HashMap<String, List<RuleDescr>>();
         LinkedHashMap<String, RuleDescr> sorted = new LinkedHashMap<String, RuleDescr>();
+        List<RuleDescr> queries = new ArrayList<RuleDescr>();
 
         for ( RuleDescr ruleDescr : packageDescr.getRules() ) {
-            if ( !ruleDescr.hasParent() ) {
+            if ( ruleDescr.isQuery() ) {
+                queries.add(ruleDescr);
+            } else if ( !ruleDescr.hasParent() ) {
                 roots.add(ruleDescr);
             } else if ( pkg.getRule( ruleDescr.getParentName() ) != null ) {
                 // The parent of this rule has been already compiled
@@ -1010,6 +1013,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         if ( children.isEmpty() ) { // Sorting not necessary
+            if ( !queries.isEmpty() ) { // Build all queries first
+                packageDescr.getRules().removeAll(queries);
+                packageDescr.getRules().addAll(0, queries);
+            }
             return;
         }
 
@@ -1025,6 +1032,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         reportHierarchyErrors( children, sorted );
 
         packageDescr.getRules().clear();
+        packageDescr.getRules().addAll(queries);
         for ( RuleDescr descr : sorted.values() ) {
             packageDescr.getRules().add( descr);
         }
