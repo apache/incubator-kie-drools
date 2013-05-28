@@ -27,6 +27,12 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
     <!-- External dependencies -->
     <!-- Commons -->
     <dependency>
