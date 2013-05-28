@@ -98,16 +98,18 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         checkRunTurtleTests();
         SolverFactory solverFactory = buildSolverFactory();
         Solution planningProblem = solutionDao.readSolution(unsolvedDataFile);
-        Solution bestSolution = buildAndSolve(solverFactory, EnvironmentMode.FAST_ASSERT, planningProblem);
-        if (bestSolution == null) {
-            // Solver didn't make it past initialization // TODO remove me once getBestSolution() never returns null
-            bestSolution = planningProblem;
-        }
         // Specifically use NON_INTRUSIVE_FULL_ASSERT instead of FULL_ASSERT to flush out bugs hidden by intrusiveness
-        bestSolution = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, bestSolution);
+        // 1) NON_INTRUSIVE_FULL_ASSERT ASSERT to find CH bugs (but covers little ground)
+        planningProblem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, planningProblem, 2L);
+        // 2) FAST_ASSERT to run past CH into LS to find easy bugs (but covers much ground)
+        planningProblem = buildAndSolve(solverFactory, EnvironmentMode.FAST_ASSERT, planningProblem, 5L);
+        // 3) NON_INTRUSIVE_FULL_ASSERT ASSERT to find LS bugs (but covers little ground)
+        planningProblem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, planningProblem, 3L);
     }
 
-    protected Solution buildAndSolve(SolverFactory solverFactory, EnvironmentMode environmentMode, Solution solution) {
+    protected Solution buildAndSolve(SolverFactory solverFactory, EnvironmentMode environmentMode,
+            Solution planningProblem, long maximumMinutesSpend) {
+        solverFactory.getSolverConfig().getTerminationConfig().setMaximumMinutesSpend(maximumMinutesSpend);
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.setEnvironmentMode(environmentMode);
         ScoreDirectorFactoryConfig assertionScoreDirectorFactory = createOverwritingAssertionScoreDirectorFactory();
@@ -116,9 +118,14 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
                     assertionScoreDirectorFactory);
         }
         Solver solver = solverFactory.buildSolver();
-        solver.setPlanningProblem(solution);
+        solver.setPlanningProblem(planningProblem);
         solver.solve();
-        return solver.getBestSolution();
+        Solution bestSolution = solver.getBestSolution();
+        if (bestSolution == null) {
+            // Solver didn't make it past initialization // TODO remove me once getBestSolution() never returns null
+            bestSolution = planningProblem;
+        }
+        return bestSolution;
     }
 
     protected ScoreDirectorFactoryConfig createOverwritingAssertionScoreDirectorFactory()  {
@@ -128,7 +135,7 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
     protected SolverFactory buildSolverFactory() {
         SolverFactory solverFactory = new XmlSolverFactory(createSolverConfigResource());
         TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setMaximumMinutesSpend(5L);
+        // buildAndSolve() fills in maximumMinutesSpend
         solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
         return solverFactory;
     }
