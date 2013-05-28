@@ -383,6 +383,18 @@
       output a <literal>HardSoftScore</literal>.</para>
 
       <para>All score calculation types are Object Orientated and can reuse existing Java code.</para>
+
+      <important>
+        <para>The score calculation should be read-only: it should not change the planning entities or the problem facts
+        in any way. For example, it must not call a setter method on a planning entity in a Drools score rule's RHS.
+        This does not apply to <emphasis>logically inserted</emphasis> objects, which can be changed by the score rules
+        who logically inserted them in the first place.</para>
+
+        <para>OptaPlanner will not recalculate the score of a <literal>Solution</literal> if it can predict it (unless
+        an <link linkend="environmentMode">environmentMode assertion</link> is enabled). For example, after a winning
+        step is done, there is no need to calculate the score because that move was done and undone earlier. As a
+        result, there's no guarantee that such changes applied during score calculation are actually done.</para>
+      </important>
     </section>
 
     <section>
