@@ -205,7 +205,7 @@
         <literal>XStream</literal> instance.</para>
 
         <warning>
-          <para>XStream and XML in general is a very verbose format. Reading or writing large datasets in this format
+          <para>XStream (and XML in general) is a very verbose format. Reading or writing large datasets in this format
           can cause an <literal>OutOfMemoryError</literal> and performance degradation.</para>
         </warning>
       </section>
