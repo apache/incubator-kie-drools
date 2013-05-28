@@ -16,9 +16,11 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftdouble;
 
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
 import org.junit.Test;
+import org.optaplanner.core.impl.util.SerializationTestUtils;
 
 import static org.junit.Assert.assertEquals;
 
@@ -102,6 +104,19 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
                 HardSoftDoubleScore.valueOf(0.0, -1.0),
                 HardSoftDoubleScore.valueOf(0.0, 0.0),
                 HardSoftDoubleScore.valueOf(0.0, 1.0)
+        );
+    }
+
+    @Test
+    public void serializeAndDeserialize() {
+        HardSoftDoubleScore input = HardSoftDoubleScore.valueOf(-12.3, 3400.5);
+        SerializationTestUtils.serializeAndDeserializeWithAll(input,
+                new SerializationTestUtils.OutputAsserter<HardSoftDoubleScore>() {
+                    public void assertOutput(HardSoftDoubleScore output) {
+                        assertEquals(-12.3, output.getHardScore(), 0.0);
+                        assertEquals(3400.5, output.getSoftScore(), 0.0);
+                    }
+                }
         );
     }
 

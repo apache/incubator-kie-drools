@@ -16,9 +16,11 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
 import org.junit.Test;
+import org.optaplanner.core.impl.util.SerializationTestUtils;
 
 import static org.junit.Assert.assertEquals;
 
@@ -82,6 +84,18 @@ public class SimpleScoreTest extends AbstractScoreTest {
                 SimpleScore.valueOf(-1),
                 SimpleScore.valueOf(0),
                 SimpleScore.valueOf(1)
+        );
+    }
+
+    @Test
+    public void serializeAndDeserialize() {
+        SimpleScore input = SimpleScore.valueOf(123);
+        SerializationTestUtils.serializeAndDeserializeWithAll(input,
+                new SerializationTestUtils.OutputAsserter<SimpleScore>() {
+                    public void assertOutput(SimpleScore output) {
+                        assertEquals(123, output.getScore());
+                    }
+                }
         );
     }
 

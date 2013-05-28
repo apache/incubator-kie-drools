@@ -16,9 +16,11 @@
 
 package org.optaplanner.core.impl.score.buildin.simpledouble;
 
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
 import org.junit.Test;
+import org.optaplanner.core.impl.util.SerializationTestUtils;
 
 import static org.junit.Assert.assertEquals;
 
@@ -85,6 +87,18 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
                 SimpleDoubleScore.valueOf(-1.0),
                 SimpleDoubleScore.valueOf(0.0),
                 SimpleDoubleScore.valueOf(1.0)
+        );
+    }
+
+    @Test
+    public void serializeAndDeserialize() {
+        SimpleDoubleScore input = SimpleDoubleScore.valueOf(123.4);
+        SerializationTestUtils.serializeAndDeserializeWithAll(input,
+                new SerializationTestUtils.OutputAsserter<SimpleDoubleScore>() {
+                    public void assertOutput(SimpleDoubleScore output) {
+                        assertEquals(123.4, output.getScore(), 0.0);
+                    }
+                }
         );
     }
 

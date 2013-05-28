@@ -19,9 +19,11 @@ package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 import java.math.BigDecimal;
 
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
 import org.junit.Test;
+import org.optaplanner.core.impl.util.SerializationTestUtils;
 
 import static org.junit.Assert.assertEquals;
 
@@ -86,6 +88,18 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
                 SimpleBigDecimalScore.valueOf(new BigDecimal("-1")),
                 SimpleBigDecimalScore.valueOf(new BigDecimal("0")),
                 SimpleBigDecimalScore.valueOf(new BigDecimal("1"))
+        );
+    }
+
+    @Test
+    public void serializeAndDeserialize() {
+        SimpleBigDecimalScore input = SimpleBigDecimalScore.valueOf(new BigDecimal("123.4"));
+        SerializationTestUtils.serializeAndDeserializeWithAll(input,
+                new SerializationTestUtils.OutputAsserter<SimpleBigDecimalScore>() {
+                    public void assertOutput(SimpleBigDecimalScore output) {
+                        assertEquals(new BigDecimal("123.4"), output.getScore());
+                    }
+                }
         );
     }
 

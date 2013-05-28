@@ -16,9 +16,11 @@
 
 package org.optaplanner.core.impl.score.buildin.simplelong;
 
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
 import org.junit.Test;
+import org.optaplanner.core.impl.util.SerializationTestUtils;
 
 import static org.junit.Assert.assertEquals;
 
@@ -84,6 +86,18 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
                 SimpleLongScore.valueOf(0L),
                 SimpleLongScore.valueOf(1L),
                 SimpleLongScore.valueOf(((long) Integer.MAX_VALUE) + 4000L)
+        );
+    }
+
+    @Test
+    public void serializeAndDeserialize() {
+        SimpleLongScore input = SimpleLongScore.valueOf(123L);
+        SerializationTestUtils.serializeAndDeserializeWithAll(input,
+                new SerializationTestUtils.OutputAsserter<SimpleLongScore>() {
+                    public void assertOutput(SimpleLongScore output) {
+                        assertEquals(123L, output.getScore());
+                    }
+                }
         );
     }
 
