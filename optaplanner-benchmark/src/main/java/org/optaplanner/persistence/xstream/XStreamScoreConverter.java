@@ -22,8 +22,13 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
+/**
+ * Some {@link Score} implementations require specific subclasses:
+ * For {@link BendableScore}, use {@link XStreamBendableScoreConverter}.
+ */
 public class XStreamScoreConverter implements Converter {
 
     private final ScoreDefinition scoreDefinition;
