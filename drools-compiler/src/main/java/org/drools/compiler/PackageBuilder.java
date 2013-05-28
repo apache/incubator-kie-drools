@@ -2118,7 +2118,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         if (pkg != null) {
                             typeDescr.setNamespace( pkg.getName() );
                             int index = typeDescr.getNamespace() != null && !typeDescr.getNamespace().isEmpty() ? typeDescr.getNamespace().length() + 1 : 0;
-                            typeDescr.setTypeName( clz.getCanonicalName().substring( index ) );
+                            typeDescr.setTypeName( clz.getName().substring( index ) );
                         }
                     } catch (Exception e) {
                         // intentionally eating the exception as we will fallback to default namespace
@@ -3654,10 +3654,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 //we can't use newFactField.getType() since it throws a NPE at this point.
                 String newFactType = ((FieldDefinition)newFactField).getTypeName();
 
-                if (!newFactType.equals(oldFactField.getType().getCanonicalName())){
+                if (!newFactType.equals(oldFactField.getType().getName())){
                     throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+"."+newFactField.getName()+" has a different"
                         + " type that its previous definition: "+newFactType
-                        +" != "+oldFactField.getType().getCanonicalName());
+                        +" != "+oldFactField.getType().getName());
                 }
             }else{
                 allFieldsInOldDeclarationAreStillPresent = false;

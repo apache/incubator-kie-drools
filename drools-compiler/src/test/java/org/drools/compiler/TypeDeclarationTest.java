@@ -8,6 +8,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.KnowledgeBuilderResults;
 import org.drools.builder.ResourceType;
 import org.drools.builder.ResultSeverity;
+import org.drools.common.EventFactHandle;
 import org.drools.definition.type.Annotation;
 import org.drools.definition.type.FactField;
 import org.drools.definition.type.FactType;
@@ -15,6 +16,8 @@ import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.TypeDeclaration;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 import org.junit.Test;
 
 import java.lang.annotation.ElementType;
@@ -479,6 +482,71 @@ public class TypeDeclarationTest {
         assertTrue( field.getMetaData().containsKey( "key" ) );
 
     }
+
+
+
+    public static class EventBar {
+        public static class Foo {
+
+        }
+    }
+
+    @Test
+    public void testTypeDeclarationWithInnerClasses() {
+        String str = "";
+        str += "package org.drools.compiler;\n" +
+               "\n" +
+               "import org.drools.compiler.TypeDeclarationTest.EventBar.*;\n" +
+               "" +
+               "declare Foo\n" +
+               "  @role( event )\n" +
+               "end\n" +
+               "" +
+               "rule R when Foo() then end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+        System.err.println( kbuilder.getErrors() );
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        FactHandle handle = knowledgeSession.insert( new EventBar.Foo() );
+
+        assertTrue( handle instanceof EventFactHandle );
+
+    }
+
+    @Test
+    public void testTypeDeclarationWithInnerClassesImport() {
+        String str = "";
+        str += "package org.drools.compiler;\n" +
+               "\n" +
+               "import org.drools.compiler.TypeDeclarationTest.EventBar.Foo;\n" +
+               "" +
+               "declare Foo\n" +
+               "  @role( event )\n" +
+               "end\n" +
+               "" +
+               "rule R when Foo() then end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+        System.err.println( kbuilder.getErrors() );
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession knowledgeSession = kBase.newStatefulKnowledgeSession();
+        FactHandle handle = knowledgeSession.insert( new EventBar.Foo() );
+
+        assertTrue( handle instanceof EventFactHandle );
+
+    }
+
 
 
 }
