@@ -46,6 +46,7 @@ message ProcessInstance {
     repeated NodeInstance node_instance = 7;
     repeated Variable variable = 8;
     repeated ExclusiveGroupInstance exclusive_group = 10;
+    repeated string completedNodeIds = 13;
 
     message SwimlaneContextInstance {
         optional string swimlane = 1;
