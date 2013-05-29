@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.runtime.manager.impl;
 
 import java.io.File;
@@ -16,6 +31,27 @@ import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 import org.kie.internal.task.api.InternalTaskService;
 
+/**
+ * RuntimeManager that is backed by "Singleton" strategy meaning only one <code>RuntimeEngine</code> instance will
+ * exist for for given RuntimeManager instance. The RuntimeEngine will be synchronized to make sure it will work 
+ * properly in multi-thread environments but might cause some performance issues due to sequential execution.
+ * <br/>
+ * Important aspect of this manager is that it will persists it's identifier as temporary file to keep track of the 
+ * <code>KieSession</code> it was using to maintain its state - for example session state such as facts, etc.
+ * the mentioned file is named as follows:<br>
+ * <code>manager.getIdentifier()-jbpmSessionId.ser</code>
+ * for example for default named manager it will be:<br/>
+ * default-singleton-jbpmSessionId.ser
+ * <br/>
+ * The location of the file can be one of the following, it is resolved in below order:
+ * <ul>
+ *  <li>system property named: jbpm.data.dir</li>
+ *  <li>system property named: jboss.server.data.dir - shall be used by default on JBoss AS</li>
+ *  <li>system property named: java.io.tmpdir</li>
+ * </ul>
+ * In case there is a need to reset the state, simply removing of the *-jbpm.SessionId.ser from the mentioned location
+ * will do the trick.
+ */
 public class SingletonRuntimeManager extends AbstractRuntimeManager {
     
     private RuntimeEngine singleton;

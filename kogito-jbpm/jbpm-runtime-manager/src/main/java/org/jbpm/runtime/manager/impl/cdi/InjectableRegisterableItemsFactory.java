@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.runtime.manager.impl.cdi;
 
 import java.lang.annotation.Annotation;
@@ -9,6 +24,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.Bean;
@@ -40,6 +56,30 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 
+/**
+ * Implementation of <code>RegisterableItemsFactory</code> dedicated to CDI environments that allows to get 
+ * injections of following components:
+ * <ul>
+ *  <li><code>ExternalTaskEventListener</code> - required bean</li>
+ *  <li><code>WorkItemHandlerProducer</code> - optional bean (0 or more)</li>
+ *  <li><code>EventListenerProducer<ProcessEventListener>></code> - optional bean (0 or more)</li>
+ *  <li><code>EventListenerProducer<AgendaEventListener>></code> - optional bean (0 or more)</li>
+ *  <li><code>EventListenerProducer<WorkingMemoryEventListener>></code> - optional bean (0 or more)</li>
+ *  <li><code>RuntimeFinder</code> - optional required only when single CDI bean is going to manage many 
+ *  <code>RuntimeManager</code> instances</li>
+ * </ul>
+ * In addition to that, <code>AbstractAuditLogger</code> can be set after bean has been injected if the default 
+ * is not sufficient. Although this factory extends <code>DefaultRegisterableItemsFactory</code> it will not
+ * use any of the listeners and handlers that comes from the super class. It mainly relies on CDI injections
+ * where the only exception from this rule is <code>AbstractAuditLogger</code>
+ * <br/>
+ * Even though this is fully qualified bean for injection it provides helper methods to build its instances
+ * using <code>BeanManager</code> in case more independent instances are required.
+ * <ul>
+ *  <li>getFactory(BeanManager, AbstractAuditLogger)</li>
+ *  <li>getFactory(BeanManager, AbstractAuditLogger, KieContainer, String)</li>
+ * </ul>  
+ */
 public class InjectableRegisterableItemsFactory extends DefaultRegisterableItemsFactory {
 
     private static Logger logger = Logger.getLogger(InjectableRegisterableItemsFactory.class.getName());
@@ -48,6 +88,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     private ExternalTaskEventListener taskListener; 
     // optional injections
     @Inject
+    @Any
     private Instance<WorkItemHandlerProducer> workItemHandlerProducer;  
     @Inject
     @Process
@@ -175,12 +216,29 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         return defaultListeners;
     }
     
+    /**
+     * Allows to create instance of this class dynamically via <code>BeanManager</code>. This is useful in case multiple 
+     * independent instances are required on runtime and that need cannot be satisfied with regular CDI practices.
+     * @param beanManager - bean manager instance of the container
+     * @param auditlogger - <code>AbstractAuditLogger</code> logger instance to be used, might be null
+     * @return new instance of the factory
+     */
     public static RegisterableItemsFactory getFactory(BeanManager beanManager, AbstractAuditLogger auditlogger) {
         InjectableRegisterableItemsFactory instance = getInstanceByType(beanManager, InjectableRegisterableItemsFactory.class, new Annotation[]{});
         instance.setAuditlogger(auditlogger);
         return instance;
     }
     
+    /**
+     * Allows to create instance of this class dynamically via <code>BeanManager</code>. This is useful in case multiple 
+     * independent instances are required on runtime and that need cannot be satisfied with regular CDI practices.
+     * @param beanManager - bean manager instance of the container
+     * @param auditlogger - <code>AbstractAuditLogger</code> logger instance to be used, might be null
+     * @param kieContainer - <code>KieContainer</code> that the factory is built for
+     * @param ksessionName - name of the ksession defined in kmodule to be used, 
+     * if not given default ksession from kmodule will be used.
+     * @return
+     */
     public static RegisterableItemsFactory getFactory(BeanManager beanManager, AbstractAuditLogger auditlogger, KieContainer kieContainer, String ksessionName) {
         InjectableRegisterableItemsFactory instance = getInstanceByType(beanManager, InjectableRegisterableItemsFactory.class, new Annotation[]{});
         instance.setAuditlogger(auditlogger);

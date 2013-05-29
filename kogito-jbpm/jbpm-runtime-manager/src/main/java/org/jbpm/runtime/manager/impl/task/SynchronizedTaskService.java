@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.runtime.manager.impl.task;
 
 import java.util.Date;
@@ -30,13 +45,15 @@ import org.kie.internal.task.api.model.NotificationEvent;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 import org.kie.internal.task.api.model.TaskDef;
 import org.kie.internal.task.api.model.TaskEvent;
-
+/**
+ * Fully synchronized <code>TaskService</code> implementation used by <code>SingletonRuntimeManager</code>.
+ * Synchronization is done on <code>CommandService</code> of the <code>KieSession</code> to ensure correctness 
+ * until transaction completion.
+ *
+ */
 public class SynchronizedTaskService 
             implements InternalTaskService, EventService<JbpmServicesEventListener<NotificationEvent>,JbpmServicesEventListener<Task>> {
 	
-	// TODO: when engine controls transaction boundaries, this is probably sufficient
-	// however, with user transactions, we should make sure we sync on the ksession
-	// until the transaction is committed
 	
 	private Object ksession;
 	private InternalTaskService taskService;

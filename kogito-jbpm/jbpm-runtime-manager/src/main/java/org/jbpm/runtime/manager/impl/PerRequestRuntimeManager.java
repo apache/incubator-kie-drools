@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.runtime.manager.impl;
 
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
@@ -9,8 +24,18 @@ import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
-import org.kie.internal.runtime.manager.context.EmptyContext;
 
+/**
+ * RuntimeManager implementation that is backed by "Per Request" strategy - meaning that for every call to 
+ * <code>getRuntimeEngine</code> new instance will be delivered with brand new KieSession and TaskService.
+ * The only exception to this is when invoking within same transaction from different places - as then manager
+ *  caches currently active instance in ThreadLocal to avoid concurrent modifications - or "lost" of data.
+ * On dispose of runtime engine manager will ensure that it is destroyed as well so it will get removed from 
+ * data base to avoid out dated data.  
+ * <br/>
+ * This implementation does not require any special <code>Context</code> to proceed.
+ *
+ */
 public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 
     private SessionFactory factory;

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.runtime.manager.impl;
 
 import javax.persistence.EntityManagerFactory;
@@ -13,6 +28,16 @@ import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.task.api.UserGroupCallback;
 
+/**
+ * Builder implementation that follows fluent approach to build <code>RuntimeEnvironments</code>.
+ * Comes with short cut methods to get predefined configurations of the <code>RuntimeEnvironment</code>:
+ * <ul>
+ *  <li>getDefault() - returns preconfigured environment with enabled persistence</li>
+ *  <li>getefaultInMemory() - returns preconfigured environment with disabled persistence for runtime engine</li>
+ *  <li>getEmpty() - completely empty environment for self configuration</li>
+ * </ul>  
+ *
+ */
 public class RuntimeEnvironmentBuilder {
 
     private SimpleRuntimeEnvironment runtimeEnvironment;

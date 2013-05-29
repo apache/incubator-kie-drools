@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.runtime.manager.api.qualifiers;
+package org.jbpm.runtime.manager.api;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import javax.inject.Qualifier;
+import org.jbpm.process.core.timer.GlobalSchedulerService;
 
 /**
- * Defines that a annotated element is of type Agenda, used with 
- * <code>EventListenerProducer</code>
+ * Marker interface to indicate that a given component provides <code>SchedulerService</code>
+ * especially important for RuntimeEnvironment implementations that not all must provide such capabilities.
  */
-@Qualifier
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
-public @interface Agenda {
+public interface SchedulerProvider {
 
+    /**
+     * Returns fully configured instance of <code>SchedulerService</code> ready to be used/
+     * @return <code>GlobalSchedulerService</code> instance configured according to environment needs
+     */
+    GlobalSchedulerService getSchedulerService();
 }
