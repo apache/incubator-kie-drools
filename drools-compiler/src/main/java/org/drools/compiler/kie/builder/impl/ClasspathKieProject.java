@@ -60,7 +60,7 @@ public class ClasspathKieProject extends AbstractKieProject {
     public void init() {
         this.cl = ClassLoaderUtil.getClassLoader( null, null, true );
         discoverKieModules();
-        indexParts(kieModules, kJarFromKBaseName);
+        indexParts(kieModules.values(), kJarFromKBaseName);
     }
 
     public ReleaseId getGAV() {

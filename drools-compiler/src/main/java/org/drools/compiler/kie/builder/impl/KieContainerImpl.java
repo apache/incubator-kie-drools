@@ -58,7 +58,7 @@ public class KieContainerImpl
 
     public void updateToVersion(ReleaseId releaseId) {
         kBases.clear();
-        this.kProject = new KieModuleKieProject( (InternalKieModule)kr.getKieModule(releaseId), kr );
+        this.kProject = new KieModuleKieProject( (InternalKieModule)kr.getKieModule(releaseId) );
         this.kProject.init();
     }
 

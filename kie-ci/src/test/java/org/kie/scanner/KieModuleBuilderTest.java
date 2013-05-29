@@ -21,7 +21,6 @@ import static junit.framework.Assert.*;
 public class KieModuleBuilderTest extends AbstractKieCiTest {
 
     @Test
-    @Ignore("See DROOLS-153: KieBuilder requires KieModule to contain a KBase to build")
     public void testKieModuleUsingPOMMissingKBaseDefinition() throws Exception {
         KieServices ks = KieServices.Factory.get();
 
@@ -76,9 +75,6 @@ public class KieModuleBuilderTest extends AbstractKieCiTest {
         KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
         InputStream is = new FileInputStream( pomFile2 );
         KieModuleModel kproj2 = ks.newKieModuleModel();
-
-        //Uncomment this line for the test to pass
-        //kproj2.newKieBaseModel("KBase2");
 
         kieFileSystem.write( "pom.xml",
                              KieServices.Factory.get().getResources().newInputStreamResource( is ) );
