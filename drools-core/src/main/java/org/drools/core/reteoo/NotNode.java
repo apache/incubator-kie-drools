@@ -26,6 +26,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.common.SynchronizedRightTupleSets;
+import org.drools.core.phreak.RightTupleEntry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.RightTupleList;
@@ -152,7 +153,14 @@ public class NotNode extends BetaNode {
             // strangely we link here, this is actually just to force a network evaluation
             // The assert is then processed and the rule unlinks then. 
             // This is because we need the first RightTuple to link with it's blocked
-            boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
+            boolean stagedInsertWasEmpty = false;
+            if ( streamMode ) {
+                stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
+                memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory ));
+            }  else {
+                stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
+            }
+
             if (  memory.getAndIncCounter() == 0 && isEmptyBetaConstraints()  ) {
                 // NotNodes can only be unlinked, if they have no variable constraints
                 memory.linkNode( wm ); 
@@ -216,7 +224,13 @@ public class NotNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( isUnlinkingEnabled() ) {
             RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
-            boolean  stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
+            boolean  stagedDeleteWasEmpty = false;
+            if ( streamMode ) {
+                stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
+                memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, rightTuple.getPropagationContext(), memory ));
+            } else {
+                stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
+            }
             
             if (  memory.getAndDecCounter() == 1 && isEmptyBetaConstraints()  ) {
                 // NotNodes can only be unlinked, if they have no variable constraints

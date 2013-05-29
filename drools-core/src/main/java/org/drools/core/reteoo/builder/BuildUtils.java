@@ -127,7 +127,8 @@ public class BuildUtils {
             }
         }
 
-        if ( node == null ) {
+        if ( node == null || node.isStreamMode() ) {
+            // SteamMode in Phreak does not allow sharing
             // only attach() if it is a new node
             node = candidate;
 

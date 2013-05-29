@@ -4,10 +4,13 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.LeftTupleSets;
+import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaFilter;
@@ -55,9 +58,28 @@ public class RuleExecutor {
                                       int fireLimit) {
         LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
 
-        if (dirty) {
+        if ( log.isTraceEnabled() ) {
+            log.trace( "Start eval entry {}", pmem.getQueue().isEmpty() );
+        }
+
+        if (isDirty() || (pmem.getQueue() != null && !pmem.getQueue().isEmpty())) {
             setDirty(false);
-            this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+            boolean callEvaluateNetwork = true;
+            if (pmem.getQueue() != null && !pmem.getQueue().isEmpty()) {
+                removeQueuedTupleEntry();
+                this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                while (tupleList.isEmpty() && !pmem.getQueue().isEmpty()) {
+                    // need to keep removing the events, until either the queue is empty, or there are rules to fire
+                    removeQueuedTupleEntry();
+                    this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                    callEvaluateNetwork = false;
+                }
+            }
+            if (callEvaluateNetwork) {
+                // this must be called, atleast once
+                this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+            }
+
             wm.executeQueuedActions();
         }
 
@@ -120,9 +142,22 @@ public class RuleExecutor {
                 if (haltRuleFiring(nextRule, fireCount, fireLimit, localFireCount, agenda, salience)) {
                     break; // another rule has high priority and is on the agenda, so evaluate it first
                 }
-                if (isDirty()) {
+                if (isDirty() || (pmem.getQueue() != null && !pmem.getQueue().isEmpty())) {
                     setDirty(false);
-                    this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                    boolean callEvaluateNetwork = true;
+                    if (pmem.getQueue() != null && !pmem.getQueue().isEmpty()) {
+                        removeQueuedTupleEntry();
+                        while (tupleList.isEmpty() && !pmem.getQueue().isEmpty()) {
+                            // need to keep removing the events, until either the queue is empty, or there are rules to fire
+                            removeQueuedTupleEntry();
+                            this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                            callEvaluateNetwork = false;
+                        }
+                    }
+                    if (callEvaluateNetwork) {
+                        // this must be called, atleast once
+                        this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                    }
                 }
                 wm.executeQueuedActions();
 
@@ -137,9 +172,9 @@ public class RuleExecutor {
 
         if (!dirty && tupleList.isEmpty()) {
             // dirty check, before doing the synced check and removal
-            synchronized ( ruleAgendaItem ) {
+            synchronized (ruleAgendaItem) {
                 if (!dirty && tupleList.isEmpty()) {
-                    if ( log.isTraceEnabled() ) {
+                    if (log.isTraceEnabled()) {
                         log.trace("Removing RuleAgendaItem");
                     }
                     ruleAgendaItem.remove();
@@ -153,16 +188,46 @@ public class RuleExecutor {
         return localFireCount;
     }
 
-    public RuleTerminalNodeLeftTuple removeFirstLeftTuple() {
-        RuleTerminalNodeLeftTuple lt;
-        if (queue == null) {
-            lt = (RuleTerminalNodeLeftTuple) tupleList.removeFirst();
-        } else {
-            lt = (RuleTerminalNodeLeftTuple) queue.dequeue();
-            removeQueuedLeftTuple(lt);
-
+    private void removeQueuedTupleEntry() {
+        TupleEntry tupleEntry = pmem.getQueue().remove();
+        if ( log.isTraceEnabled() ) {
+            log.trace( "Stream removed entry {}", tupleEntry );
         }
-        return lt;
+        if (tupleEntry.getLeftTuple() != null) {
+            SegmentMemory sm = (SegmentMemory) tupleEntry.getNodeMemory().getSegmentMemory();
+            LeftTupleSets tuples = sm.getStagedLeftTuples();
+            tupleEntry.getLeftTuple().setPropagationContext(tupleEntry.getPropagationContext());
+            switch (tupleEntry.getPropagationContext().getType()) {
+                case PropagationContext.INSERTION:
+                case PropagationContext.RULE_ADDITION:
+                    tuples.addInsert(tupleEntry.getLeftTuple());
+                    break;
+                case PropagationContext.MODIFICATION:
+                    tuples.addUpdate(tupleEntry.getLeftTuple());
+                    break;
+                case PropagationContext.DELETION:
+                case PropagationContext.EXPIRATION:
+                case PropagationContext.RULE_REMOVAL:
+                    tuples.addDelete(tupleEntry.getLeftTuple());
+                    break;
+            }
+        } else {
+            BetaMemory bm = (BetaMemory) tupleEntry.getNodeMemory();
+            switch (tupleEntry.getPropagationContext().getType()) {
+                case PropagationContext.INSERTION:
+                case PropagationContext.RULE_ADDITION:
+                    bm.getStagedRightTuples().addInsert(tupleEntry.getRightTuple());
+                    break;
+                case PropagationContext.MODIFICATION:
+                    bm.getStagedRightTuples().addUpdate(tupleEntry.getRightTuple());
+                    break;
+                case PropagationContext.DELETION:
+                case PropagationContext.EXPIRATION:
+                case PropagationContext.RULE_REMOVAL:
+                    bm.getStagedRightTuples().addDelete(tupleEntry.getRightTuple());
+                    break;
+            }
+        }
     }
 
     public RuleAgendaItem getRuleAgendaItem() {

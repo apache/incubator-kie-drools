@@ -474,47 +474,6 @@ public class RuleNetworkEvaluator {
             return true; // return here, doRiaNode queues the evaluation on the stack, which is necessary to handled nested query nodes
         }
 
-        Deque<RightTuple> que = bm.getDequeu();
-        if ( !que.isEmpty() ) {
-            // If there are no staged RightTuples, then process the Dequeue, popping entries, until another insert/expiration clash
-            RightTupleSets rightTuples = bm.getStagedRightTuples();
-
-            if ( rightTuples.isEmpty()) {
-                RightTuple rightTuple = que.peekFirst();
-                PropagationContext pctx = rightTuple.getPropagationContext();
-                // nothing staged, so now process the Dequeu
-                loop:
-                while ( rightTuple != null && rightTuple.getPropagationContext() == pctx ) {
-                    switch( rightTuple.getPropagationContext().getType() ) {
-                        case PropagationContext.INSERTION:
-                        case PropagationContext.RULE_ADDITION:
-                            rightTuples.addInsert( rightTuple );
-                            break;
-                        case PropagationContext.MODIFICATION:
-                            rightTuples.addUpdate( rightTuple );
-                            break;
-                        case PropagationContext.DELETION:
-                        case PropagationContext.RULE_REMOVAL:
-                             rightTuples.addDelete( rightTuple );
-                        break;
-                        case PropagationContext.EXPIRATION:
-                            // expirations must be handled serially
-                            rightTuples.addDelete( rightTuple );
-                            break loop;
-                    }
-                    que.removeFirst();
-                    rightTuple = que.peekFirst();
-                }
-            }
-
-            if ( !que.isEmpty() ) {
-                // The DeQue is not empty, add StackEntry for reprocessing. Note it uses the outerStack, which means it executes after rule firing
-                StackEntry stackEntry = new StackEntry(liaNode,node, sink, pmem, nodeMem, smems,
-                                                       smemIndex, trgTuples, visitedRules, false);
-                outerStack.add(stackEntry);
-            }
-        }
-
         if ( stagedLeftTuples != null ) {
             synchronized ( stagedLeftTuples ) {
                 switchOnDoBetaNode(node, trgTuples, wm, srcTuples, stagedLeftTuples, sink, bm, am);

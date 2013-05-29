@@ -50,11 +50,13 @@ import org.drools.core.common.TripleBetaConstraints;
 import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.phreak.RightTupleEntry;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
@@ -118,8 +120,6 @@ public abstract class BetaNode extends LeftTupleSource
 
     private int unlinkedDisabledCount;
 
-    private boolean streamMode;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -167,15 +167,11 @@ public abstract class BetaNode extends LeftTupleSource
 
         ObjectTypeNode node = null;
 
-        if (context.isStreamMode()) {
+        if (context.isStreamMode() && context.getRootObjectTypeNode().getObjectType().isEvent()) {
             streamMode = true;
         } else {
             streamMode = false;
         }
-    }
-
-    public boolean isStreamMode() {
-        return streamMode;
     }
 
     public boolean isUnlinkingEnabled() {
@@ -274,7 +270,6 @@ public abstract class BetaNode extends LeftTupleSource
         rightNegativeMask = in.readLong();
         leftListenedProperties = (List) in.readObject();
         rightListenedProperties = (List) in.readObject();
-        streamMode = in.readBoolean();
         setUnificationJoin();
         super.readExternal( in );
         if ( NodeTypeEnums.RightInputAdaterNode == rightInput.getType() ) {
@@ -305,7 +300,6 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeLong( rightNegativeMask );
         out.writeObject( leftListenedProperties );
         out.writeObject( rightListenedProperties );
-        out.writeBoolean( streamMode );
         super.writeExternal( out );
     }
 
@@ -341,7 +335,13 @@ public abstract class BetaNode extends LeftTupleSource
                                                   pctx );
 
         if ( isUnlinkingEnabled() ) {
-            boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
+            boolean stagedInsertWasEmpty = false;
+            if ( streamMode ) {
+                stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
+                memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory ));
+            }  else {
+                stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
+            }
             if ( log.isTraceEnabled() ) {
                 log.trace("BetaNode insert={} stagedInsertWasEmpty={}",  memory.getStagedRightTuples().insertSize(), stagedInsertWasEmpty );
             }
@@ -350,14 +350,6 @@ public abstract class BetaNode extends LeftTupleSource
             } else if ( stagedInsertWasEmpty ) {
                 memory.getSegmentMemory().notifyRuleLinkSegment( wm );
             }
-
-//            RightTuple insertFirst = memory.getStagedRightTuples().getInsertFirst();
-//            if ( streamMode && insertFirst != null && insertFirst.getPropagationContext() != pctx ) {
-//                memory.getDequeu().add( rightTuple );
-//            } else {
-//                memory.getStagedRightTuples().addInsert( rightTuple );
-//            }
-
 
             if( pctx.getReaderContext() != null ) {
                 // we are deserializing a session, so we might need to evaluate
@@ -384,24 +376,14 @@ public abstract class BetaNode extends LeftTupleSource
                                           final BetaMemory memory) {
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
 
-//        RightTuple deleteFirst = stagedRightTuples.getDeleteFirst();
-//
-//        if ( !memory.getDequeu().isEmpty() || (bnode.isStreamMode() && deleteFirst != null && deleteFirst.getPropagationContext() != rightTuple.getPropagationContext() )) {
-//            memory.getDequeu().add( rightTuple );
-//            return;
-//        }
-//
-//        switch ( rightTuple.getStagedType() ) {
-//            // handle clash with already staged entries
-//            case LeftTuple.INSERT:
-//                stagedRightTuples.removeInsert( rightTuple );
-//                break;
-//            case LeftTuple.UPDATE:
-//                stagedRightTuples.removeUpdate( rightTuple );
-//                break;
-//        }
+        boolean stagedDeleteWasEmpty = false;
+        if ( bnode.isStreamMode() ) {
+            stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
+            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, rightTuple.getPropagationContext(), memory ));
+        } else {
+            stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
+        }
 
-        boolean  stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
         if ( memory.getAndDecCounter() == 1 ) {
             memory.unlinkNode( wm );
         } else if ( stagedDeleteWasEmpty ) {
@@ -416,22 +398,17 @@ public abstract class BetaNode extends LeftTupleSource
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
 
 
-        if ( stagedRightTuples.addUpdate( rightTuple )  ) {
-            memory.getSegmentMemory().notifyRuleLinkSegment( wm );
+        boolean stagedUpdateWasEmpty = false;
+        if ( streamMode ) {
+            stagedUpdateWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
+            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, rightTuple.getPropagationContext(), memory ));
+        } else {
+            stagedUpdateWasEmpty = stagedRightTuples.addUpdate( rightTuple );
         }
 
-//        if ( stagedRightTuples.updateSize() == 0 || stagedRightTuples.insertSize() == 0 ) {
-//            // also check inserts, as we'll leave it in insert stage list, if it has not yet been processed
-//            // nothing staged before, notify rule, so it can evaluate network
-//            memory.getSegmentMemory().notifyRuleLinkSegment( wm );
-//        }
-//
-//        RightTuple updateFirst = memory.getStagedRightTuples().getUpdateFirst();
-//        if ( !memory.getDequeu().isEmpty() || ( streamMode && updateFirst != null && updateFirst.getPropagationContext() != rightTuple.getPropagationContext() ) ) {
-//            memory.getDequeu().add( rightTuple );
-//        } else if (rightTuple.getStagedType() == LeftTuple.NONE) {
-//            memory.getStagedRightTuples().addUpdate( rightTuple );
-//        }
+        if ( stagedUpdateWasEmpty  ) {
+            memory.getSegmentMemory().notifyRuleLinkSegment( wm );
+        }
     }
 
     public boolean isRightInputIsRiaNode() {

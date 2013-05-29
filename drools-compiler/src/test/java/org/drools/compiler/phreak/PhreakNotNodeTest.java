@@ -50,10 +50,10 @@ public class PhreakNotNodeTest {
         
         BetaMemory bm1 =(BetaMemory)  wm.getNodeMemory( sinkNode );
         
-        SegmentMemory smem = new SegmentMemory( notNode ) ;
+        SegmentMemory smem = new SegmentMemory( notNode, null ) ;
         bm.setSegmentMemory( smem );
         
-        SegmentMemory childSmem = new SegmentMemory( sinkNode ) ;
+        SegmentMemory childSmem = new SegmentMemory( sinkNode, null ) ;
         bm1.setSegmentMemory( childSmem );       
         smem.add( childSmem );     
 

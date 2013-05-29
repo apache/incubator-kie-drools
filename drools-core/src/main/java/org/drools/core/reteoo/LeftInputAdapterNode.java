@@ -27,6 +27,7 @@ import java.util.Map;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
@@ -36,12 +37,17 @@ import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.phreak.LeftTupleEntry;
+import org.drools.core.phreak.RightTupleEntry;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.definition.rule.Rule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -54,20 +60,22 @@ public class LeftInputAdapterNode extends LeftTupleSource
     ObjectSinkNode,
     MemoryFactory {
 
+    protected static transient Logger log = LoggerFactory.getLogger(LeftInputAdapterNode.class);
+
     private static final long serialVersionUID = 510l;
-    private ObjectSource      objectSource;
+    private ObjectSource objectSource;
 
-    private ObjectSinkNode    previousRightTupleSinkNode;
-    private ObjectSinkNode    nextRightTupleSinkNode;
+    private ObjectSinkNode previousRightTupleSinkNode;
+    private ObjectSinkNode nextRightTupleSinkNode;
 
-    private boolean           leftTupleMemoryEnabled;
-    
-    protected boolean         rootQueryNode;
-    
-    protected boolean         unlinkingEnabled;
-    private int               unlinkedDisabledCount;
-    private int               segmentMemoryIndex;    
-    
+    private boolean leftTupleMemoryEnabled;
+
+    protected boolean rootQueryNode;
+
+    protected boolean unlinkingEnabled;
+    private   int     unlinkedDisabledCount;
+    private   int     segmentMemoryIndex;
+
     public LeftInputAdapterNode() {
 
     }
@@ -84,44 +92,50 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public LeftInputAdapterNode(final int id,
                                 final ObjectSource source,
                                 final BuildContext context) {
-        super( id,
-               context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
+        super(id,
+              context.getPartitionId(),
+              context.getRuleBase().getConfiguration().isMultithreadEvaluation());
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
         ObjectSource current = source;
-        while ( !(current.getType() == NodeTypeEnums.ObjectTypeNode) ) {
-               current = current.getParentObjectSource();
+        while (!(current.getType() == NodeTypeEnums.ObjectTypeNode)) {
+            current = current.getParentObjectSource();
         }
-        ObjectTypeNode otn = ( ObjectTypeNode ) current;
-        rootQueryNode = ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( otn.getObjectType() );
-        
+        ObjectTypeNode otn = (ObjectTypeNode) current;
+        rootQueryNode = ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom(otn.getObjectType());
+
         this.unlinkingEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
-    }    
+
+        if (context.isStreamMode() && context.getRootObjectTypeNode().getObjectType().isEvent()) {
+            streamMode = true;
+        } else {
+            streamMode = false;
+        }
+    }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
+            ClassNotFoundException {
+        super.readExternal(in);
         objectSource = (ObjectSource) in.readObject();
         leftTupleMemoryEnabled = in.readBoolean();
         rootQueryNode = in.readBoolean();
         unlinkingEnabled = in.readBoolean();
-        unlinkedDisabledCount = in.readInt();        
+        unlinkedDisabledCount = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( objectSource );
-        out.writeBoolean( leftTupleMemoryEnabled );
-        out.writeBoolean(  rootQueryNode );
-        out.writeBoolean( unlinkingEnabled );
-        out.writeInt( unlinkedDisabledCount );        
+        super.writeExternal(out);
+        out.writeObject(objectSource);
+        out.writeBoolean(leftTupleMemoryEnabled);
+        out.writeBoolean(rootQueryNode);
+        out.writeBoolean(unlinkingEnabled);
+        out.writeInt(unlinkedDisabledCount);
     }
-    
+
     public ObjectSource getObjectSource() {
         return this.objectSource;
     }
-    
+
     public int getSegmentMemoryIndex() {
         return segmentMemoryIndex;
     }
@@ -251,36 +265,26 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                        boolean useLeftMemory) {
         SegmentMemory sm = lm.getSegmentMemory();
         if ( sm.getTipNode() == liaNode) {
+            // liaNode in it's own segment and child segments not yet created
             if ( sm.isEmpty() ) {
-                // liaNode in it's own segment and child segments not yet created
-                synchronized ( sm ) {
-                    if ( sm.isEmpty() ) {
-                        SegmentUtilities.createChildSegments( wm,
-                                                              sm,
-                                                              liaNode.getSinkPropagator() );
-                    }
-                }
+                SegmentUtilities.createChildSegments( wm,
+                                                      sm,
+                                                      liaNode.getSinkPropagator() );
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
 
-        if ( useLeftMemory && lm.getAndIncreaseCounter() == 0) {
-            // if there is no left mempry, then there is no linking or notification
-            if ( linkOrNotify ) {
-                // link and notify
-                lm.linkNode( wm );
-            } else {
-                // link without notify, when driven by a query, as we don't want it, placed on the agenda
-                lm.linkNodeWithoutRuleNotify();
-            }
-            linkOrNotify = false; // we don't need to do any more notifcations
+        boolean notifySegment = linkOrNotify;
+        int counter =  lm.getAndIncreaseCounter();
+        if ( counter == 1) {
+            notifySegment = false; // node is not linked, so notify will happen when we link the node
         }
 
         LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink();
         LeftTuple leftTuple = sink.createLeftTuple( factHandle, sink, useLeftMemory );
         leftTuple.setPropagationContext( context );
         long mask = sink.getLeftInferredMask();
-        doInsertSegmentMemory(context, wm, linkOrNotify, sm, leftTuple, mask);
+        doInsertSegmentMemory(context, wm, notifySegment, sm, leftTuple, mask);
 
         if ( sm.getRootNode() != liaNode ) {
             // sm points to lia child sm, so iterate for all remaining children 
@@ -289,9 +293,21 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 sink =  sm.getSinkFactory();                
                 leftTuple = sink.createPeer( leftTuple ); // pctx is set during peer cloning
                 mask = ((LeftTupleSink)sm.getRootNode()).getLeftInferredMask();
-                doInsertSegmentMemory(context, wm, linkOrNotify, sm, leftTuple, mask);
+                 doInsertSegmentMemory(context, wm, notifySegment, sm, leftTuple, mask);
             }              
         }
+
+        if ( useLeftMemory && counter == 0) {
+            // if there is no left mempry, then there is no linking or notification
+            if ( linkOrNotify ) {
+                // link and notify
+                lm.linkNode( wm );
+            } else {
+                // link without notify, when driven by a query, as we don't want it, placed on the agenda
+                lm.linkNodeWithoutRuleNotify();
+            }
+        }
+
         if( context.getReaderContext() != null && sm != null ) {
             // we are deserializing a session, so we might need to evaluate
             // rule activations immediately
@@ -300,13 +316,25 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    private static void doInsertSegmentMemory(PropagationContext context, InternalWorkingMemory wm, boolean linkOrNotify, SegmentMemory sm, LeftTuple leftTuple, long mask) {
-        if ( context.getType() == PropagationContext.INSERTION ||
+    private static void doInsertSegmentMemory(PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
+                                              SegmentMemory sm, LeftTuple leftTuple, long mask) {
+        if ( pctx.getType() == PropagationContext.INSERTION ||
                 mask == Long.MAX_VALUE ||
-                intersect( context.getModificationMask(),  mask) ) {
-                // mask check is necessary if insert is a result of a modify
+                intersect( pctx.getModificationMask(),  mask) ) {
+            boolean stagedInsertWasEmpty = false;
 
-            if ( sm.getStagedLeftTuples().addInsert( leftTuple ) && linkOrNotify  ) {
+            // mask check is necessary if insert is a result of a modify
+            if ( ((BaseNode)sm.getRootNode()).isStreamMode() ) {
+                stagedInsertWasEmpty = sm.getTupleQueue().isEmpty();
+                sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst() ));
+
+                if ( log.isTraceEnabled() ) {
+                    log.trace( "LeftInputAdapterNode queue={} empty={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().isEmpty() );
+                }
+            }  else {
+                stagedInsertWasEmpty = sm.getStagedLeftTuples().addInsert( leftTuple );
+            }
+            if ( stagedInsertWasEmpty && linkOrNotify  ) {
                 // staged is empty, so notify rule, to force re-evaluation.
                 sm.notifyRuleLinkSegment(wm);
             }
@@ -321,15 +349,11 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                       final boolean linkOrNotify,
                                       final LiaNodeMemory lm) {
         if ( sm.getTipNode() == liaNode ) {
+            // liaNode in it's own segment and child segments not yet created
             if ( sm.isEmpty() ) {
-                // liaNode in it's own segment and child segments not yet created
-                synchronized ( sm ) {
-                    if ( sm.isEmpty() ) {
-                        SegmentUtilities.createChildSegments( wm,
-                                                              sm,
-                                                              liaNode.getSinkPropagator() );
-                    }
-                }
+                SegmentUtilities.createChildSegments( wm,
+                                                      sm,
+                                                      liaNode.getSinkPropagator() );
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -355,14 +379,23 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    private static void doDeleteSegmentMemory(LeftTuple leftTuple, PropagationContext context, SegmentMemory sm, InternalWorkingMemory wm, boolean linkOrNotify) {
+    private static void doDeleteSegmentMemory(LeftTuple leftTuple, PropagationContext context,
+                                              SegmentMemory sm, InternalWorkingMemory wm, boolean linkOrNotify) {
         LeftTupleSets leftTuples = sm.getStagedLeftTuples();
-        if ( leftTuples.addDelete(leftTuple) && linkOrNotify ) {
+        leftTuple.setPropagationContext( context );
+
+        boolean stagedDeleteWasEmpty = false;
+        if ( ((BaseNode)sm.getRootNode()).isStreamMode() ) {
+            stagedDeleteWasEmpty = sm.getTupleQueue().isEmpty();
+            sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, context, sm.getNodeMemories().getFirst() ));
+        } else {
+            stagedDeleteWasEmpty = leftTuples.addDelete(leftTuple);
+        }
+
+        if (  stagedDeleteWasEmpty && linkOrNotify ) {
             // staged is empty, so notify rule, to force re-evaluation
             sm.notifyRuleLinkSegment( wm );
         }
-        leftTuple.setPropagationContext( context );
-
     }
 
     public static void doUpdateObject(LeftTuple leftTuple,
@@ -372,15 +405,11 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                       final boolean linkOrNotify,
                                       SegmentMemory sm) {
         if ( sm.getTipNode() == liaNode) {
+            // liaNode in it's own segment and child segments not yet created
             if ( sm.isEmpty() ) {
-                // liaNode in it's own segment and child segments not yet created
-                synchronized ( sm ) {
-                    if ( sm.isEmpty() ) {
-                        SegmentUtilities.createChildSegments( wm,
-                                                              sm,
-                                                              liaNode.getSinkPropagator() );
-                    }
-                }
+                SegmentUtilities.createChildSegments( wm,
+                                                      sm,
+                                                      liaNode.getSinkPropagator() );
             }
             sm = sm.getFirst(); // repoint to the child sm
         }
@@ -418,7 +447,15 @@ public class LeftInputAdapterNode extends LeftTupleSource
                      intersect( context.getModificationMask(),  mask) ) {
                     // only add to staging if masks match
 
-                    if ( leftTuples.addUpdate( leftTuple )  && linkOrNotify ) {
+                    boolean stagedUpdateWasEmpty = false;
+                    if ( ((BaseNode)sm.getRootNode()).isStreamMode() ) {
+                        stagedUpdateWasEmpty = sm.getTupleQueue().isEmpty();
+                        sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, context, sm.getNodeMemories().getFirst() ));
+                    } else {
+                        stagedUpdateWasEmpty = leftTuples.addUpdate(leftTuple);
+                    }
+
+                    if ( stagedUpdateWasEmpty  && linkOrNotify ) {
                         // staged is empty, so notify rule, to force re-evaluation
                         sm.notifyRuleLinkSegment(wm);
                     }

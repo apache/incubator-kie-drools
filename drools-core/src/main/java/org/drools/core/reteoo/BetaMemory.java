@@ -20,11 +20,13 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.common.SynchronizedRightTupleSets;
+import org.drools.core.phreak.TupleEntry;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Queue;
 
 public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         implements
@@ -41,7 +43,6 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
     private long                       nodePosMaskBit;
     private int                        counter;
     private RiaPathMemory              riaRuleMemory;
-    private Deque<RightTuple>          dequeu;
 
     public BetaMemory() {
     }
@@ -55,11 +56,6 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         this.stagedRightTuples = new SynchronizedRightTupleSets();
         this.context = context;
         this.nodeType = nodeType;
-        this.dequeu = new ArrayDeque<RightTuple>();
-    }
-
-    public Deque<RightTuple> getDequeu() {
-        return dequeu;
     }
 
     public RightTupleSets getStagedRightTuples() {

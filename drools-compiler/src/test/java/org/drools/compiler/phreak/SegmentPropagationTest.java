@@ -72,18 +72,18 @@ public class SegmentPropagationTest {
         bm1 =(BetaMemory)  wm.getNodeMemory( sinkNode1 );
         bm2 =(BetaMemory)  wm.getNodeMemory( sinkNode2 );
         
-        smem = new SegmentMemory( joinNode ) ;
+        smem = new SegmentMemory( joinNode, null ) ;
         bm.setSegmentMemory( smem );
         
-        smem0 = new SegmentMemory( sinkNode0 ) ;
+        smem0 = new SegmentMemory( sinkNode0, null ) ;
         bm0.setSegmentMemory( smem0 );       
         smem.add( smem0 );
 
-        smem1 = new SegmentMemory( sinkNode1 ) ;
+        smem1 = new SegmentMemory( sinkNode1, null ) ;
         bm1.setSegmentMemory( smem1 );       
         smem.add( smem1 );    
         
-        smem2 = new SegmentMemory( sinkNode2 ) ;
+        smem2 = new SegmentMemory( sinkNode2, null ) ;
         bm2.setSegmentMemory( smem2 );       
         smem.add( smem2 );          
     }
@@ -114,7 +114,7 @@ public class SegmentPropagationTest {
         parentNode.addTupleSink( child2Node );
         parentNode.addTupleSink( child3Node );
         
-        SegmentMemory smem = new SegmentMemory( parentNode );
+        SegmentMemory smem = new SegmentMemory( parentNode, null );
         smem.setTipNode( parentNode );
         
         // @formatter:off
