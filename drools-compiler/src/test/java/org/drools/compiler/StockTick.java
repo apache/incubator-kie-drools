@@ -33,6 +33,12 @@ public class StockTick implements Serializable, StockTickInterface {
 
     public StockTick(long seq,
                      String company,
+                     double price) {
+        this(seq, company, price, System.currentTimeMillis());
+    }
+
+    public StockTick(long seq,
+                     String company,
                      double price,
                      long time) {
         super();
