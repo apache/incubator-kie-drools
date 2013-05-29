@@ -1,6 +1,7 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.BinaryHeapQueueAgendaGroup;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
@@ -174,8 +175,8 @@ public class RuleExecutor {
             // dirty check, before doing the synced check and removal
             synchronized (ruleAgendaItem) {
                 if (!dirty && tupleList.isEmpty()) {
-                    if (log.isTraceEnabled()) {
-                        log.trace("Removing RuleAgendaItem");
+                    if ( log.isTraceEnabled() ) {
+                        log.trace("Removing RuleAgendaItem " + ruleAgendaItem);
                     }
                     ruleAgendaItem.remove();
                     if (ruleAgendaItem.getRule().isEager()) {

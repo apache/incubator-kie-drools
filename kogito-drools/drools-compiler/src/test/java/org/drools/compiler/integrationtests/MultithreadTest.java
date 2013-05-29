@@ -368,7 +368,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 
 
 
-    @Test @Ignore
+    @Test
     public void testConcurrencyWithChronThreads() throws InterruptedException {
 
         String drl = "package it.intext.drools.fusion.bug;\n" +
@@ -464,7 +464,6 @@ public class MultithreadTest extends CommonTestMethodBase {
             return error;
         }
     }
-
 
     // FIXME
 //

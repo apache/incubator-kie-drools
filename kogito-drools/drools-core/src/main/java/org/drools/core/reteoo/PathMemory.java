@@ -1,10 +1,8 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.base.mvel.MVELSalienceExpression;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
-import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
@@ -46,10 +44,6 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         return agendaItem;
     }
 
-    public void setAgendaItem(RuleAgendaItem agendaItem) {
-        this.agendaItem = agendaItem;
-    }
-
     public void setlinkedSegmentMask(long mask) {
         linkedSegmentMask = mask;
     }
@@ -86,7 +80,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         }
     }
 
-    public void doLinkRule(InternalWorkingMemory wm) {
+    public synchronized void doLinkRule(InternalWorkingMemory wm) {
         TerminalNode rtn = (TerminalNode) getNetworkNode();
         if (log.isTraceEnabled()) {
             log.trace("    LinkRule name={}", rtn.getRule().getName());
@@ -101,7 +95,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         queueRuleAgendaItem(wm);
     }
 
-    public void doUnlinkRule(InternalWorkingMemory wm) {
+    public synchronized void doUnlinkRule(InternalWorkingMemory wm) {
         TerminalNode rtn = (TerminalNode) getNetworkNode();
         if (log.isTraceEnabled()) {
             log.trace("    UnlinkRule name={}", rtn.getRule().getName());
