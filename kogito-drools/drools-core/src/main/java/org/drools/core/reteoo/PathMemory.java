@@ -9,9 +9,13 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.phreak.TupleEntry;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         implements
@@ -23,9 +27,15 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     private volatile RuleAgendaItem  agendaItem;
     private          SegmentMemory[] segmentMemories;
     private          SegmentMemory   segmentMemory;
+    private          Queue           queue;
 
     public PathMemory(NetworkNode networkNode) {
         this.networkNode = networkNode;
+        this.queue = new ConcurrentLinkedQueue();
+    }
+
+    public Queue<TupleEntry> getQueue() {
+        return queue;
     }
 
     public NetworkNode getNetworkNode() {

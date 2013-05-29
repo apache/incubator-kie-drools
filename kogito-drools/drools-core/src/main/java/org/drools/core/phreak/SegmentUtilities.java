@@ -40,6 +40,10 @@ import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+
 public class SegmentUtilities {
 
     //    public static RightInputAdapterNode getOuterMostRiaNode(RightInputAdapterNode riaNode, LeftTupleSource startLTs) {
@@ -66,7 +70,7 @@ public class SegmentUtilities {
                                                                   final InternalWorkingMemory wm) {
         SegmentMemory smem = wm.getNodeMemory((MemoryFactory) tupleSource).getSegmentMemory();
         if (  smem != null ) {
-            return smem;
+            return smem; // this can happen when multiple threads are trying to initialize the segment
         }
         boolean initRtn = false;
         if (tupleSource.getType() == NodeTypeEnums.LeftInputAdapterNode) {
@@ -81,11 +85,19 @@ public class SegmentUtilities {
 
         LeftTupleSource segmentRoot = tupleSource;
 
+        List<PathMemory> pmems = new ArrayList<PathMemory>();
         if (initRtn) {
-            initialiseRtnMemory(segmentRoot, wm);
+            initialiseRtnMemory(segmentRoot, wm, pmems);
         }
 
-        smem = new SegmentMemory(segmentRoot);
+        Queue queue = null;
+        if ( tupleSource.isStreamMode() ) {
+            // Stream node in Phreak does not currently support sharing, so we know only 1 pmem.
+            // This ensures that all nodes in all segment for a steam mode rule, use the same queue
+            queue = pmems.get(0).getQueue();
+        }
+
+        smem = new SegmentMemory(segmentRoot, queue);
 
         // Iterate all nodes on the same segment, assigning their position as a bit mask value
         // allLinkedTestMask is the resulting mask used to test if all nodes are linked in
@@ -271,9 +283,12 @@ public class SegmentUtilities {
         return allLinkedTestMask;
     }
 
-    public static void createChildSegments(final InternalWorkingMemory wm,
+    public static synchronized void createChildSegments(final InternalWorkingMemory wm,
                                            SegmentMemory smem,
                                            LeftTupleSinkPropagator sinkProp) {
+        if ( !smem.isEmpty() ) {
+              return; // this can happen when multiple threads are trying to initialize the segment
+        }
         for (LeftTupleSinkNode sink = (LeftTupleSinkNode) sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode()) {
             Memory memory = wm.getNodeMemory((MemoryFactory) sink);
 
@@ -290,7 +305,7 @@ public class SegmentUtilities {
         } else {
             // RTNS and RiaNode's have their own segment, if they are the child of a split.
             if (memory.getSegmentMemory() == null) {
-                SegmentMemory childSmem = new SegmentMemory(sink);
+                SegmentMemory childSmem = new SegmentMemory(sink, null); // rtns or riatns don't need a queue
                 if ( sink.getLeftTupleSource().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
                     // If LiaNode is in it's own segment, then the segment first after that must use SynchronizedLeftTupleSets
                     childSmem.setStagedTuples( new SynchronizedLeftTupleSets() );
@@ -384,13 +399,15 @@ public class SegmentUtilities {
     }
 
     public static void initialiseRtnMemory(LeftTupleSource lt,
-                                           InternalWorkingMemory wm) {
+                                           InternalWorkingMemory wm,
+                                           List<PathMemory> pmems) {
         for (LeftTupleSink sink : lt.getSinkPropagator().getSinks()) {
             if (NodeTypeEnums.isLeftTupleSource(sink)) {
-                initialiseRtnMemory((LeftTupleSource) sink, wm);
+                initialiseRtnMemory((LeftTupleSource) sink, wm, pmems);
             } else if (NodeTypeEnums.isTerminalNode(sink)) {
                 // getting will cause an initialization of rtn, which will recursively initialise rians too.
-                PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
+                PathMemory pmem =  (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
+                pmems.add(pmem);
             }
         }
     }

@@ -6,6 +6,7 @@ import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.phreak.TupleEntry;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 public class SegmentMemory extends LinkedList<SegmentMemory>
         implements
@@ -31,12 +33,18 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          boolean            active;
     private          SegmentMemory      previous;
     private          SegmentMemory      next;
+    private          Queue<TupleEntry>  queue;
 
-    public SegmentMemory(NetworkNode rootNode) {
+    public SegmentMemory(NetworkNode rootNode, Queue<TupleEntry> queue) {
         this.rootNode = rootNode;
         this.pathMemories = new ArrayList<PathMemory>(1);
         this.nodeMemories = new LinkedList<Memory>();
         this.stagedLeftTuples = new LeftTupleSetsImpl();
+        this.queue = queue;
+    }
+
+    public Queue<TupleEntry> getTupleQueue() {
+        return queue;
     }
 
     public NetworkNode getRootNode() {

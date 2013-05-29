@@ -114,9 +114,13 @@ public class PhreakTimerNode {
         synchronized ( leftTuples ) {
             LeftTupleList deletes = tm.getDeleteLeftTuples();
             if ( !deletes.isEmpty() ) {
-                for ( LeftTuple leftTuple = deletes.removeFirst(); leftTuple != null; leftTuple =  deletes.removeFirst()  ) {
+                for ( LeftTuple leftTuple = deletes.getFirst(); leftTuple != null;  ) {
+                    LeftTuple next =  ( LeftTuple ) leftTuple.getNext();
                     srcLeftTuples.addDelete(leftTuple);
+                    leftTuple.clear();
+                    leftTuple = next;
                 }
+                deletes.clear();
             }
             for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
                 LeftTuple next = leftTuple.getStagedNext();

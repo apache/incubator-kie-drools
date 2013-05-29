@@ -56,10 +56,10 @@ public class ScenarioTest {
         
         bm0 =(BetaMemory)  wm.getNodeMemory( sinkNode );
         
-        smem = new SegmentMemory( joinNode ) ;
+        smem = new SegmentMemory( joinNode, null ) ;
         bm.setSegmentMemory( smem );
         
-        smem0 = new SegmentMemory( sinkNode ) ;
+        smem0 = new SegmentMemory( sinkNode, null ) ;
         bm0.setSegmentMemory( smem0 );       
         smem.add( smem0 );
 

@@ -41,6 +41,7 @@ public abstract class BaseNode
     protected RuleBasePartitionId      partitionId;
     protected boolean                  partitionsEnabled;
     protected Map<Rule, RuleComponent> associations;
+    protected boolean                  streamMode;
 
     public BaseNode() {
 
@@ -69,6 +70,7 @@ public abstract class BaseNode
         partitionId = (RuleBasePartitionId) in.readObject();
         partitionsEnabled = in.readBoolean();
         associations = (Map<Rule, RuleComponent>) in.readObject();
+        streamMode = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -76,6 +78,7 @@ public abstract class BaseNode
         out.writeObject( partitionId );
         out.writeBoolean( partitionsEnabled );
         out.writeObject( associations );
+        out.writeObject( streamMode );
     }
 
     /* (non-Javadoc)
@@ -87,6 +90,10 @@ public abstract class BaseNode
     
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isStreamMode() {
+        return this.streamMode;
     }
 
     public void attach() {
