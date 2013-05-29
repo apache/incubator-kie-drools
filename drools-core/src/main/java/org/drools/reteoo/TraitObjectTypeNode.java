@@ -65,7 +65,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         if ( compiledNetwork != null ) {
             compiledNetwork.modifyObject( factHandle,
                     modifyPreviousTuples,
-                    context.adaptModificationMaskForObjectType( objectType, workingMemory ),
+                    context.getModificationMask() != 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
                     workingMemory );
         } else {
             if ( factHandle.getObject() instanceof TraitProxy )  {
@@ -73,7 +73,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                 if ( vetoMask == null ) {
                     this.sink.propagateModifyObject( factHandle,
                             modifyPreviousTuples,
-                            context.adaptModificationMaskForObjectType( objectType, workingMemory ),
+                            context.getModificationMask() != 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
                             workingMemory );
                 } else {
                     BitSet checkMask = (BitSet) typeMask.clone();
@@ -81,14 +81,14 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                     if ( ! checkMask.equals( typeMask ) ) {
                         this.sink.propagateModifyObject( factHandle,
                                 modifyPreviousTuples,
-                                context.adaptModificationMaskForObjectType( objectType, workingMemory ),
+                                context.getModificationMask() != 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
                                 workingMemory );
                     }
                 }
             } else {
                 this.sink.propagateModifyObject( factHandle,
                         modifyPreviousTuples,
-                        context.adaptModificationMaskForObjectType( objectType, workingMemory ),
+                        context.getModificationMask() != 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
                         workingMemory );
             }
 

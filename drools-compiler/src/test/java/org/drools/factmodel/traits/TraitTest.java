@@ -2703,6 +2703,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "end \n" +
                 "" +
                 "rule \"Don\" \n" +
+                "no-loop\n " +
                 "when \n" +
                 "  $p : Person( name == \"john\" ) \n" +
                 "then \n" +
@@ -2772,11 +2773,11 @@ public class TraitTest extends CommonTestMethodBase {
         String s1 = "package test;\n" +
                 "import org.drools.factmodel.traits.*;\n" +
                 "" +
-                "declare trait Student name : String end\n" +
-                "declare trait Worker name : String end\n" +
-                "declare trait StudentWorker extends Student, Worker name : String end\n" +
-                "declare trait Assistant extends Student, Worker name : String end\n" +
-                "declare Person @Traitable name : String end\n" +
+                "declare trait Student @propertyReactive name : String end\n" +
+                "declare trait Worker @propertyReactive name : String end\n" +
+                "declare trait StudentWorker extends Student, Worker @propertyReactive name : String end\n" +
+                "declare trait Assistant extends Student, Worker @propertyReactive name : String end\n" +
+                "declare Person @Traitable @propertyReactive name : String end\n" +
                 "" +
                 "rule \"Init\" \n" +
                 "when \n" +
@@ -2796,31 +2797,31 @@ public class TraitTest extends CommonTestMethodBase {
                 "" +
                 "rule \"Log S\" \n" +
                 "when \n" +
-                "  $t : Student() \n" +
+                "  $t : Student() @watch( name ) \n" +
                 "then \n" +
                 "  System.out.println( \"Student >> \" +  $t ); \n" +
                 "end \n" +
                 "rule \"Log W\" \n" +
                 "when \n" +
-                "  $t : Worker() \n" +
+                "  $t : Worker() @watch( name ) \n" +
                 "then \n" +
                 "  System.out.println( \"Worker >> \" + $t ); \n" +
                 "end \n" +
                 "rule \"Log SW\" \n" +
                 "when \n" +
-                "  $t : StudentWorker() \n" +
+                "  $t : StudentWorker() @watch( name ) \n" +
                 "then \n" +
                 "  System.out.println( \"StudentWorker >> \" + $t ); \n" +
                 "end \n" +
                 "rule \"Log RA\" \n" +
                 "when \n" +
-                "  $t : Assistant() \n" +
+                "  $t : Assistant() @watch( name ) \n" +
                 "then \n" +
                 "  System.out.println( \"Assistant >> \" + $t ); \n" +
                 "end \n" +
                 "rule \"Log Px\" \n" +
                 "when \n" +
-                "  $p : Person() \n" +
+                "  $p : Person() @watch( name ) \n" +
                 "then \n" +
                 "  System.out.println( \"Poor Core Person >> \" + $p ); \n" +
                 "end \n" +
@@ -3572,6 +3573,67 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+
+
+
+
+
+    @Test
+    public void testIsAOptimization(  ) {
+        String source = "package t.x \n" +
+                        "import java.util.*; \n" +
+                        "import org.drools.factmodel.traits.Thing \n" +
+                        "import org.drools.factmodel.traits.Traitable \n" +
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "\n" +
+                        "" +
+                        "declare trait A end\n" +
+                        "declare trait B extends A end\n" +
+                        "declare trait C extends B end\n" +
+                        "declare trait D extends A end\n" +
+                        "declare trait E extends C, D end\n" +
+                        "declare trait F extends E end\n" +
+                        "" +
+                        "declare Kore\n" +
+                        "   @Traitable\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        "   Kore k = new Kore();\n" +
+                        "   don( k, E.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule Check_1 when\n" +
+                        "   $x : Kore( this isA [ B, D ]  ) \n" +
+                        "then \n" +
+                        "   list.add( \" B+D \" ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule Check_2 when\n" +
+                        "   $x : Kore( this isA [ A ]  ) \n" +
+                        "then \n" +
+                        "   list.add( \" A \" ); \n" +
+                        "end\n" +
+
+                        "rule Check_3 when\n" +
+                        "   $x : Kore( this not isA [ F ]  ) \n" +
+                        "then \n" +
+                        "   list.add( \" F \" ); \n" +
+                        "end\n" +
+                        "";
+
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        assertEquals( 3, list.size() );
+
+    }
 
 
 

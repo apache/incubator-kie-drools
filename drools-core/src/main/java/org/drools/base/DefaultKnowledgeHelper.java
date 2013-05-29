@@ -297,7 +297,21 @@ public class DefaultKnowledgeHelper
             leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, (PropagationContext) act.getPropagationContext(), workingMemory );
         }
     }
-    
+
+    public FactHandle lookupFactHandle(Object object) {
+        FactHandle handle = null;
+        if ( identityMap != null ) {
+            handle = identityMap.get( object );
+        }
+
+        if ( handle != null ) {
+            return handle;
+        }
+
+        handle = getFactHandleFromWM( object );
+        return handle;
+    }
+
     public FactHandle getFactHandle(Object object) {
         FactHandle handle = null;
         if ( identityMap != null ) {
@@ -386,12 +400,14 @@ public class DefaultKnowledgeHelper
                 TraitProxy proxy = (TraitProxy) t;
 
                 proxy.setTypeFilter( veto );
-                InternalFactHandle h = (InternalFactHandle) getFactHandle( t );
-                ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
-                                                                              t,
-                                                                              mask,
-                                                                              modifiedClass,
-                                                                              this.activation );
+                InternalFactHandle h = (InternalFactHandle) lookupFactHandle( t );
+                if ( h != null ) {
+                    ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
+                                                                                  t,
+                                                                                  mask,
+                                                                                  modifiedClass,
+                                                                                  this.activation );
+                }
                 proxy.setTypeFilter( null );
 
                 BitSet tc = proxy.getTypeCode();
@@ -646,6 +662,7 @@ public class DefaultKnowledgeHelper
                                      TraitableBean<K,? extends TraitableBean> inner,
                                      boolean logical ) throws LogicalTypeInconsistencyException {
         T thing;
+        boolean refresh = false;
         if ( trait.isAssignableFrom( inner.getClass() ) ) {
             thing = (T) inner;
             inner.addTrait( trait.getName(), (Thing<K>) core );
@@ -654,6 +671,7 @@ public class DefaultKnowledgeHelper
             return (T) inner.getTrait( trait.getName() );
         } else {
             thing = (T) builder.getProxy( inner, trait );
+            refresh = Thing.class != trait;
         }
 
         if ( needsUpdate ) {
@@ -662,6 +680,24 @@ public class DefaultKnowledgeHelper
 
         if ( ! inner.hasTrait( Thing.class.getName() ) ) {
             don( inner, Thing.class, logical );
+        }
+
+        if ( refresh ) {
+            FactHandle handle = lookupFactHandle( inner );
+            if ( handle != null ) {
+                update( handle, 0L, core.getClass() );
+            } else {
+                handle = this.workingMemory.insert( inner,
+                                                    null,
+                                                    false,
+                                                    false,
+                                                    this.activation.getRule(),
+                                                    this.activation );
+                if ( this.identityMap != null ) {
+                    this.getIdentityMap().put( inner,
+                            handle );
+                }
+            }
         }
 
         return thing;

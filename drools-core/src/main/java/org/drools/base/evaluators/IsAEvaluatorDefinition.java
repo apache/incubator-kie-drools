@@ -141,12 +141,15 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
 
     public static class IsAEvaluator extends BaseEvaluator {
 
+        private BitSet cachedLiteral;
+        private Object cachedValue;
+
         public void setParameterText(String parameterText) {
 
         }
 
         public IsAEvaluator(final ValueType type, final boolean isNegated) {
-            super(type, isNegated ? NOT_ISA : ISA );
+            super( type, isNegated ? NOT_ISA : ISA );
         }
 
         /**
@@ -155,27 +158,84 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         public boolean evaluate( InternalWorkingMemory workingMemory,
                 InternalReadAccessor extractor, InternalFactHandle handle, FieldValue value ) {
             final Object objectValue = extractor.getValue( workingMemory, handle.getObject() );
-
-            Object typeName = value.getValue();
-            if ( typeName instanceof Class ) {
-                typeName = ((Class) typeName).getName();
+            final Object literal = value.getValue();
+            if ( cachedValue != literal) {
+                cachedValue = literal;
+                cacheLiteral( literal, workingMemory );
             }
 
-            TraitableBean core = null;
+            TraitableBean core;
             if ( objectValue instanceof Thing ) {
                 Thing thing = (Thing) objectValue;
                 core = (TraitableBean) thing.getCore();
-                return this.getOperator().isNegated() ^ core.hasTrait( typeName.toString() );
+                BitSet code = core.getCurrentTypeCode();
+                if ( code != null ) {
+                    return this.getOperator().isNegated() ^ isA( code, cachedLiteral );
+                } else {
+                    return this.getOperator().isNegated() ^ hasTrait( core, literal );
+                }
             } else if ( objectValue instanceof TraitableBean ) {
                 core = (TraitableBean) objectValue;
-                return this.getOperator().isNegated() ^ core.hasTrait( typeName.toString() );
+                BitSet code = core.getCurrentTypeCode();
+                if ( code != null ) {
+                    return this.getOperator().isNegated() ^ isA( code, cachedLiteral );
+                } else {
+                    return this.getOperator().isNegated() ^ hasTrait( core, literal );
+                }
             } else {
                 core = lookForWrapper( objectValue, workingMemory );
-                return ( core == null && this.getOperator().isNegated() )
-                        || ( core != null && this.getOperator().isNegated() ^ core.hasTrait( typeName.toString() ) );
+                if ( core == null ) {
+                    return this.getOperator().isNegated();
+                }
+                BitSet code = core.getCurrentTypeCode();
+                if ( code != null ) {
+                    return this.getOperator().isNegated() ^ isA( code, cachedLiteral );
+                } else {
+                    return this.getOperator().isNegated() ^ hasTrait( core, literal );
+                }
             }
         }
 
+        private boolean hasTrait( TraitableBean core, Object value ) {
+            if ( value instanceof Class ) {
+                return core.hasTrait( ( (Class) value ).getName() );
+            } else if ( value instanceof String ) {
+                return core.hasTrait( (String) value );
+            } else if ( value instanceof Collection ) {
+                for ( Object o : (Collection) value ) {
+                    if ( ! hasTrait( core, o ) ) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            throw new UnsupportedOperationException( " IsA Operator : Unsupported literal " + value );
+        }
+
+        private void cacheLiteral( Object value, InternalWorkingMemory workingMemory ) {
+            CodedHierarchy x = ((ReteooRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
+            cachedLiteral = getCode( value, x );
+        }
+
+        private BitSet getCode( Object value, CodedHierarchy x ) {
+            if ( value instanceof Class ) {
+                String typeName = ((Class) value).getName();
+                return x.getCode( typeName );
+            } else if ( value instanceof String ) {
+                return x.getCode( value );
+            } else if ( value instanceof Collection ) {
+                BitSet code = null;
+                for ( Object o : ( (Collection) value ) ) {
+                    if ( code == null ) {
+                        code = (BitSet) getCode( o, x ).clone();
+                    } else {
+                        code.and( getCode( o, x ) );
+                    }
+                }
+                return code;
+            }
+            throw new UnsupportedOperationException( " IsA Operator : Unsupported literal " + value );
+        }
 
 
         protected TraitableBean lookForWrapper( final Object objectValue, InternalWorkingMemory workingMemory) {
@@ -269,7 +329,17 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 return getOperator().isNegated();
             }
 
-            return HierarchyEncoderImpl.supersetOrEqualset(sourceTraits, targetTraits) ^ getOperator().isNegated();
+            return isA(sourceTraits, targetTraits) ^ getOperator().isNegated();
+        }
+
+        private boolean isA( BitSet sourceTraits, BitSet targetTraits ) {
+            if ( sourceTraits == null ) {
+                return false;
+            }
+            if ( targetTraits == null ) {
+                return true;
+            }
+            return HierarchyEncoderImpl.supersetOrEqualset( sourceTraits, targetTraits );
         }
 
         @Override
