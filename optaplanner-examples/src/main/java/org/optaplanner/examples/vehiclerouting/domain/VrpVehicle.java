@@ -22,8 +22,8 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("VrpVehicle")
 public class VrpVehicle extends AbstractPersistable implements VrpAppearance {
 
-    private int capacity;
-    private VrpDepot depot;
+    protected int capacity;
+    protected VrpDepot depot;
 
     public int getCapacity() {
         return capacity;
