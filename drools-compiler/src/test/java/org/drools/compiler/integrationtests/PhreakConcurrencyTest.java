@@ -287,7 +287,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                      "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        KieSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<String> results = new ArrayList<String>();
         ksession.setGlobal("results", results);
@@ -314,7 +314,19 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
             assertTrue(success);
 
-            ksession.fireAllRules();
+            new Thread () {
+                public void run () {
+                    ksession.fireUntilHalt();
+                }
+            }.start ();
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            ksession.halt();
 
             if (deleteIndex % 10 == 0) {
                 assertEquals(3, results.size());
