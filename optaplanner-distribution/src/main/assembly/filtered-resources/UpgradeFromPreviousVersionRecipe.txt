@@ -3211,8 +3211,8 @@ After in *Config.xml:
     </forager>
 
 
-From 6.0.0.Beta2 to 6.0.0.CR1
------------------------------
+From 6.0.0.Beta2 to 6.0.0.Beta3
+-------------------------------
 
 [MINOR] If you have a custom ScoreDefinition implementation: the interface Score has a new method power(double).
 After in *Score.java:
