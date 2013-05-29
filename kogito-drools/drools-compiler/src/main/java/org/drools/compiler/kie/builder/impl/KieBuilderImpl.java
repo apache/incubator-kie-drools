@@ -202,7 +202,7 @@ public class KieBuilderImpl
     }
 
     public static boolean buildKieModule(InternalKieModule kModule, ResultsImpl messages) {
-        KieModuleKieProject kProject = new KieModuleKieProject( kModule, null );
+        KieModuleKieProject kProject = new KieModuleKieProject( kModule );
         kProject.init();
         kProject.verify(messages);
 

@@ -2,13 +2,13 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,9 +60,9 @@ public abstract class AbstractKieProject implements KieProject {
         return kSessionModels.get( kSessionName );
     }
 
-    protected void indexParts(Map<ReleaseId, InternalKieModule> kieModules,
+    protected void indexParts(Collection<InternalKieModule> kieModules,
                               Map<String, InternalKieModule> kJarFromKBaseName) {
-        for ( InternalKieModule kJar : kieModules.values() ) {
+        for ( InternalKieModule kJar : kieModules ) {
             KieModuleModel kieProject = kJar.getKieModuleModel();
             for ( KieBaseModel kieBaseModel : kieProject.getKieBaseModels().values() ) {
                 if (kieBaseModel.isDefault()) {

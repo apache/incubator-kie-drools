@@ -74,7 +74,7 @@ public class KieServicesImpl implements KieServices {
         if (kieModule == null) {
             throw new RuntimeException("Cannot find KieModule: " + releaseId);
         }
-        KieProject kProject = new KieModuleKieProject( kieModule, getRepository() );
+        KieProject kProject = new KieModuleKieProject( kieModule );
         return new KieContainerImpl( kProject, getRepository() );
     }
     
