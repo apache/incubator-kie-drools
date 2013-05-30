@@ -162,12 +162,8 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     public ListIterator<SubChain> listIterator() {
         if (!randomSelection) {
-            // TODO refactor OriginalSubChainIterator to implement ListIterator
-            // https://issues.jboss.org/browse/JBRULES-3586
-            throw new UnsupportedOperationException("This class ("
-                    + getClass() + ") does not support the listIterator() methods yet. "
-                    + "As a result you can only use SubChain based swap moves with randomSelection true. "
-                    + " https://issues.jboss.org/browse/JBRULES-3586");
+            // TODO Implement more efficient ListIterator https://issues.jboss.org/browse/PLANNER-37
+            return new OriginalSubChainIterator(anchorTrailingChainList.iterator());
         } else {
             throw new IllegalStateException("The selector (" + this
                     + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
@@ -176,19 +172,20 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     public ListIterator<SubChain> listIterator(int index) {
         if (!randomSelection) {
-            // TODO refactor OriginalSubChainIterator to implement ListIterator
-            // https://issues.jboss.org/browse/JBRULES-3586
-            throw new UnsupportedOperationException("This class ("
-                    + getClass() + ") does not support the listIterator() methods yet. "
-                    + "As a result you can only use SubChain based swap moves with randomSelection true. "
-                    + " https://issues.jboss.org/browse/JBRULES-3586");
+            // TODO Implement more efficient ListIterator https://issues.jboss.org/browse/PLANNER-37
+            OriginalSubChainIterator it = new OriginalSubChainIterator(anchorTrailingChainList.iterator());
+            for (int i = 0; i < index; i++) {
+                it.next();
+            }
+            return it;
         } else {
             throw new IllegalStateException("The selector (" + this
                     + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
     }
 
-    private class OriginalSubChainIterator extends UpcomingSelectionIterator<SubChain> {
+    private class OriginalSubChainIterator extends UpcomingSelectionIterator<SubChain>
+            implements ListIterator<SubChain> {
 
         private final Iterator<SubChain> anchorTrailingChainIterator;
         private List<Object> anchorTrailingChain;
@@ -196,11 +193,14 @@ public class DefaultSubChainSelector extends AbstractSelector
         private int fromIndex; // Inclusive
         private int toIndex; // Exclusive
 
+        private int nextListIteratorIndex;
+
         public OriginalSubChainIterator(Iterator<SubChain> anchorTrailingChainIterator) {
             this.anchorTrailingChainIterator = anchorTrailingChainIterator;
             anchorTrailingChainSize = -1;
             fromIndex = -1;
             toIndex = -1;
+            nextListIteratorIndex = 0;
             createUpcomingSelection();
         }
 
@@ -224,6 +224,38 @@ public class DefaultSubChainSelector extends AbstractSelector
             upcomingSelection = new SubChain(anchorTrailingChain.subList(fromIndex, toIndex));
         }
 
+        @Override
+        public SubChain next() {
+            nextListIteratorIndex++;
+            return super.next();
+        }
+
+        public int nextIndex() {
+            return nextListIteratorIndex;
+        }
+
+        public boolean hasPrevious() {
+            throw new UnsupportedOperationException("The operation hasPrevious() is not supported."
+                    + " See https://issues.jboss.org/browse/PLANNER-37");
+        }
+
+        public SubChain previous() {
+            throw new UnsupportedOperationException("The operation previous() is not supported."
+                    + " See https://issues.jboss.org/browse/PLANNER-37");
+        }
+
+        public int previousIndex() {
+            throw new UnsupportedOperationException("The operation previousIndex() is not supported."
+                    + " See https://issues.jboss.org/browse/PLANNER-37");
+        }
+
+        public void set(SubChain subChain) {
+            throw new UnsupportedOperationException("The optional operation set() is not supported.");
+        }
+
+        public void add(SubChain subChain) {
+            throw new UnsupportedOperationException("The optional operation add() is not supported.");
+        }
     }
 
     private class RandomSubChainIterator extends UpcomingSelectionIterator<SubChain> {
