@@ -111,7 +111,7 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
             }
 
             public void remove() {
-                throw new UnsupportedOperationException("Remove is not supported.");
+                throw new UnsupportedOperationException("The optional operation remove() is not supported.");
             }
         };
     }

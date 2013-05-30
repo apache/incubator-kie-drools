@@ -158,7 +158,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
         }
 
         public void remove() {
-            throw new UnsupportedOperationException("Remove is not supported.");
+            throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }
 
     }

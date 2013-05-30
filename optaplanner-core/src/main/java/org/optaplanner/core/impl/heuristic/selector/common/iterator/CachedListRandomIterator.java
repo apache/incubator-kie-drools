@@ -46,7 +46,7 @@ public class CachedListRandomIterator<S> implements Iterator<S>  {
     }
 
     public void remove() {
-        throw new UnsupportedOperationException("Remove is not supported.");
+        throw new UnsupportedOperationException("The optional operation remove() is not supported.");
     }
 
 }
