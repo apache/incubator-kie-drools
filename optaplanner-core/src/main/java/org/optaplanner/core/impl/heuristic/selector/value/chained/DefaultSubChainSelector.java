@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.value.chained;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -97,7 +98,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         PlanningVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         Class<?> entityClass = variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass();
         long valueSize = valueSelector.getSize();
-        // Fail-fast when anchorTrailingChainSize could ever be too big
+        // Fail-fast when anchorTrailingChainList.size() could ever be too big
         if (valueSize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a valueSelector (" + valueSelector
@@ -188,7 +189,6 @@ public class DefaultSubChainSelector extends AbstractSelector
 
         private final Iterator<SubChain> anchorTrailingChainIterator;
         private List<Object> anchorTrailingChain;
-        private int anchorTrailingChainSize;
         private int fromIndex; // Inclusive
         private int toIndex; // Exclusive
 
@@ -196,9 +196,9 @@ public class DefaultSubChainSelector extends AbstractSelector
 
         public OriginalSubChainIterator(Iterator<SubChain> anchorTrailingChainIterator) {
             this.anchorTrailingChainIterator = anchorTrailingChainIterator;
-            anchorTrailingChainSize = -1;
-            fromIndex = -1;
-            toIndex = -1;
+            fromIndex = 0;
+            toIndex = 1;
+            anchorTrailingChain = Collections.emptyList();
             nextListIteratorIndex = 0;
             createUpcomingSelection();
         }
@@ -206,16 +206,15 @@ public class DefaultSubChainSelector extends AbstractSelector
         @Override
         protected void createUpcomingSelection() {
             toIndex++;
-            if (toIndex > anchorTrailingChainSize) {
+            if (toIndex - fromIndex > maximumSubChainSize || toIndex > anchorTrailingChain.size()) {
                 fromIndex++;
                 toIndex = fromIndex + minimumSubChainSize;
-                while (toIndex > anchorTrailingChainSize) {
+                while (toIndex - fromIndex > maximumSubChainSize || toIndex > anchorTrailingChain.size()) {
                     if (!anchorTrailingChainIterator.hasNext()) {
                         upcomingSelection = null;
                         return;
                     }
                     anchorTrailingChain = anchorTrailingChainIterator.next().getEntityList();
-                    anchorTrailingChainSize = Math.min(maximumSubChainSize, anchorTrailingChain.size());
                     fromIndex = 0;
                     toIndex = fromIndex + minimumSubChainSize;
                 }
