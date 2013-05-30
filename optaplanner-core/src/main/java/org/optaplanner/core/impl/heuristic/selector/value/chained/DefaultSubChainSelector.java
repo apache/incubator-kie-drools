@@ -162,7 +162,6 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     public ListIterator<SubChain> listIterator() {
         if (!randomSelection) {
-            // TODO Implement more efficient ListIterator https://issues.jboss.org/browse/PLANNER-37
             return new OriginalSubChainIterator(anchorTrailingChainList.iterator());
         } else {
             throw new IllegalStateException("The selector (" + this
