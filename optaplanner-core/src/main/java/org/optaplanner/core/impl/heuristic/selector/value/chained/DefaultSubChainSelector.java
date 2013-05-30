@@ -209,7 +209,8 @@ public class DefaultSubChainSelector extends AbstractSelector
             if (toIndex - fromIndex > maximumSubChainSize || toIndex > anchorTrailingChain.size()) {
                 fromIndex++;
                 toIndex = fromIndex + minimumSubChainSize;
-                while (toIndex - fromIndex > maximumSubChainSize || toIndex > anchorTrailingChain.size()) {
+                // minimumSubChainSize <= maximumSubChainSize so (toIndex - fromIndex > maximumSubChainSize) is true
+                while (toIndex > anchorTrailingChain.size()) {
                     if (!anchorTrailingChainIterator.hasNext()) {
                         upcomingSelection = null;
                         return;
