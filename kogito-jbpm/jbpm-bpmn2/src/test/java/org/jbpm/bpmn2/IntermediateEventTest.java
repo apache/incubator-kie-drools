@@ -1014,7 +1014,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession
                 .startProcess("EscalationBoundaryEvent");
         assertProcessInstanceCompleted(processInstance);
-        // TODO: check for cancellation of task
+        // TODO: testEscalationBoundaryEventInterrupting: check for cancellation of task
 
     }
 

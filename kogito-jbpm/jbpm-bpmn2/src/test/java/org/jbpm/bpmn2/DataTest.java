@@ -251,8 +251,7 @@ public class DataTest extends JbpmBpmn2TestCase {
     }
 
     /**
-     * FIXME
-     * @throws Exception
+     * FIXME testDataInputAssociationsWithLazyLoading
      */
     @Test
     @Ignore
@@ -270,11 +269,9 @@ public class DataTest extends JbpmBpmn2TestCase {
 
                     public void executeWorkItem(WorkItem workItem,
                             WorkItemManager mgr) {
-                        assertEquals("mydoc", ((Element) workItem
-                                .getParameter("coId")).getNodeName());
-                        assertEquals("mynode", ((Element) workItem
-                                .getParameter("coId")).getFirstChild()
-                                .getNodeName());
+                        Object coIdParamObj = workItem.getParameter("coId");
+                        assertEquals("mydoc", ((Element) coIdParamObj).getNodeName());
+                        assertEquals("mynode", ((Element) workItem.getParameter("coId")).getFirstChild().getNodeName());
                         assertEquals("user",
                                 ((Element) workItem.getParameter("coId"))
                                         .getFirstChild().getFirstChild()
@@ -374,8 +371,7 @@ public class DataTest extends JbpmBpmn2TestCase {
     }
 
     /**
-     * FIXME
-     * @throws Exception
+     * FIXME testDataInputAssociationsWithTwoAssigns
      */
     @Test
     @Ignore
@@ -435,8 +431,6 @@ public class DataTest extends JbpmBpmn2TestCase {
                         try {
                             builder = factory.newDocumentBuilder();
                         } catch (ParserConfigurationException e) {
-                            // TODO Auto-generated catch block
-                            // e.printStackTrace();
                             throw new RuntimeException(e);
                         }
                         final Map<String, Object> results = new HashMap<String, Object>();

@@ -90,11 +90,6 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
     }
 
-    /**
-     * FIXME when it's run without persistence, list contains only 4 identifiers
-     * 
-     * @throws Exception
-     */
     @Test
     public void testTimerStart() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStart.bpmn2");

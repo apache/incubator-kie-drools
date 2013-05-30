@@ -756,12 +756,10 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
 
     /**
-     * FIXME process build is probably caught and there is another exception instead (ArrayIndexOutOfBoundsException)
-     * 
-     * @throws Exception
+     * FIXME testMultipleInOutgoingSequenceFlowsDisable 
+     * -- process build is probably caught and there is another exception instead (ArrayIndexOutOfBoundsException)
      */
     @Test
-    @Ignore
     public void testMultipleInOutgoingSequenceFlowsDisable() throws Exception {
         try {
             KieBase kbase = createKnowledgeBase("BPMN2-MultipleInOutgoingSequenceFlows.bpmn2");

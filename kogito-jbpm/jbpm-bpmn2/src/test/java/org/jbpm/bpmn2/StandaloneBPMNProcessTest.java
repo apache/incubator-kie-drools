@@ -503,7 +503,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("EscalationBoundaryEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-        // TODO: check for cancellation of task
+        // TODO: testEscalationBoundaryEventInterrupting: check for cancellation of task
     }
 
     @Test
