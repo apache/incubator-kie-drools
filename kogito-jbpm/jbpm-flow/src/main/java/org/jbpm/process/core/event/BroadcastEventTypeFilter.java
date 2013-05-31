@@ -17,7 +17,20 @@
 package org.jbpm.process.core.event;
 
 
-// OCRAM: how broadcast signalling shoudl work
+/**
+ * This event type filter adds "broadcast" functionality that's necessary for compensation. 
+ * 
+ * Compensation can be triggered in at least two ways: 
+ * 1. A targeted compensate event. 
+ * 2. A "general" compensate event, for example, when a cancel signal is sent. 
+ * 
+ * In order to accomodate the second case, this class reacts to signals that begin with a "base" string as well as targeted signal
+ * names. 
+ * 
+ * For example, it will react to: 
+ * - "Compensate-" as the base string
+ * - and something like "Compensate-SubProcess_1" as the type string. 
+ */
 public class BroadcastEventTypeFilter extends EventTypeFilter {
  
     private static final long serialVersionUID = 510L;
@@ -43,7 +56,7 @@ public class BroadcastEventTypeFilter extends EventTypeFilter {
                 return true;
             } else if( this.base != null ) { 
                 // broadcast
-		        if( type.startsWith(this.base) ) { 
+		        if( type.equals(this.base) ) { 
 		            return true;
 		        }
 		    } 
