@@ -146,14 +146,17 @@ public class DefaultSubChainSelector extends AbstractSelector
     public long getSize() {
         long selectionSize = 0L;
         for (SubChain anchorTrailingChain : anchorTrailingChainList) {
-            long anchorTrailingChainSize = (long) anchorTrailingChain.getSize();
-            long n = anchorTrailingChainSize - (long) minimumSubChainSize + 1L;
-            long m = (maximumSubChainSize >= anchorTrailingChainSize)
-                    ? 0L : anchorTrailingChainSize - (long) maximumSubChainSize;
-            long subSelectionSize = (n * (n + 1L) / 2L) - (m * (m + 1L) / 2L);
-            selectionSize += subSelectionSize;
+            selectionSize += calculateSubChainSelectionSize(anchorTrailingChain);
         }
         return selectionSize;
+    }
+
+    private long calculateSubChainSelectionSize(SubChain anchorTrailingChain) {
+        long anchorTrailingChainSize = (long) anchorTrailingChain.getSize();
+        long n = anchorTrailingChainSize - (long) minimumSubChainSize + 1L;
+        long m = (maximumSubChainSize >= anchorTrailingChainSize)
+                ? 0L : anchorTrailingChainSize - (long) maximumSubChainSize;
+        return (n * (n + 1L) / 2L) - (m * (m + 1L) / 2L);
     }
 
     public Iterator<SubChain> iterator() {
@@ -272,24 +275,29 @@ public class DefaultSubChainSelector extends AbstractSelector
 
         @Override
         protected void createUpcomingSelection() {
+            SubChain anchorTrailingChain = selectAnchorTrailingChain();
+            // Every SubChain must have same probability. A random fromIndex and random toIndex would not be fair.
+            long selectionSize = calculateSubChainSelectionSize(anchorTrailingChain);
+            long selectionIndex = RandomUtils.nextLong(workingRandom, selectionSize);
+            // Black magic to translate selectionIndex into fromIndex and toIndex
+            long fromIndex = selectionIndex;
+            long subChainSize = minimumSubChainSize;
+            long countInThatSize = anchorTrailingChain.getSize() - subChainSize + 1;
+            while (fromIndex >= countInThatSize) {
+                fromIndex -= countInThatSize;
+                subChainSize++;
+                countInThatSize--;
+                if (countInThatSize <= 0) {
+                    throw new IllegalStateException("Impossible if calculateSubChainSelectionSize() works correctly.");
+                }
+            }
+            upcomingSelection = anchorTrailingChain.subChain((int) fromIndex, (int) (fromIndex + subChainSize));
+        }
+
+        private SubChain selectAnchorTrailingChain() {
             // TODO support SelectionProbabilityWeightFactory, such as FairSelectorProbabilityWeightFactory too
             int anchorTrailingChainListIndex = workingRandom.nextInt(anchorTrailingChainList.size());
-            List<Object> anchorTrailingChain = anchorTrailingChainList.get(anchorTrailingChainListIndex).getEntityList();
-            // Every SubChain must have same probability. A random fromIndex and random toIndex would not be fair.
-            int n = Math.min(maximumSubChainSize, anchorTrailingChain.size()) - minimumSubChainSize + 1;
-            long size = ((long) n) * (((long) n) + 1L) / 2L;
-            long sizeIndex = RandomUtils.nextLong(workingRandom, size);
-            // Black magic to translate sizeIndex into fromIndex and toIndex
-            int fromIndex = 0;
-            long subChainSize = sizeIndex;
-            long maxSize = (long) n;
-            while (subChainSize >= maxSize) {
-                subChainSize -= maxSize;
-                fromIndex++;
-                maxSize--;
-            }
-            int toIndex = fromIndex + ((int) subChainSize) + minimumSubChainSize;
-            upcomingSelection = new SubChain(anchorTrailingChain.subList(fromIndex, toIndex));
+            return anchorTrailingChainList.get(anchorTrailingChainListIndex);
         }
 
     }

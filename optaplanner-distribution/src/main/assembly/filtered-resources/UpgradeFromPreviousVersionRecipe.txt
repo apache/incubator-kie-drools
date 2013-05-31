@@ -3254,3 +3254,10 @@ After in *Config.xml:
 
 [MINOR] The implementation classes PlanningEntityTabuAcceptor and PlanningValueTabuAcceptor have been renamed
 to EntityTabuAcceptor and ValueTabuAcceptor
+
+
+From 6.0.0.Beta3 to 6.0.0.Beta4
+-------------------------------
+
+[MINOR] <subChainChangeMoveSelector> and <subChainSwapMoveSelector> combined with a <maximumSubChainSize> value
+did not select all possible moves previously. If you use this, you might want to rerun benchmarks.

@@ -66,6 +66,10 @@ public class SubChain implements Serializable {
         return new SubChain(reversedEntityList);
     }
 
+    public SubChain subChain(int fromIndex, int toIndex) {
+        return new SubChain(entityList.subList(fromIndex, toIndex));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
