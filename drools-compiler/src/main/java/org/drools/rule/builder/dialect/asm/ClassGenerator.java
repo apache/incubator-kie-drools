@@ -55,7 +55,9 @@ public class ClassGenerator {
     }
 
     public Class<?> generateClass() {
-        if (clazz == null) clazz = classLoader.defineClass(className, generateBytecode());
+        if (clazz == null) {
+            clazz = classLoader.defineClass(className, generateBytecode());
+        }
         return clazz;
     }
 

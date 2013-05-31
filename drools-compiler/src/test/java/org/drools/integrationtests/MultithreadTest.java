@@ -23,10 +23,19 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.CommonTestMethodBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -66,13 +75,104 @@ import static org.mockito.Mockito.*;
 /**
  * This is a test case for multi-thred issues
  */
-public class MultithreadTest {
+public class MultithreadTest extends CommonTestMethodBase {
 
     @Test @Ignore
     public void testDummy() {
         
     }
-    
+
+    @Test
+    public void testConcurrentInsertionOfNewTypes() throws Exception {
+        // JBRULES-3274
+        String str = "import org.drools.integrationtests.MultithreadTest.Interfaze\n" +
+                     "global java.util.List list\n" +
+                     "rule R1 when\n" +
+                     "    Interfaze( $v : value < 10 )\n" +
+                     "then\n" +
+                     "    list.add($v);\n" +
+                     "end\n";
+
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+
+        Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            }
+        });
+
+        final CyclicBarrier barrier = new CyclicBarrier(8);
+
+        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+        for (int i = 0; i < 8; i++) {
+            ecs.submit(new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+                    List list = new ArrayList();
+                    ksession.setGlobal("list", list);
+                    barrier.await();
+                    for (int i = 0; i < 100; i++) {
+                        ksession.insert(new Implementation0());
+                        ksession.insert(new Implementation1());
+                        ksession.insert(new Implementation2());
+                        ksession.insert(new Implementation3());
+                        ksession.insert(new Implementation4());
+                    }
+                    ksession.fireAllRules();
+                    ksession.dispose();
+                    return list.size() == 500;
+                }
+            });
+        }
+
+        boolean success = true;
+        for (int i = 0; i < 8; i++) {
+            try {
+                success = ecs.take().get() && success;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        assertTrue(success);
+    }
+
+    public static interface Interfaze {
+        int getValue();
+    }
+
+    public static class Implementation0 implements Interfaze {
+        public int getValue() {
+            return 0;
+        }
+    }
+
+    public static class Implementation1 implements Interfaze {
+        public int getValue() {
+            return 1;
+        }
+    }
+
+    public static class Implementation2 implements Interfaze {
+        public int getValue() {
+            return 2;
+        }
+    }
+
+    public static class Implementation3 implements Interfaze {
+        public int getValue() {
+            return 3;
+        }
+    }
+
+    public static class Implementation4 implements Interfaze {
+        public int getValue() {
+            return 4;
+        }
+    }
+
     // FIXME
 //    
 //    public void testRuleBaseConcurrentCompilation() {

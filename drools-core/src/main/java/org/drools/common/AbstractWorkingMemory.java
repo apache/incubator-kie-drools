@@ -270,6 +270,7 @@ public abstract class AbstractWorkingMemory
         this.environment = environment;
         
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
+        this.actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
 
         Globals globals = (Globals) this.environment.get( EnvironmentName.GLOBALS );
         if ( globals != null ) {
@@ -991,7 +992,6 @@ public abstract class AbstractWorkingMemory
     }
 
     public Queue<WorkingMemoryAction> getActionQueue() {
-        if (actionQueue == null) actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
         return actionQueue;
     }
 
