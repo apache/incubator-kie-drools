@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -58,7 +59,7 @@ public class SolversTest {
         RulePackage rulePackage = new RulePackage(descr);
         rulePackage.setName( "testPackage" );
 
-        VerifierRule rule = new VerifierRule(descr, rulePackage );
+        VerifierRule rule = new VerifierRule(descr, rulePackage, new HashMap<String, Object>());
         rule.setName( "testRule" );
         Pattern pattern = new Pattern(new PatternDescr(), rule );
 

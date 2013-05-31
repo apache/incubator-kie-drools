@@ -55,9 +55,11 @@ public class VerifierRule extends PackageComponent
     private Map<String, List<String>> otherInfo       = new HashMap<String, List<String>>();
 
     private int                       offset          = 0;
+    private final Map<String, Object> namedConsequences;
 
-    public VerifierRule(BaseDescr descr,RulePackage rulePackage) {
+    public VerifierRule(BaseDescr descr, RulePackage rulePackage, Map<String, Object> namedConsequences) {
         super(descr, rulePackage );
+        this.namedConsequences = namedConsequences;
     }
 
     @Override
@@ -164,5 +166,9 @@ public class VerifierRule extends PackageComponent
 
     public Map<String, List<String>> getOtherInfo() {
         return otherInfo;
+    }
+
+    public Map<String, Object> getNamedConsequences() {
+        return namedConsequences;
     }
 }
