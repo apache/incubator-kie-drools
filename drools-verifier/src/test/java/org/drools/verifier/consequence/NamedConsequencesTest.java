@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.verifier;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+package org.drools.verifier.consequence;
 
 import org.drools.core.StatelessSession;
 import org.drools.core.base.RuleNameMatchesAgendaFilter;
+import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
@@ -35,12 +26,20 @@ import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 import org.junit.Test;
 
-public class ConsequenceTest extends TestBaseOld {
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+import static org.junit.Assert.*;
+
+public class NamedConsequencesTest extends TestBaseOld {
 
     @Test
     public void testMissingConsequence() throws Exception {
 
-        InputStream in = getClass().getResourceAsStream( "Consequence.drl" );
+        InputStream in = getClass().getResourceAsStream( "NamedConsequences.drl" );
 
         StatelessSession session = getStatelessSession( in );
 
@@ -56,7 +55,7 @@ public class ConsequenceTest extends TestBaseOld {
 
         session.executeWithResults( testData );
 
-        Iterator<VerifierMessageBase> iter = result.getBySeverity( Severity.WARNING ).iterator();
+        Iterator<VerifierMessageBase> iter = result.getBySeverity( Severity.NOTE ).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while ( iter.hasNext() ) {
@@ -67,9 +66,7 @@ public class ConsequenceTest extends TestBaseOld {
             }
         }
 
-        assertFalse( rulesThatHadErrors.contains( "Has a consequence 1" ) );
-        assertTrue( rulesThatHadErrors.remove( "Missing consequence 1" ) );
-        assertTrue( rulesThatHadErrors.remove( "Missing consequence 2" ) );
+        assertFalse( rulesThatHadErrors.contains( "This one is has an unused named consequence" ) );
 
         if ( !rulesThatHadErrors.isEmpty() ) {
             for ( String string : rulesThatHadErrors ) {
