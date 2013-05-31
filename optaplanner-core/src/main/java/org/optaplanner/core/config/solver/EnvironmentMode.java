@@ -84,7 +84,7 @@ public enum EnvironmentMode {
      * <p/>
      * In practice, this mode uses the default random seed,
      * and it also disables certain concurrency optimizations (such as work stealing).
-     * TODO: JBRULES-681 Multi-threaded support which implement those concurrency optimizations
+     * TODO: PLANNER-76 Multi-threaded support which implement those concurrency optimizations
      */
     REPRODUCIBLE,
     /**

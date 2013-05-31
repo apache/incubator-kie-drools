@@ -66,7 +66,7 @@ public class DefaultSolverScope {
     }
 
     public void setScoreDirector(ScoreDirector scoreDirector) {
-        // TODO remove HACK to fix memory leak of https://issues.jboss.org/browse/JBRULES-3692
+        // TODO remove HACK to fix memory leak of https://issues.jboss.org/browse/PLANNER-19
         if (this.scoreDirector != null) {
             this.scoreDirector.dispose();
         }

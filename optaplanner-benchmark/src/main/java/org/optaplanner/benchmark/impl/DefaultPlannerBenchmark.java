@@ -266,9 +266,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             try {
                 // Explicitly returning it in the Callable guarantees memory visibility
                 singleBenchmark = future.get();
-                // TODO WORKAROUND Remove when JBRULES-3462 is fixed.
+                // TODO WORKAROUND Remove when PLANNER-46 is fixed.
                 if (singleBenchmark.getScore() == null) {
-                    throw new IllegalStateException("Score is null. TODO fix JBRULES-3462.");
+                    throw new IllegalStateException("Score is null. TODO fix PLANNER-46.");
                 }
             } catch (InterruptedException e) {
                 logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") was interrupted.", e);
@@ -278,7 +278,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") failed.", cause);
                 failureThrowable = cause;
             } catch (IllegalStateException e) {
-                // TODO WORKAROUND Remove when JBRULES-3462 is fixed.
+                // TODO WORKAROUND Remove when PLANNER-46 is fixed.
                 logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") failed.", e);
                 failureThrowable = e;
             }

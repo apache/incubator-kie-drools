@@ -605,7 +605,7 @@ public class Queen {
     }</programlisting>
 
           <para>TODO: this is likely to change in the future (<link
-          xlink:href="https://issues.jboss.org/browse/JBRULES-3408">jira</link>), as it should support specific planning
+          xlink:href="https://issues.jboss.org/browse/PLANNER-115">jira</link>), as it should support specific planning
           variable initialization too.</para>
         </section>
       </section>

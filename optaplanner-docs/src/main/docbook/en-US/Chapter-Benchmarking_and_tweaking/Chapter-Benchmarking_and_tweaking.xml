@@ -525,7 +525,7 @@
 
         <note>
           <para>In the future, we will also support multi-JVM benchmarking. This feature is independent of <link
-          xlink:href="https://issues.jboss.org/browse/JBRULES-681">multi-threaded solving</link> or multi-JVM
+          xlink:href="https://issues.jboss.org/browse/PLANNER-76">multi-threaded solving</link> or multi-JVM
           solving.</para>
         </note>
       </section>
