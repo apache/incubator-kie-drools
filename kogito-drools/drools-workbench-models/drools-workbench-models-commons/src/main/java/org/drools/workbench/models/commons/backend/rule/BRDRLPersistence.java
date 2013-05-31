@@ -1956,7 +1956,8 @@ public class BRDRLPersistence
                                        String dslLine ) {
         DSLSentence dslSentence = new DSLSentence();
         for ( String dslPattern : dslPatterns ) {
-            String regex = dslPattern.replaceAll( "\\{\\s*[\\:\\.\\w]+\\s*\\}", "(.*)" );
+            //A DSL Pattern can contain Regex itself, for example "When the ages is less than {num:1?[0-9]?[0-9]}"
+            String regex = dslPattern.replaceAll( "\\{\\s*[\\:\\[\\]\\?\\*\\+\\-\\.\\^\\$\\|\\(\\)\\w]+\\s*\\}", "(.*)" );
             Matcher m = Pattern.compile( regex ).matcher( dslLine );
             if ( m.matches() ) {
                 dslSentence.setDefinition( dslPattern );
