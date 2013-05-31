@@ -508,7 +508,7 @@ in the BPMN2, we set the signal to <code>Error-code</code>.</para>
 <para>When signalling the jBPM process engine with an event of some sort, you should keep in mind
 the rules for signalling process events.
   <itemizedlist>
-    <listitem>Error events can be signalled by sending an "Error-" + &lt;the <code>errorCode<code> 
+    <listitem>Error events can be signalled by sending an "Error-" + &lt;the <code>errorCode</code> 
     attribute value&gt; value to the session.</listitem>
 <listitem>Signal events can be signalled by sending the name of the signal to the session.</listitem>
   </itemizedlist>
