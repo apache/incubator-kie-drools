@@ -144,13 +144,16 @@ public class DefaultSubChainSelector extends AbstractSelector
     }
 
     public long getSize() {
-        long size = 0L;
+        long selectionSize = 0L;
         for (SubChain anchorTrailingChain : anchorTrailingChainList) {
-            long n = (long) Math.min(maximumSubChainSize, anchorTrailingChain.getEntityList().size())
-                    - (long) minimumSubChainSize + 1L;
-            size += n * (n + 1L) / 2L;
+            long anchorTrailingChainSize = (long) anchorTrailingChain.getSize();
+            long n = anchorTrailingChainSize - (long) minimumSubChainSize + 1L;
+            long m = (maximumSubChainSize >= anchorTrailingChainSize)
+                    ? 0L : anchorTrailingChainSize - (long) maximumSubChainSize;
+            long subSelectionSize = (n * (n + 1L) / 2L) - (m * (m + 1L) / 2L);
+            selectionSize += subSelectionSize;
         }
-        return size;
+        return selectionSize;
     }
 
     public Iterator<SubChain> iterator() {
