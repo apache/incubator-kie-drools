@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
@@ -95,25 +96,11 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         final Node node = createNode(attrs);
         String id = attrs.getValue("id");
         node.setMetaData("UniqueId", id);
-        try {
-            // remove starting _
-            id = id.substring(1);
-            // remove ids of parent nodes
-            id = id.substring(id.lastIndexOf("-") + 1);
-            final String name = attrs.getValue("name");
-            node.setName(name);
-            node.setId(new Integer(id));
-        } catch (NumberFormatException e) {
-            // id is not in the expected format, generating a new one
-            long newId = 0;
-            NodeContainer nodeContainer = (NodeContainer) parser.getParent();
-            for (org.kie.api.definition.process.Node n: nodeContainer.getNodes()) {
-                if (n.getId() > newId) {
-                    newId = n.getId();
-                }
-            }
-            ((org.jbpm.workflow.core.Node) node).setId(++newId);
-        }
+        final String name = attrs.getValue("name");
+        node.setName(name);
+        
+        AtomicInteger idGen = (AtomicInteger) parser.getMetaData().get("idGen");
+        node.setId(idGen.getAndIncrement());
         return node;
     }
 

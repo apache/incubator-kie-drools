@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
@@ -121,6 +122,10 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		if (typedImports != null) {
 		    process.setMetaData("Bpmn2Imports", typedImports);
 		}
+		
+		// for unique id's of nodes
+		parser.getMetaData().put("idGen", new AtomicInteger());
+		
 		return process;
 	}
 
@@ -229,23 +234,15 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
 	 private static Node findNodeByIdOrUniqueIdInMetadata(NodeContainer nodeContainer, final String nodeRef, String errorMsg) { 
 	     Node node = null;
-	     try {
-	         // remove starting _
-	         String numNodeRef = nodeRef.substring(1);
-	         // remove ids of parent nodes
-	         numNodeRef = numNodeRef.substring(numNodeRef.lastIndexOf("-") + 1);
-	         node = nodeContainer.getNode(new Integer(numNodeRef));
-	     } catch (NumberFormatException e) {
-	         // try looking for a node with same "UniqueId" (in metadata)
-	         for (Node containerNode: nodeContainer.getNodes()) {
-	             if (nodeRef.equals(containerNode.getMetaData().get("UniqueId"))) {
-	                 node = containerNode;
-	                 break;
-	             }
+	     // try looking for a node with same "UniqueId" (in metadata)
+	     for (Node containerNode: nodeContainer.getNodes()) {
+	         if (nodeRef.equals(containerNode.getMetaData().get("UniqueId"))) {
+	             node = containerNode;
+	             break;
 	         }
-	         if (node == null) {
-	             throw new IllegalArgumentException(errorMsg);
-	         }
+	     }
+	     if (node == null) {
+	         throw new IllegalArgumentException(errorMsg);
 	     }
 	     return node;
 	 }
