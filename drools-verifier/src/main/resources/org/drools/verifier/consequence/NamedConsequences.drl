@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-//created on: 18.10.2007
 package org.drools.verifier.consequence
 
 //list any import classes here.
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.TextConsequence;
+import org.drools.verifier.components.NamedConsequence;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
@@ -34,19 +34,17 @@ global VerifierReport result;
 
 rule "No action - possibly commented out"
     when
-        $c :TextConsequence( ( text == null || == "" ) )
-
-        $r :VerifierRule(
-            path == $c.rulePath
-        )
+        $consequence : NamedConsequence( )
+        $rule :VerifierRule( namedConsequences not contains $consequence.name )
     then
         Map impactedRules = new HashMap();
-        impactedRules.put( $r.getPath(), $r.getName());
+        impactedRules.put( $rule.getPath(), $rule.getName());
+
 
         result.add( new VerifierMessage(
                                 impactedRules,
-                                Severity.WARNING,
+                                Severity.NOTE,
                                 MessageType.MISSING_COMPONENT,
                                 null,
-                                $r + " has no RHS." ) );
+                                $rule + " has named consequence: " + $consequence.getName() + " declared, but it is not used." ) );
 end

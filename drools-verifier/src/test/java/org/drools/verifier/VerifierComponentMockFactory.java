@@ -22,6 +22,8 @@ import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.VerifierRule;
 
+import java.util.HashMap;
+
 public class VerifierComponentMockFactory {
 
     public static RulePackage createPackage1() {
@@ -50,7 +52,7 @@ public class VerifierComponentMockFactory {
     }
 
     public static VerifierRule createRule(int i) {
-        VerifierRule rule = new VerifierRule( new PackageDescr("testPackage1"), createPackage1() );
+        VerifierRule rule = new VerifierRule( new PackageDescr("testPackage1"), createPackage1(), new HashMap<String, Object>());
 
         rule.setName( "testRule" + i );
 

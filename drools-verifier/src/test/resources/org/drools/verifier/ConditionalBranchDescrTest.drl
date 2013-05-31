@@ -14,26 +14,16 @@
  * limitations under the License.
  */
 
-package com.misc.someData
+package com.misc.missingRanges
 
-import com.sample.DroolsTest.Message;
 
-rule "Missing consequence 1"
-    when
-        Foo()
-    then
-end
-
-rule "Has a consequence 1"
-    when
-        Foo()
-    then
-        System.out.println("Test");
-end
-
-rule "Missing consequence 2"
-    when
-        Foo()
-    then
-        // System.out.println("Test");
+rule "Give 10% discount and free parking to customers older than 60"
+when
+    $customer : Customer( age > 60 )
+    do[giveDiscount]
+    $car : Car ( owner == $customer )
+then
+    modify($car) { setFreeParking( true ) };
+then[giveDiscount]
+    modify($customer) { setDiscount( 0.1 ) };
 end
