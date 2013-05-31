@@ -440,7 +440,10 @@ public class MVELDialect
         try {
             cls = pkgBuilder.getRootClassLoader().loadClass( className );
         } catch ( ClassNotFoundException e ) { }
-        if (cls == null) results.add( new ImportError( importDescr, -1 ) );
+        if ( cls == null ) {
+            results.add( new ImportError( importDescr, -1 ) );
+            return;
+        }
 
         for (Method method : cls.getDeclaredMethods()) {
             if ((method.getModifiers() | Modifier.STATIC) > 0) {

@@ -1588,4 +1588,18 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals( N, list.size() );
     }
 
+    @Test
+    public void testFailedStaticImport()  {
+        String drl = "package org.drools.test; \n" +
+                     "" +
+                     "import function org.does.not.exist.Foo; \n" +
+                     "" +                     "" +
+                     "rule X when\n" +
+                     "then\n" +
+                     "end";
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        assertTrue( kb.hasErrors() );
+    }
+
 }
