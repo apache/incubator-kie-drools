@@ -59,7 +59,8 @@ public class MavenRepository {
     public List<DependencyDescriptor> getArtifactDependecies(String artifactName) {
         Artifact artifact = new DefaultArtifact( artifactName );
         CollectRequest collectRequest = new CollectRequest();
-        collectRequest.setRoot( new Dependency( artifact, "" ) );
+        Dependency root = new Dependency( artifact, "" );
+        collectRequest.setRoot( root );
         for (RemoteRepository repo : aether.getRepositories()) {
             collectRequest.addRepository(repo);
         }
@@ -77,6 +78,10 @@ public class MavenRepository {
 
         List<DependencyDescriptor> descriptors = new ArrayList<DependencyDescriptor>();
         for (DependencyNode node : visitor.getDependencies()) {
+            // skip root to not add artifact as dependency
+            if (node.getDependency().equals(root)) {
+                continue;
+            }
             descriptors.add(new DependencyDescriptor(node.getDependency().getArtifact()));
         }
         return descriptors;
