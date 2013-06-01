@@ -1948,11 +1948,17 @@ public class MiscTest2 extends CommonTestMethodBase {
         private final String id;
         private int day;
         private int index;
+        private boolean available;
 
         public Lecture(String id, int day, int index) {
+            this(id, day, index, true);
+        }
+
+        public Lecture(String id, int day, int index, boolean available) {
             this.id = id;
             this.day = day;
             this.index = index;
+            this.available = available;
         }
 
         public String getId() {
@@ -1974,6 +1980,15 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         public Lecture setIndex(int index) {
             this.index = index;
+            return this;
+        }
+
+        public boolean isAvailable() {
+            return available;
+        }
+
+        public Lecture setAvailable(boolean available) {
+            this.available = available;
             return this;
         }
 
@@ -2033,5 +2048,63 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals(1, list.size());
         assertTrue(list.contains("B"));
+    }
+
+    @Test
+    public void testPhreakAccumulate() {
+        // DROOLS-7
+        String str =
+                "import org.drools.compiler.integrationtests.MiscTest2.Lecture\n" +
+                "global java.util.List list;\n" +
+                "rule \"R1\"\n" +
+                "    when\n" +
+                "        $lecture : Lecture(\n" +
+                "            $day : day, $index : index\n" +
+                "        )\n" +
+                "        not Lecture(\n" +
+                "            day == $day, index == ($index + 1)\n" +
+                "        )\n" +
+                "    then\n" +
+                "        list.add($lecture.getId());\n" +
+                "end\n" +
+                "rule \"R2\"\n" +
+                "    when\n" +
+                "        $availableLectures : Number(intValue > 0) from accumulate(\n" +
+                "            $lecture : Lecture(\n" +
+                "                available == true\n" +
+                "            ),\n" +
+                "            count($lecture)\n" +
+                "        )\n\n" +
+                "    then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Lecture lA = new Lecture("A", 0, 4, true);
+        Lecture lB = new Lecture("B", 2, 2, true);
+        Lecture lC = new Lecture("C", 2, 1, true);
+
+        FactHandle fhA = ksession.insert(lA);
+        FactHandle fhB = ksession.insert(lB);
+        FactHandle fhC = ksession.insert(lC);
+
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll(asList("A", "B")));
+        list.clear();
+
+        ksession.update(fhB, lB.setAvailable(false));
+        ksession.fireAllRules();
+
+        ksession.update(fhB, lB.setDay(0).setIndex(3));
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll(asList("B", "C")));
+        list.clear();
     }
 }
