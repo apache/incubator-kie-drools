@@ -18,8 +18,8 @@ import static org.junit.Assert.assertTrue;
 
 public class AbstractKieCiTest {
 
-    protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, String... rules) throws IOException {
-        KieFileSystem kfs = createKieFileSystemWithKProject(ks);
+    protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, boolean isdefault, String... rules) throws IOException {
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks, isdefault);
         kfs.writePomXML( getPom(releaseId) );
 
         for (String rule : rules) {
@@ -32,8 +32,12 @@ public class AbstractKieCiTest {
         return ( InternalKieModule ) kieBuilder.getKieModule();
     }
 
+    protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, String... rules) throws IOException {
+        return createKieJar(ks, releaseId, false, rules);
+    }
+
     protected InternalKieModule createKieJarWithClass(KieServices ks, ReleaseId releaseId, boolean useTypeDeclaration, int value, int factor, ReleaseId... dependencies) throws IOException {
-        KieFileSystem kfs = createKieFileSystemWithKProject(ks);
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks, false);
         kfs.writePomXML(getPom(releaseId, dependencies));
 
         if (useTypeDeclaration) {
@@ -47,15 +51,18 @@ public class AbstractKieCiTest {
         assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
         return ( InternalKieModule ) kieBuilder.getKieModule();
     }
-
     protected KieFileSystem createKieFileSystemWithKProject(KieServices ks) {
+        return createKieFileSystemWithKProject(ks, false);
+    }
+
+    protected KieFileSystem createKieFileSystemWithKProject(KieServices ks, boolean isdefault) {
         KieModuleModel kproj = ks.newKieModuleModel();
 
-        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1").setDefault(isdefault)
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1").setDefault(isdefault)
                 .setType(KieSessionModel.KieSessionType.STATEFUL)
                 .setClockType( ClockTypeOption.get("realtime") );
 
