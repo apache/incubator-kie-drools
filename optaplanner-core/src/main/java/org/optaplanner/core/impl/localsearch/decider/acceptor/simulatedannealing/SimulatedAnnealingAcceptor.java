@@ -70,19 +70,19 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getStepScope().getPhaseScope();
         Score lastStepScore = localSearchSolverPhaseScope.getLastCompletedStepScope().getScore();
-        Score moveScore = moveScope.getScore();
-        if (moveScore.compareTo(lastStepScore) >= 0) {
+        Score score = moveScope.getScore();
+        if (score.compareTo(lastStepScore) >= 0) {
             return true;
         }
-        Score scoreDifference = lastStepScore.subtract(moveScore);
-        double acceptChance = 1.0;
+        Score scoreDifference = lastStepScore.subtract(score);
         double[] scoreDifferenceLevels = ScoreUtils.extractLevelDoubles(scoreDifference);
+        double acceptChance = 1.0;
         for (int i = 0; i < levelsLength; i++) {
             double scoreDifferenceLevel = scoreDifferenceLevels[i];
             double temperatureLevel = temperatureLevels[i];
             double acceptChanceLevel;
             if (scoreDifferenceLevel <= 0.0) {
-                // In this level moveScore is better than the lastStepScore, so do not disrupt the acceptChance
+                // In this level score is better than the lastStepScore, so do not disrupt the acceptChance
                 acceptChanceLevel = 1.0;
             } else {
                 acceptChanceLevel = Math.exp(-scoreDifferenceLevel / temperatureLevel);
