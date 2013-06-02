@@ -16,19 +16,15 @@
 
 package org.drools.core.reteoo.builder;
 
-import org.drools.core.common.BetaConstraints;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.From;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.drools.core.time.impl.Timer;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 public class TimerBuilder
@@ -63,6 +59,10 @@ public class TimerBuilder
             Arrays.sort(periodDeclrs, SortDeclarations.instance);
 
             declrs = new Declaration[][] { delayDeclrs, periodDeclrs };
+        } else if ( timer instanceof DurationTimer ) {
+            DurationTimer durTimer = ( DurationTimer ) timer;
+            declrs = new Declaration[][] { new Declaration[] {durTimer.getEventFactHandleDeclaration()}, null};
+
         }
 
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,

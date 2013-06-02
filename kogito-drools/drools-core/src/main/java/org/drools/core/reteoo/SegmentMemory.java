@@ -47,6 +47,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return queue;
     }
 
+    public void setTupleQueue(Queue queue) {
+        this.queue = queue;
+    }
+
     public NetworkNode getRootNode() {
         return rootNode;
     }

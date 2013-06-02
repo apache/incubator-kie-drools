@@ -19,6 +19,8 @@ import org.kie.api.runtime.Calendars;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+
 public class PhreakTimerNode {
     private static final Logger log = LoggerFactory.getLogger(PhreakTimerNode.class);
 
@@ -117,6 +119,7 @@ public class PhreakTimerNode {
                 for ( LeftTuple leftTuple = deletes.getFirst(); leftTuple != null;  ) {
                     LeftTuple next =  ( LeftTuple ) leftTuple.getNext();
                     srcLeftTuples.addDelete(leftTuple);
+                    log.trace("Timer Add Postponed Delete {}", leftTuple );
                     leftTuple.clear();
                     leftTuple = next;
                 }
@@ -127,7 +130,10 @@ public class PhreakTimerNode {
 
 
                 DefaultJobHandle jobHandle = ( DefaultJobHandle ) leftTuple.getObject();
-                timerService.removeJob( jobHandle );
+                if ( jobHandle != null ) {
+                    // jobHandle can be null, if the time fired straight away, and never ended up scheduling a job
+                    timerService.removeJob( jobHandle );
+                }
 
                 if ( leftTuple.getMemory() != null ) {
                     // a delete clashes with insert or update, allow it to propagate once, will handle the deletes the second time around
@@ -135,6 +141,7 @@ public class PhreakTimerNode {
                     doPropagateChildLeftTuple(sink, trgLeftTuples, stagedLeftTuples, leftTuple);
                     tm.getDeleteLeftTuples().add(leftTuple);
                     pmem.doLinkRule(wm); // make sure it's dirty, so it'll evaluate again
+                    log.trace("Timer Postponed Delete {}", leftTuple );
                 } else {
                     LeftTuple childLeftTuple = leftTuple.getFirstChild(); // only has one child
 
@@ -150,6 +157,7 @@ public class PhreakTimerNode {
                         }
 
                         trgLeftTuples.addDelete( childLeftTuple );
+                        log.trace("Timer Delete {}", leftTuple );
                     }
                 }
 
@@ -174,16 +182,22 @@ public class PhreakTimerNode {
 
             trigger.nextFireTime();
 
-            if ( trigger.hasNextFireTime().getTime() <= timestamp ) {
+            Date nextFireTime =  trigger.hasNextFireTime();
+            if ( nextFireTime != null && nextFireTime.getTime() <= timestamp ) {
                 throw new IllegalStateException( "Trigger.nextFireTime is not increasing" );
             }
         }
 
-        TimerNodeJob job = new TimerNodeJob();
-        TimerNodeJobContext jobCtx = new TimerNodeJobContext(trigger, leftTuple, tm,  sink, pmem, wm);
+        if ( trigger.hasNextFireTime() != null ) {
+            // can be null, if the system timestamp has surpassed when this was suppose to fire
+            TimerNodeJob job = new TimerNodeJob();
+            TimerNodeJobContext jobCtx = new TimerNodeJobContext(trigger, leftTuple, tm,  sink, pmem, wm);
 
-        jobHandle = ( DefaultJobHandle ) timerService.scheduleJob(job, jobCtx, trigger);
-        leftTuple.setObject( jobHandle );
+            jobHandle = ( DefaultJobHandle ) timerService.scheduleJob(job, jobCtx, trigger);
+            leftTuple.setObject( jobHandle );
+
+            log.trace("Timer Scheduled {}", leftTuple );
+        }
     }
 
     public void doPropagateChildLeftTuples(TimerNode timerNode,
@@ -214,6 +228,7 @@ public class PhreakTimerNode {
         if ( childLeftTuple == null ) {
             childLeftTuple = sink.createLeftTuple(leftTuple, sink, leftTuple.getPropagationContext(), true);
             trgLeftTuples.addInsert( childLeftTuple );
+            log.trace("Timer Insert {}", childLeftTuple);
         } else {
             switch (childLeftTuple.getStagedType()) {
                 // handle clash with already staged entries
@@ -225,6 +240,8 @@ public class PhreakTimerNode {
                     break;
             }
             trgLeftTuples.addUpdate( childLeftTuple );
+            log.trace("Timer Update {}", childLeftTuple);
+
         }
     }
 

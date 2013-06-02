@@ -86,18 +86,11 @@ public class SegmentUtilities {
         LeftTupleSource segmentRoot = tupleSource;
 
         List<PathMemory> pmems = new ArrayList<PathMemory>();
-        if (initRtn) {
+        if (initRtn ) {
             initialiseRtnMemory(segmentRoot, wm, pmems);
         }
 
-        Queue queue = null;
-        if ( tupleSource.isStreamMode() ) {
-            // Stream node in Phreak does not currently support sharing, so we know only 1 pmem.
-            // This ensures that all nodes in all segment for a steam mode rule, use the same queue
-            queue = pmems.get(0).getQueue();
-        }
-
-        smem = new SegmentMemory(segmentRoot, queue);
+        smem = new SegmentMemory(segmentRoot, null);
 
         // Iterate all nodes on the same segment, assigning their position as a bit mask value
         // allLinkedTestMask is the resulting mask used to test if all nodes are linked in
@@ -106,6 +99,14 @@ public class SegmentUtilities {
         boolean updateNodeBit = true;  // nodes after a branch CE can notify, but they cannot impact linking
 
         while (true) {
+            if ( tupleSource.isStreamMode() && smem.getTupleQueue() == null ) {
+                // need to make sure there is one Queue, for the rule, when a stream mode node is found.
+                if ( pmems.isEmpty() ) {
+                    // pmems is empty, if initialiseRtnMemory was not previously called
+                    initialiseRtnMemory(segmentRoot, wm, pmems);
+                }
+                smem.setTupleQueue( pmems.get(0).getQueue() );
+            }
             if (NodeTypeEnums.isBetaNode(tupleSource)) {
                 allLinkedTestMask = processBetaNode(tupleSource, wm, smem, nodePosMask, allLinkedTestMask, updateNodeBit);
             } else {

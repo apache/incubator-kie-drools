@@ -77,13 +77,17 @@ public class TimerNode extends LeftTupleSource
             ClassNotFoundException {
         super.readExternal(in);
         timer = (Timer) in.readObject();
+        calendarNames = (String[]) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
+        declarations = ( Declaration[][] ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject(timer);
+        out.writeObject( calendarNames );
         out.writeBoolean(tupleMemoryEnabled);
+        out.writeObject( declarations );
     }
 
     public void attach(BuildContext context) {

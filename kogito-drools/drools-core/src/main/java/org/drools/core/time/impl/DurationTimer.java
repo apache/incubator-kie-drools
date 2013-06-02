@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ConditionalElement;
@@ -37,6 +38,7 @@ public class DurationTimer extends BaseTimer
     Externalizable {
 
     private long duration;
+    private Declaration eventFactHandle;
 
     public DurationTimer() {
 
@@ -48,11 +50,13 @@ public class DurationTimer extends BaseTimer
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong(duration);
+        out.writeObject(eventFactHandle);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
         duration = in.readLong();
+        eventFactHandle = (Declaration ) in.readObject();
     }
 
     public long getDuration() {
@@ -73,6 +77,10 @@ public class DurationTimer extends BaseTimer
                                  Calendars calendars,
                                  Declaration[][] declrs,
                                  InternalWorkingMemory wm) {
+        if ( eventFactHandle != null ) {
+            EventFactHandle  fh = (EventFactHandle) leftTuple.get(declrs[0][0]);
+            timestamp = fh.getStartTimestamp();
+        }
         return createTrigger(timestamp, calendarNames, calendars);
     }
 
@@ -115,4 +123,11 @@ public class DurationTimer extends BaseTimer
         return new DurationTimer( duration );
     }
 
+    public void setEventFactHandle(Declaration eventFactHandle) {
+        this.eventFactHandle = eventFactHandle;
+    }
+
+    public Declaration getEventFactHandleDeclaration() {
+        return eventFactHandle;
+    }
 }

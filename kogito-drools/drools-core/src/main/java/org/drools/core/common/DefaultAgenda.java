@@ -128,6 +128,9 @@ public class DefaultAgenda
 
     private boolean                                              unlinkingEnabled;
 
+
+    private volatile boolean                                     fireUntilHalt = false;
+
     // @TODO make serialisation work
     private ActivationGroup stagedActivations;
 
@@ -1518,7 +1521,13 @@ public class DefaultAgenda
         return this.getFocus().getName();
     }
 
+    @Override
+    public boolean isFireUntilHalt() {
+        return fireUntilHalt;
+    }
+
     public void fireUntilHalt() {
+        fireUntilHalt = true;
         fireUntilHalt( null );
     }
 
@@ -1531,17 +1540,20 @@ public class DefaultAgenda
             this.workingMemory.executeQueuedActions();
             if ( !fired ) {
 //                Thread.yield();
-//                try {
-//                    synchronized ( this.halt ) {
-//                        if ( !this.halt.get() ) this.halt.wait();
-//                    }
-//                } catch ( InterruptedException e ) {
-//                    this.halt.set( true );
-//                }
+                if ( !unlinkingEnabled ) {
+                    try {
+                        synchronized ( this.halt ) {
+                            if ( !this.halt.get() ) this.halt.wait();
+                        }
+                    } catch ( InterruptedException e ) {
+                        this.halt.set( true );
+                    }
+                }
             } else {
                 this.workingMemory.executeQueuedActions();
             }
         }
+        fireUntilHalt = false;
     }
 
     public int fireAllRules(AgendaFilter agendaFilter,

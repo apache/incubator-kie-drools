@@ -16,22 +16,16 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextImpl;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashMap;
+import org.drools.core.reteoo.ObjectTypeNode.Id;
+import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.BehaviorManager;
@@ -39,30 +33,41 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.ObjectHashSet.ObjectEntry;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static org.drools.core.util.BitMaskUtil.intersect;
 
 /**
  * <code>WindowNodes</code> are nodes in the <code>Rete</code> network used
- * to manage windows. They support multiple types of windows, like 
+ * to manage windows. They support multiple types of windows, like
  * sliding windows, tumbling windows, etc.
- * 
+ * <p/>
  * This class must act as a lock-gate for all working memory actions on it
  * and propagated down the network in this branch, as there can be concurrent
  * threads propagating events and expiring events working on this node at the
  * same time. It requires it to be thread safe.
- *
  */
 public class WindowNode extends ObjectSource
-                                            implements ObjectSinkNode,
-                                            MemoryFactory {
+        implements ObjectSinkNode,
+                   RightTupleSink,
+                   MemoryFactory {
 
-    private static final long              serialVersionUID = 540l;
-
+    private static final long serialVersionUID = 540l;
     private List<AlphaNodeFieldConstraint> constraints;
     private BehaviorManager                behavior;
     private EntryPoint                     entryPoint;
-
     private ObjectSinkNode                 previousRightTupleSinkNode;
     private ObjectSinkNode                 nextRightTupleSinkNode;
+    private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFAULT_ID;
 
     public WindowNode() {
     }
@@ -70,22 +75,22 @@ public class WindowNode extends ObjectSource
     /**
      * Construct a <code>WindowNode</code> with a unique id using the provided
      * list of <code>AlphaNodeFieldConstraint</code> and the given <code>ObjectSource</code>.
-     * 
-     * @param id Node's ID
-     * @param constraints Node's constraints
-     * @param behaviors list of behaviors for this window node
+     *
+     * @param id           Node's ID
+     * @param constraints  Node's constraints
+     * @param behaviors    list of behaviors for this window node
      * @param objectSource Node's object source
      */
     public WindowNode(final int id,
-            final List<AlphaNodeFieldConstraint> constraints,
-            final List<Behavior> behaviors,
-            final ObjectSource objectSource,
-            final BuildContext context) {
+                      final List<AlphaNodeFieldConstraint> constraints,
+                      final List<Behavior> behaviors,
+                      final ObjectSource objectSource,
+                      final BuildContext context) {
         super(id,
-                context.getPartitionId(),
-                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
-                objectSource,
-                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold());
+              context.getPartitionId(),
+              context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+              objectSource,
+              context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold());
         // needs to be cloned as the list is managed externally
         this.constraints = new ArrayList<AlphaNodeFieldConstraint>(constraints);
         this.behavior = new BehaviorManager(behaviors);
@@ -108,10 +113,10 @@ public class WindowNode extends ObjectSource
         out.writeObject(behavior);
         out.writeObject(entryPoint);
     }
-    
+
     public short getType() {
         return NodeTypeEnums.WindowNode;
-    }      
+    }
 
     /**
      * Returns the <code>FieldConstraints</code>
@@ -124,6 +129,7 @@ public class WindowNode extends ObjectSource
 
     /**
      * Returns the list of behaviors for this window node
+     *
      * @return
      */
     public Behavior[] getBehaviors() {
@@ -132,7 +138,7 @@ public class WindowNode extends ObjectSource
 
     public void attach(BuildContext context) {
         this.source.addObjectSink(this);
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled()) {
             return;
         }
 
@@ -144,137 +150,139 @@ public class WindowNode extends ObjectSource
                     null,
                     null);
             this.source.updateSink(this,
-                    propagationContext,
-                    workingMemory);
+                                   propagationContext,
+                                   workingMemory);
         }
     }
 
     public void assertObject(final InternalFactHandle factHandle,
-                             final PropagationContext context,
+                             final PropagationContext pctx,
                              final InternalWorkingMemory workingMemory) {
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
-        
+
+        EventFactHandle evFh = ( EventFactHandle ) factHandle;
         // must guarantee single thread from now on
         memory.gate.lock();
         try {
             int index = 0;
             for (AlphaNodeFieldConstraint constraint : constraints) {
-                if (!constraint.isAllowed(factHandle, workingMemory, memory.context[index++])) {
+                if (!constraint.isAllowed(evFh, workingMemory, memory.context[index++])) {
                     return;
                 }
             }
+
+            RightTuple rightTuple = new RightTuple( evFh, this );
+            rightTuple.setPropagationContext( pctx );
+
+            InternalFactHandle clonedFh = evFh.cloneAndLink();  // this is cloned, as we need to separate the child RightTuple references
+            rightTuple.setObject( clonedFh );
+
             // process the behavior
-            if (!behavior.assertFact(memory, factHandle, workingMemory)) {
+            if (!behavior.assertFact(memory, clonedFh, pctx, workingMemory)) {
                 return;
             }
 
-            // propagate
-            WindowTupleList list = new WindowTupleList((EventFactHandle) factHandle, this);
-            context.setActiveWindowTupleList(list);
-
-            memory.events.put(factHandle, list);
-            this.sink.propagateAssertObject(factHandle, context, workingMemory);
-            context.setActiveWindowTupleList(null);
+            this.sink.propagateAssertObject(clonedFh, pctx, workingMemory);
         } finally {
             memory.gate.unlock();
         }
     }
 
-    public void modifyObject(final InternalFactHandle factHandle,
-            final ModifyPreviousTuples modifyPreviousTuples,
-            final PropagationContext context,
-            final InternalWorkingMemory workingMemory) {
+    @Override
+    public void retractRightTuple(RightTuple rightTuple, PropagationContext pctx, InternalWorkingMemory wm) {
+        final WindowMemory memory = (WindowMemory) wm.getNodeMemory(this);
+
+        memory.gate.lock();
+        try {
+            behavior.retractFact(memory, rightTuple.getFactHandle(), pctx, wm);
+        } finally {
+            memory.gate.unlock();
+        }
+
+        InternalFactHandle clonedFh = ( InternalFactHandle ) rightTuple.getObject();
+        ObjectTypeNode.doRetractObject(clonedFh, pctx, wm);
+    }
+
+    @Override
+    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
 
         // must guarantee single thread from now on
         memory.gate.lock();
+
+        EventFactHandle originalFactHandle = ( EventFactHandle ) rightTuple.getFactHandle();
+        EventFactHandle cloneFactHandle  = ( EventFactHandle ) rightTuple.getObject();
+        originalFactHandle.quickCloneUpdate( cloneFactHandle ); // make sure all fields are updated
 
         // behavior modify
         try {
             int index = 0;
             boolean isAllowed = true;
             for (AlphaNodeFieldConstraint constraint : constraints) {
-                if (!constraint.isAllowed(factHandle,
-                        workingMemory,
-                        memory.context[index++])) {
+                if (!constraint.isAllowed(cloneFactHandle,
+                                          workingMemory,
+                                          memory.context[index++])) {
                     isAllowed = false;
                     break;
                 }
             }
-            // propagate
-            WindowTupleList list = (WindowTupleList) memory.events.get(factHandle);
-            if (isAllowed) {
-                if (list != null) {
-                    context.setActiveWindowTupleList(list);
-                    this.sink.propagateModifyObject(factHandle,
-                            modifyPreviousTuples,
-                            context,
-                            workingMemory);
-                    context.setActiveWindowTupleList(null);
-                } else {
-                    list = new WindowTupleList((EventFactHandle) factHandle, this);
-                    context.setActiveWindowTupleList(list);
-                    memory.events.put(factHandle,
-                            list);
-                    this.sink.propagateAssertObject(factHandle,
-                            context,
-                            workingMemory);
-                    context.setActiveWindowTupleList(null);
-                }
+
+            if  ( isAllowed ) {
+                ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(cloneFactHandle.getFirstLeftTuple(), cloneFactHandle.getFirstRightTuple(), true );
+                cloneFactHandle.clearLeftTuples();
+                cloneFactHandle.clearRightTuples();
+
+                this.sink.propagateModifyObject(cloneFactHandle,
+                                                modifyPreviousTuples,
+                                                context,
+                                                workingMemory);
+                modifyPreviousTuples.retractTuples(context, workingMemory);
             } else {
-                memory.events.remove(factHandle);
-                // no need to propagate retract if it is no longer allowed
-                // because the algorithm will automatically retract facts
-                // based on the ModifyPreviousTuples parameters 
+                ObjectTypeNode.doRetractObject(cloneFactHandle, context, workingMemory);
             }
         } finally {
             memory.gate.unlock();
         }
     }
 
-    /**
-     * Retract the <code>FactHandle</code> from the <code>WindowNode</code>.
-     * This method is for the node benefit only as the node itself will not 
-     * propagate retracts down the network, relying on the standard Rete
-     * retract algorithm implemented by the ObjectTypeNode to do it.
-     *
-     * @param factHandle    The fact handle.
-     * @param context       The propagation context
-     * @param workingMemory The working memory session.
-     */
-    public void retractObject(final InternalFactHandle factHandle,
-            final PropagationContext context,
-            final InternalWorkingMemory workingMemory) {
-        final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
 
-        // must guarantee single thread from now on
-        memory.gate.lock();
-        
-        try {
-            // behavior retract
-            behavior.retractFact(memory,
-                    factHandle,
-                    workingMemory);
+    public void modifyObject(InternalFactHandle factHandle,
+                             ModifyPreviousTuples modifyPreviousTuples,
+                             PropagationContext context,
+                             InternalWorkingMemory wm) {
+        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
 
-            // memory retract
-            memory.events.remove(factHandle);
+        // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
+        while ( rightTuple != null &&
+                (( BetaNode ) rightTuple.getRightTupleSink()).getRightInputOtnId().before( getRightInputOtnId() ) ) {
+            modifyPreviousTuples.removeRightTuple();
 
-            // as noted in the javadoc, this node will not propagate retracts, relying
-            // on the standard algorithm to do it instead.
-        } finally {
-            memory.gate.unlock();
+            // we skipped this node, due to alpha hashing, so retract now
+            rightTuple.setPropagationContext( context );
+            retractRightTuple( rightTuple,
+                               context,
+                               wm );
+            rightTuple = modifyPreviousTuples.peekRightTuple();
+        }
+
+        if ( rightTuple != null && (( BetaNode ) rightTuple.getRightTupleSink()).getRightInputOtnId().equals(getRightInputOtnId()) ) {
+            modifyPreviousTuples.removeRightTuple();
+            modifyRightTuple( rightTuple, context, wm );
+        } else {
+            // RightTuple does not exist for this node, so create and continue as assert
+            assertObject( factHandle, context, wm );
         }
     }
 
     public void byPassModifyToBetaNode(InternalFactHandle factHandle,
-            ModifyPreviousTuples modifyPreviousTuples,
-            PropagationContext context,
-            InternalWorkingMemory workingMemory) {
+                                       ModifyPreviousTuples modifyPreviousTuples,
+                                       PropagationContext context,
+                                       InternalWorkingMemory workingMemory) {
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
 
         // must guarantee single thread from now on
         memory.gate.lock();
-        
+
         try {
             sink.byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
         } finally {
@@ -283,24 +291,23 @@ public class WindowNode extends ObjectSource
     }
 
     public void updateSink(final ObjectSink sink,
-            final PropagationContext context,
-            final InternalWorkingMemory workingMemory) {
-        final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
+                           final PropagationContext context,
+                           final InternalWorkingMemory wm) {
+        final WindowMemory memory = (WindowMemory) wm.getNodeMemory(this);
 
         // even if the update Sink guarantees the kbase/ksession lock is acquired, we can't
         // have triggers being executed concurrently
         memory.gate.lock();
-        
+
         try {
-            Iterator it = memory.events.iterator();
-            try {
-                for (ObjectHashMap.ObjectEntry entry = (ObjectHashMap.ObjectEntry) it.next(); entry != null; entry = (ObjectHashMap.ObjectEntry) it.next()) {
-                    sink.assertObject((InternalFactHandle) entry.getValue(),
-                            context,
-                            workingMemory);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory( getObjectTypeNode());
+            Iterator it = omem.getObjectHashSet().iterator();
+
+            for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
+                InternalFactHandle fh = (InternalFactHandle) entry.getValue();
+                sink.assertObject(fh,
+                                  context,
+                                  wm);
             }
         } finally {
             memory.gate.unlock();
@@ -351,8 +358,8 @@ public class WindowNode extends ObjectSource
 
     /**
      * Returns the next node
-     * @return
-     *      The next ObjectSinkNode
+     *
+     * @return The next ObjectSinkNode
      */
     public ObjectSinkNode getNextObjectSinkNode() {
         return this.nextRightTupleSinkNode;
@@ -360,8 +367,8 @@ public class WindowNode extends ObjectSource
 
     /**
      * Sets the next node
-     * @param next
-     *      The next ObjectSinkNode
+     *
+     * @param next The next ObjectSinkNode
      */
     public void setNextObjectSinkNode(final ObjectSinkNode next) {
         this.nextRightTupleSinkNode = next;
@@ -369,8 +376,8 @@ public class WindowNode extends ObjectSource
 
     /**
      * Returns the previous node
-     * @return
-     *      The previous ObjectSinkNode
+     *
+     * @return The previous ObjectSinkNode
      */
     public ObjectSinkNode getPreviousObjectSinkNode() {
         return this.previousRightTupleSinkNode;
@@ -378,8 +385,8 @@ public class WindowNode extends ObjectSource
 
     /**
      * Sets the previous node
-     * @param previous
-     *      The previous ObjectSinkNode
+     *
+     * @param previous The previous ObjectSinkNode
      */
     public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
         this.previousRightTupleSinkNode = previous;
@@ -389,18 +396,30 @@ public class WindowNode extends ObjectSource
         return entryPoint;
     }
 
+    @Override
+    public long calculateDeclaredMask(List<String> settableProperties) {
+        throw new UnsupportedOperationException();
+    }
+
+    public ObjectTypeNode.Id getRightInputOtnId() {
+        return rightInputOtnId;
+    }
+
+    public void setRightInputOtnId(ObjectTypeNode.Id rightInputOtnId) {
+        this.rightInputOtnId = rightInputOtnId;
+    }
+
     public static class WindowMemory implements Memory {
 
-        public ObjectHashMap           events           = new ObjectHashMap();
-        public ContextEntry[]          context;
-        public Object                  behaviorContext;
-
-        public transient ReentrantLock gate;
+        // public ObjectHashMap events = new ObjectHashMap();
+        public           ContextEntry[] context;
+        public           Object         behaviorContext;
+        public transient ReentrantLock  gate;
 
         public short getNodeType() {
             return NodeTypeEnums.WindowNode;
         }
-        
+
         public SegmentMemory getSegmentMemory() {
             throw new UnsupportedOperationException();
         }
@@ -417,17 +436,12 @@ public class WindowNode extends ObjectSource
             throw new UnsupportedOperationException();
         }
 
-        public void setNext(Memory next) {
+        public Memory getNext() {
             throw new UnsupportedOperationException();
         }
 
-        public Memory getNext() {
+        public void setNext(Memory next) {
             throw new UnsupportedOperationException();
-        }        
-    }
-
-    @Override
-    public long calculateDeclaredMask(List<String> settableProperties) {
-        throw new UnsupportedOperationException();
+        }
     }
 }

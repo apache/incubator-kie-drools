@@ -33,15 +33,14 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.LeftTupleEntry;
-import org.drools.core.phreak.RightTupleEntry;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
 import org.drools.core.util.AbstractBaseLinkedListNode;
@@ -284,7 +283,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         LeftTuple leftTuple = sink.createLeftTuple( factHandle, sink, useLeftMemory );
         leftTuple.setPropagationContext( context );
         long mask = sink.getLeftInferredMask();
-        doInsertSegmentMemory(context, wm, notifySegment, sm, leftTuple, mask);
+        doInsertSegmentMemory(context, wm, notifySegment, sm, leftTuple, liaNode, mask);
 
         if ( sm.getRootNode() != liaNode ) {
             // sm points to lia child sm, so iterate for all remaining children 
@@ -293,7 +292,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 sink =  sm.getSinkFactory();                
                 leftTuple = sink.createPeer( leftTuple ); // pctx is set during peer cloning
                 mask = ((LeftTupleSink)sm.getRootNode()).getLeftInferredMask();
-                 doInsertSegmentMemory(context, wm, notifySegment, sm, leftTuple, mask);
+                 doInsertSegmentMemory(context, wm, notifySegment, sm, leftTuple, liaNode, mask);
             }              
         }
 
@@ -317,19 +316,19 @@ public class LeftInputAdapterNode extends LeftTupleSource
     }
 
     private static void doInsertSegmentMemory(PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
-                                              SegmentMemory sm, LeftTuple leftTuple, long mask) {
+                                              SegmentMemory sm, LeftTuple leftTuple, LeftInputAdapterNode liaNode, long mask) {
         if ( pctx.getType() == PropagationContext.INSERTION ||
                 mask == Long.MAX_VALUE ||
                 intersect( pctx.getModificationMask(),  mask) ) {
             boolean stagedInsertWasEmpty = false;
 
             // mask check is necessary if insert is a result of a modify
-            if ( ((BaseNode)sm.getRootNode()).isStreamMode() ) {
+            if ( liaNode.isStreamMode() ) {
                 stagedInsertWasEmpty = sm.getTupleQueue().isEmpty();
                 sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst() ));
 
                 if ( log.isTraceEnabled() ) {
-                    log.trace( "LeftInputAdapterNode queue={} empty={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().isEmpty() );
+                    log.trace( "LeftInputAdapterNode insert size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), PropagationContextImpl.intEnumToString(pctx), leftTuple);
                 }
             }  else {
                 stagedInsertWasEmpty = sm.getStagedLeftTuples().addInsert( leftTuple );
@@ -388,6 +387,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( ((BaseNode)sm.getRootNode()).isStreamMode() ) {
             stagedDeleteWasEmpty = sm.getTupleQueue().isEmpty();
             sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, context, sm.getNodeMemories().getFirst() ));
+            if ( log.isTraceEnabled() ) {
+                log.trace( "LeftInputAdapterNode delete size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), PropagationContextImpl.intEnumToString( context ), leftTuple );
+            }
         } else {
             stagedDeleteWasEmpty = leftTuples.addDelete(leftTuple);
         }

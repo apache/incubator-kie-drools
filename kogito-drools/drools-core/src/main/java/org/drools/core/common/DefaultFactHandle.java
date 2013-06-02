@@ -519,7 +519,18 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
         clone.objectHashCode = this.objectHashCode;
         clone.identityHashCode = this.identityHashCode;
+        clone.disconnected = this.disconnected;
         return clone;
+    }
+
+    public void quickCloneUpdate(DefaultFactHandle clone) {
+        clone.object = this.object;
+        clone.recency  = this.recency;
+        clone.key = this.key;
+
+        clone.objectHashCode = this.objectHashCode;
+        clone.identityHashCode = this.identityHashCode;
+        clone.disconnected = this.disconnected;
     }
     
     public DefaultFactHandle clone() {

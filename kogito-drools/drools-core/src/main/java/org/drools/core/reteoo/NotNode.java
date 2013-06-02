@@ -157,6 +157,7 @@ public class NotNode extends BetaNode {
             if ( streamMode ) {
                 stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
                 memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory ));
+                //log.trace( "NotNode insert queue={} size={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), rightTuple );
             }  else {
                 stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
             }
@@ -222,12 +223,14 @@ public class NotNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        rightTuple.setPropagationContext( context );
         if ( isUnlinkingEnabled() ) {
             RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
             boolean  stagedDeleteWasEmpty = false;
             if ( streamMode ) {
                 stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
-                memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, rightTuple.getPropagationContext(), memory ));
+                memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, context, memory ));
+                //log.trace( "NotNode delete queue={} size={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), rightTuple );
             } else {
                 stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
             }

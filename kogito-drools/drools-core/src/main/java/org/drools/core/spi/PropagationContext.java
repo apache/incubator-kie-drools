@@ -71,10 +71,6 @@ public interface PropagationContext
     LinkedList<WorkingMemoryAction> getQueue2();
 
     void evaluateActionQueue(InternalWorkingMemory workingMemory);
-    
-    WindowTupleList getActiveWindowTupleList();
-    
-    void setActiveWindowTupleList( WindowTupleList list );
 
     long getModificationMask();
     PropagationContext adaptModificationMaskForObjectType(ObjectType type, InternalWorkingMemory workingMemory);
@@ -83,4 +79,5 @@ public interface PropagationContext
     void setObjectType(ObjectType objectType);
 
     MarshallerReaderContext getReaderContext();
+
 }

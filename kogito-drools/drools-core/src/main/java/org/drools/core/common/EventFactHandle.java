@@ -27,9 +27,8 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
     private long              duration;
     private boolean           expired;
     private long              activationsCount;
-    
-    private WindowTupleList   firstWindowTuple;
-    private WindowTupleList   lastWindowTuple;
+
+    private EventFactHandle   linkedFactHandle;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -117,95 +116,64 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
     }
 
     public boolean isExpired() {
-        return expired;
+        if ( linkedFactHandle != null ) {
+            return linkedFactHandle.isExpired();
+        }  else {
+            return expired;
+        }
     }
 
     public void setExpired(boolean expired) {
-        this.expired = expired;
+        if ( linkedFactHandle != null ) {
+            linkedFactHandle.setExpired(expired);
+        }  else {
+            this.expired = expired;
+        }
     }
 
     public long getActivationsCount() {
-        return activationsCount;
+        if ( linkedFactHandle != null ) {
+            return linkedFactHandle.getActivationsCount();
+        } else {
+            return activationsCount;
+        }
     }
     
     public void setActivationsCount(long activationsCount) {
-        this.activationsCount = activationsCount;
+        if ( linkedFactHandle != null ) {
+            linkedFactHandle.setActivationsCount( activationsCount );
+        }  else {
+            this.activationsCount = activationsCount;
+        }
+
     }
 
     public void increaseActivationsCount() {
-        this.activationsCount++;
+        if ( linkedFactHandle != null ) {
+            linkedFactHandle.increaseActivationsCount();;
+        }  else {
+            this.activationsCount++;
+        }
+
     }
 
     public void decreaseActivationsCount() {
-        this.activationsCount--;
-    }
-
-    public void addFirstWindowTupleList( WindowTupleList window ) {
-        WindowTupleList previous = this.firstWindowTuple;
-        if ( previous == null ) {
-            // no other WindowTuples, just add.
-            window.setListPrevious( null );
-            window.setListNext( null );
-            firstWindowTuple = window;
-            lastWindowTuple = window;
-        } else {
-            window.setListPrevious( null );
-            window.setListNext( previous );
-            previous.setListPrevious( window );
-            firstWindowTuple = window;
+        if ( linkedFactHandle != null ) {
+            linkedFactHandle.decreaseActivationsCount();
+        }  else {
+            this.activationsCount--;
         }
-    }
-    
-    public void addLastWindowTupleList( WindowTupleList window ) {
-        WindowTupleList previous = this.lastWindowTuple;
-        if ( previous == null ) {
-            // no other WindowTuples, just add.
-            window.setListPrevious( null );
-            window.setListNext( null );
-            firstWindowTuple = window;
-            lastWindowTuple = window;
-        } else {
-            window.setListPrevious( previous );
-            window.setListNext( null );
-            previous.setListNext( window );
-            lastWindowTuple = window;
-        }
-    }
-    
-    public void removeWindowTupleList( WindowTupleList window ) {
-        WindowTupleList previous = window.getListPrevious();
-        WindowTupleList next = window.getListNext();
-        
-        if ( previous != null && next != null ) {
-            // remove  from middle
-            previous.setListNext( next );
-            next.setListPrevious( previous );
-        } else if ( next != null ) {
-            // remove from first
-            next.setListPrevious( null );
-            firstWindowTuple = next;
-        } else if ( previous != null ) {
-            // remove from end
-            previous.setListNext( null );
-            lastWindowTuple = previous;
-        } else {
-            // single remaining item, no previous or next
-            firstWindowTuple = null;
-            lastWindowTuple = null;
-        }
-        window.setListPrevious( null );
-        window.setListNext( null );
     }
     
     public EventFactHandle clone() {
         EventFactHandle clone = new EventFactHandle( getId(),
                                                       getObject(),
                                                       getRecency(),
-                                                      startTimestamp,
-                                                      duration,
+                                                      getStartTimestamp(),
+                                                      getDuration(),
                                                       getEntryPoint() );
-        clone.activationsCount = activationsCount;
-        clone.expired = expired;
+        clone.setActivationsCount( getActivationsCount() );
+        clone.setExpired( isExpired() );
         clone.setEntryPoint( getEntryPoint() );
         clone.setEqualityKey( getEqualityKey() );
         clone.setFirstLeftTuple(getLastLeftTuple());
@@ -213,8 +181,27 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         clone.setFirstRightTuple(getFirstRightTuple());
         clone.setLastRightTuple(getLastRightTuple());
         clone.setObjectHashCode(getObjectHashCode());
-        clone.firstWindowTuple = firstWindowTuple;
-        clone.lastWindowTuple = lastWindowTuple;
+        return clone;
+    }
+
+    public EventFactHandle quickClone() {
+        EventFactHandle clone = new EventFactHandle( getId(),
+                                                     getObject(),
+                                                     getRecency(),
+                                                     getStartTimestamp(),
+                                                     getDuration(),
+                                                     getEntryPoint() );
+        clone.setActivationsCount( getActivationsCount() );
+        clone.setExpired( isExpired() );
+        clone.setEntryPoint( getEntryPoint() );
+        clone.setEqualityKey( getEqualityKey() );
+        clone.setObjectHashCode(getObjectHashCode());
+        return clone;
+    }
+
+    public EventFactHandle cloneAndLink() {
+        EventFactHandle clone =  quickClone();
+        clone.linkedFactHandle = this;
         return clone;
     }
 

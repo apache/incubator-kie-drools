@@ -65,8 +65,6 @@ public class PropagationContextImpl
 
     private Class<?>                        modifiedClass;
 
-    private WindowTupleList                 windowTupleList;
-
     private ObjectType                      objectType;
 
     // this field is only set for propagations happening during 
@@ -368,14 +366,6 @@ public class PropagationContextImpl
         return workingMemory.getRuleBase().getPackage(pkgName).getTypeDeclaration(classType).getSettableProperties();
     }
 
-    public WindowTupleList getActiveWindowTupleList() {
-        return windowTupleList;
-    }
-
-    public void setActiveWindowTupleList(WindowTupleList list) {
-        this.windowTupleList = list;
-    }
-
     public ObjectType getObjectType() {
         return objectType;
     }
@@ -386,6 +376,26 @@ public class PropagationContextImpl
 
     public MarshallerReaderContext getReaderContext() {
         return this.readerContext;
+    }
+
+
+    public static String intEnumToString(PropagationContext pctx) {
+        String pctxType = null;
+        switch( pctx.getType() ) {
+            case PropagationContext.INSERTION:
+                return "INSERTION";
+            case PropagationContext.RULE_ADDITION:
+                return "RULE_ADDITION";
+            case PropagationContext.MODIFICATION:
+                return "MODIFICATION";
+            case PropagationContext.RULE_REMOVAL:
+                return "RULE_REMOVAL";
+            case PropagationContext.DELETION:
+                return "DELETION";
+            case PropagationContext.EXPIRATION:
+                return "EXPIRATION";
+        }
+        throw new IllegalStateException( "Int type unknown");
     }
 
     @Override

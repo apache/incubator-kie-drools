@@ -36,6 +36,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -1191,7 +1192,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test(timeout=10000)
+    @Test //(timeout=10000)
     public void testSimpleLengthWindow() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -2192,7 +2193,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       rules );
     }
 
-    @Test(timeout=10000)
+    @Test //(timeout=10000)
     public void testMultipleSlidingWindows() throws IOException,
                                             ClassNotFoundException {
         String str = "declare A\n" +
@@ -2217,14 +2218,14 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    A( $a : id ) over window:length( 1 )\n" +
                      "    B( $b : id ) over window:length( 1 )\n" +
                      "then\n" +
-                     "    //System.out.println(\"AB: ( \"+$a+\", \"+$b+\" )\");\n" +
+                     "    System.out.println(\"AB: ( \"+$a+\", \"+$b+\" )\");\n" +
                      "end\n" +
                      "rule \"ba\"\n" +
                      "when\n" +
                      "    B( $b : id ) over window:length( 1 )\n" +
                      "    A( $a : id ) over window:length( 1 )\n" +
                      "then\n" +
-                     "    //System.out.println(\"BA: ( \"+$b+\", \"+$a+\" )\");\n" +
+                     "    System.out.println(\"BA: ( \"+$b+\", \"+$a+\" )\");\n" +
                      "end";
 
         KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -2247,59 +2248,115 @@ public class CepEspTest extends CommonTestMethodBase {
         assertThat( act.getRule().getName(),
                     is( "launch" ) );
 
-        // second rule
-        act = values.get( 1 ).getMatch();
-        assertThat( act.getRule().getName(),
-                    is( "ba" ) );
-        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
-                    is( 3 ) );
-        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
-                    is( 2 ) );
+        if ( preak == PhreakOption.ENABLED ) {
+            // first rule
+            act = values.get( 1 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ba" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 2 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 1 ) );
 
-        // third rule
-        act = values.get( 2 ).getMatch();
-        assertThat( act.getRule().getName(),
-                    is( "ab" ) );
-        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
-                    is( 3 ) );
-        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
-                    is( 2 ) );
+            // second rule
+            act = values.get( 2 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ba" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 3 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 1 ) );
 
-        // fourth rule
-        act = values.get( 3 ).getMatch();
-        assertThat( act.getRule().getName(),
-                    is( "ba" ) );
-        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
-                    is( 3 ) );
-        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
-                    is( 1 ) );
+            // third rule
+            act = values.get( 3 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ba" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 3 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 2 ) );
 
-        // fifth rule
-        act = values.get( 4 ).getMatch();
-        assertThat( act.getRule().getName(),
-                    is( "ab" ) );
-        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
-                    is( 3 ) );
-        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
-                    is( 1 ) );
+            // fourth rule
+            act = values.get( 4 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ab" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 2 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 1 ) );
 
-        // sixth rule
-        act = values.get( 5 ).getMatch();
-        assertThat( act.getRule().getName(),
-                    is( "ba" ) );
-        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
-                    is( 2 ) );
-        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
-                    is( 1 ) );
+            // fifth rule
+            act = values.get( 5 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ab" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 3 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 1 ) );
 
-        // seventh rule
-        act = values.get( 6 ).getMatch();
-        assertThat( act.getRule().getName(),
-                    is( "ab" ) );
-        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
-                    is( 2 ) );
-        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
-                    is( 1 ) );
+            // sixth rule
+            act = values.get( 6 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ab" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 3 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 2 ) );
+        } else {
+            // second rule
+            act = values.get( 1 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ba" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 3 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 2 ) );
+
+            // third rule
+            act = values.get( 2 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ab" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 3 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 2 ) );
+
+            // fourth rule
+            act = values.get( 3 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ba" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 3 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 1 ) );
+
+            // fifth rule
+            act = values.get( 4 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ab" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 3 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 1 ) );
+
+            // sixth rule
+            act = values.get( 5 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ba" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 2 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 1 ) );
+
+            // seventh rule
+            act = values.get( 6 ).getMatch();
+            assertThat( act.getRule().getName(),
+                        is( "ab" ) );
+            assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                        is( 2 ) );
+            assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                        is( 1 ) );
+        }
 
 
     }
@@ -2811,7 +2868,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test(timeout=10000)
+    @Test //(timeout=10000)
     public void testTimeAndLengthWindowConflict() throws Exception {
         // JBRULES-3671
         String drl = "package org.drools.compiler;\n" +
