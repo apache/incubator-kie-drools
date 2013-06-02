@@ -3093,15 +3093,13 @@ public class CepEspTest extends CommonTestMethodBase {
                      "\n" +
                      "rule \"r1\"\n" +
                      "when\n" +
-                     "    $o1 : OrderEvent() over window:length(4) \n" +
+                     "    $o1 : OrderEvent() over window:length(3) \n" +
                      "        accumulate(  $o2 : OrderEvent() over window:length(3);\n" +
                      "                     $avg : average( $o2.getTotal() ) )\n" +
                      "then\n" +
                      "     System.out.println( $o1.getTotal() + \":\" + $avg ); \n" +
-                     "end\n"
-                ;
+                     "end\n";
 
-        System.out.println( drl);
         final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf, drl );

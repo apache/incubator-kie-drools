@@ -443,6 +443,7 @@ public class PhreakNotNode {
                 LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
                 if (childLeftTuple != null) { // NotNode only has one child
+                    childLeftTuple.setPropagationContext(leftTuple.getPropagationContext());
                     RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples); // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
                 }
             } else {

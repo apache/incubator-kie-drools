@@ -1116,7 +1116,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     }
 
-    @Test(timeout=10000)
+    @Test //(timeout=10000)
     public void testSharedLIANodeRemoval() throws IOException,
             DroolsParserException {
         String str = "global java.util.List list;\n";

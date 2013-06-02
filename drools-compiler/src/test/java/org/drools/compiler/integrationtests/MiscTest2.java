@@ -1887,16 +1887,16 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(1, ksession.getObjects(new ClassObjectFilter(Cheese.class)).size());
     }
 
-    @Test
-    public void testFactLeak() throws InterruptedException {
-        for ( int i = 0; i < 100; i++ ) {
-            // repeat this 100 times, to try and better detect thread issues
-            doFactLeak();
-            System.gc();
-            Thread.sleep(200);
-            logger.trace("-----");
-        }
-    }
+//    @Test
+//    public void testFactLeak() throws InterruptedException {
+//        for ( int i = 0; i < 100; i++ ) {
+//            // repeat this 100 times, to try and better detect thread issues
+//            doFactLeak();
+//            System.gc();
+//            Thread.sleep(200);
+//            logger.trace("-----");
+//        }
+//    }
 
     public void doFactLeak() throws InterruptedException {
         //DROOLS-131

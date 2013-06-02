@@ -245,6 +245,7 @@ public class PhreakFromNode {
                 LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
                 while (childLeftTuple != null) {
+                    childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
                     childLeftTuple = RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                 }
             }
