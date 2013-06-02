@@ -2946,7 +2946,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test(timeout=10000)
+    @Test //(timeout=10000)
     public void testTimeWindowWithPastEvents() throws Exception {
         // JBRULES-2258 
         String drl = "package org.drools.compiler;\n" +
@@ -3079,8 +3079,8 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
 
-    @Test //(timeout=10000)
-    public void testXXX() throws Exception {
+    @Test(timeout=10000)
+    public void testTwoWindowsInsideCEAndOut() throws Exception {
         String drl = "package org.drools.compiler;\n" +
                      "\n" +
                      "import java.util.List\n" +
