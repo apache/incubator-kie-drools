@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.CompositeAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.lateannealing.LateAnnealingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.EntityTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
@@ -69,6 +70,8 @@ public class AcceptorConfig {
     protected Double greatDelugeWaterRisingRate = null;
 
     protected Integer lateAcceptanceSize = null;
+
+    protected Integer lateAnnealingSize = null;
 
     public List<Class<? extends Acceptor>> getAcceptorClassList() {
         return acceptorClassList;
@@ -230,6 +233,14 @@ public class AcceptorConfig {
         this.lateAcceptanceSize = lateAcceptanceSize;
     }
 
+    public Integer getLateAnnealingSize() {
+        return lateAnnealingSize;
+    }
+
+    public void setLateAnnealingSize(Integer lateAnnealingSize) {
+        this.lateAnnealingSize = lateAnnealingSize;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -369,6 +380,12 @@ public class AcceptorConfig {
             lateAcceptanceAcceptor.setLateAcceptanceSize((lateAcceptanceSize == null) ? 1000 : lateAcceptanceSize);
             acceptorList.add(lateAcceptanceAcceptor);
         }
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_ANNEALING))
+                || lateAnnealingSize != null ) {
+            LateAnnealingAcceptor lateAnnealingAcceptor = new LateAnnealingAcceptor();
+            lateAnnealingAcceptor.setLateAnnealingSize((lateAnnealingSize == null) ? 1000 : lateAnnealingSize);
+            acceptorList.add(lateAnnealingAcceptor);
+        }
         if (acceptorList.size() == 1) {
             return acceptorList.get(0);
         } else if (acceptorList.size() > 1) {
@@ -431,6 +448,8 @@ public class AcceptorConfig {
                 inheritedConfig.getGreatDelugeWaterRisingRate());
         lateAcceptanceSize = ConfigUtils.inheritOverwritableProperty(lateAcceptanceSize,
                 inheritedConfig.getLateAcceptanceSize());
+        lateAnnealingSize = ConfigUtils.inheritOverwritableProperty(lateAnnealingSize,
+                inheritedConfig.getLateAnnealingSize());
     }
 
     public static enum AcceptorType {
@@ -442,6 +461,7 @@ public class AcceptorConfig {
         SIMULATED_ANNEALING,
         GREAT_DELUGE,
         LATE_ACCEPTANCE,
+        LATE_ANNEALING,
     }
 
 }
