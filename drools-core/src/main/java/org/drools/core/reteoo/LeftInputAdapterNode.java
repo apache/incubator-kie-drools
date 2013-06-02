@@ -275,7 +275,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         boolean notifySegment = linkOrNotify;
         int counter =  lm.getAndIncreaseCounter();
-        if ( counter == 1) {
+        if ( counter == 0) {
             notifySegment = false; // node is not linked, so notify will happen when we link the node
         }
 
@@ -296,7 +296,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             }              
         }
 
-        if ( useLeftMemory && counter == 0) {
+        if ( counter == 0) {
             // if there is no left mempry, then there is no linking or notification
             if ( linkOrNotify ) {
                 // link and notify

@@ -115,7 +115,7 @@ public class SlidingLengthWindow
                                                                                null,
                                                                                previous );
             ObjectTypeNode.doRetractObject( previous, expiresPctx, workingMemory);
-            pctx.evaluateActionQueue( workingMemory );
+            expiresPctx.evaluateActionQueue( workingMemory );
         }
         window.handles[window.pos] = (EventFactHandle) handle;
         return true;

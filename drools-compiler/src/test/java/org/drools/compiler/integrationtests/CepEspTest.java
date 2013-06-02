@@ -3002,6 +3002,7 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.insert( tick5 );
 
         ksession.fireAllRules();
+        System.out.println(timeResults);
         assertTrue( timeResults.isEmpty() );
 
         clock.advanceTime( 0, TimeUnit.MILLISECONDS );
@@ -3075,5 +3076,49 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 1, list.size() );
 
+    }
+
+
+    @Test //(timeout=10000)
+    public void testXXX() throws Exception {
+        String drl = "package org.drools.compiler;\n" +
+                     "\n" +
+                     "import java.util.List\n" +
+                     "\n" +
+                     "global List timeResults;\n" +
+                     "\n" +
+                     "declare " + OrderEvent.class.getCanonicalName() + "\n" +
+                     " @role( event )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"r1\"\n" +
+                     "when\n" +
+                     "    $o1 : OrderEvent() over window:length(4) \n" +
+                     "        accumulate(  $o2 : OrderEvent() over window:length(3);\n" +
+                     "                     $avg : average( $o2.getTotal() ) )\n" +
+                     "then\n" +
+                     "     System.out.println( $o1.getTotal() + \":\" + $avg ); \n" +
+                     "end\n"
+                ;
+
+        System.out.println( drl);
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf, drl );
+
+        KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession wm = createKnowledgeSession( kbase, sconf );
+
+
+
+        wm.insert( new OrderEvent( "1", "customer A", 70 ) );
+        wm.insert( new OrderEvent( "2", "customer A", 60 ) );
+        wm.insert( new OrderEvent( "3", "customer A", 50 ) );
+        wm.insert( new OrderEvent( "4", "customer A", 40 ) );
+        wm.insert( new OrderEvent( "5", "customer A", 30 ) );
+        wm.insert( new OrderEvent( "6", "customer A", 20 ) );
+        wm.insert( new OrderEvent( "7", "customer A", 10 ) );
+        wm.fireAllRules();
     }
 }

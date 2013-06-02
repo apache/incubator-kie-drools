@@ -201,10 +201,12 @@ public class PhreakRuleTerminalNode {
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
             PropagationContext pctx = leftTuple.getPropagationContext();
+            pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple, pctx);
 
             RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) leftTuple;
 
-            if ( leftTuple.getMemory() != null && !(pctx.getType() == PropagationContext.EXPIRATION && pctx.getFactHandleOrigin() != null ) ) {
+            //if ( leftTuple.getMemory() != null && !(pctx.getType() == PropagationContext.EXPIRATION && pctx.getFactHandleOrigin() != null ) ) {
+            if ( leftTuple.getMemory() != null && (pctx.getType() != PropagationContext.EXPIRATION  ) ) {
                 // Expiration propagations should not be removed from the list, as they still need to fire
                 executor.removeLeftTuple(leftTuple);
             }
