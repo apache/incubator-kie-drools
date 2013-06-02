@@ -192,7 +192,7 @@ public class SlidingTimeWindow
                                                                                        null,
                                                                                        handle );
                     ObjectTypeNode.doRetractObject(handle, expiresPctx, workingMemory);
-                    pctx.evaluateActionQueue( workingMemory );
+                    expiresPctx.evaluateActionQueue( workingMemory );
                 }
                 queue.expiringHandle = null;
                 handle = queue.queue.peek();
