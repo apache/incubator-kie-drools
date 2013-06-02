@@ -1383,7 +1383,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         new Thread( new Runnable(){
             public void run(){ ksession.fireUntilHalt(); }
         } ).start();
-        Thread.sleep( 200 );
+        Thread.sleep( 1000 );
 
         assertEquals( 2, list.size() );
         assertEquals( java.util.Arrays.asList( 0, 0 ), list );

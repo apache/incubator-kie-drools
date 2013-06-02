@@ -59,29 +59,30 @@ public class RuleExecutor {
                                       int fireLimit) {
         LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
 
-        if ( log.isTraceEnabled() ) {
-            log.trace( "Start eval entry {} {}", pmem.getRuleAgendaItem().getRule().getName(), pmem.getQueue().isEmpty() );
-        }
-
         InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
         boolean fireUntilHalt = agenda.isFireUntilHalt();
 
         if (isDirty() || (pmem.getQueue() != null && !pmem.getQueue().isEmpty())) {
             setDirty(false);
-            if (pmem.getQueue() != null && !pmem.getQueue().isEmpty()) {
-                removeQueuedTupleEntry(fireUntilHalt);
-                this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
 
-                while (tupleList.isEmpty() && !pmem.getQueue().isEmpty()) {
-                    // need to keep removing the events, until either the queue is empty, or there are rules to fire
-                    removeQueuedTupleEntry(fireUntilHalt);
+            boolean evaled = false;
+            if (pmem.getQueue() != null ) {
+                if ( !fireUntilHalt) {
+                    while ( !pmem.getQueue().isEmpty() ) {
+                        removeQueuedTupleEntry();
+                        this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                        evaled = true;
+                    }
+                } else {
+                    removeQueuedTupleEntry();
                     this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                    evaled = true;
                 }
-            } else {
-                // this must be called, atleast once
-                this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
             }
 
+            if ( !evaled) {
+                this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+            }
             wm.executeQueuedActions();
         }
 
@@ -146,17 +147,23 @@ public class RuleExecutor {
                 }
                 if (isDirty() || (pmem.getQueue() != null && !pmem.getQueue().isEmpty())) {
                     setDirty(false);
-                    if (pmem.getQueue() != null && !pmem.getQueue().isEmpty()) {
-                        removeQueuedTupleEntry(fireUntilHalt);
-                        this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
 
-                        while (tupleList.isEmpty() && !pmem.getQueue().isEmpty()) {
-                            // need to keep removing the events, until either the queue is empty, or there are rules to fire
-                            removeQueuedTupleEntry(fireUntilHalt);
+                    boolean evaled = false;
+                    if (pmem.getQueue() != null ) {
+                        if ( !fireUntilHalt) {
+                            while ( !pmem.getQueue().isEmpty() ) {
+                                removeQueuedTupleEntry();
+                                this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                                evaled = true;
+                            }
+                        } else {
+                            removeQueuedTupleEntry();
                             this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                            evaled = true;
                         }
-                    } else {
-                        // this must be called, atleast once
+                    }
+
+                    if ( !evaled) {
                         this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
                     }
                 }
@@ -189,11 +196,9 @@ public class RuleExecutor {
         return localFireCount;
     }
 
-    private void removeQueuedTupleEntry(boolean fireUntilHalt) {
+    private void removeQueuedTupleEntry() {
         TupleEntry tupleEntry = pmem.getQueue().remove();
-        TupleEntry originalTupleEntry = tupleEntry;
         PropagationContext originalPctx = tupleEntry.getPropagationContext();
-        PropagationContext pctx = originalPctx;
 
         EventFactHandle  evFh1 = null;
         EventFactHandle  evFh2 = null;
@@ -209,7 +214,7 @@ public class RuleExecutor {
                 log.trace( "Stream removed entry {} {} size {}",  System.identityHashCode(  pmem.getQueue() ), tupleEntry, pmem.getQueue().size() );
             }
             if (tupleEntry.getLeftTuple() != null) {
-                SegmentMemory sm = (SegmentMemory) tupleEntry.getNodeMemory().getSegmentMemory();
+                SegmentMemory sm = tupleEntry.getNodeMemory().getSegmentMemory();
                 LeftTupleSets tuples = sm.getStagedLeftTuples();
                 tupleEntry.getLeftTuple().setPropagationContext(tupleEntry.getPropagationContext());
                 switch (tupleEntry.getPropagationContext().getType()) {
@@ -228,6 +233,7 @@ public class RuleExecutor {
                 }
             } else {
                 BetaMemory bm = (BetaMemory) tupleEntry.getNodeMemory();
+                tupleEntry.getRightTuple().setPropagationContext(tupleEntry.getPropagationContext());
                 switch (tupleEntry.getPropagationContext().getType()) {
                     case PropagationContext.INSERTION:
                     case PropagationContext.RULE_ADDITION:
@@ -245,34 +251,26 @@ public class RuleExecutor {
             }
             if ( !pmem.getQueue().isEmpty() ) {
                 tupleEntry = pmem.getQueue().peek();
-                pctx = tupleEntry.getPropagationContext();
+                PropagationContext pctx = tupleEntry.getPropagationContext();
 
-                if ( fireUntilHalt ) {
-                    // repeat if either the pctx number is the same, or the event time is the same or before
-                    if ( pctx.getPropagationNumber() != originalPctx.getPropagationNumber() ) {
-                        repeat = false;
-                    }
-
-                    if ( tupleEntry.getLeftTuple() != null ) {
-                        evFh2 = ( EventFactHandle ) tupleEntry.getLeftTuple().getLastHandle();
-                    }  else {
-                        evFh2 = ( EventFactHandle ) tupleEntry.getRightTuple().getFactHandle();
-                    }
-
-                    if ( evFh2.getStartTimestamp() <= evFh1.getStartTimestamp() ) {
-                        repeat = true;
-                    }
+                // repeat if either the pctx number is the same, or the event time is the same or before
+                if ( pctx.getPropagationNumber() == originalPctx.getPropagationNumber() ) {
+                    repeat = true;
                 } else {
-                    // fireAllRules must drain all events, unless it's already staged
-                    // it may be staged, if it tries to expire something not yet propagated
-                    if ( tupleEntry.getLeftTuple() != null && tupleEntry.getLeftTuple().getStagedType() == LeftTuple.NONE) {
-                        repeat = true;
-                    } else if ( tupleEntry.getRightTuple() != null && tupleEntry.getRightTuple().getStagedType() == LeftTuple.NONE) {
-                        repeat = true;
-                    } else {
-                        repeat = false;
-                    }
+                    repeat = false;
                 }
+
+//                if ( tupleEntry.getLeftTuple() != null ) {
+//                    evFh2 = ( EventFactHandle ) tupleEntry.getLeftTuple().getLastHandle();
+//                }  else {
+//                    evFh2 = ( EventFactHandle ) tupleEntry.getRightTuple().getFactHandle();
+//                }
+//
+//                if ( !repeat && evFh2.getStartTimestamp() <= evFh1.getStartTimestamp() ) {
+//                    repeat = true;
+//                } else {
+//                    repeat = false;
+//                }
             } else {
                 repeat = false;
             }
@@ -281,6 +279,99 @@ public class RuleExecutor {
             }
         }
     }
+
+//    private void removeQueuedTupleEntry(boolean fireUntilHalt) {
+//        TupleEntry tupleEntry = pmem.getQueue().remove();
+//        TupleEntry originalTupleEntry = tupleEntry;
+//        PropagationContext originalPctx = tupleEntry.getPropagationContext();
+//        PropagationContext pctx = originalPctx;
+//
+//        EventFactHandle  evFh1 = null;
+//        EventFactHandle  evFh2 = null;
+//        if ( tupleEntry.getLeftTuple() != null ) {
+//            evFh1 = ( EventFactHandle ) tupleEntry.getLeftTuple().getLastHandle();
+//        }  else {
+//            evFh1 = ( EventFactHandle ) tupleEntry.getRightTuple().getFactHandle();
+//        }
+//
+//        boolean repeat = true;
+//        while ( repeat ) {
+//            if ( log.isTraceEnabled() ) {
+//                log.trace( "Stream removed entry {} {} size {}",  System.identityHashCode(  pmem.getQueue() ), tupleEntry, pmem.getQueue().size() );
+//            }
+//            if (tupleEntry.getLeftTuple() != null) {
+//                SegmentMemory sm = (SegmentMemory) tupleEntry.getNodeMemory().getSegmentMemory();
+//                LeftTupleSets tuples = sm.getStagedLeftTuples();
+//                tupleEntry.getLeftTuple().setPropagationContext(tupleEntry.getPropagationContext());
+//                switch (tupleEntry.getPropagationContext().getType()) {
+//                    case PropagationContext.INSERTION:
+//                    case PropagationContext.RULE_ADDITION:
+//                        tuples.addInsert(tupleEntry.getLeftTuple());
+//                        break;
+//                    case PropagationContext.MODIFICATION:
+//                        tuples.addUpdate(tupleEntry.getLeftTuple());
+//                        break;
+//                    case PropagationContext.DELETION:
+//                    case PropagationContext.EXPIRATION:
+//                    case PropagationContext.RULE_REMOVAL:
+//                        tuples.addDelete(tupleEntry.getLeftTuple());
+//                        break;
+//                }
+//            } else {
+//                BetaMemory bm = (BetaMemory) tupleEntry.getNodeMemory();
+//                switch (tupleEntry.getPropagationContext().getType()) {
+//                    case PropagationContext.INSERTION:
+//                    case PropagationContext.RULE_ADDITION:
+//                        bm.getStagedRightTuples().addInsert(tupleEntry.getRightTuple());
+//                        break;
+//                    case PropagationContext.MODIFICATION:
+//                        bm.getStagedRightTuples().addUpdate(tupleEntry.getRightTuple());
+//                        break;
+//                    case PropagationContext.DELETION:
+//                    case PropagationContext.EXPIRATION:
+//                    case PropagationContext.RULE_REMOVAL:
+//                        bm.getStagedRightTuples().addDelete(tupleEntry.getRightTuple());
+//                        break;
+//                }
+//            }
+//            if ( !pmem.getQueue().isEmpty() ) {
+//                tupleEntry = pmem.getQueue().peek();
+//                pctx = tupleEntry.getPropagationContext();
+//
+//                if ( fireUntilHalt ) {
+//                    // repeat if either the pctx number is the same, or the event time is the same or before
+//                    if ( pctx.getPropagationNumber() != originalPctx.getPropagationNumber() ) {
+//                        repeat = false;
+//                    }
+//
+//                    if ( tupleEntry.getLeftTuple() != null ) {
+//                        evFh2 = ( EventFactHandle ) tupleEntry.getLeftTuple().getLastHandle();
+//                    }  else {
+//                        evFh2 = ( EventFactHandle ) tupleEntry.getRightTuple().getFactHandle();
+//                    }
+//
+//                    if ( evFh2.getStartTimestamp() <= evFh1.getStartTimestamp() ) {
+//                        repeat = true;
+//                    }
+//                } else {
+//                    // fireAllRules must drain all events, unless it's already staged
+//                    // it may be staged, if it tries to expire something not yet propagated
+//                    if ( tupleEntry.getLeftTuple() != null && tupleEntry.getLeftTuple().getStagedType() == LeftTuple.NONE) {
+//                        repeat = true;
+//                    } else if ( tupleEntry.getRightTuple() != null && tupleEntry.getRightTuple().getStagedType() == LeftTuple.NONE) {
+//                        repeat = true;
+//                    } else {
+//                        repeat = false;
+//                    }
+//                }
+//            } else {
+//                repeat = false;
+//            }
+//            if ( repeat ) {
+//                tupleEntry = pmem.getQueue().remove();
+//            }
+//        }
+//    }
 
     public RuleAgendaItem getRuleAgendaItem() {
         return ruleAgendaItem;

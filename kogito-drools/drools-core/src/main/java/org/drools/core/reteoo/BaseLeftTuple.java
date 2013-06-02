@@ -104,7 +104,7 @@ public class BaseLeftTuple
                          final PropagationContext pctx,
                          final boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex();
-        this.parent = leftTuple.getParent();
+        this.parent = leftTuple;
         this.handle = leftTuple.getHandle();
         this.propagationContext = pctx;
 

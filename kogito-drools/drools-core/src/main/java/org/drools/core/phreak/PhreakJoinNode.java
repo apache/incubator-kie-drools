@@ -299,6 +299,7 @@ public class PhreakJoinNode {
             if (childLeftTuple != null && ltm.isIndexed() && !it.isFullIterator() && (leftTuple == null || (leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory()))) {
                 // our index has changed, so delete all the previous propagations
                 while (childLeftTuple != null) {
+                    childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                     childLeftTuple = RuleNetworkEvaluator.deleteRightChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                 }
                 // childLeftTuple is now null, so the next check will attempt matches for new bucket
@@ -349,7 +350,6 @@ public class PhreakJoinNode {
                     // ignore, as it will get processed via left iteration. Children cannot be processed twice
                     continue;
                 }
-
                 if (constraints.isAllowedCachedRight(contextEntry,
                                                      leftTuple)) {
                     // insert, childLeftTuple is not updated
@@ -372,6 +372,7 @@ public class PhreakJoinNode {
                         }
 
                         // update, childLeftTuple is updated
+                        childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                         trgLeftTuples.addUpdate(childLeftTuple);
 
                         LeftTuple nextChildLeftTuple = childLeftTuple.getRightParentNext();
@@ -380,6 +381,7 @@ public class PhreakJoinNode {
                     }
                 } else if (childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple) {
                     // delete, childLeftTuple is updated
+                    childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                     childLeftTuple = RuleNetworkEvaluator.deleteRightChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                 }
             }
@@ -433,7 +435,7 @@ public class PhreakJoinNode {
 
             if (rightTuple.getFirstChild() != null) {
                 LeftTuple childLeftTuple = rightTuple.getFirstChild();
-
+                childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                 while (childLeftTuple != null) {
                     childLeftTuple = RuleNetworkEvaluator.deleteRightChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
                 }

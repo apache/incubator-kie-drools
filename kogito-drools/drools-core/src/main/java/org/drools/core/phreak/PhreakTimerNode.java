@@ -144,7 +144,6 @@ public class PhreakTimerNode {
                     log.trace("Timer Postponed Delete {}", leftTuple );
                 } else {
                     LeftTuple childLeftTuple = leftTuple.getFirstChild(); // only has one child
-
                     if ( childLeftTuple != null ) {
                         switch (childLeftTuple.getStagedType()) {
                             // handle clash with already staged entries
@@ -177,7 +176,7 @@ public class PhreakTimerNode {
 
         if ( trigger.hasNextFireTime().getTime() <= timestamp ) {
             // first execution is straight away, so void Scheduling
-
+            log.trace("Timer Fire Now {}", leftTuple );
             doPropagateChildLeftTuple(sink, trgLeftTuples, stagedLeftTuples, leftTuple);
 
             trigger.nextFireTime();
