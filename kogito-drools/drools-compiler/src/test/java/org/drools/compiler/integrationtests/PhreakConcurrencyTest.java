@@ -15,6 +15,7 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -36,6 +37,7 @@ import java.util.concurrent.ThreadFactory;
 import static java.util.Arrays.asList;
 import static org.drools.core.reteoo.ReteDumper.dumpRete;
 
+@Ignore
 public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
     private Executor executor;

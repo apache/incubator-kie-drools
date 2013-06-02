@@ -155,6 +155,7 @@ public class PhreakTimerNode {
                                 break;
                         }
 
+                        childLeftTuple.setPropagationContext( leftTuple.getPropagationContext() );
                         trgLeftTuples.addDelete( childLeftTuple );
                         log.trace("Timer Delete {}", leftTuple );
                     }
