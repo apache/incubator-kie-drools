@@ -25,6 +25,7 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.reteoo.WindowTuple;
@@ -101,40 +102,20 @@ public class SlidingLengthWindow
     public boolean assertFact(final WindowMemory memory,
                               final Object context,
                               final InternalFactHandle handle,
+                              final PropagationContext pctx,
                               final InternalWorkingMemory workingMemory) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
         window.pos = (window.pos + 1) % window.handles.length;
         if ( window.handles[window.pos] != null ) {
             final EventFactHandle previous = window.handles[window.pos];
             // retract previous
-            final PropagationContext pctx = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.EXPIRATION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      previous );
-            WindowTupleList list = (WindowTupleList) memory.events.get( previous );
-            //for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
-            for( WindowTuple tuple = list.getFirstWindowTuple(); tuple != null;  ) {
-                WindowTuple next = tuple.getWindowNext();
-                tuple.setPropagationContext(pctx);
-                tuple.getRightTupleSink().retractRightTuple(tuple,
-                                                            pctx,
-                                                            workingMemory);
-                pctx.evaluateActionQueue(workingMemory);
-                //tuple.unlinkFromRightParent();
-                tuple = next;
-            }
-//            Commented out, for phreak development
-//            for( WindowTuple tuple = list.getFirstWindowTuple(); tuple != null;  ) {
-//                WindowTuple next = tuple.getWindowNext();
-//
-//                tuple.setPropagationContext(pctx);
-//                tuple.getRightTupleSink().retractRightTuple( tuple,
-//                                                             pctx,
-//                                                             workingMemory );
-//                pctx.evaluateActionQueue( workingMemory );
-//                tuple = next;
-//            }
+            final PropagationContext expiresPctx = new PropagationContextImpl( pctx.getPropagationNumber(),
+                                                                               PropagationContext.EXPIRATION,
+                                                                               null,
+                                                                               null,
+                                                                               previous );
+            ObjectTypeNode.doRetractObject( previous, expiresPctx, workingMemory);
+            pctx.evaluateActionQueue( workingMemory );
         }
         window.handles[window.pos] = (EventFactHandle) handle;
         return true;
@@ -148,6 +129,7 @@ public class SlidingLengthWindow
     public void retractFact(final WindowMemory memory,
                             final Object context,
                             final InternalFactHandle handle,
+                            final PropagationContext pctx,
                             final InternalWorkingMemory workingMemory) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
         final int last = (window.pos == 0) ? window.handles.length - 1 : window.pos - 1;
@@ -164,6 +146,7 @@ public class SlidingLengthWindow
 
     public void expireFacts(final WindowMemory memory,
                             final Object context,
+                            final PropagationContext pctx,
                             final InternalWorkingMemory workingMemory) {
         // do nothing?
     }

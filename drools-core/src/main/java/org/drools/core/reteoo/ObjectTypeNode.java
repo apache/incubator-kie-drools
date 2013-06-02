@@ -340,6 +340,12 @@ public class ObjectTypeNode extends ObjectSource
             memory.memory.remove(factHandle);
         }
 
+        doRetractObject(factHandle, context, workingMemory);
+    }
+
+    public static void doRetractObject(final InternalFactHandle factHandle,
+                                       final PropagationContext context,
+                                       final InternalWorkingMemory workingMemory ) {
         for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
             rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
                                                               context,
@@ -349,15 +355,9 @@ public class ObjectTypeNode extends ObjectSource
 
         for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
             // must go via the LiaNode, so that the fact counter is updated, for linking
-//            leftTuple.getLeftTupleSink().getLeftTupleSource().retractLeftTuple( leftTuple,
-//                                                                                context,
-//                                                                                workingMemory );            
             ((LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource()).retractLeftTuple( leftTuple,
                                                                                                          context,
                                                                                                          workingMemory );
-//            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
-//                                                           context,
-//                                                           workingMemory );            
         }
         factHandle.clearLeftTuples();
     }
@@ -448,7 +448,10 @@ public class ObjectTypeNode extends ObjectSource
                 for ( LeftTupleSink liaChildSink : ((LeftInputAdapterNode) sink).getSinkPropagator().getSinks() ) {
                     liaChildSink.setLeftInputOtnId( otn.nextOtnId() );
                 }
-            } else if ( sink instanceof AlphaNode ) {
+            } else if ( sink instanceof WindowNode ) {
+                ((WindowNode) sink).setRightInputOtnId( otn.nextOtnId() );
+                updateTupleSinkId( otn, (WindowNode) sink );
+            }  else if ( sink instanceof AlphaNode ) {
                 updateTupleSinkId( otn, (AlphaNode) sink );
             }
         }

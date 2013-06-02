@@ -78,7 +78,7 @@ public abstract class BaseNode
         out.writeObject( partitionId );
         out.writeBoolean( partitionsEnabled );
         out.writeObject( associations );
-        out.writeObject( streamMode );
+        out.writeBoolean( streamMode );
     }
 
     /* (non-Javadoc)

@@ -19,6 +19,7 @@ package org.drools.core.rule;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
+import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
 
 /**
@@ -73,6 +74,7 @@ public interface Behavior extends RuleComponent, Cloneable {
     public boolean assertFact(WindowMemory memory,
                               Object context,
                               InternalFactHandle fact,
+                              PropagationContext pctx,
                               InternalWorkingMemory workingMemory);
 
     /**
@@ -86,6 +88,7 @@ public interface Behavior extends RuleComponent, Cloneable {
     public void retractFact(WindowMemory memory,
                             Object context,
                             InternalFactHandle fact,
+                            PropagationContext pctx,
                             InternalWorkingMemory workingMemory);
 
     /**
@@ -96,7 +99,8 @@ public interface Behavior extends RuleComponent, Cloneable {
      * @param workingMemory The working memory session reference
      */
     public void expireFacts(WindowMemory memory,
-                            Object context, 
+                            Object context,
+                            PropagationContext pctx,
                             InternalWorkingMemory workingMemory);
 
     /**

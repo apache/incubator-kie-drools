@@ -74,7 +74,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
             "";
     int evalFirePseudoClockStockCount = 5;
 
-    @Test //(timeout = 6000)
+    @Test(timeout = 6000)
     public void testEvenFirePseudoClockRuleA() throws Exception {
 
         AgendaEventListener ael = mock(AgendaEventListener.class);
@@ -87,7 +87,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
                 any(AfterMatchFiredEvent.class));
     }
 
-    @Test //(timeout = 6000)
+    @Test(timeout = 6000)
     public void testEvenFirePseudoClockRuleB() throws Exception {
 
         AgendaEventListener ael = mock(AgendaEventListener.class);
@@ -100,7 +100,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
                 any(AfterMatchFiredEvent.class));
     }
 
-    @Test//(timeout = 60000)
+    @Test(timeout = 60000)
     public void testEvenFirePseudoClockRulesAB() throws Exception {
 
         AgendaEventListener ael = mock(AgendaEventListener.class);
@@ -150,7 +150,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
             Thread.sleep(1);
         }
 
-        Thread.sleep(5000);
+        Thread.sleep(100);
         ksession.halt();
 
         return stockCount;

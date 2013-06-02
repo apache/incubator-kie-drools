@@ -189,4 +189,6 @@ public interface InternalAgenda
          * @see org.kie.common.AgendaI#setFocus(org.kie.spi.AgendaGroup)
          */
     boolean setFocus(AgendaGroup agendaGroup);
+
+    boolean isFireUntilHalt();
 }

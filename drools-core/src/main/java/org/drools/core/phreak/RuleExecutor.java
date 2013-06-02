@@ -1,7 +1,7 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.BinaryHeapQueueAgendaGroup;
+import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
@@ -60,23 +60,24 @@ public class RuleExecutor {
         LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
 
         if ( log.isTraceEnabled() ) {
-            log.trace( "Start eval entry {}", pmem.getQueue().isEmpty() );
+            log.trace( "Start eval entry {} {}", pmem.getRuleAgendaItem().getRule().getName(), pmem.getQueue().isEmpty() );
         }
+
+        InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
+        boolean fireUntilHalt = agenda.isFireUntilHalt();
 
         if (isDirty() || (pmem.getQueue() != null && !pmem.getQueue().isEmpty())) {
             setDirty(false);
-            boolean callEvaluateNetwork = true;
             if (pmem.getQueue() != null && !pmem.getQueue().isEmpty()) {
-                removeQueuedTupleEntry();
+                removeQueuedTupleEntry(fireUntilHalt);
                 this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+
                 while (tupleList.isEmpty() && !pmem.getQueue().isEmpty()) {
                     // need to keep removing the events, until either the queue is empty, or there are rules to fire
-                    removeQueuedTupleEntry();
+                    removeQueuedTupleEntry(fireUntilHalt);
                     this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
-                    callEvaluateNetwork = false;
                 }
-            }
-            if (callEvaluateNetwork) {
+            } else {
                 // this must be called, atleast once
                 this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
             }
@@ -89,7 +90,7 @@ public class RuleExecutor {
         if (!tupleList.isEmpty()) {
             RuleTerminalNode rtn = (RuleTerminalNode) pmem.getNetworkNode();
 
-            InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
+
             int salience = ruleAgendaItem.getSalience();
 
             if (isDeclarativeAgendaEnabled()) {
@@ -145,17 +146,16 @@ public class RuleExecutor {
                 }
                 if (isDirty() || (pmem.getQueue() != null && !pmem.getQueue().isEmpty())) {
                     setDirty(false);
-                    boolean callEvaluateNetwork = true;
                     if (pmem.getQueue() != null && !pmem.getQueue().isEmpty()) {
-                        removeQueuedTupleEntry();
+                        removeQueuedTupleEntry(fireUntilHalt);
+                        this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+
                         while (tupleList.isEmpty() && !pmem.getQueue().isEmpty()) {
                             // need to keep removing the events, until either the queue is empty, or there are rules to fire
-                            removeQueuedTupleEntry();
+                            removeQueuedTupleEntry(fireUntilHalt);
                             this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
-                            callEvaluateNetwork = false;
                         }
-                    }
-                    if (callEvaluateNetwork) {
+                    } else {
                         // this must be called, atleast once
                         this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
                     }
@@ -189,44 +189,95 @@ public class RuleExecutor {
         return localFireCount;
     }
 
-    private void removeQueuedTupleEntry() {
+    private void removeQueuedTupleEntry(boolean fireUntilHalt) {
         TupleEntry tupleEntry = pmem.getQueue().remove();
-        if ( log.isTraceEnabled() ) {
-            log.trace( "Stream removed entry {}", tupleEntry );
+        TupleEntry originalTupleEntry = tupleEntry;
+        PropagationContext originalPctx = tupleEntry.getPropagationContext();
+        PropagationContext pctx = originalPctx;
+
+        EventFactHandle  evFh1 = null;
+        EventFactHandle  evFh2 = null;
+        if ( tupleEntry.getLeftTuple() != null ) {
+            evFh1 = ( EventFactHandle ) tupleEntry.getLeftTuple().getLastHandle();
+        }  else {
+            evFh1 = ( EventFactHandle ) tupleEntry.getRightTuple().getFactHandle();
         }
-        if (tupleEntry.getLeftTuple() != null) {
-            SegmentMemory sm = (SegmentMemory) tupleEntry.getNodeMemory().getSegmentMemory();
-            LeftTupleSets tuples = sm.getStagedLeftTuples();
-            tupleEntry.getLeftTuple().setPropagationContext(tupleEntry.getPropagationContext());
-            switch (tupleEntry.getPropagationContext().getType()) {
-                case PropagationContext.INSERTION:
-                case PropagationContext.RULE_ADDITION:
-                    tuples.addInsert(tupleEntry.getLeftTuple());
-                    break;
-                case PropagationContext.MODIFICATION:
-                    tuples.addUpdate(tupleEntry.getLeftTuple());
-                    break;
-                case PropagationContext.DELETION:
-                case PropagationContext.EXPIRATION:
-                case PropagationContext.RULE_REMOVAL:
-                    tuples.addDelete(tupleEntry.getLeftTuple());
-                    break;
+
+        boolean repeat = true;
+        while ( repeat ) {
+            if ( log.isTraceEnabled() ) {
+                log.trace( "Stream removed entry {} {} size {}",  System.identityHashCode(  pmem.getQueue() ), tupleEntry, pmem.getQueue().size() );
             }
-        } else {
-            BetaMemory bm = (BetaMemory) tupleEntry.getNodeMemory();
-            switch (tupleEntry.getPropagationContext().getType()) {
-                case PropagationContext.INSERTION:
-                case PropagationContext.RULE_ADDITION:
-                    bm.getStagedRightTuples().addInsert(tupleEntry.getRightTuple());
-                    break;
-                case PropagationContext.MODIFICATION:
-                    bm.getStagedRightTuples().addUpdate(tupleEntry.getRightTuple());
-                    break;
-                case PropagationContext.DELETION:
-                case PropagationContext.EXPIRATION:
-                case PropagationContext.RULE_REMOVAL:
-                    bm.getStagedRightTuples().addDelete(tupleEntry.getRightTuple());
-                    break;
+            if (tupleEntry.getLeftTuple() != null) {
+                SegmentMemory sm = (SegmentMemory) tupleEntry.getNodeMemory().getSegmentMemory();
+                LeftTupleSets tuples = sm.getStagedLeftTuples();
+                tupleEntry.getLeftTuple().setPropagationContext(tupleEntry.getPropagationContext());
+                switch (tupleEntry.getPropagationContext().getType()) {
+                    case PropagationContext.INSERTION:
+                    case PropagationContext.RULE_ADDITION:
+                        tuples.addInsert(tupleEntry.getLeftTuple());
+                        break;
+                    case PropagationContext.MODIFICATION:
+                        tuples.addUpdate(tupleEntry.getLeftTuple());
+                        break;
+                    case PropagationContext.DELETION:
+                    case PropagationContext.EXPIRATION:
+                    case PropagationContext.RULE_REMOVAL:
+                        tuples.addDelete(tupleEntry.getLeftTuple());
+                        break;
+                }
+            } else {
+                BetaMemory bm = (BetaMemory) tupleEntry.getNodeMemory();
+                switch (tupleEntry.getPropagationContext().getType()) {
+                    case PropagationContext.INSERTION:
+                    case PropagationContext.RULE_ADDITION:
+                        bm.getStagedRightTuples().addInsert(tupleEntry.getRightTuple());
+                        break;
+                    case PropagationContext.MODIFICATION:
+                        bm.getStagedRightTuples().addUpdate(tupleEntry.getRightTuple());
+                        break;
+                    case PropagationContext.DELETION:
+                    case PropagationContext.EXPIRATION:
+                    case PropagationContext.RULE_REMOVAL:
+                        bm.getStagedRightTuples().addDelete(tupleEntry.getRightTuple());
+                        break;
+                }
+            }
+            if ( !pmem.getQueue().isEmpty() ) {
+                tupleEntry = pmem.getQueue().peek();
+                pctx = tupleEntry.getPropagationContext();
+
+                if ( fireUntilHalt ) {
+                    // repeat if either the pctx number is the same, or the event time is the same or before
+                    if ( pctx.getPropagationNumber() != originalPctx.getPropagationNumber() ) {
+                        repeat = false;
+                    }
+
+                    if ( tupleEntry.getLeftTuple() != null ) {
+                        evFh2 = ( EventFactHandle ) tupleEntry.getLeftTuple().getLastHandle();
+                    }  else {
+                        evFh2 = ( EventFactHandle ) tupleEntry.getRightTuple().getFactHandle();
+                    }
+
+                    if ( evFh2.getStartTimestamp() <= evFh1.getStartTimestamp() ) {
+                        repeat = true;
+                    }
+                } else {
+                    // fireAllRules must drain all events, unless it's already staged
+                    // it may be staged, if it tries to expire something not yet propagated
+                    if ( tupleEntry.getLeftTuple() != null && tupleEntry.getLeftTuple().getStagedType() == LeftTuple.NONE) {
+                        repeat = true;
+                    } else if ( tupleEntry.getRightTuple() != null && tupleEntry.getRightTuple().getStagedType() == LeftTuple.NONE) {
+                        repeat = true;
+                    } else {
+                        repeat = false;
+                    }
+                }
+            } else {
+                repeat = false;
+            }
+            if ( repeat ) {
+                tupleEntry = pmem.getQueue().remove();
             }
         }
     }

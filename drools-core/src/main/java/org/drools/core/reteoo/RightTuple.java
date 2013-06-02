@@ -34,6 +34,8 @@ public class RightTuple
     private Entry                previous;
     private Entry                next;
 
+    private Object               object;
+
     public LeftTuple             firstChild;
     public LeftTuple             lastChild;
 
@@ -254,6 +256,14 @@ public class RightTuple
 
     public int hashCode() {
         return this.handle.hashCode();
+    }
+
+    public Object getObject() {
+        return object;
+    }
+
+    public void setObject(Object object) {
+        this.object = object;
     }
 
     public String toString() {
