@@ -638,7 +638,6 @@ public class PhreakAccumulateNode {
                         match = nextLeft;
                     }
                 }
-                rightTuple.unlinkFromRightParent();
             }
             rightTuple.clearStaged();
             rightTuple = next;
