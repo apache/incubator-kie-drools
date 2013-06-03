@@ -129,15 +129,22 @@ public class ChangeSetTest extends CommonTestMethodBase {
                       resource.getResourceType() );
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testCustomClassLoader() throws Exception {
         // JBRULES-3630
         String absolutePath = new File("file").getAbsolutePath();
-        String jarPath = absolutePath.contains("drools-compiler") ?
-                "src/test/resources/org/drools/compiler/compiler/xml/changeset/changeset.jar" :
-                "drools-compiler/src/test/resources/org/drools/compiler/compiler//xml/changeset/changeset.jar";
-        File jar = new File(jarPath);
-        assertTrue(jar.exists());
+
+        URL url = ChangeSetTest.class.getResource(ChangeSetTest.class.getSimpleName() + ".class");
+        File file = new File( url.toURI() );
+        File jar = null;
+        while ( true ) {
+            file = file.getParentFile();
+            jar = new File( file, "/src/test/resources/org/drools/compiler/compiler/xml/changeset/changeset.jar" );
+            if ( jar.exists() ) {
+                break;
+            }
+        }
+
         ClassLoader classLoader = URLClassLoader.newInstance(new URL[]{jar.toURI().toURL()}, getClass().getClassLoader());
         Resource changeSet = ResourceFactory.newClassPathResource("changeset1.xml", classLoader);
         KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader);
