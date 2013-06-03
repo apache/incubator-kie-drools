@@ -207,9 +207,9 @@ public class KnowledgeBuilderConfigurationTest {
                       config.getProperty( DumpDirOption.PROPERTY_NAME ) );
 
         // setting the dump dir using the string based setProperty() method
-        dumpDir = new File( "src/main/resources" );
+        dumpDir = new File( System.getProperty( "java.io.tmpdir" ) );
         config.setProperty( DumpDirOption.PROPERTY_NAME,
-                            "src/main/resources" );
+                            System.getProperty( "java.io.tmpdir" ) );
         
         // checking the type safe getOption() method
         assertEquals( DumpDirOption.get( dumpDir ),
