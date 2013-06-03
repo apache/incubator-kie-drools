@@ -26,7 +26,6 @@ import java.util.jar.JarInputStream;
 import org.drools.compiler.Address;
 import org.drools.compiler.Cell;
 import org.drools.compiler.Cheese;
-import org.drools.core.ClockType;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
 import org.drools.compiler.FactB;
@@ -34,6 +33,11 @@ import org.drools.compiler.FactC;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
 import org.drools.compiler.Primitives;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.integrationtests.IteratorToList;
+import org.drools.compiler.integrationtests.SerializationHelper;
+import org.drools.core.ClockType;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.SessionConfiguration;
@@ -41,20 +45,15 @@ import org.drools.core.StatefulSession;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.integrationtests.IteratorToList;
-import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.core.marshalling.impl.RuleBaseNodes;
@@ -73,22 +72,16 @@ import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.KeyStoreHelper;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
-import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.kie.api.runtime.Environment;
@@ -100,6 +93,14 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.rule.SessionEntryPoint;
 import org.kie.api.time.SessionClock;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class MarshallingTest extends CommonTestMethodBase {
 
@@ -2290,46 +2291,34 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule4 += "    list.add( \"rule4\" );\n";
         rule4 += "    drools.halt();\n";
         rule4 += "end";
-
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule1 ) );
-        builder.addPackageFromDrl( new StringReader( rule2 ) );
-        builder.addPackageFromDrl( new StringReader( rule3 ) );
-        builder.addPackageFromDrl( new StringReader( rule4 ) );
-
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        StatefulSession session = ruleBase.newStatefulSession();
-
-        session = getSerialisedStatefulSession( session );
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule1, rule2, rule3, rule4 );
+        StatefulKnowledgeSession ksession = getSerialisedStatefulKnowledgeSession( kbase.newStatefulKnowledgeSession(), true );
 
         final List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        session.insert( brie );
+        ksession.insert( brie );
 
-        session = getSerialisedStatefulSession( session );
-        session.getAgenda().activateRuleFlowGroup( "ruleflow-group-1" );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, true  );
+        ((AgendaImpl) ksession.getAgenda()).activateRuleFlowGroup( "ruleflow-group-1" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, true  );
+        ksession.fireAllRules();
         assertEquals( "rule2",
                       list.get( 0 ) );
 
-        session = getSerialisedStatefulSession( session );
-        session.getAgenda().activateRuleFlowGroup( "ruleflow-group-2" );
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, true  );
+        ((AgendaImpl) ksession.getAgenda()).activateRuleFlowGroup( "ruleflow-group-2" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, true  );
+        ksession.fireAllRules();
         assertEquals( "rule3",
                       list.get( 1 ) );
 
-        session = getSerialisedStatefulSession( session );
-        session.fireAllRules();
+        ksession = getSerialisedStatefulKnowledgeSession( ksession, true  );
+        ksession.fireAllRules();
         assertEquals( "rule1",
                       list.get( 2 ) );
     }
