@@ -69,9 +69,10 @@ public class LateAnnealingAcceptor extends AbstractAcceptor {
             return true;
         }
         Score lateScore = previousScores[lateScoreIndex];
-        Score scoreDifference = lastStepScore.subtract(score);
+        Score bestScore = moveScope.getStepScope().getPhaseScope().getBestScore();
+        Score scoreDifference = bestScore.subtract(score);
         double[] scoreDifferenceLevels = ScoreUtils.extractLevelDoubles(scoreDifference);
-        Score lateScoreDifference = lastStepScore.subtract(lateScore);
+        Score lateScoreDifference = bestScore.subtract(lateScore);
         double[] lateScoreDifferenceLevels = ScoreUtils.extractLevelDoubles(lateScoreDifference);
         double acceptChance = 1.0;
         for (int i = 0; i < scoreDifferenceLevels.length; i++) {
@@ -79,7 +80,7 @@ public class LateAnnealingAcceptor extends AbstractAcceptor {
             double lateScoreDifferenceLevel = lateScoreDifferenceLevels[i];
             double acceptChanceLevel;
             if (scoreDifferenceLevel <= 0.0) {
-                // In this level score is better than the lastStepScore, so do not disrupt the acceptChance
+                // In this level, score is better than the bestScore, so do not disrupt the acceptChance
                 acceptChanceLevel = 1.0;
             } else {
                 acceptChanceLevel = Math.exp(-scoreDifferenceLevel / lateScoreDifferenceLevel);
