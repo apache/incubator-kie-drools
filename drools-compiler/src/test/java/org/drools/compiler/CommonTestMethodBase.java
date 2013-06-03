@@ -41,7 +41,7 @@ import org.kie.api.runtime.conf.KieSessionOption;
  * in drools-persistence-jpa.
  */
 public class CommonTestMethodBase extends Assert {
-    public static PhreakOption preak = PhreakOption.ENABLED;
+    public static PhreakOption phreak = PhreakOption.ENABLED;
 
     // ***********************************************
     // METHODS TO BE REMOVED FOR 6.0.0
@@ -80,13 +80,13 @@ public class CommonTestMethodBase extends Assert {
         final PackageDescr packageDescr = parser.parse(reader);
         if (parser.hasErrors()) {
             fail("Error messages in parser, need to sort this our (or else collect error messages):\n"
-                  + parser.getErrors() );
+                 + parser.getErrors());
         }
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
+        builder.addPackage(packageDescr);
 
-        if ( builder.hasErrors() ) {
+        if (builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
         }
 
@@ -130,7 +130,7 @@ public class CommonTestMethodBase extends Assert {
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(String... drlContentStrings) {
-        return loadKnowledgeBaseFromString( null, null, preak, drlContentStrings );
+        return loadKnowledgeBaseFromString( null, null, phreak, drlContentStrings );
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(PhreakOption phreak, String... drlContentStrings) {
@@ -139,12 +139,12 @@ public class CommonTestMethodBase extends Assert {
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config,
                                                         String... drlContentStrings) {
-        return loadKnowledgeBaseFromString( config, null, preak, drlContentStrings );
+        return loadKnowledgeBaseFromString( config, null, phreak, drlContentStrings );
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KieBaseConfiguration kBaseConfig,
                                                         String... drlContentStrings) {
-        return loadKnowledgeBaseFromString( null, kBaseConfig, preak, drlContentStrings );
+        return loadKnowledgeBaseFromString( null, kBaseConfig, phreak, drlContentStrings );
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config,
@@ -177,7 +177,7 @@ public class CommonTestMethodBase extends Assert {
         if ( kbaseConf == null ) {
             kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
-        kbaseConf.setOption( preak );
+        kbaseConf.setOption(phreak);
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase.addKnowledgePackages( knowledgePackages );
         try {
@@ -200,7 +200,7 @@ public class CommonTestMethodBase extends Assert {
         if ( kbaseConf == null ) {
             kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
-        kbaseConf.setOption( preak );
+        kbaseConf.setOption(phreak);
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase.addKnowledgePackages( knowledgePackages );
         try {
