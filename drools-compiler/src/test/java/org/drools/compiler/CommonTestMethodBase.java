@@ -248,7 +248,12 @@ public class CommonTestMethodBase extends Assert {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
+        Collection<KnowledgePackage> knowledgePackages = null;
+        try {
+            knowledgePackages = SerializationHelper.serializeObject(kbuilder.getKnowledgePackages());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return knowledgePackages;
     }
 

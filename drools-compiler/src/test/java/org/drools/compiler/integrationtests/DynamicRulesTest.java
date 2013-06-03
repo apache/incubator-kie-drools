@@ -23,10 +23,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -43,15 +39,9 @@ import org.drools.compiler.OrderItem;
 import org.drools.compiler.Person;
 import org.drools.compiler.PersonInterface;
 import org.drools.compiler.Precondition;
-import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
 import org.drools.compiler.StockTick;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.DroolsStreamUtils;
@@ -59,8 +49,6 @@ import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
-import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.rule.Package;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
@@ -274,7 +262,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testDynamicFunction() throws Exception {
-        //FIXME JBRULES-1258 serialising a package breaks function removal -- left the serialisation commented out for now
+        //JBRULES-1258 serialising a package breaks function removal -- left the serialisation commented out for now
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_DynamicFunction1.drl" ) );
         KnowledgeBase kbase = loadKnowledgeBase( );
 
@@ -446,18 +434,10 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                                             this.getClass().getClassLoader() );
             Class cheeseClass = loader1.loadClass( "org.drools.compiler.Cheese" );
 
-            PackageBuilderConfiguration conf = new PackageBuilderConfiguration( loader1 );
-            PackageBuilder builder = new PackageBuilder( conf );
-            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
+            KnowledgeBuilderConfiguration kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, loader1);
+            KnowledgeBase kbase = loadKnowledgeBase( kbuilderConf, "test_Dynamic1.drl"  );
+            StatefulKnowledgeSession wm = createKnowledgeSession(kbase);
 
-            // must set the classloader for rulebase conf too
-            RuleBaseConfiguration rbconf = new RuleBaseConfiguration( loader1 );
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase( rbconf );
-            Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
-            ruleBase.addPackage( pkg );
-            //            ruleBase    = SerializationHelper.serializeObject(ruleBase);
-
-            StatefulSession wm = ruleBase.newStatefulSession();
             wm.insert( cheeseClass.newInstance() );
             wm.fireAllRules();
 
@@ -466,17 +446,9 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                                                             this.getClass().getClassLoader() );
             cheeseClass = loader2.loadClass( "org.drools.compiler.Cheese" );
 
-            conf = new PackageBuilderConfiguration( loader2 );
-            builder = new PackageBuilder( conf );
-            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
-
-            rbconf = new RuleBaseConfiguration( loader2 );
-            ruleBase = RuleBaseFactory.newRuleBase( rbconf );
-            pkg = SerializationHelper.serializeObject( builder.getPackage() );
-            ruleBase.addPackage( pkg );
-            //            ruleBase    = SerializationHelper.serializeObject(ruleBase);
-
-            wm = ruleBase.newStatefulSession();
+            kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, loader2);
+            kbase = loadKnowledgeBase( kbuilderConf, "test_Dynamic1.drl"  );
+            wm = createKnowledgeSession(kbase);
             wm.insert( cheeseClass.newInstance() );
             wm.fireAllRules();
         } catch ( ClassCastException cce ) {
@@ -496,14 +468,9 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             Thread.currentThread().setContextClassLoader( loader1 );
             Class cheeseClass = loader1.loadClass( "org.drools.compiler.Cheese" );
 
-            PackageBuilder builder = new PackageBuilder();
-            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
+            KnowledgeBase kbase = loadKnowledgeBase( "test_Dynamic1.drl" );
+            StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
 
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-            Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
-            ruleBase.addPackage( pkg );
-
-            StatefulSession wm = ruleBase.newStatefulSession();
             wm.insert( cheeseClass.newInstance() );
             wm.fireAllRules();
 
@@ -513,14 +480,9 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             Thread.currentThread().setContextClassLoader( loader2 );
             cheeseClass = loader2.loadClass( "org.drools.compiler.Cheese" );
 
-            builder = new PackageBuilder();
-            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
+            kbase = loadKnowledgeBase( "test_Dynamic1.drl" );
+            wm = createKnowledgeSession( kbase );
 
-            ruleBase = RuleBaseFactory.newRuleBase();
-            pkg = SerializationHelper.serializeObject( builder.getPackage() );
-            ruleBase.addPackage( pkg );
-
-            wm = ruleBase.newStatefulSession();
             wm.insert( cheeseClass.newInstance() );
             wm.fireAllRules();
 
@@ -899,21 +861,18 @@ public class DynamicRulesTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testRuleBaseAddRemoveSubNetworks() throws Exception {
         try {
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
             //add and remove
-            PackageBuilder builder = new PackageBuilder();
-            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
-            Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
-            ruleBase.addPackage( pkg );
-            ruleBase.removePackage( pkg.getName() );
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( );
+            Collection<KnowledgePackage> kpkgs = loadKnowledgePackages("test_DynamicRulesWithSubnetwork.drl");
+            KnowledgePackage kpkg = ( KnowledgePackage ) kpkgs.toArray()[0];
+            kbase.addKnowledgePackages(kpkgs);
+            kbase.removeKnowledgePackage(kpkg.getName());
 
             //add and remove again
-            builder = new PackageBuilder();
-            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
-            pkg = SerializationHelper.serializeObject( builder.getPackage() );
-            ruleBase.addPackage( pkg );
-            ruleBase.removePackage( pkg.getName() );
+            kpkgs = loadKnowledgePackages("test_DynamicRulesWithSubnetwork.drl");
+            kpkg = ( KnowledgePackage ) kpkgs.toArray()[0];
+            kbase.addKnowledgePackages(kpkgs);
+            kbase.removeKnowledgePackage(kpkg.getName());
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( "Should not raise any exception" );
@@ -922,19 +881,13 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testDynamicRuleAdditionsWithEntryPoints() throws Exception {
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_DynamicWithEntryPoint.drl" ) );
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( reader ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-
+        Collection<KnowledgePackage> kpkgs = loadKnowledgePackages("test_DynamicWithEntryPoint.drl" );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         // now lets add some knowledge to the kbase
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages( kpkgs );
 
         List<StockTick> results = new ArrayList<StockTick>();
         ksession.setGlobal( "results",
@@ -1068,32 +1021,28 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testDynamicRuleRemovalsSubNetworkAndNot() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_DynamicRulesWithNotSubnetwork.drl" ) ),
-                      ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
+        KnowledgeBase kbase = loadKnowledgeBase("test_DynamicRulesWithNotSubnetwork.drl");
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         final AgendaEventListener alistener = mock( AgendaEventListener.class );
         ksession.addEventListener( alistener );
 
         // pattern does not match, so do not activate
         ksession.insert( new Person( "toni" ) );
+        ksession.fireAllRules();
         verify( alistener,
                 never() ).matchCreated(any(org.kie.api.event.rule.MatchCreatedEvent.class));
 
         // pattern matches, so create activation
         ksession.insert( new Person( "bob" ) );
+        ksession.fireAllRules();
         verify( alistener,
                 times( 1 ) ).matchCreated(any(org.kie.api.event.rule.MatchCreatedEvent.class));
 
         // already active, so no new activation should be created
         ksession.insert( new Person( "mark" ) );
+        ksession.fireAllRules();
         verify( alistener,
                 times( 1 ) ).matchCreated(any(org.kie.api.event.rule.MatchCreatedEvent.class));
 
@@ -1103,22 +1052,19 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       kbase.getKnowledgePackages().size() );
 
         // lets re-compile and add it again
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_DynamicRulesWithNotSubnetwork.drl" ) ),
-                      ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        Collection<KnowledgePackage> kpkgs = loadKnowledgePackages("test_DynamicRulesWithNotSubnetwork.drl");
+        kbase.addKnowledgePackages( kpkgs );
+        ksession.fireAllRules();
 
-        // rule should be reactivated, since data is still in the session
+                // rule should be reactivated, since data is still in the session
         verify( alistener,
                 times( 2 ) ).matchCreated(any(org.kie.api.event.rule.MatchCreatedEvent.class));
 
     }
 
-    @Test //(timeout=10000)
-    public void testSharedLIANodeRemoval() throws IOException,
-            DroolsParserException {
+    @Test(timeout=10000)
+    public void testSharedLIANodeRemoval() throws Exception {
+        // it's not a true share, but the liaNode will have two sinks, due to subnetwork.
         String str = "global java.util.List list;\n";
         str += "rule \"test\"\n";
         str += "when\n";
@@ -1127,18 +1073,15 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         str += " list.add(\"fired\");\n";
         str += "end\n";
 
-        PackageBuilder pkgBuilder = new PackageBuilder();
-        pkgBuilder.addPackageFromDrl( new StringReader( str ) );
-        assertTrue( "Should not have errors",
-                    pkgBuilder.getErrors().isEmpty() );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackagesFromString( str ) );
 
         // Add once ...
-        ReteooRuleBase rb = new ReteooRuleBase( "dummy" );
-        rb.addPackage( pkgBuilder.getPackage() );
+        kbase.addKnowledgePackages( kpkgs );
 
         // This one works
         List list = new ArrayList();
-        StatefulSession session = rb.newStatefulSession();
+        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
         session.setGlobal( "list",
                            list );
         session.fireAllRules();
@@ -1147,9 +1090,10 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         list.clear();
         // ... remove ...
-        rb.removePackage( pkgBuilder.getPackage().getName() );
-        rb.addPackage( pkgBuilder.getPackage() );
-        session = rb.newStatefulSession();
+        KnowledgePackage kpkg = ( KnowledgePackage ) kpkgs.toArray()[0];
+        kbase.removeKnowledgePackage( kpkg.getName() );
+        kbase.addKnowledgePackages( kpkgs );
+        session = createKnowledgeSession( kbase );
         session.setGlobal( "list",
                            list );
         session.fireAllRules();
@@ -1181,12 +1125,12 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( type.getBytes() ), ResourceType.DRL );
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-        
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
+
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
         
@@ -1228,7 +1172,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             session.insert( new Cheese() );
         }
 
-        addDrlToKBase( kbase, "test_JBRULES_2206_1.drl" );
+        kbase.addKnowledgePackages( loadKnowledgePackages( "test_JBRULES_2206_1.drl" ));
 
         // two matching rules were added, so 2 activations should have been created 
         verify( ael, times( 2 ) ).matchCreated(any(MatchCreatedEvent.class));
@@ -1236,7 +1180,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         // both should have fired
         assertEquals( 2, fireCount );
 
-        addDrlToKBase( kbase, "test_JBRULES_2206_2.drl" );
+        kbase.addKnowledgePackages( loadKnowledgePackages( "test_JBRULES_2206_2.drl" ));
 
         // one rule was overridden and should activate 
         verify( ael, times( 3 ) ).matchCreated(any(MatchCreatedEvent.class));
@@ -1245,19 +1189,6 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 1, fireCount );
 
         session.dispose();
-    }
-
-    private void addDrlToKBase(KnowledgeBase kbase,
-                               String drlName) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource(drlName,
-                DynamicRulesTest.class),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
     }
 
     public class SubvertedClassLoader extends URLClassLoader {
