@@ -66,6 +66,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void linkSegment(long mask,
                             InternalWorkingMemory wm) {
+        linkedSegmentMask = linkedSegmentMask | mask;
         if (log.isTraceEnabled()) {
             if (NodeTypeEnums.isTerminalNode(getNetworkNode())) {
                 TerminalNode rtn = (TerminalNode) getNetworkNode();
@@ -74,7 +75,6 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
                 log.trace("  LinkSegment smask={} rmask={} name={}", mask, "RiaNode");
             }
         }
-        linkedSegmentMask = linkedSegmentMask | mask;
         if (isRuleLinked()) {
             doLinkRule(wm);
         }
@@ -130,13 +130,14 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public void unlinkedSegment(long mask,
                                 InternalWorkingMemory wm) {
+        boolean linkedRule =  isRuleLinked();
+        linkedSegmentMask = linkedSegmentMask ^ mask;
         if (log.isTraceEnabled()) {
             log.trace("  UnlinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, this);
         }
-        if (isRuleLinked()) {
+        if (linkedRule && !isRuleLinked()) {
             doUnlinkRule(wm);
         }
-        linkedSegmentMask = linkedSegmentMask ^ mask;
     }
 
     public boolean isRuleLinked() {
