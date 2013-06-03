@@ -1534,6 +1534,9 @@ public class DefaultAgenda
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
         unstageActivations();
         this.halt.set( false );
+        if ( log.isDebugEnabled()  ) {
+            log.trace("Starting fireUntilHalt");
+        }
         while ( continueFiring( -1 ) ) {
             boolean fired = fireNextItem( agendaFilter, 0, -1 ) >= 0 ||
                             !((AbstractWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
@@ -1543,7 +1546,9 @@ public class DefaultAgenda
                 if ( !unlinkingEnabled ) {
                     try {
                         synchronized ( this.halt ) {
-                            if ( !this.halt.get() ) this.halt.wait();
+                            if ( !this.halt.get() ) {
+                                this.halt.wait();
+                            }
                         }
                     } catch ( InterruptedException e ) {
                         this.halt.set( true );
@@ -1552,6 +1557,9 @@ public class DefaultAgenda
             } else {
                 this.workingMemory.executeQueuedActions();
             }
+        }
+        if ( log.isDebugEnabled()  ) {
+            log.trace("Ending fireUntilHalt");
         }
         fireUntilHalt = false;
     }

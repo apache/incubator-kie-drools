@@ -5,6 +5,7 @@ import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.time.Job;
@@ -16,6 +17,7 @@ import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.Timer;
 import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.runtime.Calendars;
+import org.kie.api.runtime.rule.PropagationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,14 +137,22 @@ public class PhreakTimerNode {
                     timerService.removeJob( jobHandle );
                 }
 
+                org.drools.core.spi.PropagationContext pctx = leftTuple.getPropagationContext();
+                pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple, pctx);
+
                 if ( leftTuple.getMemory() != null ) {
-                    // a delete clashes with insert or update, allow it to propagate once, will handle the deletes the second time around
-                    leftTuples.remove( leftTuple );
-                    doPropagateChildLeftTuple(sink, trgLeftTuples, stagedLeftTuples, leftTuple);
-                    tm.getDeleteLeftTuples().add(leftTuple);
-                    pmem.doLinkRule(wm); // make sure it's dirty, so it'll evaluate again
-                    log.trace("Timer Postponed Delete {}", leftTuple );
-                } else {
+                    leftTuples.remove( leftTuple ); // it gets removed either way.
+                    if ( pctx.getType() == PropagationContext.EXPIRATION ) {
+                        // a expire clashes with insert or update, allow it to propagate once, will handle the expire the second time around
+                        doPropagateChildLeftTuple(sink, trgLeftTuples, stagedLeftTuples, leftTuple);
+                        tm.getDeleteLeftTuples().add(leftTuple);
+                        pmem.doLinkRule(wm); // make sure it's dirty, so it'll evaluate again
+                        log.trace("Timer Postponed Delete {}", leftTuple );
+                    }
+                }
+
+                if ( leftTuple.getMemory() == null ) {
+                    // if it's != null, then it's already been postponed, and the existing child propagated
                     LeftTuple childLeftTuple = leftTuple.getFirstChild(); // only has one child
                     if ( childLeftTuple != null ) {
                         switch (childLeftTuple.getStagedType()) {
