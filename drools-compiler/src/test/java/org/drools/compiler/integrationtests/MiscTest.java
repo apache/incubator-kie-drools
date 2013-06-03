@@ -2473,6 +2473,8 @@ public class MiscTest extends CommonTestMethodBase {
         final DrlDumper drlDumper = new DrlDumper();
         final String drlResult = drlDumper.dump( pkg );
 
+        System.out.println( drlResult );
+
         kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( drlResult ) );
         ksession = kbase.newStatefulKnowledgeSession();
 

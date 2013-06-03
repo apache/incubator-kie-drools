@@ -25,18 +25,13 @@ import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.BinaryHeapQueue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -55,7 +50,7 @@ public class BinaryHeapQueueAgendaGroup
     /**
      * Items in the agenda.
      */
-    private          BinaryHeapQueue    queue;
+    private          BinaryHeapQueue    priorityQueue;
     private volatile boolean            active;
     private          PropagationContext autoFocusActivator;
     private          long               activatedForRecency;
@@ -78,19 +73,19 @@ public class BinaryHeapQueueAgendaGroup
                                       final InternalRuleBase ruleBase) {
         this.name = name;
         if (ruleBase.getConfiguration().isPhreakEnabled()) {
-            this.queue = new BinaryHeapQueue(new PhreakConflictResolver());
+            this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());
         }
         if (ruleBase.getConfiguration().isSequential()) {
-            this.queue = new BinaryHeapQueue(new SequentialConflictResolver());
+            this.priorityQueue = new BinaryHeapQueue(new SequentialConflictResolver());
         } else {
-            this.queue = new BinaryHeapQueue(ruleBase.getConfiguration().getConflictResolver());
+            this.priorityQueue = new BinaryHeapQueue(ruleBase.getConfiguration().getConflictResolver());
         }
 
         this.clearedForRecency = -1;
     }
 
     public BinaryHeapQueue getBinaryHeapQueue() {
-        return this.queue;
+        return this.priorityQueue;
     }
 
     /* (non-Javadoc)
@@ -121,31 +116,35 @@ public class BinaryHeapQueueAgendaGroup
     }
 
     public void clear() {
-        this.queue.clear();
+        this.priorityQueue.clear();
         this.active = false;
     }
 
     public Activation[] getAndClear() {
-        return this.queue.getAndClear();
+        return this.priorityQueue.getAndClear();
     }
 
     /* (non-Javadoc)
      * @see org.kie.spi.AgendaGroup#size()
      */
     public int size() {
-        return this.queue.size();
+        return this.priorityQueue.size();
     }
 
     public void add(final Activation activation) {
-        this.queue.enqueue((Activation) activation);
+        this.priorityQueue.enqueue((Activation) activation);
     }
 
     public Activation getNext() {
-        return (Activation) this.queue.dequeue();
+        Activation act = this.priorityQueue.dequeue();
+        if ( this.priorityQueue.isEmpty() && autoDeactivate ) {
+            setActive( false );
+        }
+        return (Activation) act;
     }
 
     public Activation peekNext() {
-        return this.queue.peek();
+        return this.priorityQueue.peek();
     }
 
     public boolean isActive() {
@@ -165,6 +164,11 @@ public class BinaryHeapQueueAgendaGroup
     @Override
     public void setAutoDeactivate(boolean autoDeactivate) {
         this.autoDeactivate = autoDeactivate;
+        synchronized ( this ) {
+            if ( autoDeactivate && isActive() && isEmpty() ) {
+                setActive(false);
+            }
+        }
     }
 
     public void addNodeInstance(Long processInstanceId,
@@ -181,6 +185,11 @@ public class BinaryHeapQueueAgendaGroup
 
     public void setActive(final boolean activate) {
         this.active = activate;
+        synchronized ( this ) {
+            if ( autoDeactivate && isActive() && isEmpty() ) {
+                setActive( false );
+            }
+        }
     }
 
     public PropagationContext getAutoFocusActivator() {
@@ -193,11 +202,11 @@ public class BinaryHeapQueueAgendaGroup
 
 
     public boolean isEmpty() {
-        return this.queue.isEmpty();
+        return this.priorityQueue.isEmpty();
     }
 
     public Activation[] getActivations() {
-        return (Activation[]) this.queue.toArray(new AgendaItem[this.queue.size()]);
+        return (Activation[]) this.priorityQueue.toArray(new AgendaItem[this.priorityQueue.size()]);
     }
 
     @Override
@@ -230,7 +239,7 @@ public class BinaryHeapQueueAgendaGroup
     }
 
     public void remove(final Activation activation) {
-        this.queue.dequeue(activation.getQueueIndex());
+        this.priorityQueue.dequeue(activation.getQueueIndex());
     }
 
     public long getActivatedForRecency() {

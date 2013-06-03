@@ -36,6 +36,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.RuleFlowGroupImpl;
@@ -811,7 +812,8 @@ public class AgendaTest extends DroolsTestCase {
 
         // When both the rule is lock-on-active and the agenda group is active, activations should be ignored
         rule.setLockOnActive( true );
-        agendaGroup.setActive( true );
+        ((InternalRuleFlowGroup)agendaGroup).setAutoDeactivate(false);
+        agendaGroup.setActive(true);
         node.assertLeftTuple( tuple,
                               context,
                               workingMemory );
@@ -1173,35 +1175,34 @@ public class AgendaTest extends DroolsTestCase {
                                workingMemory );
         agenda.unstageActivations();
 
-        // RuleFlowGroups should be populated, but the agenda shouldn't be
         assertEquals( 2,
                       ruleFlowGroup0.size() );
         assertEquals( 1,
                       ruleFlowGroup1.size() );
         assertEquals( 1,
                       ruleFlowGroup2.size() );
-        assertEquals( 0,
+        assertEquals( 4,
                       agenda.agendaSize() );
 
         // Activate the RuleFlowGroup, the nodes stay in the group, but should now also be in the Agenda
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
-        assertEquals( 2,
+        assertEquals( 4,
                       agenda.agendaSize() );
 
         // As we fire each rule they are removed from both the Agenda and the RuleFlowGroup
         agenda.fireNextItem( null, 0, -1 );
         assertEquals( 1,
                       ruleFlowGroup0.size() );
-        assertEquals( 1,
+        assertEquals( 3,
                       agenda.agendaSize() );
 
         // After firing all activations of RuleFlowGroup 0, the agenda is empty
         agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       ruleFlowGroup0.size() );
-        assertEquals( 0,
+        assertEquals( 2,
                       agenda.agendaSize() );
 
         // Now we activate two RuleFlowGroups together
@@ -1346,22 +1347,16 @@ public class AgendaTest extends DroolsTestCase {
         // RuleFlowGroup should be populated, but the agenda shouldn't be
         assertEquals( 1,
                       ruleFlowGroup0.size() );
-        assertEquals( 0,
-                      agenda.agendaSize() );
 
         // Activate the RuleFlowGroup, the activation stays in the group, but should now also be in the Agenda
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 1,
                       ruleFlowGroup0.size() );
-        assertEquals( 1,
-                      agenda.agendaSize() );
 
         // As we fire the rule, an new activation is created for rule1, and it should be added to group AND the agenda.
         agenda.fireNextItem( null, 0, -1 );
         assertEquals( 1,
                       ruleFlowGroup0.size() );
-        assertEquals( 1,
-                      agenda.agendaSize() );
 
         // After firing all activations of RuleFlowGroup 0, the agenda is empty
         agenda.fireNextItem( null, 0, -1 );
@@ -1486,23 +1481,21 @@ public class AgendaTest extends DroolsTestCase {
         // RuleFlowGroup should be populated, but the agenda shouldn't be
         assertEquals( 2,
                       ruleFlowGroup0.size() );
-        assertEquals( 0,
-                      agenda.agendaSize() );
 
         // Activate the RuleFlowGroup, the activations stay in the group, but should now also be in the Agenda
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
-        assertEquals( 2,
-                      agenda.agendaSize() );
 
         // As we fire the rule, rule0 should execute first, as it has higher salience.
         // Rule0 should deactivate rule1 as well, so the everything should be empty
         agenda.fireNextItem( null, 0, -1 );
+        assertEquals( 1,
+                      ruleFlowGroup0.size() );
+
+        agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       ruleFlowGroup0.size() );
-        assertEquals( 0,
-                      agenda.agendaSize() );
 
     }
 
@@ -1582,39 +1575,29 @@ public class AgendaTest extends DroolsTestCase {
         // RuleFlowGroup should be populated, but the agenda shouldn't be
         assertEquals( 2,
                       ruleFlowGroup0.size() );
-        assertEquals( 0,
-                      agenda.agendaSize() );
 
         // Activate the RuleFlowGroup, the activations stay in the group, but
         // should now also be in the Agenda
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
-        assertEquals( 2,
-                      agenda.agendaSize() );
 
         // Reactivate an already active RuleFlowGroup should not have any effect
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
-        assertEquals( 2,
-                      agenda.agendaSize() );
 
         // Deactivate the RuleFlowGroup, the activations should be removed from
         // the agenda but still in the RuleFlowGroup
         agenda.deactivateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
-        assertEquals( 0,
-                      agenda.agendaSize() );
 
         // Reactivate the RuleFlowGroup, the activations stay in the group, but
         // should now also be in the Agenda again
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
-        assertEquals( 2,
-                      agenda.agendaSize() );
 
     }
 
@@ -1689,23 +1672,17 @@ public class AgendaTest extends DroolsTestCase {
         // RuleFlowGroup should be populated, but the agenda shouldn't be
         assertEquals( 1,
                       ruleFlowGroup0.size() );
-        assertEquals( 0,
-                      agenda.agendaSize() );
 
         // Activate the RuleFlowGroup, the activations stay in the group, but
         // should now also be in the Agenda
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 1,
                       ruleFlowGroup0.size() );
-        assertEquals( 1,
-                      agenda.agendaSize() );
 
         // Execute activation
         agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       ruleFlowGroup0.size() );
-        assertEquals( 0,
-                      agenda.agendaSize() );
         assertTrue( ruleFlowGroup0.isActive() );
 
         // Set auto-deactivation status to true
@@ -1725,17 +1702,14 @@ public class AgendaTest extends DroolsTestCase {
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 1,
                       ruleFlowGroup0.size() );
-        assertEquals( 1,
-                      agenda.agendaSize() );
         assertTrue( ruleFlowGroup0.isActive() );
 
         // Execute the activation, the RuleFlowGroup should automatically deactivate
         agenda.fireNextItem( null, 0, -1 );
         assertEquals( 0,
                       ruleFlowGroup0.size() );
-        assertEquals( 0,
-                      agenda.agendaSize() );
         workingMemory.executeQueuedActions();
+        assertEquals(0, ruleFlowGroup0.size());
         assertFalse( ruleFlowGroup0.isActive() );
 
         // A new activation should now be added to the RuleFlowGroup but not to the agenda
@@ -1749,8 +1723,6 @@ public class AgendaTest extends DroolsTestCase {
         agenda.unstageActivations();
         assertEquals( 1,
                       ruleFlowGroup0.size() );
-        assertEquals( 0,
-                      agenda.agendaSize() );
     }
 
     /**
@@ -1823,11 +1795,11 @@ public class AgendaTest extends DroolsTestCase {
         //final AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup" );
         //agenda.addAgendaGroup( agendaGroup );
 
-        final RuleFlowGroupImpl ruleFlowGroup = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-0" );
+        final RuleFlowGroup ruleFlowGroup = (RuleFlowGroup) agenda.getRuleFlowGroup( "rule-flow-group-0" );
 
         // create a rule for the agendaGroup
         final Rule rule = new Rule( "test-rule" );
-        rule.setRuleFlowGroup( "rule-flow-group-0" );
+        rule.setAgendaGroup("rule-flow-group-0");
         final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                             new MockTupleSource( 2 ),
                                                             rule,
@@ -1846,15 +1818,14 @@ public class AgendaTest extends DroolsTestCase {
                                                                        new DefaultFactHandle() );
 
         // When both the rule is lock-on-active and the agenda group is active, activations should be ignored
-        rule.setLockOnActive( true );
+        rule.setLockOnActive(true);
         ruleFlowGroup.setAutoDeactivate( false );
-        ruleFlowGroup.setActive( true );
+        ((InternalRuleFlowGroup)ruleFlowGroup).setActive( true );
         node.assertLeftTuple( tuple1,
                               context,
                               workingMemory );
         // activation should be ignored
-        assertEquals( 0,
-                      ruleFlowGroup.size() );
+        assertEquals( 0, ruleFlowGroup.size() );
 
         // lock-on-active is now false so activation should propagate
         rule.setLockOnActive( false );
@@ -1867,7 +1838,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // even if lock-on-active is true, unless the agenda group is active the activation will still propagate
         rule.setLockOnActive( true );
-        ruleFlowGroup.setActive( false );
+        ((InternalAgendaGroup)ruleFlowGroup).setActive(false);
         node.assertLeftTuple( tuple3,
                               context,
                               workingMemory );
