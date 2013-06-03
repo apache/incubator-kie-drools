@@ -1425,7 +1425,7 @@ public class PackageBuilder
         processEntryPointDeclarations( pkgRegistry, packageDescr );
 
         // process types in 2 steps to deal with circular and recursive declarations
-        processUnresolvedTypes( pkgRegistry, processTypeDeclarations( pkgRegistry, packageDescr ) );
+        processUnresolvedTypes( pkgRegistry, processTypeDeclarations( pkgRegistry, packageDescr, new ArrayList<TypeDefinition>() ) );
 
         processOtherDeclarations( pkgRegistry, packageDescr );
     }
@@ -1488,18 +1488,20 @@ public class PackageBuilder
         }
     }
 
-    void processUnresolvedTypes(PackageRegistry pkgRegistry,
-                                List<TypeDefinition> unresolvedTypeDefinitions) {
-        if ( unresolvedTypeDefinitions != null ) {
-            for ( TypeDefinition typeDef : unresolvedTypeDefinitions ) {
-                processTypeFields( pkgRegistry, typeDef.typeDescr, typeDef.type, false );
+    void processUnresolvedTypes(PackageRegistry pkgRegistry, List<TypeDefinition> unresolvedTypeDefinitions) {
+        if (unresolvedTypeDefinitions != null) {
+            for (TypeDefinition typeDef : unresolvedTypeDefinitions) {
+                processUnresolvedType(pkgRegistry, typeDef);
             }
         }
     }
 
-    public TypeDeclaration getAndRegisterTypeDeclaration(Class< ? > cls,
-                                                         String packageName) {
-        if ( cls.isPrimitive() || cls.isArray() ) {
+    void processUnresolvedType(PackageRegistry pkgRegistry, TypeDefinition unresolvedTypeDefinition) {
+        processTypeFields(pkgRegistry, unresolvedTypeDefinition.typeDescr, unresolvedTypeDefinition.type, false);
+    }
+
+    public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String packageName ) {
+        if (cls.isPrimitive() || cls.isArray()) {
             return null;
         }
         TypeDeclaration typeDeclaration = getCachedTypeDeclaration( cls );
@@ -2125,8 +2127,7 @@ public class PackageBuilder
     /**
      * @param packageDescr
      */
-    List<TypeDefinition> processTypeDeclarations(PackageRegistry pkgRegistry,
-                                                 PackageDescr packageDescr) {
+    List<TypeDefinition> processTypeDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr, List<TypeDefinition> unresolvedTypes) {
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
 
             String qName = typeDescr.getType().getFullName();
@@ -2211,8 +2212,6 @@ public class PackageBuilder
         for ( AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors ) {
             registerGeneratedType( typeDescr );
         }
-
-        List<TypeDefinition> unresolvedTypeDefinitions = null;
 
         for ( AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors ) {
 
@@ -2309,7 +2308,7 @@ public class PackageBuilder
                 generateDeclaredBean( typeDescr,
                                       type,
                                       pkgRegistry,
-                                      unresolvedTypeDefinitions );
+                                      unresolvedTypes );
 
                 Class< ? > clazz = pkgRegistry.getTypeResolver().resolveType( typeDescr.getType().getFullName() );
                 type.setTypeClass( clazz );
@@ -2322,15 +2321,12 @@ public class PackageBuilder
                 continue;
             }
 
-            if ( !processTypeFields( pkgRegistry, typeDescr, type, true ) ) {
-                if ( unresolvedTypeDefinitions == null ) {
-                    unresolvedTypeDefinitions = new ArrayList<TypeDefinition>();
-                }
-                unresolvedTypeDefinitions.add( new TypeDefinition( type, typeDescr ) );
+            if ( ! processTypeFields( pkgRegistry, typeDescr, type, true ) ) {
+                unresolvedTypes.add( new TypeDefinition( type, typeDescr ) );
             }
         }
 
-        return unresolvedTypeDefinitions;
+        return unresolvedTypes;
     }
 
     private boolean processTypeFields(PackageRegistry pkgRegistry,
@@ -3792,6 +3788,10 @@ public class PackageBuilder
 
         public String getTypeClassName() {
             return type.getTypeClassName();
+        }
+
+        public String getNamespace() {
+            return typeDescr.getNamespace();
         }
     }
 

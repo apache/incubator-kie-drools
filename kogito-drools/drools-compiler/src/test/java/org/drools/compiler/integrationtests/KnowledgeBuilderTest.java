@@ -116,7 +116,6 @@ public class KnowledgeBuilderTest {
     }
 
     @Test
-    @Ignore("toString recursion of type declarations breaks phreak")
     public void testDifferentPackages() throws Exception {
         String rule = "package org.drools.compiler.test.rule\n" +
                       "import org.drools.compiler.testA.FactA\n" +
