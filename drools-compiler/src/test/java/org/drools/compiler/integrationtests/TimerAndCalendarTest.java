@@ -1332,7 +1332,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
 
 
-    @Test(timeout=10000)
+    @Test //(timeout=10000)
     public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
         if ( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
             return; // fails randomly for Rete
@@ -1383,7 +1383,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         new Thread( new Runnable(){
             public void run(){ ksession.fireUntilHalt(); }
         } ).start();
-        Thread.sleep( 1000 );
+        Thread.sleep( 500 );
 
         assertEquals( 2, list.size() );
         assertEquals( java.util.Arrays.asList( 0, 0 ), list );
