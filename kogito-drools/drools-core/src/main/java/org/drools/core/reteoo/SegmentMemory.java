@@ -143,13 +143,20 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         }
 
         // some node unlinking does not unlink the segment, such as nodes after a Branch CE
-        boolean linked = isSegmentLinked();
         linkedNodeMask = linkedNodeMask ^ mask;
-        if (linked) {
+        if (!isSegmentLinked()) {
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
                 pathMemories.get(i).unlinkedSegment(segmentPosMaskBit,
                                                     wm);
+            }
+        } else {
+            // if not unlinked, then we still need to notify if the rule is linked
+            for (int i = 0, length = pathMemories.size(); i < length; i++) {
+                // do not use foreach, don't want Iterator object creation
+                if (pathMemories.get(i).isRuleLinked() ){
+                    pathMemories.get(i).doLinkRule(wm);
+                }
             }
         }
     }

@@ -1887,64 +1887,6 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(1, ksession.getObjects(new ClassObjectFilter(Cheese.class)).size());
     }
 
-//    @Test
-//    public void testFactLeak() throws InterruptedException {
-//        for ( int i = 0; i < 100; i++ ) {
-//            // repeat this 100 times, to try and better detect thread issues
-//            doFactLeak();
-//            System.gc();
-//            Thread.sleep(200);
-//            logger.trace("-----");
-//        }
-//    }
-
-    public void doFactLeak() throws InterruptedException {
-        //DROOLS-131
-        String drl = "package org.drools.test; \n" +
-                     "global " + ConcurrentLinkedQueue.class.getCanonicalName() + " list; \n" +
-                     //"global " + AtomicInteger.class.getCanonicalName() + "counter; \n" +
-                     "" +
-                     "rule Intx when\n" +
-                     " $x : Integer() from entry-point \"x\" \n" +
-                     "then\n" +
-                     " list.add( $x );" +
-                     "end";
-        int N = 1100;
-
-        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
-        final StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
-        ConcurrentLinkedQueue list = new ConcurrentLinkedQueue<Integer>();
-        AtomicInteger counter = new AtomicInteger(0);
-        ks.setGlobal( "list", list );
-        //ks.setGlobal( "counter", counter );
-
-        new Thread () {
-            public void run () {
-                ks.fireUntilHalt();
-            }
-        }.start ();
-
-        for ( int j = 0; j < N; j++ ) {
-            ks.getEntryPoint( "x" ).insert( new Integer( j ) );
-        }
-
-        int count = 0;
-        while ( list.size() != N && count++ != 1000) {
-            Thread.sleep( 200 );
-        }
-
-        ks.halt();
-        if ( list.size() != N ) {
-            for ( int j = 0; j < N; j++ ) {
-               if ( !list.contains( new Integer( j ) ) ) {
-                System.out.println( "missed: " + j );
-               }
-            }
-        }
-
-        assertEquals( N, list.size() );
-    }
-
     @Test
     public void testHelloWorld() throws Exception {
         // DROOLS-145
