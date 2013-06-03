@@ -82,7 +82,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
             double temperatureLevel = temperatureLevels[i];
             double acceptChanceLevel;
             if (scoreDifferenceLevel <= 0.0) {
-                // In this level score is better than the lastStepScore, so do not disrupt the acceptChance
+                // In this level, score is better than the lastStepScore, so do not disrupt the acceptChance
                 acceptChanceLevel = 1.0;
             } else {
                 acceptChanceLevel = Math.exp(-scoreDifferenceLevel / temperatureLevel);
