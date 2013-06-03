@@ -43,7 +43,6 @@ public class DRLIncompleteCodeTest {
     }
 
     @Test
-    @Ignore
     public void testIncompleteCode2() throws DroolsParserException,
             RecognitionException {
         String input = "rule MyRule when Class ( property memberOf collection ";
@@ -177,7 +176,7 @@ public class DRLIncompleteCodeTest {
         assertEquals(0, descr.getRules().size());
     }
 
-    @Test @Ignore
+    @Test
     public void testIncompleteCode11() throws DroolsParserException,
             RecognitionException {
         String input = "package a.b.c import a.b.c.*"
