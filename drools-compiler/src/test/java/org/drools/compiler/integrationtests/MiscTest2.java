@@ -292,7 +292,6 @@ public class MiscTest2 extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testReuseAgendaAfterException() throws Exception {
         // JBRULES-3677
 
@@ -350,7 +349,7 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         FactHandle fact1 = ksession.insert(new Person("Mario", 38));
         ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
-
+        ksession.fireAllRules();
         assertEquals(1, res.size());
         res.clear();
 
@@ -359,6 +358,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         FactHandle fact2 = ksession.insert(new Person("Mario", 48));
         try {
             ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
+            ksession.fireAllRules();
             fail("should throw an Exception");
         } catch (Exception e) { }
         ksession.retract(fact2);
@@ -368,6 +368,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         // try to reuse the ksession after the Exception
         FactHandle fact3 = ksession.insert(new Person("Mario", 38));
         ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
+        ksession.fireAllRules();
         assertEquals(1, res.size());
         ksession.retract(fact3);
 
