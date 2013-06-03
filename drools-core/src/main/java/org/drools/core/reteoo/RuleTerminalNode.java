@@ -189,9 +189,9 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         salienceDeclarations = ( Declaration[]) in.readObject();
         enabledDeclarations = ( Declaration[]) in.readObject();
         consequenceName = (String) in.readObject();
+        unlinkingEnabled = in.readBoolean();
 
         fireDirect = rule.getActivationListener().equals( "direct" );
-        unlinkingEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
