@@ -22,17 +22,20 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.SessionEntryPoint;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static org.drools.core.reteoo.ReteDumper.dumpRete;
@@ -679,5 +682,63 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
                 pathMemories[i] =  ( PathMemory ) wm.getNodeMemory(rtn);
             }
         }
+    }
+
+
+    @Test
+    public void testFactLeak() throws InterruptedException {
+        for ( int i = 0; i < 100; i++ ) {
+            // repeat this 100 times, to try and better detect thread issues
+            doFactLeak();
+            System.gc();
+            Thread.sleep(200);
+        }
+    }
+
+    public void doFactLeak() throws InterruptedException {
+        //DROOLS-131
+        String drl = "package org.drools.test; \n" +
+                     "global " + ConcurrentLinkedQueue.class.getCanonicalName() + " list; \n" +
+                     //"global " + AtomicInteger.class.getCanonicalName() + "counter; \n" +
+                     "" +
+                     "rule Intx when\n" +
+                     " $x : Integer() from entry-point \"x\" \n" +
+                     "then\n" +
+                     " list.add( $x );" +
+                     "end";
+        int N = 1100;
+
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        final StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ConcurrentLinkedQueue list = new ConcurrentLinkedQueue<Integer>();
+        AtomicInteger counter = new AtomicInteger(0);
+        ks.setGlobal( "list", list );
+        //ks.setGlobal( "counter", counter );
+
+        new Thread () {
+            public void run () {
+                ks.fireUntilHalt();
+            }
+        }.start ();
+
+        for ( int j = 0; j < N; j++ ) {
+            ks.getEntryPoint( "x" ).insert( new Integer( j ) );
+        }
+
+        int count = 0;
+        while ( list.size() != N && count++ != 1000) {
+            Thread.sleep( 200 );
+        }
+
+        ks.halt();
+        if ( list.size() != N ) {
+            for ( int j = 0; j < N; j++ ) {
+                if ( !list.contains( new Integer( j ) ) ) {
+                    System.out.println( "missed: " + j );
+                }
+            }
+        }
+
+        assertEquals( N, list.size() );
     }
 }

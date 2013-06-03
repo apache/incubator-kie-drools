@@ -13,7 +13,6 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
@@ -329,7 +328,7 @@ public class SegmentCreationTest {
         assertEquals( rtn3, notSmem.getTipNode() );     
     }
 
-    @Test @Ignore
+    @Test
     public void testBranchCESingleSegment() throws Exception {
         KnowledgeBase kbase = buildKnowledgeBase( "   $a : A() \n" +
                                                   "   if ( $a != null ) do[t1] \n" +
@@ -370,7 +369,7 @@ public class SegmentCreationTest {
         assertTrue( pmem.isRuleLinked() );
     }
 
-    @Test @Ignore
+    @Test
     public void testBranchCEMultipleSegments() throws Exception {
         KnowledgeBase kbase = buildKnowledgeBase( "   $a : A() \n", // r1
                                                   "   $a : A() \n" +
