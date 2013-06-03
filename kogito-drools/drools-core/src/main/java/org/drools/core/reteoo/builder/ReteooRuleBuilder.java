@@ -124,11 +124,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
                 context.setTemporalDistance( temporal );
             }
 
-            if (rulebase.getConfiguration().isSequential()) {
-//                context.setTupleMemoryEnabled( false );
-//                context.setObjectTypeNodeMemoryEnabled( false );
-                context.setTupleMemoryEnabled( true );
-                context.setObjectTypeNodeMemoryEnabled( true );
+            if (rulebase.getConfiguration().isSequential() ) {
+                context.setTupleMemoryEnabled( false );
+                context.setObjectTypeNodeMemoryEnabled( false );
             } else {
                 context.setTupleMemoryEnabled( true );
                 context.setObjectTypeNodeMemoryEnabled( true );
@@ -186,10 +184,6 @@ public class ReteooRuleBuilder implements RuleBuilder {
         if ( context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
             AddRemoveRule.addRule( terminal, context.getWorkingMemories() );
         }
-        
-//        if ( context.getRuleBase().getConfiguration().isPhreakEnabled() && !unlinkingAllowedForRule(context.getRule() ) ) {
-//            setUnlinkDisabledCount( null, terminal.getLeftTupleSource(),  ( context.getWorkingMemories().length == 0) ? null : context.getWorkingMemories() );
-//        }
 
         // adds the terminal node to the list of nodes created/added by this sub-rule
         context.getNodes().add( baseTerminalNode );
@@ -199,67 +193,6 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
         return terminal;
     }
-    
-//    public static boolean unlinkingAllowedForRule(Rule rule) {
-//        return !(rule.isQuery() ||
-//                   rule.getTimer() != null ||
-//                   rule.getAutoFocus() ||
-//                   rule.getSalience() instanceof MVELSalienceExpression);
-//    }
-    
-    public void setUnlinkDisabledCount(LeftTupleSource startNode,
-                                       LeftTupleSource lt,
-                                       InternalWorkingMemory[] wms) {
-//        while ( lt != null ) {
-//            if ( startNode == lt ) {
-//                return;
-//            }
-//            if ( NodeTypeEnums.isBetaNode( lt ) ) {
-//                BetaNode betaNode = (BetaNode) lt;
-//                if ( betaNode.isRightInputIsRiaNode() ) {
-//                    RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
-//                    lt = lt.getLeftTupleSource();
-//                    setUnlinkDisabledCount( lt, riaNode.getLeftTupleSource(), wms );
-//                    continue;
-//                }
-//
-//                if ( wms != null && betaNode.isPhreakEnabled() ) {
-//                    for ( InternalWorkingMemory wm : wms ) {
-//                        BetaMemory bm;
-//                        if ( NodeTypeEnums.AccumulateNode == lt.getType() ) {
-//                            bm = ((AccumulateMemory) wm.getNodeMemory( (AccumulateNode) lt )).getBetaMemory();
-//                        } else {
-//                            bm = (BetaMemory) wm.getNodeMemory( (BetaNode) lt );
-//                        }
-//                        RightTupleList list = bm.getStagedAssertRightTupleList();
-//                        int length = list.size();
-//
-//                        BetaNode.propagateAssertRightTuples( betaNode, list, length, wm );
-//                        bm.clearStagingMemory();
-//                    }
-//                }
-//                betaNode.setPhreakEnabled( false );
-//                betaNode.setUnlinkedDisabledCount( betaNode.getUnlinkedDisabledCount() + 1 );
-//            } else if ( NodeTypeEnums.LeftInputAdapterNode == lt.getType() ) {
-//                LeftInputAdapterNode liaNode = ((LeftInputAdapterNode) lt);
-//
-//                if ( wms != null && liaNode.isPhreakEnabled() ) {
-//                    for ( InternalWorkingMemory wm : wms ) {
-//                        LiaNodeMemory lm = (LiaNodeMemory) wm.getNodeMemory( (LeftInputAdapterNode) lt );
-//                        LeftTupleList list = lm.getStagedLeftTupleList();
-//                        int length = list.size();
-//
-//                        LeftInputAdapterNode.propagateLeftTuples( (LeftInputAdapterNode) lt, list, length, wm );
-//                        lm.setStagedLeftTupleList( null );
-//                    }
-//                }   
-//                
-//                liaNode.setUnlinkedDisabledCount( liaNode.getUnlinkedDisabledCount() + 1 );
-//                liaNode.setPhreakEnabled( false );
-//            }
-//            lt = lt.getLeftTupleSource();
-//        }
-    } 
 
     /**
      * Adds a query pattern to the given subrule

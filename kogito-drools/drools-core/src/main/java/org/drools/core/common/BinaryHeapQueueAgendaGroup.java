@@ -57,8 +57,8 @@ public class BinaryHeapQueueAgendaGroup
     private          long               clearedForRecency;
 
     private InternalWorkingMemory workingMemory;
-    private boolean           autoDeactivate = true;
-    private Map<Long, String> nodeInstances  = new HashMap<Long, String>();
+    private boolean               autoDeactivate = true;
+    private Map<Long, String>     nodeInstances  = new HashMap<Long, String>();
 
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
@@ -164,11 +164,6 @@ public class BinaryHeapQueueAgendaGroup
     @Override
     public void setAutoDeactivate(boolean autoDeactivate) {
         this.autoDeactivate = autoDeactivate;
-        synchronized ( this ) {
-            if ( autoDeactivate && isActive() && isEmpty() ) {
-                setActive(false);
-            }
-        }
     }
 
     public void addNodeInstance(Long processInstanceId,
@@ -185,11 +180,6 @@ public class BinaryHeapQueueAgendaGroup
 
     public void setActive(final boolean activate) {
         this.active = activate;
-        synchronized ( this ) {
-            if ( autoDeactivate && isActive() && isEmpty() ) {
-                setActive( false );
-            }
-        }
     }
 
     public PropagationContext getAutoFocusActivator() {

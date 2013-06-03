@@ -72,7 +72,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
     protected boolean rootQueryNode;
 
     protected boolean unlinkingEnabled;
-    private   int     unlinkedDisabledCount;
     private   int     segmentMemoryIndex;
 
     public LeftInputAdapterNode() {
@@ -119,7 +118,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         leftTupleMemoryEnabled = in.readBoolean();
         rootQueryNode = in.readBoolean();
         unlinkingEnabled = in.readBoolean();
-        unlinkedDisabledCount = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -128,7 +126,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         out.writeBoolean(leftTupleMemoryEnabled);
         out.writeBoolean(rootQueryNode);
         out.writeBoolean(unlinkingEnabled);
-        out.writeInt(unlinkedDisabledCount);
     }
 
     public ObjectSource getObjectSource() {
@@ -162,14 +159,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     public void setUnlinkingEnabled(boolean unlinkingEnabled) {
         this.unlinkingEnabled = unlinkingEnabled;
-    }
-
-    public int getUnlinkedDisabledCount() {
-        return unlinkedDisabledCount;
-    }
-
-    public void setUnlinkedDisabledCount(int unlinkedDisabledCount) {
-        this.unlinkedDisabledCount = unlinkedDisabledCount;
     }
     
     public ObjectSource getParentObjectSource() {
@@ -571,8 +560,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 }
             }
         }
-
-        handleUnlinking(context);
     }
 
     protected void doCollectAncestors(NodeSet nodeSet) {
@@ -583,22 +570,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public LeftTuple createPeer(LeftTuple original) {
         return null;
     }
-    
-    
-    public void handleUnlinking(final RuleRemovalContext context) {
-        if ( !context.isUnlinkEnabled( )  && unlinkedDisabledCount == 0) {
-            // if unlinkedDisabledCount is 0, then we know that unlinking is disabled globally
-            return;
-        }
-        
-        if ( context.isUnlinkEnabled( ) ) {
-            unlinkedDisabledCount--;
-            if ( unlinkedDisabledCount == 0 ) {
-                unlinkingEnabled = true;
-            }
-        }
-        
-    }    
 
     /**
      * Returns the next node

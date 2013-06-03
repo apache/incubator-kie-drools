@@ -118,8 +118,6 @@ public abstract class BetaNode extends LeftTupleSource
 
     private boolean unlinkingEnabled;
 
-    private int unlinkedDisabledCount;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -163,7 +161,6 @@ public abstract class BetaNode extends LeftTupleSource
         initMasks(context, leftInput);
 
         this.unlinkingEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
-        this.unlinkedDisabledCount = 0;
 
         ObjectTypeNode node = null;
 
@@ -180,14 +177,6 @@ public abstract class BetaNode extends LeftTupleSource
 
     public void setUnlinkingEnabled(boolean unlinkingEnabled) {
         this.unlinkingEnabled = unlinkingEnabled;
-    }
-
-    public int getUnlinkedDisabledCount() {
-        return unlinkedDisabledCount;
-    }
-
-    public void setUnlinkedDisabledCount(int unlinkedDisabledCount) {
-        this.unlinkedDisabledCount = unlinkedDisabledCount;
     }
 
     @Override
@@ -264,7 +253,6 @@ public abstract class BetaNode extends LeftTupleSource
         tupleMemoryEnabled = in.readBoolean();
         concurrentRightTupleMemory = in.readBoolean();
         unlinkingEnabled = in.readBoolean();
-        unlinkedDisabledCount = in.readInt();
         rightDeclaredMask = in.readLong();
         rightInferredMask = in.readLong();
         rightNegativeMask = in.readLong();
@@ -294,7 +282,6 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( concurrentRightTupleMemory );
         out.writeBoolean( unlinkingEnabled );
-        out.writeInt( unlinkedDisabledCount );
         out.writeLong( rightDeclaredMask );
         out.writeLong( rightInferredMask );
         out.writeLong( rightNegativeMask );
@@ -641,25 +628,9 @@ public abstract class BetaNode extends LeftTupleSource
             context.setCleanupAdapter( null );
         }
 
-        handleUnlinking(context);
-
         if ( !isInUse() ) {
             leftInput.removeTupleSink( this );
             rightInput.removeObjectSink( this );
-        }
-    }
-    
-    public void handleUnlinking(final RuleRemovalContext context) {
-        if ( !context.isUnlinkEnabled( )  && unlinkedDisabledCount == 0) {
-            // if unlinkedDisabledCount is 0, then we know that unlinking is disabled globally
-            return;
-        }
-        
-        if ( context.isUnlinkEnabled( ) ) {
-            unlinkedDisabledCount--;
-            if ( unlinkedDisabledCount == 0 ) {
-                unlinkingEnabled = true;
-            }
         }
     }
         

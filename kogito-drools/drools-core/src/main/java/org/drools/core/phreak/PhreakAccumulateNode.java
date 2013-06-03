@@ -209,8 +209,14 @@ public class PhreakAccumulateNode {
             RightTuple next = rightTuple.getStagedNext();
 
             rtm.add(rightTuple);
-            PropagationContext context = rightTuple.getPropagationContext();
+            if ( ltm == null || ltm.size() == 0 ) {
+                // do nothing here, as no left memory
+                rightTuple.clearStaged();
+                rightTuple = next;
+                continue;
+            }
 
+            PropagationContext context = rightTuple.getPropagationContext();
             constraints.updateFromFactHandle(contextEntry,
                                              wm,
                                              rightTuple.getFactHandle());
