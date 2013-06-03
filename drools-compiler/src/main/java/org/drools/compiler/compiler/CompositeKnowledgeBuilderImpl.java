@@ -242,16 +242,13 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             }
         }
 
-        Map<String, List<PackageBuilder.TypeDefinition>> unresolvedTypes = new HashMap<String, List<PackageBuilder.TypeDefinition>>();
+        List<PackageBuilder.TypeDefinition> unresolvedTypes = new ArrayList<PackageBuilder.TypeDefinition>();
         for (PackageDescr packageDescr : packages) {
-            List<PackageBuilder.TypeDefinition> unresolvedTypesForPkg = buildTypeDeclarations(packageDescr);
-            if (unresolvedTypesForPkg != null) {
-                unresolvedTypes.put(packageDescr.getNamespace(), unresolvedTypesForPkg);
-            }
+            buildTypeDeclarations(packageDescr, unresolvedTypes);
         }
 
-        for (Map.Entry<String, List<PackageBuilder.TypeDefinition>> unresolvedType : unresolvedTypes.entrySet()) {
-            pkgBuilder.processUnresolvedTypes(pkgBuilder.getPackageRegistry(unresolvedType.getKey()), unresolvedType.getValue());
+        for (PackageBuilder.TypeDefinition unresolvedType : unresolvedTypes) {
+            pkgBuilder.processUnresolvedType(pkgBuilder.getPackageRegistry(unresolvedType.getNamespace()), unresolvedType);
         }
 
         for (PackageDescr packageDescr : packages) {
@@ -261,14 +258,14 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private List<PackageBuilder.TypeDefinition> buildTypeDeclarations(PackageDescr packageDescr) {
+    private List<PackageBuilder.TypeDefinition> buildTypeDeclarations(PackageDescr packageDescr, List<PackageBuilder.TypeDefinition> unresolvedTypes) {
         PackageRegistry pkgRegistry = pkgBuilder.initPackageRegistry(packageDescr);
         if (pkgRegistry == null) {
             return null;
         }
 
         pkgBuilder.processEntryPointDeclarations(pkgRegistry, packageDescr);
-        return pkgBuilder.processTypeDeclarations(pkgRegistry, packageDescr);
+        return pkgBuilder.processTypeDeclarations(pkgRegistry, packageDescr, unresolvedTypes);
     }
 
     private Collection<CompositePackageDescr> buildPackageDescr() {
