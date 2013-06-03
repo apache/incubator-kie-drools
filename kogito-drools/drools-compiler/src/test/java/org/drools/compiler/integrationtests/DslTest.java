@@ -151,9 +151,9 @@ public class DslTest extends CommonTestMethodBase {
                       messages.size() );
     }
 
-    @Test @Ignore
+    @Test @Ignore("antlr cannot parse correctly if the file ends with a comment without a further line break")
     public void testEmptyDSL() throws Exception {
-        // FIXME eterelli / mic_hat not sure what to do with this?
+        // FIXME etirelli / mic_hat not sure what to do with this?
         final String DSL = "# This is an empty dsl file.";  // gives antlr <EOF> error
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
