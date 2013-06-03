@@ -31,7 +31,7 @@ import org.junit.Test;
 
 public class RulebasePartitioningTest extends CommonTestMethodBase {
 
-    @Test 
+    @Test
     @Ignore
     public void testRulebasePartitions1() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
