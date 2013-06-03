@@ -104,16 +104,19 @@ public class SessionInspectorTest extends CommonTestMethodBase {
     }
     
     @Test
-    @Ignore("Does not work in the IBM JDK due to a bug in MVEL")
     public void testGetSessionInfoWithCustomTemplate() {
+        if ( System.getProperty("java.vendor").toUpperCase().contains("IBM") ) {
+            return; //Does not work in the IBM JDK due to a bug in MVEL
+        }
+
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_SubNetworks.drl" ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_SubNetworks.drl" ),
                       ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_AccumulateWithFromChaining.drl" ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_AccumulateWithFromChaining.drl" ),
                       ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_CollectResultsBetaConstraint.drl" ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_CollectResultsBetaConstraint.drl" ),
                       ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newClassPathResource("org/drools/integrationtests/test_QueryMemoryLeak.drl"),
+        kbuilder.add( ResourceFactory.newClassPathResource("org/drools/compiler/integrationtests/test_QueryMemoryLeak.drl"),
                       ResourceType.DRL );
 
         assertFalse( kbuilder.getErrors().toString(),
