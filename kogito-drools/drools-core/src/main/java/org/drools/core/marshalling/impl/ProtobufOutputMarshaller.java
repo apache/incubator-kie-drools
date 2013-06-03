@@ -31,6 +31,7 @@ import org.drools.core.InitialFact;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.BinaryHeapQueueAgendaGroup;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
@@ -44,7 +45,6 @@ import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.QueryElementFactHandle;
-import org.drools.core.common.RuleFlowGroupImpl;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
@@ -103,9 +103,9 @@ public class ProtobufOutputMarshaller {
     public static void writeSession(MarshallerWriteContext context) throws IOException {
 
         ProtobufMessages.KnowledgeSession _session = serializeSession( context );
-        
+
         PersisterHelper.writeToStreamWithHeader( context,
-                                                 _session );              
+                                                 _session );
     }
 
     private static ProtobufMessages.KnowledgeSession serializeSession(MarshallerWriteContext context) throws IOException {
@@ -174,7 +174,7 @@ public class ProtobufOutputMarshaller {
             _session.setProcessData( _pdata.build() );
         }
 
-        Timers _timers = writeTimers( context.wm.getTimerService().getTimerJobInstances(context.wm.getId()),
+        Timers _timers = writeTimers( context.wm.getTimerService().getTimerJobInstances( context.wm.getId() ),
                                       context );
         if ( _timers != null ) {
             _session.setTimers( _timers );
@@ -193,10 +193,23 @@ public class ProtobufOutputMarshaller {
         AgendaGroup[] agendaGroups = (AgendaGroup[]) agenda.getAgendaGroupsMap().values().toArray( new AgendaGroup[agenda.getAgendaGroupsMap().size()] );
         Arrays.sort( agendaGroups,
                      AgendaGroupSorter.instance );
-        for ( AgendaGroup group : agendaGroups ) {
+        for ( AgendaGroup ag : agendaGroups ) {
+            BinaryHeapQueueAgendaGroup group = (BinaryHeapQueueAgendaGroup) ag;
             org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.Builder _agb = ProtobufMessages.Agenda.AgendaGroup.newBuilder();
-            _agb.setName( group.getName() );
-            _agb.setIsActive( group.isActive() );
+            _agb.setName( group.getName() )
+                    .setIsActive( group.isActive() )
+                    .setIsAutoDeactivate( group.isAutoDeactivate() )
+                    .setClearedForRecency( group.getClearedForRecency() )
+                    .setActivatedForRecency( group.getActivatedForRecency() );
+
+            Map<Long, String> nodeInstances = group.getNodeInstances();
+            for ( Map.Entry<Long, String> entry : nodeInstances.entrySet() ) {
+                org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder _nib = ProtobufMessages.Agenda.AgendaGroup.NodeInstance.newBuilder();
+                _nib.setProcessInstanceId( entry.getKey() );
+                _nib.setNodeInstanceId( entry.getValue() );
+                _agb.addNodeInstance( _nib.build() );
+            }
+
             _ab.addAgendaGroup( _agb.build() );
 
         }
@@ -221,10 +234,10 @@ public class ProtobufOutputMarshaller {
         for ( org.drools.core.spi.Activation activation : dormant ) {
             _ab.addActivation( writeActivation( context, (AgendaItem) activation ) );
         }
-        
+
         // serialize all network evaluator activations
-        for( Activation activation : agenda.getActivations() ) {
-            if( activation.isRuleAgendaItem() ) {
+        for ( Activation activation : agenda.getActivations() ) {
+            if ( activation.isRuleAgendaItem() ) {
                 // serialize it
                 _ab.addRnea( writeActivation( context, (AgendaItem) activation ) );
             }
@@ -307,9 +320,9 @@ public class ProtobufOutputMarshaller {
                                                                   final Memory memory) {
         // for RIA nodes, we need to store the ID of the created handles
         RiaNodeMemory mem = (RiaNodeMemory) memory;
-        if( ! mem.getMap().isEmpty() ) {
+        if ( !mem.getMap().isEmpty() ) {
             ProtobufMessages.NodeMemory.RIANodeMemory.Builder _ria = ProtobufMessages.NodeMemory.RIANodeMemory.newBuilder();
-            
+
             final org.drools.core.util.Iterator it = mem.getMap().iterator();
             // iterates over all propagated handles and assert them to the new sink
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
@@ -445,7 +458,7 @@ public class ProtobufOutputMarshaller {
     }
 
     public static void writeTruthMaintenanceSystem(MarshallerWriteContext context,
-                                                   SessionEntryPoint wmep, 
+                                                   SessionEntryPoint wmep,
                                                    ProtobufMessages.EntryPoint.Builder _epb) throws IOException {
         TruthMaintenanceSystem tms = ((NamedEntryPoint) wmep).getTruthMaintenanceSystem();
         ObjectHashMap justifiedMap = tms.getEqualityKeyMap();
@@ -477,15 +490,14 @@ public class ProtobufOutputMarshaller {
                         _key.addOtherHandle( handle.getId() );
                     }
                 }
-                
-                if ( key.getBeliefSet() != null && !key.getBeliefSet().isEmpty()) {
+
+                if ( key.getBeliefSet() != null && !key.getBeliefSet().isEmpty() ) {
                     writeBeliefSet( context, key.getBeliefSet(), _key );
                 }
 
-                
                 _tms.addKey( _key.build() );
             }
-            
+
             _epb.setTms( _tms.build() );
         }
     }
@@ -493,12 +505,12 @@ public class ProtobufOutputMarshaller {
     private static void writeBeliefSet(MarshallerWriteContext context,
                                        BeliefSet beliefSet,
                                        org.drools.core.marshalling.impl.ProtobufMessages.EqualityKey.Builder _key) throws IOException {
-        
+
         ProtobufMessages.BeliefSet.Builder _beliefSet = ProtobufMessages.BeliefSet.newBuilder();
         _beliefSet.setHandleId( beliefSet.getFactHandle().getId() );
-        
+
         ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
-        
+
         for ( LinkedListEntry node = (LinkedListEntry) beliefSet.getFirst(); node != null; node = (LinkedListEntry) node.getNext() ) {
             LogicalDependency belief = (LogicalDependency) node.getObject();
             ProtobufMessages.LogicalDependency.Builder _logicalDependency = ProtobufMessages.LogicalDependency.newBuilder();
@@ -512,26 +524,26 @@ public class ProtobufOutputMarshaller {
                     .setTuple( PersisterHelper.createTuple( activation.getTuple() ) )
                     .build();
             _logicalDependency.setActivation( _activation );
-            
+
             if ( belief.getObject() != null ) {
                 ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( belief.getObject() );
 
                 Integer index = context.getStrategyIndex( strategy );
                 _logicalDependency.setObjectStrategyIndex( index.intValue() );
                 _logicalDependency.setObject( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
-                                                                          context,
-                                                                          belief.getObject() ) ) );
+                                                                                     context,
+                                                                                     belief.getObject() ) ) );
             }
-            
+
             if ( belief.getValue() != null ) {
                 ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( belief.getValue() );
 
                 Integer index = context.getStrategyIndex( strategy );
                 _logicalDependency.setValueStrategyIndex( index.intValue() );
                 _logicalDependency.setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
-                                                                          context,
-                                                                          belief.getValue() ) ) );
-            }    
+                                                                                    context,
+                                                                                    belief.getValue() ) ) );
+            }
             _beliefSet.addLogicalDependency( _logicalDependency.build() );
         }
         _key.setBeliefSet( _beliefSet );
@@ -607,7 +619,7 @@ public class ProtobufOutputMarshaller {
             return ProtobufMessages.FactHandle.HandleType.EVENT;
         } else if ( handle instanceof QueryElementFactHandle ) {
             return ProtobufMessages.FactHandle.HandleType.QUERY;
-        } else if ( handle.getObject() instanceof InitialFact) {
+        } else if ( handle.getObject() instanceof InitialFact ) {
             return ProtobufMessages.FactHandle.HandleType.INITIAL_FACT;
         }
         return ProtobufMessages.FactHandle.HandleType.FACT;
@@ -720,7 +732,7 @@ public class ProtobufOutputMarshaller {
                 JobContext jctx = ((SelfRemovalJobContext) timer.getJobContext()).getJobContext();
                 TimersOutputMarshaller writer = outCtx.writersByClass.get( jctx.getClass() );
                 Timer _timer = writer.serialize( jctx, outCtx );
-                if (_timer != null) {
+                if ( _timer != null ) {
                     _timers.addTimer( _timer );
                 }
             }

@@ -110,6 +110,17 @@ message Agenda {
     message AgendaGroup {
         optional string name = 1;
         optional bool is_active = 2;
+        optional bool is_auto_deactivate = 3;
+        optional int64 activated_for_recency = 4;
+        optional int64 cleared_for_recency = 5;
+
+        repeated Activation activation = 6;
+        repeated NodeInstance node_instance = 7;
+
+        message NodeInstance {
+            optional int64 process_instance_id = 1;
+            optional string node_instance_id = 2;
+        }
     }
 
     message FocusStack {

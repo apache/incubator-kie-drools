@@ -30,11 +30,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.ActivationsFilter;
+import org.drools.core.common.BinaryHeapQueueAgendaGroup;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -42,12 +42,10 @@ import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.QueryElementFactHandle;
-import org.drools.core.common.RuleFlowGroupImpl;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.marshalling.impl.ProtobufMessages.RuleData;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
@@ -63,7 +61,6 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
@@ -234,9 +231,9 @@ public class ProtobufInputMarshaller {
         }
 
         // RuleFlowGroups need to reference the session
-//        for ( InternalAgendaGroup group : agenda.getAgendaGroupsMap().values() ) {
-//            ((RuleFlowGroupImpl) group).setWorkingMemory( session );
-//        }
+        //        for ( InternalAgendaGroup group : agenda.getAgendaGroupsMap().values() ) {
+        //            ((RuleFlowGroupImpl) group).setWorkingMemory( session );
+        //        }
 
         context.wm = session;
 
@@ -389,8 +386,16 @@ public class ProtobufInputMarshaller {
         ProtobufMessages.Agenda _agenda = _ruleData.getAgenda();
 
         for ( org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup _agendaGroup : _agenda.getAgendaGroupList() ) {
-            InternalAgendaGroup group = (InternalAgendaGroup) agenda.getAgendaGroup( _agendaGroup.getName(), context.ruleBase );
+            BinaryHeapQueueAgendaGroup group = (BinaryHeapQueueAgendaGroup) agenda.getAgendaGroup( _agendaGroup.getName(), context.ruleBase );
             group.setActive( _agendaGroup.getIsActive() );
+            group.setAutoDeactivate( _agendaGroup.getIsAutoDeactivate() );
+            group.setClearedForRecency( _agendaGroup.getClearedForRecency() );
+            group.setActivatedForRecency( _agendaGroup.getActivatedForRecency() );
+
+            for ( org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance _nodeInstance : _agendaGroup.getNodeInstanceList() ) {
+                group.addNodeInstance( _nodeInstance.getProcessInstanceId(),
+                                       _nodeInstance.getNodeInstanceId() );
+            }
             agenda.getAgendaGroupsMap().put( group.getName(),
                                              group );
         }
@@ -398,22 +403,6 @@ public class ProtobufInputMarshaller {
         for ( String _groupName : _agenda.getFocusStack().getGroupNameList() ) {
             agenda.addAgendaGroupOnStack( agenda.getAgendaGroup( _groupName ) );
         }
-
-//        for ( ProtobufMessages.Agenda.RuleFlowGroup _ruleFlowGroup : _agenda.getRuleFlowGroupList() ) {
-//            RuleFlowGroupImpl rfgi = new RuleFlowGroupImpl( _ruleFlowGroup.getName(),
-//                                                            _ruleFlowGroup.getIsActive(),
-//                                                            _ruleFlowGroup.getIsAutoDeactivate() );
-//            agenda.getRuleFlowGroupsMap().put( _ruleFlowGroup.getName(),
-//                                               rfgi );
-//
-//            //            readActivations( context,
-//            //                             _ruleFlowGroup.getActivationList() );
-//
-//            for ( NodeInstance _nodeInstance : _ruleFlowGroup.getNodeInstanceList() ) {
-//                rfgi.addNodeInstance( _nodeInstance.getProcessInstanceId(),
-//                                      _nodeInstance.getNodeInstanceId() );
-//            }
-//        }
 
         readActivations( context,
                          _agenda.getActivationList(),
@@ -739,18 +728,18 @@ public class ProtobufInputMarshaller {
                               PropagationContext context,
                               InternalWorkingMemory workingMemory,
                               TerminalNode rtn) {
-            if (activation.isRuleAgendaItem()) {
-                ActivationKey key = PersisterHelper.createActivationKey(activation.getRule().getPackageName(), activation.getRule().getName(), activation.getTuple());
-                if (!this.rneActivations.containsKey(key)) {
-                    rneaToFire.add((RuleAgendaItem) activation);
+            if ( activation.isRuleAgendaItem() ) {
+                ActivationKey key = PersisterHelper.createActivationKey( activation.getRule().getPackageName(), activation.getRule().getName(), activation.getTuple() );
+                if ( !this.rneActivations.containsKey( key ) ) {
+                    rneaToFire.add( (RuleAgendaItem) activation );
                 }
                 return true;
             } else {
-                ActivationKey key = PersisterHelper.createActivationKey(rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple());
+                ActivationKey key = PersisterHelper.createActivationKey( rtn.getRule().getPackageName(), rtn.getRule().getName(), activation.getTuple() );
                 // add the tuple to the cache for correlation
-                this.tuplesCache.put(key, activation.getTuple());
+                this.tuplesCache.put( key, activation.getTuple() );
                 // check if there was an active activation for it
-                return !this.dormantActivations.containsKey(key);
+                return !this.dormantActivations.containsKey( key );
             }
         }
 
@@ -764,10 +753,10 @@ public class ProtobufInputMarshaller {
 
         public void fireRNEAs(final InternalWorkingMemory wm) {
             RuleAgendaItem rnea = null;
-            while ((rnea = rneaToFire.poll()) != null) {
+            while ( (rnea = rneaToFire.poll()) != null ) {
                 rnea.remove();
-                rnea.setQueued(false);
-                rnea.getRuleExecutor().evaluateNetworkAndFire(wm, null, 0, -1);
+                rnea.setQueued( false );
+                rnea.getRuleExecutor().evaluateNetworkAndFire( wm, null, 0, -1 );
             }
         }
     }
@@ -792,23 +781,23 @@ public class ProtobufInputMarshaller {
             int result = 1;
             result = prime * result + ((pkgName == null) ? 0 : pkgName.hashCode());
             result = prime * result + ((ruleName == null) ? 0 : ruleName.hashCode());
-            result = prime * result + Arrays.hashCode(tuple);
+            result = prime * result + Arrays.hashCode( tuple );
             return result;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            if (getClass() != obj.getClass()) return false;
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
             ActivationKey other = (ActivationKey) obj;
-            if (pkgName == null) {
-                if (other.pkgName != null) return false;
-            } else if (!pkgName.equals(other.pkgName)) return false;
-            if (ruleName == null) {
-                if (other.ruleName != null) return false;
-            } else if (!ruleName.equals(other.ruleName)) return false;
-            if (!Arrays.equals(tuple, other.tuple)) return false;
+            if ( pkgName == null ) {
+                if ( other.pkgName != null ) return false;
+            } else if ( !pkgName.equals( other.pkgName ) ) return false;
+            if ( ruleName == null ) {
+                if ( other.ruleName != null ) return false;
+            } else if ( !ruleName.equals( other.ruleName ) ) return false;
+            if ( !Arrays.equals( tuple, other.tuple ) ) return false;
             return true;
         }
     }
@@ -825,17 +814,17 @@ public class ProtobufInputMarshaller {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + Arrays.hashCode(tuple);
+            result = prime * result + Arrays.hashCode( tuple );
             return result;
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null) return false;
-            if (getClass() != obj.getClass()) return false;
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
             TupleKey other = (TupleKey) obj;
-            if (!Arrays.equals(tuple, other.tuple)) return false;
+            if ( !Arrays.equals( tuple, other.tuple ) ) return false;
             return true;
         }
     }

@@ -7525,6 +7525,86 @@ public final class ProtobufMessages {
        * <code>optional bool is_active = 2;</code>
        */
       boolean getIsActive();
+
+      // optional bool is_auto_deactivate = 3;
+      /**
+       * <code>optional bool is_auto_deactivate = 3;</code>
+       */
+      boolean hasIsAutoDeactivate();
+      /**
+       * <code>optional bool is_auto_deactivate = 3;</code>
+       */
+      boolean getIsAutoDeactivate();
+
+      // optional int64 activated_for_recency = 4;
+      /**
+       * <code>optional int64 activated_for_recency = 4;</code>
+       */
+      boolean hasActivatedForRecency();
+      /**
+       * <code>optional int64 activated_for_recency = 4;</code>
+       */
+      long getActivatedForRecency();
+
+      // optional int64 cleared_for_recency = 5;
+      /**
+       * <code>optional int64 cleared_for_recency = 5;</code>
+       */
+      boolean hasClearedForRecency();
+      /**
+       * <code>optional int64 cleared_for_recency = 5;</code>
+       */
+      long getClearedForRecency();
+
+      // repeated .org.drools.core.marshalling.Activation activation = 6;
+      /**
+       * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+       */
+      java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Activation> 
+          getActivationList();
+      /**
+       * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+       */
+      org.drools.core.marshalling.impl.ProtobufMessages.Activation getActivation(int index);
+      /**
+       * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+       */
+      int getActivationCount();
+      /**
+       * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+       */
+      java.util.List<? extends org.drools.core.marshalling.impl.ProtobufMessages.ActivationOrBuilder> 
+          getActivationOrBuilderList();
+      /**
+       * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+       */
+      org.drools.core.marshalling.impl.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder(
+          int index);
+
+      // repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;
+      /**
+       * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+       */
+      java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance> 
+          getNodeInstanceList();
+      /**
+       * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+       */
+      org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance getNodeInstance(int index);
+      /**
+       * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+       */
+      int getNodeInstanceCount();
+      /**
+       * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+       */
+      java.util.List<? extends org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder> 
+          getNodeInstanceOrBuilderList();
+      /**
+       * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+       */
+      org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder getNodeInstanceOrBuilder(
+          int index);
     }
     /**
      * Protobuf type {@code org.drools.core.marshalling.Agenda.AgendaGroup}
@@ -7587,6 +7667,37 @@ public final class ProtobufMessages {
                 isActive_ = input.readBool();
                 break;
               }
+              case 24: {
+                bitField0_ |= 0x00000004;
+                isAutoDeactivate_ = input.readBool();
+                break;
+              }
+              case 32: {
+                bitField0_ |= 0x00000008;
+                activatedForRecency_ = input.readInt64();
+                break;
+              }
+              case 40: {
+                bitField0_ |= 0x00000010;
+                clearedForRecency_ = input.readInt64();
+                break;
+              }
+              case 50: {
+                if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+                  activation_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.Activation>();
+                  mutable_bitField0_ |= 0x00000020;
+                }
+                activation_.add(input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.Activation.PARSER, extensionRegistry));
+                break;
+              }
+              case 58: {
+                if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+                  nodeInstance_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance>();
+                  mutable_bitField0_ |= 0x00000040;
+                }
+                nodeInstance_.add(input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.PARSER, extensionRegistry));
+                break;
+              }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -7595,6 +7706,12 @@ public final class ProtobufMessages {
           throw new com.google.protobuf.InvalidProtocolBufferException(
               e.getMessage()).setUnfinishedMessage(this);
         } finally {
+          if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+            activation_ = java.util.Collections.unmodifiableList(activation_);
+          }
+          if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+            nodeInstance_ = java.util.Collections.unmodifiableList(nodeInstance_);
+          }
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
         }
@@ -7624,6 +7741,558 @@ public final class ProtobufMessages {
       @java.lang.Override
       public com.google.protobuf.Parser<AgendaGroup> getParserForType() {
         return PARSER;
+      }
+
+      public interface NodeInstanceOrBuilder
+          extends com.google.protobuf.MessageOrBuilder {
+
+        // optional int64 process_instance_id = 1;
+        /**
+         * <code>optional int64 process_instance_id = 1;</code>
+         */
+        boolean hasProcessInstanceId();
+        /**
+         * <code>optional int64 process_instance_id = 1;</code>
+         */
+        long getProcessInstanceId();
+
+        // optional string node_instance_id = 2;
+        /**
+         * <code>optional string node_instance_id = 2;</code>
+         */
+        boolean hasNodeInstanceId();
+        /**
+         * <code>optional string node_instance_id = 2;</code>
+         */
+        java.lang.String getNodeInstanceId();
+        /**
+         * <code>optional string node_instance_id = 2;</code>
+         */
+        com.google.protobuf.ByteString
+            getNodeInstanceIdBytes();
+      }
+      /**
+       * Protobuf type {@code org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance}
+       */
+      public static final class NodeInstance extends
+          com.google.protobuf.GeneratedMessage
+          implements NodeInstanceOrBuilder {
+        // Use NodeInstance.newBuilder() to construct.
+        private NodeInstance(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+          super(builder);
+          this.unknownFields = builder.getUnknownFields();
+        }
+        private NodeInstance(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+        private static final NodeInstance defaultInstance;
+        public static NodeInstance getDefaultInstance() {
+          return defaultInstance;
+        }
+
+        public NodeInstance getDefaultInstanceForType() {
+          return defaultInstance;
+        }
+
+        private final com.google.protobuf.UnknownFieldSet unknownFields;
+        @java.lang.Override
+        public final com.google.protobuf.UnknownFieldSet
+            getUnknownFields() {
+          return this.unknownFields;
+        }
+        private NodeInstance(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          initFields();
+          int mutable_bitField0_ = 0;
+          com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+              com.google.protobuf.UnknownFieldSet.newBuilder();
+          try {
+            boolean done = false;
+            while (!done) {
+              int tag = input.readTag();
+              switch (tag) {
+                case 0:
+                  done = true;
+                  break;
+                default: {
+                  if (!parseUnknownField(input, unknownFields,
+                                         extensionRegistry, tag)) {
+                    done = true;
+                  }
+                  break;
+                }
+                case 8: {
+                  bitField0_ |= 0x00000001;
+                  processInstanceId_ = input.readInt64();
+                  break;
+                }
+                case 18: {
+                  bitField0_ |= 0x00000002;
+                  nodeInstanceId_ = input.readBytes();
+                  break;
+                }
+              }
+            }
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            throw e.setUnfinishedMessage(this);
+          } catch (java.io.IOException e) {
+            throw new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this);
+          } finally {
+            this.unknownFields = unknownFields.build();
+            makeExtensionsImmutable();
+          }
+        }
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.class, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder.class);
+        }
+
+        public static com.google.protobuf.Parser<NodeInstance> PARSER =
+            new com.google.protobuf.AbstractParser<NodeInstance>() {
+          public NodeInstance parsePartialFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new NodeInstance(input, extensionRegistry);
+          }
+        };
+
+        @java.lang.Override
+        public com.google.protobuf.Parser<NodeInstance> getParserForType() {
+          return PARSER;
+        }
+
+        private int bitField0_;
+        // optional int64 process_instance_id = 1;
+        public static final int PROCESS_INSTANCE_ID_FIELD_NUMBER = 1;
+        private long processInstanceId_;
+        /**
+         * <code>optional int64 process_instance_id = 1;</code>
+         */
+        public boolean hasProcessInstanceId() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>optional int64 process_instance_id = 1;</code>
+         */
+        public long getProcessInstanceId() {
+          return processInstanceId_;
+        }
+
+        // optional string node_instance_id = 2;
+        public static final int NODE_INSTANCE_ID_FIELD_NUMBER = 2;
+        private java.lang.Object nodeInstanceId_;
+        /**
+         * <code>optional string node_instance_id = 2;</code>
+         */
+        public boolean hasNodeInstanceId() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>optional string node_instance_id = 2;</code>
+         */
+        public java.lang.String getNodeInstanceId() {
+          java.lang.Object ref = nodeInstanceId_;
+          if (ref instanceof java.lang.String) {
+            return (java.lang.String) ref;
+          } else {
+            com.google.protobuf.ByteString bs = 
+                (com.google.protobuf.ByteString) ref;
+            java.lang.String s = bs.toStringUtf8();
+            if (bs.isValidUtf8()) {
+              nodeInstanceId_ = s;
+            }
+            return s;
+          }
+        }
+        /**
+         * <code>optional string node_instance_id = 2;</code>
+         */
+        public com.google.protobuf.ByteString
+            getNodeInstanceIdBytes() {
+          java.lang.Object ref = nodeInstanceId_;
+          if (ref instanceof java.lang.String) {
+            com.google.protobuf.ByteString b = 
+                com.google.protobuf.ByteString.copyFromUtf8(
+                    (java.lang.String) ref);
+            nodeInstanceId_ = b;
+            return b;
+          } else {
+            return (com.google.protobuf.ByteString) ref;
+          }
+        }
+
+        private void initFields() {
+          processInstanceId_ = 0L;
+          nodeInstanceId_ = "";
+        }
+        private byte memoizedIsInitialized = -1;
+        public final boolean isInitialized() {
+          byte isInitialized = memoizedIsInitialized;
+          if (isInitialized != -1) return isInitialized == 1;
+
+          memoizedIsInitialized = 1;
+          return true;
+        }
+
+        public void writeTo(com.google.protobuf.CodedOutputStream output)
+                            throws java.io.IOException {
+          getSerializedSize();
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            output.writeInt64(1, processInstanceId_);
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            output.writeBytes(2, getNodeInstanceIdBytes());
+          }
+          getUnknownFields().writeTo(output);
+        }
+
+        private int memoizedSerializedSize = -1;
+        public int getSerializedSize() {
+          int size = memoizedSerializedSize;
+          if (size != -1) return size;
+
+          size = 0;
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeInt64Size(1, processInstanceId_);
+          }
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            size += com.google.protobuf.CodedOutputStream
+              .computeBytesSize(2, getNodeInstanceIdBytes());
+          }
+          size += getUnknownFields().getSerializedSize();
+          memoizedSerializedSize = size;
+          return size;
+        }
+
+        private static final long serialVersionUID = 0L;
+        @java.lang.Override
+        protected java.lang.Object writeReplace()
+            throws java.io.ObjectStreamException {
+          return super.writeReplace();
+        }
+
+        public static org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance parseFrom(
+            com.google.protobuf.ByteString data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance parseFrom(
+            com.google.protobuf.ByteString data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance parseFrom(byte[] data)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data);
+        }
+        public static org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance parseFrom(
+            byte[] data,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return PARSER.parseFrom(data, extensionRegistry);
+        }
+        public static org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance parseFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input);
+        }
+        public static org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance parseFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input, extensionRegistry);
+        }
+        public static org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance parseDelimitedFrom(java.io.InputStream input)
+            throws java.io.IOException {
+          return PARSER.parseDelimitedFrom(input);
+        }
+        public static org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance parseDelimitedFrom(
+            java.io.InputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseDelimitedFrom(input, extensionRegistry);
+        }
+        public static org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance parseFrom(
+            com.google.protobuf.CodedInputStream input)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input);
+        }
+        public static org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance parseFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          return PARSER.parseFrom(input, extensionRegistry);
+        }
+
+        public static Builder newBuilder() { return Builder.create(); }
+        public Builder newBuilderForType() { return newBuilder(); }
+        public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance prototype) {
+          return newBuilder().mergeFrom(prototype);
+        }
+        public Builder toBuilder() { return newBuilder(this); }
+
+        @java.lang.Override
+        protected Builder newBuilderForType(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          Builder builder = new Builder(parent);
+          return builder;
+        }
+        /**
+         * Protobuf type {@code org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance}
+         */
+        public static final class Builder extends
+            com.google.protobuf.GeneratedMessage.Builder<Builder>
+           implements org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder {
+          public static final com.google.protobuf.Descriptors.Descriptor
+              getDescriptor() {
+            return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_descriptor;
+          }
+
+          protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+              internalGetFieldAccessorTable() {
+            return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_fieldAccessorTable
+                .ensureFieldAccessorsInitialized(
+                    org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.class, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder.class);
+          }
+
+          // Construct using org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.newBuilder()
+          private Builder() {
+            maybeForceBuilderInitialization();
+          }
+
+          private Builder(
+              com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            super(parent);
+            maybeForceBuilderInitialization();
+          }
+          private void maybeForceBuilderInitialization() {
+            if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            }
+          }
+          private static Builder create() {
+            return new Builder();
+          }
+
+          public Builder clear() {
+            super.clear();
+            processInstanceId_ = 0L;
+            bitField0_ = (bitField0_ & ~0x00000001);
+            nodeInstanceId_ = "";
+            bitField0_ = (bitField0_ & ~0x00000002);
+            return this;
+          }
+
+          public Builder clone() {
+            return create().mergeFrom(buildPartial());
+          }
+
+          public com.google.protobuf.Descriptors.Descriptor
+              getDescriptorForType() {
+            return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_descriptor;
+          }
+
+          public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance getDefaultInstanceForType() {
+            return org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.getDefaultInstance();
+          }
+
+          public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance build() {
+            org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance result = buildPartial();
+            if (!result.isInitialized()) {
+              throw newUninitializedMessageException(result);
+            }
+            return result;
+          }
+
+          public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance buildPartial() {
+            org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance result = new org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance(this);
+            int from_bitField0_ = bitField0_;
+            int to_bitField0_ = 0;
+            if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+              to_bitField0_ |= 0x00000001;
+            }
+            result.processInstanceId_ = processInstanceId_;
+            if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+              to_bitField0_ |= 0x00000002;
+            }
+            result.nodeInstanceId_ = nodeInstanceId_;
+            result.bitField0_ = to_bitField0_;
+            onBuilt();
+            return result;
+          }
+
+          public Builder mergeFrom(com.google.protobuf.Message other) {
+            if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance) {
+              return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance)other);
+            } else {
+              super.mergeFrom(other);
+              return this;
+            }
+          }
+
+          public Builder mergeFrom(org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance other) {
+            if (other == org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.getDefaultInstance()) return this;
+            if (other.hasProcessInstanceId()) {
+              setProcessInstanceId(other.getProcessInstanceId());
+            }
+            if (other.hasNodeInstanceId()) {
+              bitField0_ |= 0x00000002;
+              nodeInstanceId_ = other.nodeInstanceId_;
+              onChanged();
+            }
+            this.mergeUnknownFields(other.getUnknownFields());
+            return this;
+          }
+
+          public final boolean isInitialized() {
+            return true;
+          }
+
+          public Builder mergeFrom(
+              com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+            org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance parsedMessage = null;
+            try {
+              parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+              parsedMessage = (org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance) e.getUnfinishedMessage();
+              throw e;
+            } finally {
+              if (parsedMessage != null) {
+                mergeFrom(parsedMessage);
+              }
+            }
+            return this;
+          }
+          private int bitField0_;
+
+          // optional int64 process_instance_id = 1;
+          private long processInstanceId_ ;
+          /**
+           * <code>optional int64 process_instance_id = 1;</code>
+           */
+          public boolean hasProcessInstanceId() {
+            return ((bitField0_ & 0x00000001) == 0x00000001);
+          }
+          /**
+           * <code>optional int64 process_instance_id = 1;</code>
+           */
+          public long getProcessInstanceId() {
+            return processInstanceId_;
+          }
+          /**
+           * <code>optional int64 process_instance_id = 1;</code>
+           */
+          public Builder setProcessInstanceId(long value) {
+            bitField0_ |= 0x00000001;
+            processInstanceId_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>optional int64 process_instance_id = 1;</code>
+           */
+          public Builder clearProcessInstanceId() {
+            bitField0_ = (bitField0_ & ~0x00000001);
+            processInstanceId_ = 0L;
+            onChanged();
+            return this;
+          }
+
+          // optional string node_instance_id = 2;
+          private java.lang.Object nodeInstanceId_ = "";
+          /**
+           * <code>optional string node_instance_id = 2;</code>
+           */
+          public boolean hasNodeInstanceId() {
+            return ((bitField0_ & 0x00000002) == 0x00000002);
+          }
+          /**
+           * <code>optional string node_instance_id = 2;</code>
+           */
+          public java.lang.String getNodeInstanceId() {
+            java.lang.Object ref = nodeInstanceId_;
+            if (!(ref instanceof java.lang.String)) {
+              java.lang.String s = ((com.google.protobuf.ByteString) ref)
+                  .toStringUtf8();
+              nodeInstanceId_ = s;
+              return s;
+            } else {
+              return (java.lang.String) ref;
+            }
+          }
+          /**
+           * <code>optional string node_instance_id = 2;</code>
+           */
+          public com.google.protobuf.ByteString
+              getNodeInstanceIdBytes() {
+            java.lang.Object ref = nodeInstanceId_;
+            if (ref instanceof String) {
+              com.google.protobuf.ByteString b = 
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                      (java.lang.String) ref);
+              nodeInstanceId_ = b;
+              return b;
+            } else {
+              return (com.google.protobuf.ByteString) ref;
+            }
+          }
+          /**
+           * <code>optional string node_instance_id = 2;</code>
+           */
+          public Builder setNodeInstanceId(
+              java.lang.String value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+            nodeInstanceId_ = value;
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>optional string node_instance_id = 2;</code>
+           */
+          public Builder clearNodeInstanceId() {
+            bitField0_ = (bitField0_ & ~0x00000002);
+            nodeInstanceId_ = getDefaultInstance().getNodeInstanceId();
+            onChanged();
+            return this;
+          }
+          /**
+           * <code>optional string node_instance_id = 2;</code>
+           */
+          public Builder setNodeInstanceIdBytes(
+              com.google.protobuf.ByteString value) {
+            if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+            nodeInstanceId_ = value;
+            onChanged();
+            return this;
+          }
+
+          // @@protoc_insertion_point(builder_scope:org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance)
+        }
+
+        static {
+          defaultInstance = new NodeInstance(true);
+          defaultInstance.initFields();
+        }
+
+        // @@protoc_insertion_point(class_scope:org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance)
       }
 
       private int bitField0_;
@@ -7686,9 +8355,134 @@ public final class ProtobufMessages {
         return isActive_;
       }
 
+      // optional bool is_auto_deactivate = 3;
+      public static final int IS_AUTO_DEACTIVATE_FIELD_NUMBER = 3;
+      private boolean isAutoDeactivate_;
+      /**
+       * <code>optional bool is_auto_deactivate = 3;</code>
+       */
+      public boolean hasIsAutoDeactivate() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional bool is_auto_deactivate = 3;</code>
+       */
+      public boolean getIsAutoDeactivate() {
+        return isAutoDeactivate_;
+      }
+
+      // optional int64 activated_for_recency = 4;
+      public static final int ACTIVATED_FOR_RECENCY_FIELD_NUMBER = 4;
+      private long activatedForRecency_;
+      /**
+       * <code>optional int64 activated_for_recency = 4;</code>
+       */
+      public boolean hasActivatedForRecency() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional int64 activated_for_recency = 4;</code>
+       */
+      public long getActivatedForRecency() {
+        return activatedForRecency_;
+      }
+
+      // optional int64 cleared_for_recency = 5;
+      public static final int CLEARED_FOR_RECENCY_FIELD_NUMBER = 5;
+      private long clearedForRecency_;
+      /**
+       * <code>optional int64 cleared_for_recency = 5;</code>
+       */
+      public boolean hasClearedForRecency() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional int64 cleared_for_recency = 5;</code>
+       */
+      public long getClearedForRecency() {
+        return clearedForRecency_;
+      }
+
+      // repeated .org.drools.core.marshalling.Activation activation = 6;
+      public static final int ACTIVATION_FIELD_NUMBER = 6;
+      private java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Activation> activation_;
+      /**
+       * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+       */
+      public java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Activation> getActivationList() {
+        return activation_;
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+       */
+      public java.util.List<? extends org.drools.core.marshalling.impl.ProtobufMessages.ActivationOrBuilder> 
+          getActivationOrBuilderList() {
+        return activation_;
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+       */
+      public int getActivationCount() {
+        return activation_.size();
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.Activation getActivation(int index) {
+        return activation_.get(index);
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder(
+          int index) {
+        return activation_.get(index);
+      }
+
+      // repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;
+      public static final int NODE_INSTANCE_FIELD_NUMBER = 7;
+      private java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance> nodeInstance_;
+      /**
+       * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+       */
+      public java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance> getNodeInstanceList() {
+        return nodeInstance_;
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+       */
+      public java.util.List<? extends org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder> 
+          getNodeInstanceOrBuilderList() {
+        return nodeInstance_;
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+       */
+      public int getNodeInstanceCount() {
+        return nodeInstance_.size();
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance getNodeInstance(int index) {
+        return nodeInstance_.get(index);
+      }
+      /**
+       * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder getNodeInstanceOrBuilder(
+          int index) {
+        return nodeInstance_.get(index);
+      }
+
       private void initFields() {
         name_ = "";
         isActive_ = false;
+        isAutoDeactivate_ = false;
+        activatedForRecency_ = 0L;
+        clearedForRecency_ = 0L;
+        activation_ = java.util.Collections.emptyList();
+        nodeInstance_ = java.util.Collections.emptyList();
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -7708,6 +8502,21 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeBool(2, isActive_);
         }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeBool(3, isAutoDeactivate_);
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          output.writeInt64(4, activatedForRecency_);
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          output.writeInt64(5, clearedForRecency_);
+        }
+        for (int i = 0; i < activation_.size(); i++) {
+          output.writeMessage(6, activation_.get(i));
+        }
+        for (int i = 0; i < nodeInstance_.size(); i++) {
+          output.writeMessage(7, nodeInstance_.get(i));
+        }
         getUnknownFields().writeTo(output);
       }
 
@@ -7724,6 +8533,26 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
             .computeBoolSize(2, isActive_);
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(3, isAutoDeactivate_);
+        }
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(4, activatedForRecency_);
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(5, clearedForRecency_);
+        }
+        for (int i = 0; i < activation_.size(); i++) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(6, activation_.get(i));
+        }
+        for (int i = 0; i < nodeInstance_.size(); i++) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(7, nodeInstance_.get(i));
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -7833,6 +8662,8 @@ public final class ProtobufMessages {
         }
         private void maybeForceBuilderInitialization() {
           if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getActivationFieldBuilder();
+            getNodeInstanceFieldBuilder();
           }
         }
         private static Builder create() {
@@ -7845,6 +8676,24 @@ public final class ProtobufMessages {
           bitField0_ = (bitField0_ & ~0x00000001);
           isActive_ = false;
           bitField0_ = (bitField0_ & ~0x00000002);
+          isAutoDeactivate_ = false;
+          bitField0_ = (bitField0_ & ~0x00000004);
+          activatedForRecency_ = 0L;
+          bitField0_ = (bitField0_ & ~0x00000008);
+          clearedForRecency_ = 0L;
+          bitField0_ = (bitField0_ & ~0x00000010);
+          if (activationBuilder_ == null) {
+            activation_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000020);
+          } else {
+            activationBuilder_.clear();
+          }
+          if (nodeInstanceBuilder_ == null) {
+            nodeInstance_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000040);
+          } else {
+            nodeInstanceBuilder_.clear();
+          }
           return this;
         }
 
@@ -7881,6 +8730,36 @@ public final class ProtobufMessages {
             to_bitField0_ |= 0x00000002;
           }
           result.isActive_ = isActive_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.isAutoDeactivate_ = isAutoDeactivate_;
+          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+            to_bitField0_ |= 0x00000008;
+          }
+          result.activatedForRecency_ = activatedForRecency_;
+          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+            to_bitField0_ |= 0x00000010;
+          }
+          result.clearedForRecency_ = clearedForRecency_;
+          if (activationBuilder_ == null) {
+            if (((bitField0_ & 0x00000020) == 0x00000020)) {
+              activation_ = java.util.Collections.unmodifiableList(activation_);
+              bitField0_ = (bitField0_ & ~0x00000020);
+            }
+            result.activation_ = activation_;
+          } else {
+            result.activation_ = activationBuilder_.build();
+          }
+          if (nodeInstanceBuilder_ == null) {
+            if (((bitField0_ & 0x00000040) == 0x00000040)) {
+              nodeInstance_ = java.util.Collections.unmodifiableList(nodeInstance_);
+              bitField0_ = (bitField0_ & ~0x00000040);
+            }
+            result.nodeInstance_ = nodeInstance_;
+          } else {
+            result.nodeInstance_ = nodeInstanceBuilder_.build();
+          }
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -7904,6 +8783,67 @@ public final class ProtobufMessages {
           }
           if (other.hasIsActive()) {
             setIsActive(other.getIsActive());
+          }
+          if (other.hasIsAutoDeactivate()) {
+            setIsAutoDeactivate(other.getIsAutoDeactivate());
+          }
+          if (other.hasActivatedForRecency()) {
+            setActivatedForRecency(other.getActivatedForRecency());
+          }
+          if (other.hasClearedForRecency()) {
+            setClearedForRecency(other.getClearedForRecency());
+          }
+          if (activationBuilder_ == null) {
+            if (!other.activation_.isEmpty()) {
+              if (activation_.isEmpty()) {
+                activation_ = other.activation_;
+                bitField0_ = (bitField0_ & ~0x00000020);
+              } else {
+                ensureActivationIsMutable();
+                activation_.addAll(other.activation_);
+              }
+              onChanged();
+            }
+          } else {
+            if (!other.activation_.isEmpty()) {
+              if (activationBuilder_.isEmpty()) {
+                activationBuilder_.dispose();
+                activationBuilder_ = null;
+                activation_ = other.activation_;
+                bitField0_ = (bitField0_ & ~0x00000020);
+                activationBuilder_ = 
+                  com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                     getActivationFieldBuilder() : null;
+              } else {
+                activationBuilder_.addAllMessages(other.activation_);
+              }
+            }
+          }
+          if (nodeInstanceBuilder_ == null) {
+            if (!other.nodeInstance_.isEmpty()) {
+              if (nodeInstance_.isEmpty()) {
+                nodeInstance_ = other.nodeInstance_;
+                bitField0_ = (bitField0_ & ~0x00000040);
+              } else {
+                ensureNodeInstanceIsMutable();
+                nodeInstance_.addAll(other.nodeInstance_);
+              }
+              onChanged();
+            }
+          } else {
+            if (!other.nodeInstance_.isEmpty()) {
+              if (nodeInstanceBuilder_.isEmpty()) {
+                nodeInstanceBuilder_.dispose();
+                nodeInstanceBuilder_ = null;
+                nodeInstance_ = other.nodeInstance_;
+                bitField0_ = (bitField0_ & ~0x00000040);
+                nodeInstanceBuilder_ = 
+                  com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                     getNodeInstanceFieldBuilder() : null;
+              } else {
+                nodeInstanceBuilder_.addAllMessages(other.nodeInstance_);
+              }
+            }
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -8037,6 +8977,585 @@ public final class ProtobufMessages {
           isActive_ = false;
           onChanged();
           return this;
+        }
+
+        // optional bool is_auto_deactivate = 3;
+        private boolean isAutoDeactivate_ ;
+        /**
+         * <code>optional bool is_auto_deactivate = 3;</code>
+         */
+        public boolean hasIsAutoDeactivate() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        /**
+         * <code>optional bool is_auto_deactivate = 3;</code>
+         */
+        public boolean getIsAutoDeactivate() {
+          return isAutoDeactivate_;
+        }
+        /**
+         * <code>optional bool is_auto_deactivate = 3;</code>
+         */
+        public Builder setIsAutoDeactivate(boolean value) {
+          bitField0_ |= 0x00000004;
+          isAutoDeactivate_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional bool is_auto_deactivate = 3;</code>
+         */
+        public Builder clearIsAutoDeactivate() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          isAutoDeactivate_ = false;
+          onChanged();
+          return this;
+        }
+
+        // optional int64 activated_for_recency = 4;
+        private long activatedForRecency_ ;
+        /**
+         * <code>optional int64 activated_for_recency = 4;</code>
+         */
+        public boolean hasActivatedForRecency() {
+          return ((bitField0_ & 0x00000008) == 0x00000008);
+        }
+        /**
+         * <code>optional int64 activated_for_recency = 4;</code>
+         */
+        public long getActivatedForRecency() {
+          return activatedForRecency_;
+        }
+        /**
+         * <code>optional int64 activated_for_recency = 4;</code>
+         */
+        public Builder setActivatedForRecency(long value) {
+          bitField0_ |= 0x00000008;
+          activatedForRecency_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int64 activated_for_recency = 4;</code>
+         */
+        public Builder clearActivatedForRecency() {
+          bitField0_ = (bitField0_ & ~0x00000008);
+          activatedForRecency_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        // optional int64 cleared_for_recency = 5;
+        private long clearedForRecency_ ;
+        /**
+         * <code>optional int64 cleared_for_recency = 5;</code>
+         */
+        public boolean hasClearedForRecency() {
+          return ((bitField0_ & 0x00000010) == 0x00000010);
+        }
+        /**
+         * <code>optional int64 cleared_for_recency = 5;</code>
+         */
+        public long getClearedForRecency() {
+          return clearedForRecency_;
+        }
+        /**
+         * <code>optional int64 cleared_for_recency = 5;</code>
+         */
+        public Builder setClearedForRecency(long value) {
+          bitField0_ |= 0x00000010;
+          clearedForRecency_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int64 cleared_for_recency = 5;</code>
+         */
+        public Builder clearClearedForRecency() {
+          bitField0_ = (bitField0_ & ~0x00000010);
+          clearedForRecency_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        // repeated .org.drools.core.marshalling.Activation activation = 6;
+        private java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Activation> activation_ =
+          java.util.Collections.emptyList();
+        private void ensureActivationIsMutable() {
+          if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+            activation_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.Activation>(activation_);
+            bitField0_ |= 0x00000020;
+           }
+        }
+
+        private com.google.protobuf.RepeatedFieldBuilder<
+            org.drools.core.marshalling.impl.ProtobufMessages.Activation, org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder, org.drools.core.marshalling.impl.ProtobufMessages.ActivationOrBuilder> activationBuilder_;
+
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Activation> getActivationList() {
+          if (activationBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(activation_);
+          } else {
+            return activationBuilder_.getMessageList();
+          }
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public int getActivationCount() {
+          if (activationBuilder_ == null) {
+            return activation_.size();
+          } else {
+            return activationBuilder_.getCount();
+          }
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Activation getActivation(int index) {
+          if (activationBuilder_ == null) {
+            return activation_.get(index);
+          } else {
+            return activationBuilder_.getMessage(index);
+          }
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public Builder setActivation(
+            int index, org.drools.core.marshalling.impl.ProtobufMessages.Activation value) {
+          if (activationBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureActivationIsMutable();
+            activation_.set(index, value);
+            onChanged();
+          } else {
+            activationBuilder_.setMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public Builder setActivation(
+            int index, org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder builderForValue) {
+          if (activationBuilder_ == null) {
+            ensureActivationIsMutable();
+            activation_.set(index, builderForValue.build());
+            onChanged();
+          } else {
+            activationBuilder_.setMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public Builder addActivation(org.drools.core.marshalling.impl.ProtobufMessages.Activation value) {
+          if (activationBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureActivationIsMutable();
+            activation_.add(value);
+            onChanged();
+          } else {
+            activationBuilder_.addMessage(value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public Builder addActivation(
+            int index, org.drools.core.marshalling.impl.ProtobufMessages.Activation value) {
+          if (activationBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureActivationIsMutable();
+            activation_.add(index, value);
+            onChanged();
+          } else {
+            activationBuilder_.addMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public Builder addActivation(
+            org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder builderForValue) {
+          if (activationBuilder_ == null) {
+            ensureActivationIsMutable();
+            activation_.add(builderForValue.build());
+            onChanged();
+          } else {
+            activationBuilder_.addMessage(builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public Builder addActivation(
+            int index, org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder builderForValue) {
+          if (activationBuilder_ == null) {
+            ensureActivationIsMutable();
+            activation_.add(index, builderForValue.build());
+            onChanged();
+          } else {
+            activationBuilder_.addMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public Builder addAllActivation(
+            java.lang.Iterable<? extends org.drools.core.marshalling.impl.ProtobufMessages.Activation> values) {
+          if (activationBuilder_ == null) {
+            ensureActivationIsMutable();
+            super.addAll(values, activation_);
+            onChanged();
+          } else {
+            activationBuilder_.addAllMessages(values);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public Builder clearActivation() {
+          if (activationBuilder_ == null) {
+            activation_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000020);
+            onChanged();
+          } else {
+            activationBuilder_.clear();
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public Builder removeActivation(int index) {
+          if (activationBuilder_ == null) {
+            ensureActivationIsMutable();
+            activation_.remove(index);
+            onChanged();
+          } else {
+            activationBuilder_.remove(index);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder getActivationBuilder(
+            int index) {
+          return getActivationFieldBuilder().getBuilder(index);
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.ActivationOrBuilder getActivationOrBuilder(
+            int index) {
+          if (activationBuilder_ == null) {
+            return activation_.get(index);  } else {
+            return activationBuilder_.getMessageOrBuilder(index);
+          }
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public java.util.List<? extends org.drools.core.marshalling.impl.ProtobufMessages.ActivationOrBuilder> 
+             getActivationOrBuilderList() {
+          if (activationBuilder_ != null) {
+            return activationBuilder_.getMessageOrBuilderList();
+          } else {
+            return java.util.Collections.unmodifiableList(activation_);
+          }
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder addActivationBuilder() {
+          return getActivationFieldBuilder().addBuilder(
+              org.drools.core.marshalling.impl.ProtobufMessages.Activation.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder addActivationBuilder(
+            int index) {
+          return getActivationFieldBuilder().addBuilder(
+              index, org.drools.core.marshalling.impl.ProtobufMessages.Activation.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Activation activation = 6;</code>
+         */
+        public java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder> 
+             getActivationBuilderList() {
+          return getActivationFieldBuilder().getBuilderList();
+        }
+        private com.google.protobuf.RepeatedFieldBuilder<
+            org.drools.core.marshalling.impl.ProtobufMessages.Activation, org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder, org.drools.core.marshalling.impl.ProtobufMessages.ActivationOrBuilder> 
+            getActivationFieldBuilder() {
+          if (activationBuilder_ == null) {
+            activationBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+                org.drools.core.marshalling.impl.ProtobufMessages.Activation, org.drools.core.marshalling.impl.ProtobufMessages.Activation.Builder, org.drools.core.marshalling.impl.ProtobufMessages.ActivationOrBuilder>(
+                    activation_,
+                    ((bitField0_ & 0x00000020) == 0x00000020),
+                    getParentForChildren(),
+                    isClean());
+            activation_ = null;
+          }
+          return activationBuilder_;
+        }
+
+        // repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;
+        private java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance> nodeInstance_ =
+          java.util.Collections.emptyList();
+        private void ensureNodeInstanceIsMutable() {
+          if (!((bitField0_ & 0x00000040) == 0x00000040)) {
+            nodeInstance_ = new java.util.ArrayList<org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance>(nodeInstance_);
+            bitField0_ |= 0x00000040;
+           }
+        }
+
+        private com.google.protobuf.RepeatedFieldBuilder<
+            org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder> nodeInstanceBuilder_;
+
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance> getNodeInstanceList() {
+          if (nodeInstanceBuilder_ == null) {
+            return java.util.Collections.unmodifiableList(nodeInstance_);
+          } else {
+            return nodeInstanceBuilder_.getMessageList();
+          }
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public int getNodeInstanceCount() {
+          if (nodeInstanceBuilder_ == null) {
+            return nodeInstance_.size();
+          } else {
+            return nodeInstanceBuilder_.getCount();
+          }
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance getNodeInstance(int index) {
+          if (nodeInstanceBuilder_ == null) {
+            return nodeInstance_.get(index);
+          } else {
+            return nodeInstanceBuilder_.getMessage(index);
+          }
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public Builder setNodeInstance(
+            int index, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance value) {
+          if (nodeInstanceBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureNodeInstanceIsMutable();
+            nodeInstance_.set(index, value);
+            onChanged();
+          } else {
+            nodeInstanceBuilder_.setMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public Builder setNodeInstance(
+            int index, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder builderForValue) {
+          if (nodeInstanceBuilder_ == null) {
+            ensureNodeInstanceIsMutable();
+            nodeInstance_.set(index, builderForValue.build());
+            onChanged();
+          } else {
+            nodeInstanceBuilder_.setMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public Builder addNodeInstance(org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance value) {
+          if (nodeInstanceBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureNodeInstanceIsMutable();
+            nodeInstance_.add(value);
+            onChanged();
+          } else {
+            nodeInstanceBuilder_.addMessage(value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public Builder addNodeInstance(
+            int index, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance value) {
+          if (nodeInstanceBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            ensureNodeInstanceIsMutable();
+            nodeInstance_.add(index, value);
+            onChanged();
+          } else {
+            nodeInstanceBuilder_.addMessage(index, value);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public Builder addNodeInstance(
+            org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder builderForValue) {
+          if (nodeInstanceBuilder_ == null) {
+            ensureNodeInstanceIsMutable();
+            nodeInstance_.add(builderForValue.build());
+            onChanged();
+          } else {
+            nodeInstanceBuilder_.addMessage(builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public Builder addNodeInstance(
+            int index, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder builderForValue) {
+          if (nodeInstanceBuilder_ == null) {
+            ensureNodeInstanceIsMutable();
+            nodeInstance_.add(index, builderForValue.build());
+            onChanged();
+          } else {
+            nodeInstanceBuilder_.addMessage(index, builderForValue.build());
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public Builder addAllNodeInstance(
+            java.lang.Iterable<? extends org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance> values) {
+          if (nodeInstanceBuilder_ == null) {
+            ensureNodeInstanceIsMutable();
+            super.addAll(values, nodeInstance_);
+            onChanged();
+          } else {
+            nodeInstanceBuilder_.addAllMessages(values);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public Builder clearNodeInstance() {
+          if (nodeInstanceBuilder_ == null) {
+            nodeInstance_ = java.util.Collections.emptyList();
+            bitField0_ = (bitField0_ & ~0x00000040);
+            onChanged();
+          } else {
+            nodeInstanceBuilder_.clear();
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public Builder removeNodeInstance(int index) {
+          if (nodeInstanceBuilder_ == null) {
+            ensureNodeInstanceIsMutable();
+            nodeInstance_.remove(index);
+            onChanged();
+          } else {
+            nodeInstanceBuilder_.remove(index);
+          }
+          return this;
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder getNodeInstanceBuilder(
+            int index) {
+          return getNodeInstanceFieldBuilder().getBuilder(index);
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder getNodeInstanceOrBuilder(
+            int index) {
+          if (nodeInstanceBuilder_ == null) {
+            return nodeInstance_.get(index);  } else {
+            return nodeInstanceBuilder_.getMessageOrBuilder(index);
+          }
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public java.util.List<? extends org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder> 
+             getNodeInstanceOrBuilderList() {
+          if (nodeInstanceBuilder_ != null) {
+            return nodeInstanceBuilder_.getMessageOrBuilderList();
+          } else {
+            return java.util.Collections.unmodifiableList(nodeInstance_);
+          }
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder addNodeInstanceBuilder() {
+          return getNodeInstanceFieldBuilder().addBuilder(
+              org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder addNodeInstanceBuilder(
+            int index) {
+          return getNodeInstanceFieldBuilder().addBuilder(
+              index, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.getDefaultInstance());
+        }
+        /**
+         * <code>repeated .org.drools.core.marshalling.Agenda.AgendaGroup.NodeInstance node_instance = 7;</code>
+         */
+        public java.util.List<org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder> 
+             getNodeInstanceBuilderList() {
+          return getNodeInstanceFieldBuilder().getBuilderList();
+        }
+        private com.google.protobuf.RepeatedFieldBuilder<
+            org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder> 
+            getNodeInstanceFieldBuilder() {
+          if (nodeInstanceBuilder_ == null) {
+            nodeInstanceBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+                org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance.Builder, org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstanceOrBuilder>(
+                    nodeInstance_,
+                    ((bitField0_ & 0x00000040) == 0x00000040),
+                    getParentForChildren(),
+                    isClean());
+            nodeInstance_ = null;
+          }
+          return nodeInstanceBuilder_;
         }
 
         // @@protoc_insertion_point(builder_scope:org.drools.core.marshalling.Agenda.AgendaGroup)
@@ -42684,6 +44203,11 @@ public final class ProtobufMessages {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_org_drools_core_marshalling_Agenda_FocusStack_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -42917,7 +44441,7 @@ public final class ProtobufMessages {
       "ion_queue\030\013 \001(\0132(.org.drools.core.marsha" +
       "lling.ActionQueue\022I\n\014OBSOLETE_tms\030\014 \001(\0132" +
       "3.org.drools.core.marshalling.TruthMaint",
-      "enanceSystem\"\024\n\013ProcessData*\005\010\n\020\310\001\"\211\006\n\006A" +
+      "enanceSystem\"\024\n\013ProcessData*\005\010\n\020\310\001\"\273\010\n\006A" +
       "genda\022\033\n\023dormant_activations\030\001 \001(\005\022\032\n\022ac" +
       "tive_activations\030\002 \001(\005\022E\n\014agenda_group\030\003" +
       " \003(\0132/.org.drools.core.marshalling.Agend" +
@@ -42927,164 +44451,172 @@ public final class ProtobufMessages {
       ".core.marshalling.Agenda.RuleFlowGroup\022;" +
       "\n\nactivation\030\006 \003(\0132\'.org.drools.core.mar" +
       "shalling.Activation\0225\n\004rnea\030\007 \003(\0132\'.org.",
-      "drools.core.marshalling.Activation\032.\n\013Ag" +
-      "endaGroup\022\014\n\004name\030\001 \001(\t\022\021\n\tis_active\030\002 \001" +
-      "(\010\032 \n\nFocusStack\022\022\n\ngroup_name\030\001 \003(\t\032\247\002\n" +
-      "\rRuleFlowGroup\022\014\n\004name\030\001 \001(\t\022\021\n\tis_activ" +
-      "e\030\002 \001(\010\022\032\n\022is_auto_deactivate\030\003 \001(\010\022;\n\na" +
-      "ctivation\030\004 \003(\0132\'.org.drools.core.marsha" +
-      "lling.Activation\022U\n\rnode_instance\030\005 \003(\0132" +
-      ">.org.drools.core.marshalling.Agenda.Rul" +
-      "eFlowGroup.NodeInstance\032E\n\014NodeInstance\022" +
-      "\033\n\023process_instance_id\030\001 \001(\003\022\030\n\020node_ins",
-      "tance_id\030\002 \001(\t\"\322\013\n\nNodeMemory\022\017\n\007node_id" +
-      "\030\001 \001(\005\022C\n\tnode_type\030\002 \001(\01620.org.drools.c" +
-      "ore.marshalling.NodeMemory.NodeType\022P\n\na" +
-      "ccumulate\030\003 \001(\0132<.org.drools.core.marsha" +
-      "lling.NodeMemory.AccumulateNodeMemory\022B\n" +
-      "\003ria\030\004 \001(\01325.org.drools.core.marshalling" +
-      ".NodeMemory.RIANodeMemory\022D\n\004from\030\005 \001(\0132" +
-      "6.org.drools.core.marshalling.NodeMemory" +
-      ".FromNodeMemory\022U\n\rquery_element\030\006 \001(\0132>" +
-      ".org.drools.core.marshalling.NodeMemory.",
-      "QueryElementNodeMemory\032\200\002\n\024AccumulateNod" +
-      "eMemory\022_\n\007context\030\001 \003(\0132N.org.drools.co" +
-      "re.marshalling.NodeMemory.AccumulateNode" +
-      "Memory.AccumulateContext\032\206\001\n\021AccumulateC" +
-      "ontext\0221\n\005tuple\030\001 \001(\0132\".org.drools.core." +
-      "marshalling.Tuple\022>\n\rresult_handle\030\002 \001(\013" +
-      "2\'.org.drools.core.marshalling.FactHandl" +
-      "e\032\343\001\n\rRIANodeMemory\022Q\n\007context\030\001 \003(\0132@.o" +
+      "drools.core.marshalling.Activation\032\337\002\n\013A" +
+      "gendaGroup\022\014\n\004name\030\001 \001(\t\022\021\n\tis_active\030\002 " +
+      "\001(\010\022\032\n\022is_auto_deactivate\030\003 \001(\010\022\035\n\025activ" +
+      "ated_for_recency\030\004 \001(\003\022\033\n\023cleared_for_re" +
+      "cency\030\005 \001(\003\022;\n\nactivation\030\006 \003(\0132\'.org.dr" +
+      "ools.core.marshalling.Activation\022S\n\rnode" +
+      "_instance\030\007 \003(\0132<.org.drools.core.marsha" +
+      "lling.Agenda.AgendaGroup.NodeInstance\032E\n" +
+      "\014NodeInstance\022\033\n\023process_instance_id\030\001 \001" +
+      "(\003\022\030\n\020node_instance_id\030\002 \001(\t\032 \n\nFocusSta",
+      "ck\022\022\n\ngroup_name\030\001 \003(\t\032\247\002\n\rRuleFlowGroup" +
+      "\022\014\n\004name\030\001 \001(\t\022\021\n\tis_active\030\002 \001(\010\022\032\n\022is_" +
+      "auto_deactivate\030\003 \001(\010\022;\n\nactivation\030\004 \003(" +
+      "\0132\'.org.drools.core.marshalling.Activati" +
+      "on\022U\n\rnode_instance\030\005 \003(\0132>.org.drools.c" +
+      "ore.marshalling.Agenda.RuleFlowGroup.Nod" +
+      "eInstance\032E\n\014NodeInstance\022\033\n\023process_ins" +
+      "tance_id\030\001 \001(\003\022\030\n\020node_instance_id\030\002 \001(\t" +
+      "\"\322\013\n\nNodeMemory\022\017\n\007node_id\030\001 \001(\005\022C\n\tnode" +
+      "_type\030\002 \001(\01620.org.drools.core.marshallin",
+      "g.NodeMemory.NodeType\022P\n\naccumulate\030\003 \001(" +
+      "\0132<.org.drools.core.marshalling.NodeMemo" +
+      "ry.AccumulateNodeMemory\022B\n\003ria\030\004 \001(\01325.o" +
       "rg.drools.core.marshalling.NodeMemory.RI" +
-      "ANodeMemory.RIAContext\032\177\n\nRIAContext\0221\n\005",
-      "tuple\030\001 \001(\0132\".org.drools.core.marshallin" +
-      "g.Tuple\022>\n\rresult_handle\030\002 \001(\0132\'.org.dro" +
-      "ols.core.marshalling.FactHandle\032\340\001\n\016From" +
-      "NodeMemory\022S\n\007context\030\001 \003(\0132B.org.drools" +
-      ".core.marshalling.NodeMemory.FromNodeMem" +
-      "ory.FromContext\032y\n\013FromContext\0221\n\005tuple\030" +
-      "\001 \001(\0132\".org.drools.core.marshalling.Tupl" +
-      "e\0227\n\006handle\030\002 \003(\0132\'.org.drools.core.mars" +
-      "halling.FactHandle\032\254\002\n\026QueryElementNodeM" +
-      "emory\022\\\n\007context\030\001 \003(\0132K.org.drools.core",
-      ".marshalling.NodeMemory.QueryElementNode" +
-      "Memory.QueryContext\032\263\001\n\014QueryContext\0221\n\005" +
-      "tuple\030\001 \001(\0132\".org.drools.core.marshallin" +
-      "g.Tuple\0227\n\006handle\030\002 \001(\0132\'.org.drools.cor" +
-      "e.marshalling.FactHandle\0227\n\006result\030\003 \003(\013" +
-      "2\'.org.drools.core.marshalling.FactHandl" +
-      "e\"@\n\010NodeType\022\016\n\nACCUMULATE\020\000\022\007\n\003RIA\020\001\022\010" +
-      "\n\004FROM\020\002\022\021\n\rQUERY_ELEMENT\020\003\"\237\001\n\nEntryPoi" +
-      "nt\022\026\n\016entry_point_id\030\001 \001(\t\0227\n\006handle\030\002 \003" +
-      "(\0132\'.org.drools.core.marshalling.FactHan",
-      "dle\022@\n\003tms\030\003 \001(\01323.org.drools.core.marsh" +
-      "alling.TruthMaintenanceSystem\"\322\002\n\nFactHa" +
-      "ndle\022@\n\004type\030\001 \001(\01622.org.drools.core.mar" +
-      "shalling.FactHandle.HandleType\022\n\n\002id\030\002 \001" +
-      "(\005\022\017\n\007recency\030\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\022\020" +
-      "\n\010duration\030\005 \001(\003\022\022\n\nis_expired\030\006 \001(\010\022\031\n\021" +
-      "activations_count\030\007 \001(\003\022\026\n\016strategy_inde" +
-      "x\030\010 \001(\005\022\016\n\006object\030\t \001(\014\022\023\n\013entry_point\030\n" +
-      " \001(\t\022\024\n\014is_justified\030\013 \001(\010\">\n\nHandleType" +
-      "\022\020\n\014INITIAL_FACT\020\001\022\010\n\004FACT\020\002\022\t\n\005QUERY\020\003\022",
-      "\t\n\005EVENT\020\004\"\331\001\n\nActivation\0221\n\005tuple\030\002 \001(\013" +
-      "2\".org.drools.core.marshalling.Tuple\022\020\n\010" +
-      "salience\030\003 \001(\005\022\024\n\014package_name\030\004 \001(\t\022\021\n\t" +
-      "rule_name\030\005 \001(\t\022\030\n\020activation_group\030\007 \001(" +
-      "\t\022\024\n\014is_activated\030\010 \001(\010\022\021\n\thandle_id\030\t \001" +
-      "(\005\022\032\n\022logical_dependency\030\n \003(\005\"\032\n\005Tuple\022" +
-      "\021\n\thandle_id\030\001 \003(\005\"\227\001\n\026TruthMaintenanceS" +
-      "ystem\0225\n\003key\030\001 \003(\0132(.org.drools.core.mar" +
-      "shalling.EqualityKey\022F\n\026OBSOLETE_justifi" +
-      "cation\030\002 \003(\0132&.org.drools.core.marshalli",
-      "ng.BeliefSet\"\201\001\n\013EqualityKey\022\016\n\006status\030\001" +
-      " \001(\005\022\021\n\thandle_id\030\002 \001(\005\022\024\n\014other_handle\030" +
-      "\003 \003(\005\0229\n\tbeliefSet\030\004 \001(\0132&.org.drools.co" +
-      "re.marshalling.BeliefSet\"i\n\tBeliefSet\022\021\n" +
-      "\thandle_id\030\001 \001(\005\022I\n\021logicalDependency\030\002 " +
-      "\003(\0132..org.drools.core.marshalling.Logica" +
-      "lDependency\"\254\001\n\021LogicalDependency\022;\n\nact" +
-      "ivation\030\002 \001(\0132\'.org.drools.core.marshall" +
-      "ing.Activation\022\035\n\025object_strategy_index\030" +
-      "\010 \001(\005\022\016\n\006object\030\t \001(\014\022\034\n\024value_strategy_",
-      "index\030\n \001(\005\022\r\n\005value\030\013 \001(\014\"\377\013\n\013ActionQue" +
-      "ue\022?\n\006action\030\001 \003(\0132/.org.drools.core.mar" +
-      "shalling.ActionQueue.Action\032\264\005\n\006Action\022A" +
-      "\n\004type\030\001 \001(\01623.org.drools.core.marshalli" +
-      "ng.ActionQueue.ActionType\022P\n\017behavior_ex" +
-      "pire\030\002 \001(\01327.org.drools.core.marshalling" +
-      ".ActionQueue.BehaviorExpire\022X\n\023deactivat" +
-      "e_callback\030\003 \001(\0132;.org.drools.core.marsh" +
-      "alling.ActionQueue.DeactivateCallback\022P\n" +
-      "\017logical_retract\030\004 \001(\01327.org.drools.core",
-      ".marshalling.ActionQueue.LogicalRetract\022" +
-      "E\n\tpropagate\030\005 \001(\01322.org.drools.core.mar" +
-      "shalling.ActionQueue.Propagate\022?\n\006assert" +
-      "\030\006 \001(\0132/.org.drools.core.marshalling.Act" +
-      "ionQueue.Assert\022?\n\006expire\030\007 \001(\0132/.org.dr" +
-      "ools.core.marshalling.ActionQueue.Expire" +
-      "\022?\n\006signal\030\010 \001(\0132/.org.drools.core.marsh" +
-      "alling.ActionQueue.Signal\022_\n\027signal_proc" +
-      "ess_instance\030\t \001(\0132>.org.drools.core.mar" +
-      "shalling.ActionQueue.SignalProcessInstan",
-      "ce\032!\n\016BehaviorExpire\022\017\n\007node_id\030\001 \001(\005\032,\n" +
-      "\022DeactivateCallback\022\026\n\016ruleflow_group\030\001 " +
-      "\001(\t\032\207\001\n\016LogicalRetract\022\021\n\thandle_id\030\001 \001(" +
-      "\005\022;\n\nactivation\030\002 \001(\0132\'.org.drools.core." +
-      "marshalling.Activation\022\025\n\rfully_retract\030" +
-      "\003 \001(\010\022\016\n\006update\030\004 \001(\010\032\034\n\tPropagate\022\017\n\007no" +
-      "de_id\030\001 \001(\005\032\264\001\n\006Assert\022\021\n\thandle_id\030\001 \001(" +
-      "\005\022\026\n\016remove_logical\030\002 \001(\010\022\031\n\021update_equa" +
-      "ls_map\030\003 \001(\010\022\027\n\017origin_pkg_name\030\004 \001(\t\022\030\n" +
-      "\020origin_rule_name\030\005 \001(\t\0221\n\005tuple\030\006 \001(\0132\"",
-      ".org.drools.core.marshalling.Tuple\032,\n\006Ex" +
-      "pire\022\021\n\thandle_id\030\001 \001(\005\022\017\n\007node_id\030\002 \001(\005" +
-      "\032%\n\006Signal\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\032" +
-      "Q\n\025SignalProcessInstance\022\014\n\004type\030\001 \001(\t\022\r" +
-      "\n\005event\030\002 \001(\014\022\033\n\023process_instance_id\030\003 \001" +
-      "(\003\"\237\001\n\nActionType\022\023\n\017BEHAVIOR_EXPIRE\020\001\022\027" +
-      "\n\023DEACTIVATE_CALLBACK\020\002\022\023\n\017LOGICAL_RETRA" +
-      "CT\020\003\022\r\n\tPROPAGATE\020\004\022\n\n\006ASSERT\020\005\022\n\n\006EXPIR" +
-      "E\020\006\022\n\n\006SIGNAL\020\007\022\033\n\027SIGNAL_PROCESS_INSTAN" +
-      "CE\020\010\"\371\005\n\006Timers\0228\n\005timer\030\001 \003(\0132).org.dro",
-      "ols.core.marshalling.Timers.Timer\032\232\002\n\005Ti" +
-      "mer\022;\n\004type\030\001 \001(\0162-.org.drools.core.mars" +
-      "halling.Timers.TimerType\022?\n\006expire\030\002 \001(\013" +
-      "2/.org.drools.core.marshalling.Timers.Ex" +
-      "pireTimer\022G\n\nactivation\030\003 \001(\01323.org.droo" +
-      "ls.core.marshalling.Timers.ActivationTim" +
-      "er\022C\n\010behavior\030\004 \001(\01321.org.drools.core.m" +
-      "arshalling.Timers.BehaviorTimer*\005\010d\020\310\001\032i" +
-      "\n\013ExpireTimer\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016entr" +
-      "y_point_id\030\002 \001(\t\022\022\n\nclass_name\030\003 \001(\t\022\033\n\023",
-      "next_fire_timestamp\030\004 \001(\003\032\205\001\n\017Activation" +
-      "Timer\022;\n\nactivation\030\001 \001(\0132\'.org.drools.c" +
-      "ore.marshalling.Activation\0225\n\007trigger\030\002 " +
-      "\001(\0132$.org.drools.core.marshalling.Trigge" +
-      "r\032a\n\rBehaviorTimer\022\032\n\022DEPRECATED_node_id" +
-      "\030\001 \001(\005\022!\n\031DEPRECATED_behavior_index\030\002 \001(" +
-      "\005\022\021\n\thandle_id\030\003 \001(\005\"B\n\tTimerType\022\n\n\006EXP" +
-      "IRE\020\001\022\016\n\nACTIVATION\020\002\022\014\n\010BEHAVIOR\020\003\022\013\n\007P" +
-      "ROCESS\020\004\"\316\005\n\007Trigger\022>\n\004type\030\001 \001(\01620.org" +
-      ".drools.core.marshalling.Trigger.Trigger",
-      "Type\022>\n\004cron\030\002 \001(\01320.org.drools.core.mar" +
-      "shalling.Trigger.CronTrigger\022F\n\010interval" +
-      "\030\003 \001(\01324.org.drools.core.marshalling.Tri" +
-      "gger.IntervalTrigger\022D\n\003pit\030\004 \001(\01327.org." +
-      "drools.core.marshalling.Trigger.PointInT" +
-      "imeTrigger\032\247\001\n\013CronTrigger\022\022\n\nstart_time" +
+      "ANodeMemory\022D\n\004from\030\005 \001(\01326.org.drools.c" +
+      "ore.marshalling.NodeMemory.FromNodeMemor" +
+      "y\022U\n\rquery_element\030\006 \001(\0132>.org.drools.co" +
+      "re.marshalling.NodeMemory.QueryElementNo" +
+      "deMemory\032\200\002\n\024AccumulateNodeMemory\022_\n\007con" +
+      "text\030\001 \003(\0132N.org.drools.core.marshalling",
+      ".NodeMemory.AccumulateNodeMemory.Accumul" +
+      "ateContext\032\206\001\n\021AccumulateContext\0221\n\005tupl" +
+      "e\030\001 \001(\0132\".org.drools.core.marshalling.Tu" +
+      "ple\022>\n\rresult_handle\030\002 \001(\0132\'.org.drools." +
+      "core.marshalling.FactHandle\032\343\001\n\rRIANodeM" +
+      "emory\022Q\n\007context\030\001 \003(\0132@.org.drools.core" +
+      ".marshalling.NodeMemory.RIANodeMemory.RI" +
+      "AContext\032\177\n\nRIAContext\0221\n\005tuple\030\001 \001(\0132\"." +
+      "org.drools.core.marshalling.Tuple\022>\n\rres" +
+      "ult_handle\030\002 \001(\0132\'.org.drools.core.marsh",
+      "alling.FactHandle\032\340\001\n\016FromNodeMemory\022S\n\007" +
+      "context\030\001 \003(\0132B.org.drools.core.marshall" +
+      "ing.NodeMemory.FromNodeMemory.FromContex" +
+      "t\032y\n\013FromContext\0221\n\005tuple\030\001 \001(\0132\".org.dr" +
+      "ools.core.marshalling.Tuple\0227\n\006handle\030\002 " +
+      "\003(\0132\'.org.drools.core.marshalling.FactHa" +
+      "ndle\032\254\002\n\026QueryElementNodeMemory\022\\\n\007conte" +
+      "xt\030\001 \003(\0132K.org.drools.core.marshalling.N" +
+      "odeMemory.QueryElementNodeMemory.QueryCo" +
+      "ntext\032\263\001\n\014QueryContext\0221\n\005tuple\030\001 \001(\0132\".",
+      "org.drools.core.marshalling.Tuple\0227\n\006han" +
+      "dle\030\002 \001(\0132\'.org.drools.core.marshalling." +
+      "FactHandle\0227\n\006result\030\003 \003(\0132\'.org.drools." +
+      "core.marshalling.FactHandle\"@\n\010NodeType\022" +
+      "\016\n\nACCUMULATE\020\000\022\007\n\003RIA\020\001\022\010\n\004FROM\020\002\022\021\n\rQU" +
+      "ERY_ELEMENT\020\003\"\237\001\n\nEntryPoint\022\026\n\016entry_po" +
+      "int_id\030\001 \001(\t\0227\n\006handle\030\002 \003(\0132\'.org.drool" +
+      "s.core.marshalling.FactHandle\022@\n\003tms\030\003 \001" +
+      "(\01323.org.drools.core.marshalling.TruthMa" +
+      "intenanceSystem\"\322\002\n\nFactHandle\022@\n\004type\030\001",
+      " \001(\01622.org.drools.core.marshalling.FactH" +
+      "andle.HandleType\022\n\n\002id\030\002 \001(\005\022\017\n\007recency\030" +
+      "\003 \001(\003\022\021\n\ttimestamp\030\004 \001(\003\022\020\n\010duration\030\005 \001" +
+      "(\003\022\022\n\nis_expired\030\006 \001(\010\022\031\n\021activations_co" +
+      "unt\030\007 \001(\003\022\026\n\016strategy_index\030\010 \001(\005\022\016\n\006obj" +
+      "ect\030\t \001(\014\022\023\n\013entry_point\030\n \001(\t\022\024\n\014is_jus" +
+      "tified\030\013 \001(\010\">\n\nHandleType\022\020\n\014INITIAL_FA" +
+      "CT\020\001\022\010\n\004FACT\020\002\022\t\n\005QUERY\020\003\022\t\n\005EVENT\020\004\"\331\001\n" +
+      "\nActivation\0221\n\005tuple\030\002 \001(\0132\".org.drools." +
+      "core.marshalling.Tuple\022\020\n\010salience\030\003 \001(\005",
+      "\022\024\n\014package_name\030\004 \001(\t\022\021\n\trule_name\030\005 \001(" +
+      "\t\022\030\n\020activation_group\030\007 \001(\t\022\024\n\014is_activa" +
+      "ted\030\010 \001(\010\022\021\n\thandle_id\030\t \001(\005\022\032\n\022logical_" +
+      "dependency\030\n \003(\005\"\032\n\005Tuple\022\021\n\thandle_id\030\001" +
+      " \003(\005\"\227\001\n\026TruthMaintenanceSystem\0225\n\003key\030\001" +
+      " \003(\0132(.org.drools.core.marshalling.Equal" +
+      "ityKey\022F\n\026OBSOLETE_justification\030\002 \003(\0132&" +
+      ".org.drools.core.marshalling.BeliefSet\"\201" +
+      "\001\n\013EqualityKey\022\016\n\006status\030\001 \001(\005\022\021\n\thandle" +
+      "_id\030\002 \001(\005\022\024\n\014other_handle\030\003 \003(\005\0229\n\tbelie",
+      "fSet\030\004 \001(\0132&.org.drools.core.marshalling" +
+      ".BeliefSet\"i\n\tBeliefSet\022\021\n\thandle_id\030\001 \001" +
+      "(\005\022I\n\021logicalDependency\030\002 \003(\0132..org.droo" +
+      "ls.core.marshalling.LogicalDependency\"\254\001" +
+      "\n\021LogicalDependency\022;\n\nactivation\030\002 \001(\0132" +
+      "\'.org.drools.core.marshalling.Activation" +
+      "\022\035\n\025object_strategy_index\030\010 \001(\005\022\016\n\006objec" +
+      "t\030\t \001(\014\022\034\n\024value_strategy_index\030\n \001(\005\022\r\n" +
+      "\005value\030\013 \001(\014\"\377\013\n\013ActionQueue\022?\n\006action\030\001" +
+      " \003(\0132/.org.drools.core.marshalling.Actio",
+      "nQueue.Action\032\264\005\n\006Action\022A\n\004type\030\001 \001(\01623" +
+      ".org.drools.core.marshalling.ActionQueue" +
+      ".ActionType\022P\n\017behavior_expire\030\002 \001(\01327.o" +
+      "rg.drools.core.marshalling.ActionQueue.B" +
+      "ehaviorExpire\022X\n\023deactivate_callback\030\003 \001" +
+      "(\0132;.org.drools.core.marshalling.ActionQ" +
+      "ueue.DeactivateCallback\022P\n\017logical_retra" +
+      "ct\030\004 \001(\01327.org.drools.core.marshalling.A" +
+      "ctionQueue.LogicalRetract\022E\n\tpropagate\030\005" +
+      " \001(\01322.org.drools.core.marshalling.Actio",
+      "nQueue.Propagate\022?\n\006assert\030\006 \001(\0132/.org.d" +
+      "rools.core.marshalling.ActionQueue.Asser" +
+      "t\022?\n\006expire\030\007 \001(\0132/.org.drools.core.mars" +
+      "halling.ActionQueue.Expire\022?\n\006signal\030\010 \001" +
+      "(\0132/.org.drools.core.marshalling.ActionQ" +
+      "ueue.Signal\022_\n\027signal_process_instance\030\t" +
+      " \001(\0132>.org.drools.core.marshalling.Actio" +
+      "nQueue.SignalProcessInstance\032!\n\016Behavior" +
+      "Expire\022\017\n\007node_id\030\001 \001(\005\032,\n\022DeactivateCal" +
+      "lback\022\026\n\016ruleflow_group\030\001 \001(\t\032\207\001\n\016Logica",
+      "lRetract\022\021\n\thandle_id\030\001 \001(\005\022;\n\nactivatio" +
+      "n\030\002 \001(\0132\'.org.drools.core.marshalling.Ac" +
+      "tivation\022\025\n\rfully_retract\030\003 \001(\010\022\016\n\006updat" +
+      "e\030\004 \001(\010\032\034\n\tPropagate\022\017\n\007node_id\030\001 \001(\005\032\264\001" +
+      "\n\006Assert\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016remove_lo" +
+      "gical\030\002 \001(\010\022\031\n\021update_equals_map\030\003 \001(\010\022\027" +
+      "\n\017origin_pkg_name\030\004 \001(\t\022\030\n\020origin_rule_n" +
+      "ame\030\005 \001(\t\0221\n\005tuple\030\006 \001(\0132\".org.drools.co" +
+      "re.marshalling.Tuple\032,\n\006Expire\022\021\n\thandle" +
+      "_id\030\001 \001(\005\022\017\n\007node_id\030\002 \001(\005\032%\n\006Signal\022\014\n\004",
+      "type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\032Q\n\025SignalProce" +
+      "ssInstance\022\014\n\004type\030\001 \001(\t\022\r\n\005event\030\002 \001(\014\022" +
+      "\033\n\023process_instance_id\030\003 \001(\003\"\237\001\n\nActionT" +
+      "ype\022\023\n\017BEHAVIOR_EXPIRE\020\001\022\027\n\023DEACTIVATE_C" +
+      "ALLBACK\020\002\022\023\n\017LOGICAL_RETRACT\020\003\022\r\n\tPROPAG" +
+      "ATE\020\004\022\n\n\006ASSERT\020\005\022\n\n\006EXPIRE\020\006\022\n\n\006SIGNAL\020" +
+      "\007\022\033\n\027SIGNAL_PROCESS_INSTANCE\020\010\"\371\005\n\006Timer" +
+      "s\0228\n\005timer\030\001 \003(\0132).org.drools.core.marsh" +
+      "alling.Timers.Timer\032\232\002\n\005Timer\022;\n\004type\030\001 " +
+      "\001(\0162-.org.drools.core.marshalling.Timers",
+      ".TimerType\022?\n\006expire\030\002 \001(\0132/.org.drools." +
+      "core.marshalling.Timers.ExpireTimer\022G\n\na" +
+      "ctivation\030\003 \001(\01323.org.drools.core.marsha" +
+      "lling.Timers.ActivationTimer\022C\n\010behavior" +
+      "\030\004 \001(\01321.org.drools.core.marshalling.Tim" +
+      "ers.BehaviorTimer*\005\010d\020\310\001\032i\n\013ExpireTimer\022" +
+      "\021\n\thandle_id\030\001 \001(\005\022\026\n\016entry_point_id\030\002 \001" +
+      "(\t\022\022\n\nclass_name\030\003 \001(\t\022\033\n\023next_fire_time" +
+      "stamp\030\004 \001(\003\032\205\001\n\017ActivationTimer\022;\n\nactiv" +
+      "ation\030\001 \001(\0132\'.org.drools.core.marshallin",
+      "g.Activation\0225\n\007trigger\030\002 \001(\0132$.org.droo" +
+      "ls.core.marshalling.Trigger\032a\n\rBehaviorT" +
+      "imer\022\032\n\022DEPRECATED_node_id\030\001 \001(\005\022!\n\031DEPR" +
+      "ECATED_behavior_index\030\002 \001(\005\022\021\n\thandle_id" +
+      "\030\003 \001(\005\"B\n\tTimerType\022\n\n\006EXPIRE\020\001\022\016\n\nACTIV" +
+      "ATION\020\002\022\014\n\010BEHAVIOR\020\003\022\013\n\007PROCESS\020\004\"\316\005\n\007T" +
+      "rigger\022>\n\004type\030\001 \001(\01620.org.drools.core.m" +
+      "arshalling.Trigger.TriggerType\022>\n\004cron\030\002" +
+      " \001(\01320.org.drools.core.marshalling.Trigg" +
+      "er.CronTrigger\022F\n\010interval\030\003 \001(\01324.org.d",
+      "rools.core.marshalling.Trigger.IntervalT" +
+      "rigger\022D\n\003pit\030\004 \001(\01327.org.drools.core.ma" +
+      "rshalling.Trigger.PointInTimeTrigger\032\247\001\n" +
+      "\013CronTrigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_" +
+      "time\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014repe" +
+      "at_count\030\004 \001(\005\022\027\n\017cron_expression\030\005 \001(\t\022" +
+      "\026\n\016next_fire_time\030\006 \001(\003\022\025\n\rcalendar_name" +
+      "\030\007 \003(\t\032\242\001\n\017IntervalTrigger\022\022\n\nstart_time" +
       "\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_limit" +
-      "\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\027\n\017cron_exp" +
-      "ression\030\005 \001(\t\022\026\n\016next_fire_time\030\006 \001(\003\022\025\n" +
-      "\rcalendar_name\030\007 \003(\t\032\242\001\n\017IntervalTrigger",
-      "\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024" +
-      "\n\014repeat_limit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001" +
-      "(\005\022\026\n\016next_fire_time\030\006 \001(\003\022\016\n\006period\030\007 \001" +
-      "(\003\022\025\n\rcalendar_name\030\010 \003(\t\032,\n\022PointInTime" +
-      "Trigger\022\026\n\016next_fire_time\030\001 \001(\003\"8\n\013Trigg" +
-      "erType\022\010\n\004CRON\020\000\022\014\n\010INTERVAL\020\001\022\021\n\rPOINT_" +
-      "IN_TIME\020\002B4\n org.drools.core.marshalling" +
-      ".implB\020ProtobufMessages"
+      "\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\026\n\016next_fir",
+      "e_time\030\006 \001(\003\022\016\n\006period\030\007 \001(\003\022\025\n\rcalendar" +
+      "_name\030\010 \003(\t\032,\n\022PointInTimeTrigger\022\026\n\016nex" +
+      "t_fire_time\030\001 \001(\003\"8\n\013TriggerType\022\010\n\004CRON" +
+      "\020\000\022\014\n\010INTERVAL\020\001\022\021\n\rPOINT_IN_TIME\020\002B4\n o" +
+      "rg.drools.core.marshalling.implB\020Protobu" +
+      "fMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -43150,7 +44682,13 @@ public final class ProtobufMessages {
           internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_descriptor,
-              new java.lang.String[] { "Name", "IsActive", });
+              new java.lang.String[] { "Name", "IsActive", "IsAutoDeactivate", "ActivatedForRecency", "ClearedForRecency", "Activation", "NodeInstance", });
+          internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_descriptor =
+            internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_descriptor.getNestedTypes().get(0);
+          internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_org_drools_core_marshalling_Agenda_AgendaGroup_NodeInstance_descriptor,
+              new java.lang.String[] { "ProcessInstanceId", "NodeInstanceId", });
           internal_static_org_drools_core_marshalling_Agenda_FocusStack_descriptor =
             internal_static_org_drools_core_marshalling_Agenda_descriptor.getNestedTypes().get(1);
           internal_static_org_drools_core_marshalling_Agenda_FocusStack_fieldAccessorTable = new
