@@ -1078,8 +1078,7 @@ public class AccumulateNode extends BetaNode {
         LeftTuple child = leftTuple.getFirstChild();
 
         if ( accctx.propagated ) {
-            // To do that, we need to skip the first N children that are in fact
-            // the propagated tuples
+            // To do that, we need to skip the first N children that are in fact the propagated tuples
             int target = isUpdatingSink ? this.sink.size() - 1 : this.sink.size();
             for ( int i = 0; i < target; i++ ) {
                 child = child.getLeftParentNext();

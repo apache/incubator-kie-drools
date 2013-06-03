@@ -30,6 +30,7 @@ import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.QueryRiaFixerNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.WindowNode;
 
 public class RuleBaseNodes {
     public static Map<Integer, BaseNode> getNodeMap(InternalRuleBase ruleBase) {
@@ -54,15 +55,20 @@ public class RuleBaseNodes {
                                      Map<Integer, BaseNode> nodes) {
         // we don't need to store alpha nodes, as they have no state to serialise
         if ( sink instanceof PropagationQueuingNode ) {
-            nodes.put( sink.getId(),
-                       ((BaseNode)sink) );
+            nodes.put( sink.getId(), ((BaseNode)sink) );
         }
         if ( sink instanceof LeftTupleSource ) {
             LeftTupleSource node = (LeftTupleSource) sink;
             for ( LeftTupleSink leftTupleSink : node.getSinkPropagator().getSinks() ) {
-                addLeftTupleSink( ruleBase,
-                                  leftTupleSink,
-                                  nodes );
+                addLeftTupleSink(ruleBase,
+                                 leftTupleSink,
+                                 nodes);
+            }
+        } else if ( sink instanceof WindowNode ) {
+            WindowNode node = (WindowNode) sink;
+            nodes.put( sink.getId(), ((BaseNode)sink) );
+            for ( ObjectSink objectSink : node.getSinkPropagator().getSinks() ) {
+                addObjectSink(ruleBase, objectSink, nodes);
             }
         } else {
             ObjectSource node = ( ObjectSource ) sink;

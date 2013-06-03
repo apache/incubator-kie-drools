@@ -2,9 +2,7 @@ package org.drools.compiler.integrationtests;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -22,26 +20,21 @@ import org.drools.compiler.Person;
 import org.drools.compiler.PersonInterface;
 import org.drools.compiler.Pet;
 import org.drools.core.RuleBase;
-import org.drools.core.StatefulSession;
 import org.drools.compiler.TotalHolder;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
-import org.drools.core.common.RuleFlowGroupImpl;
 import org.drools.core.event.ActivationCancelledEvent;
 import org.drools.core.event.ActivationCreatedEvent;
 import org.drools.core.event.AgendaEventListener;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.rule.Package;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.ActivationGroup;
 import org.drools.core.spi.AgendaGroup;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
@@ -384,7 +377,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
         final DefaultAgenda agenda = (DefaultAgenda) ((AgendaImpl)ksession.getAgenda()).getAgenda();
         final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
-        if ( preak == PhreakOption.DISABLED ) {
+        if ( phreak == PhreakOption.DISABLED ) {
             agenda.setFocus( group1 );
             assertEquals( 3, group1.size() );
             agenda.fireNextItem( null, 0, 0 );
@@ -598,7 +591,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( 8, list.size() );
         assertEquals( "group2", list.get( 7 ) );
 
-        if ( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+        if ( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
             // clear only works for Rete, as while Phreak can be eager, it'll still result in rule firing
 
             // clear main only the auto focus related ones should fire

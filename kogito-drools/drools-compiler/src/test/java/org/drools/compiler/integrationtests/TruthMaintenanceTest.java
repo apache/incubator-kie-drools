@@ -1106,7 +1106,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     @Test
     public void testTMSWithLateUpdate() {
         //  JBRULES-3416
-        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+        if( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
             return;  // Feature can never work in Rete mode.
         }
 
