@@ -107,7 +107,7 @@ public class EmptyBetaConstraints
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
                                        final short nodeType) {
-        final BetaMemory memory = new BetaMemory( new LeftTupleList(), //config.isSequential() ? null : new LeftTupleList(),
+        final BetaMemory memory = new BetaMemory( config.isSequential() ? null : new LeftTupleList(),
                                                   new RightTupleList(),
                                                   this.createContext(),
                                                   nodeType );

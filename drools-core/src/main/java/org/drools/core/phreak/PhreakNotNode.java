@@ -142,6 +142,12 @@ public class PhreakNotNode {
             RightTuple next = rightTuple.getStagedNext();
 
             rtm.add(rightTuple);
+            if ( ltm == null || ltm.size() == 0 ) {
+                // do nothing here, as no left memory
+                rightTuple.clearStaged();
+                rightTuple = next;
+                continue;
+            }
 
             FastIterator it = notNode.getLeftIterator(ltm);
             PropagationContext context = rightTuple.getPropagationContext();
