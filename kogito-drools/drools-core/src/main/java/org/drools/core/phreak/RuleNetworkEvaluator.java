@@ -489,7 +489,7 @@ public class RuleNetworkEvaluator {
     private void switchOnDoBetaNode(NetworkNode node, LeftTupleSets trgTuples, InternalWorkingMemory wm, LeftTupleSets srcTuples, LeftTupleSets stagedLeftTuples, LeftTupleSinkNode sink, BetaMemory bm, AccumulateMemory am) {
         if (log.isTraceEnabled()) {
             int offset = getOffset(node);
-            log.trace("{} {} rightTuples {}", indent(offset), ++cycle, bm.getStagedRightTuples().toStringSizes());
+            log.trace("{} rightTuples {}", indent(offset), bm.getStagedRightTuples().toStringSizes());
         }
 
         switch (node.getType()) {

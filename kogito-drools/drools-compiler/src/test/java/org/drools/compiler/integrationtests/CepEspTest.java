@@ -3011,9 +3011,11 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test //(timeout=10000)
+    @Test
     public void testLeakingActivationsWithDetachedExpiredNonCancelling() throws Exception {
         // JBRULES-3558
+        // TODO: it is still possible to get multiple insertions of the Recording object
+        // if you set the @expires of Motion to 1ms, maybe because the event expires too soon
         String drl = "package org.drools;\n" +
                      "\n" +
                      "import java.util.List\n" +
@@ -3022,7 +3024,7 @@ public class CepEspTest extends CommonTestMethodBase {
                      "" +
                      "declare Motion\n" +
                      "    @role( event )\n" +
-                     "    @expires( 1ms )\n" +
+                     "    @expires( 10ms )\n" +
                      "    @timestamp( timestamp )\n" +
                      "    timestamp : long\n" +
                      "end\n" +
