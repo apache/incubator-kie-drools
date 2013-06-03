@@ -427,7 +427,9 @@ public class LinkingTest {
         assertFalse( rs.isRuleLinked() );
 
         wm.insert(  new A() );
+        assertFalse( rs.isRuleLinked() );
         wm.insert(  new B() );
+        assertFalse( rs.isRuleLinked() );
         wm.insert(  new E() );
         assertFalse( rs.isRuleLinked() );
 
