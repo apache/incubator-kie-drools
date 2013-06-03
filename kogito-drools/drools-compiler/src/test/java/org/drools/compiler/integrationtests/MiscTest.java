@@ -2437,7 +2437,6 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser( LanguageLevelOption.DRL5 );
         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );

@@ -71,7 +71,7 @@ public class AttributeDescr extends BaseDescr {
     }
     
     public String getValueString() {
-        if( type == Type.STRING || type == Type.DATE ) {
+        if( type == Type.STRING || type == Type.DATE || name.equals("dialect") ) {
             // needs escaping
             return "\""+this.value+"\"";
         }
