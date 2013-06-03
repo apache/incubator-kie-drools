@@ -30,7 +30,7 @@
         <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" sourceRef="CompStartEvent_2" targetRef="ScriptTask_1"/>
         
         <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 1">
-          <bpmn2:script>System.out.println("Compensated"); x.setVal("true");</bpmn2:script>
+          <bpmn2:script>System.out.println("Compensated"); x.setVal("true");kcontext.setVariable("x", "x");</bpmn2:script>
         </bpmn2:scriptTask>
         <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" sourceRef="ScriptTask_1" targetRef="CompEndEvent_2"/>
         

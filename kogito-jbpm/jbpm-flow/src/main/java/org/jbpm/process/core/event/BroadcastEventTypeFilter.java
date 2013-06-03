@@ -56,7 +56,7 @@ public class BroadcastEventTypeFilter extends EventTypeFilter {
                 return true;
             } else if( this.base != null ) { 
                 // broadcast
-		        if( type.equals(this.base) ) { 
+		        if( type.startsWith(this.base) ) { 
 		            return true;
 		        }
 		    } 

@@ -96,12 +96,12 @@ public class CompensationTest extends JbpmBpmn2TestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         StringHolder x = new StringHolder();
         params.put("x", x);
-        ProcessInstance processInstance = ksession.startProcess("CompensateEventSubprocess");
+        ProcessInstance processInstance = ksession.startProcess("CompensateEventSubprocess", params);
 
         assertProcessInstanceActive(processInstance.getId(), ksession);
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), null);
-        
-        assertTrue("Value was not modified in compensation script and is: " + x.getVal(), "true".equals(x.getVal()));
+        assertProcessVarValue(processInstance, "x", "true");
+
     }
 
 

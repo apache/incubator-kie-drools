@@ -1,7 +1,10 @@
 package org.jbpm.bpmn2.objects;
 
-public class StringHolder {
+import java.io.Serializable;
 
+public class StringHolder implements Serializable {
+
+    private static final long serialVersionUID = -4824571232463620777L;
     private String val = null;
 
     public String getVal() {
@@ -11,4 +14,11 @@ public class StringHolder {
     public void setVal(String val) {
         this.val = val;
     }
+
+    @Override
+    public String toString() {
+        return val;
+    }
+    
+    
 }

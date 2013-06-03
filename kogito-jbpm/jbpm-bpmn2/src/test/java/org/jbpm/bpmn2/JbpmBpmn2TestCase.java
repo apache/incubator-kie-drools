@@ -54,6 +54,7 @@ import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -672,6 +673,27 @@ public abstract class JbpmBpmn2TestCase extends Assert {
             fail("Process Variable(s) do not exist: " + s);
         }
 
+    }
+    
+    public void assertProcessVarValue(ProcessInstance processInstance, String varName, String varValue) {
+        boolean result = false;
+        String actualValue = null;
+        if (sessionPersistence) {
+            List<VariableInstanceLog> log = JPAProcessInstanceDbLog.findVariableInstances(processInstance.getId(), varName);
+            if (log != null && !log.isEmpty()) {
+                actualValue = log.get(log.size()-1).getValue();
+                
+            }
+        } else {
+            Object value = ((WorkflowProcessInstanceImpl) processInstance).getVariable(varName);
+            if (value != null) {
+                actualValue = value.toString();
+            }
+        } 
+        result = varName.equals(actualValue);
+        if(!result) {
+            fail("Variable " + varName + " value missmatch - expected " + varValue + " actual " + actualValue);
+        }
     }
 
     public void assertNodeExists(ProcessInstance process, String... nodeNames) {

@@ -60,6 +60,7 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
             
             return null;
         } catch( Exception e ) { 
+
             throw e;
         } finally {
             if (commandService != null && commandService instanceof DisposableCommandService) {

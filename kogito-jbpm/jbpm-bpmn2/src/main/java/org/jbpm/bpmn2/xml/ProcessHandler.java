@@ -123,8 +123,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		    process.setMetaData("Bpmn2Imports", typedImports);
 		}
 		
-		// for unique id's of nodes
-		parser.getMetaData().put("idGen", new AtomicInteger());
+		// for unique id's of nodes, start with one to avoid returning wrong nodes for dynamic nodes
+		parser.getMetaData().put("idGen", new AtomicInteger(1));
 		
 		return process;
 	}
