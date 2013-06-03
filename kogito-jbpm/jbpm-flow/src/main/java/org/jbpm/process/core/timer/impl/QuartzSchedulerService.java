@@ -15,6 +15,7 @@
  */
 package org.jbpm.process.core.timer.impl;
 
+import java.io.NotSerializableException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.concurrent.Callable;
@@ -160,7 +161,13 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
             }
             
         } catch (JobPersistenceException e) {
-            internalSchedule(new InmemoryTimerJobInstanceDelegate(quartzJobHandle.getJobName(), ((GlobalTimerService) globalTimerService).getTimerServiceId()));
+            if (e.getCause() instanceof NotSerializableException) {
+                // in case job cannot be persisted, like rule timer then make it in memory
+                internalSchedule(new InmemoryTimerJobInstanceDelegate(quartzJobHandle.getJobName(), ((GlobalTimerService) globalTimerService).getTimerServiceId()));
+            } else {
+                ((AcceptsTimerJobFactoryManager) globalTimerService).getTimerJobFactoryManager().removeTimerJobInstance(timerJobInstance);
+                throw new RuntimeException(e);
+            }
         } catch (SchedulerException e) {
             ((AcceptsTimerJobFactoryManager) globalTimerService).getTimerJobFactoryManager().removeTimerJobInstance(timerJobInstance);
             throw new RuntimeException("Exception while scheduling job", e);
