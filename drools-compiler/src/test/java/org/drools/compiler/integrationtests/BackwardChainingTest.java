@@ -35,7 +35,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.reteoo.RightInputAdapterNode;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -1491,7 +1490,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000)
     public void testSubNetworksAndQueries() throws Exception {
-        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+        if( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
             return;  //Disbaled due to phreak, as tests is order specific
         }
         String str = "" +

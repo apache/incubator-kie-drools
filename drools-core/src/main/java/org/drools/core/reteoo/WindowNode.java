@@ -31,6 +31,7 @@ import org.drools.core.rule.Behavior;
 import org.drools.core.rule.BehaviorManager;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.Iterator;
@@ -95,6 +96,11 @@ public class WindowNode extends ObjectSource
         this.constraints = new ArrayList<AlphaNodeFieldConstraint>(constraints);
         this.behavior = new BehaviorManager(behaviors);
         this.entryPoint = context.getCurrentEntryPoint();
+        for ( Behavior b :  behaviors ) {
+            if ( b instanceof SlidingTimeWindow ) {
+                ((SlidingTimeWindow)b).setWindowNode( this );
+            }
+        }
 
     }
 
@@ -410,8 +416,6 @@ public class WindowNode extends ObjectSource
     }
 
     public static class WindowMemory implements Memory {
-
-        // public ObjectHashMap events = new ObjectHashMap();
         public           ContextEntry[] context;
         public           Object         behaviorContext;
         public transient ReentrantLock  gate;

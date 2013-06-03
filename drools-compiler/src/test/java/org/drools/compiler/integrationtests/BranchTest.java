@@ -499,7 +499,7 @@ public class BranchTest extends CommonTestMethodBase {
 
         List<String> results = executeTestWithDRL(str);
 
-        if ( CommonTestMethodBase.preak == PhreakOption.ENABLED) {
+        if ( CommonTestMethodBase.phreak == PhreakOption.ENABLED) {
             assertEquals( 2, results.size() );
         } else {
             assertEquals( 1, results.size() );

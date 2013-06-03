@@ -32,7 +32,6 @@ import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.definition.rule.Rule;
@@ -606,7 +605,7 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testOpenQuery() throws Exception {
-        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+        if( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
             return;  //Disbaled due to phreak, as tests is order specific
         }
         String str = "";

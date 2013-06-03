@@ -1980,7 +1980,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testBasicFrom() throws Exception {
-        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+        if( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
             return;  //Disbaled due to phreak, as tests is order specific
         }
 
@@ -2044,7 +2044,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testFromWithParams() throws Exception {
-        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+        if( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
             return;  //Disbaled due to phreak, as tests is order specific
         }
 
@@ -5107,7 +5107,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testFromArrayIteration() throws Exception {
-        if( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+        if( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
             return;  //Disbaled due to phreak, as tests is order specific
         }
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_FromArrayIteration.drl" ) );

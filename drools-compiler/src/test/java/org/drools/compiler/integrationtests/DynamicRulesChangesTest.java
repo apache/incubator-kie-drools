@@ -27,7 +27,6 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.command.Command;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -42,7 +41,7 @@ public class DynamicRulesChangesTest {
     @Before
     public void setUp() throws Exception {
         KieBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbaseConf.setOption(CommonTestMethodBase.preak);
+        kbaseConf.setOption(CommonTestMethodBase.phreak);
         kbase = ( InternalKnowledgeBase ) KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
         ruleBase = ((KnowledgeBaseImpl)kbase).ruleBase;

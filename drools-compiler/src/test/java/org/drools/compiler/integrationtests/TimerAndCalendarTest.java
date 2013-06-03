@@ -1,11 +1,9 @@
 package org.drools.compiler.integrationtests;
 
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -23,12 +21,8 @@ import org.drools.compiler.Pet;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
-import org.drools.core.WorkingMemory;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.core.rule.Package;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
@@ -36,9 +30,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.PhreakOption;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
@@ -979,7 +971,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testIntervalTimerWithLongExpressions() throws Exception {
-        if ( CommonTestMethodBase.preak == PhreakOption.ENABLED ) {
+        if ( CommonTestMethodBase.phreak == PhreakOption.ENABLED ) {
             return; // phreak does not yet support dynamic salience
         }
 
@@ -1047,7 +1039,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testIntervalTimerWithStringExpressions() throws Exception {
-        if ( CommonTestMethodBase.preak == PhreakOption.ENABLED ) {
+        if ( CommonTestMethodBase.phreak == PhreakOption.ENABLED ) {
             return; // phreak does not yet support dynamic salience
         }
 
@@ -1264,7 +1256,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     
     @Test(timeout=10000)
     public void testHaltAfterSomeTimeThenRestart() throws Exception {
-        if ( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+        if ( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
             return; // fails randomly for Rete
         }
 
@@ -1334,7 +1326,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test //(timeout=10000)
     public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
-        if ( CommonTestMethodBase.preak == PhreakOption.DISABLED ) {
+        if ( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
             return; // fails randomly for Rete
         }
 

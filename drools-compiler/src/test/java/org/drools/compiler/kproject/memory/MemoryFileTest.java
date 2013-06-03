@@ -17,37 +17,26 @@ import org.junit.Test;
 
 public class MemoryFileTest {
     @Test
-    @Ignore // this now passes, as we want to allow overwriting as default
     public void testFileCreation() throws IOException {
         FileSystem fs = new MemoryFileSystem();
         
         Folder mres = fs.getFolder( "src/main/java/org/domain" );  
         
         File f1 = mres.getFile( "MyClass.java" );
-        try {
-            f1.create( new ByteArrayInputStream( "ABC".getBytes() ) );
-            fail( "Folder does not exist, cannot create file" );
-        } catch (IOException e){
-            
-        }
+        f1.create( new ByteArrayInputStream( "ABC".getBytes() ) );
         
         mres.create();
         
         f1 = mres.getFile( "MyClass.java" );
-        assertFalse( f1.exists());
+        assertTrue( f1.exists());
         
         f1.create( new ByteArrayInputStream( "ABC".getBytes() ) );        
         f1 = mres.getFile( "MyClass.java" );
         assertTrue( f1.exists() );
         
         assertEquals( "ABC", StringUtils.toString( f1.getContents() ) );
-        
-        try {
-            f1.create( new ByteArrayInputStream( "ABC".getBytes() ) );
-            fail( "file already exists, should only allow setContents" );
-        } catch (IOException e){
-            
-        }
+
+        f1.create( new ByteArrayInputStream( "ABC".getBytes() ) );
         
         f1.setContents( new ByteArrayInputStream( "DEF".getBytes() ) );
         assertEquals( "DEF", StringUtils.toString( f1.getContents() ) );

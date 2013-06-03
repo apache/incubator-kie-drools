@@ -49,13 +49,13 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
     @BeforeClass
     public static void setPhreak() {
-        wasRunningPhreak = preak;
-        preak = PhreakOption.ENABLED;
+        wasRunningPhreak = phreak;
+        phreak = PhreakOption.ENABLED;
     }
 
     @AfterClass
     public static void unsetPhreak() {
-        preak = wasRunningPhreak;
+        phreak = wasRunningPhreak;
     }
 
     @Before

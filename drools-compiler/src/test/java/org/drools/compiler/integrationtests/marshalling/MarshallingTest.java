@@ -2436,24 +2436,27 @@ public class MarshallingTest extends CommonTestMethodBase {
      * from the ObjectOutputStream API: "Multiple references to a single object
      * are encoded using a reference sharing mechanism so that graphs of objects
      * can be restored to the same shape as when the original was written."
+     *
+     * This is still not fixed, as mentioned in the JIRA
      * 
      * @see JBRULES-2048
      * 
      * @throws Exception
      */
-    @Test
-    @Ignore
+    @Test @Ignore
     public void testDroolsObjectOutputInputStream() throws Exception {
-        Person bob = new Person();
+
 
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_Serializable.drl" ),
+        knowledgeBuilder.add( ResourceFactory.newClassPathResource( "org/drools/compiler/integrationtests/test_Serializable.drl" ),
                               ResourceType.DRL );
 
         KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
         knowledgeBase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
 
         KieSession session = knowledgeBase.newStatefulKnowledgeSession();
+
+        Person bob = new Person();
         session.insert( bob );
 
         assertSame( "these two object references should be same",
@@ -2883,7 +2886,6 @@ public class MarshallingTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testMarshallEntryPointsWithSlidingTimeWindow() throws Exception {
         String str =
                 "package org.domain.test \n" +
@@ -2907,22 +2909,14 @@ public class MarshallingTest extends CommonTestMethodBase {
                         "   list.add( $l );" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( str ) ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            throw new RuntimeException( kbuilder.getErrors().toString() );
-        }
-
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
-        knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( conf, str );
 
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
-        KieSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
+        KieSession ksession = createKnowledgeSession(kbase, ksconf);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2967,7 +2961,6 @@ public class MarshallingTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testMarshallEntryPointsWithSlidingLengthWindow() throws Exception {
         String str =
                 "package org.domain.test \n" +
@@ -2991,22 +2984,14 @@ public class MarshallingTest extends CommonTestMethodBase {
                         "   list.add( $l );" +
                         "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( str ) ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            throw new RuntimeException( kbuilder.getErrors().toString() );
-        }
-
-        KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
-        knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( conf, str );
 
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
         ksconf.setOption( TimerJobFactoryOption.get("trackable") );
-        KieSession ksession = knowledgeBase.newStatefulKnowledgeSession( ksconf, null );
+        KieSession ksession = createKnowledgeSession(kbase, ksconf);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
