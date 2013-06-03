@@ -17,7 +17,7 @@ public class DSLMappingFileTest {
     private DSLMappingFile file     = null;
     private final String   filename = "test_metainfo.dsl";
 
-    @Test @Ignore
+    @Test
     public void testParseFile() {
         try {
             final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( this.filename ) );
@@ -160,7 +160,7 @@ public class DSLMappingFileTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testParseFileWithEscapes() {
         String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");\n" + "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))\n"
                       + "[when]code {code1} occurs=BBBB\n";
@@ -183,7 +183,7 @@ public class DSLMappingFileTest {
 
             final String ruleAfterExpansion = de.expand( rule );
 
-            final String expected = "rule \"x\"\nwhen\nAAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))\nthen\nSystem.out.println(\"DO_SOMETHING\");\nend\n";
+            final String expected = "rule \"x\"\nwhen\nAAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))\nthen\nSystem.out.println(\"DO_SOMETHING\");\nend";
 
             assertEquals( expected,
                           ruleAfterExpansion );
@@ -230,7 +230,7 @@ public class DSLMappingFileTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testEnum() {
         String file = "[when][]ATTRIBUTE {attr:ENUM:Attribute.value} in {list}=Attribute( {attr} in ({list}) )";
         try {
@@ -260,7 +260,7 @@ public class DSLMappingFileTest {
             assertEquals( "Attribute( {attr} in ({list}) )",
                           entry.getMappingValue() );
 
-            assertEquals( "(\\W|^)ATTRIBUTE\\s+(.*?)\\s+in\\s+(.*?)$",
+            assertEquals( "(?:(?<=^)|(?<=\\W))ATTRIBUTE\\s+(.*?)\\s+in\\s+(.*?)$",
                           entry.getKeyPattern().toString() );
 
         } catch ( final IOException e ) {

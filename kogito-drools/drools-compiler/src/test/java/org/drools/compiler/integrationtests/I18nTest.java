@@ -41,7 +41,7 @@ public class I18nTest extends CommonTestMethodBase {
 
     private static Logger logger = LoggerFactory.getLogger(I18nTest.class);
 
-    @Test @Ignore("Fails because of JBRULES-3435. But the JBRULES-2853 part works fine")
+    @Test @Ignore("Fails because of JBRULES-3435. But the JBRULES-2853 part works fine. Support for i18n properties must be fixed in mvel")
     public void readDrlInEncodingUtf8() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_I18nPerson_utf8.drl", "UTF-8", getClass() ),

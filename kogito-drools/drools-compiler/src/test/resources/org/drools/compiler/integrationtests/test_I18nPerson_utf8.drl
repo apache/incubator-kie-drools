@@ -1,6 +1,6 @@
 package org.drools.compiler.test
 
-import org.drools.I18nPerson
+import org.drools.compiler.I18nPerson
 
 global java.util.List list
 
