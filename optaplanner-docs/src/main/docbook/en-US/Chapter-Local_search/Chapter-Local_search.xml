@@ -23,12 +23,12 @@
   </section>
 
   <section xml:id="hillClimbing">
-    <title>Hill climbing (simple local search)</title>
+    <title>Hill Climbing (Simple Local Search)</title>
 
     <section>
       <title>Algorithm description</title>
 
-      <para>Hill climbing tries all selected moves and then takes the best move, which is the move which leads to the
+      <para>Hill Climbing tries all selected moves and then takes the best move, which is the move which leads to the
       solution with the highest score. That best move is called the step move. From that new solution, it again tries
       all selected moves and takes the best move and continues like that iteratively. If multiple selected moves tie for
       the best move, one of them is randomly chosen as the best move.</para>
@@ -43,7 +43,7 @@
       NP-complete problem it's impossible to predict what will be the optimal final value for a planning
       variable.</para>
 
-      <para>Hill climbing can easily get stuck in a local optima:</para>
+      <para>Hill Climbing can easily get stuck in a local optima:</para>
 
       <mediaobject>
         <imageobject>
@@ -57,12 +57,12 @@
   </section>
 
   <section xml:id="tabuSearch">
-    <title>Tabu search</title>
+    <title>Tabu Search</title>
 
     <section>
       <title>Algorithm description</title>
 
-      <para>Tabu search works like hill climbing, but it maintains a tabu list to avoid getting stuck in local optima.
+      <para>Tabu Search works like hill climbing, but it maintains a tabu list to avoid getting stuck in local optima.
       The tabu list holds recently used objects that are <emphasis>taboo</emphasis> to use for now. Moves that involve
       an object in the tabu list, are not accepted. The tabu list objects can be anything related to the move, such as
       the planning entity, planning value, move, solution, ... Here's an example with entity tabu for 4 queens, so the
@@ -79,12 +79,12 @@
   </section>
 
   <section xml:id="simulatedAnnealing">
-    <title>Simulated annealing</title>
+    <title>Simulated Annealing</title>
 
     <section>
       <title>Algorithm description</title>
 
-      <para>Simulated annealing evaluates only a few moves per step, so it steps quickly. In the classic implementation,
+      <para>Simulated Annealing evaluates only a few moves per step, so it steps quickly. In the classic implementation,
       the first accepted move is the winning step. A move is accepted if it doesn't decrease the score or - in case it
       does decrease the score - if passes a random check. The chance that a decreasing move passes the random check
       decreases relative to the size of the score decrement and the time the phase has been running (which is
@@ -101,13 +101,14 @@
   </section>
 
   <section xml:id="lateAcceptance">
-    <title>Late acceptance</title>
+    <title>Late Acceptance</title>
 
     <section>
       <title>Algorithm description</title>
 
-      <para>Late acceptance (also known as Late acceptance hill climbing) also evaluates only a few moves per step. A
-      move is accepted if it leads to a score that is at least the winning score of a fixed number of steps ago.</para>
+      <para>Late Acceptance (also known as Late Acceptance Hill Climbing) also evaluates only a few moves per step. A
+      move is accepted if does not decrease the score, or if it leads to a score that is at least the late score (which
+      is the winning score of a fixed number of steps ago).</para>
 
       <mediaobject>
         <imageobject>
@@ -115,10 +116,22 @@
         </imageobject>
       </mediaobject>
 
-      <para>By default hill climbing behaviour is enabled, which means that moves that lead to a score of at least the
-      current solution are also accepted.</para>
-
       <para>See Late Acceptance acceptor below.</para>
+    </section>
+  </section>
+
+  <section xml:id="lateSimulatedAnnealing">
+    <title>Late Simulated Annealing</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Late Simulated Annealing combines the best characteristics of Simulated Annealing and Late Acceptance. A
+      move is accepted if does not decrease the score, or if it leads to a score that is at least the late score, or -
+      failing those criteria - if it passes a random check. The chance that a decreasing move passes the random check
+      decreases relative to the size of the score decrement and the late score.</para>
+
+      <para>See Late Simulated Annealing acceptor below.</para>
     </section>
   </section>
 
@@ -310,7 +323,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
       most needs. You can also combine multiple acceptors.</para>
 
       <section>
-        <title>Tabu search acceptor</title>
+        <title>Tabu Search acceptor</title>
 
         <para>When tabu search takes steps it creates tabu's. It does not accept a move as the next step if that move
         breaks tabu. OptaPlanner implements several tabu types:</para>
@@ -389,12 +402,16 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
         <para>A tabu search acceptor should be combined with a high <literal>acceptedCountLimit</literal>, such as
         <literal>1000</literal>.</para>
+
+        <programlisting language="xml">    &lt;forager&gt;
+        &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
+    &lt;/forager&gt;</programlisting>
       </section>
 
       <section>
-        <title>Simulated annealing acceptor</title>
+        <title>Simulated Annealing acceptor</title>
 
-        <para>Simulated annealing does not always pick the move with the highest score, neither does it evaluate many
+        <para>Simulated Annealing does not always pick the move with the highest score, neither does it evaluate many
         moves per step. At least at first. Instead, it gives non improving moves also a chance to be picked, depending
         on its score and the time gradient of the <literal>Termination</literal>. In the end, it gradually turns into a
         hill climber, only accepting improving moves.</para>
@@ -432,13 +449,28 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
       </section>
 
       <section>
-        <title>Late acceptance acceptor</title>
+        <title>Late Acceptance acceptor</title>
 
-        <para>Late acceptance accepts any move that has a score which is higher than the best score of a number of steps
+        <para>Late Acceptance accepts any move that has a score which is higher than the best score of a number of steps
         ago. That number of steps is the <literal>lateAcceptanceSize</literal>.</para>
 
         <programlisting language="xml">    &lt;acceptor&gt;
       &lt;lateAcceptanceSize&gt;500&lt;/lateAcceptanceSize&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+        &lt;acceptedCountLimit&gt;4&lt;/acceptedCountLimit&gt;
+    &lt;/forager&gt;</programlisting>
+      </section>
+
+      <section>
+        <title>Late Simulated Annealing acceptor</title>
+
+        <para>Late Simulated Annealing accepts any move that has a score which is higher than the best score of a number
+        of steps ago and has a chance to accept any move below that score too. That number of steps is the
+        <literal>lateSimulatedAnnealingSize</literal>.</para>
+
+        <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;lateSimulatedAnnealingSize&gt;100&lt;/lateSimulatedAnnealingSize&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
         &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;

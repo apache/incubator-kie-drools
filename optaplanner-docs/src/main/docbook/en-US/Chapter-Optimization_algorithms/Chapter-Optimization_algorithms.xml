@@ -291,7 +291,7 @@
           </row>
 
           <row>
-            <entry>  Local search</entry>
+            <entry>  Local Search</entry>
 
             <entry/>
 
@@ -305,7 +305,7 @@
           </row>
 
           <row>
-            <entry>    Hill-climbing</entry>
+            <entry>    Hill-Climbing</entry>
 
             <entry>5/5</entry>
 
@@ -319,7 +319,7 @@
           </row>
 
           <row>
-            <entry>    Tabu search</entry>
+            <entry>    Tabu Search</entry>
 
             <entry>5/5</entry>
 
@@ -333,7 +333,7 @@
           </row>
 
           <row>
-            <entry>    Simulated annealing</entry>
+            <entry>    Simulated Annealing</entry>
 
             <entry>5/5</entry>
 
@@ -347,7 +347,7 @@
           </row>
 
           <row>
-            <entry>    Late acceptance</entry>
+            <entry>    Late Acceptance</entry>
 
             <entry>5/5</entry>
 
@@ -361,7 +361,21 @@
           </row>
 
           <row>
-            <entry>  Evolutionary algorithms</entry>
+            <entry>    Late Simulated Annealing</entry>
+
+            <entry>5/5</entry>
+
+            <entry>4/5</entry>
+
+            <entry>3/5</entry>
+
+            <entry>5/5</entry>
+
+            <entry>Yes</entry>
+          </row>
+
+          <row>
+            <entry>  Evolutionary Algorithms</entry>
 
             <entry/>
 
@@ -375,7 +389,7 @@
           </row>
 
           <row>
-            <entry>    Evolutionary strategies</entry>
+            <entry>    Evolutionary Strategies</entry>
 
             <entry>4/5</entry>
 
@@ -389,7 +403,7 @@
           </row>
 
           <row>
-            <entry>    Genetic algorithms</entry>
+            <entry>    Genetic Algorithms</entry>
 
             <entry>4/5</entry>
 
@@ -441,7 +455,7 @@
       </listitem>
 
       <listitem>
-        <para>Tabu search (use planning entity tabu)</para>
+        <para>Tabu Search (use planning entity tabu)</para>
       </listitem>
     </orderedlist>
 
@@ -449,7 +463,7 @@
     probably already more than good enough.</para>
 
     <para>But you can do even better, at a lower return on invested time. Use the Benchmarker and try a couple of
-    simulated annealing configurations:</para>
+    Simulated Annealing, Late Acceptance or Late Simulated Annealing configurations, for example:</para>
 
     <orderedlist>
       <listitem>
@@ -457,11 +471,11 @@
       </listitem>
 
       <listitem>
-        <para>Simulated annealing (try several starting temperatures)</para>
+        <para>Late Simulated Annealing (try several sizes)</para>
       </listitem>
     </orderedlist>
 
-    <para>And combine them with tabu search:</para>
+    <para>And combine them with Tabu Search:</para>
 
     <orderedlist>
       <listitem>
@@ -469,11 +483,11 @@
       </listitem>
 
       <listitem>
-        <para>Simulated annealing (relatively long time)</para>
+        <para>Late Simulated Annealing (relatively long time)</para>
       </listitem>
 
       <listitem>
-        <para>Tabu search (relatively short time)</para>
+        <para>Tabu Search (relatively short time)</para>
       </listitem>
     </orderedlist>
 
@@ -498,13 +512,13 @@
     <programlisting language="xml">&lt;solver&gt;
   ...
   &lt;constructionHeuristic&gt;
-    ... &lt;!-- First phase: First Fit decreasing --&gt;
+    ... &lt;!-- First phase: First Fit Decreasing --&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
-    ... &lt;!-- Second phase: Simulated annealing --&gt;
+    ... &lt;!-- Second phase: Simulated Annealing --&gt;
   &lt;/localSearch&gt;
   &lt;localSearch&gt;
-    ... &lt;!-- Third phase: Tabu search --&gt;
+    ... &lt;!-- Third phase: Tabu Search --&gt;
   &lt;/localSearch&gt;
 &lt;/solver&gt;</programlisting>
 
