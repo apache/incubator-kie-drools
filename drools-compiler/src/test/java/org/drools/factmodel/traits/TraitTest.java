@@ -3637,5 +3637,34 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
+    @Test
+    public void testShadowAliasingTriples() {
+        shadowAlias( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
 
+    @Test
+    public void testShadowAliasingMap() {
+        shadowAlias( TraitFactory.VirtualPropertyMode.MAP );
+    }
+
+    public void shadowAlias( TraitFactory.VirtualPropertyMode mode ) {
+
+        KnowledgeBuilder kbuilderImpl = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilderImpl.add( ResourceFactory.newClassPathResource ( "org/drools/factmodel/traits/testTraitedAliasing.drl" ), ResourceType.DRL );
+        if ( kbuilderImpl.hasErrors() ) {
+            fail( kbuilderImpl.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilderImpl.getKnowledgePackages() );
+
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES, kbase );
+
+        StatefulKnowledgeSession ks = kbase.newStatefulKnowledgeSession();
+
+        ArrayList list = new ArrayList(  );
+        ks.setGlobal( "list", list );
+
+        ks.fireAllRules();
+        System.out.println( list );
+    }
 }
