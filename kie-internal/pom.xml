@@ -32,6 +32,7 @@
               org.drools.core.impl,
               org.drools.core.io.impl,
               org.drools.decisiontable;resolution:=optional,
+              org.jbpm.process.builder;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>
