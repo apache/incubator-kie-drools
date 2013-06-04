@@ -26,17 +26,12 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 public class LateSimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     protected int lateSimulatedAnnealingSize = -1;
-    protected boolean hillClimbingEnabled = true;
 
     protected Score[] previousScores;
     protected int lateScoreIndex = -1;
 
     public void setLateSimulatedAnnealingSize(int lateSimulatedAnnealingSize) {
         this.lateSimulatedAnnealingSize = lateSimulatedAnnealingSize;
-    }
-
-    public void setHillClimbingEnabled(boolean hillClimbingEnabled) {
-        this.hillClimbingEnabled = hillClimbingEnabled;
     }
 
     // ************************************************************************
