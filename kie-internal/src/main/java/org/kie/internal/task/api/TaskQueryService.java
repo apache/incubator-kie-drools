@@ -18,6 +18,7 @@ package org.kie.internal.task.api;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
@@ -38,6 +39,14 @@ public interface TaskQueryService {
     List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId, String language);
 
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language);
+    
+    List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(String userId, List<String> groupIds, List<Status> status, Date expirationDate);
+    
+    List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(String userId, List<String> groupIds, List<Status> status, Date expirationDate);
+    
+    List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(String userId, List<Status> status, Date expirationDate);
+    
+    List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(String userId, List<Status> status, Date expirationDate);
 
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language);
 
@@ -87,5 +96,6 @@ public interface TaskQueryService {
     
     List<Long> getTasksByProcessInstanceId(long processInstanceId);
     
+    Map<Long, List<String>> getPotentialOwnersForTaskIds(List<Long> taskIds);
     
 }
