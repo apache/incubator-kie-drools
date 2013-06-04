@@ -41,8 +41,10 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * @see org.drools.common.NodeMemories#clearNodeMemory(org.drools.common.NodeMemory)
      */
     public void clearNodeMemory( NodeMemory node ) {
-        this.memories.set( node.getId(),
-                           null );
+        if ( node.getId() < memories.length() ) {
+            this.memories.set( node.getId(),
+                               null );
+        }
     }
     
     public void clear() {
