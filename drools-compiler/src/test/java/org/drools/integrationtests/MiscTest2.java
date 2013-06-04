@@ -19,14 +19,17 @@ package org.drools.integrationtests;
 import org.drools.Address;
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
+import org.drools.RuleBaseConfiguration;
 import org.drools.builder.CompositeKnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.compiler.CompositeKnowledgeBuilderImpl;
+import org.drools.conflict.SalienceConflictResolver;
 import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.Modifies;
@@ -1628,5 +1631,41 @@ public class MiscTest2 extends CommonTestMethodBase {
         System.err.println( kb.getErrors().toString() );
         assertTrue( kb.hasErrors() );
     }
+
+    @Test
+    public void testLegacySalienceResolver()  {
+        String drl = "package org.drools.test; \n" +
+                     "" +
+                     "global java.util.List list; \n " +
+                     "" +
+                     "rule X salience 10 \n" +
+                     "then\n" +
+                     "  list.add( 1 ); \n" +
+                     "end\n" +
+                     "" +
+                     "rule Y salience 5 \n" +
+                     "then\n" +
+                     "  list.add( 2 ); \n" +
+                     "end\n" +
+                     "";
+
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        assertFalse( kb.hasErrors() );
+
+        KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        (( RuleBaseConfiguration) kbconf).setConflictResolver( SalienceConflictResolver.getInstance() );
+
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( kbconf );
+        knowledgeBase.addKnowledgePackages( kb.getKnowledgePackages() );
+        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1, 2 ), list );
+    }
+
 
 }
