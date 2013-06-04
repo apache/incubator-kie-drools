@@ -391,22 +391,6 @@ public class SynchronizedTaskService
     }
 
     @Override
-    public List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(
-            List<String> groupIds, String language, Date expirationDate) {
-        synchronized (ksession) {
-            return  taskService.getTasksAssignedByGroupsByExpirationDate(groupIds, language, expirationDate);
-        }
-    }
-
-    @Override
-    public List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(
-            List<String> groupIds, String language, Date expirationDate) {
-        synchronized (ksession) {
-            return  taskService.getTasksAssignedByGroupsByExpirationDateOptional(groupIds, language, expirationDate);
-        }
-    }
-
-    @Override
     public List<TaskSummary> getTasksByStatusByProcessInstanceId(
             long processInstanceId, List<Status> status, String language) {
         synchronized (ksession) {
@@ -874,4 +858,25 @@ public class SynchronizedTaskService
 			return taskService.execute(command);
 		}
 	}
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(String userId, List<Status> statuses, Date expirationDate) {
+       synchronized (ksession) {
+            return  taskService.getTasksAssignedAsPotentialOwnerByExpirationDate(userId, statuses, expirationDate);
+       } 
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(String userId, List<Status> statuses, Date expirationDate) {
+       synchronized (ksession) {
+            return  taskService.getTasksAssignedAsPotentialOwnerByExpirationDateOptional(userId, statuses, expirationDate);
+       } 
+    }
+
+    @Override
+    public Map<Long, List<String>> getPotentialOwnersForTaskIds(List<Long> taskIds) {
+       synchronized (ksession) {
+            return  taskService.getPotentialOwnersForTaskIds(taskIds);
+       } 
+    }
 }
