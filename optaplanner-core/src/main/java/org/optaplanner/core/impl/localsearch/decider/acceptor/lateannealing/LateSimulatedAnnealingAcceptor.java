@@ -23,16 +23,16 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
-public class LateAnnealingAcceptor extends AbstractAcceptor {
+public class LateSimulatedAnnealingAcceptor extends AbstractAcceptor {
 
-    protected int lateAnnealingSize = -1;
+    protected int lateSimulatedAnnealingSize = -1;
     protected boolean hillClimbingEnabled = true;
 
     protected Score[] previousScores;
     protected int lateScoreIndex = -1;
 
-    public void setLateAnnealingSize(int lateAnnealingSize) {
-        this.lateAnnealingSize = lateAnnealingSize;
+    public void setLateSimulatedAnnealingSize(int lateSimulatedAnnealingSize) {
+        this.lateSimulatedAnnealingSize = lateSimulatedAnnealingSize;
     }
 
     public void setHillClimbingEnabled(boolean hillClimbingEnabled) {
@@ -47,7 +47,7 @@ public class LateAnnealingAcceptor extends AbstractAcceptor {
     public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         validate();
-        previousScores = new Score[lateAnnealingSize];
+        previousScores = new Score[lateSimulatedAnnealingSize];
         Score initialScore = phaseScope.getBestScore();
         for (int i = 0; i < previousScores.length; i++) {
             previousScores[i] = initialScore;
@@ -56,8 +56,8 @@ public class LateAnnealingAcceptor extends AbstractAcceptor {
     }
 
     private void validate() {
-        if (lateAnnealingSize <= 0) {
-            throw new IllegalArgumentException("The lateAcceptanceSize (" + lateAnnealingSize
+        if (lateSimulatedAnnealingSize <= 0) {
+            throw new IllegalArgumentException("The lateAcceptanceSize (" + lateSimulatedAnnealingSize
                     + ") cannot be negative or zero.");
         }
     }
@@ -98,7 +98,7 @@ public class LateAnnealingAcceptor extends AbstractAcceptor {
     public void stepEnded(LocalSearchStepScope stepScope) {
         super.stepEnded(stepScope);
         previousScores[lateScoreIndex] = stepScope.getScore();
-        lateScoreIndex = (lateScoreIndex + 1) % lateAnnealingSize;
+        lateScoreIndex = (lateScoreIndex + 1) % lateSimulatedAnnealingSize;
     }
 
     @Override

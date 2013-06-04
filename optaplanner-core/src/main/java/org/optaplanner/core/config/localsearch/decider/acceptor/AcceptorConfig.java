@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.CompositeAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
-import org.optaplanner.core.impl.localsearch.decider.acceptor.lateannealing.LateAnnealingAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.lateannealing.LateSimulatedAnnealingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.EntityTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
@@ -71,7 +71,7 @@ public class AcceptorConfig {
 
     protected Integer lateAcceptanceSize = null;
 
-    protected Integer lateAnnealingSize = null;
+    protected Integer lateSimulatedAnnealingSize = null;
 
     public List<Class<? extends Acceptor>> getAcceptorClassList() {
         return acceptorClassList;
@@ -233,12 +233,12 @@ public class AcceptorConfig {
         this.lateAcceptanceSize = lateAcceptanceSize;
     }
 
-    public Integer getLateAnnealingSize() {
-        return lateAnnealingSize;
+    public Integer getLateSimulatedAnnealingSize() {
+        return lateSimulatedAnnealingSize;
     }
 
-    public void setLateAnnealingSize(Integer lateAnnealingSize) {
-        this.lateAnnealingSize = lateAnnealingSize;
+    public void setLateSimulatedAnnealingSize(Integer lateSimulatedAnnealingSize) {
+        this.lateSimulatedAnnealingSize = lateSimulatedAnnealingSize;
     }
 
     // ************************************************************************
@@ -256,15 +256,15 @@ public class AcceptorConfig {
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_ENTITY_TABU))
                 || entityTabuSize != null || entityTabuRatio != null
                 || fadingEntityTabuSize != null || fadingEntityTabuRatio != null) {
-            EntityTabuAcceptor entityTabuAcceptor = new EntityTabuAcceptor();
+            EntityTabuAcceptor acceptor = new EntityTabuAcceptor();
             if (entityTabuSize != null) {
                 if (entityTabuRatio != null) {
                     throw new IllegalArgumentException("The acceptor cannot have both entityTabuSize ("
                             + entityTabuSize + ") and entityTabuRatio (" + entityTabuRatio + ").");
                 }
-                entityTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(entityTabuSize));
+                acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(entityTabuSize));
             } else if (entityTabuRatio != null) {
-                entityTabuAcceptor.setTabuSizeStrategy(new EntityRatioTabuSizeStrategy(entityTabuRatio));
+                acceptor.setTabuSizeStrategy(new EntityRatioTabuSizeStrategy(entityTabuRatio));
             }
             if (fadingEntityTabuSize != null) {
                 if (fadingEntityTabuRatio != null) {
@@ -272,27 +272,27 @@ public class AcceptorConfig {
                             + fadingEntityTabuSize + ") and fadingEntityTabuRatio ("
                             + fadingEntityTabuRatio + ").");
                 }
-                entityTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingEntityTabuSize));
+                acceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingEntityTabuSize));
             } else if (fadingEntityTabuRatio != null) {
-                entityTabuAcceptor.setFadingTabuSizeStrategy(new EntityRatioTabuSizeStrategy(fadingEntityTabuRatio));
+                acceptor.setFadingTabuSizeStrategy(new EntityRatioTabuSizeStrategy(fadingEntityTabuRatio));
             }
             if (environmentMode.isNonIntrusiveFullAsserted()) {
-                entityTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+                acceptor.setAssertTabuHashCodeCorrectness(true);
             }
-            acceptorList.add(entityTabuAcceptor);
+            acceptorList.add(acceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_VALUE_TABU))
                 || valueTabuSize != null || valueTabuRatio != null
                 || fadingValueTabuSize != null  || fadingValueTabuRatio != null) {
-            ValueTabuAcceptor valueTabuAcceptor = new ValueTabuAcceptor();
+            ValueTabuAcceptor acceptor = new ValueTabuAcceptor();
             if (valueTabuSize != null) {
                 if (valueTabuRatio != null) {
                     throw new IllegalArgumentException("The acceptor cannot have both valueTabuSize ("
                             + valueTabuSize + ") and valueTabuRatio (" + valueTabuRatio + ").");
                 }
-                valueTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(valueTabuSize));
+                acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(valueTabuSize));
             } else if (valueTabuRatio != null) {
-                valueTabuAcceptor.setTabuSizeStrategy(new ValueRatioTabuSizeStrategy(valueTabuRatio));
+                acceptor.setTabuSizeStrategy(new ValueRatioTabuSizeStrategy(valueTabuRatio));
             }
             if (fadingValueTabuSize != null) {
                 if (fadingValueTabuRatio != null) {
@@ -300,71 +300,71 @@ public class AcceptorConfig {
                             + fadingValueTabuSize + ") and fadingValueTabuRatio ("
                             + fadingValueTabuRatio + ").");
                 }
-                valueTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingValueTabuSize));
+                acceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingValueTabuSize));
             } else if (fadingValueTabuRatio != null) {
-                valueTabuAcceptor.setFadingTabuSizeStrategy(new ValueRatioTabuSizeStrategy(fadingValueTabuRatio));
+                acceptor.setFadingTabuSizeStrategy(new ValueRatioTabuSizeStrategy(fadingValueTabuRatio));
             }
 
             if (valueTabuSize != null) {
-                valueTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(valueTabuSize));
+                acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(valueTabuSize));
             }
             if (fadingValueTabuSize != null) {
-                valueTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingValueTabuSize));
+                acceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingValueTabuSize));
             }
             if (environmentMode.isNonIntrusiveFullAsserted()) {
-                valueTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+                acceptor.setAssertTabuHashCodeCorrectness(true);
             }
-            acceptorList.add(valueTabuAcceptor);
+            acceptorList.add(acceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.MOVE_TABU))
                 || moveTabuSize != null || fadingMoveTabuSize != null) {
-            MoveTabuAcceptor moveTabuAcceptor = new MoveTabuAcceptor();
-            moveTabuAcceptor.setUseUndoMoveAsTabuMove(false);
+            MoveTabuAcceptor acceptor = new MoveTabuAcceptor();
+            acceptor.setUseUndoMoveAsTabuMove(false);
             if (moveTabuSize != null) {
-                moveTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(moveTabuSize));
+                acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(moveTabuSize));
             }
             if (fadingMoveTabuSize != null) {
-                moveTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingMoveTabuSize));
+                acceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingMoveTabuSize));
             }
             if (environmentMode.isNonIntrusiveFullAsserted()) {
-                moveTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+                acceptor.setAssertTabuHashCodeCorrectness(true);
             }
-            acceptorList.add(moveTabuAcceptor);
+            acceptorList.add(acceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.UNDO_MOVE_TABU))
                 || undoMoveTabuSize != null || fadingUndoMoveTabuSize != null) {
-            MoveTabuAcceptor undoMoveTabuAcceptor = new MoveTabuAcceptor();
-            undoMoveTabuAcceptor.setUseUndoMoveAsTabuMove(true);
+            MoveTabuAcceptor acceptor = new MoveTabuAcceptor();
+            acceptor.setUseUndoMoveAsTabuMove(true);
             if (undoMoveTabuSize != null) {
-                undoMoveTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(undoMoveTabuSize));
+                acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(undoMoveTabuSize));
             }
             if (fadingUndoMoveTabuSize != null) {
-                undoMoveTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingUndoMoveTabuSize));
+                acceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingUndoMoveTabuSize));
             }
             if (environmentMode.isNonIntrusiveFullAsserted()) {
-                undoMoveTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+                acceptor.setAssertTabuHashCodeCorrectness(true);
             }
-            acceptorList.add(undoMoveTabuAcceptor);
+            acceptorList.add(acceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SOLUTION_TABU))
                 || solutionTabuSize != null || fadingSolutionTabuSize != null) {
-            SolutionTabuAcceptor solutionTabuAcceptor = new SolutionTabuAcceptor();
+            SolutionTabuAcceptor acceptor = new SolutionTabuAcceptor();
             if (solutionTabuSize != null) {
-                solutionTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(solutionTabuSize));
+                acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(solutionTabuSize));
             }
             if (fadingSolutionTabuSize != null) {
-                solutionTabuAcceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingSolutionTabuSize));
+                acceptor.setFadingTabuSizeStrategy(new FixedTabuSizeStrategy(fadingSolutionTabuSize));
             }
             if (environmentMode.isNonIntrusiveFullAsserted()) {
-                solutionTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+                acceptor.setAssertTabuHashCodeCorrectness(true);
             }
-            acceptorList.add(solutionTabuAcceptor);
+            acceptorList.add(acceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SIMULATED_ANNEALING))
                 || simulatedAnnealingStartingTemperature != null) {
-            SimulatedAnnealingAcceptor simulatedAnnealingAcceptor = new SimulatedAnnealingAcceptor();
-            simulatedAnnealingAcceptor.setStartingTemperature(scoreDefinition.parseScore(simulatedAnnealingStartingTemperature));
-            acceptorList.add(simulatedAnnealingAcceptor);
+            SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
+            acceptor.setStartingTemperature(scoreDefinition.parseScore(simulatedAnnealingStartingTemperature));
+            acceptorList.add(acceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.GREAT_DELUGE))
                 || greatDelugeWaterLevelUpperBoundRate != null || greatDelugeWaterRisingRate != null) {
@@ -376,15 +376,15 @@ public class AcceptorConfig {
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_ACCEPTANCE))
                 || lateAcceptanceSize != null ) {
-            LateAcceptanceAcceptor lateAcceptanceAcceptor = new LateAcceptanceAcceptor();
-            lateAcceptanceAcceptor.setLateAcceptanceSize((lateAcceptanceSize == null) ? 1000 : lateAcceptanceSize);
-            acceptorList.add(lateAcceptanceAcceptor);
+            LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
+            acceptor.setLateAcceptanceSize((lateAcceptanceSize == null) ? 1000 : lateAcceptanceSize);
+            acceptorList.add(acceptor);
         }
-        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_ANNEALING))
-                || lateAnnealingSize != null ) {
-            LateAnnealingAcceptor lateAnnealingAcceptor = new LateAnnealingAcceptor();
-            lateAnnealingAcceptor.setLateAnnealingSize((lateAnnealingSize == null) ? 1000 : lateAnnealingSize);
-            acceptorList.add(lateAnnealingAcceptor);
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_SIMULATED_ANNEALING))
+                || lateSimulatedAnnealingSize != null ) {
+            LateSimulatedAnnealingAcceptor acceptor = new LateSimulatedAnnealingAcceptor();
+            acceptor.setLateSimulatedAnnealingSize((lateSimulatedAnnealingSize == null) ? 1000 : lateSimulatedAnnealingSize);
+            acceptorList.add(acceptor);
         }
         if (acceptorList.size() == 1) {
             return acceptorList.get(0);
@@ -448,8 +448,8 @@ public class AcceptorConfig {
                 inheritedConfig.getGreatDelugeWaterRisingRate());
         lateAcceptanceSize = ConfigUtils.inheritOverwritableProperty(lateAcceptanceSize,
                 inheritedConfig.getLateAcceptanceSize());
-        lateAnnealingSize = ConfigUtils.inheritOverwritableProperty(lateAnnealingSize,
-                inheritedConfig.getLateAnnealingSize());
+        lateSimulatedAnnealingSize = ConfigUtils.inheritOverwritableProperty(lateSimulatedAnnealingSize,
+                inheritedConfig.getLateSimulatedAnnealingSize());
     }
 
     public static enum AcceptorType {
@@ -461,7 +461,7 @@ public class AcceptorConfig {
         SIMULATED_ANNEALING,
         GREAT_DELUGE,
         LATE_ACCEPTANCE,
-        LATE_ANNEALING,
+        LATE_SIMULATED_ANNEALING,
     }
 
 }
