@@ -16,6 +16,10 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.models.commons.shared.rule.ActionCallMethod;
 import org.drools.workbench.models.commons.shared.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.commons.shared.rule.ActionFieldFunction;
@@ -51,17 +55,13 @@ import org.drools.workbench.models.commons.shared.rule.RuleAttribute;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
-import org.junit.Before;
-import org.junit.Test;
 import org.drools.workbench.models.commons.shared.workitems.PortableBooleanParameterDefinition;
 import org.drools.workbench.models.commons.shared.workitems.PortableFloatParameterDefinition;
 import org.drools.workbench.models.commons.shared.workitems.PortableIntegerParameterDefinition;
 import org.drools.workbench.models.commons.shared.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
-import org.drools.workbench.models.commons.shared.oracle.DataType;
-
-import java.util.Arrays;
-import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -415,17 +415,89 @@ public class BRDRLPersistenceTest {
 
         String dslFile = "[when]" + dslDefinition + "=Credit( rating == {rating} )";
 
-        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, null, dslFile );
+        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl,
+                                                                        null,
+                                                                        dslFile );
 
         DSLSentence dslSentence = (DSLSentence) unmarshalledModel.lhs[ 0 ];
-        assertEquals( dslDefinition, dslSentence.getDefinition() );
-        assertEquals( 1, dslSentence.getValues().size() );
+        assertEquals( dslDefinition,
+                      dslSentence.getDefinition() );
+        assertEquals( 1,
+                      dslSentence.getValues().size() );
         assertTrue( dslSentence.getValues().get( 0 ) instanceof DSLComplexVariableValue );
         DSLComplexVariableValue dslComplexVariableValue = (DSLComplexVariableValue) dslSentence.getValues().get( 0 );
-        assertEquals( "AA", dslComplexVariableValue.getValue() );
-        assertEquals( "ENUM:Applicant.creditRating", dslComplexVariableValue.getId() );
+        assertEquals( "AA",
+                      dslComplexVariableValue.getValue() );
+        assertEquals( "ENUM:Applicant.creditRating",
+                      dslComplexVariableValue.getId() );
 
-        assertEqualsIgnoreWhitespace( expected, brlPersistence.marshal( unmarshalledModel ) );
+        assertEqualsIgnoreWhitespace( expected,
+                                      brlPersistence.marshal( unmarshalledModel ) );
+    }
+
+    @Test
+    public void testDSLExpansionContainingRegex() {
+        String expected =
+                "rule \"RegexDslRule\"\n" +
+                        "dialect \"mvel\"\n" +
+                        "when\n" +
+                        "When the ages is less than  57\n" +
+                        "then\n" +
+                        "end\n";
+        final String dslDefinition = "When the ages is less than {num:1?[0-9]?[0-9]}";
+
+        final DSLSentence dsl = new DSLSentence();
+        dsl.setDefinition( dslDefinition );
+
+        //Check values are correctly parsed
+        final List<DSLVariableValue> values = dsl.getValues();
+        assertEquals( 1,
+                      values.size() );
+        assertTrue( values.get( 0 ) instanceof DSLComplexVariableValue );
+        assertEquals( "num",
+                      values.get( 0 ).getValue() );
+        assertEquals( "1?[0-9]?[0-9]",
+                      ( (DSLComplexVariableValue) values.get( 0 ) ).getId() );
+
+        //The following line is normally performed by the UI when the user sets values
+        dsl.getValues().get( 0 ).setValue( "57" );
+
+        //Check interpolation
+        final String expansion = dsl.interpolate();
+
+        assertEquals( "When the ages is less than 57",
+                      expansion );
+        assertEquals( dsl.getDefinition(),
+                      dslDefinition );
+
+        final RuleModel m = new RuleModel();
+        m.name = "RegexDslRule";
+        m.addLhsItem( dsl );
+
+        String drl = brlPersistence.marshal( m );
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+
+        String dslFile = "[when]" + dslDefinition + "=applicant:Applicant(age<{num})";
+
+        RuleModel model = brlPersistence.unmarshalUsingDSL( drl,
+                                                            null,
+                                                            dslFile );
+
+        DSLSentence dslSentence = (DSLSentence) model.lhs[ 0 ];
+        assertEquals( dslDefinition,
+                      dslSentence.getDefinition() );
+        assertEquals( 1,
+                      dslSentence.getValues().size() );
+        assertTrue( dslSentence.getValues().get( 0 ) instanceof DSLComplexVariableValue );
+        DSLComplexVariableValue dslComplexVariableValue = (DSLComplexVariableValue) dslSentence.getValues().get( 0 );
+        assertEquals( "57",
+                      dslComplexVariableValue.getValue() );
+        assertEquals( "1?[0-9]?[0-9]",
+                      dslComplexVariableValue.getId() );
+
+        assertEqualsIgnoreWhitespace( drl,
+                                      brlPersistence.marshal( model ) );
     }
 
     @Test
@@ -3073,7 +3145,7 @@ public class BRDRLPersistenceTest {
         assertTrue( m.rhs[ 0 ] instanceof FreeFormLine );
         final FreeFormLine ffl = (FreeFormLine) m.rhs[ 0 ];
         assertEquals( "Here's something typed by the user as free-format DRL",
-                ffl.getText() );
+                      ffl.getText() );
 
         assertTrue( m.rhs[ 1 ] instanceof ActionSetField );
         final ActionSetField a1 = (ActionSetField) m.rhs[ 1 ];
