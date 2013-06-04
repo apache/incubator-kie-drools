@@ -179,8 +179,9 @@ public class DeclarationScopeResolver {
         return false;
     }
 
-    public boolean isDuplicated(Rule rule,
-                                final String name) {
+    public boolean isDuplicated( Rule rule,
+                                 final String name,
+                                 final String type ) {
         if ( this.map.containsKey( (name) ) ) {
             return true;
         }
@@ -191,7 +192,11 @@ public class DeclarationScopeResolver {
             if ( declaration != null ) {
                 // if it is an OR and it is duplicated, we can stop looking for duplication now
                 // as it is a separate logical branch
-                return !((rce instanceof GroupElement) && ((GroupElement) rce).isOr());
+                boolean inOr = ((rce instanceof GroupElement) && ((GroupElement) rce).isOr());
+                if ( ! inOr || type == null ) {
+                    return ! inOr;
+                }
+                return ! declaration.getExtractor().getExtractToClass().getName().equals( type );
             }
         }
         // look at parent rules
