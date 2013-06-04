@@ -58,27 +58,27 @@ public class LateSimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
-        Score score = moveScope.getScore();
+        Score moveScore = moveScope.getScore();
         Score lastStepScore = moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore();
-        if (score.compareTo(lastStepScore) >= 0) {
+        if (moveScore.compareTo(lastStepScore) >= 0) {
             return true;
         }
         Score lateScore = previousScores[lateScoreIndex];
         Score bestScore = moveScope.getStepScope().getPhaseScope().getBestScore();
-        Score scoreDifference = bestScore.subtract(score);
-        double[] scoreDifferenceLevels = ScoreUtils.extractLevelDoubles(scoreDifference);
+        Score moveScoreDifference = bestScore.subtract(moveScore);
+        double[] moveScoreDifferenceLevels = ScoreUtils.extractLevelDoubles(moveScoreDifference);
         Score lateScoreDifference = bestScore.subtract(lateScore);
         double[] lateScoreDifferenceLevels = ScoreUtils.extractLevelDoubles(lateScoreDifference);
         double acceptChance = 1.0;
-        for (int i = 0; i < scoreDifferenceLevels.length; i++) {
-            double scoreDifferenceLevel = scoreDifferenceLevels[i];
+        for (int i = 0; i < moveScoreDifferenceLevels.length; i++) {
+            double moveScoreDifferenceLevel = moveScoreDifferenceLevels[i];
             double lateScoreDifferenceLevel = lateScoreDifferenceLevels[i];
             double acceptChanceLevel;
-            if (scoreDifferenceLevel <= 0.0) {
-                // In this level, score is better than the bestScore, so do not disrupt the acceptChance
+            if (moveScoreDifferenceLevel <= 0.0) {
+                // In this level, moveScore is better than the bestScore, so do not disrupt the acceptChance
                 acceptChanceLevel = 1.0;
             } else {
-                acceptChanceLevel = Math.exp(-scoreDifferenceLevel / lateScoreDifferenceLevel);
+                acceptChanceLevel = Math.exp(-moveScoreDifferenceLevel / lateScoreDifferenceLevel);
             }
             acceptChance *= acceptChanceLevel;
         }

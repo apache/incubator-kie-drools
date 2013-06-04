@@ -65,15 +65,15 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
         if (moveScore.compareTo(lastStepScore) > 0) {
             return true;
         }
-        Score scoreDifference = lastStepScore.subtract(moveScore);
-        double[] scoreDifferenceLevels = ScoreUtils.extractLevelDoubles(scoreDifference);
-        for (int i = 0; i < scoreDifferenceLevels.length - 1; i++) {
-            if (scoreDifferenceLevels[i] != 0) {
+        Score moveScoreDifference = lastStepScore.subtract(moveScore);
+        double[] moveScoreDifferenceLevels = ScoreUtils.extractLevelDoubles(moveScoreDifference);
+        for (int i = 0; i < moveScoreDifferenceLevels.length - 1; i++) {
+            if (moveScoreDifferenceLevels[i] != 0) {
                 // more hard constraints broken, ignore it for now
                 return false;
             }
         }
-        double diff = scoreDifferenceLevels[scoreDifferenceLevels.length - 1];
+        double diff = moveScoreDifferenceLevels[moveScoreDifferenceLevels.length - 1];
         double acceptChance = Math.exp(-diff / temperature);
         if (moveScope.getWorkingRandom().nextDouble() < acceptChance) {
             return true;
