@@ -113,7 +113,28 @@
           <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <lateAcceptanceSize>2000</lateAcceptanceSize>
+          <lateAcceptanceSize>400</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>4</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Late Simulated Annealing</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <lateSimulatedAnnealingSize>100</lateSimulatedAnnealingSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>4</acceptedCountLimit>
