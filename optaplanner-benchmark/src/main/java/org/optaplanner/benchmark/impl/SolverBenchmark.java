@@ -27,7 +27,6 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.ScoreUtils;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,10 @@ public class SolverBenchmark {
     private Score totalScore = null;
     private Score averageScore = null;
 
-    private double[] totalAverageSquaredDifference;
+    // Not a Score because
+    // - the squaring would cause overflow for relatively small int and long scores.
+    // - standard deviation should not be rounded to integer numbers
+    private double[] standardDeviationDoubles = null;
 
     private Score totalWinningScoreDifference = null;
     private ScoreDifferencePercentage averageWorstScoreDifferencePercentage = null;
@@ -143,7 +145,7 @@ public class SolverBenchmark {
 
     public void benchmarkingEnded() {
         determineTotalsAndAverages();
-        determineDifferencesFromAverage();
+        determineStandardDeviation();
     }
 
     protected void determineTotalsAndAverages() {
@@ -181,30 +183,29 @@ public class SolverBenchmark {
         }
     }
 
-    protected void determineDifferencesFromAverage() {
-        Score average = getAverageScore();
-        if (average == null) {
+    protected void determineStandardDeviation() {
+        int successCount = getSuccessCount();
+        if (successCount <= 0) {
             return;
         }
-
-        boolean firstNonFailure = true;
+        // averageScore can no longer be null
+        double[] differenceSquaredTotalDoubles = null;
         for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
             if (!singleBenchmark.isFailure()) {
-                if (firstNonFailure) {
-                    //we do power operation on "double" to avoid common overflow when operating with scores > 500 000
-                    totalAverageSquaredDifference = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore().subtract(average));
-                    for (int i = 0; i < totalAverageSquaredDifference.length; i++) {
-                        totalAverageSquaredDifference[i] = Math.pow(totalAverageSquaredDifference[i], 2.0);
-                    }
-                    firstNonFailure = false;
-                } else {
-                    double[] temp = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore().subtract(average));
-
-                    for (int i = 0; i < totalAverageSquaredDifference.length; i++) {
-                        totalAverageSquaredDifference[i] += Math.pow(temp[i], 2.0);
-                    }
+                Score difference = singleBenchmark.getScore().subtract(averageScore);
+                // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
+                double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);
+                if (differenceSquaredTotalDoubles == null) {
+                    differenceSquaredTotalDoubles = new double[differenceDoubles.length];
+                }
+                for (int i = 0; i < differenceDoubles.length; i++) {
+                    differenceSquaredTotalDoubles[i] += Math.pow(differenceDoubles[i], 2.0);
                 }
             }
+        }
+        standardDeviationDoubles = new double[differenceSquaredTotalDoubles.length];
+        for (int i = 0; i < differenceSquaredTotalDoubles.length; i++) {
+            standardDeviationDoubles[i] = Math.pow(differenceSquaredTotalDoubles[i] / successCount, 0.5);
         }
     }
 
@@ -228,26 +229,29 @@ public class SolverBenchmark {
         return averageScore;
     }
 
-    public String getScoreStandardDeviation() {
-        if (totalAverageSquaredDifference == null || totalScore == null) {
+    // TODO Do the locale formatting in benchmarkReport.html.ftl - https://issues.jboss.org/browse/PLANNER-169
+    public String getStandardDeviationString() {
+        if (standardDeviationDoubles == null) {
             return null;
         }
-
-        int successCount = getSuccessCount();
-
-        StringBuilder builder = new StringBuilder();
-
-        // do sqrt(totalAverageSquaredDifference/count) and build a String
-        int i = 0;
-        for (Number number : totalAverageSquaredDifference) {
-            if (i > 0) {
-                builder.append("/");
+        StringBuilder standardDeviationString = new StringBuilder(standardDeviationDoubles.length * 9);
+        boolean first = true;
+        for (double standardDeviationDouble : standardDeviationDoubles) {
+            if (first) {
+                first = false;
+            } else {
+                standardDeviationString.append("/");
             }
-            builder.append((int) Math.floor(Math.pow(number.doubleValue() / successCount, 0.5)));
-            i++;
+            String abbreviated = Double.toString(standardDeviationDouble);
+            // Abbreviate to 2 decimals
+            // We don't use DecimalFormat to abbreviate because it's written locale insensitive (like java literals)
+            int dotIndex = abbreviated.lastIndexOf('.');
+            if (dotIndex >= 0 && dotIndex + 3 < abbreviated.length()) {
+                abbreviated = abbreviated.substring(0, dotIndex + 3);
+            }
+            standardDeviationString.append(abbreviated);
         }
-
-        return builder.toString();
+        return standardDeviationString.toString();
     }
 
     public Score getAverageWinningScoreDifference() {

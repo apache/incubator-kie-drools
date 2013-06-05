@@ -157,7 +157,7 @@
                                             </#if>
                                         </#list>
                                         <td>${solverBenchmark.averageScore!""}</td>
-                                        <td>${solverBenchmark.scoreStandardDeviation!""}</td>
+                                        <td>${solverBenchmark.standardDeviationString!""}</td>
                                         <td><@addSolverRankingBadge solverBenchmark=solverBenchmark/></td>
                                     </tr>
                                 </#list>
