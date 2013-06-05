@@ -538,7 +538,7 @@ end</programlisting>
 
     <para>Earlier the term "cross product" was mentioned, which is the result
     of a join. Imagine for a moment that the data from the fire alarm example
-    were used in combination with the following rule where there ar no field
+    were used in combination with the following rule where there are no field
     constraints:</para>
 
     <programlisting>rule
