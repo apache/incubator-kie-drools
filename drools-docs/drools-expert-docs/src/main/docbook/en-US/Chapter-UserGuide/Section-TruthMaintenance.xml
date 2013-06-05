@@ -113,17 +113,17 @@ then
 end</programlisting>
 
       <para>An "insertLogical" is part of the Drools Truth Maintenance System
-      (TMS). Here the fact is logically inserted, this fact is dependant on
-      the truth of the "when" clause. It means that when the rule becomes
+      (TMS). When a fact is logically inserted, that fact is dependant on
+      the truth of the "when" clause. This means that when the rule becomes
       false the fact is automatically retracted. This works particularly well
       as the two rules are mutually exclusive. So in the above rules if the
       person is under 16 it inserts an IsChild fact, once the person is 16 or
       over the IsChild fact is automatically retracted and the IsAdult fact
       inserted.</para>
 
-      <para>We can now bring back in the code to issue the passes, these two
-      can also be logically inserted, as the TMS supports chaining of logical
-      insertions for a cascading set of retracts.</para>
+      <para>Returning to the code to issue bus passes, these two rules can 
+      logically insert the ChildBusPass and AdultBusPass facts, as  the TMS 
+      supports chaining of logical insertions for a cascading set of retracts.</para>
 
       <programlisting>rule "Issue Child Bus Pass" when
     $p : Person( )
