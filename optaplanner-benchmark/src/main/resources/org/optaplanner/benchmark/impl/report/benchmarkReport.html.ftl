@@ -138,6 +138,7 @@
                                         <th>${problemBenchmark.name}</th>
                                     </#list>
                                         <th>Average</th>
+                                        <th>Standard Deviation</th>
                                         <th>Ranking</th>
                                     </tr>
                                 <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
@@ -156,6 +157,7 @@
                                             </#if>
                                         </#list>
                                         <td>${solverBenchmark.averageScore!""}</td>
+                                        <td>${solverBenchmark.scoreStandardDeviation!""}</td>
                                         <td><@addSolverRankingBadge solverBenchmark=solverBenchmark/></td>
                                     </tr>
                                 </#list>
