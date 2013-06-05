@@ -139,10 +139,10 @@ then
     insertLogical(new AdultBusPass( $p ) );
 end</programlisting>
 
-      <para>Now when the person changes from being 15 to 16, not only is the
-      IsChild fact automatically retracted, so is the person's ChildBusPass
+      <para>Now when a person ages from being 15 to 16, not only is the
+      IsChild fact automatically retracted, so is that person's ChildBusPass
       fact. For bonus points we can combine this with the 'not' conditional
-      element to handle notifications, in this situation a request for the
+      element to handle notifications. In this situation, a request for the
       returning of the pass. So when the TMS automatically retracts the
       ChildBusPass object, this rule triggers and sends a request to the
       person:</para>
