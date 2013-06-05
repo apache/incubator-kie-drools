@@ -15,7 +15,7 @@
     <para>So where do we get started? There are so many use cases and so much
     functionality in a rule engine such as Drools that it becomes beguiling.
     Have no fear my intrepid adventurer, the complexity is layered and you can
-    ease yourself into with simple use cases.</para>
+    ease yourself in with simple use cases.</para>
 
     <para>Stateless session, not utilising inference, forms the simplest use
     case. A stateless session can be called like a function passing it some

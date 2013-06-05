@@ -55,7 +55,7 @@
     venture for Prolog, and many of the failures are pinned on the problems
     of trying to run a logic based programming language concurrently on multi CPU
     hardware with effective results. Some believe that the failure of the 5GP
-    project tainted Prolog and resigned it academia, see <link
+    project tainted Prolog and relegated it to academia, see <link
     xlink:href="http://www.dvorak.org/blog/whatever-happened-to-prolog/">"Whatever
     Happened to Prolog"</link> by John C. Dvorak.</para>
 
@@ -71,22 +71,21 @@
     <para><firstterm>Imperative</firstterm>, system based languages, languages
     such as C, C++, Java and C#/.Net have dominated the last 20 years, enabled by
     the practicality of the languages and ability to run with good performance
-    on commodity hardware. However many believe there is renaissance
+    on commodity hardware. However many believe there is a renaissance
     underway in the field of AI, spurred by advances in hardware
     capabilities and AI research. In 2005 Heather Havenstein authored <link
     xlink:href="http://www.computerworld.com/s/article/99691/Spring_comes_to_AI_winter">"Spring
-    comes to AI winter"</link> which outlines a case for this resurgence,
-    which she refers to as a <firstterm>spring</firstterm>. Norvig and Russel
-    dedicate several pages to what factors allowed the industry to over come
-    it's problems and the research that came about as a result:</para>
+    comes to AI winter"</link> which outlines a case for this resurgence. Norvig and Russel
+    dedicate several pages to what factors allowed the industry to overcome
+    its problems and the research that came about as a result:</para>
 
-    <para><quote>Recent years have seen a revolution in both the content and
+    <blockquote><attribution>Artificial Intelligence: A Modern Approach.</attribution>
+    <para>Recent years have seen a revolution in both the content and
     the methodology of work in artificial intelligence. It is now more common
     to build on existing theories than to propose brand-new ones, to base
     claims on rigorous theorems or hard experimental evidence rather than on
     intuition, and to show relevance to real-world applications rather than
-    toy examples.</quote> (Artificial Intelligence: A Modern
-    Approach.)</para>
+    toy examples.</para></blockquote>
 
     <para><firstterm>Computer vision</firstterm>, <firstterm>neural
     networks</firstterm>, <firstterm>machine learning</firstterm> and
@@ -97,8 +96,8 @@
     cars about to enter the commercial market.
     <firstterm>Ontological</firstterm> research, based around description
     logic, has provided very rich semantics to represent our world. Algorithms
-    such as the tableaux algorithm have made it possible to effectively use
-    those rich semantics in large complex ontologies. Early KRR systems, like
+    such as the tableaux algorithm have made it possible to use
+    those rich semantics effectively in large complex ontologies. Early KRR systems, like
     Prolog in 5GP, were dogged by the limited semantic capabilities and memory
     restrictions on the size of those ontologies.</para>
   </section>
@@ -123,7 +122,7 @@
     theoretically represented and what can be used computationally in
     practically timely manner, which is why OWL has different sub-languages
     from Lite to Full. It is not believed that any reasoning system can
-    support OWL Full. Although each year algorithmic advances try to narrow
+    support OWL Full. However, algorithmic advances continue to narrow
     that gap and improve the expressiveness available to reasoning engines.</para>
 
     <para>There are also many approaches to how these systems go about
@@ -160,7 +159,7 @@
     <title>Rule Engines and Production Rule Systems (PRS)</title>
 
     <para>We've now covered a brief history of AI and learnt that the core of
-    AI is formed around KRR. We've shown than KRR is vast and fascinating
+    AI is formed around KRR. We've shown than KRR is a vast and fascinating
     subject which forms the bulk of the theory driving Drools R&amp;D.</para>
 
     <para>The rule engine is the computer program that delivers KRR
@@ -193,7 +192,7 @@
     expression engines. The book "How to Build a Business Rules Engine" (2004)
     by Malcolm Chisholm exemplifies this ambiguity. The book is actually about
     how to build and alter a database schema to hold validation rules. The
-    book then shows how to generate VB code from those validation rules to
+    book then shows how to generate Visual Basic code from those validation rules to
     validate data entry. While perfectly valid, this is very different to what
     we are talking about.</para>
 
@@ -223,15 +222,13 @@ then
         <primary>data driven</primary>
       </indexterm> approach to reasoning. The actions themselves can change
     data, which in turn could match against other rules causing them to fire;
-    this is referred to as<indexterm>
+    this is referred to as <indexterm>
         <primary>forward chaining</primary>
       </indexterm>forward chaining</para>
 
     <para>Drools implements and extends the <indexterm>
         <primary>Rete</primary>
-      </indexterm> Rete algorithm;<indexterm>
-        <primary>Leaps</primary>
-      </indexterm>. The Drools <indexterm>
+      </indexterm> Rete algorithm. The Drools <indexterm>
         <primary>Rete</primary>
       </indexterm> Rete implementation is called ReteOO, signifying that
     Drools has an enhanced and optimized implementation of the Rete algorithm
@@ -274,7 +271,7 @@ then
     <title>Hybrid Reasoning Systems (HRS)</title>
 
     <para>You may have read discussions comparing the merits of forward
-    chaining (reactive and data driven) or backward chaining(passive query).
+    chaining (reactive and data driven) or backward chaining (passive query).
     Here is a quick explanation of these two main types of reasoning.</para>
 
     <para>Forward chaining is "data-driven" and thus reactionary, with facts
