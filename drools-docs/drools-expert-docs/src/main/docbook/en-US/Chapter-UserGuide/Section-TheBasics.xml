@@ -510,7 +510,7 @@ ksession.fireAllRules();</programlisting>
         Person( name == "Chuck" )
     then
         System.out.println( "Hello Chuck" );
-        end</programlisting>
+    end</programlisting>
 
     <itemizedlist>
       <listitem>
