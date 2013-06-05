@@ -48,10 +48,10 @@ public class SolverBenchmark {
     private List<SingleBenchmark> singleBenchmarkList = null;
 
     private int failureCount = -1;
-    private Score totalScore = null;    
-       
-    private double totalAverageSquaredDifference[];    
-    
+    private Score totalScore = null;
+
+    private double[] totalAverageSquaredDifference;
+
     private Score totalWinningScoreDifference = null;
     private ScoreDifferencePercentage averageWorstScoreDifferencePercentage = null;
     // The average of the average is not just the overall average if the SingleBenchmark's timeMillisSpend differ
@@ -61,8 +61,7 @@ public class SolverBenchmark {
     private Integer ranking = null;
 
     public SolverBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
-        this.plannerBenchmark = plannerBenchmark;        
-        
+        this.plannerBenchmark = plannerBenchmark;
     }
 
     public String getName() {
@@ -179,28 +178,29 @@ public class SolverBenchmark {
             averageAverageCalculateCountPerSecond = totalAverageCalculateCountPerSecond / (long) successCount;
         }
     }
-        
-    protected void determineDifferencesFromAverage(){        
-        
+
+    protected void determineDifferencesFromAverage() {
         Score average = getAverageScore();
-        if (average==null) return;
-        
+        if (average == null) {
+            return;
+        }
+
         boolean firstNonFailure = true;
         for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
-            if (!singleBenchmark.isFailure()) {                
-                if (firstNonFailure) {                                                           
+            if (!singleBenchmark.isFailure()) {
+                if (firstNonFailure) {
                     //we do power operation on "double" to avoid common overflow when operating with scores > 500 000
-                    totalAverageSquaredDifference = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore().subtract(average));                                          
-                    for (int i = 0; i< totalAverageSquaredDifference.length; i++) {                                                
-                        totalAverageSquaredDifference[i] = Math.pow(totalAverageSquaredDifference[i], 2.0);                                                
-                    }                                                       
+                    totalAverageSquaredDifference = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore().subtract(average));
+                    for (int i = 0; i < totalAverageSquaredDifference.length; i++) {
+                        totalAverageSquaredDifference[i] = Math.pow(totalAverageSquaredDifference[i], 2.0);
+                    }
                     firstNonFailure = false;
                 } else {
-                    double temp[] = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore().subtract(average));                                                        
-                    
-                    for (int i = 0; i< totalAverageSquaredDifference.length; i++) {                                                
-                        totalAverageSquaredDifference[i] += Math.pow(temp[i], 2.0);                                                
-                    }                                                      
+                    double[] temp = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore().subtract(average));
+
+                    for (int i = 0; i < totalAverageSquaredDifference.length; i++) {
+                        totalAverageSquaredDifference[i] += Math.pow(temp[i], 2.0);
+                    }
                 }
             }
         }
@@ -228,27 +228,27 @@ public class SolverBenchmark {
         }
         return totalScore.divide(getSuccessCount());
     }
-    
-     public String getScoreStandardDeviation(){
+
+    public String getScoreStandardDeviation() {
         if (totalAverageSquaredDifference == null || totalScore == null) {
             return null;
-        }        
-        
-        int successCount = getSuccessCount();        
-        
+        }
+
+        int successCount = getSuccessCount();
+
         StringBuilder builder = new StringBuilder();
-        
+
         // do sqrt(totalAverageSquaredDifference/count) and build a String
-        int i=0;
-        for (Number number :  totalAverageSquaredDifference){             
-            if (i>0){
+        int i = 0;
+        for (Number number : totalAverageSquaredDifference) {
+            if (i > 0) {
                 builder.append("/");
             }
-            builder.append((int) Math.floor(Math.pow(number.doubleValue() / successCount, 0.5)));            
+            builder.append((int) Math.floor(Math.pow(number.doubleValue() / successCount, 0.5)));
             i++;
         }
-        
-        return builder.toString();        
+
+        return builder.toString();
     }
 
     public Score getAverageWinningScoreDifference() {
