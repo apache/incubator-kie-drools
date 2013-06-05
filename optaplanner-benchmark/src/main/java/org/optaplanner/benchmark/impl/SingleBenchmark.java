@@ -24,6 +24,7 @@ import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
+import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.api.score.Score;
@@ -190,6 +191,14 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
 
     public boolean isFailure() {
         return succeeded != null && !succeeded.booleanValue();
+    }
+
+    public boolean isScoreFeasible() {
+        if (score instanceof FeasibilityScore) {
+            return ((FeasibilityScore) score).isFeasible();
+        } else {
+            return true;
+        }
     }
 
     public Long getAverageCalculateCountPerSecond() {
