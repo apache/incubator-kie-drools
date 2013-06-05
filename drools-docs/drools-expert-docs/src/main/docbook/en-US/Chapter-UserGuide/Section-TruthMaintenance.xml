@@ -156,17 +156,6 @@ end</programlisting>
     </section>
 
     <section>
-      <title>Lazy Truth Maintenance</title>
-
-      <para>You no longer need to enable or disable truth maintenance, via the
-      kbase configuration. It is now handled automatically and turned on only
-      when needed. This was done along with the code changes so that all entry
-      points use the same code, previous to this the default entry point and
-      named entry points used different code, to avoid TMS overhead for event
-      processing.</para>
-    </section>
-
-    <section>
       <title>Important note: Equality for Java objects</title>
 
       <para>It is important to note that for Truth Maintenance (and logical
