@@ -187,10 +187,10 @@ public class SolverConfig {
                     "Configure at least 1 <planningEntityClass> in the solver configuration.");
         }
         for (Class<?> planningEntityClass : planningEntityClassSet) {
-            PlanningEntityDescriptor planningEntityDescriptor = new PlanningEntityDescriptor(
+            PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
                     solutionDescriptor, planningEntityClass);
-            solutionDescriptor.addPlanningEntityDescriptor(planningEntityDescriptor);
-            planningEntityDescriptor.processAnnotations();
+            solutionDescriptor.addPlanningEntityDescriptor(entityDescriptor);
+            entityDescriptor.processAnnotations();
         }
         return solutionDescriptor;
     }
