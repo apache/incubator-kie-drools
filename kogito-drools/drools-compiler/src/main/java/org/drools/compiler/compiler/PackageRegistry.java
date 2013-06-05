@@ -76,6 +76,10 @@ public class PackageRegistry {
         return pkg;
     }
 
+    public ClassLoader getPackageClassLoader() {
+        return getPackage().getPackageClassLoader();
+    }
+
     public DialectRuntimeRegistry getDialectRuntimeRegistry() {
         return dialectRuntimeRegistry;
     }

@@ -39,5 +39,5 @@ public interface InternalKieModule extends KieModule {
     
     File getFile();
 
-    Map<String, byte[]> getClassesMap();
+    Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations);
 }

@@ -59,7 +59,7 @@ public class DialectRuntimeRegistry
         this.lineMappings = (Map<String, LineMappings>) stream.readObject();
     }
 
-    public void onAdd(CompositeClassLoader rootClassLoader) {
+    public void onAdd(ClassLoader rootClassLoader) {
         //this.classLoader = rootClassLoader;
         for (DialectRuntimeData data : this.dialects.values()) {
             data.onAdd(this, rootClassLoader);
@@ -99,13 +99,13 @@ public class DialectRuntimeRegistry
     }
 
     public void merge( DialectRuntimeRegistry newDatas,
-                       CompositeClassLoader rootClassLoader ) {
+                       ClassLoader rootClassLoader ) {
         // false to preserve backward compatibility, should proabably be true
         merge( newDatas, rootClassLoader, false );
     }
 
     public void merge( DialectRuntimeRegistry newDatas,
-                       CompositeClassLoader rootClassLoader,
+                       ClassLoader rootClassLoader,
                        boolean excludeClasses ) {
         for ( Entry<String, DialectRuntimeData> entry : newDatas.dialects.entrySet() ) {
             DialectRuntimeData data = this.dialects.get( entry.getKey() );

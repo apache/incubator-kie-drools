@@ -9,8 +9,6 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.KieRepository;
-import org.kie.internal.utils.ClassLoaderUtil;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +28,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
@@ -47,7 +46,7 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     private KieRepository                   kr;
     
-    private CompositeClassLoader            cl;
+    private ClassLoader                     cl;
 
     public ClasspathKieProject() {
         this( KieServices.Factory.get().getRepository() );
@@ -58,7 +57,7 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
     
     public void init() {
-        this.cl = ClassLoaderUtil.getClassLoader( null, null, true );
+        this.cl = createProjectClassLoader();
         discoverKieModules();
         indexParts(kieModules.values(), kJarFromKBaseName);
     }
@@ -300,7 +299,7 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     @Override
-    public CompositeClassLoader getClassLoader() {
+    public ClassLoader getClassLoader() {
         return this.cl;
     }
 }

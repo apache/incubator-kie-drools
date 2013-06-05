@@ -113,7 +113,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
             classLoader.addClassLoader(new URLClassLoader(urls));
 
             if (kieModule != null) {
-                Map<String, byte[]> classes = kieModule.getClassesMap();
+                Map<String, byte[]> classes = kieModule.getClassesMap(true);
                 if ( !classes.isEmpty() ) {
                     classLoader.addClassLoaderToEnd( new ClassUtils.MapClassLoader( classes, classLoader ) );
                 }

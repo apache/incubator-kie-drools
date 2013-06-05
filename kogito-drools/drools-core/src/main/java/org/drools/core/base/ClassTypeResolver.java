@@ -68,7 +68,7 @@ public class ClassTypeResolver
     }
 
     public ClassTypeResolver(Set<String> imports,
-                             CompositeClassLoader rootClassLoader,
+                             ClassLoader rootClassLoader,
                              String name) {
         this( imports,
               rootClassLoader );

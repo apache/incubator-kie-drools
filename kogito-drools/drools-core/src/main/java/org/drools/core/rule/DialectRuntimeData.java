@@ -34,12 +34,12 @@ public interface DialectRuntimeData extends Cloneable {
 
     public void reload();
 
-    public DialectRuntimeData clone( DialectRuntimeRegistry registry, CompositeClassLoader rootClassLoader);
+    public DialectRuntimeData clone( DialectRuntimeRegistry registry, ClassLoader rootClassLoader);
 
-    public DialectRuntimeData clone( DialectRuntimeRegistry registry, CompositeClassLoader rootClassLoader, boolean excludeDeclaredClasses );
+    public DialectRuntimeData clone( DialectRuntimeRegistry registry, ClassLoader rootClassLoader, boolean excludeDeclaredClasses );
 
     public void onAdd( DialectRuntimeRegistry dialectRuntimeRegistry,
-                       CompositeClassLoader rootClassLoader );
+                       ClassLoader rootClassLoader );
 
     public void onRemove();
 

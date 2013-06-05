@@ -518,14 +518,11 @@ public final class ClassUtils {
         }
 
         public Class<?> loadClass( final String name,
-                final boolean resolve ) throws ClassNotFoundException {
+                                   final boolean resolve ) throws ClassNotFoundException {
             Class<?> cls = fastFindClass( name );
 
             if (cls == null) {
-                final CompositeClassLoader parent = (CompositeClassLoader) getParent();
-                cls = parent.loadClass( name,
-                                        resolve,
-                                        this );
+                cls = super.loadClass( name, resolve );
             }
 
             if (cls == null) {

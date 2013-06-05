@@ -222,7 +222,7 @@ public class MVELCompilationUnit
             for ( int i = 0, length = inputIdentifiers.length; i < length; i++ ) {
                 identifier = inputIdentifiers[i];
                 type = inputTypes[i];
-                Class< ? > cls = loadClass( runtimeData.getRootClassLoader(),
+                Class< ? > cls = loadClass( runtimeData.getPackageClassLoader(),
                                             inputTypes[i] );
                 parserContext.addInput( inputIdentifiers[i],
                                         cls );
@@ -236,7 +236,7 @@ public class MVELCompilationUnit
         String[] varNames = parserContext.getIndexedVarNames();
         
         ExecutableStatement stmt = (ExecutableStatement) compile( expression,
-                                                                  runtimeData.getRootClassLoader(),
+                                                                  runtimeData.getPackageClassLoader(),
                                                                   parserContext,
                                                                   languageLevel );
         

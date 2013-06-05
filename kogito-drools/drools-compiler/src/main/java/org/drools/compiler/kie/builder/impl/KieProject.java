@@ -3,7 +3,6 @@ package org.drools.compiler.kie.builder.impl;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
-import org.kie.internal.utils.CompositeClassLoader;
 
 public interface KieProject {
     
@@ -23,7 +22,7 @@ public interface KieProject {
 
     void init();   
     
-    CompositeClassLoader getClassLoader();
+    ClassLoader getClassLoader();
 
     ResultsImpl verify();
 }

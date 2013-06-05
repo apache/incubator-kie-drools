@@ -405,7 +405,7 @@ public class MVELDialect
         String methodName = staticImportEntry.substring( index + 1 );
 
         try {
-            Class cls = this.pkgBuilder.getRootClassLoader().loadClass( className );
+            Class cls = this.packageRegistry.getPackageClassLoader().loadClass( className );
             if ( cls != null ) {
 
                 // First try and find a matching method

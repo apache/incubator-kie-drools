@@ -42,8 +42,6 @@ import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
-import org.kie.internal.utils.ClassLoaderUtil;
-import org.kie.internal.utils.CompositeClassLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -65,6 +63,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 import static org.drools.core.util.BitMaskUtil.isSet;
 
 /**
@@ -90,7 +89,7 @@ abstract public class AbstractRuleBase
 
     private Map<String, Process>                          processes;
 
-    private transient CompositeClassLoader                rootClassLoader;
+    private transient ClassLoader                         rootClassLoader;
 
     /**
      * The fact handle factory.
@@ -117,9 +116,6 @@ abstract public class AbstractRuleBase
     private int                                           removalsSinceLock;
 
     private transient Map<String, TypeDeclaration>        classTypeDeclaration;
-
-    private transient JavaDialectRuntimeData.TypeDeclarationClassLoader
-                                                          declarationClassLoader;
 
     private List<RuleBasePartitionId>                     partitionIDs;
 
@@ -157,15 +153,6 @@ abstract public class AbstractRuleBase
         this.factHandleFactory = factHandleFactory;
 
         this.rootClassLoader = this.config.getClassLoader();
-        this.rootClassLoader.addClassLoader( getClass().getClassLoader() );
-
-        this.declarationClassLoader = new JavaDialectRuntimeData.TypeDeclarationClassLoader(
-                new JavaDialectRuntimeData(),
-                this.rootClassLoader
-        );
-        this.rootClassLoader.addClassLoader( this.declarationClassLoader );
-
-
 
         this.pkgs = new HashMap<String, Package>();
         this.processes = new HashMap<String, Process>();
@@ -219,8 +206,7 @@ abstract public class AbstractRuleBase
         // must write this option first in order to properly deserialize later
         droolsStream.writeBoolean( this.config.isClassLoaderCacheEnabled() );
 
-        droolsStream.writeObject( this.declarationClassLoader.getStore() );
-
+        droolsStream.writeObject( ((ProjectClassLoader)rootClassLoader).getStore() );
 
         droolsStream.writeObject( this.config );
         droolsStream.writeObject( this.pkgs );
@@ -272,20 +258,12 @@ abstract public class AbstractRuleBase
         }
 
         boolean classLoaderCacheEnabled = droolsStream.readBoolean();
+        Map<String, byte[]> store = (Map<String, byte[]>)droolsStream.readObject();
 
-        this.rootClassLoader = ClassLoaderUtil.getClassLoader( new ClassLoader[]{droolsStream.getParentClassLoader()},
-                                                               getClass(),
-                                                               classLoaderCacheEnabled );
+        this.rootClassLoader = createProjectClassLoader(droolsStream.getParentClassLoader(), store);
 
         droolsStream.setClassLoader( this.rootClassLoader );
         droolsStream.setRuleBase(this);
-
-        JavaDialectRuntimeData typeStore = (JavaDialectRuntimeData) droolsStream.readObject();
-        this.declarationClassLoader = new JavaDialectRuntimeData.TypeDeclarationClassLoader(
-                        typeStore,
-                        this.rootClassLoader
-        );
-        this.rootClassLoader.addClassLoader( this.declarationClassLoader );
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
 
@@ -294,8 +272,8 @@ abstract public class AbstractRuleBase
 
         this.pkgs = (Map<String, Package>) droolsStream.readObject();
 
-        for (final Object object : this.pkgs.values()) {
-            ( (Package) object ).getDialectRuntimeRegistry().onAdd( this.rootClassLoader );
+        for (Package pkg : this.pkgs.values()) {
+            pkg.getDialectRuntimeRegistry().onAdd( this.rootClassLoader );
         }
 
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
@@ -315,10 +293,10 @@ abstract public class AbstractRuleBase
                                                               e );
         }
 
-        for (final Object object : this.pkgs.values()) {
-            ( (Package) object ).getDialectRuntimeRegistry().onBeforeExecute();
-            ( (Package) object ).getClassFieldAccessorStore().setClassFieldAccessorCache( this.classFieldAccessorCache );
-            ( (Package) object ).getClassFieldAccessorStore().wire();
+        for (Package pkg : this.pkgs.values()) {
+            pkg.getDialectRuntimeRegistry().onBeforeExecute();
+            pkg.getClassFieldAccessorStore().setClassFieldAccessorCache( this.classFieldAccessorCache );
+            pkg.getClassFieldAccessorStore().wire();
         }
 
         this.populateTypeDeclarationMaps();
@@ -637,8 +615,14 @@ abstract public class AbstractRuleBase
     }
 
     public Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException {
-        this.declarationClassLoader.addClassDefinition( className, def );
-        return this.rootClassLoader.loadClass( className, true );
+        try {
+            return this.rootClassLoader.loadClass( className );
+        } catch (ClassNotFoundException e) {
+            if (def != null && rootClassLoader instanceof ProjectClassLoader) {
+                return ((ProjectClassLoader)rootClassLoader).defineClass(className, def);
+            }
+            throw e;
+        }
     }
 
 
@@ -855,11 +839,6 @@ abstract public class AbstractRuleBase
         }
     }
 
-    public ClassLoader getTypeDeclarationClassLoader() {
-        return this.declarationClassLoader;
-    }
-
-
     private static class TypeDeclarationCandidate {
 
         public TypeDeclaration candidate = null;
@@ -952,7 +931,7 @@ abstract public class AbstractRuleBase
                                   final String id ) throws InvalidPatternException {
         lock();
         try {
-            addEntryPoint( id );
+            addEntryPoint(id);
         } finally {
             unlock();
         }
@@ -1041,8 +1020,8 @@ abstract public class AbstractRuleBase
 
     public void removeQuery( final String packageName,
                              final String ruleName ) {
-        removeRule( packageName,
-                    ruleName );
+        removeRule(packageName,
+                   ruleName);
     }
 
     public void removeRule( final String packageName,
@@ -1085,11 +1064,11 @@ abstract public class AbstractRuleBase
             final Rule rule ) {
         lock();
         try {
-            this.eventSupport.fireBeforeRuleRemoved( pkg,
-                                                     rule );
-            removeRule( rule );
-            this.eventSupport.fireAfterRuleRemoved( pkg,
-                                                    rule );
+            this.eventSupport.fireBeforeRuleRemoved(pkg,
+                                                    rule);
+            removeRule(rule);
+            this.eventSupport.fireAfterRuleRemoved(pkg,
+                                                   rule);
         } finally {
             unlock();
         }
@@ -1245,7 +1224,7 @@ abstract public class AbstractRuleBase
         return this.config;
     }
 
-    public CompositeClassLoader getRootClassLoader() {
+    public ClassLoader getRootClassLoader() {
         return this.rootClassLoader;
     }
 

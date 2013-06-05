@@ -58,7 +58,7 @@ public class ClassFieldImpl implements FieldValue, Externalizable {
 
     public Object resolve( InternalWorkingMemory workingMemory ) {
         try {
-            type = ((ReteooRuleBase) workingMemory.getRuleBase()).getRootClassLoader().loadClass( className, true );
+            type = ((ReteooRuleBase) workingMemory.getRuleBase()).getRootClassLoader().loadClass( className );
         } catch (Exception e) {
 
         }

@@ -244,9 +244,9 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
         try {
             long mask = ruleBase.getTraitRegistry().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );
-            Class<T> proxyClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( proxyName, true );
+            Class<T> proxyClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( proxyName );
             bindAccessors( proxyClass, tdef, cdef, mask );
-            Class<T> wrapperClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( wrapperName, true );
+            Class<T> wrapperClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( wrapperName );
             bindCoreAccessors( wrapperClass, cdef );
             return proxyClass;
         } catch (ClassNotFoundException e) {
@@ -302,8 +302,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
             pkg = new Package( pack );
             JavaDialectRuntimeData data = new JavaDialectRuntimeData();
             pkg.getDialectRuntimeRegistry().setDialectData( "java", data );
-            data.onAdd(pkg.getDialectRuntimeRegistry(),
-                    ruleBase.getRootClassLoader());
+            data.onAdd( pkg.getDialectRuntimeRegistry(),
+                        ruleBase.getRootClassLoader() );
             ruleBase.addPackages( Arrays.asList(pkg) );
         }
         return pkg;
@@ -417,7 +417,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
             e.printStackTrace();
         }
 
-        Class<CoreWrapper<K>> wrapperClass = (Class<CoreWrapper<K>>) ruleBase.getRootClassLoader().loadClass( wrapperName, true );
+        Class<CoreWrapper<K>> wrapperClass = (Class<CoreWrapper<K>>) ruleBase.getRootClassLoader().loadClass( wrapperName );
         return wrapperClass;
     }
 

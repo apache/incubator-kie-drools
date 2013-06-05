@@ -278,7 +278,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         try {
-            CompositeClassLoader classLoader = ruleBase.getRootClassLoader();
+            ClassLoader classLoader = ruleBase.getRootClassLoader();
             if (analyzedCondition == null) {
                 analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(object, workingMemory, leftTuple);
             }

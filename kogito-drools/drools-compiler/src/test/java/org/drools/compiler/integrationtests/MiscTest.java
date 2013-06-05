@@ -976,7 +976,6 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testTypeDeclarationOnSeparateResource() throws Exception {
-        System.setProperty( "drools.dump.dir", "target" );
         String file1 = "package a.b.c\n" +
                        "declare SomePerson\n" +
                        "    weight : double\n" +
