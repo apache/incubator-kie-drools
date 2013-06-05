@@ -31,7 +31,7 @@ then
   insert( new IsAdult( $p ) )
 end</programlisting>
 
-    <para>due to the preceding rule, every Person who is 18 or over will have an
+    <para>Due to the preceding rule, every Person who is 18 or over will have an
     instance of IsAdult inserted for them. This fact is special in that it is known
     as a relation. We can use this inferred relation in any rule:</para>
 
