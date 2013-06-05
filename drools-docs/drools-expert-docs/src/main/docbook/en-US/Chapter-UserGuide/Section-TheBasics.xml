@@ -506,11 +506,11 @@ ksession.fireAllRules();</programlisting>
     </itemizedlist>
 
     <programlisting>rule "Hello World"
-    when
-        Person( name == "Chuck" )
-    then
-        System.out.println( "Hello Chuck" );
-    end</programlisting>
+when
+    Person( name == "Chuck" )
+then
+    System.out.println( "Hello Chuck" );
+end</programlisting>
 
     <itemizedlist>
       <listitem>
