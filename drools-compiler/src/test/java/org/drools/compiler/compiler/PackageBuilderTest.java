@@ -1073,14 +1073,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( builder.hasErrors() );
 
         Package bp = builder.getPackage();
-        CompositeClassLoader rootClassloader = ClassLoaderUtil.getClassLoader( new ClassLoader[]{Thread.currentThread().getContextClassLoader()},
-                                                                               getClass(),
-                                                                               false );
-        JavaDialectRuntimeData dialectData = (JavaDialectRuntimeData) bp.getDialectRuntimeRegistry().getDialectData( "java" );
-        dialectData.onAdd( bp.getDialectRuntimeRegistry(),
-                           rootClassloader );
 
-        Class newBean = rootClassloader.loadClass( "org.drools.compiler.test.NewBean" );
+        Class newBean = bp.getPackageClassLoader().loadClass( "org.drools.compiler.test.NewBean" );
         assertNotNull( newBean );
     }
 

@@ -77,7 +77,7 @@ public class JavaDialectConfiguration
 
     /**
      * You cannot set language level below 1.5, as we need static imports, 1.5 is now the default.
-     * @param level
+     * @param languageLevel
      */
     public void setJavaLanguageLevel(final String languageLevel) {
         if ( Arrays.binarySearch( LANGUAGE_LEVELS,

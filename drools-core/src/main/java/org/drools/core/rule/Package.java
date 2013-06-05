@@ -245,6 +245,11 @@ public class Package
         return this.name;
     }
 
+    public ClassLoader getPackageClassLoader() {
+        JavaDialectRuntimeData javaRuntime = (JavaDialectRuntimeData) getDialectRuntimeRegistry().getDialectData( "java" );
+        return javaRuntime.getClassLoader();
+    }
+
     public DialectRuntimeRegistry getDialectRuntimeRegistry() {
         return this.dialectRuntimeRegistry;
     }

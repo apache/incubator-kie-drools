@@ -84,38 +84,20 @@ public final class GeneratorHelper {
         }
     }
 
-    static CompositeClassLoader getCompositeClassLoader(Object obj) {
-        ClassLoader classLoader = obj.getClass().getClassLoader();
-        while (true) {
-            if (classLoader instanceof CompositeClassLoader) {
-                return (CompositeClassLoader)classLoader;
-            }
-            ClassLoader parentLoader = classLoader.getParent();
-            if (parentLoader == null || parentLoader == classLoader) {
-                break;
-            }
-            classLoader = parentLoader;
-        }
-        return null;
-    }
-
-    static CompositeClassLoader getCompositeClassLoader(final Object obj, final WorkingMemory workingMemory) {
-        CompositeClassLoader classLoader = getCompositeClassLoader(obj); // Try to use the same ClassLoader used for the stub
-        if (classLoader == null) {
-            classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
-        }
-        return classLoader;
+    private static ClassLoader getClassLoader(final Object obj, final WorkingMemory workingMemory) {
+        // use the same ClassLoader used for the stub
+        return obj.getClass().getClassLoader();
     }
 
     static ClassGenerator createInvokerClassGenerator(final InvokerStub stub, final WorkingMemory workingMemory) {
         String className = stub.getPackageName() + "." + stub.getGeneratedInvokerClassName();
-        CompositeClassLoader classLoader = getCompositeClassLoader(stub, workingMemory);
+        ClassLoader classLoader = getClassLoader(stub, workingMemory);
         return createInvokerClassGenerator(className, stub, classLoader, getTypeResolver(stub, workingMemory, classLoader));
     }
 
     public static ClassGenerator createInvokerClassGenerator(final String className,
                                                               final InvokerDataProvider data,
-                                                              final CompositeClassLoader classLoader,
+                                                              final ClassLoader classLoader,
                                                               final TypeResolver typeResolver) {
         final ClassGenerator generator = new ClassGenerator(className, classLoader, typeResolver)
                 .addStaticField(ACC_PRIVATE + ACC_FINAL, "serialVersionUID", Long.TYPE, INVOKER_SERIAL_UID)
@@ -133,7 +115,7 @@ public final class GeneratorHelper {
         return generator;
     }
 
-    static TypeResolver getTypeResolver(final InvokerStub stub, final WorkingMemory workingMemory, final CompositeClassLoader classLoader) {
+    static TypeResolver getTypeResolver(final InvokerStub stub, final WorkingMemory workingMemory, final ClassLoader classLoader) {
         org.drools.core.rule.Package pkg = workingMemory.getRuleBase().getPackage(stub.getPackageName());
         TypeResolver typeResolver = pkg == null ? null : pkg.getTypeResolver();
         if (typeResolver == null) {

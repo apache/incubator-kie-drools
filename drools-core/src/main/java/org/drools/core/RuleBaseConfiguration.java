@@ -66,6 +66,8 @@ import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
+
 /**
  * RuleBaseConfiguration
  *
@@ -161,7 +163,7 @@ public class RuleBaseConfiguration
     private List<Map<String, Object>> workDefinitions;
     private boolean                   advancedProcessRuleIntegration;
 
-    private transient CompositeClassLoader classLoader;
+    private transient ClassLoader classLoader;
 
     private ReteooComponentFactory componentFactory;
 
@@ -428,21 +430,21 @@ public class RuleBaseConfiguration
 
         setAlphaNodeHashingThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaThresholdOption.PROPERTY_NAME, "3")));
 
-        setCompositeKeyDepth( Integer.parseInt( this.chainedProperties.getProperty( CompositeKeyDepthOption.PROPERTY_NAME, "3" ) ) );
+        setCompositeKeyDepth(Integer.parseInt(this.chainedProperties.getProperty(CompositeKeyDepthOption.PROPERTY_NAME, "3")));
 
-        setIndexLeftBetaMemory( Boolean.valueOf( this.chainedProperties.getProperty( IndexLeftBetaMemoryOption.PROPERTY_NAME, "true" ) ).booleanValue() );
+        setIndexLeftBetaMemory(Boolean.valueOf(this.chainedProperties.getProperty(IndexLeftBetaMemoryOption.PROPERTY_NAME, "true")).booleanValue());
 
-        setIndexRightBetaMemory( Boolean.valueOf( this.chainedProperties.getProperty( IndexRightBetaMemoryOption.PROPERTY_NAME, "true" ) ).booleanValue() );
+        setIndexRightBetaMemory(Boolean.valueOf(this.chainedProperties.getProperty(IndexRightBetaMemoryOption.PROPERTY_NAME, "true")).booleanValue());
 
-        setIndexPrecedenceOption( IndexPrecedenceOption.determineIndexPrecedence( this.chainedProperties.getProperty( IndexPrecedenceOption.PROPERTY_NAME, "equality" ) ) );
+        setIndexPrecedenceOption(IndexPrecedenceOption.determineIndexPrecedence(this.chainedProperties.getProperty(IndexPrecedenceOption.PROPERTY_NAME, "equality")));
 
-        setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( this.chainedProperties.getProperty( EqualityBehaviorOption.PROPERTY_NAME, "identity" ) ) );
+        setAssertBehaviour(AssertBehaviour.determineAssertBehaviour(this.chainedProperties.getProperty(EqualityBehaviorOption.PROPERTY_NAME, "identity")));
 
-        setExecutorService( this.chainedProperties.getProperty( "drools.executorService", "org.drools.core.concurrent.DefaultExecutorService" ) );
+        setExecutorService(this.chainedProperties.getProperty("drools.executorService", "org.drools.core.concurrent.DefaultExecutorService"));
 
-        setConsequenceExceptionHandler( this.chainedProperties.getProperty( ConsequenceExceptionHandlerOption.PROPERTY_NAME, "org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler" ) );
+        setConsequenceExceptionHandler(this.chainedProperties.getProperty(ConsequenceExceptionHandlerOption.PROPERTY_NAME, "org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler"));
 
-        setRuleBaseUpdateHandler( this.chainedProperties.getProperty( "drools.ruleBaseUpdateHandler", "" ) );
+        setRuleBaseUpdateHandler(this.chainedProperties.getProperty("drools.ruleBaseUpdateHandler", ""));
 
         setSequentialAgenda(SequentialAgenda.determineSequentialAgenda(this.chainedProperties.getProperty(SequentialAgendaOption.PROPERTY_NAME, "sequential")));
 
@@ -728,7 +730,6 @@ public class RuleBaseConfiguration
     public void setClassLoaderCacheEnabled(final boolean classLoaderCacheEnabled) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.classLoaderCacheEnabled = classLoaderCacheEnabled;
-        this.classLoader.setCachingEnabled( this.classLoaderCacheEnabled );
     }
     
     /**
@@ -882,14 +883,20 @@ public class RuleBaseConfiguration
         return this.conflictResolver;
     }
 
-    public CompositeClassLoader getClassLoader() {
-        return this.classLoader.clone();
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
     }
 
     public void setClassLoader(ClassLoader... classLoaders) {
-        this.classLoader = ClassLoaderUtil.getClassLoader( classLoaders,
-                                                           getClass(),
-                                                           isClassLoaderCacheEnabled() );
+        if (classLoaders == null || classLoaders.length == 0) {
+            this.classLoader = createProjectClassLoader();
+        } else if (classLoaders.length == 1) {
+            this.classLoader = createProjectClassLoader(classLoaders[0]);
+        } else {
+            this.classLoader = ClassLoaderUtil.getClassLoader( classLoaders,
+                                                               getClass(),
+                                                               isClassLoaderCacheEnabled() );
+        }
     }
 
     public ReteooComponentFactory getComponentFactory() {

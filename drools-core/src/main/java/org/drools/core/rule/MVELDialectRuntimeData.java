@@ -48,7 +48,8 @@ public class MVELDialectRuntimeData
     private Map<Wireable, MVELCompileable>   invokerLookups;
     private Set<MVELCompileable>             mvelReaders;
 
-    private CompositeClassLoader             rootClassLoader;
+    private ClassLoader                      rootClassLoader;
+    private DialectRuntimeRegistry           registry;
 
     private List<Wireable>                   wireList = Collections.emptyList();
 
@@ -134,13 +135,13 @@ public class MVELDialectRuntimeData
     }
 
     public DialectRuntimeData clone( DialectRuntimeRegistry registry,
-                                     CompositeClassLoader rootClassLoader ) {
+                                     ClassLoader rootClassLoader ) {
         return clone( registry, rootClassLoader, false );
     }
 
 
     public DialectRuntimeData clone(DialectRuntimeRegistry registry,
-                                    CompositeClassLoader rootClassLoader,
+                                    ClassLoader rootClassLoader,
                                     boolean excludeClasses ) {
         MVELDialectRuntimeData clone = new MVELDialectRuntimeData();
         clone.rootClassLoader = rootClassLoader;
@@ -153,18 +154,9 @@ public class MVELDialectRuntimeData
     }
 
     public void onAdd(DialectRuntimeRegistry registry,
-                      CompositeClassLoader rootClassLoader) {
+                      ClassLoader rootClassLoader) {
         this.rootClassLoader = rootClassLoader;
-
-        //        for (Entry<Wireable, MVELCompilable> entry : this.invokerLookups.entrySet() ) {
-        //            // first make sure the MVELCompilationUnit is compiled
-        //            MVELCompilable component = entry.getValue();
-        //            component.compile( rootClassLoader );
-        //
-        //            // now wire up the target
-        //            Wireable target = entry.getKey();
-        //            target.wire( component );
-        //        }
+        this.registry = registry;
     }
 
     public void onRemove() {
@@ -198,7 +190,7 @@ public class MVELDialectRuntimeData
                 if (imp instanceof Method) {
                     Method method = (Method)imp;
                     try {
-                        Class<?> c = Class.forName(method.getDeclaringClass().getName(), false, rootClassLoader);
+                        Class<?> c = Class.forName(method.getDeclaringClass().getName(), false, getPackageClassLoader());
                         for (Method m : c.getDeclaredMethods()) {
                             if (method.getName().equals(m.getName()) && method.getParameterTypes().length == m.getParameterTypes().length) {
                                 rewiredMethod.put(m.getName(), m);
@@ -286,44 +278,42 @@ public class MVELDialectRuntimeData
 
     public ParserConfiguration getParserConfiguration() {
         if ( parserConfiguration == null ) {
-            ClassLoader classLoader = rootClassLoader;
+            ClassLoader packageClassLoader = getPackageClassLoader();
 
-            {
-                String  key = null;
-                Object value = null;
-                try {
-                    // First replace fields and method tokens with actual instances
-                    for ( Entry<String, Object> entry : this.imports.entrySet() ) {
-                        key = entry.getKey();
-                        value = entry.getValue();
-                        if ( entry.getValue() instanceof String ) {
-                            String str = (String ) value;
-                            // @TODO MVEL doesn't yet support importing of fields
-                            if ( str.startsWith( "m:" ) ) {
-                                Class cls = this.rootClassLoader.loadClass( str.substring( 2 ) );
-                                String methodName =  key;
-                                for ( Method method : cls.getDeclaredMethods() ) {
-                                    if ( method.getName().equals( methodName ) ) {
-                                        entry.setValue( method );
-                                        break;
-                                    }
+            String  key = null;
+            Object value = null;
+            try {
+                // First replace fields and method tokens with actual instances
+                for ( Entry<String, Object> entry : this.imports.entrySet() ) {
+                    key = entry.getKey();
+                    value = entry.getValue();
+                    if ( entry.getValue() instanceof String ) {
+                        String str = (String ) value;
+                        // @TODO MVEL doesn't yet support importing of fields
+                        if ( str.startsWith( "m:" ) ) {
+                            Class cls = packageClassLoader.loadClass( str.substring( 2 ) );
+                            String methodName =  key;
+                            for ( Method method : cls.getDeclaredMethods() ) {
+                                if ( method.getName().equals( methodName ) ) {
+                                    entry.setValue( method );
+                                    break;
                                 }
-                            } else {
-                                Class cls = this.rootClassLoader.loadClass( str);
-                                entry.setValue( cls );
                             }
+                        } else {
+                            Class cls = packageClassLoader.loadClass( str);
+                            entry.setValue( cls );
                         }
                     }
-                } catch ( ClassNotFoundException e ) {
-                    throw new IllegalArgumentException( "Unable to resolve method of field: " + key + " - " + value, e );
-
                 }
+            } catch ( ClassNotFoundException e ) {
+                throw new IllegalArgumentException( "Unable to resolve method of field: " + key + " - " + value, e );
+
             }
 
             this.parserConfiguration = new ParserConfiguration();
             this.parserConfiguration.setImports( this.imports );
             this.parserConfiguration.setPackageImports( this.packageImports );
-            this.parserConfiguration.setClassLoader( classLoader );
+            this.parserConfiguration.setClassLoader( packageClassLoader );
         }
         return this.parserConfiguration;
     }
@@ -370,9 +360,16 @@ public class MVELDialectRuntimeData
         return this.invokerLookups;
     }
 
-    public CompositeClassLoader getRootClassLoader() {
+    public ClassLoader getRootClassLoader() {
         return rootClassLoader;
     }
 
-
+    public ClassLoader getPackageClassLoader() {
+        if (registry == null) {
+            // should happens only in tests
+            return getRootClassLoader();
+        }
+        JavaDialectRuntimeData javaRuntime = (JavaDialectRuntimeData) registry.getDialectData("java");
+        return javaRuntime.getClassLoader();
+    }
 }

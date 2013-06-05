@@ -60,6 +60,8 @@ import org.kie.internal.utils.ChainedProperties;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.internal.utils.CompositeClassLoader;
 
+import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
+
 /**
  * This class configures the package compiler.
  * Dialects and their DialectConfigurations  are handled by the DialectRegistry
@@ -97,7 +99,7 @@ public class PackageBuilderConfiguration
 
     private DefaultDialectOption              defaultDialect;
 
-    private CompositeClassLoader              classLoader;
+    private ClassLoader                       classLoader;
 
     private ChainedProperties                 chainedProperties;
 
@@ -196,7 +198,7 @@ public class PackageBuilderConfiguration
     private void init(Properties properties) {
 
         this.chainedProperties = new ChainedProperties( "packagebuilder.conf",
-                                                        this.classLoader,
+                                                        getClassLoader(),
                                                         true );
 
         if ( properties != null ) {
@@ -335,7 +337,7 @@ public class PackageBuilderConfiguration
                            String dialectClass) {
         Class<?> cls = null;
         try {
-            cls = classLoader.loadClass( dialectClass );
+            cls = getClassLoader().loadClass(dialectClass);
             DialectConfiguration dialectConf = (DialectConfiguration) cls.newInstance();
             dialectConf.init( this );
             addDialect( dialectName,
@@ -381,15 +383,21 @@ public class PackageBuilderConfiguration
                                         configuration );
     }
 
-    public CompositeClassLoader getClassLoader() {
-        return this.classLoader.clone();
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
     }
 
     /** Use this to override the classLoader that will be used for the rules. */
     private void setClassLoader(final ClassLoader... classLoaders) {
-        this.classLoader = ClassLoaderUtil.getClassLoader( classLoaders,
-                                                           getClass(),
-                                                           isClassLoaderCacheEnabled() );
+        if (classLoaders == null || classLoaders.length == 0) {
+            this.classLoader = createProjectClassLoader();
+        } else if (classLoaders.length == 1) {
+            this.classLoader = createProjectClassLoader(classLoaders[0]);
+        } else {
+            this.classLoader = ClassLoaderUtil.getClassLoader( classLoaders,
+                                                               getClass(),
+                                                               isClassLoaderCacheEnabled() );
+        }
     }
 
     public void addSemanticModule(SemanticModule module) {
@@ -438,7 +446,7 @@ public class PackageBuilderConfiguration
 
     public void loadSemanticModule(String moduleLocation) {
         URL url = ConfFileUtils.getURL( moduleLocation,
-                                        this.classLoader,
+                                        getClassLoader(),
                                         getClass() );
         if ( url == null ) {
             throw new IllegalArgumentException( moduleLocation + " is specified but cannot be found.'" );
@@ -478,7 +486,7 @@ public class PackageBuilderConfiguration
             }
 
             Handler handler = (Handler) ClassUtils.instantiateObject( handlerName,
-                                                                      this.classLoader );
+                                                                      getClassLoader() );
 
             if ( handler == null ) {
                 throw new RuntimeException( "Unable to load Semantic Module handler '" + elementName + ":" + handlerName + "'" );
@@ -549,7 +557,7 @@ public class PackageBuilderConfiguration
     private AccumulateFunction loadAccumulateFunction(String identifier,
                                                       String className) {
         try {
-            Class< ? extends AccumulateFunction> clazz = (Class< ? extends AccumulateFunction>) this.classLoader.loadClass( className );
+            Class< ? extends AccumulateFunction> clazz = (Class< ? extends AccumulateFunction>) getClassLoader().loadClass(className);
             return clazz.newInstance();
         } catch ( ClassNotFoundException e ) {
             throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
@@ -564,7 +572,7 @@ public class PackageBuilderConfiguration
     }
 
     private void buildEvaluatorRegistry() {
-        this.evaluatorRegistry = new EvaluatorRegistry( this.classLoader );
+        this.evaluatorRegistry = new EvaluatorRegistry( getClassLoader() );
         Map<String, String> temp = new HashMap<String, String>();
         this.chainedProperties.mapStartsWith( temp,
                                               EvaluatorOption.PROPERTY_NAME,
@@ -638,13 +646,14 @@ public class PackageBuilderConfiguration
         this.processStringEscapes = processStringEscapes;
     }
 
+    @Deprecated
     public boolean isClassLoaderCacheEnabled() {
         return classLoaderCache;
     }
 
+    @Deprecated
     public void setClassLoaderCacheEnabled(boolean classLoaderCacheEnabled) {
         this.classLoaderCache = classLoaderCacheEnabled;
-        this.classLoader.setCachingEnabled( this.classLoaderCache );
     }
 
     public String getDefaultPackageName() {

@@ -325,7 +325,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       list.get( 2 ) );
     }
 
-    @Test(timeout=10000)
+    @Test//(timeout=10000)
     public void testRemovePackage() throws Exception {
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_RemovePackage.drl" ) );
         final String packageName = kpkgs.iterator().next().getName();
