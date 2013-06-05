@@ -480,7 +480,7 @@ ksession.fireAllRules();</programlisting>
   <section>
     <title>Methods versus Rules</title>
 
-    <para>People often confuse methods and rules, and new rule users regular
+    <para>People often confuse methods and rules, and new rule users often
     ask, "How do I call a rule?" After the last section, you are now feeling
     like a rule expert and the answer to that is obvious, but let's summarize
     the differences nonetheless.</para>
