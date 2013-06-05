@@ -24,6 +24,8 @@ public class CurriculumCourseBenchmarkApp extends CommonBenchmarkApp {
             = "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfig.xml";
     public static final String STEP_LIMIT_BENCHMARK_CONFIG
             = "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseStepLimitBenchmarkConfig.xml";
+    public static final String TEMPLATE_BENCHMARK_CONFIG_TEMPLATE
+            = "/org/optaplanner/examples/curriculumcourse/benchmark/curriculumCourseBenchmarkConfigTemplate.xml.ftl";
 
     public static void main(String[] args) {
         String benchmarkConfig;
@@ -32,6 +34,10 @@ public class CurriculumCourseBenchmarkApp extends CommonBenchmarkApp {
                 benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
             } else if (args[0].equals("stepLimit")) {
                 benchmarkConfig = STEP_LIMIT_BENCHMARK_CONFIG;
+            } else if (args[0].equals("template")) {
+                benchmarkConfig = TEMPLATE_BENCHMARK_CONFIG_TEMPLATE;
+                new CurriculumCourseBenchmarkApp().buildFromTemplateAndBenchmark(benchmarkConfig);
+                return;
             } else {
                 throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
             }
