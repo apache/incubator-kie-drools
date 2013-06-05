@@ -49,6 +49,7 @@ public class SolverBenchmark {
 
     private int failureCount = -1;
     private Score totalScore = null;
+    private Score averageScore = null;
 
     private double[] totalAverageSquaredDifference;
 
@@ -174,6 +175,7 @@ public class SolverBenchmark {
         }
         if (!firstNonFailure) {
             int successCount = getSuccessCount();
+            averageScore = totalScore.divide(successCount);
             averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide((double) successCount);
             averageAverageCalculateCountPerSecond = totalAverageCalculateCountPerSecond / (long) successCount;
         }
@@ -223,10 +225,7 @@ public class SolverBenchmark {
     }
 
     public Score getAverageScore() {
-        if (totalScore == null) {
-            return null;
-        }
-        return totalScore.divide(getSuccessCount());
+        return averageScore;
     }
 
     public String getScoreStandardDeviation() {
