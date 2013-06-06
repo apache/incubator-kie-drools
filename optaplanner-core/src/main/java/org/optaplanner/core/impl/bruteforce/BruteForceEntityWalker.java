@@ -42,8 +42,8 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
         this.solutionDescriptor = solutionDescriptor;
     }
 
-    public void phaseStarted(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
-        List<Object> workingPlanningEntityList = bruteForceSolverPhaseScope.getWorkingEntityList();
+    public void phaseStarted(BruteForceSolverPhaseScope phaseScope) {
+        List<Object> workingPlanningEntityList = phaseScope.getWorkingEntityList();
         planningVariableWalkerList = new ArrayList<PlanningVariableWalker>(workingPlanningEntityList.size());
         for (Object planningEntity : workingPlanningEntityList) {
             PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
@@ -52,7 +52,7 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
             List<PlanningValueWalker> planningValueWalkerList = buildPlanningValueWalkerList(planningEntityDescriptor);
             planningVariableWalker.setPlanningValueWalkerList(planningValueWalkerList);
             planningVariableWalkerList.add(planningVariableWalker);
-            planningVariableWalker.phaseStarted(bruteForceSolverPhaseScope);
+            planningVariableWalker.phaseStarted(phaseScope);
             planningVariableWalker.initWalk(planningEntity);
         }
     }
@@ -99,15 +99,15 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
         }
     }
 
-    public void stepEnded(BruteForceStepScope bruteForceStepScope) {
+    public void stepEnded(BruteForceStepScope stepScope) {
         for (PlanningVariableWalker planningVariableWalker : planningVariableWalkerList) {
-            planningVariableWalker.stepEnded(bruteForceStepScope);
+            planningVariableWalker.stepEnded(stepScope);
         }
     }
 
-    public void phaseEnded(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
+    public void phaseEnded(BruteForceSolverPhaseScope phaseScope) {
         for (PlanningVariableWalker planningVariableWalker : planningVariableWalkerList) {
-            planningVariableWalker.phaseEnded(bruteForceSolverPhaseScope);
+            planningVariableWalker.phaseEnded(phaseScope);
         }
         planningVariableWalkerList = null;
     }

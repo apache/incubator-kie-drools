@@ -23,10 +23,10 @@ import org.optaplanner.core.impl.bruteforce.scope.BruteForceStepScope;
 
 public interface BruteForceSolverPhaseLifecycleListener extends EventListener {
 
-    void phaseStarted(BruteForceSolverPhaseScope bruteForceSolverPhaseScope);
+    void phaseStarted(BruteForceSolverPhaseScope phaseScope);
 
-    void stepEnded(BruteForceStepScope bruteForceStepScope);
+    void stepEnded(BruteForceStepScope stepScope);
 
-    void phaseEnded(BruteForceSolverPhaseScope bruteForceSolverPhaseScope);
+    void phaseEnded(BruteForceSolverPhaseScope phaseScope);
 
 }
