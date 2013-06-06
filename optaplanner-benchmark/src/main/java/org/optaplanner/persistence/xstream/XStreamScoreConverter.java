@@ -39,6 +39,10 @@ public class XStreamScoreConverter implements Converter {
 
     public XStreamScoreConverter(Class<? extends Score> scoreClass,
             Class<? extends ScoreDefinition> scoreDefinitionClass) {
+        if (BendableScore.class.equals(scoreClass)) {
+            throw new IllegalArgumentException(XStreamScoreConverter.class + " is not compatible with scoreClass ("
+                    + scoreClass + "), use " + XStreamBendableScoreConverter.class + " instead.");
+        }
         try {
             scoreDefinition = scoreDefinitionClass.newInstance();
         } catch (InstantiationException e) {
