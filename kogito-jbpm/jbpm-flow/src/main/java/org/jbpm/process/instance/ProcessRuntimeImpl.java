@@ -107,7 +107,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		}
 		
 		this.kruntime = (InternalKnowledgeRuntime) workingMemory.getKnowledgeRuntime();
-		((CompositeClassLoader) getRootClassLoader()).addClassLoader( getClass().getClassLoader() );
 		initProcessInstanceManager();
 		initSignalManager();
 		timerManager = new TimerManager(kruntime, kruntime.getTimerService());
