@@ -1671,9 +1671,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         TypeDeclaration tdecl = this.builtinTypes.get((cls.getName()));
         if (tdecl == null) {
-            pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
+            String pkg = ClassUtils.getPackage( cls );
+            pkgReg = this.pkgRegistryMap.get( pkg );
             if (pkgReg != null) {
-                tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
+                tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getName().substring( pkg.length() + 1 ) );
             }
         }
         if (tdecl != null) {
@@ -1684,9 +1685,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         Class<?>[] intfs = cls.getInterfaces();
         for (Class<?> intf : intfs) {
-            pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( intf ) );
+            String pkg = ClassUtils.getPackage( intf );
+            pkgReg = this.pkgRegistryMap.get( pkg );
             if (pkgReg != null) {
-                tdecl = pkgReg.getPackage().getTypeDeclaration( intf.getSimpleName() );
+                tdecl = pkgReg.getPackage().getTypeDeclaration( intf.getName().substring( pkg.length() + 1 ) );
             }
             if (tdecl != null) {
                 tdecls.add( tdecl );

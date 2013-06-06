@@ -724,12 +724,11 @@ public class ExtendsTest extends CommonTestMethodBase {
 
 
     @Test
-    @Ignore
     public void testDeclareInheritance() throws Exception {
         String s1 = "package org.drools;\n" +
                     "import org.drools.integrationtests.ExtendsTest.*;\n" +
                     "\n" +
-                    "declare A \n" +
+                    "declare B \n" +
                     " @role( event )" +
                     " @typesafe( false )\n" +
                     "end\n" +
