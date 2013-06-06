@@ -60,6 +60,8 @@ public class AgendaGroupQueueImpl
     private boolean               autoDeactivate = true;
     private Map<Long, String>     nodeInstances  = new HashMap<Long, String>();
 
+    private volatile              boolean hasRuleFlowLister;
+
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
      *
@@ -101,6 +103,16 @@ public class AgendaGroupQueueImpl
 
     public InternalWorkingMemory getWorkingMemory() {
         return workingMemory;
+    }
+
+    @Override
+    public void hasRuleFlowListener(boolean hasRuleFlowLister) {
+        this.hasRuleFlowLister = hasRuleFlowLister;
+    }
+
+    @Override
+    public boolean isRuleFlowListener() {
+        return hasRuleFlowLister;
     }
 
     public void clear() {

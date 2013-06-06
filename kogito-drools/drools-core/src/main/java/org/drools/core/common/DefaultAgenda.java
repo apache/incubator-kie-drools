@@ -929,19 +929,34 @@ public class DefaultAgenda
     }
 
     public void activateRuleFlowGroup(final InternalRuleFlowGroup group, long processInstanceId, String nodeInstanceId) {
+        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupActivated( group, this.workingMemory );
         group.setActive( true );
-        if ( StringUtils.isEmpty( nodeInstanceId ) ) {
+        group.hasRuleFlowListener(true);
+        if ( !StringUtils.isEmpty( nodeInstanceId ) ) {
             group.addNodeInstance( processInstanceId, nodeInstanceId );
             group.setActive( true );
         }
-        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupActivated( group, this.workingMemory );
+        System.out.println( "activate" + group.getName() );
         setFocus( (InternalAgendaGroup)  group);
+        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupActivated( group,
+                                                                                                     this.workingMemory );
     }
 
     public void deactivateRuleFlowGroup(final String name) {
-        InternalRuleFlowGroup  group = (InternalRuleFlowGroup ) getRuleFlowGroup(name);
-        clearAndCancelAgendaGroup(group);
+        deactivateRuleFlowGroup((InternalRuleFlowGroup ) getRuleFlowGroup(name));
+    }
+
+    public void deactivateRuleFlowGroup(final InternalRuleFlowGroup group) {
+        if ( !group.isRuleFlowListener() ) {
+            return;
+        }
+        ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( group,
+                                                                                                        this.workingMemory );
+        if ( !group.isEmpty() ) {
+            clearAndCancelAgendaGroup(group);
+        }
         group.setActive(false);
+        group.hasRuleFlowListener(false);
         group.getNodeInstances().clear();
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( group, this.workingMemory );
     }
@@ -1307,12 +1322,10 @@ public class DefaultAgenda
                                                                                               MatchCancelledCause.FILTER );
                                 tryagain = true;
                             }
+                        }
 
-                            // The routine bellow cleans up ruleflow activations
-//                            if ( ruleFlowGroup != null ) {
-//                                ruleFlowGroup.deactivateIfEmpty();
-//                                this.workingMemory.executeQueuedActions();
-//                            }
+                        if ( group.isEmpty() ) {
+                            deactivateRuleFlowGroup((InternalRuleFlowGroup) group);
                         }
                     }
 

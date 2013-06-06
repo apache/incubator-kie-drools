@@ -99,6 +99,16 @@ public class RuleFlowGroupImpl
         return this.workingMemory;
     }
 
+    @Override
+    public void hasRuleFlowListener(boolean hasRuleFlowLister) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public boolean isRuleFlowListener() {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public Activation remove() {
         return agendaGroup.remove();
     }

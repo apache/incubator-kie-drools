@@ -117,6 +117,8 @@ message Agenda {
         repeated Activation activation = 6;
         repeated NodeInstance node_instance = 7;
 
+        optional bool has_rule_flow_lister = 8;
+
         message NodeInstance {
             optional int64 process_instance_id = 1;
             optional string node_instance_id = 2;

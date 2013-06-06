@@ -390,6 +390,7 @@ public class ProtobufInputMarshaller {
             group.setActive( _agendaGroup.getIsActive() );
             group.setAutoDeactivate( _agendaGroup.getIsAutoDeactivate() );
             group.setClearedForRecency( _agendaGroup.getClearedForRecency() );
+            group.hasRuleFlowListener( _agendaGroup.getHasRuleFlowLister() );
             group.setActivatedForRecency( _agendaGroup.getActivatedForRecency() );
 
             for ( org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.NodeInstance _nodeInstance : _agendaGroup.getNodeInstanceList() ) {
