@@ -25,7 +25,7 @@ from
 where 
     size(key.properties) = cast(:elem_count as integer) and 
     props.value in :properties 
-    group by key.id 
+    group by key.id,key.processInstanceId 
 having count(key.id) = :elem_count
           </query>
       </named-query>
