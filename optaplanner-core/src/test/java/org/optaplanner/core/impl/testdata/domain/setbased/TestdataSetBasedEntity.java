@@ -30,7 +30,7 @@ public class TestdataSetBasedEntity extends TestdataObject {
 
     public static PlanningEntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataSetBasedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.getPlanningEntityDescriptor(TestdataSetBasedEntity.class);
+        return solutionDescriptor.getEntityDescriptor(TestdataSetBasedEntity.class);
     }
 
     private TestdataValue value;

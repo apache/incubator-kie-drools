@@ -100,7 +100,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         if (entity == null) {
             throw new IllegalArgumentException("The entity (" + entity + ") cannot be added to the ScoreDirector.");
         }
-        if (!getSolutionDescriptor().hasPlanningEntityDescriptor(entity.getClass())) {
+        if (!getSolutionDescriptor().hasEntityDescriptor(entity.getClass())) {
             throw new IllegalArgumentException("The entity (" + entity + ") of class (" + entity.getClass()
                     + ") is not a configured @PlanningEntity.");
         }

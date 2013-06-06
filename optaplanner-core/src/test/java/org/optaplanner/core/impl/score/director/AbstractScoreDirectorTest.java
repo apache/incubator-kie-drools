@@ -51,7 +51,7 @@ public class AbstractScoreDirectorTest {
         solution.setChainedEntityList(Arrays.asList(a1, a2, a3, b1));
 
         SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
+        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(
                 TestdataChainedEntity.class);
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
 

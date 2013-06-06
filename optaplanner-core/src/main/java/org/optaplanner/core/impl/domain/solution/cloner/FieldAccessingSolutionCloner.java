@@ -183,7 +183,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
 
         protected boolean isValueAnEntityOrSolution(Object originalValue) {
             Class valueClass = originalValue.getClass();
-            if (solutionDescriptor.hasPlanningEntityDescriptor(valueClass)
+            if (solutionDescriptor.hasEntityDescriptor(valueClass)
                     || valueClass == ((Class) solutionDescriptor.getSolutionClass())) {
                 return true;
             }

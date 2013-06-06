@@ -30,7 +30,7 @@ public class TestdataMultiVarEntity extends TestdataObject {
 
     public static PlanningEntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
-        return solutionDescriptor.getPlanningEntityDescriptor(TestdataMultiVarEntity.class);
+        return solutionDescriptor.getEntityDescriptor(TestdataMultiVarEntity.class);
     }
 
     private TestdataValue primaryValue;

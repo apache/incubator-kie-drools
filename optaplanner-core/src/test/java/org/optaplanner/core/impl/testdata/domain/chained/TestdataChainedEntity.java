@@ -14,7 +14,7 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
 
     public static PlanningEntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        return solutionDescriptor.getPlanningEntityDescriptor(TestdataChainedEntity.class);
+        return solutionDescriptor.getEntityDescriptor(TestdataChainedEntity.class);
     }
 
     private TestdataChainedObject chainedObject;

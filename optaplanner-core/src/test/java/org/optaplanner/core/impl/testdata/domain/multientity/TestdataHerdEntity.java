@@ -29,7 +29,7 @@ public class TestdataHerdEntity extends TestdataObject {
 
     public static PlanningEntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataMultiEntitySolution.buildSolutionDescriptor();
-        return solutionDescriptor.getPlanningEntityDescriptor(TestdataHerdEntity.class);
+        return solutionDescriptor.getEntityDescriptor(TestdataHerdEntity.class);
     }
 
     private TestdataLeadEntity leadEntity;

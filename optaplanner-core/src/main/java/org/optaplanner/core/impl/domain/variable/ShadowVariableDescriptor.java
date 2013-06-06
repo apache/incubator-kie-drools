@@ -140,7 +140,7 @@ public class ShadowVariableDescriptor {
     public void afterAnnotationsProcessed() {
         Class<?> masterClass = getVariablePropertyType();
         PlanningEntityDescriptor mappedByEntityDescriptor = getEntityDescriptor().getSolutionDescriptor()
-                .getPlanningEntityDescriptor(masterClass);
+                .getEntityDescriptor(masterClass);
         if (mappedByEntityDescriptor == null) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + entityDescriptor.getPlanningEntityClass()

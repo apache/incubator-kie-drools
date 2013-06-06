@@ -110,7 +110,7 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
                     "1 planningEntityClass.");
         }
         Class<?> planningEntityClass = planningEntityClassSet.iterator().next();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(planningEntityClass);
+        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(planningEntityClass);
         PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(entityDescriptor);
         List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>();
         for (PlanningVariableDescriptor planningVariableDescriptor
