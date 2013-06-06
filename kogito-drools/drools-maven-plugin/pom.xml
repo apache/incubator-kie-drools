@@ -37,7 +37,12 @@
             <version>2.0</version>
             <scope>test</scope>
         </dependency>
-
+        
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+        </dependency>
+      
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.drools</groupId>
