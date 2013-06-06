@@ -1097,7 +1097,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create a rule for each rule flow groups
         final Rule rule0 = new Rule( "test-rule0" );
-        rule0.setRuleFlowGroup( "rule-flow-group-0" );
+        rule0.setAgendaGroup( "rule-flow-group-0" );
         rule0.setConsequence( consequence );
 
         final RuleTerminalNode node0 = new RuleTerminalNode( 3,
@@ -1108,7 +1108,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              buildContext );
 
         final Rule rule1 = new Rule( "test-rule1" );
-        rule1.setRuleFlowGroup( "rule-flow-group-1" );
+        rule1.setAgendaGroup( "rule-flow-group-1" );
         rule1.setConsequence( consequence );
 
         final RuleTerminalNode node1 = new RuleTerminalNode( 4,
@@ -1119,7 +1119,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              buildContext );
 
         final Rule rule2 = new Rule( "test-rule2" );
-        rule2.setRuleFlowGroup( "rule-flow-group-2" );
+        rule2.setAgendaGroup( "rule-flow-group-2" );
         rule2.setConsequence( consequence );
         rule2.setSalience( new SalienceInteger( 10 ) );
 
@@ -1272,7 +1272,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         final Rule rule1 = new Rule( "test-rule1" );
-        rule1.setRuleFlowGroup( "rule-flow-group-0" );
+        rule1.setAgendaGroup( "rule-flow-group-0" );
         rule1.setConsequence( consequence1 );
 
         final RuleTerminalNode node1 = new RuleTerminalNode( 4,
@@ -1320,7 +1320,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         final Rule rule0 = new Rule( "test-rule0" );
-        rule0.setRuleFlowGroup( "rule-flow-group-0" );
+        rule0.setAgendaGroup( "rule-flow-group-0" );
         rule0.setConsequence( consequence0 );
 
         final RuleTerminalNode node0 = new RuleTerminalNode( 3,
@@ -1400,7 +1400,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         final Rule rule1 = new Rule( "test-rule1" );
-        rule1.setRuleFlowGroup( "rule-flow-group-0" );
+        rule1.setAgendaGroup( "rule-flow-group-0" );
         rule1.setConsequence( consequence1 );
 
         final RuleTerminalNode node1 = new RuleTerminalNode( 4,
@@ -1449,7 +1449,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         final Rule rule0 = new Rule( "test-rule0" );
-        rule0.setRuleFlowGroup( "rule-flow-group-0" );
+        rule0.setAgendaGroup( "rule-flow-group-0" );
         rule0.setConsequence( consequence0 );
         rule0.setSalience( new SalienceInteger( 10 ) );
 
@@ -1476,7 +1476,7 @@ public class AgendaTest extends DroolsTestCase {
                                workingMemory );
         agenda.unstageActivations();
 
-        // RuleFlowGroup should be populated, but the agenda shouldn't be
+        // RuleFlowGroup should be populated
         assertEquals( 2,
                       ruleFlowGroup0.size() );
 
@@ -1488,7 +1488,7 @@ public class AgendaTest extends DroolsTestCase {
         // As we fire the rule, rule0 should execute first, as it has higher salience.
         // Rule0 should deactivate rule1 as well, so the everything should be empty
         agenda.fireNextItem( null, 0, -1 );
-        assertEquals( 1,
+        assertEquals( 0,
                       ruleFlowGroup0.size() );
 
         agenda.fireNextItem( null, 0, -1 );
@@ -1534,7 +1534,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         final Rule rule0 = new Rule( "test-rule0" );
-        rule0.setRuleFlowGroup( "rule-flow-group-0" );
+        rule0.setAgendaGroup( "rule-flow-group-0" );
         rule0.setConsequence( consequence0 );
 
         final RuleTerminalNode node0 = new RuleTerminalNode( 1,
@@ -1574,8 +1574,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 2,
                       ruleFlowGroup0.size() );
 
-        // Activate the RuleFlowGroup, the activations stay in the group, but
-        // should now also be in the Agenda
+        // Activate the RuleFlowGroup
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 2,
                       ruleFlowGroup0.size() );
@@ -1634,7 +1633,7 @@ public class AgendaTest extends DroolsTestCase {
         };
 
         final Rule rule0 = new Rule( "test-rule0" );
-        rule0.setRuleFlowGroup( "rule-flow-group-0" );
+        rule0.setAgendaGroup( "rule-flow-group-0" );
         rule0.setConsequence( consequence0 );
 
         final RuleTerminalNode node0 = new RuleTerminalNode( idGenerator.getNextId(),
@@ -1671,57 +1670,56 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 1,
                       ruleFlowGroup0.size() );
 
-        // Activate the RuleFlowGroup, the activations stay in the group, but
-        // should now also be in the Agenda
+        // Activate the RuleFlowGroup
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 1,
                       ruleFlowGroup0.size() );
 
-        // @TODO FIXME (mdp)
-//        // Execute activation
-//        agenda.fireNextItem( null, 0, -1 );
-//        assertEquals( 0,
-//                      ruleFlowGroup0.size() );
-//        assertTrue( ruleFlowGroup0.isActive() );
-//
-//        // Set auto-deactivation status to true
-//        ruleFlowGroup0.setAutoDeactivate( true );
-//        assertTrue( ruleFlowGroup0.isAutoDeactivate() );
-//        assertFalse( ruleFlowGroup0.isActive() );
-//
-//        // Add another activation and activate RuleFlowGroup again
-//        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
-//                                                                                                       "cheese" ),
-//                                                                                node0,
-//                                                                                true );
-//        node0.assertLeftTuple( tuple1,
-//                               context0,
-//                               workingMemory );
-//        agenda.unstageActivations();
-//        agenda.activateRuleFlowGroup( "rule-flow-group-0" );
-//        assertEquals( 1,
-//                      ruleFlowGroup0.size() );
-//        assertTrue( ruleFlowGroup0.isActive() );
-//
-//        // Execute the activation, the RuleFlowGroup should automatically deactivate
-//        agenda.fireNextItem( null, 0, -1 );
-//        assertEquals( 0,
-//                      ruleFlowGroup0.size() );
-//        workingMemory.executeQueuedActions();
-//        assertEquals(0, ruleFlowGroup0.size());
-//        assertFalse( ruleFlowGroup0.isActive() );
-//
-//        // A new activation should now be added to the RuleFlowGroup but not to the agenda
-//        final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
-//                                                                                                       "cheese" ),
-//                                                                                node0,
-//                                                                                true );
-//        node0.assertLeftTuple( tuple2,
-//                               context0,
-//                               workingMemory );
-//        agenda.unstageActivations();
-//        assertEquals( 1,
-//                      ruleFlowGroup0.size() );
+        // Execute activation
+        agenda.fireNextItem( null, 0, -1 );
+        assertEquals( 0,
+                      ruleFlowGroup0.size() );
+        assertTrue( ruleFlowGroup0.isActive() );
+
+        // Set auto-deactivation status to true
+        ruleFlowGroup0.setAutoDeactivate( true );
+        assertTrue( ruleFlowGroup0.isAutoDeactivate() );
+        agenda.fireNextItem( null, 0, -1 );
+        assertFalse( ruleFlowGroup0.isActive() );
+
+        // Add another activation and activate RuleFlowGroup again
+        final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
+                                                                                                       "cheese" ),
+                                                                                node0,
+                                                                                true );
+        node0.assertLeftTuple( tuple1,
+                               context0,
+                               workingMemory );
+        agenda.unstageActivations();
+        agenda.activateRuleFlowGroup( "rule-flow-group-0" );
+        assertEquals( 1,
+                      ruleFlowGroup0.size() );
+        assertTrue( ruleFlowGroup0.isActive() );
+
+        // Execute the activation, the RuleFlowGroup should automatically deactivate
+        agenda.fireNextItem( null, 0, -1 );
+        assertEquals( 0,
+                      ruleFlowGroup0.size() );
+        workingMemory.executeQueuedActions();
+        assertEquals(0, ruleFlowGroup0.size());
+        assertFalse( ruleFlowGroup0.isActive() );
+
+        // A new activation should now be added to the RuleFlowGroup but not to the agenda
+        final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple( new DefaultFactHandle( 1,
+                                                                                                       "cheese" ),
+                                                                                node0,
+                                                                                true );
+        node0.assertLeftTuple( tuple2,
+                               context0,
+                               workingMemory );
+        agenda.unstageActivations();
+        assertEquals( 1,
+                      ruleFlowGroup0.size() );
     }
 
     /**
