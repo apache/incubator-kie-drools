@@ -62,29 +62,8 @@ public class RuleExecutor {
         InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
         boolean fireUntilHalt = agenda.isFireUntilHalt();
 
-        if (isDirty() || (pmem.getQueue() != null && !pmem.getQueue().isEmpty())) {
-            setDirty(false);
-
-            boolean evaled = false;
-            if (pmem.getQueue() != null ) {
-                if ( !fireUntilHalt) {
-                    while ( !pmem.getQueue().isEmpty() ) {
-                        removeQueuedTupleEntry();
-                        this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
-                        evaled = true;
-                    }
-                } else {
-                    removeQueuedTupleEntry();
-                    this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
-                    evaled = true;
-                }
-            }
-
-            if ( !evaled) {
-                this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
-            }
-            wm.executeQueuedActions();
-        }
+        reEvaluateNetwork(wm, outerStack, fireUntilHalt);
+        wm.executeQueuedActions();
 
         //int fireCount = 0;
         int localFireCount = 0;
@@ -122,6 +101,7 @@ public class RuleExecutor {
                 // if the current Rule is no-loop and the origin rule is the same then return
                 if (cancelAndContinue(wm, rtn, rule, leftTuple, pctx, filter)) {
                     continue;
+
                 }
 
                 AgendaItem item = (AgendaItem) leftTuple;
@@ -145,28 +125,7 @@ public class RuleExecutor {
                 if (haltRuleFiring(nextRule, fireCount, fireLimit, localFireCount, agenda, salience)) {
                     break; // another rule has high priority and is on the agenda, so evaluate it first
                 }
-                if (isDirty() || (pmem.getQueue() != null && !pmem.getQueue().isEmpty())) {
-                    setDirty(false);
-
-                    boolean evaled = false;
-                    if (pmem.getQueue() != null ) {
-                        if ( !fireUntilHalt) {
-                            while ( !pmem.getQueue().isEmpty() ) {
-                                removeQueuedTupleEntry();
-                                this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
-                                evaled = true;
-                            }
-                        } else {
-                            removeQueuedTupleEntry();
-                            this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
-                            evaled = true;
-                        }
-                    }
-
-                    if ( !evaled) {
-                        this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
-                    }
-                }
+                reEvaluateNetwork(wm, outerStack, fireUntilHalt);
                 wm.executeQueuedActions();
 
                 if (tupleList.isEmpty() && !outerStack.isEmpty()) {
@@ -194,6 +153,31 @@ public class RuleExecutor {
         }
 
         return localFireCount;
+    }
+
+    private void reEvaluateNetwork(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack, boolean fireUntilHalt) {
+        if (isDirty() || (pmem.getQueue() != null && !pmem.getQueue().isEmpty())) {
+            setDirty(false);
+
+            boolean evaled = false;
+            if (pmem.getQueue() != null ) {
+                if ( !fireUntilHalt) {
+                    while ( !pmem.getQueue().isEmpty() ) {
+                        removeQueuedTupleEntry();
+                        this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                        evaled = true;
+                    }
+                } else {
+                    removeQueuedTupleEntry();
+                    this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                    evaled = true;
+                }
+            }
+
+            if ( !evaled) {
+                this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+            }
+        }
     }
 
     private void removeQueuedTupleEntry() {

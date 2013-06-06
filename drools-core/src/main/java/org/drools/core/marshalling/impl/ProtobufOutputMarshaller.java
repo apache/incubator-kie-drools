@@ -200,6 +200,7 @@ public class ProtobufOutputMarshaller {
                     .setIsActive( group.isActive() )
                     .setIsAutoDeactivate( group.isAutoDeactivate() )
                     .setClearedForRecency( group.getClearedForRecency() )
+                    .setHasRuleFlowLister( group.isRuleFlowListener() )
                     .setActivatedForRecency( group.getActivatedForRecency() );
 
             Map<Long, String> nodeInstances = group.getNodeInstances();

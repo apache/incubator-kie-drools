@@ -60,4 +60,7 @@ public interface InternalAgendaGroup extends AgendaGroup {
     InternalWorkingMemory getWorkingMemory();
 
 
+    void hasRuleFlowListener(boolean hasRuleFlowLister);
+
+    boolean isRuleFlowListener();
 }
