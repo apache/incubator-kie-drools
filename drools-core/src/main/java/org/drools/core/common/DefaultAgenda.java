@@ -785,6 +785,9 @@ public class DefaultAgenda
 
             // No populated queues found so pop the focusStack and repeat
             if ( empty && (this.focusStack.size() > 1) ) {
+                if ( agendaGroup.isAutoDeactivate() ) {
+                    innerDeactiveRuleFlowGroup((InternalRuleFlowGroup) agendaGroup);
+                }
                 agendaGroup.setActive( false );
                 this.focusStack.removeLast();
                 final EventSupport eventsupport = (EventSupport) this.workingMemory;
@@ -953,8 +956,11 @@ public class DefaultAgenda
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( group,
                                                                                                         this.workingMemory );
         while ( this.focusStack.remove( group ) ); // keep removing while group is on the stack
-
         group.setActive(false);
+        innerDeactiveRuleFlowGroup(group);
+    }
+
+    private void innerDeactiveRuleFlowGroup(InternalRuleFlowGroup group) {
         group.hasRuleFlowListener(false);
         group.getNodeInstances().clear();
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( group, this.workingMemory );
@@ -1321,10 +1327,6 @@ public class DefaultAgenda
                                                                                               MatchCancelledCause.FILTER );
                                 tryagain = true;
                             }
-                        }
-
-                        if ( group.isAutoDeactivate() && group.isEmpty() ) {
-                            deactivateRuleFlowGroup((InternalRuleFlowGroup) group);
                         }
                     }
 
