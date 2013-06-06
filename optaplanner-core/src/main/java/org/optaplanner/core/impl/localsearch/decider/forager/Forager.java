@@ -32,6 +32,6 @@ public interface Forager extends LocalSearchSolverPhaseLifecycleListener {
 
     boolean isQuitEarly();
 
-    LocalSearchMoveScope pickMove(LocalSearchStepScope localSearchStepScope);
+    LocalSearchMoveScope pickMove(LocalSearchStepScope stepScope);
 
 }

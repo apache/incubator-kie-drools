@@ -81,8 +81,8 @@ public class GreatDelugeAcceptorTest {
         return phaseScope;
     }
 
-    public LocalSearchMoveScope createMoveScope(LocalSearchStepScope localSearchStepScope, Score score) {
-        LocalSearchMoveScope moveScope = new LocalSearchMoveScope(localSearchStepScope);
+    public LocalSearchMoveScope createMoveScope(LocalSearchStepScope stepScope, Score score) {
+        LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
         moveScope.setMove(new DummyMove());
         moveScope.setScore(score);
         return moveScope;
