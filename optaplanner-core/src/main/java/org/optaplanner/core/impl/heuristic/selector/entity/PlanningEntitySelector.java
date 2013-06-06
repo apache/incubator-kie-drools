@@ -16,14 +16,14 @@ import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter
 public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
         implements Iterable<Object> {
 
-    private PlanningEntityDescriptor planningEntityDescriptor;
+    private PlanningEntityDescriptor entityDescriptor;
 
     private PlanningEntitySelectionOrder selectionOrder = PlanningEntitySelectionOrder.ORIGINAL;
 
     private List<Object> selectedPlanningEntityList = null;
 
-    public PlanningEntitySelector(PlanningEntityDescriptor planningEntityDescriptor) {
-        this.planningEntityDescriptor = planningEntityDescriptor;
+    public PlanningEntitySelector(PlanningEntityDescriptor entityDescriptor) {
+        this.entityDescriptor = entityDescriptor;
     }
 
     public void setSelectionOrder(PlanningEntitySelectionOrder selectionOrder) {
@@ -42,11 +42,11 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
 
     private void validate() {
         if (selectionOrder == PlanningEntitySelectionOrder.DECREASING_DIFFICULTY) {
-            PlanningEntitySorter planningEntitySorter = planningEntityDescriptor.getPlanningEntitySorter();
+            PlanningEntitySorter planningEntitySorter = entityDescriptor.getPlanningEntitySorter();
             if (!planningEntitySorter.isSortDifficultySupported()) {
                 throw new IllegalStateException("The selectionOrder (" + selectionOrder
                         + ") can not be used on a PlanningEntity ("
-                        + planningEntityDescriptor.getPlanningEntityClass().getName()
+                        + entityDescriptor.getPlanningEntityClass().getName()
                         + ") that has no support for difficulty sorting. Check the @PlanningEntity annotation.");
             }
         }
@@ -56,9 +56,9 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
         List<Object> workingPlanningEntityList = phaseScope.getWorkingEntityList();
         for (Iterator<Object> it = workingPlanningEntityList.iterator(); it.hasNext(); ) {
             Object planningEntity = it.next();
-            if (!planningEntityDescriptor.getPlanningEntityClass().isInstance(planningEntity)) {
+            if (!entityDescriptor.getPlanningEntityClass().isInstance(planningEntity)) {
                 it.remove();
-            } else if (planningEntityDescriptor.isInitialized(planningEntity)) {
+            } else if (entityDescriptor.isInitialized(planningEntity)) {
                 // Do not plan the initialized planning entity
                 it.remove();
             }
@@ -70,7 +70,7 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
                 Collections.shuffle(workingPlanningEntityList, phaseScope.getWorkingRandom());
                 break;
             case DECREASING_DIFFICULTY:
-                PlanningEntitySorter planningEntitySorter = planningEntityDescriptor.getPlanningEntitySorter();
+                PlanningEntitySorter planningEntitySorter = entityDescriptor.getPlanningEntitySorter();
                 planningEntitySorter.sortDifficultyDescending(
                         phaseScope.getWorkingSolution(), workingPlanningEntityList);
                 break;

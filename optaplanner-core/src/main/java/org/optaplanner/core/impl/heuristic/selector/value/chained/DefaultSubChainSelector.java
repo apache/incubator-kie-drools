@@ -96,7 +96,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     public void constructCache(DefaultSolverScope solverScope) {
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
         PlanningVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
-        Class<?> entityClass = variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass();
+        Class<?> entityClass = variableDescriptor.getEntityDescriptor().getPlanningEntityClass();
         long valueSize = valueSelector.getSize();
         // Fail-fast when anchorTrailingChainList.size() could ever be too big
         if (valueSize > (long) Integer.MAX_VALUE) {

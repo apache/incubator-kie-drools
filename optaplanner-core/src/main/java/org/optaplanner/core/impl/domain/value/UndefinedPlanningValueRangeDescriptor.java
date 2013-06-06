@@ -33,21 +33,21 @@ public class UndefinedPlanningValueRangeDescriptor extends AbstractPlanningValue
     private void validate(ValueRange valueRangeAnnotation) {
         if (!valueRangeAnnotation.solutionProperty().equals("")) {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                    + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") of type (" + valueRangeAnnotation.type() + ") with a non-empty solutionProperty ("
                     + valueRangeAnnotation.solutionProperty() + ").");
         }
         if (!valueRangeAnnotation.planningEntityProperty().equals("")) {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                    + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") of type (" + valueRangeAnnotation.type() + ") with a non-empty planningEntityProperty ("
                     + valueRangeAnnotation.planningEntityProperty() + ").");
         }
         if (valueRangeAnnotation.excludeUninitializedPlanningEntity()) {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                    + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") of type (" + valueRangeAnnotation.type() + ") with excludeUninitializedPlanningEntity ("
                     + valueRangeAnnotation.excludeUninitializedPlanningEntity() + ").");
@@ -56,21 +56,21 @@ public class UndefinedPlanningValueRangeDescriptor extends AbstractPlanningValue
 
     public boolean isEntityDependent() {
         throw new IllegalStateException("The planningEntityClass ("
-                + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                 + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                 + ") which uses a @ValueRangeUndefined.");
     }
 
     public Collection<?> extractAllValuesWithFiltering(Solution solution) {
         throw new IllegalStateException("The planningEntityClass ("
-                + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                 + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                 + ") which uses a @ValueRangeUndefined.");
     }
 
     public Collection<?> extractValuesWithFiltering(Solution solution, Object planningEntity) {
         throw new IllegalStateException("The planningEntityClass ("
-                + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                 + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                 + ") which uses a @ValueRangeUndefined.");
     }

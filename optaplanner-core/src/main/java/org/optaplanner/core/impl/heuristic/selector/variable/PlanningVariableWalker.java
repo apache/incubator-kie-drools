@@ -32,15 +32,15 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 @Deprecated
 public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
     
-    private final PlanningEntityDescriptor planningEntityDescriptor;
+    private final PlanningEntityDescriptor entityDescriptor;
     private List<PlanningValueWalker> planningValueWalkerList;
 
     private ScoreDirector scoreDirector;
 
     private Object planningEntity;
 
-    public PlanningVariableWalker(PlanningEntityDescriptor planningEntityDescriptor) {
-        this.planningEntityDescriptor = planningEntityDescriptor;
+    public PlanningVariableWalker(PlanningEntityDescriptor entityDescriptor) {
+        this.entityDescriptor = entityDescriptor;
     }
 
     public void setPlanningValueWalkerList(List<PlanningValueWalker> planningValueWalkerList) {
@@ -153,7 +153,7 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
                     if (!moveIterator.hasNext()) {
                         // TODO the algorithms should be able to cope with that. Mind the use of .walkerList.get(j)
                         throw new IllegalStateException("The planning entity class ("
-                                + planningEntityDescriptor.getPlanningEntityClass() + ") for planning variable ("
+                                + entityDescriptor.getPlanningEntityClass() + ") for planning variable ("
                                 + planningValueWalker.getPlanningVariableDescriptor().getVariableName()
                                 + ") has an empty planning value range for planning entity (" + planningEntity + ").");
                     }

@@ -46,10 +46,10 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
         List<Object> workingPlanningEntityList = phaseScope.getWorkingEntityList();
         planningVariableWalkerList = new ArrayList<PlanningVariableWalker>(workingPlanningEntityList.size());
         for (Object planningEntity : workingPlanningEntityList) {
-            PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
+            PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
                     planningEntity.getClass());
-            PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(planningEntityDescriptor);
-            List<PlanningValueWalker> planningValueWalkerList = buildPlanningValueWalkerList(planningEntityDescriptor);
+            PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(entityDescriptor);
+            List<PlanningValueWalker> planningValueWalkerList = buildPlanningValueWalkerList(entityDescriptor);
             planningVariableWalker.setPlanningValueWalkerList(planningValueWalkerList);
             planningVariableWalkerList.add(planningVariableWalker);
             planningVariableWalker.phaseStarted(phaseScope);
@@ -57,9 +57,9 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
         }
     }
 
-    private List<PlanningValueWalker> buildPlanningValueWalkerList(PlanningEntityDescriptor planningEntityDescriptor) {
+    private List<PlanningValueWalker> buildPlanningValueWalkerList(PlanningEntityDescriptor entityDescriptor) {
         Collection<PlanningVariableDescriptor> planningVariableDescriptors
-                = planningEntityDescriptor.getPlanningVariableDescriptors();
+                = entityDescriptor.getPlanningVariableDescriptors();
         List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>(
                 planningVariableDescriptors.size());
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {

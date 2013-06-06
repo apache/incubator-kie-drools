@@ -125,7 +125,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 PlanningVariableDescriptor variableDescriptor = entry.getKey();
-                if (variableDescriptor.getPlanningEntityDescriptor().appliesToPlanningEntity(entity)) {
+                if (variableDescriptor.getEntityDescriptor().appliesToPlanningEntity(entity)) {
                     Object value = variableDescriptor.getValue(entity);
                     Map<Object, Set<Object>> valueToTrailingEntityMap = entry.getValue();
                     Set<Object> trailingEntities = valueToTrailingEntityMap.get(value);
@@ -150,7 +150,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 PlanningVariableDescriptor variableDescriptor = entry.getKey();
-                if (variableDescriptor.getPlanningEntityDescriptor().appliesToPlanningEntity(entity)) {
+                if (variableDescriptor.getEntityDescriptor().appliesToPlanningEntity(entity)) {
                     Object value = variableDescriptor.getValue(entity);
                     Map<Object, Set<Object>> valueToTrailingEntityMap = entry.getValue();
                     Set<Object> trailingEntities = valueToTrailingEntityMap.get(value);

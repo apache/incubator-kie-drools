@@ -52,10 +52,10 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
         }
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
             if (!leftEntityClass.equals(
-                    variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass())) {
+                    variableDescriptor.getEntityDescriptor().getPlanningEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
                         + ") has a variableDescriptor (" + variableDescriptor
-                        + ") with a entityClass (" + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                        + ") with a entityClass (" + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                         + ") which is not equal to the leftPillarSelector's entityClass (" + leftEntityClass + ").");
             }
             if (variableDescriptor.isChained()) {

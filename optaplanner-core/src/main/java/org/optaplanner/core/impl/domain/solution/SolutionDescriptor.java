@@ -52,7 +52,7 @@ public class SolutionDescriptor {
     private final Map<String, PropertyAccessor> entityPropertyAccessorMap;
     private final Map<String, PropertyAccessor> entityCollectionPropertyAccessorMap;
 
-    private final Map<Class<?>, PlanningEntityDescriptor> planningEntityDescriptorMap;
+    private final Map<Class<?>, PlanningEntityDescriptor> entityDescriptorMap;
 
     public SolutionDescriptor(Class<? extends Solution> solutionClass) {
         this.solutionClass = solutionClass;
@@ -65,11 +65,11 @@ public class SolutionDescriptor {
         propertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
         entityPropertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
         entityCollectionPropertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
-        planningEntityDescriptorMap = new LinkedHashMap<Class<?>, PlanningEntityDescriptor>(mapSize);
+        entityDescriptorMap = new LinkedHashMap<Class<?>, PlanningEntityDescriptor>(mapSize);
     }
 
-    public void addPlanningEntityDescriptor(PlanningEntityDescriptor planningEntityDescriptor) {
-        planningEntityDescriptorMap.put(planningEntityDescriptor.getPlanningEntityClass(), planningEntityDescriptor);
+    public void addPlanningEntityDescriptor(PlanningEntityDescriptor entityDescriptor) {
+        entityDescriptorMap.put(entityDescriptor.getPlanningEntityClass(), entityDescriptor);
     }
 
     public void processAnnotations() {
@@ -132,7 +132,7 @@ public class SolutionDescriptor {
     }
 
     public void afterAnnotationsProcessed() {
-        for (PlanningEntityDescriptor entityDescriptor : planningEntityDescriptorMap.values()) {
+        for (PlanningEntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
             entityDescriptor.afterAnnotationsProcessed();
         }
     }
@@ -162,25 +162,25 @@ public class SolutionDescriptor {
     }
 
     public Set<Class<?>> getPlanningEntityClassSet() {
-        return planningEntityDescriptorMap.keySet();
+        return entityDescriptorMap.keySet();
     }
 
     public Collection<PlanningEntityDescriptor> getPlanningEntityDescriptors() {
-        return planningEntityDescriptorMap.values();
+        return entityDescriptorMap.values();
     }
 
     public boolean hasPlanningEntityDescriptorStrict(Class<?> planningEntityClass) {
-        return planningEntityDescriptorMap.containsKey(planningEntityClass);
+        return entityDescriptorMap.containsKey(planningEntityClass);
     }
 
     public PlanningEntityDescriptor getPlanningEntityDescriptorStrict(Class<?> planningEntityClass) {
-        return planningEntityDescriptorMap.get(planningEntityClass);
+        return entityDescriptorMap.get(planningEntityClass);
     }
 
     public boolean hasPlanningEntityDescriptor(Class<?> entitySubclass) {
         Class<?> entityClass = entitySubclass;
         while (entityClass != null) {
-            if (planningEntityDescriptorMap.containsKey(entityClass)) {
+            if (entityDescriptorMap.containsKey(entityClass)) {
                 return true;
             }
             entityClass = entityClass.getSuperclass();
@@ -192,7 +192,7 @@ public class SolutionDescriptor {
         PlanningEntityDescriptor entityDescriptor = null;
         Class<?> planningEntityClass = planningEntitySubclass;
         while (planningEntityClass != null) {
-            entityDescriptor = planningEntityDescriptorMap.get(planningEntityClass);
+            entityDescriptor = entityDescriptorMap.get(planningEntityClass);
             if (entityDescriptor != null) {
                 return entityDescriptor;
             }
@@ -210,7 +210,7 @@ public class SolutionDescriptor {
     public Collection<PlanningVariableDescriptor> getChainedVariableDescriptors() {
         Collection<PlanningVariableDescriptor> chainedVariableDescriptors
                 = new ArrayList<PlanningVariableDescriptor>();
-        for (PlanningEntityDescriptor entityDescriptor : planningEntityDescriptorMap.values()) {
+        for (PlanningEntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
             for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getPlanningVariableDescriptors()) {
                 if (variableDescriptor.isChained()) {
                     chainedVariableDescriptors.add(variableDescriptor);

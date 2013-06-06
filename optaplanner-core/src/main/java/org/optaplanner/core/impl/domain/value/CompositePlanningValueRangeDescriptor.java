@@ -38,7 +38,7 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
             if (valueRangeDescriptor instanceof UndefinedPlanningValueRangeDescriptor) {
                 throw new IllegalArgumentException("The planningEntityClass ("
-                        + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                        + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                         + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                         + ") with multiple " + ValueRange.class.getSimpleName() + " annotations,"
                         + " including one of type (" + ValueRangeType.UNDEFINED + ").");

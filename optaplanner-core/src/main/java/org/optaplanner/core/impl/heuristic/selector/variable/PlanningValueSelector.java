@@ -79,7 +79,7 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
             if (!valueSorter.isSortStrengthSupported()) {
                 throw new IllegalStateException("The selectionOrder (" + selectionOrder
                         + ") can not be used on PlanningEntity ("
-                        + planningVariableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass().getName()
+                        + planningVariableDescriptor.getEntityDescriptor().getPlanningEntityClass().getName()
                         + ")'s planningVariable (" + planningVariableDescriptor.getVariableName()
                         + ") that has no support for strength sorting. Check the @PlanningVariable annotation.");
             }

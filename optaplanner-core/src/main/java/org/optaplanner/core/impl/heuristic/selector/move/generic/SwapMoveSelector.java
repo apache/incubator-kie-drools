@@ -57,10 +57,10 @@ public class SwapMoveSelector extends GenericMoveSelector {
         }
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
             if (!leftEntityDescriptor.getPlanningEntityClass().equals(
-                    variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass())) {
+                    variableDescriptor.getEntityDescriptor().getPlanningEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
                         + ") has a variableDescriptor with a entityClass ("
-                        + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                        + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                         + ") which is not equal to the leftEntitySelector's entityClass ("
                         + leftEntityDescriptor.getPlanningEntityClass() + ").");
             }

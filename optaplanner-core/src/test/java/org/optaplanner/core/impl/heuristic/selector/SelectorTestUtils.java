@@ -60,7 +60,7 @@ public class SelectorTestUtils {
     public static PlanningVariableDescriptor mockVariableDescriptor(PlanningEntityDescriptor entityDescriptor,
             String variableName) {
         PlanningVariableDescriptor variableDescriptor = mock(PlanningVariableDescriptor.class);
-        when(variableDescriptor.getPlanningEntityDescriptor()).thenReturn(entityDescriptor);
+        when(variableDescriptor.getEntityDescriptor()).thenReturn(entityDescriptor);
         when(variableDescriptor.getVariableName()).thenReturn(variableName);
         return variableDescriptor;
     }

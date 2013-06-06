@@ -41,14 +41,14 @@ public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlan
     private void validate(ValueRange valueRangeAnnotation) {
         if (!valueRangeAnnotation.solutionProperty().equals("")) {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                    + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") of type (" + valueRangeAnnotation.type() + ") with a non-empty solutionProperty ("
                     + valueRangeAnnotation.solutionProperty() + ").");
         }
         if (valueRangeAnnotation.planningEntityProperty().equals("")) {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                    + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") of type (" + valueRangeAnnotation.type() + ") with an empty planningEntityProperty ("
                     + valueRangeAnnotation.planningEntityProperty() + ").");
@@ -62,12 +62,12 @@ public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlan
 
     private void processPlanningEntityProperty(ValueRange valueRangeAnnotation) {
         String planningEntityProperty = valueRangeAnnotation.planningEntityProperty();
-        PlanningEntityDescriptor planningEntityDescriptor = variableDescriptor.getPlanningEntityDescriptor();
+        PlanningEntityDescriptor entityDescriptor = variableDescriptor.getEntityDescriptor();
         rangePropertyAccessor = new ReflectionPropertyAccessor(
-                planningEntityDescriptor.getPropertyDescriptor(planningEntityProperty));
+                entityDescriptor.getPropertyDescriptor(planningEntityProperty));
         if (rangePropertyAccessor == null) {
             String exceptionMessage = "The planningEntityClass ("
-                    + planningEntityDescriptor.getPlanningEntityClass()
+                    + entityDescriptor.getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") that refers to a planningEntityProperty (" + planningEntityProperty
                     + ") that does not exist.";
@@ -82,7 +82,7 @@ public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlan
         }
         if (!Collection.class.isAssignableFrom(rangePropertyAccessor.getPropertyType())) {
             throw new IllegalArgumentException("The planningEntityClass ("
-                    + planningEntityDescriptor.getPlanningEntityClass()
+                    + entityDescriptor.getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") that refers to a planningEntityProperty (" + planningEntityProperty
                     + ") that does not return a Collection.");
@@ -95,7 +95,7 @@ public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlan
 
     public Collection<?> extractAllValuesWithFiltering(Solution solution) {
         Set<Object> valueSet = new LinkedHashSet<Object>();
-        for (Object entity : variableDescriptor.getPlanningEntityDescriptor().extractEntities(solution)) {
+        for (Object entity : variableDescriptor.getEntityDescriptor().extractEntities(solution)) {
             valueSet.addAll(extractValuesWithFiltering(solution, entity));
         }
         return valueSet;

@@ -170,11 +170,11 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                     "1 planningEntityClass.");
         }
         Class<?> planningEntityClass = planningEntityClassSet.iterator().next();
-        PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(planningEntityClass);
-        PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(planningEntityDescriptor);
+        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(planningEntityClass);
+        PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(entityDescriptor);
         List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>();
         for (PlanningVariableDescriptor planningVariableDescriptor
-                : planningEntityDescriptor.getPlanningVariableDescriptors()) {
+                : entityDescriptor.getPlanningVariableDescriptors()) {
             PlanningValueSelector planningValueSelector = new PlanningValueSelector(planningVariableDescriptor);
             planningValueSelector.setSelectionOrder(determinePlanningValueSelectionOrder());
             PlanningValueWalker planningValueWalker = new PlanningValueWalker(
