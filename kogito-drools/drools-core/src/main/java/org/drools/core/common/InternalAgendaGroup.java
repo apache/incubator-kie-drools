@@ -23,6 +23,19 @@ import java.util.Map;
 
 public interface InternalAgendaGroup extends AgendaGroup {
 
+    /**
+     * Sets the auto-deactivate status of this RuleFlowGroup.
+     * If this is set to true, an active RuleFlowGroup automatically
+     * deactivates if it has no more activations.  If it had no
+     * activations when it was activated, it will be deactivated immediately.
+     */
+    void setAutoDeactivate(boolean autoDeactivate);
+
+    boolean isAutoDeactivate();
+
+    void clear();
+
+
     public void add(Activation activation);
 
     public Activation peek();
@@ -33,9 +46,6 @@ public interface InternalAgendaGroup extends AgendaGroup {
 
     public void setActive(boolean activate);
 
-    public void setAutoDeactivate(final boolean autoDeactivate);
-
-    public void clear();
     
     public Activation[] getAndClear();
 

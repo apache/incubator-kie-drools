@@ -952,9 +952,8 @@ public class DefaultAgenda
         }
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( group,
                                                                                                         this.workingMemory );
-        if ( !group.isEmpty() ) {
-            clearAndCancelAgendaGroup(group);
-        }
+        while ( this.focusStack.remove( group ) ); // keep removing while group is on the stack
+
         group.setActive(false);
         group.hasRuleFlowListener(false);
         group.getNodeInstances().clear();
@@ -1324,7 +1323,7 @@ public class DefaultAgenda
                             }
                         }
 
-                        if ( group.isEmpty() ) {
+                        if ( group.isAutoDeactivate() && group.isEmpty() ) {
                             deactivateRuleFlowGroup((InternalRuleFlowGroup) group);
                         }
                     }
