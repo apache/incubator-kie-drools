@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 @Deprecated
 public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
 
-    private PlanningVariableDescriptor planningVariableDescriptor;
+    private PlanningVariableDescriptor variableDescriptor;
 
     private PlanningValueSelectionOrder selectionOrder = PlanningValueSelectionOrder.ORIGINAL;
     private PlanningValueSelectionPromotion selectionPromotion = PlanningValueSelectionPromotion.NONE; // TODO
@@ -45,8 +45,8 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
     private Random workingRandom;
     private Collection<?> cachedPlanningValues = null;
 
-    public PlanningValueSelector(PlanningVariableDescriptor planningVariableDescriptor) {
-        this.planningVariableDescriptor = planningVariableDescriptor;
+    public PlanningValueSelector(PlanningVariableDescriptor variableDescriptor) {
+        this.variableDescriptor = variableDescriptor;
     }
 
     public void setSelectionOrder(PlanningValueSelectionOrder selectionOrder) {
@@ -75,20 +75,20 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
 
     private void validate() {
         if (selectionOrder == PlanningValueSelectionOrder.INCREASING_STRENGTH) {
-            PlanningValueSorter valueSorter = planningVariableDescriptor.getValueSorter();
+            PlanningValueSorter valueSorter = variableDescriptor.getValueSorter();
             if (!valueSorter.isSortStrengthSupported()) {
                 throw new IllegalStateException("The selectionOrder (" + selectionOrder
                         + ") can not be used on PlanningEntity ("
-                        + planningVariableDescriptor.getEntityDescriptor().getPlanningEntityClass().getName()
-                        + ")'s planningVariable (" + planningVariableDescriptor.getVariableName()
+                        + variableDescriptor.getEntityDescriptor().getPlanningEntityClass().getName()
+                        + ")'s planningVariable (" + variableDescriptor.getVariableName()
                         + ") that has no support for strength sorting. Check the @PlanningVariable annotation.");
             }
         }
     }
 
     private void initSelectedPlanningValueList(AbstractSolverPhaseScope phaseScope) {
-        if (planningVariableDescriptor.isPlanningValuesCacheable()) {
-            Collection<?> planningValues = planningVariableDescriptor.extractPlanningValues(
+        if (variableDescriptor.isPlanningValuesCacheable()) {
+            Collection<?> planningValues = variableDescriptor.extractPlanningValues(
                     phaseScope.getWorkingSolution(), null);
             cachedPlanningValues = applySelectionOrder(planningValues);
         } else {
@@ -105,7 +105,7 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
         if (cachedPlanningValues != null) {
             return cachedPlanningValues.iterator();
         } else {
-            Collection<?> planningValues = planningVariableDescriptor.extractPlanningValues(
+            Collection<?> planningValues = variableDescriptor.extractPlanningValues(
                     scoreDirector.getWorkingSolution(), planningEntity);
             planningValues = applySelectionOrder(planningValues);
             return planningValues.iterator();
@@ -122,7 +122,7 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
                 return randomPlanningValueList;
             case INCREASING_STRENGTH:
                 List<Object> increasingStrengthPlanningValueList = new ArrayList<Object>(workingPlanningValues);
-                PlanningValueSorter valueSorter = planningVariableDescriptor.getValueSorter();
+                PlanningValueSorter valueSorter = variableDescriptor.getValueSorter();
                 valueSorter.sortStrengthAscending(
                         scoreDirector.getWorkingSolution(), increasingStrengthPlanningValueList);
                 return increasingStrengthPlanningValueList;

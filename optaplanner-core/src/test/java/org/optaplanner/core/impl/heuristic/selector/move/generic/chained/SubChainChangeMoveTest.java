@@ -19,7 +19,7 @@ public class SubChainChangeMoveTest {
     @Test
     public void noTrailing() {
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -58,7 +58,7 @@ public class SubChainChangeMoveTest {
     @Test
     public void oldAndNewTrailing() {
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");

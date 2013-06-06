@@ -84,7 +84,7 @@ public class PillarSelectorConfig extends SelectorConfig {
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(environmentMode, solutionDescriptor,
                 minimumCacheType, SelectionOrder.ORIGINAL);
         Collection<PlanningVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
-                .getPlanningVariableDescriptors();
+                .getVariableDescriptors();
         return new SameValuePillarSelector(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean());
     }

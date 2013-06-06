@@ -148,7 +148,7 @@ public class ShadowVariableDescriptor {
                     + ") with a masterClass (" + masterClass
                     + ") which is not a valid planning entity.");
         }
-        mappedByVariableDescriptor = mappedByEntityDescriptor.getPlanningVariableDescriptor(mappedBy);
+        mappedByVariableDescriptor = mappedByEntityDescriptor.getVariableDescriptor(mappedBy);
         if (mappedByVariableDescriptor == null) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + entityDescriptor.getPlanningEntityClass()

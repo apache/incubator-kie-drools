@@ -211,7 +211,7 @@ public class SolutionDescriptor {
         Collection<PlanningVariableDescriptor> chainedVariableDescriptors
                 = new ArrayList<PlanningVariableDescriptor>();
         for (PlanningEntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
-            for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getPlanningVariableDescriptors()) {
+            for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getVariableDescriptors()) {
                 if (variableDescriptor.isChained()) {
                     chainedVariableDescriptors.add(variableDescriptor);
                 }

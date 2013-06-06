@@ -58,16 +58,16 @@ public class BruteForceEntityWalker implements BruteForceSolverPhaseLifecycleLis
     }
 
     private List<PlanningValueWalker> buildPlanningValueWalkerList(PlanningEntityDescriptor entityDescriptor) {
-        Collection<PlanningVariableDescriptor> planningVariableDescriptors
-                = entityDescriptor.getPlanningVariableDescriptors();
+        Collection<PlanningVariableDescriptor> variableDescriptors
+                = entityDescriptor.getVariableDescriptors();
         List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>(
-                planningVariableDescriptors.size());
-        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
-            PlanningValueSelector planningValueSelector = new PlanningValueSelector(planningVariableDescriptor);
+                variableDescriptors.size());
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            PlanningValueSelector planningValueSelector = new PlanningValueSelector(variableDescriptor);
             planningValueSelector.setSelectionOrder(PlanningValueSelectionOrder.ORIGINAL);
             planningValueSelector.setSelectionPromotion(PlanningValueSelectionPromotion.NONE);
             planningValueSelector.setRoundRobinSelection(false);
-            PlanningValueWalker planningValueWalker = new PlanningValueWalker(planningVariableDescriptor,
+            PlanningValueWalker planningValueWalker = new PlanningValueWalker(variableDescriptor,
                     planningValueSelector);
             planningValueWalkerList.add(planningValueWalker);
         }

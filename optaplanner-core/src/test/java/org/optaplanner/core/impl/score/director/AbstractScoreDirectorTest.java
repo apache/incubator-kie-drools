@@ -53,7 +53,7 @@ public class AbstractScoreDirectorTest {
         SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
         PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(
                 TestdataChainedEntity.class);
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
 
         AbstractScoreDirectorFactory scoreDirectorFactory = mock(AbstractScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);

@@ -54,9 +54,9 @@ public class SwapMove implements Move {
     // ************************************************************************
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor planningVariableDescriptor : variableDescriptors) {
-            Object leftValue = planningVariableDescriptor.getValue(leftEntity);
-            Object rightValue = planningVariableDescriptor.getValue(rightEntity);
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            Object leftValue = variableDescriptor.getValue(leftEntity);
+            Object rightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(leftValue, rightValue)) {
                 return true;
             }
@@ -69,16 +69,16 @@ public class SwapMove implements Move {
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        for (PlanningVariableDescriptor planningVariableDescriptor : variableDescriptors) {
-            Object oldLeftValue = planningVariableDescriptor.getValue(leftEntity);
-            Object oldRightValue = planningVariableDescriptor.getValue(rightEntity);
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            Object oldLeftValue = variableDescriptor.getValue(leftEntity);
+            Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
-                scoreDirector.beforeVariableChanged(leftEntity, planningVariableDescriptor.getVariableName());
-                planningVariableDescriptor.setValue(leftEntity, oldRightValue);
-                scoreDirector.afterVariableChanged(leftEntity, planningVariableDescriptor.getVariableName());
-                scoreDirector.beforeVariableChanged(rightEntity, planningVariableDescriptor.getVariableName());
-                planningVariableDescriptor.setValue(rightEntity, oldLeftValue);
-                scoreDirector.afterVariableChanged(rightEntity, planningVariableDescriptor.getVariableName());
+                scoreDirector.beforeVariableChanged(leftEntity, variableDescriptor.getVariableName());
+                variableDescriptor.setValue(leftEntity, oldRightValue);
+                scoreDirector.afterVariableChanged(leftEntity, variableDescriptor.getVariableName());
+                scoreDirector.beforeVariableChanged(rightEntity, variableDescriptor.getVariableName());
+                variableDescriptor.setValue(rightEntity, oldLeftValue);
+                scoreDirector.afterVariableChanged(rightEntity, variableDescriptor.getVariableName());
             }
         }
     }
@@ -89,9 +89,9 @@ public class SwapMove implements Move {
 
     public Collection<? extends Object> getPlanningValues() {
         List<Object> values = new ArrayList<Object>(variableDescriptors.size() * 2);
-        for (PlanningVariableDescriptor planningVariableDescriptor : variableDescriptors) {
-            values.add(planningVariableDescriptor.getValue(leftEntity));
-            values.add(planningVariableDescriptor.getValue(rightEntity));
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+            values.add(variableDescriptor.getValue(leftEntity));
+            values.add(variableDescriptor.getValue(rightEntity));
         }
         return values;
     }

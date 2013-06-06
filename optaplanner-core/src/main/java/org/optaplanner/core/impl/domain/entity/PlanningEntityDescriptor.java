@@ -46,7 +46,7 @@ public class PlanningEntityDescriptor {
     private SelectionFilter movableEntitySelectionFilter;
     private PlanningEntitySorter planningEntitySorter;
 
-    private Map<String, PlanningVariableDescriptor> planningVariableDescriptorMap;
+    private Map<String, PlanningVariableDescriptor> variableDescriptorMap;
     private Map<String, ShadowVariableDescriptor> shadowVariableDescriptorMap;
 
     public PlanningEntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> planningEntityClass) {
@@ -118,7 +118,7 @@ public class PlanningEntityDescriptor {
 
     private void processPropertyAnnotations() {
         PropertyDescriptor[] propertyDescriptors = planningEntityBeanInfo.getPropertyDescriptors();
-        planningVariableDescriptorMap = new LinkedHashMap<String, PlanningVariableDescriptor>(propertyDescriptors.length);
+        variableDescriptorMap = new LinkedHashMap<String, PlanningVariableDescriptor>(propertyDescriptors.length);
         shadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>(propertyDescriptors.length);
         boolean noPlanningVariableAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
@@ -134,7 +134,7 @@ public class PlanningEntityDescriptor {
                 if (planningVariableAnnotation.mappedBy().equals("")) {
                     PlanningVariableDescriptor variableDescriptor = new PlanningVariableDescriptor(
                             this, propertyDescriptor);
-                    planningVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
+                    variableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
                     variableDescriptor.processAnnotations();
                 } else {
                     ShadowVariableDescriptor variableDescriptor = new ShadowVariableDescriptor(
@@ -151,7 +151,7 @@ public class PlanningEntityDescriptor {
     }
 
     public void afterAnnotationsProcessed() {
-        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptorMap.values()) {
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptorMap.values()) {
             variableDescriptor.afterAnnotationsProcessed();
         }
         for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorMap.values()) {
@@ -197,15 +197,15 @@ public class PlanningEntityDescriptor {
     }
 
     public Collection<String> getPlanningVariableNameSet() {
-        return planningVariableDescriptorMap.keySet();
+        return variableDescriptorMap.keySet();
     }
 
-    public Collection<PlanningVariableDescriptor> getPlanningVariableDescriptors() {
-        return planningVariableDescriptorMap.values();
+    public Collection<PlanningVariableDescriptor> getVariableDescriptors() {
+        return variableDescriptorMap.values();
     }
     
-    public PlanningVariableDescriptor getPlanningVariableDescriptor(String propertyName) {
-        return planningVariableDescriptorMap.get(propertyName);
+    public PlanningVariableDescriptor getVariableDescriptor(String propertyName) {
+        return variableDescriptorMap.get(propertyName);
     }
 
     public List<Object> extractEntities(Solution solution) {
@@ -214,7 +214,7 @@ public class PlanningEntityDescriptor {
 
     public long getProblemScale(Solution solution, Object planningEntity) {
         long problemScale = 1L;
-        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptorMap.values()) {
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptorMap.values()) {
             problemScale *= variableDescriptor.getValueCount(solution, planningEntity);
         }
         return problemScale;
@@ -222,7 +222,7 @@ public class PlanningEntityDescriptor {
 
     public int countUninitializedVariables(Object planningEntity) {
         int uninitializedVariableCount = 0;
-        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptorMap.values()) {
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptorMap.values()) {
             if (!variableDescriptor.isInitialized(planningEntity)) {
                 uninitializedVariableCount++;
             }
@@ -231,7 +231,7 @@ public class PlanningEntityDescriptor {
     }
 
     public boolean isInitialized(Object planningEntity) {
-        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptorMap.values()) {
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptorMap.values()) {
             if (!variableDescriptor.isInitialized(planningEntity)) {
                 return false;
             }

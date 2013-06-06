@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 @Deprecated
 public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
-    private final PlanningVariableDescriptor planningVariableDescriptor;
+    private final PlanningVariableDescriptor variableDescriptor;
     private final PlanningValueSelector planningValueSelector;
 
     private ScoreDirector scoreDirector;
@@ -42,14 +42,14 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     private boolean isFirstValue; // TODO remove and require partially initialized entity's support in score rules
     private Object workingValue;
 
-    public PlanningValueWalker(PlanningVariableDescriptor planningVariableDescriptor,
+    public PlanningValueWalker(PlanningVariableDescriptor variableDescriptor,
             PlanningValueSelector planningValueSelector) {
-        this.planningVariableDescriptor = planningVariableDescriptor;
+        this.variableDescriptor = variableDescriptor;
         this.planningValueSelector = planningValueSelector;
     }
 
-    public PlanningVariableDescriptor getPlanningVariableDescriptor() {
-        return planningVariableDescriptor;
+    public PlanningVariableDescriptor getVariableDescriptor() {
+        return variableDescriptor;
     }
 
     // ************************************************************************
@@ -94,12 +94,12 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         planningValueIterator = planningValueSelector.iterator(planningEntity);
         if (!planningValueIterator.hasNext()) {
             throw new IllegalStateException("The planningEntity (" + planningEntity + ") has a planning variable ("
-                    + planningVariableDescriptor.getVariableName() + ") which has no planning values.");
+                    + variableDescriptor.getVariableName() + ") which has no planning values.");
         }
         Object value = planningValueIterator.next();
-        scoreDirector.beforeVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
-        planningVariableDescriptor.setValue(planningEntity, value);
-        scoreDirector.afterVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
+        scoreDirector.beforeVariableChanged(planningEntity, variableDescriptor.getVariableName());
+        variableDescriptor.setValue(planningEntity, value);
+        scoreDirector.afterVariableChanged(planningEntity, variableDescriptor.getVariableName());
         isFirstValue = true;
         workingValue = value;
     }
@@ -128,16 +128,16 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     }
 
     private void changeWorkingValue(Object value) {
-        scoreDirector.beforeVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
-        planningVariableDescriptor.setValue(planningEntity, value);
-        scoreDirector.afterVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
+        scoreDirector.beforeVariableChanged(planningEntity, variableDescriptor.getVariableName());
+        variableDescriptor.setValue(planningEntity, value);
+        scoreDirector.afterVariableChanged(planningEntity, variableDescriptor.getVariableName());
         workingValue = value;
     }
 
     // TODO refactor variableWalker to this
     public Iterator<Move> moveIterator(final Object planningEntity) {
         final Iterator<?> planningValueIterator = planningValueSelector.iterator(planningEntity);
-        if (!planningVariableDescriptor.isChained()) {
+        if (!variableDescriptor.isChained()) {
             return new ChangeMoveIterator(planningValueIterator, planningEntity);
         } else {
             return new ChainedChangeMoveIterator(planningValueIterator, planningEntity);
@@ -160,7 +160,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
         public Move next() {
             Object toPlanningValue = planningValueIterator.next();
-            return new ChangeMove(planningEntity, planningVariableDescriptor, toPlanningValue);
+            return new ChangeMove(planningEntity, variableDescriptor, toPlanningValue);
         }
 
         public void remove() {
@@ -178,7 +178,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         @Override
         public Move next() {
             Object toPlanningValue = planningValueIterator.next();
-            return new ChainedChangeMove(planningEntity, planningVariableDescriptor, toPlanningValue);
+            return new ChainedChangeMove(planningEntity, variableDescriptor, toPlanningValue);
         }
 
     }

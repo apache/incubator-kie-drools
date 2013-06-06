@@ -93,7 +93,7 @@ public abstract class SelectorConfig {
             PlanningEntityDescriptor entityDescriptor, String variableName) {
         PlanningVariableDescriptor variableDescriptor;
         if (variableName != null) {
-            variableDescriptor = entityDescriptor.getPlanningVariableDescriptor(variableName);
+            variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
             if (variableDescriptor == null) {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has a variableName (" + variableName
@@ -102,9 +102,9 @@ public abstract class SelectorConfig {
                         "Check your planning entity implementation's annotated methods.");
             }
         } else {
-            Collection<PlanningVariableDescriptor> planningVariableDescriptors = entityDescriptor
-                    .getPlanningVariableDescriptors();
-            if (planningVariableDescriptors.size() != 1) {
+            Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor
+                    .getVariableDescriptors();
+            if (variableDescriptors.size() != 1) {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has no configured variableName (" + variableName
                         + ") for planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
@@ -112,14 +112,14 @@ public abstract class SelectorConfig {
                         + entityDescriptor.getPlanningVariableNameSet()
                         + "), it can not be deducted automatically.");
             }
-            variableDescriptor = planningVariableDescriptors.iterator().next();
+            variableDescriptor = variableDescriptors.iterator().next();
         }
         return variableDescriptor;
     }
 
     protected Collection<PlanningVariableDescriptor> deduceVariableDescriptors(
             PlanningEntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
-        Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getPlanningVariableDescriptors();
+        Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
         if (variableNameIncludeList == null) {
             return variableDescriptors;
         }

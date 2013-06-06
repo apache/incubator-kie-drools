@@ -154,7 +154,7 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
                         // TODO the algorithms should be able to cope with that. Mind the use of .walkerList.get(j)
                         throw new IllegalStateException("The planning entity class ("
                                 + entityDescriptor.getPlanningEntityClass() + ") for planning variable ("
-                                + planningValueWalker.getPlanningVariableDescriptor().getVariableName()
+                                + planningValueWalker.getVariableDescriptor().getVariableName()
                                 + ") has an empty planning value range for planning entity (" + planningEntity + ").");
                     }
                     initialMove = moveIterator.next();
