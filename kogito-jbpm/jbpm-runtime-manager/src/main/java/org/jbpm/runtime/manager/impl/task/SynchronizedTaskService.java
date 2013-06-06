@@ -875,7 +875,7 @@ public class SynchronizedTaskService
 			return taskService.execute(command);
 		}
 	}
-
+    
     @Override
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(String userId, List<Status> statuses, Date expirationDate) {
        synchronized (ksession) {
@@ -896,4 +896,5 @@ public class SynchronizedTaskService
             return  taskService.getPotentialOwnersForTaskIds(taskIds);
        } 
     }
+
 }
