@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
-  <benchmarkDirectory>local/data/curriculumcourse</benchmarkDirectory>
+  <benchmarkDirectory>local/data/curriculumcourse/template</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
