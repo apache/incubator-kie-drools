@@ -73,7 +73,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
     // ************************************************************************
 
     @Override
-    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         successiveNoHardScoreChange = 0;
         shiftingPenaltyActive = false;
     }
