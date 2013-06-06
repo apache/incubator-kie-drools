@@ -32,7 +32,10 @@ import java.util.HashMap;
 global VerifierReport result;
 
 
-rule "No action - possibly commented out"
+/**
+* For situations where the named consequence is listed in the bottom, but not used in RHS.
+*/
+rule "Named consequence declared, but not used"
     when
         $consequence : NamedConsequence( )
         $rule :VerifierRule( namedConsequences not contains $consequence.name )
