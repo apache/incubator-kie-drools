@@ -26,18 +26,18 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public class GreedyMoveScope {
 
-    private final GreedyFitStepScope greedyFitStepScope;
+    private final GreedyFitStepScope stepScope;
     private int moveIndex;
     private Move move = null;
     private Move undoMove = null;
     private Score score = null;
 
-    public GreedyMoveScope(GreedyFitStepScope greedyFitStepScope) {
-        this.greedyFitStepScope = greedyFitStepScope;
+    public GreedyMoveScope(GreedyFitStepScope stepScope) {
+        this.stepScope = stepScope;
     }
 
-    public GreedyFitStepScope getGreedyFitStepScope() {
-        return greedyFitStepScope;
+    public GreedyFitStepScope getStepScope() {
+        return stepScope;
     }
 
     public int getMoveIndex() {
@@ -77,15 +77,15 @@ public class GreedyMoveScope {
     // ************************************************************************
 
     public ScoreDirector getScoreDirector() {
-        return greedyFitStepScope.getScoreDirector();
+        return stepScope.getScoreDirector();
     }
 
     public Solution getWorkingSolution() {
-        return greedyFitStepScope.getWorkingSolution();
+        return stepScope.getWorkingSolution();
     }
 
     public Random getWorkingRandom() {
-        return greedyFitStepScope.getWorkingRandom();
+        return stepScope.getWorkingRandom();
     }
 
     @Override

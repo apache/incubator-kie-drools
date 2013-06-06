@@ -23,12 +23,12 @@ import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFit
 
 public interface GreedySolverPhaseLifecycleListener extends EventListener {
 
-    void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope);
+    void phaseStarted(GreedyFitSolverPhaseScope phaseScope);
 
-    void stepStarted(GreedyFitStepScope greedyFitStepScope);
+    void stepStarted(GreedyFitStepScope stepScope);
 
-    void stepEnded(GreedyFitStepScope greedyFitStepScope);
+    void stepEnded(GreedyFitStepScope stepScope);
 
-    void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope);
+    void phaseEnded(GreedyFitSolverPhaseScope phaseScope);
 
 }

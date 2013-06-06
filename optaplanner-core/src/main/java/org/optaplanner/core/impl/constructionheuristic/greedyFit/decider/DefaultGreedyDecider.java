@@ -58,14 +58,14 @@ public class DefaultGreedyDecider implements GreedyDecider {
     // Worker methods
     // ************************************************************************
 
-    public void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
-        planningVariableWalker.phaseStarted(greedyFitSolverPhaseScope);
-        forager.phaseStarted(greedyFitSolverPhaseScope);
+    public void phaseStarted(GreedyFitSolverPhaseScope phaseScope) {
+        planningVariableWalker.phaseStarted(phaseScope);
+        forager.phaseStarted(phaseScope);
     }
 
-    public void stepStarted(GreedyFitStepScope greedyFitStepScope) {
-        planningVariableWalker.stepStarted(greedyFitStepScope);
-        forager.stepStarted(greedyFitStepScope);
+    public void stepStarted(GreedyFitStepScope stepScope) {
+        planningVariableWalker.stepStarted(stepScope);
+        forager.stepStarted(stepScope);
     }
 
     public void decideNextStep(GreedyFitStepScope stepScope) {
@@ -110,7 +110,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
         if (assertExpectedUndoMoveScore) {
-            GreedyFitSolverPhaseScope phaseScope = moveScope.getGreedyFitStepScope()
+            GreedyFitSolverPhaseScope phaseScope = moveScope.getStepScope()
                     .getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove);
         }
@@ -119,22 +119,22 @@ public class DefaultGreedyDecider implements GreedyDecider {
     }
 
     private void processMove(GreedyMoveScope moveScope) {
-        Score score = moveScope.getGreedyFitStepScope().getPhaseScope().calculateScore();
+        Score score = moveScope.getStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreFromScratch) {
-            moveScope.getGreedyFitStepScope().getPhaseScope().assertWorkingScoreFromScratch(score, moveScope.getMove());
+            moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score, moveScope.getMove());
         }
         moveScope.setScore(score);
         forager.addMove(moveScope);
     }
 
-    public void stepEnded(GreedyFitStepScope greedyFitStepScope) {
-        planningVariableWalker.stepEnded(greedyFitStepScope);
-        forager.stepEnded(greedyFitStepScope);
+    public void stepEnded(GreedyFitStepScope stepScope) {
+        planningVariableWalker.stepEnded(stepScope);
+        forager.stepEnded(stepScope);
     }
 
-    public void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
-        planningVariableWalker.phaseEnded(greedyFitSolverPhaseScope);
-        forager.phaseEnded(greedyFitSolverPhaseScope);
+    public void phaseEnded(GreedyFitSolverPhaseScope phaseScope) {
+        planningVariableWalker.phaseEnded(phaseScope);
+        forager.phaseEnded(phaseScope);
     }
 
 }

@@ -36,27 +36,27 @@ public class GreedyPlanningEntitySelector implements Iterable<Object>, GreedySol
         this.planningEntitySelectorList = planningEntitySelectorList;
     }
 
-    public void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
+    public void phaseStarted(GreedyFitSolverPhaseScope phaseScope) {
         for (PlanningEntitySelector planningEntitySelector : planningEntitySelectorList) {
-            planningEntitySelector.phaseStarted(greedyFitSolverPhaseScope);
+            planningEntitySelector.phaseStarted(phaseScope);
         }
     }
 
-    public void stepStarted(GreedyFitStepScope greedyFitStepScope) {
+    public void stepStarted(GreedyFitStepScope stepScope) {
         for (PlanningEntitySelector planningEntitySelector : planningEntitySelectorList) {
-            planningEntitySelector.stepStarted(greedyFitStepScope);
+            planningEntitySelector.stepStarted(stepScope);
         }
     }
 
-    public void stepEnded(GreedyFitStepScope greedyFitStepScope) {
+    public void stepEnded(GreedyFitStepScope stepScope) {
         for (PlanningEntitySelector planningEntitySelector : planningEntitySelectorList) {
-            planningEntitySelector.stepEnded(greedyFitStepScope);
+            planningEntitySelector.stepEnded(stepScope);
         }
     }
 
-    public void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
+    public void phaseEnded(GreedyFitSolverPhaseScope phaseScope) {
         for (PlanningEntitySelector planningEntitySelector : planningEntitySelectorList) {
-            planningEntitySelector.phaseEnded(greedyFitSolverPhaseScope);
+            planningEntitySelector.phaseEnded(phaseScope);
         }
     }
 

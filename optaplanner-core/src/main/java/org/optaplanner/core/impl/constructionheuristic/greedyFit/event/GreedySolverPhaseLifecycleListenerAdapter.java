@@ -21,19 +21,19 @@ import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFit
 
 public abstract class GreedySolverPhaseLifecycleListenerAdapter implements GreedySolverPhaseLifecycleListener {
 
-    public void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
+    public void phaseStarted(GreedyFitSolverPhaseScope phaseScope) {
         // Hook method
     }
 
-    public void stepStarted(GreedyFitStepScope greedyFitStepScope) {
+    public void stepStarted(GreedyFitStepScope stepScope) {
         // Hook method
     }
 
-    public void stepEnded(GreedyFitStepScope greedyFitStepScope) {
+    public void stepEnded(GreedyFitStepScope stepScope) {
         // Hook method
     }
 
-    public void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
+    public void phaseEnded(GreedyFitSolverPhaseScope phaseScope) {
         // Hook method
     }
 
