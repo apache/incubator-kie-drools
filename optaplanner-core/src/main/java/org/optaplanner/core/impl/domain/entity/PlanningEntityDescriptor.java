@@ -32,6 +32,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.solution.Solution;
@@ -46,6 +47,7 @@ public class PlanningEntityDescriptor {
     private PlanningEntitySorter planningEntitySorter;
 
     private Map<String, PlanningVariableDescriptor> planningVariableDescriptorMap;
+    private Map<String, ShadowVariableDescriptor> shadowVariableDescriptorMap;
 
     public PlanningEntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> planningEntityClass) {
         this.solutionDescriptor = solutionDescriptor;
@@ -117,25 +119,43 @@ public class PlanningEntityDescriptor {
     private void processPropertyAnnotations() {
         PropertyDescriptor[] propertyDescriptors = planningEntityBeanInfo.getPropertyDescriptors();
         planningVariableDescriptorMap = new LinkedHashMap<String, PlanningVariableDescriptor>(propertyDescriptors.length);
+        shadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>(propertyDescriptors.length);
         boolean noPlanningVariableAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             Method propertyGetter = propertyDescriptor.getReadMethod();
             if (propertyGetter != null && propertyGetter.isAnnotationPresent(PlanningVariable.class)) {
+                PlanningVariable planningVariableAnnotation = propertyGetter.getAnnotation(PlanningVariable.class);
                 noPlanningVariableAnnotation = false;
                 if (propertyDescriptor.getWriteMethod() == null) {
                     throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
                             + ") has a PlanningVariable annotated property (" + propertyDescriptor.getName()
                             + ") that should have a setter.");
                 }
-                PlanningVariableDescriptor variableDescriptor = new PlanningVariableDescriptor(
-                        this, propertyDescriptor);
-                planningVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
-                variableDescriptor.processAnnotations();
+                if (planningVariableAnnotation.mappedBy().equals("")) {
+                    PlanningVariableDescriptor variableDescriptor = new PlanningVariableDescriptor(
+                            this, propertyDescriptor);
+                    planningVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
+                    variableDescriptor.processAnnotations();
+                } else {
+                    ShadowVariableDescriptor variableDescriptor = new ShadowVariableDescriptor(
+                            this, propertyDescriptor);
+                    shadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
+                    variableDescriptor.processAnnotations();
+                }
             }
         }
         if (noPlanningVariableAnnotation) {
             throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
                     + ") should have at least 1 getter with a PlanningVariable annotation.");
+        }
+    }
+
+    public void afterAnnotationsProcessed() {
+        for (PlanningVariableDescriptor variableDescriptor : planningVariableDescriptorMap.values()) {
+            variableDescriptor.afterAnnotationsProcessed();
+        }
+        for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorMap.values()) {
+            shadowVariableDescriptor.afterAnnotationsProcessed();
         }
     }
 

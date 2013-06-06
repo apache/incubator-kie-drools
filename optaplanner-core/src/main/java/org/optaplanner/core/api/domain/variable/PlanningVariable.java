@@ -39,6 +39,17 @@ import static java.lang.annotation.RetentionPolicy.*;
 public @interface PlanningVariable {
 
     /**
+     * In a bidirectional relationship, the shadow side (= the slave side) uses this {@link #mappedBy()} property
+     * (and nothing else) to declare for which normal {@link PlanningVariable} (= the master side) it is a shadow.
+     * <p/>
+     * Both sides of a bidirectional relationship should be consistent: if A points to B then B must point to A.
+     * When planner changes a normal variable, it adjusts the shadow variable accordingly.
+     * In practice, planner ignores the shadow variables (except for consistency housekeeping).
+     * @return the variable property name on the opposite end of this bidirectional relationship
+     */
+    String mappedBy() default "";
+
+    /**
      * A nullable planning variable will automatically add the planning value null to the {@link ValueRange}.
      * <p/>
      * In repeated planning use cases, it's recommended to specify a {@link #reinitializeVariableEntityFilter()}

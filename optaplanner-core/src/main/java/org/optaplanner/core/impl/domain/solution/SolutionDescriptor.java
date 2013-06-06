@@ -23,7 +23,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,10 +62,14 @@ public class SolutionDescriptor {
             throw new IllegalStateException("The solutionClass (" + solutionClass + ") is not a valid java bean.", e);
         }
         int mapSize = solutionBeanInfo.getPropertyDescriptors().length;
-        propertyAccessorMap = new HashMap<String, PropertyAccessor>(mapSize);
-        entityPropertyAccessorMap = new HashMap<String, PropertyAccessor>(mapSize);
-        entityCollectionPropertyAccessorMap = new HashMap<String, PropertyAccessor>(mapSize);
-        planningEntityDescriptorMap = new HashMap<Class<?>, PlanningEntityDescriptor>(mapSize);
+        propertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
+        entityPropertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
+        entityCollectionPropertyAccessorMap = new LinkedHashMap<String, PropertyAccessor>(mapSize);
+        planningEntityDescriptorMap = new LinkedHashMap<Class<?>, PlanningEntityDescriptor>(mapSize);
+    }
+
+    public void addPlanningEntityDescriptor(PlanningEntityDescriptor planningEntityDescriptor) {
+        planningEntityDescriptorMap.put(planningEntityDescriptor.getPlanningEntityClass(), planningEntityDescriptor);
     }
 
     public void processAnnotations() {
@@ -127,8 +131,10 @@ public class SolutionDescriptor {
         }
     }
 
-    public void addPlanningEntityDescriptor(PlanningEntityDescriptor planningEntityDescriptor) {
-        planningEntityDescriptorMap.put(planningEntityDescriptor.getPlanningEntityClass(), planningEntityDescriptor);
+    public void afterAnnotationsProcessed() {
+        for (PlanningEntityDescriptor entityDescriptor : planningEntityDescriptorMap.values()) {
+            entityDescriptor.afterAnnotationsProcessed();
+        }
     }
 
     public Class<? extends Solution> getSolutionClass() {

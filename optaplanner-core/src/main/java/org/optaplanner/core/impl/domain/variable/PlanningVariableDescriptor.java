@@ -66,10 +66,21 @@ public class PlanningVariableDescriptor {
         PlanningVariable planningVariableAnnotation = variablePropertyAccessor.getReadMethod()
                 .getAnnotation(PlanningVariable.class);
         valueSorter = new PlanningValueSorter();
+        // Keep in sync with ShadowVariableDescriptor.processPropertyAnnotations()
+        processMappedBy(planningVariableAnnotation);
         processNullable(planningVariableAnnotation);
         processStrength(planningVariableAnnotation);
         processChained(planningVariableAnnotation);
-        processValueRangeAnnotation();
+        processValueRangeAnnotation(planningVariableAnnotation);
+    }
+
+    private void processMappedBy(PlanningVariable planningVariableAnnotation) {
+        String mappedBy = planningVariableAnnotation.mappedBy();
+        if (!mappedBy.equals("")) {
+            throw new IllegalStateException("Impossible state: the " + PlanningEntityDescriptor.class
+                    + " would never try to build a " + PlanningVariableDescriptor.class
+                    + " for a shadow variable with mappedBy (" + mappedBy + ").");
+        }
     }
 
     private void processNullable(PlanningVariable planningVariableAnnotation) {
@@ -143,7 +154,7 @@ public class PlanningVariableDescriptor {
         }
     }
 
-    private void processValueRangeAnnotation() {
+    private void processValueRangeAnnotation(PlanningVariable planningVariableAnnotation) {
         Method propertyGetter = variablePropertyAccessor.getReadMethod();
         ValueRange valueRangeAnnotation = propertyGetter.getAnnotation(ValueRange.class);
         ValueRanges valueRangesAnnotation = propertyGetter.getAnnotation(ValueRanges.class);
@@ -184,6 +195,10 @@ public class PlanningVariableDescriptor {
                         + valueRangeAnnotation.type() + ") is not implemented.");
         }
         // TODO Support plugging in other ValueRange implementations
+    }
+
+    public void afterAnnotationsProcessed() {
+        // Do nothing
     }
 
     // ************************************************************************

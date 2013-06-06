@@ -41,6 +41,7 @@ public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
 
     // Planning variables: changes during planning, between score calculations.
     protected VrpAppearance previousAppearance;
+    protected VrpCustomer nextCustomer;
 
     public VrpLocation getLocation() {
         return location;
@@ -69,6 +70,15 @@ public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
 
     public void setPreviousAppearance(VrpAppearance previousAppearance) {
         this.previousAppearance = previousAppearance;
+    }
+
+    @PlanningVariable(mappedBy = "previousAppearance")
+    public VrpCustomer getNextCustomer() {
+        return nextCustomer;
+    }
+
+    public void setNextCustomer(VrpCustomer nextCustomer) {
+        this.nextCustomer = nextCustomer;
     }
 
     // ************************************************************************

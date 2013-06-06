@@ -192,6 +192,7 @@ public class SolverConfig {
             solutionDescriptor.addPlanningEntityDescriptor(entityDescriptor);
             entityDescriptor.processAnnotations();
         }
+        solutionDescriptor.afterAnnotationsProcessed();
         return solutionDescriptor;
     }
 
