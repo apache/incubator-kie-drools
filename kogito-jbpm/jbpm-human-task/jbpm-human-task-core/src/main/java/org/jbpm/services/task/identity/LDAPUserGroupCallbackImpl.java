@@ -240,7 +240,7 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
                 result.close();
             }
             
-            String roleContext = this.config.getProperty(USER_ROLES_CTX, ROLE_CTX);
+            String roleContext = this.config.getProperty(USER_ROLES_CTX, this.config.getProperty(ROLE_CTX));
             String roleFilter = this.config.getProperty(USER_ROLES_FILTER);
             String roleAttrId = this.config.getProperty(ROLE_ATTR_ID, "cn");
             
