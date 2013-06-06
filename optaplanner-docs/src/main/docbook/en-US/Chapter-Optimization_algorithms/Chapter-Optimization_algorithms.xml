@@ -463,7 +463,7 @@
     probably already more than good enough.</para>
 
     <para>But you can do even better, at a lower return on invested time. Use the Benchmarker and try a couple of
-    Simulated Annealing, Late Acceptance or Late Simulated Annealing configurations, for example:</para>
+    Simulated Annealing or Late Acceptance configurations, for example:</para>
 
     <orderedlist>
       <listitem>
@@ -471,7 +471,7 @@
       </listitem>
 
       <listitem>
-        <para>Late Simulated Annealing (try several sizes)</para>
+        <para>Late Acceptance (try several sizes)</para>
       </listitem>
     </orderedlist>
 
@@ -483,7 +483,7 @@
       </listitem>
 
       <listitem>
-        <para>Late Simulated Annealing (relatively long time)</para>
+        <para>Late Acceptance (relatively long time)</para>
       </listitem>
 
       <listitem>
