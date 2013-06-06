@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.entity.PlanningEntitySorter;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
@@ -47,7 +48,8 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
                 throw new IllegalStateException("The selectionOrder (" + selectionOrder
                         + ") can not be used on a PlanningEntity ("
                         + entityDescriptor.getPlanningEntityClass().getName()
-                        + ") that has no support for difficulty sorting. Check the @PlanningEntity annotation.");
+                        + ") that has no support for difficulty sorting."
+                        + " Check the " + PlanningEntity.class.getSimpleName() + " annotation.");
             }
         }
     }

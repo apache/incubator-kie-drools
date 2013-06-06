@@ -146,7 +146,8 @@ public class PlanningEntityDescriptor {
         }
         if (noPlanningVariableAnnotation) {
             throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
-                    + ") should have at least 1 getter with a PlanningVariable annotation.");
+                    + ") should have at least 1 getter with a " + PlanningVariable.class.getSimpleName()
+                    + " annotation.");
         }
     }
 

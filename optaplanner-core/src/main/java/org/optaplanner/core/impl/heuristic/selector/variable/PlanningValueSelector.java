@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.variable.PlanningValueSorter;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
@@ -81,7 +82,8 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
                         + ") can not be used on PlanningEntity ("
                         + variableDescriptor.getEntityDescriptor().getPlanningEntityClass().getName()
                         + ")'s planningVariable (" + variableDescriptor.getVariableName()
-                        + ") that has no support for strength sorting. Check the @PlanningVariable annotation.");
+                        + ") that has no support for strength sorting."
+                        + " Check the " + PlanningVariable.class.getSimpleName() +" annotation.");
             }
         }
     }
