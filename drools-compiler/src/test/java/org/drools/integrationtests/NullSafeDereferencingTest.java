@@ -5,6 +5,7 @@ import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.Person;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class NullSafeDereferencingTest extends CommonTestMethodBase {
@@ -58,6 +59,38 @@ public class NullSafeDereferencingTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
     }
+
+    @Test
+    public void testNullSafeNullComparison2() {
+        String str = "import org.drools.*;\n" +
+                     "rule R1 when\n" +
+                     " $street : String()\n"+
+                     // this does not work
+                     " Person( address!.street == $street ) \n" +
+                     // this does
+                     //" Person( address != null, address.street == $street ) \n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Person("Mario", 38));
+
+        ksession.insert("Main Street");
+        Person mark = new Person("Mark", 37);
+        mark.setAddress(new Address("Main Street"));
+        ksession.insert(mark);
+
+        Person edson = new Person("Edson", 34);
+        edson.setAddress(new Address(null));
+        ksession.insert(edson);
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+
 
     @Test
     public void testNullSafeNullComparisonReverse() {

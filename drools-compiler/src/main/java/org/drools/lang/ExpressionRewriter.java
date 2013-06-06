@@ -2,6 +2,7 @@ package org.drools.lang;
 
 
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.drools.lang.descr.OperatorDescr;
 
 public interface ExpressionRewriter {
@@ -12,10 +13,21 @@ public interface ExpressionRewriter {
                         MVELDumper.MVELDumperContext context );
 
     public String dump( BaseDescr base,
+                        ConstraintConnectiveDescr parent,
+                        MVELDumper.MVELDumperContext context );
+
+    public String dump( BaseDescr base,
                         int parentPrecedence );
 
     public StringBuilder dump( StringBuilder sbuilder,
                                BaseDescr base,
+                               int parentPriority,
+                               boolean isInsideRelCons,
+                               MVELDumper.MVELDumperContext context );
+
+    public StringBuilder dump( StringBuilder sbuilder,
+                               BaseDescr base,
+                               ConstraintConnectiveDescr parent,
                                int parentPriority,
                                boolean isInsideRelCons,
                                MVELDumper.MVELDumperContext context );

@@ -2,14 +2,17 @@ package org.drools.lang;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.SetEvaluatorsDefinition;
 import org.drools.compiler.DrlExprParser;
 import org.drools.lang.MVELDumper.MVELDumperContext;
 import org.drools.lang.descr.AtomicExprDescr;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
+import org.drools.lang.descr.RelationalExprDescr;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -289,20 +292,25 @@ public class MVELDumperTest {
     @Test
     public void testProcessInlineCast() throws Exception {
         String expr = "field1#Class.field2";
-        String expectedInstanceof = "field1 instanceof Class && ";
+        String expectedInstanceof = "field1 instanceof Class";
         String expectedcasted = "((Class)field1).field2";
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
-        String[] instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, null);
-        assertEquals(expectedInstanceof, instanceofAndCastedExpr[0]);
-        assertEquals(expectedcasted, instanceofAndCastedExpr[1]);
+        ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr(  );
+            ccd.addDescr( atomicExpr );
+        String[] instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, null);
+        assertEquals( 2, ccd.getDescrs().size() );
+        assertEquals( expectedInstanceof, ccd.getDescrs().get( 0 ).toString() );
         assertEquals(expectedcasted, atomicExpr.getRewrittenExpression());
 
         expr = "field1#Class1.field2#Class2.field3";
-        expectedInstanceof = "field1 instanceof Class1 && ((Class1)field1).field2 instanceof Class2 && ";
+        String expectedInstanceof1 = "field1 instanceof Class1";
+        String expectedInstanceof2 = "((Class1)field1).field2 instanceof Class2";
         expectedcasted = "((Class2)((Class1)field1).field2).field3";
         atomicExpr = new AtomicExprDescr(expr);
-        instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, null);
-        assertEquals(expectedInstanceof, instanceofAndCastedExpr[0]);
+        ccd = new ConstraintConnectiveDescr(  );
+        instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, null);
+        assertEquals( expectedInstanceof1, ccd.getDescrs().get( 0 ).toString() );
+        assertEquals( expectedInstanceof2, ccd.getDescrs().get( 1 ).toString() );
         assertEquals(expectedcasted, instanceofAndCastedExpr[1]);
         assertEquals(expectedcasted, atomicExpr.getRewrittenExpression());
     }
@@ -310,20 +318,24 @@ public class MVELDumperTest {
     @Test
     public void testProcessNullSafeDereferencing() throws Exception {
         String expr = "field1!.field2";
-        String expectedNullCheck = "field1 != null && ";
+        String expectedNullCheck = "field1 != null";
         String expectedExpr = "field1.field2";
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
-        String[] nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, null );
-        assertEquals(expectedNullCheck, nullCheckAndExpr[0]);
+        ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr(  );
+        String[] nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, null );
+        assertEquals( expectedNullCheck, ccd.getDescrs().get( 0 ).toString() );
         assertEquals(expectedExpr, nullCheckAndExpr[1]);
         assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
 
         expr = "field1!.field2!.field3";
-        expectedNullCheck = "field1 != null && field1.field2 != null && ";
+        String expectedNullCheck1 = "field1 != null";
+        String expectedNullCheck2 = "field1.field2 != null";
         expectedExpr = "field1.field2.field3";
         atomicExpr = new AtomicExprDescr(expr);
-        nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, null );
-        assertEquals(expectedNullCheck, nullCheckAndExpr[0]);
+        ccd = new ConstraintConnectiveDescr(  );
+        nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, null );
+        assertEquals( expectedNullCheck1, ccd.getDescrs().get( 0 ).toString() );
+        assertEquals( expectedNullCheck2, ccd.getDescrs().get( 1 ).toString() );
         assertEquals(expectedExpr, nullCheckAndExpr[1]);
         assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
     }
@@ -331,29 +343,36 @@ public class MVELDumperTest {
     @Test
     public void testProcessImplicitConstraints() throws Exception {
         String expr = "field1#Class!.field2";
-        String expectedConstraints = "field1 instanceof Class && ";
+        String expectedConstraints = "field1 instanceof Class";
         String expectedExpr = "((Class)field1).field2";
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
-        String[] constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, null );
-        assertEquals(expectedConstraints, constraintsAndExpr[0]);
+        ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr(  );
+        String[] constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, null );
+        assertEquals( expectedConstraints, ccd.getDescrs().get( 0 ).toString() );
         assertEquals(expectedExpr, constraintsAndExpr[1]);
         assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
 
         expr = "field1!.field2#Class.field3";
-        expectedConstraints = "field1 != null && field1.field2 instanceof Class && ";
+        String expectedConstraints1 = "field1 != null";
+        String expectedConstraints2 = "field1.field2 instanceof Class";
         expectedExpr = "((Class)field1.field2).field3";
         atomicExpr = new AtomicExprDescr(expr);
-        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, null );
-        assertEquals(expectedConstraints, constraintsAndExpr[0]);
+        ccd = new ConstraintConnectiveDescr(  );
+        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, null );
+        assertEquals( expectedConstraints1, ccd.getDescrs().get( 0 ).toString() );
+        assertEquals( expectedConstraints2, ccd.getDescrs().get( 1 ).toString() );
         assertEquals(expectedExpr, constraintsAndExpr[1]);
         assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
 
         expr = "field1#Class.field2!.field3";
-        expectedConstraints = "field1 instanceof Class && ((Class)field1).field2 != null && ";
+        expectedConstraints1 = "field1 instanceof Class";
+        expectedConstraints2 = "((Class)field1).field2 != null";
         expectedExpr = "((Class)field1).field2.field3";
         atomicExpr = new AtomicExprDescr(expr);
-        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, null );
-        assertEquals(expectedConstraints, constraintsAndExpr[0]);
+        ccd = new ConstraintConnectiveDescr(  );
+        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, null );
+        assertEquals( expectedConstraints1, ccd.getDescrs().get( 0 ).toString() );
+        assertEquals( expectedConstraints2, ccd.getDescrs().get( 1 ).toString() );
         assertEquals(expectedExpr, constraintsAndExpr[1]);
         assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
     }
