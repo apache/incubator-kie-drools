@@ -47,7 +47,7 @@ public abstract class AbstractBaseLinkedListNode<T extends LinkedListNode<T>>
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LinkedListNode#getNext()
+     * @see org.kie.reteoo.LinkedListNode#remove()
      */
     public T getNext() {
         return this.next;

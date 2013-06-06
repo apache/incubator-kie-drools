@@ -210,7 +210,7 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
                         nestedNode = tree.findNearestNode(key, true, RBTree.Boundary.UPPER);
                         break;
                     default:
-                        throw new UnsupportedOperationException("Cannot call getNext constraint of type: " + ascendingConstraintType);
+                        throw new UnsupportedOperationException("Cannot call remove constraint of type: " + ascendingConstraintType);
                 }
             }
 
@@ -233,7 +233,7 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
                         firstNode = nestedTree.findNearestNode(key, true, RBTree.Boundary.LOWER);
                         break;
                     default:
-                        throw new UnsupportedOperationException("Cannot call getNext constraint of type: " + descendingConstraintType);
+                        throw new UnsupportedOperationException("Cannot call remove constraint of type: " + descendingConstraintType);
                 }
 
                 if (firstNode != null && firstNode.value.size() == 0) {

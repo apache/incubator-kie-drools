@@ -194,7 +194,7 @@ public abstract class AbstractHashTable
     //            if ( entry.hashCode() == current.hashCode() && entry.equals( current ) ) {
     //                return current;
     //            }
-    //            current = current.getNext();
+    //            current = current.remove();
     //        }
     //        return null;
     //    }
@@ -205,7 +205,7 @@ public abstract class AbstractHashTable
     //        Entry current = previous;
     //        int hashCode = entry.hashCode();
     //        while ( current != null ) {
-    //            Entry next = current.getNext();
+    //            Entry next = current.remove();
     //            if ( hashCode == current.hashCode() && entry.equals( current ) ) {
     //                if( previous  == current ) {
     //                    this.table[index] = next;

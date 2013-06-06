@@ -19,20 +19,25 @@ package org.drools.core.common;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 
+import java.util.Map;
+
 public interface InternalAgendaGroup extends AgendaGroup {
-    public Activation getNext();
-    
+
     public void add(Activation activation);
-    
+
+    public Activation peek();
+
+    public Activation remove();
+
+    public void remove(Activation activation);
+
     public void setActive(boolean activate);
-    
-    public Activation  peekNext();
-    
+
+    public void setAutoDeactivate(final boolean autoDeactivate);
+
     public void clear();
     
     public Activation[] getAndClear();
-
-    public void remove(Activation activation);
 
     public void setActivatedForRecency(long recency);
     
@@ -41,4 +46,18 @@ public interface InternalAgendaGroup extends AgendaGroup {
     public void setClearedForRecency(long recency);
     
     public long getClearedForRecency();
+
+    void addNodeInstance(Long processInstanceId, String nodeInstanceId);
+
+    void removeNodeInstance(Long processInstanceId, String nodeInstanceId);
+
+    public Activation[] getActivations();
+
+    Map<Long, String> getNodeInstances();
+
+    void setWorkingMemory(InternalWorkingMemory workingMemory);
+
+    InternalWorkingMemory getWorkingMemory();
+
+
 }

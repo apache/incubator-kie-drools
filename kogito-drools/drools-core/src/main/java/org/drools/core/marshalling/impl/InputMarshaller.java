@@ -29,9 +29,9 @@ import org.drools.core.RuntimeDroolsException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.BinaryHeapQueueAgendaGroup;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
@@ -48,7 +48,6 @@ import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.common.RuleFlowGroupImpl;
 import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
@@ -93,7 +92,6 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.CronTrigger;
 import org.drools.core.time.impl.IntervalTrigger;
@@ -228,7 +226,7 @@ public class InputMarshaller {
 
         // RuleFlowGroups need to reference the session
         for (AgendaGroup group : agenda.getAgendaGroupsMap().values()) {
-            ( (RuleFlowGroupImpl) group ).setWorkingMemory( session );
+            ( (InternalRuleFlowGroup) group ).setWorkingMemory( session );
         }
 
         context.wm = session;
@@ -338,7 +336,7 @@ public class InputMarshaller {
         ObjectInputStream stream = context.stream;
 
         while (stream.readShort() == PersisterEnums.AGENDA_GROUP) {
-            BinaryHeapQueueAgendaGroup group = new BinaryHeapQueueAgendaGroup( stream.readUTF(),
+            AgendaGroupQueueImpl group = new AgendaGroupQueueImpl( stream.readUTF(),
                                                                                context.ruleBase );
             group.setActive( stream.readBoolean() );
             group.setActivatedForRecency( stream.readLong() );
@@ -1027,7 +1025,7 @@ public class InputMarshaller {
             if (rule.getRuleFlowGroup() == null) {
                 agendaGroup.add( activation );
             } else {
-                rfg.addActivation( activation );
+                rfg.add( activation );
             }
         }
 

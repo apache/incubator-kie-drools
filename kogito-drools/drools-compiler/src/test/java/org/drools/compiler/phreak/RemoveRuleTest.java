@@ -276,7 +276,7 @@ public class RemoveRuleTest {
         assertEquals( 3, b1Mem.getLeftTupleMemory().size() );
         assertEquals( 1, b1Mem.getRightTupleMemory().size() );
 
-        //SegmentMemory b2Smem =  sm.getFirst().getNext();
+        //SegmentMemory b2Smem =  sm.getFirst().remove();
         assertSame( b2Smem, b2Mem.getSegmentMemory());
         assertEquals( 0, b2Mem.getLeftTupleMemory().size() );
         assertEquals( 0, b2Mem.getRightTupleMemory().size() );

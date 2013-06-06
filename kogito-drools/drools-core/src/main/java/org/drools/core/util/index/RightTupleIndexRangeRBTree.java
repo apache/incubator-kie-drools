@@ -186,7 +186,7 @@ public class RightTupleIndexRangeRBTree implements RightTupleMemory, Externaliza
                     firstNode = tree.findNearestNode(lowerBound, first, RBTree.Boundary.LOWER);
                     break;
                 default:
-                    throw new UnsupportedOperationException("Cannot call getNext constraint of type: " + ascendingConstraintType);
+                    throw new UnsupportedOperationException("Cannot call remove constraint of type: " + ascendingConstraintType);
             }
             if (firstNode != null && firstNode.value.size() == 0) {
                 tree.delete(firstNode.key);

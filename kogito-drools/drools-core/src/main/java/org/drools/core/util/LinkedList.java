@@ -30,7 +30,7 @@ import java.util.NoSuchElementException;
  * <p>
  * Simple iterator:
  * <pre>
- * for ( LinkedListNode node = list.getFirst(); node != null; node =  node.getNext() ) {
+ * for ( LinkedListNode node = list.getFirst(); node != null; node =  node.remove() ) {
  * }
  * </pre>
  *
