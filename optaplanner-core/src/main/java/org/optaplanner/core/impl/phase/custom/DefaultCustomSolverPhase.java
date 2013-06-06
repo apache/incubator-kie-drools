@@ -86,14 +86,14 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
             bestSolutionRecaller.updateBestSolution(solverScope,
                     newBestSolution, stepScope.getUninitializedVariableCount());
         }
-        CustomSolverPhaseScope customSolverPhaseScope = stepScope.getPhaseScope();
+        CustomSolverPhaseScope phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
-            long timeMillisSpend = customSolverPhaseScope.calculateSolverTimeMillisSpend();
+            long timeMillisSpend = phaseScope.calculateSolverTimeMillisSpend();
             logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}).",
                     stepScope.getStepIndex(), timeMillisSpend,
                     stepScope.getScore(),
                     bestScoreImproved ? "new" : (forceUpdateBestSolution ? "forced" : "   "),
-                    customSolverPhaseScope.getBestScore());
+                    phaseScope.getBestScore());
         }
     }
 

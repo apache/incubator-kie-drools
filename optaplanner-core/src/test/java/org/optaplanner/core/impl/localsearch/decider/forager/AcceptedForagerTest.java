@@ -41,7 +41,7 @@ public class AcceptedForagerTest {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.NEVER, Integer.MAX_VALUE);
         ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
-        LocalSearchSolverPhaseScope phaseScope = createLocalSearchSolverPhaseScope();
+        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
         forager.stepStarted(stepScope);
@@ -73,7 +73,7 @@ public class AcceptedForagerTest {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.NEVER, Integer.MAX_VALUE);
         ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
-        LocalSearchSolverPhaseScope phaseScope = createLocalSearchSolverPhaseScope();
+        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
         forager.stepStarted(stepScope);
@@ -105,7 +105,7 @@ public class AcceptedForagerTest {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.FIRST_BEST_SCORE_IMPROVING, Integer.MAX_VALUE);
         ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
-        LocalSearchSolverPhaseScope phaseScope = createLocalSearchSolverPhaseScope();
+        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
         forager.stepStarted(stepScope);
@@ -134,7 +134,7 @@ public class AcceptedForagerTest {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING, Integer.MAX_VALUE);
         ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
-        LocalSearchSolverPhaseScope phaseScope = createLocalSearchSolverPhaseScope();
+        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
         forager.stepStarted(stepScope);
@@ -163,7 +163,7 @@ public class AcceptedForagerTest {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.NEVER, 3);
         ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
-        LocalSearchSolverPhaseScope phaseScope = createLocalSearchSolverPhaseScope();
+        LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
         forager.stepStarted(stepScope);
@@ -187,7 +187,7 @@ public class AcceptedForagerTest {
         forager.phaseEnded(phaseScope);
     }
 
-    private LocalSearchSolverPhaseScope createLocalSearchSolverPhaseScope() {
+    private LocalSearchSolverPhaseScope createPhaseScope() {
         DefaultSolverScope solverScope = new DefaultSolverScope();
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
