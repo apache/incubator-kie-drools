@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.director;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -67,7 +66,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         Collection<PlanningVariableDescriptor> chainedVariableDescriptors = getSolutionDescriptor()
                 .getChainedVariableDescriptors();
         hasChainedVariables = !chainedVariableDescriptors.isEmpty();
-        chainedVariableToTrailingEntitiesMap = new HashMap<PlanningVariableDescriptor, Map<Object, Set<Object>>>(
+        chainedVariableToTrailingEntitiesMap = new LinkedHashMap<PlanningVariableDescriptor, Map<Object, Set<Object>>>(
                 chainedVariableDescriptors.size());
         for (PlanningVariableDescriptor chainedVariableDescriptor : chainedVariableDescriptors) {
             chainedVariableToTrailingEntitiesMap.put(chainedVariableDescriptor, null);
