@@ -151,7 +151,7 @@ public class JoinNode extends BetaNode {
 //        if ( rightTuple.getMemory().isStagingMemory()) {
 //            memory.getStagedAssertRightTupleList().remove( rightTuple );            
 //        } else {
-//            RightTuple next = ( RightTuple ) rightTuple.getNext();
+//            RightTuple next = ( RightTuple ) rightTuple.remove();
 //            memory.getRightTupleMemory().remove( rightTuple );
 //            rightTuple.setNext( next ); // preserve for 'not' node iterator
 //        }

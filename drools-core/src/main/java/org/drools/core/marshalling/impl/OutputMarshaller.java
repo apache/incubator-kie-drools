@@ -47,7 +47,6 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ObjectStore;
-import org.drools.core.common.RuleFlowGroupImpl;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
@@ -282,7 +281,7 @@ public class OutputMarshaller {
 //            //context.out.println( "EqualityKey int:" + key.getStatus() + " int:" + handle.getId() );
 //            if ( key.size() > 1) {
 //                FastIterator keyIter = key.fastIterator();
-//                for ( DefaultFactHandle handle2 = key.getFirst().getNext(); handle2 != null; handle2 = ( DefaultFactHandle  ) keyIter.next( handle2 )) {
+//                for ( DefaultFactHandle handle2 = key.getFirst().remove(); handle2 != null; handle2 = ( DefaultFactHandle  ) keyIter.next( handle2 )) {
 //                    stream.writeShort( PersisterEnums.FACT_HANDLE );
 //                    stream.writeInt( handle2.getId() );
 //                    //context.out.println( "OtherHandle int:" + handle2.getId() );                    

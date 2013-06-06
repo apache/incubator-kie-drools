@@ -173,7 +173,7 @@ public class DefaultKnowledgeHelper
 
             if ( targetMatch.getActivationNode() != null ) {
                 final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) targetMatch.getActivationNode().getParentContainer();
-                ruleFlowGroup.removeActivation( targetMatch );
+                ruleFlowGroup.remove( targetMatch );
             }
         }
     }

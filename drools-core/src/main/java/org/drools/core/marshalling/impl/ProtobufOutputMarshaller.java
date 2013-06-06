@@ -30,8 +30,8 @@ import java.util.Map;
 import org.drools.core.InitialFact;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.common.ActivationIterator;
+import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.BinaryHeapQueueAgendaGroup;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
@@ -194,7 +194,7 @@ public class ProtobufOutputMarshaller {
         Arrays.sort( agendaGroups,
                      AgendaGroupSorter.instance );
         for ( AgendaGroup ag : agendaGroups ) {
-            BinaryHeapQueueAgendaGroup group = (BinaryHeapQueueAgendaGroup) ag;
+            AgendaGroupQueueImpl group = (AgendaGroupQueueImpl) ag;
             org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup.Builder _agb = ProtobufMessages.Agenda.AgendaGroup.newBuilder();
             _agb.setName( group.getName() )
                     .setIsActive( group.isActive() )

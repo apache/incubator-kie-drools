@@ -25,8 +25,6 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.LinkedList;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -75,7 +73,7 @@ public class RuleFlowGroupImpl
     public RuleFlowGroupImpl(final String name, InternalRuleBase rbase) {
         //this.name = name;
         //this.list = new LinkedList();
-        agendaGroup = new BinaryHeapQueueAgendaGroup(name, rbase);
+        agendaGroup = new AgendaGroupQueueImpl(name, rbase);
     }
 
     public RuleFlowGroupImpl(final String name,
@@ -101,12 +99,12 @@ public class RuleFlowGroupImpl
         return this.workingMemory;
     }
 
-    public Activation getNext() {
-        return agendaGroup.getNext();
+    public Activation remove() {
+        return agendaGroup.remove();
     }
 
-    public Activation peekNext() {
-        return agendaGroup.peekNext();
+    public Activation peek() {
+        return agendaGroup.peek();
     }
 
     public void setActive(final boolean active) {
@@ -336,7 +334,7 @@ public class RuleFlowGroupImpl
     }
 
     public String toString() {
-        return "RuleFlowGroup '" + this.agendaGroup.getNext() + "'";
+        return "RuleFlowGroup '" + this.agendaGroup.remove() + "'";
     }
 
     public int size() {

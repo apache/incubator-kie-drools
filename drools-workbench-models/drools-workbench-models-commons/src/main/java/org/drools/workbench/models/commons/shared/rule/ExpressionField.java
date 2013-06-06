@@ -36,7 +36,7 @@ public class ExpressionField extends ExpressionPart {
 
 //    @Override
 //    public String getText() {
-//        return "." + getName() + (getNext() == null ? "" : getNext().getText());
+//        return "." + getName() + (remove() == null ? "" : remove().getText());
 //    }
 
     @Override

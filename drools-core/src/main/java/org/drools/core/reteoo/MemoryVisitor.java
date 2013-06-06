@@ -303,7 +303,7 @@ public class MemoryVisitor extends ReflectiveVisitor
 //                Entry entry = entries[i];
 //                while ( entry != null ) {
 //                    count++;
-//                    entry = entry.getNext();
+//                    entry = entry.remove();
 //                }
 //            }
 //        }

@@ -1665,7 +1665,7 @@ public class LinkingTest {
         
         DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
         InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
-        AgendaItem item = (AgendaItem) group.getNext();
+        AgendaItem item = (AgendaItem) group.remove();
         int count = ((RuleAgendaItem)item).getRuleExecutor().evaluateNetworkAndFire(wm, null, 0, -1);
         //assertEquals(3, count );
         
@@ -1731,21 +1731,21 @@ public class LinkingTest {
         
 //        DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
 //        InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
-//        AgendaItem item = (AgendaItem) group.getNext();
+//        AgendaItem item = (AgendaItem) group.remove();
 //        int count = ((RuleAgendaItem)item).evaluateNetworkAndFire( wm );
 //        //assertEquals(7, count ); // proves we correctly track nested sub network staged propagations
 //                
 //        agenda.addActivation( item, true );
 //        agenda = ( DefaultAgenda ) wm.getAgenda();
 //        group = (InternalAgendaGroup) agenda.getNextFocus();
-//        item = (AgendaItem) group.getNext();
+//        item = (AgendaItem) group.remove();
 //        
 //        agenda.fireActivation( item );
 //        assertEquals( 1, list.size() );        
 //        
 //        agenda = ( DefaultAgenda ) wm.getAgenda();
 //        group = (InternalAgendaGroup) agenda.getNextFocus();
-//        item = (AgendaItem) group.getNext();
+//        item = (AgendaItem) group.remove();
 //        count = ((RuleAgendaItem)item).evaluateNetworkAndFire( wm );
 //        //assertEquals(0, count );        
         

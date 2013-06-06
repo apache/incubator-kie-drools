@@ -53,7 +53,7 @@ public abstract class Waltz extends CommonTestMethodBase {
         try {
             //load up the rulebase
             final KieBase kBase = readKnowledegBase();
-            for ( int i = 0; i < 1; i++ ) {
+            for ( int i = 0; i < 50; i++ ) {
                 KieSession kSession = kBase.newKieSession();
     
     //            workingMemory.setGlobal( "sysout",
@@ -66,7 +66,7 @@ public abstract class Waltz extends CommonTestMethodBase {
     
                 //go !     
                 this.loadLines( kSession,
-                                "waltz12.dat" );
+                                "waltz50.dat" );
     
                 //final Stage stage = new Stage( Stage.START );
                 //workingMemory.assertObject( stage );

@@ -28,7 +28,6 @@ import java.util.Map.Entry;
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.common.TruthMaintenanceSystem.LogicalCallback;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.KeyStoreHelper;
@@ -55,9 +54,9 @@ public class PersisterHelper {
             case WorkingMemoryAction.WorkingMemoryReteAssertAction : {
                 return new WorkingMemoryReteAssertAction( context );
             }
-            case WorkingMemoryAction.DeactivateCallback : {
-                return new DeactivateCallback( context );
-            }
+//            case WorkingMemoryAction.DeactivateCallback : {
+//                return new DeactivateCallback( context );
+//            }
             case WorkingMemoryAction.PropagateAction : {
                 return new PropagateAction( context );
             }
@@ -83,10 +82,10 @@ public class PersisterHelper {
                 return new WorkingMemoryReteAssertAction( context, 
                                                           _action );
             }
-            case DEACTIVATE_CALLBACK : {
-                return new DeactivateCallback(context, 
-                                              _action );
-            }
+//            case DEACTIVATE_CALLBACK : {
+//                return new DeactivateCallback(context,
+//                                              _action );
+//            }
             case PROPAGATE : {
                 return new PropagateAction(context,
                                            _action );

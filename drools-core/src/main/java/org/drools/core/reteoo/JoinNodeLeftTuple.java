@@ -119,7 +119,7 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getNext()
+     * @see org.kie.reteoo.LeftTuple#remove()
      */
     public Entry getNext() {
         return this.next;

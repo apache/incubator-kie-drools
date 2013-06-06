@@ -191,9 +191,9 @@ public class TripleStore extends AbstractHashTable implements Externalizable {
                     if ( this.comparator.equal( triple, tx ) ) {
                         list.add( tx );
                     }
-//                    current = (Triple) current.getNext();
+//                    current = (Triple) current.remove();
 //                }
-//                tx = (TripleImpl) tx.getNext();
+//                tx = (TripleImpl) tx.remove();
 //            }
         }
 

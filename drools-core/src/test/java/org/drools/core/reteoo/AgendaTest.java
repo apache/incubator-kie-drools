@@ -29,8 +29,8 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.SalienceInteger;
+import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.BinaryHeapQueueAgendaGroup;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalAgenda;
@@ -39,7 +39,6 @@ import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
-import org.drools.core.common.RuleFlowGroupImpl;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.event.ActivationCancelledEvent;
@@ -59,7 +58,6 @@ import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.time.impl.DurationTimer;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
@@ -517,15 +515,15 @@ public class AgendaTest extends DroolsTestCase {
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
 
         // create the AgendaGroups
-        final AgendaGroup agendaGroup1 = new BinaryHeapQueueAgendaGroup( "agendaGroup1",
+        final AgendaGroup agendaGroup1 = new AgendaGroupQueueImpl( "agendaGroup1",
                                                                          ruleBase );
         agenda.addAgendaGroup( agendaGroup1 );
 
-        final AgendaGroup agendaGroup2 = new BinaryHeapQueueAgendaGroup( "agendaGroup2",
+        final AgendaGroup agendaGroup2 = new AgendaGroupQueueImpl( "agendaGroup2",
                                                                          ruleBase );
         agenda.addAgendaGroup( agendaGroup2 );
 
-        final AgendaGroup agendaGroup3 = new BinaryHeapQueueAgendaGroup( "agendaGroup3",
+        final AgendaGroup agendaGroup3 = new AgendaGroupQueueImpl( "agendaGroup3",
                                                                          ruleBase );
         agenda.addAgendaGroup( agendaGroup3 );
 
@@ -686,7 +684,7 @@ public class AgendaTest extends DroolsTestCase {
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         // create the agendaGroup
-        final AgendaGroup agendaGroup = new BinaryHeapQueueAgendaGroup( "agendaGroup",
+        final AgendaGroup agendaGroup = new AgendaGroupQueueImpl( "agendaGroup",
                                                                         ruleBase );
         agenda.addAgendaGroup( agendaGroup );
 
@@ -785,7 +783,7 @@ public class AgendaTest extends DroolsTestCase {
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         // create the agendaGroup
-        final InternalAgendaGroup agendaGroup = new BinaryHeapQueueAgendaGroup( "agendaGroup",
+        final InternalAgendaGroup agendaGroup = new AgendaGroupQueueImpl( "agendaGroup",
                                                                                 ruleBase );
         agenda.addAgendaGroup( agendaGroup );
 
@@ -1821,7 +1819,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // When both the rule is lock-on-active and the agenda group is active, activations should be ignored
         rule.setLockOnActive(true);
-        ruleFlowGroup.setAutoDeactivate( false );
+        ruleFlowGroup.setAutoDeactivate(false);
         ((InternalRuleFlowGroup)ruleFlowGroup).setActive( true );
         node.assertLeftTuple( tuple1,
                               context,

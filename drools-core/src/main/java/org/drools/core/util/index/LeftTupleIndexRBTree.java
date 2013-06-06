@@ -156,7 +156,7 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
                 firstNode = tree.findNearestNode(key, first, Boundary.UPPER);
                 break;
             default:
-                throw new UnsupportedOperationException("Cannot call getNext constraint of type: " + constraintType);
+                throw new UnsupportedOperationException("Cannot call remove constraint of type: " + constraintType);
         }
         return firstNode == null ? null : firstNode.getFirst();
     }

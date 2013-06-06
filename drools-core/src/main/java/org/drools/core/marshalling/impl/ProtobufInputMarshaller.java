@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.ActivationsFilter;
-import org.drools.core.common.BinaryHeapQueueAgendaGroup;
+import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
@@ -386,7 +386,7 @@ public class ProtobufInputMarshaller {
         ProtobufMessages.Agenda _agenda = _ruleData.getAgenda();
 
         for ( org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup _agendaGroup : _agenda.getAgendaGroupList() ) {
-            BinaryHeapQueueAgendaGroup group = (BinaryHeapQueueAgendaGroup) agenda.getAgendaGroup( _agendaGroup.getName(), context.ruleBase );
+            AgendaGroupQueueImpl group = (AgendaGroupQueueImpl) agenda.getAgendaGroup( _agendaGroup.getName(), context.ruleBase );
             group.setActive( _agendaGroup.getIsActive() );
             group.setAutoDeactivate( _agendaGroup.getIsAutoDeactivate() );
             group.setClearedForRecency( _agendaGroup.getClearedForRecency() );

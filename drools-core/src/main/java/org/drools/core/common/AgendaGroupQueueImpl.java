@@ -41,7 +41,7 @@ import java.util.PriorityQueue;
  * @see PriorityQueue
  * @see ActivationQueue
  */
-public class BinaryHeapQueueAgendaGroup
+public class AgendaGroupQueueImpl
         implements
         InternalAgendaGroup,
         InternalRuleFlowGroup {
@@ -65,12 +65,12 @@ public class BinaryHeapQueueAgendaGroup
      *
      * @param name The <AgendaGroup> name.
      */
-    public BinaryHeapQueueAgendaGroup() {
+    public AgendaGroupQueueImpl() {
 
     }
 
-    public BinaryHeapQueueAgendaGroup(final String name,
-                                      final InternalRuleBase ruleBase) {
+    public AgendaGroupQueueImpl(final String name,
+                                final InternalRuleBase ruleBase) {
         this.name = name;
         if (ruleBase.getConfiguration().isPhreakEnabled()) {
             this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());
@@ -95,29 +95,17 @@ public class BinaryHeapQueueAgendaGroup
         return this.name;
     }
 
-    @Override
     public void setWorkingMemory(InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
     }
 
-    @Override
     public InternalWorkingMemory getWorkingMemory() {
         return workingMemory;
     }
 
-    @Override
-    public void addActivation(Activation activation) {
-        add(activation);
-    }
-
-    @Override
-    public void removeActivation(Activation activation) {
-        remove(activation);
-    }
-
     public void clear() {
         this.priorityQueue.clear();
-        this.active = false;
+//        this.active = false;
     }
 
     public Activation[] getAndClear() {
@@ -135,15 +123,15 @@ public class BinaryHeapQueueAgendaGroup
         this.priorityQueue.enqueue((Activation) activation);
     }
 
-    public Activation getNext() {
-        Activation act = this.priorityQueue.dequeue();
-        if ( this.priorityQueue.isEmpty() && autoDeactivate ) {
-            setActive( false );
-        }
-        return (Activation) act;
+    public Activation remove() {
+//        Activation act = this.priorityQueue.dequeue();
+//        if ( this.priorityQueue.isEmpty() && autoDeactivate ) {
+//            setActive( false );
+//        }
+        return (Activation) this.priorityQueue.dequeue();
     }
 
-    public Activation peekNext() {
+    public Activation peek() {
         return this.priorityQueue.peek();
     }
 
@@ -151,17 +139,14 @@ public class BinaryHeapQueueAgendaGroup
         return this.active;
     }
 
-    @Override
     public void deactivateIfEmpty() {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
     public boolean isAutoDeactivate() {
         return autoDeactivate;
     }
 
-    @Override
     public void setAutoDeactivate(boolean autoDeactivate) {
         this.autoDeactivate = autoDeactivate;
     }
@@ -209,11 +194,11 @@ public class BinaryHeapQueueAgendaGroup
     }
 
     public boolean equals(final Object object) {
-        if ((object == null) || !(object instanceof BinaryHeapQueueAgendaGroup)) {
+        if ((object == null) || !(object instanceof AgendaGroupQueueImpl)) {
             return false;
         }
 
-        if (((BinaryHeapQueueAgendaGroup) object).name.equals(this.name)) {
+        if (((AgendaGroupQueueImpl) object).name.equals(this.name)) {
             return true;
         }
 
