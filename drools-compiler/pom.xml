@@ -263,7 +263,7 @@
               *
             </Import-Package>
             <Export-Package>
-              org.drools.compiler.*
+              *
             </Export-Package>
             <Bundle-Activator>org.drools.compiler.osgi.Activator</Bundle-Activator>
           </instructions>
