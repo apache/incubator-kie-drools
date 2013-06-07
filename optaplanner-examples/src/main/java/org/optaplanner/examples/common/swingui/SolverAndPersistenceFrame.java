@@ -398,7 +398,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         progressBar = new JProgressBar(0, 100);
         panel.add(progressBar, BorderLayout.WEST);
-        resultLabel = new JLabel("No solution loaded yet");
+        resultLabel = new JLabel("Please load a data set and then click the solve button.");
         resultLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         panel.add(resultLabel, BorderLayout.CENTER);
         showConstraintMatchesDialogAction = new ShowConstraintMatchesDialogAction();
