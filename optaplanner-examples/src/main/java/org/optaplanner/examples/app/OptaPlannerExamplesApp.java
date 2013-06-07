@@ -37,6 +37,7 @@ import javax.swing.border.TitledBorder;
 import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.optaplanner.examples.cloudbalancing.swingui.CloudBalancingPanel;
 import org.optaplanner.examples.common.app.CommonApp;
+import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.examination.app.ExaminationApp;
@@ -68,6 +69,7 @@ public class OptaPlannerExamplesApp extends JFrame {
 
     public OptaPlannerExamplesApp() {
         super("OptaPlanner examples");
+        setIconImage(SolverAndPersistenceFrame.OPTA_PLANNER_ICON.getImage());
         setContentPane(createContentPane());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

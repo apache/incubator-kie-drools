@@ -32,6 +32,7 @@ import java.util.concurrent.Executors;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -45,6 +46,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,9 @@ import org.slf4j.LoggerFactory;
 public class SolverAndPersistenceFrame extends JFrame {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
+    public static final ImageIcon OPTA_PLANNER_ICON = new ImageIcon(
+            SolverAndPersistenceFrame.class.getResource("optaPlannerIcon.png"));
 
     private SolutionBusiness solutionBusiness;
 
@@ -74,6 +79,7 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     public SolverAndPersistenceFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel, String exampleName) {
         super(exampleName + " OptaPlanner example");
+        setIconImage(OPTA_PLANNER_ICON.getImage());
         this.solutionBusiness = solutionBusiness;
         this.solutionPanel = solutionPanel;
         solutionPanel.setSolutionBusiness(solutionBusiness);
