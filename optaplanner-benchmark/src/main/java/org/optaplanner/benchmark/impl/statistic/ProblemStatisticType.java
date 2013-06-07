@@ -23,14 +23,14 @@ import org.optaplanner.benchmark.impl.statistic.improvingsteppercentage.Improvin
 import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
 
 public enum ProblemStatisticType implements StatisticType {
-    BEST_SOLUTION_CHANGED,
+    BEST_SCORE,
     CALCULATE_COUNT_PER_SECOND,
     IMPROVING_STEP_PERCENTAGE,
     MEMORY_USE;
 
     public ProblemStatistic create(ProblemBenchmark problemBenchmark) {
         switch (this) {
-            case BEST_SOLUTION_CHANGED:
+            case BEST_SCORE:
                 return new BestScoreProblemStatistic(problemBenchmark);
             case CALCULATE_COUNT_PER_SECOND:
                 return new CalculateCountProblemStatistic(problemBenchmark);

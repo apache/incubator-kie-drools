@@ -20,7 +20,7 @@
       <inputSolutionFile>data/pas/unsolved/testdata11.xml</inputSolutionFile>
       <inputSolutionFile>data/pas/unsolved/testdata12.xml</inputSolutionFile>
       <inputSolutionFile>data/pas/unsolved/testdata13.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>

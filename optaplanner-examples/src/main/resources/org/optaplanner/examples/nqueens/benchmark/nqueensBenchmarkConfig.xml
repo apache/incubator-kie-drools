@@ -10,7 +10,7 @@
       <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</inputSolutionFile>
       <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</inputSolutionFile>
       <writeOutputSolutionEnabled>true</writeOutputSolutionEnabled>
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>

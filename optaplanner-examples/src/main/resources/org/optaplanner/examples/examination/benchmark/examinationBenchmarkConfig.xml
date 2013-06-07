@@ -15,7 +15,7 @@
       <inputSolutionFile>data/examination/unsolved/exam_comp_set6.xml</inputSolutionFile>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set7.xml</inputSolutionFile>
       <inputSolutionFile>data/examination/unsolved/exam_comp_set8.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>

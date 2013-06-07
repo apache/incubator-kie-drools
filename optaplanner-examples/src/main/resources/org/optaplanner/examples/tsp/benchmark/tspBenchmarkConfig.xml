@@ -10,7 +10,7 @@
       <inputSolutionFile>data/tsp/unsolved/dj38.xml</inputSolutionFile>
       <inputSolutionFile>data/tsp/unsolved/europe40.xml</inputSolutionFile>
       <inputSolutionFile>data/tsp/unsolved/lu980.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>

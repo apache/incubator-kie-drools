@@ -66,7 +66,7 @@
       &lt;xstreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xstreamAnnotatedClass&gt;
       &lt;inputSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/inputSolutionFile&gt;
       &lt;inputSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/inputSolutionFile&gt;
-      &lt;problemStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/problemStatisticType&gt;
+      &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
     &lt;/problemBenchmarks&gt;
     &lt;solver&gt;
       &lt;solutionClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
@@ -339,7 +339,7 @@
   &lt;inheritedSolverBenchmark&gt;
     &lt;problemBenchmarks&gt;
       ...
-      &lt;problemStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/problemStatisticType&gt;
+      &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
       &lt;problemStatisticType&gt;CALCULATE_COUNT_PER_SECOND&lt;/problemStatisticType&gt;
     &lt;/problemBenchmarks&gt;
     ...
@@ -354,7 +354,7 @@
       <section>
         <title>Best score over time statistic (graph and CSV)</title>
 
-        <para>To see how the best score evolves over time, add <literal>BEST_SOLUTION_CHANGED</literal> as <literal>a
+        <para>To see how the best score evolves over time, add <literal>BEST_SCORE</literal> as <literal>a
         problemStatisticType</literal>.</para>
 
         <figure>
@@ -362,7 +362,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestSolutionChangedStatistic.png"
+              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestScoreStatistic.png"
                          format="PNG"/>
             </imageobject>
           </mediaobject>

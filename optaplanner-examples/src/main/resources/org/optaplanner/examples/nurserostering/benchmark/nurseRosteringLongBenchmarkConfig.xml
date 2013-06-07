@@ -20,7 +20,7 @@
       <!--<inputSolutionFile>data/nurserostering/unsolved/long_late03.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/nurserostering/unsolved/long_late04.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/nurserostering/unsolved/long_late05.xml</inputSolutionFile>-->
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>

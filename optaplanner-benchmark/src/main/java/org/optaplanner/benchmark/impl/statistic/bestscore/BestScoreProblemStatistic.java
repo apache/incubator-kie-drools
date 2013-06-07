@@ -48,7 +48,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
     protected List<File> graphStatisticFileList = null;
 
     public BestScoreProblemStatistic(ProblemBenchmark problemBenchmark) {
-        super(problemBenchmark, ProblemStatisticType.BEST_SOLUTION_CHANGED);
+        super(problemBenchmark, ProblemStatisticType.BEST_SCORE);
     }
 
     public SingleStatistic createSingleStatistic() {

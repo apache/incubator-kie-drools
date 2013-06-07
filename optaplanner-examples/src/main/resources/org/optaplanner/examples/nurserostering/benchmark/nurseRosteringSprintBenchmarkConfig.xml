@@ -30,7 +30,7 @@
       <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late08.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late09.xml</inputSolutionFile>-->
       <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late10.xml</inputSolutionFile>-->
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>

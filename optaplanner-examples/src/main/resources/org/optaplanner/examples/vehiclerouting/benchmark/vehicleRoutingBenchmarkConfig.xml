@@ -37,7 +37,7 @@
       <inputSolutionFile>data/vehiclerouting/unsolved/F-n135-k7.xml</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/unsolved/F-n45-k4.xml</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/unsolved/F-n72-k4.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
     <solver>
