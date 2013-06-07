@@ -362,8 +362,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestScoreStatistic.png"
-                         format="PNG"/>
+              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestScoreStatistic.png" format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -375,7 +374,29 @@
           <para>Don't be fooled by the simulated annealing line in this graph. If you give simulated annealing only 5
           minutes, it might still be better than 5 minutes of tabu search. That's because this simulated annealing
           implementation automatically determines its velocity based on the amount of time that can be spend. On the
-          other hand, for the tabu search, what you see is what you'd get.</para>
+          other hand, for the tabu search and late annealing, what you see is what you'd get.</para>
+        </note>
+      </section>
+
+      <section>
+        <title>Step score over time statistic (graph and CSV)</title>
+
+        <para>To see how the step score evolves over time, add <literal>STEP_SCORE</literal> as <literal>a
+        problemStatisticType</literal>.</para>
+
+        <figure>
+          <title>Step score over time statistic</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/stepScoreStatistic.png" format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <note>
+          <para>This statistic will also show the score of uninitialized solutions, which might cause confusion when
+          comparing it with the <literal>BEST_SCORE</literal> statistic.</para>
         </note>
       </section>
 
@@ -535,10 +556,9 @@
       <title>Template based benchmarking and matrix benchmarking</title>
 
       <para>Matrix benchmarking is benchmarking a combination of value sets. For example: benchmark 4
-      <literal>entityTabuSize</literal> values (<literal>5</literal>, <literal>7</literal>,
-      <literal>11</literal> and <literal>13</literal>) combined with 3 <literal>acceptedCountLimit</literal>
-      values (<literal>500</literal>, <literal>1000</literal> and <literal>2000</literal>), resulting in 12 solver
-      configurations.</para>
+      <literal>entityTabuSize</literal> values (<literal>5</literal>, <literal>7</literal>, <literal>11</literal> and
+      <literal>13</literal>) combined with 3 <literal>acceptedCountLimit</literal> values (<literal>500</literal>,
+      <literal>1000</literal> and <literal>2000</literal>), resulting in 12 solver configurations.</para>
 
       <para>To reduce the verbosity of such a benchmark configuration, you can use a <link
       xlink:href="http://freemarker.sourceforge.net/">Freemarker</link> template for the benchmark configuration

@@ -114,8 +114,7 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
                         seriesList.get(i).add(timeMillisSpend, levelValues[i]);
                     }
                 }
-                // TODO if startingSolution is initialized and no improvement is made, a horizontal line should be shown
-                // Draw a horizontal line from the last new best step to how long the solver actually ran
+                // Draw a horizontal line from the last new step to how long the solver actually ran
                 long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
                 double[] stepScoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore());
                 for (int i = 0; i < stepScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
