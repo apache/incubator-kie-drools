@@ -131,14 +131,14 @@
           <instructions>
             <Bundle-SymbolicName>org.jbpm.runtime.manager</Bundle-SymbolicName>
             <Import-Package>
-              !org.jbpm.runtime.manager,
+              !org.jbpm.runtime.manager*,
               org.jboss.solder.core;resolution:=optional,
               org.jboss.seam.transaction;resolution:=optional,
               *,
             </Import-Package>
             <Private-Package></Private-Package>
             <Export-Package>
-              org.jbpm.runtime.manager.api,
+              org.jbpm.runtime.manager.api*,
               org.jbpm.runtime.manager.impl*
             </Export-Package>
           </instructions>
