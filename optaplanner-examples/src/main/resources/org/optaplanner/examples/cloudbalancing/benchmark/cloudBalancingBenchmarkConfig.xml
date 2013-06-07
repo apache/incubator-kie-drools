@@ -16,6 +16,9 @@
       <inputSolutionFile>data/cloudbalancing/unsolved/cb-0800comp-2400proc.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/cb-1600comp-4800proc.xml</inputSolutionFile>
       <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
+      <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
+      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
     </problemBenchmarks>
 
     <solver>
