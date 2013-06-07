@@ -23,6 +23,7 @@ import org.drools.core.RuntimeDroolsException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.StatefulSession;
 import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.TripleStore;
 import org.drools.core.event.RuleBaseEventListener;
@@ -262,13 +263,13 @@ abstract public class AbstractRuleBase
 
         this.rootClassLoader = createProjectClassLoader(droolsStream.getParentClassLoader(), store);
 
-        droolsStream.setClassLoader( this.rootClassLoader );
+        droolsStream.setClassLoader(this.rootClassLoader);
         droolsStream.setRuleBase(this);
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
 
         this.config = (RuleBaseConfiguration) droolsStream.readObject();
-        this.config.setClassLoader( droolsStream.getParentClassLoader() );
+        this.config.setClassLoader(droolsStream.getParentClassLoader());
 
         this.pkgs = (Map<String, Package>) droolsStream.readObject();
 
@@ -278,7 +279,7 @@ abstract public class AbstractRuleBase
 
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         this.id = (String) droolsStream.readObject();
-        this.workingMemoryCounter.set( droolsStream.readInt() );
+        this.workingMemoryCounter.set(droolsStream.readInt());
 
         this.processes = (Map) droolsStream.readObject();
         Class cls = null;
@@ -328,7 +329,7 @@ abstract public class AbstractRuleBase
         this.globals = new HashMap<String, Class<?>>();
         for (Map.Entry<String, String> entry : globs.entrySet()) {
             this.globals.put( entry.getKey(),
-                              this.rootClassLoader.loadClass( entry.getValue() ) );
+                              this.rootClassLoader.loadClass(entry.getValue()) );
         }
     }
 
@@ -512,6 +513,8 @@ abstract public class AbstractRuleBase
                 try {
                     // Add the type declarations to the RuleBase
                     if ( newPkg.getTypeDeclarations() != null ) {
+                        JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" ));
+
                         // add type declarations
                         for ( TypeDeclaration newDecl : newPkg.getTypeDeclarations().values() ) {
                             lastType = newDecl.getTypeClassName();
@@ -521,17 +524,16 @@ abstract public class AbstractRuleBase
                             if ( typeDeclaration == null ) {
                                 String className = newDecl.getTypeClassName();
 
-                                byte [] def = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" )).getClassDefinition(
-                                        JavaDialectRuntimeData.convertClassToResourcePath( className )
-                                );
-
+                                byte [] def = runtime.getClassDefinition(JavaDialectRuntimeData.convertClassToResourcePath(className));
                                 Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
 
                                 if ( definedKlass == null && typeDeclaration.isNovel() ) {
                                     throw new RuntimeException( "Registering null bytes for class " + className );
                                 }
 
-
+                                if (newDecl.getTypeClassDef() == null) {
+                                    newDecl.setTypeClassDef( new ClassDefinition() );
+                                }
                                 newDecl.getTypeClassDef().setDefinedClass( definedKlass );
                                 newDecl.setTypeClass( definedKlass );
 
@@ -632,7 +634,7 @@ abstract public class AbstractRuleBase
     private void mergeTypeDeclarations( TypeDeclaration existingDecl,
             TypeDeclaration newDecl ) {
 
-        existingDecl.addRedeclaration( newDecl );
+        existingDecl.addRedeclaration(newDecl);
 
         if ( ! nullSafeEquals( existingDecl.getFormat(),
                                newDecl.getFormat() ) ||
@@ -757,7 +759,7 @@ abstract public class AbstractRuleBase
             final Package newPkg ) {
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
-        imports.putAll( newPkg.getImports() );
+        imports.putAll(newPkg.getImports());
 
         String lastIdent = null;
         String lastType = null;

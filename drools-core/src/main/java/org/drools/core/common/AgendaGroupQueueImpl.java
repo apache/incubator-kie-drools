@@ -32,6 +32,7 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -58,7 +59,7 @@ public class AgendaGroupQueueImpl
 
     private InternalWorkingMemory workingMemory;
     private boolean               autoDeactivate = true;
-    private Map<Long, String>     nodeInstances  = new HashMap<Long, String>();
+    private Map<Long, String>     nodeInstances  = new ConcurrentHashMap<Long, String>();
 
     private volatile              boolean hasRuleFlowLister;
 
