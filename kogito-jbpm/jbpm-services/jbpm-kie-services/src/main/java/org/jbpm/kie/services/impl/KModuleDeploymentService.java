@@ -76,7 +76,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 ProcessDesc process;
                 try {
                     String processString = new String(module.getBytes(fileName), "UTF-8");
-                    process = bpmn2Service.findProcessId(processString);
+                    process = bpmn2Service.findProcessId(processString, kieContainer.getClassLoader());
                     process.setEncodedProcessSource(Base64.encodeBase64String(processString.getBytes()));
                     process.setDeploymentId(unit.getIdentifier());
                     process.setForms(formsData);

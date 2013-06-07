@@ -1,5 +1,6 @@
 package org.jbpm.kie.services.impl;
 
+import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.api.DeploymentUnit;
 
 public class KModuleDeploymentUnit implements DeploymentUnit {
@@ -30,7 +31,14 @@ public class KModuleDeploymentUnit implements DeploymentUnit {
 
     @Override
     public String getIdentifier() {
-        return getGroupId()+":"+getArtifactId()+":"+getVersion();
+        String id = getGroupId()+":"+getArtifactId()+":"+getVersion();
+        if (!StringUtils.isEmpty(kbaseName)) {
+            id = id.concat(":" + kbaseName);
+        }
+        if (!StringUtils.isEmpty(ksessionName)) {
+            id = id.concat(":" + ksessionName);
+        }
+        return id;
     }
 
     @Override
