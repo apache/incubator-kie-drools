@@ -18,7 +18,7 @@ package org.optaplanner.examples.tsp.solver.score;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
-import org.optaplanner.examples.tsp.domain.Appearance;
+import org.optaplanner.examples.tsp.domain.TspStandstill;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
@@ -74,21 +74,21 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
     }
 
     private void insert(Visit visit) {
-        Appearance previousAppearance = visit.getPreviousAppearance();
-        if (previousAppearance != null) {
-            score -= visit.getDistanceToPreviousAppearance();
+        TspStandstill previousStandstill = visit.getPreviousStandstill();
+        if (previousStandstill != null) {
+            score -= visit.getDistanceToPreviousStandstill();
             // HACK: This counts too much, but the insert/retracts balance each other out
-            score += domicile.getCity().getDistance(previousAppearance.getCity());
+            score += domicile.getCity().getDistance(previousStandstill.getCity());
             score -= domicile.getCity().getDistance(visit.getCity());
         }
     }
 
     private void retract(Visit visit) {
-        Appearance previousAppearance = visit.getPreviousAppearance();
-        if (previousAppearance != null) {
-            score += visit.getDistanceToPreviousAppearance();
+        TspStandstill previousStandstill = visit.getPreviousStandstill();
+        if (previousStandstill != null) {
+            score += visit.getDistanceToPreviousStandstill();
             // HACK: This counts too much, but the insert/retracts balance each other out
-            score -= domicile.getCity().getDistance(previousAppearance.getCity());
+            score -= domicile.getCity().getDistance(previousStandstill.getCity());
             score += domicile.getCity().getDistance(visit.getCity());
         }
     }

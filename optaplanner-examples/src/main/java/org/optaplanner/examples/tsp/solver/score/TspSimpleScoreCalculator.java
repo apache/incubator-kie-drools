@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
-import org.optaplanner.examples.tsp.domain.Appearance;
+import org.optaplanner.examples.tsp.domain.TspStandstill;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
@@ -34,11 +34,11 @@ public class TspSimpleScoreCalculator implements SimpleScoreCalculator<Traveling
         Set<Visit> tailVisitSet = new HashSet<Visit>(visitList);
         int score = 0;
         for (Visit visit : visitList) {
-            Appearance previousAppearance = visit.getPreviousAppearance();
-            if (previousAppearance != null) {
-                score -= visit.getDistanceToPreviousAppearance();
-                if (previousAppearance instanceof Visit) {
-                    tailVisitSet.remove(previousAppearance);
+            TspStandstill previousStandstill = visit.getPreviousStandstill();
+            if (previousStandstill != null) {
+                score -= visit.getDistanceToPreviousStandstill();
+                if (previousStandstill instanceof Visit) {
+                    tailVisitSet.remove(previousStandstill);
                 }
             }
         }
@@ -49,7 +49,7 @@ public class TspSimpleScoreCalculator implements SimpleScoreCalculator<Traveling
         }
         Domicile domicile = tour.getDomicileList().get(0);
         for (Visit tailVisit : tailVisitSet) {
-            if (tailVisit.getPreviousAppearance() != null) {
+            if (tailVisit.getPreviousStandstill() != null) {
                 score -= domicile.getCity().getDistance(tailVisit.getCity());
             }
         }

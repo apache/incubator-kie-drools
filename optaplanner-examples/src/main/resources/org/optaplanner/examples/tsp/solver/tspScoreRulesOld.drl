@@ -32,19 +32,19 @@ global SimpleScoreHolder scoreHolder;
 // Soft constraints
 // ############################################################################
 
-rule "distanceToPreviousAppearance"
+rule "distanceToPreviousStandstill"
     when
-        $visit : Visit(previousAppearance != null, $distanceToPreviousAppearance : distanceToPreviousAppearance)
+        $visit : Visit(previousStandstill != null, $distanceToPreviousStandstill : distanceToPreviousStandstill)
     then
-        insertLogical(new IntConstraintOccurrence("distanceToPreviousAppearance", ConstraintType.SOFT,
-                - $distanceToPreviousAppearance,
+        insertLogical(new IntConstraintOccurrence("distanceToPreviousStandstill", ConstraintType.SOFT,
+                - $distanceToPreviousStandstill,
                 $visit));
 end
 
 rule "distanceFromLastVisitToDomicile"
     when
-        $visit : Visit(previousAppearance != null)
-        not Visit(previousAppearance == $visit)
+        $visit : Visit(previousStandstill != null)
+        not Visit(previousStandstill == $visit)
         $domicile : Domicile()
     then
         insertLogical(new IntConstraintOccurrence("distanceFromLastVisitToDomicile", ConstraintType.SOFT,

@@ -119,9 +119,9 @@ public class VehicleRoutingSchedulePainter {
             int longestNonDepotDistance = -1;
             int load = 0;
             for (VrpCustomer customer : schedule.getCustomerList()) {
-                if (customer.getPreviousAppearance() != null && customer.getVehicle() == vehicle) {
+                if (customer.getPreviousStandstill() != null && customer.getVehicle() == vehicle) {
                     load += customer.getDemand();
-                    VrpLocation previousLocation = customer.getPreviousAppearance().getLocation();
+                    VrpLocation previousLocation = customer.getPreviousStandstill().getLocation();
                     int previousX = translator.translateLongitudeToX(previousLocation.getLongitude());
                     int previousY = translator.translateLatitudeToY(previousLocation.getLatitude());
                     VrpLocation location = customer.getLocation();
@@ -129,8 +129,8 @@ public class VehicleRoutingSchedulePainter {
                     int y = translator.translateLatitudeToY(location.getLatitude());
                     g.drawLine(previousX, previousY, x, y);
                     // Determine where to draw the vehicle info
-                    int distance = customer.getDistanceToPreviousAppearance();
-                    if (customer.getPreviousAppearance() instanceof VrpCustomer) {
+                    int distance = customer.getDistanceToPreviousStandstill();
+                    if (customer.getPreviousStandstill() instanceof VrpCustomer) {
                         if (longestNonDepotDistance < distance) {
                             longestNonDepotDistance = distance;
                             vehicleInfoCustomer = customer;
@@ -142,7 +142,7 @@ public class VehicleRoutingSchedulePainter {
                     // Line back to the vehicle depot
                     boolean needsBackToVehicleLineDraw = true;
                     for (VrpCustomer trailingCustomer : schedule.getCustomerList()) {
-                        if (trailingCustomer.getPreviousAppearance() == customer) {
+                        if (trailingCustomer.getPreviousStandstill() == customer) {
                             needsBackToVehicleLineDraw = false;
                             break;
                         }
@@ -160,7 +160,7 @@ public class VehicleRoutingSchedulePainter {
                 if (load > vehicle.getCapacity()) {
                     g.setColor(TangoColorFactory.SCARLET_2);
                 }
-                VrpLocation previousLocation = vehicleInfoCustomer.getPreviousAppearance().getLocation();
+                VrpLocation previousLocation = vehicleInfoCustomer.getPreviousStandstill().getLocation();
                 VrpLocation location = vehicleInfoCustomer.getLocation();
                 double longitude = (previousLocation.getLongitude() + location.getLongitude()) / 2.0;
                 int x = translator.translateLongitudeToX(longitude);

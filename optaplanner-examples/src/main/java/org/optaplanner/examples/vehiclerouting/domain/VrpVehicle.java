@@ -21,7 +21,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("VrpVehicle")
-public class VrpVehicle extends AbstractPersistable implements VrpAppearance {
+public class VrpVehicle extends AbstractPersistable implements VrpStandstill {
 
     protected int capacity;
     protected VrpDepot depot;
@@ -44,7 +44,7 @@ public class VrpVehicle extends AbstractPersistable implements VrpAppearance {
         this.depot = depot;
     }
 
-    @PlanningVariable(mappedBy = "previousAppearance")
+    @PlanningVariable(mappedBy = "previousStandstill")
     public VrpCustomer getNextCustomer() {
         return nextCustomer;
     }

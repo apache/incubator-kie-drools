@@ -29,12 +29,12 @@ import org.optaplanner.examples.tsp.domain.solver.LatitudeVisitDifficultyCompara
 
 @PlanningEntity(difficultyComparatorClass = LatitudeVisitDifficultyComparator.class)
 @XStreamAlias("Visit")
-public class Visit extends AbstractPersistable implements Appearance {
+public class Visit extends AbstractPersistable implements TspStandstill {
 
     private City city; // the destinationCity
     
     // Planning variables: changes during planning, between score calculations.
-    private Appearance previousAppearance;
+    private TspStandstill previousStandstill;
 
     public City getCity() {
         return city;
@@ -49,27 +49,27 @@ public class Visit extends AbstractPersistable implements Appearance {
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList",
                     excludeUninitializedPlanningEntity = true)})
-    public Appearance getPreviousAppearance() {
-        return previousAppearance;
+    public TspStandstill getPreviousStandstill() {
+        return previousStandstill;
     }
 
-    public void setPreviousAppearance(Appearance previousAppearance) {
-        this.previousAppearance = previousAppearance;
+    public void setPreviousStandstill(TspStandstill previousStandstill) {
+        this.previousStandstill = previousStandstill;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    public int getDistanceToPreviousAppearance() {
-        if (previousAppearance == null) {
+    public int getDistanceToPreviousStandstill() {
+        if (previousStandstill == null) {
             return 0;
         }
-        return getDistanceTo(previousAppearance);
+        return getDistanceTo(previousStandstill);
     }
 
-    public int getDistanceTo(Appearance appearance) {
-        return city.getDistance(appearance.getCity());
+    public int getDistanceTo(TspStandstill standstill) {
+        return city.getDistance(standstill.getCity());
     }
 
     /**
@@ -85,7 +85,7 @@ public class Visit extends AbstractPersistable implements Appearance {
             return new EqualsBuilder()
                     .append(id, other.id)
                     .append(city, other.city) // TODO performance leak: not needed?
-                    .append(previousAppearance, other.previousAppearance) // TODO performance leak: not needed?
+                    .append(previousStandstill, other.previousStandstill) // TODO performance leak: not needed?
                     .isEquals();
         } else {
             return false;
@@ -101,13 +101,13 @@ public class Visit extends AbstractPersistable implements Appearance {
         return new HashCodeBuilder()
                 .append(id)
                 .append(city) // TODO performance leak: not needed?
-                .append(previousAppearance) // TODO performance leak: not needed?
+                .append(previousStandstill) // TODO performance leak: not needed?
                 .toHashCode();
     }
 
     @Override
     public String toString() {
-        return city + "(after " + (previousAppearance == null ? "null" : previousAppearance.getCity()) + ")";
+        return city + "(after " + (previousStandstill == null ? "null" : previousStandstill.getCity()) + ")";
     }
 
 }

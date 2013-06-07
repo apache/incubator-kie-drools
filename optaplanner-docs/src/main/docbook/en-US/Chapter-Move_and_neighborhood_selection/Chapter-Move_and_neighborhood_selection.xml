@@ -736,7 +736,7 @@
         &lt;maximumSubChainSize&gt;40&lt;/maximumSubChainSize&gt;
       &lt;/subChainSelector&gt;
       &lt;valueSelector&gt;
-        &lt;variableName&gt;previousAppearance&lt;/variableName&gt;
+        &lt;variableName&gt;previousStandstill&lt;/variableName&gt;
         ...
       &lt;/valueSelector&gt;
       &lt;selectReversingMoveToo&gt;true&lt;/selectReversingMoveToo&gt;

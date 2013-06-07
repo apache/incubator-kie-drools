@@ -30,17 +30,17 @@ global SimpleScoreHolder scoreHolder;
 // Soft constraints
 // ############################################################################
 
-rule "distanceToPreviousAppearance"
+rule "distanceToPreviousStandstill"
     when
-        $visit : Visit(previousAppearance != null, $distanceToPreviousAppearance : distanceToPreviousAppearance)
+        $visit : Visit(previousStandstill != null, $distanceToPreviousStandstill : distanceToPreviousStandstill)
     then
-        scoreHolder.addConstraintMatch(kcontext, - $distanceToPreviousAppearance);
+        scoreHolder.addConstraintMatch(kcontext, - $distanceToPreviousStandstill);
 end
 
 rule "distanceFromLastVisitToDomicile"
     when
-        $visit : Visit(previousAppearance != null)
-        not Visit(previousAppearance == $visit)
+        $visit : Visit(previousStandstill != null)
+        not Visit(previousStandstill == $visit)
         $domicile : Domicile()
     then
         scoreHolder.addConstraintMatch(kcontext, - $visit.getDistanceTo($domicile));

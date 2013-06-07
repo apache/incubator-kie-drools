@@ -48,17 +48,17 @@ end
 // Soft constraints
 // ############################################################################
 
-rule "distanceToPreviousAppearance"
+rule "distanceToPreviousStandstill"
     when
-        $customer : VrpCustomer(previousAppearance != null, $distanceToPreviousAppearance : distanceToPreviousAppearance)
+        $customer : VrpCustomer(previousStandstill != null, $distanceToPreviousStandstill : distanceToPreviousStandstill)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $distanceToPreviousAppearance);
+        scoreHolder.addSoftConstraintMatch(kcontext, - $distanceToPreviousStandstill);
 end
 
 rule "distanceFromLastCustomerToDepot"
     when
-        $customer : VrpCustomer(previousAppearance != null)
-        not VrpCustomer(previousAppearance == $customer)
+        $customer : VrpCustomer(previousStandstill != null)
+        not VrpCustomer(previousStandstill == $customer)
     then
         VrpVehicle vehicle = $customer.getVehicle();
         scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));

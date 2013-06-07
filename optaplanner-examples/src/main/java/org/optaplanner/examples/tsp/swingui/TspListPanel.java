@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
-import org.optaplanner.examples.tsp.domain.Appearance;
+import org.optaplanner.examples.tsp.domain.TspStandstill;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
@@ -70,11 +70,11 @@ public class TspListPanel extends JPanel {
             JButton button = new JButton(new VisitAction(visit));
             visitPanel.add(button);
             String distanceLabelString;
-            if (visit.getPreviousAppearance() == null) {
+            if (visit.getPreviousStandstill() == null) {
                 distanceLabelString = "Unassigned";
             } else {
-                distanceLabelString = "After " + visit.getPreviousAppearance().getCity().getSafeName()
-                        + " with distance " + visit.getDistanceToPreviousAppearance();
+                distanceLabelString = "After " + visit.getPreviousStandstill().getCity().getSafeName()
+                        + " with distance " + visit.getDistanceToPreviousStandstill();
             }
             visitPanel.add(new JLabel(distanceLabelString));
             add(visitPanel);
@@ -96,19 +96,19 @@ public class TspListPanel extends JPanel {
 
         public void actionPerformed(ActionEvent e) {
             TravelingSalesmanTour travelingSalesmanTour = tspPanel.getTravelingSalesmanTour();
-            JComboBox previousAppearanceListField = new JComboBox();
-            for (Appearance previousAppearance : travelingSalesmanTour.getVisitList()) {
-                previousAppearanceListField.addItem(previousAppearance);
+            JComboBox previousStandstillListField = new JComboBox();
+            for (TspStandstill previousStandstill : travelingSalesmanTour.getVisitList()) {
+                previousStandstillListField.addItem(previousStandstill);
             }
-            for (Appearance previousAppearance : travelingSalesmanTour.getDomicileList()) {
-                previousAppearanceListField.addItem(previousAppearance);
+            for (TspStandstill previousStandstill : travelingSalesmanTour.getDomicileList()) {
+                previousStandstillListField.addItem(previousStandstill);
             }
-            previousAppearanceListField.setSelectedItem(visit.getPreviousAppearance());
-            int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), previousAppearanceListField,
+            previousStandstillListField.setSelectedItem(visit.getPreviousStandstill());
+            int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), previousStandstillListField,
                     "Visit " + visit.getCity().getSafeName() + " after", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                Appearance toAppearance = (Appearance) previousAppearanceListField.getSelectedItem();
-//                tspPanel.doMove(visit, toAppearance);
+                TspStandstill toStandstill = (TspStandstill) previousStandstillListField.getSelectedItem();
+//                tspPanel.doMove(visit, toStandstill);
                 JOptionPane.showMessageDialog(TspListPanel.this, "Unsupported operation."); // TODO FIXME
                 tspPanel.getWorkflowFrame().resetScreen();
             }

@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Domicile")
-public class Domicile extends AbstractPersistable implements Appearance {
+public class Domicile extends AbstractPersistable implements TspStandstill {
 
     private City city;
 

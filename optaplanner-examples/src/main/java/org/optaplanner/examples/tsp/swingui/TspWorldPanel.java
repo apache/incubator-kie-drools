@@ -115,14 +115,14 @@ public class TspWorldPanel extends JPanel {
         }
         Set<Visit> needsBackToDomicileLineSet = new HashSet<Visit>(travelingSalesmanTour.getVisitList());
         for (Visit trailingVisit : travelingSalesmanTour.getVisitList()) {
-            if (trailingVisit.getPreviousAppearance() instanceof Visit) {
-                needsBackToDomicileLineSet.remove(trailingVisit.getPreviousAppearance());
+            if (trailingVisit.getPreviousStandstill() instanceof Visit) {
+                needsBackToDomicileLineSet.remove(trailingVisit.getPreviousStandstill());
             }
         }
         g.setColor(TangoColorFactory.CHOCOLATE_1);
         for (Visit visit : travelingSalesmanTour.getVisitList()) {
-            if (visit.getPreviousAppearance() != null) {
-                City previousCity = visit.getPreviousAppearance().getCity();
+            if (visit.getPreviousStandstill() != null) {
+                City previousCity = visit.getPreviousStandstill().getCity();
                 int previousX = translator.translateLongitudeToX(previousCity.getLongitude());
                 int previousY = translator.translateLatitudeToY(previousCity.getLatitude());
                 City city = visit.getCity();

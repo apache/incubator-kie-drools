@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.vehiclerouting.domain;
 
-public interface VrpAppearance {
+public interface VrpStandstill {
 
     /**
      * @return never null

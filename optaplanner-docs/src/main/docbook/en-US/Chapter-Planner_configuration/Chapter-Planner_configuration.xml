@@ -672,7 +672,7 @@ public class Queen {
           in a database) and implement a score constraint for the last entity back to the anchor.</para>
         </note>
 
-        <para>The optimization algorithms and build-in <literal>MoveFactory</literal>'s do chain correction to guarantee
+        <para>The optimization algorithms and build-in <literal>Move</literal>'s do chain correction to guarantee
         that the model stays valid:</para>
 
         <mediaobject>
@@ -685,47 +685,47 @@ public class Queen {
           <para>A custom <literal>Move</literal> implementation must leave the model in a valid state.</para>
         </warning>
 
-        <para>For example, in TSP the anchor is a <literal>Domicile</literal> (in vehicle routing it is the
-        vehicle):</para>
+        <para>For example, in TSP the anchor is a <literal>TspDomicile</literal> (in vehicle routing it is
+        <literal>VrpVehicle</literal>):</para>
 
-        <programlisting language="java">public class Domicile ... implements Appearance {
+        <programlisting language="java">public class TspDomicile ... implements TspStandstill {
 
     ...
 
-    public City getCity() {...}
+    public TspCity getCity() {...}
 
 }</programlisting>
 
         <para>The anchor (which is a problem fact) and the planning entity implement a common interface, for example
-        TSP's <literal>Appearance</literal>:</para>
+        <literal>TspStandstill</literal>:</para>
 
-        <programlisting language="java">public interface Appearance {
+        <programlisting language="java">public interface TspStandstill {
 
-    City getCity();
+    TspCity getCity();
 
 }</programlisting>
 
         <para>That interface is the return type of the planning variable. Furthermore, the planning variable is chained.
-        For example TSP's <literal>Visit</literal> (in vehicle routing it is the customer):</para>
+        For example <literal>TspVisit</literal> (in vehicle routing it is <literal>VrpCustomer</literal>):</para>
 
         <programlisting language="java">@PlanningEntity
-public class Visit ... implements Appearance {
+public class TspVisit ... implements TspStandstill {
 
     ...
 
-    public City getCity() {...}
+    public TspCity getCity() {...}
 
     @PlanningVariable(chained = true)
     @ValueRanges({
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList",
                     excludeUninitializedPlanningEntity = true)})
-    public Appearance getPreviousAppearance() {
-        return previousAppearance;
+    public TspStandstill getPreviousStandstill() {
+        return previousStandstill;
     }
 
-    public void setPreviousAppearance(Appearance previousAppearance) {
-        this.previousAppearance = previousAppearance;
+    public void setPreviousStandstill(TspStandstill previousStandstill) {
+        this.previousStandstill = previousStandstill;
     }
 
 }</programlisting>

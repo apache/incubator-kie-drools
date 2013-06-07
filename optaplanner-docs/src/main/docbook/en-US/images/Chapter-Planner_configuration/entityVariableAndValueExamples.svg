@@ -938,7 +938,7 @@
            y="69.77758"
            style="font-size:16px;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1" /></flowRegion><flowPara
          style="font-size:16px;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1"
-         id="flowPara3608">previousAppearance</flowPara></flowRoot>    <path
+         id="flowPara3608">previousStandstill</flowPara></flowRoot>    <path
        style="color:#000000;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        d="m 560,504.99962 10,-10 -10,-10"
        id="path3610"
@@ -964,7 +964,7 @@
            x="340"
            y="33.777069"
            style="font-size:20px" /></flowRegion><flowPara
-         id="flowPara3620">Appearance</flowPara></flowRoot>    <flowRoot
+         id="flowPara3620">Standstill</flowPara></flowRoot>    <flowRoot
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
        id="flowRoot3622"
        xml:space="preserve"
