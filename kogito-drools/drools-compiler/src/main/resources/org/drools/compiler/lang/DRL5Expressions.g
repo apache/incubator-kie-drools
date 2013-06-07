@@ -10,21 +10,21 @@ options {
     package org.drools.compiler.lang;
 
     import java.util.LinkedList;
-    import org.drools.compiler.DroolsParserException;
-    import ParserHelper;
-    import DroolsParserExceptionFactory;
-    import Location;
+    import org.drools.compiler.compiler.DroolsParserException;
+    import org.drools.compiler.lang.ParserHelper;
+    import org.drools.compiler.lang.DroolsParserExceptionFactory;
+    import org.drools.compiler.lang.Location;
     import org.drools.core.CheckedDroolsException;
 
-    import AnnotatedDescrBuilder;
+    import org.drools.compiler.lang.api.AnnotatedDescrBuilder;
 
-    import AtomicExprDescr;
-    import AnnotatedBaseDescr;
-    import AnnotationDescr;
-    import BaseDescr;
-    import ConstraintConnectiveDescr;
-    import RelationalExprDescr;
-    import BindingDescr;
+    import org.drools.compiler.lang.descr.AtomicExprDescr;
+    import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
+    import org.drools.compiler.lang.descr.AnnotationDescr;
+    import org.drools.compiler.lang.descr.BaseDescr;
+    import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
+    import org.drools.compiler.lang.descr.RelationalExprDescr;
+    import org.drools.compiler.lang.descr.BindingDescr;
 
 }
 

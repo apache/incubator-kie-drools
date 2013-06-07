@@ -78,15 +78,20 @@ grammar Java;
 options {k=2; backtrack=true; memoize=true;}
 
 scope VarDecl {
-            JavaLocalDeclarationDescr descr;
+    org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr descr;
 }
  
 @parser::header {
-    package org.drools.rule.builder.dialect.java.parser;
+    package org.drools.compiler.rule.builder.dialect.java.parser;
     import java.util.Iterator;
     import java.util.Queue;
     import java.util.LinkedList;   
     import java.util.Stack; 
+    
+    import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
+    import org.drools.compiler.rule.builder.dialect.java.parser.JavaRootBlockDescr;
+    import org.drools.compiler.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
+    import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
     
 }
 
@@ -251,7 +256,7 @@ scope VarDecl {
 } 
 
 @lexer::header {
-    package org.drools.rule.builder.dialect.java.parser;
+    package org.drools.compiler.rule.builder.dialect.java.parser;
 }
 
 @lexer::members {

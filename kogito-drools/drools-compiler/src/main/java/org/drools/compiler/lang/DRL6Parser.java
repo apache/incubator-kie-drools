@@ -1294,6 +1294,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      *       | AUTO-FOCUS
      *       | LOCK-ON-ACTIVE
      *       | REFRACT
+     *       | DIRECT
      *       ) BOOLEAN?
      *   |   ( AGENDA-GROUP
      *       | ACTIVATION-GROUP
@@ -1351,6 +1352,9 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.REFRACT ) ) {
                 attribute = booleanAttribute( as,
                                               new String[]{ DroolsSoftKeywords.REFRACT } );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DIRECT ) ) {
+                attribute = booleanAttribute( as,
+                                              new String[]{ DroolsSoftKeywords.DIRECT } );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.AGENDA ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
