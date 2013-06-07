@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.bestscore;
+package org.optaplanner.benchmark.impl.statistic.stepscore;
 
 import java.awt.BasicStroke;
 import java.io.File;
@@ -23,15 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
-import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
-import org.optaplanner.benchmark.impl.report.BenchmarkReport;
-import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
-import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.core.api.score.Score;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -41,18 +32,27 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
-public class BestScoreProblemStatistic extends AbstractProblemStatistic {
+public class StepScoreProblemStatistic extends AbstractProblemStatistic {
 
     protected List<File> graphStatisticFileList = null;
 
-    public BestScoreProblemStatistic(ProblemBenchmark problemBenchmark) {
-        super(problemBenchmark, ProblemStatisticType.BEST_SCORE);
+    public StepScoreProblemStatistic(ProblemBenchmark problemBenchmark) {
+        super(problemBenchmark, ProblemStatisticType.STEP_SCORE);
     }
 
     public SingleStatistic createSingleStatistic() {
-        return new BestScoreSingleStatistic();
+        return new StepScoreSingleStatistic();
     }
 
     /**
@@ -75,9 +75,9 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             if (singleBenchmark.isSuccess()) {
-                BestScoreSingleStatistic singleStatistic = (BestScoreSingleStatistic)
+                StepScoreSingleStatistic singleStatistic = (StepScoreSingleStatistic)
                         singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (BestScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
+                for (StepScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     Score score = point.getScore();
                     if (score != null) {
@@ -89,7 +89,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
             }
         }
         csvStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
-                problemBenchmark.getName() + "BestScoreStatistic.csv");
+                problemBenchmark.getName() + "StepScoreStatistic.csv");
         csv.writeCsvStatisticFile();
     }
 
@@ -101,9 +101,9 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmark.isSuccess()) {
-                BestScoreSingleStatistic singleStatistic = (BestScoreSingleStatistic)
+                StepScoreSingleStatistic singleStatistic = (StepScoreSingleStatistic)
                         singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (BestScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
+                for (StepScoreSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
@@ -117,13 +117,13 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                 // TODO if startingSolution is initialized and no improvement is made, a horizontal line should be shown
                 // Draw a horizontal line from the last new best step to how long the solver actually ran
                 long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
-                double[] bestScoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore());
-                for (int i = 0; i < bestScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
+                double[] stepScoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore());
+                for (int i = 0; i < stepScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                     if (i >= seriesList.size()) {
                         seriesList.add(new XYSeries(
                                 singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix()));
                     }
-                    seriesList.get(i).add(timeMillisSpend, bestScoreLevels[i]);
+                    seriesList.get(i).add(timeMillisSpend, stepScoreLevels[i]);
                 }
                 if (singleStatistic.getPointList().size() <= 1) {
                     // Workaround for https://sourceforge.net/tracker/?func=detail&aid=3387330&group_id=15494&atid=115494
@@ -146,10 +146,10 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         graphStatisticFileList = new ArrayList<File>(plotList.size());
         for (int scoreLevelIndex = 0; scoreLevelIndex < plotList.size(); scoreLevelIndex++) {
             JFreeChart chart = new JFreeChart(
-                    problemBenchmark.getName() + " best score level " + scoreLevelIndex + " statistic",
+                    problemBenchmark.getName() + " step score level " + scoreLevelIndex + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plotList.get(scoreLevelIndex), true);
             graphStatisticFileList.add(writeChartToImageFile(chart,
-                    problemBenchmark.getName() + "BestScoreStatisticLevel" + scoreLevelIndex));
+                    problemBenchmark.getName() + "StepScoreStatisticLevel" + scoreLevelIndex));
         }
     }
 
@@ -157,7 +157,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         Locale locale = problemBenchmark.getPlannerBenchmark().getBenchmarkReport().getLocale();
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
-        NumberAxis yAxis = new NumberAxis("Best score level " + scoreLevelIndex);
+        NumberAxis yAxis = new NumberAxis("Step score level " + scoreLevelIndex);
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         yAxis.setAutoRangeIncludesZero(false);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);

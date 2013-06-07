@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.bestscore;
+package org.optaplanner.benchmark.impl.statistic.stepscore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +23,17 @@ import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
+import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.solver.DefaultSolver;
 
-public class BestScoreSingleStatistic extends AbstractSingleStatistic {
+public class StepScoreSingleStatistic extends AbstractSingleStatistic {
 
-    private final BestScoreSingleStatisticListener listener = new BestScoreSingleStatisticListener();
+    private final StepScoreSingleStatisticListener listener = new StepScoreSingleStatisticListener();
 
-    private List<BestScoreSingleStatisticPoint> pointList = new ArrayList<BestScoreSingleStatisticPoint>();
+    private List<StepScoreSingleStatisticPoint> pointList = new ArrayList<StepScoreSingleStatisticPoint>();
 
-    public List<BestScoreSingleStatisticPoint> getPointList() {
+    public List<StepScoreSingleStatisticPoint> getPointList() {
         return pointList;
     }
 
@@ -39,18 +42,19 @@ public class BestScoreSingleStatistic extends AbstractSingleStatistic {
     // ************************************************************************
 
     public void open(Solver solver) {
-        solver.addEventListener(listener);
+        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(listener);
     }
 
     public void close(Solver solver) {
-        solver.removeEventListener(listener);
+        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
 
-    private class BestScoreSingleStatisticListener implements SolverEventListener {
+    private class StepScoreSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
-        public void bestSolutionChanged(BestSolutionChangedEvent event) {
-            pointList.add(new BestScoreSingleStatisticPoint(
-                    event.getTimeMillisSpend(), event.getNewBestSolution().getScore()));
+        @Override
+        public void stepEnded(AbstractStepScope stepScope) {
+            long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
+            pointList.add(new StepScoreSingleStatisticPoint(timeMillisSpend, stepScope.getScore()));
         }
 
     }

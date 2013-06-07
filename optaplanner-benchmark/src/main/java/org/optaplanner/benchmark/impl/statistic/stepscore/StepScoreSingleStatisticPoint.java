@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.bestscore;
+package org.optaplanner.benchmark.impl.statistic.stepscore;
 
 import org.optaplanner.core.api.score.Score;
 
-public class BestScoreSingleStatisticPoint {
+public class StepScoreSingleStatisticPoint {
 
     private final long timeMillisSpend;
     private final Score score;
 
-    public BestScoreSingleStatisticPoint(long timeMillisSpend, Score score) {
+    public StepScoreSingleStatisticPoint(long timeMillisSpend, Score score) {
         this.timeMillisSpend = timeMillisSpend;
         this.score = score;
     }

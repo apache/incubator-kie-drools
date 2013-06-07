@@ -470,7 +470,7 @@
                                                 <p>${warning}</p>
                                             </div>
                                         </#list>
-                                        <#if problemStatistic.problemStatisticType.name() == "BEST_SCORE">
+                                        <#if problemStatistic.problemStatisticType.name() == "BEST_SCORE" || problemStatistic.problemStatisticType.name() == "STEP_SCORE" >
                                             <div class="tabbable tabs-right">
                                                 <ul class="nav nav-tabs">
                                                     <#assign scoreLevelIndex = 0>
