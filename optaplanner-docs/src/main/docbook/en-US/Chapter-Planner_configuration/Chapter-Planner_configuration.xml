@@ -685,46 +685,46 @@ public class Queen {
           <para>A custom <literal>Move</literal> implementation must leave the model in a valid state.</para>
         </warning>
 
-        <para>For example, in TSP the anchor is a <literal>TspDomicile</literal> (in vehicle routing it is
-        <literal>VrpVehicle</literal>):</para>
+        <para>For example, in TSP the anchor is a <literal>Domicile</literal> (in vehicle routing it is
+        <literal>Vehicle</literal>):</para>
 
-        <programlisting language="java">public class TspDomicile ... implements TspStandstill {
+        <programlisting language="java">public class Domicile ... implements Standstill {
 
     ...
 
-    public TspCity getCity() {...}
+    public City getCity() {...}
 
 }</programlisting>
 
         <para>The anchor (which is a problem fact) and the planning entity implement a common interface, for example
-        <literal>TspStandstill</literal>:</para>
+        TSP's <literal>Standstill</literal>:</para>
 
-        <programlisting language="java">public interface TspStandstill {
+        <programlisting language="java">public interface Standstill {
 
-    TspCity getCity();
+    City getCity();
 
 }</programlisting>
 
         <para>That interface is the return type of the planning variable. Furthermore, the planning variable is chained.
-        For example <literal>TspVisit</literal> (in vehicle routing it is <literal>VrpCustomer</literal>):</para>
+        For example TSP's <literal>Visit</literal> (in vehicle routing it is <literal>Customer</literal>):</para>
 
         <programlisting language="java">@PlanningEntity
-public class TspVisit ... implements TspStandstill {
+public class Visit ... implements Standstill {
 
     ...
 
-    public TspCity getCity() {...}
+    public City getCity() {...}
 
     @PlanningVariable(chained = true)
     @ValueRanges({
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList",
                     excludeUninitializedPlanningEntity = true)})
-    public TspStandstill getPreviousStandstill() {
+    public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
 
-    public void setPreviousStandstill(TspStandstill previousStandstill) {
+    public void setPreviousStandstill(Standstill previousStandstill) {
         this.previousStandstill = previousStandstill;
     }
 

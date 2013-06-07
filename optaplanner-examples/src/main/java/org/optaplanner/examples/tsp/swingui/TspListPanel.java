@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
-import org.optaplanner.examples.tsp.domain.TspStandstill;
+import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
@@ -97,17 +97,17 @@ public class TspListPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             TravelingSalesmanTour travelingSalesmanTour = tspPanel.getTravelingSalesmanTour();
             JComboBox previousStandstillListField = new JComboBox();
-            for (TspStandstill previousStandstill : travelingSalesmanTour.getVisitList()) {
+            for (Standstill previousStandstill : travelingSalesmanTour.getVisitList()) {
                 previousStandstillListField.addItem(previousStandstill);
             }
-            for (TspStandstill previousStandstill : travelingSalesmanTour.getDomicileList()) {
+            for (Standstill previousStandstill : travelingSalesmanTour.getDomicileList()) {
                 previousStandstillListField.addItem(previousStandstill);
             }
             previousStandstillListField.setSelectedItem(visit.getPreviousStandstill());
             int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), previousStandstillListField,
                     "Visit " + visit.getCity().getSafeName() + " after", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                TspStandstill toStandstill = (TspStandstill) previousStandstillListField.getSelectedItem();
+                Standstill toStandstill = (Standstill) previousStandstillListField.getSelectedItem();
 //                tspPanel.doMove(visit, toStandstill);
                 JOptionPane.showMessageDialog(TspListPanel.this, "Unsupported operation."); // TODO FIXME
                 tspPanel.getWorkflowFrame().resetScreen();

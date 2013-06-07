@@ -16,7 +16,7 @@
 
 package org.optaplanner.examples.tsp.domain;
 
-public interface TspStandstill {
+public interface Standstill {
 
     /**
      * @return never null

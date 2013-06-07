@@ -29,12 +29,12 @@ import org.optaplanner.examples.tsp.domain.solver.LatitudeVisitDifficultyCompara
 
 @PlanningEntity(difficultyComparatorClass = LatitudeVisitDifficultyComparator.class)
 @XStreamAlias("Visit")
-public class Visit extends AbstractPersistable implements TspStandstill {
+public class Visit extends AbstractPersistable implements Standstill {
 
     private City city; // the destinationCity
     
     // Planning variables: changes during planning, between score calculations.
-    private TspStandstill previousStandstill;
+    private Standstill previousStandstill;
 
     public City getCity() {
         return city;
@@ -49,11 +49,11 @@ public class Visit extends AbstractPersistable implements TspStandstill {
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList",
                     excludeUninitializedPlanningEntity = true)})
-    public TspStandstill getPreviousStandstill() {
+    public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
 
-    public void setPreviousStandstill(TspStandstill previousStandstill) {
+    public void setPreviousStandstill(Standstill previousStandstill) {
         this.previousStandstill = previousStandstill;
     }
 
@@ -68,7 +68,7 @@ public class Visit extends AbstractPersistable implements TspStandstill {
         return getDistanceTo(previousStandstill);
     }
 
-    public int getDistanceTo(TspStandstill standstill) {
+    public int getDistanceTo(Standstill standstill) {
         return city.getDistance(standstill.getCity());
     }
 

@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
-import org.optaplanner.examples.tsp.domain.TspStandstill;
+import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
@@ -34,7 +34,7 @@ public class TspSimpleScoreCalculator implements SimpleScoreCalculator<Traveling
         Set<Visit> tailVisitSet = new HashSet<Visit>(visitList);
         int score = 0;
         for (Visit visit : visitList) {
-            TspStandstill previousStandstill = visit.getPreviousStandstill();
+            Standstill previousStandstill = visit.getPreviousStandstill();
             if (previousStandstill != null) {
                 score -= visit.getDistanceToPreviousStandstill();
                 if (previousStandstill instanceof Visit) {
