@@ -776,7 +776,7 @@ public class DefaultAgenda
         while ( true ) {
             agendaGroup = (InternalAgendaGroup) this.focusStack.getLast();
 
-            if ( !((InternalRuleFlowGroup)agendaGroup).isAutoDeactivate() ) {
+            if ( !agendaGroup.isAutoDeactivate() ) {
                 // does not automatically pop, when empty, so always return, even if empty
                 break;
             }
@@ -785,7 +785,7 @@ public class DefaultAgenda
 
             // No populated queues found so pop the focusStack and repeat
             if ( empty && (this.focusStack.size() > 1) ) {
-                if ( agendaGroup.isAutoDeactivate() ) {
+                if ( agendaGroup.isAutoDeactivate() && !agendaGroup.getNodeInstances().isEmpty() ) {
                     innerDeactiveRuleFlowGroup((InternalRuleFlowGroup) agendaGroup);
                 }
                 agendaGroup.setActive( false );

@@ -638,23 +638,7 @@ public class JavaDialect
     }
 
     private void loadCompiler() {
-        switch ( this.configuration.getCompiler() ) {
-            case JavaDialectConfiguration.JANINO : {
-                this.compiler = JavaCompilerFactory.getInstance().createCompiler( "janino" );
-                break;
-            }
-            case JavaDialectConfiguration.ECLIPSE :
-            default : {
-                this.compiler = JavaCompilerFactory.getInstance().createCompiler( "eclipse" );
-                JavaCompilerSettings settings = this.compiler.createDefaultSettings();
-
-                String lngLevel = this.configuration.getJavaLanguageLevel();
-                settings.setTargetVersion( lngLevel );
-
-                settings.setSourceVersion( lngLevel );
-                break;
-            }
-        }
+        this.compiler = JavaCompilerFactory.getInstance().loadCompiler( this.configuration );
     }
 
     public void addImport(ImportDescr importDescr) {

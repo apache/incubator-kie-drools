@@ -20,6 +20,7 @@ package org.drools.compiler.commons.jci.compilers;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.util.ClassUtils;
 
 
@@ -87,5 +88,26 @@ public final class JavaCompilerFactory {
             return null;
         }
     }
-    
+
+    public JavaCompiler loadCompiler(JavaDialectConfiguration configuration) {
+        JavaCompiler compiler;
+        switch ( configuration.getCompiler() ) {
+            case JavaDialectConfiguration.JANINO : {
+                compiler = createCompiler( "janino" );
+                break;
+            }
+            case JavaDialectConfiguration.ECLIPSE :
+            default : {
+                compiler = createCompiler( "eclipse" );
+                JavaCompilerSettings settings = compiler.createDefaultSettings();
+
+                String lngLevel = configuration.getJavaLanguageLevel();
+                settings.setTargetVersion( lngLevel );
+
+                settings.setSourceVersion( lngLevel );
+                break;
+            }
+        }
+        return compiler;
+    }
 }

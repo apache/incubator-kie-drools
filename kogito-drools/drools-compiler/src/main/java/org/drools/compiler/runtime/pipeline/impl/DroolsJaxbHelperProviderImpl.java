@@ -33,6 +33,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
+import org.drools.compiler.compiler.ProjectJavaCompiler;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
@@ -52,14 +55,17 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.xml.jaxb.util.JaxbListWrapper;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.help.DroolsJaxbHelperProvider;
 import org.kie.api.io.Resource;
 import org.xml.sax.InputSource;
@@ -126,17 +132,18 @@ public class DroolsJaxbHelperProviderImpl
         MapVfsCodeWriter codeWriter = new MapVfsCodeWriter();
         model.codeModel.build( xjcOpts.createCodeWriter( codeWriter ) );
 
+        MemoryResourceReader src = new MemoryResourceReader();
+
+        boolean useProjectClassLoader = pkgBuilder.getRootClassLoader() instanceof ProjectClassLoader;
+
         List<String> classNames = new ArrayList<String>();
+        List<String> srcNames = new ArrayList<String>();
+
         for ( Entry<String, byte[]> entry : codeWriter.getMap().entrySet() ) {
             String name = entry.getKey();
-            //if (name.endsWith("ObjectFactory.java")) {
-            //  continue;
-            //}
-            
-            String pkgName = null;
+
             int dotPos = name.lastIndexOf( '.' );
-            pkgName = name.substring( 0,
-                                      dotPos );
+            String pkgName = name.substring( 0, dotPos );
 
             if ( !name.endsWith( "package-info.java" ) ) {
                 classNames.add( pkgName );
@@ -144,8 +151,7 @@ public class DroolsJaxbHelperProviderImpl
 
             dotPos = pkgName.lastIndexOf( '.' );
             if ( dotPos != -1 ) {
-                pkgName = pkgName.substring( 0,
-                                             dotPos );
+                pkgName = pkgName.substring( 0, dotPos );
             }
 
             PackageRegistry pkgReg = pkgBuilder.getPackageRegistry( pkgName );
@@ -154,13 +160,39 @@ public class DroolsJaxbHelperProviderImpl
                 pkgReg = pkgBuilder.getPackageRegistry( pkgName );
             }
 
-            JavaDialect dialect = (JavaDialect) pkgReg.getDialectCompiletimeRegistry().getDialect( "java" );
-            dialect.addSrc( convertToResource( entry.getKey() ),
-                            entry.getValue() );
+            if (useProjectClassLoader) {
+                String srcName = convertToResource( entry.getKey() );
+                src.add( srcName, entry.getValue() );
+                srcNames.add( srcName );
+            } else {
+                JavaDialect dialect = (JavaDialect) pkgReg.getDialectCompiletimeRegistry().getDialect( "java" );
+                dialect.addSrc( convertToResource( entry.getKey() ),
+                                entry.getValue() );
+            }
         }
 
-        pkgBuilder.compileAll();
-        pkgBuilder.updateResults();
+        if (useProjectClassLoader) {
+            ProjectJavaCompiler compiler = new ProjectJavaCompiler(pkgBuilder);
+            List<KnowledgeBuilderResult> results = compiler.compileAll((ProjectClassLoader)pkgBuilder.getRootClassLoader(),
+                                                                       srcNames,
+                                                                       src);
+            for (String className : classNames) {
+                Class<?> clazz = null;
+                try {
+                    clazz = Class.forName( className, true, pkgBuilder.getRootClassLoader() );
+                } catch (ClassNotFoundException e) {
+                    continue;
+                }
+                String pkgName = className.substring( 0, className.lastIndexOf( '.' ) );
+                PackageRegistry pkgReg = pkgBuilder.getPackageRegistry(pkgName);
+                pkgReg.getPackage().addTypeDeclaration( new TypeDeclaration( clazz ) );
+            }
+
+            pkgBuilder.updateResults(results);
+        } else {
+            pkgBuilder.compileAll();
+            pkgBuilder.updateResults();
+        }
 
         return classNames.toArray( new String[classNames.size()] );
     }

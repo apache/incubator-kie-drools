@@ -555,8 +555,12 @@ public class JavaDialectRuntimeData
         if (this.classLookups == null) {
             this.classLookups = new HashMap<String, byte[]>();
         }
-        Object classDef = this.classLookups.get( className );
-        return classDef != null ? (byte[]) classDef : null;
+        byte[] classDef = this.classLookups.get( className );
+        if (classDef == null && rootClassLoader instanceof ProjectClassLoader) {
+            classDef = ((ProjectClassLoader)rootClassLoader).getBytecode(className);
+            classLookups.put( className, classDef );
+        }
+        return classDef;
     }
 
     public void removeClassDefinition( final String className ) {

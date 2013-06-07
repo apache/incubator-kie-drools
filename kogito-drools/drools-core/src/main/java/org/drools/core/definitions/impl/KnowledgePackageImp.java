@@ -121,7 +121,7 @@ public class KnowledgePackageImp
         List<FactType> list = new ArrayList<FactType>( pkg.getFactTypes().size() );
         for ( Map.Entry<String, FactType> entry : pkg.getFactTypes().entrySet() ) {
             // avoid native class definitions
-            if ( entry.getValue().getName() != null ) {
+            if ( entry.getValue() != null && entry.getValue().getName() != null ) {
                 list.add( entry.getValue() );
             }
         }
