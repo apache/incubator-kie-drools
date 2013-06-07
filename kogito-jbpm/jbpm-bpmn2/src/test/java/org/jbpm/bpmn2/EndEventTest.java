@@ -26,6 +26,7 @@ import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -37,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RunWith(Parameterized.class)
-public class EndEventTest extends JbpmTestCase {
+public class EndEventTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
@@ -98,13 +99,15 @@ public class EndEventTest extends JbpmTestCase {
     }
 
     @Test
+    @Ignore(value="This test tested an incorrect implemenation of compensation")
     public void testCompensateEndEventProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-CompensateEndEvent.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession
                 .startProcess("CompensateEndEvent");
         assertProcessInstanceCompleted(processInstance);
-        assertNodeTriggered(processInstance.getId(), "StartProcess", "Task", "CompensateEvent", "CompensateEvent2", "Compensate", "EndEvent");
+        // boundary event can only be triggered when node that it is attached to is active
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "Task", "CompensateEvent");
         
     }
 
@@ -134,7 +137,7 @@ public class EndEventTest extends JbpmTestCase {
 
     @Test
     public void testOnEntryExitScript() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-OnEntryExitScriptProcess.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-OnEntryExitScriptProcess.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());
@@ -149,7 +152,7 @@ public class EndEventTest extends JbpmTestCase {
 
     @Test
     public void testOnEntryExitNamespacedScript() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-OnEntryExitNamespacedScriptProcess.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-OnEntryExitNamespacedScriptProcess.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());
@@ -164,7 +167,7 @@ public class EndEventTest extends JbpmTestCase {
 
     @Test
     public void testOnEntryExitMixedNamespacedScript() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-OnEntryExitMixedNamespacedScriptProcess.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-OnEntryExitMixedNamespacedScriptProcess.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());
@@ -179,7 +182,7 @@ public class EndEventTest extends JbpmTestCase {
     
     @Test
     public void testOnEntryExitScriptDesigner() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-OnEntryExitDesignerScriptProcess.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-OnEntryExitDesignerScriptProcess.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
                 new SystemOutWorkItemHandler());
@@ -191,5 +194,5 @@ public class EndEventTest extends JbpmTestCase {
         assertEquals(4, myList.size());
         
     }
-    
+
 }

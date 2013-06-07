@@ -25,7 +25,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 
-public class ProcessFactoryTest extends JbpmTestCase {
+public class ProcessFactoryTest extends JbpmBpmn2TestCase {
     
     public ProcessFactoryTest() {
         super(false);

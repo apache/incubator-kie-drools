@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <error id="_exception" errorCode="mycode" />
+
+  <process processType="Private" isExecutable="true" id="ErrorEventHandling" name="Throw Error Event With Script Task" >
+
+    <startEvent id="_1" name="start" />
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+
+    <subProcess id="_2" name="subprocess"  >
+      <!-- nodes -->
+      <startEvent id="_2-1" name="sub-start" />
+      <sequenceFlow id="_2-1-_2-2" sourceRef="_2-1" targetRef="_2-2" />
+      <scriptTask id="_2-2" name="signal error" >
+        <script>kcontext.getProcessInstance().signalEvent("Error-_2-mycode", null);</script>
+      </scriptTask>
+      <sequenceFlow id="_2-2-_2-3" sourceRef="_2-2" targetRef="_2-3" />
+
+      <endEvent id="_2-3" name="sub-end" />
+    </subProcess>
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <scriptTask id="_3" name="script" >
+      <script>System.out.println("Normal process end");</script>
+    </scriptTask>
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+    <endEvent id="_4" name="end">
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- boundary error event -->
+    <boundaryEvent id="_5" name="catch event" attachedToRef="_2" >
+      <errorEventDefinition id="_5-1" errorRef="_exception"/>
+    </boundaryEvent>
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+    <scriptTask id="_6" name="error handling" >
+      <script>System.out.println("Handling with error");</script>
+    </scriptTask>
+    <sequenceFlow id="_6-_7" sourceRef="_6" targetRef="_7" />
+    <endEvent id="_7" name="error end" />
+
+  </process>
+
+</definitions>

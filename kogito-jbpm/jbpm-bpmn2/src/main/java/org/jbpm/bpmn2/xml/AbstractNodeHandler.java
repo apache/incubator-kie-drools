@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
@@ -34,11 +35,14 @@ import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
 import org.jbpm.bpmn2.core.Association;
+import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -46,6 +50,8 @@ import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
@@ -54,6 +60,8 @@ import org.xml.sax.SAXParseException;
 
 public abstract class AbstractNodeHandler extends BaseAbstractHandler implements Handler {
 
+    protected static Logger logger = LoggerFactory.getLogger(AbstractNodeHandler.class);
+    
     protected final static String EOL = System.getProperty( "line.separator" );
     protected Map<String, String> dataInputs = new HashMap<String, String>();
     protected Map<String, String> dataOutputs = new HashMap<String, String>();
@@ -88,25 +96,11 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         final Node node = createNode(attrs);
         String id = attrs.getValue("id");
         node.setMetaData("UniqueId", id);
-        try {
-            // remove starting _
-            id = id.substring(1);
-            // remove ids of parent nodes
-            id = id.substring(id.lastIndexOf("-") + 1);
-            final String name = attrs.getValue("name");
-            node.setName(name);
-            node.setId(new Integer(id));
-        } catch (NumberFormatException e) {
-            // id is not in the expected format, generating a new one
-            long newId = 0;
-            NodeContainer nodeContainer = (NodeContainer) parser.getParent();
-            for (org.kie.api.definition.process.Node n: nodeContainer.getNodes()) {
-                if (n.getId() > newId) {
-                    newId = n.getId();
-                }
-            }
-            ((org.jbpm.workflow.core.Node) node).setId(++newId);
-        }
+        final String name = attrs.getValue("name");
+        node.setName(name);
+        
+        AtomicInteger idGen = (AtomicInteger) parser.getMetaData().get("idGen");
+        node.setId(idGen.getAndIncrement());
         return node;
     }
 
@@ -414,6 +408,28 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             
         }
         return dataType;
+    }
+    
+    protected String getErrorIdForErrorCode(String errorCode, Node node) { 
+        org.kie.api.definition.process.NodeContainer parent = node.getNodeContainer();
+        while( ! (parent instanceof RuleFlowProcess) && parent instanceof Node ) { 
+            parent = ((Node) parent).getNodeContainer();
+        }
+        if( ! (parent instanceof RuleFlowProcess) ) { 
+           throw new RuntimeException( "This should never happen: !(parent instanceof RuleFlowProcess): parent is " + parent.getClass().getSimpleName() );
+        }
+        List<Error> errors = ((Definitions) ((RuleFlowProcess) parent).getMetaData("Definitions")).getErrors();
+        Error error = null;
+        for( Error listError : errors ) { 
+            if( errorCode.equals(listError.getErrorCode()) ) {
+                error = listError;
+                break;
+            }
+        }
+        if (error == null) {
+            throw new IllegalArgumentException("Could not find error with errorCode " + errorCode);
+        }
+        return error.getId();
     }
     
 }

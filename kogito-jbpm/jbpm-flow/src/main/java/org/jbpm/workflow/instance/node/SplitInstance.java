@@ -62,8 +62,7 @@ public class SplitInstance extends NodeInstanceImpl {
         } catch(WorkflowRuntimeException wre) { 
             throw wre;
         } catch(Exception e) { 
-           WorkflowRuntimeException wre = new WorkflowRuntimeException(this, "Unable to execute Split: " + e.getMessage(), e); 
-           throw wre;
+           throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Split: " + e.getMessage(), e); 
         }
     }
     

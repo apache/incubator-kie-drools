@@ -16,9 +16,15 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.util.List;
+
 import org.drools.compiler.compiler.xml.XmlDumper;
+import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.bpmn2.core.Error;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.FaultNode;
+import org.kie.api.definition.process.NodeContainer;
 import org.xml.sax.Attributes;
 
 public class FaultNodeHandler extends AbstractNodeHandler {
@@ -48,7 +54,9 @@ public class FaultNodeHandler extends AbstractNodeHandler {
             xmlDump.append("      </inputSet>" + EOL);
         }
         if (faultNode.isTerminateParent()) {
-            xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(faultNode.getFaultName()) + "\" />" + EOL);
+            String errorCode = faultNode.getFaultName();
+            String errorId = getErrorIdForErrorCode(errorCode, faultNode);
+            xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(errorId) + "\" />" + EOL);
         } else {
             xmlDump.append("      <escalationEventDefinition escalationRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(faultNode.getFaultName()) + "\" />" + EOL);
         }

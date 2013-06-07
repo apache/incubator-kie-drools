@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.net.URI;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -42,7 +43,7 @@ public class VFSFileServiceImpl implements FileService {
 
     @Inject
     @Named("ioStrategy")
-    private IOService ioService;
+    private Instance<IOService> ioService;
 
     @PostConstruct
     public void init() {
@@ -50,7 +51,7 @@ public class VFSFileServiceImpl implements FileService {
     }
 
     public void fetchChanges() {
-        ioService.getFileSystem( URI.create( REPO_PLAYGROUND + "?fetch" ) );
+        getIOService().getFileSystem( URI.create( REPO_PLAYGROUND + "?fetch" ) );
     }
     
     @Override
@@ -59,7 +60,7 @@ public class VFSFileServiceImpl implements FileService {
         checkNotNull( "file", file );
 
         try {
-            return ioService.readAllBytes( file );
+            return getIOService().readAllBytes( file );
         } catch ( IOException ex ) {
             throw new FileException( ex.getMessage(), ex );
         }
@@ -70,7 +71,7 @@ public class VFSFileServiceImpl implements FileService {
     @Override
     public Iterable<Path> loadFilesByType( final Path path,
                                            final String fileType ) {
-        return ioService.newDirectoryStream( path, new DirectoryStream.Filter<Path>() {
+        return getIOService().newDirectoryStream( path, new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws IOException {
                 if ( !org.kie.commons.java.nio.file.Files.isDirectory(entry) && 
@@ -84,7 +85,7 @@ public class VFSFileServiceImpl implements FileService {
     }
     
     public Iterable<Path> listDirectories(final Path path){
-      return ioService.newDirectoryStream( path, new DirectoryStream.Filter<Path>() {
+      return getIOService().newDirectoryStream( path, new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws IOException {
                 if ( org.kie.commons.java.nio.file.Files.isDirectory(entry) ) {
@@ -97,19 +98,19 @@ public class VFSFileServiceImpl implements FileService {
     }
     
     public Path getPath(String path){
-        return ioService.get(path);
+        return getIOService().get(path);
     }
 
     @Override
     public boolean exists(Path file){
-        return ioService.exists(file);
+        return getIOService().exists(file);
     }
 
     @Override
     public void move(Path source, Path dest){
         
         this.copy(source, dest);
-        ioService.delete(source);
+        getIOService().delete(source);
     }
     
     @Override
@@ -118,7 +119,7 @@ public class VFSFileServiceImpl implements FileService {
         checkNotNull( "source", source );
         checkNotNull( "dest", dest );
         
-        ioService.copy(source, dest);
+        getIOService().copy(source, dest);
     }
     
     @Override
@@ -126,12 +127,12 @@ public class VFSFileServiceImpl implements FileService {
         
         checkNotNull( "path", path );
         
-        return ioService.createDirectory(path);
+        return getIOService().createDirectory(path);
     }
     
     @Override
     public Path createFile(Path path){
-        return ioService.createFile(path);
+        return getIOService().createFile(path);
     }
     
     @Override
@@ -139,7 +140,7 @@ public class VFSFileServiceImpl implements FileService {
         
         checkNotNull( "path", path );
         
-        return ioService.deleteIfExists(path);
+        return getIOService().deleteIfExists(path);
     }
     
     @Override
@@ -147,7 +148,11 @@ public class VFSFileServiceImpl implements FileService {
         
         checkNotNull( "path", path );
         
-        return ioService.newOutputStream(path);
+        return getIOService().newOutputStream(path);
+    }
+    
+    protected IOService getIOService() {
+        return ioService.get();
     }
     
 }

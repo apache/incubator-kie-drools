@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.runtime.manager.impl;
 
 import java.util.HashMap;
@@ -20,8 +35,8 @@ import org.kie.api.runtime.process.WorkItemHandler;
  * This implementation extends DefaultRegisterableItemsFactory
  * and relies on definitions of work item handlers and
  * listeners that come from kmodule.xml from kjar. 
- * It will directly register all stuff on ksession and will return
- * listeners and handlers provided by default implementation.
+ * It will directly register all listeners and work item handlers on ksession
+ * and will return listeners and handlers provided by default implementation.
  *
  */
 public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFactory {
@@ -61,7 +76,13 @@ public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFac
         parameters.put("ksession", runtime.getKieSession());
         parameters.put("taskService", runtime.getKieSession());
         parameters.put("runtimeManager", ((RuntimeEngineImpl)runtime).getManager());
-        CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession(), parameters);
+        try {
+
+            CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession(), parameters);
+        } catch (Exception e) {
+            // use fallback mechanism
+            CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession());
+        }
         
         return super.getWorkItemHandlers(runtime);
     }

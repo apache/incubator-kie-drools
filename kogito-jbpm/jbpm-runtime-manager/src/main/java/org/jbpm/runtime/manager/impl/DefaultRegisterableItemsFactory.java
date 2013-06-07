@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.runtime.manager.impl;
 
 import java.util.ArrayList;
@@ -12,6 +27,7 @@ import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.process.audit.event.DefaultAuditEventBuilderImpl;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
+import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 import org.kie.api.event.process.ProcessEventListener;
@@ -24,6 +40,21 @@ import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
 import org.kie.internal.task.api.EventService;
 
+/**
+ * Default implementation of <code>RegisterableItemsFactory</code> responsible for providing 
+ * common set of WorkItemHandlers and EventListeners. This factory should not be used in CDI container.
+ * <br/>
+ * It will deliver fully configured instances of:
+ * <ul>
+ *  <li>WorkItemHandler for "Human Task" that is configured with local task service</li>
+ *  <li>JPA audit logger - for history log</li>
+ *  <li>event listener to trigger rules automatically without a need of invoking fireAllRules</li>
+ * </ul>
+ * Moreover it will invoke its super methods to get rest of registerable items defined, that might override defaults
+ * as they are added to resulting map at the end.
+ * 
+ * @see InjectableRegisterableItemsFactory
+ */
 public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFactory {
 
     private AuditEventBuilder auditBuilder = new DefaultAuditEventBuilderImpl();

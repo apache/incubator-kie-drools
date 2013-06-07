@@ -26,6 +26,7 @@ public class Definitions implements Serializable {
 	private String targetNamespace;
 	private List<DataStore> dataStores;
 	private List<Association> associations;
+	private List<Error> errors;
 
 	public String getTargetNamespace() {
 		return targetNamespace;
@@ -50,4 +51,12 @@ public class Definitions implements Serializable {
 	public List<Association> getAssociations() {
 		return this.associations;
 	}
+
+    public List<Error> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<Error> errors) {
+        this.errors = errors;
+    }
 }

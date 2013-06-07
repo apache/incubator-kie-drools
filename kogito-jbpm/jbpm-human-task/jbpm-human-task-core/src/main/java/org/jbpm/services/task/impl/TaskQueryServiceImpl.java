@@ -146,6 +146,29 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         return new ArrayList<TaskSummary>();
     }
 
+    public Map<Long, List<String>> getPotentialOwnersForTaskIds(List<Long> taskIds){
+        ArrayList<Object[]> potentialOwners = (ArrayList<Object[]>) pm.queryWithParametersInTransaction("GetPotentialOwnersForTaskIds", 
+                pm.addParametersToMap("taskIds", taskIds));
+        
+        Map<Long, List<String>> potentialOwnersMap = new HashMap<Long, List<String>>();
+        Long currentTaskId = 0L;
+        for(Object[] item : potentialOwners){
+            Long taskId = (Long) item[0];
+            String potentialOwner = (String)item[1];
+            if(currentTaskId != taskId){
+                currentTaskId = taskId;
+            }
+            
+            if(potentialOwnersMap.get(currentTaskId) == null){
+                potentialOwnersMap.put(currentTaskId, new ArrayList<String>());
+            }
+            potentialOwnersMap.get(currentTaskId).add(potentialOwner);
+        }
+        
+        return potentialOwnersMap;
+    
+    }
+    
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults) {
         return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerWithGroups", 
                                     pm.addParametersToMap("userId", userId, "groupIds", groupIds, "language", language, 
@@ -173,12 +196,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
 
     }
     
-    public List<TaskSummary> getTasksOwnedByExpirationDate(String userId,  List<Status> status, Date expirationDate) {
-
-        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksOwnedWithParticularStatusByExpirationDate",
-                          pm.addParametersToMap("userId", userId, "status", status, "expirationDate", expirationDate, "language", "en-UK"));
-
-    }
+   
     
 
     public List<TaskSummary> getTasksOwnedByStatus(String userId, List<Status> status, String language) {
@@ -257,6 +275,27 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         else 
             return (TaskImpl) (tasks.get(0));
     }
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(String userId, List<String> groupsIds,
+                                            List<Status> status, Date expirationDate) {
+        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerStatusByExpirationDate",
+                          pm.addParametersToMap("userId", userId, "groupIds", groupsIds, "status", status, "expirationDate", expirationDate, "language", "en-UK"));
+
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(String userId, List<String> groupsIds,
+                        List<Status> status, Date expirationDate) {
+        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerStatusByExpirationDateOptional",
+                    pm.addParametersToMap("userId", userId, "groupIds", groupsIds, "status", status, "expirationDate", expirationDate, "language", "en-UK")); //@TODO: FIX LANGUANGE
+        
+    }
+    @Override
+    public List<TaskSummary> getTasksOwnedByExpirationDate(String userId,  List<Status> status, Date expirationDate) {
+        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksOwnedWithParticularStatusByExpirationDate",
+                          pm.addParametersToMap("userId", userId, "status", status, "expirationDate", expirationDate, "language", "en-UK"));
+
+    }
 
     @Override
     public List<TaskSummary> getTasksOwnedByExpirationDateOptional(String userId, List<Status> status, Date expirationDate) {
@@ -264,6 +303,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                     pm.addParametersToMap("userId", userId, "status", status, "expirationDate", expirationDate, "language", "en-UK")); //@TODO: FIX LANGUANGE
         
     }
+    
     @Override
     public List<TaskSummary> getTasksOwnedByExpirationDateBeforeSpecifiedDate(String userId, List<Status> status, Date date) {
         return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksOwnedWithParticularStatusByExpirationDateBeforeSpecifiedDate",
@@ -297,5 +337,17 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         List<Long> tasks = (List<Long>)pm.queryWithParametersInTransaction("TasksByProcessInstanceId",
                 pm.addParametersToMap("processInstanceId", processInstanceId));
         return tasks;
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(String userId, List<Status> status, Date expirationDate) {
+        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerStatusByExpirationDate",
+                          pm.addParametersToMap("userId", userId, "groupIds", "", "status", status, "expirationDate", expirationDate, "language", "en-UK"));
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(String userId, List<Status> status, Date expirationDate) {
+        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerStatusByExpirationDateOptional",
+                    pm.addParametersToMap("userId", userId, "groupIds", "", "status", status, "expirationDate", expirationDate, "language", "en-UK")); //@TODO: FIX LANGUANGE
     }
 }

@@ -16,10 +16,16 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.util.List;
+
 import org.drools.compiler.compiler.xml.XmlDumper;
+import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.bpmn2.core.Error;
 import org.jbpm.process.core.event.EventTypeFilter;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.EventNode;
+import org.kie.api.definition.process.NodeContainer;
 import org.xml.sax.Attributes;
 
 public class EventNodeHandler extends AbstractNodeHandler {
@@ -78,7 +84,8 @@ public class EventNodeHandler extends AbstractNodeHandler {
                 writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
                 xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
                 xmlDump.append(">" + EOL);
-                xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" />" + EOL);
+                String errorId = getErrorIdForErrorCode(type, eventNode);
+                xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(errorId) + "\" />" + EOL);
                 endNode("boundaryEvent", xmlDump);
             } else if (type.startsWith("Timer-")) {
                 type = type.substring(attachedTo.length() + 7);

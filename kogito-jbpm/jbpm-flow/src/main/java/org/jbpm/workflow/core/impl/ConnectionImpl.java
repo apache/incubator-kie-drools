@@ -18,6 +18,7 @@ package org.jbpm.workflow.core.impl;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.kie.api.definition.process.Node;
@@ -42,6 +43,10 @@ public class ConnectionImpl implements Connection, Serializable {
     }
 
     /**
+     * This constructor calls {@link #connect()} itself! That means
+     * that simply creating the object also adds it to the appropriate
+     * {@link List} fields in other objects.
+     * </p>
      * Creates a new connection, given a from node, a to node 
      * and a type.
      * 

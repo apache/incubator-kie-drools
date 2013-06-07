@@ -18,6 +18,7 @@ package org.jbpm.workflow.core.node;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.DroolsAction;
 import org.kie.api.definition.process.Node;
@@ -27,18 +28,17 @@ public class EventSubProcessNode extends CompositeContextNode {
     private static final long serialVersionUID = 2200928773922042238L;
 
     private List<String> events = new ArrayList<String>();
+    private List<EventTypeFilter> eventTypeFilters = new ArrayList<EventTypeFilter>();
     private boolean keepActive = true;
     
-    public void addEvent(String event) {
-        this.events.add(event);
+    public void addEvent(EventTypeFilter filter) {
+        String type = filter.getType();
+        this.events.add(type);
+        this.eventTypeFilters.add(filter);
     }
     
     public List<String> getEvents() {
         return events;
-    }
-
-    public void setEvents(List<String> events) {
-        this.events = events;
     }
 
     public boolean isKeepActive() {
@@ -69,9 +69,13 @@ public class EventSubProcessNode extends CompositeContextNode {
 
     @Override
     public boolean acceptsEvent(String type, Object event) { 
-        return events.contains(type);
+        for( EventTypeFilter filter : this.eventTypeFilters ) { 
+            if( filter.acceptsEvent(type, event) ) { 
+                return true;
+            }
+        }
+        return false;
     }
-    
     
 }
 

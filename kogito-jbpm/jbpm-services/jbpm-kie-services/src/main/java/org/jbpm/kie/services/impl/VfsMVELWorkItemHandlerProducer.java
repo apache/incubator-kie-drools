@@ -16,7 +16,7 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.commons.java.nio.file.Path;
 import org.mvel2.MVEL;
 
-public class MVELWorkItemHandlerProducer implements WorkItemHandlerProducer {
+public class VfsMVELWorkItemHandlerProducer implements WorkItemHandlerProducer {
 
     @Inject
     private FileService fs;
@@ -24,7 +24,7 @@ public class MVELWorkItemHandlerProducer implements WorkItemHandlerProducer {
     @Vfs
     private Instance<DeploymentService> deploymentService;
 
-    public MVELWorkItemHandlerProducer() {
+    public VfsMVELWorkItemHandlerProducer() {
     }
 
     public void setFs(FileService fs) {
@@ -41,6 +41,9 @@ public class MVELWorkItemHandlerProducer implements WorkItemHandlerProducer {
                 return handlers;
             }
             DeployedUnit deployedUnit = deploymentService.get().getDeployedUnit(identifier);
+            if (deployedUnit == null) {
+                return handlers;
+            }
             VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) deployedUnit.getDeploymentUnit();
             Path assetFolder = fs.getPath(vfsUnit.getRepository() + vfsUnit.getRepositoryFolder());
             if (identifier == null || !fs.exists(assetFolder)) {

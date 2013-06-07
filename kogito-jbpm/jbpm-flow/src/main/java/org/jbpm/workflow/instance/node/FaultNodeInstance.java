@@ -51,7 +51,13 @@ public class FaultNodeInstance extends NodeInstanceImpl {
         ExceptionScopeInstance exceptionScopeInstance = getExceptionScopeInstance(faultName);
         NodeInstanceContainer nodeInstanceContainer =  (NodeInstanceContainer) getNodeInstanceContainer();
         nodeInstanceContainer.removeNodeInstance(this);
+        boolean exceptionHandled = false;
         if (getFaultNode().isTerminateParent()) {
+            // handle exception before canceling nodes to allow boundary event to catch the events
+            if (exceptionScopeInstance != null) {
+                exceptionHandled = true;
+                handleException(faultName, exceptionScopeInstance);                
+            }
             if (nodeInstanceContainer instanceof CompositeNodeInstance) {
 
                 ((CompositeNodeInstance) nodeInstanceContainer).cancel();
@@ -63,7 +69,9 @@ public class FaultNodeInstance extends NodeInstanceImpl {
             }
         }
         if (exceptionScopeInstance != null) {
-        	handleException(faultName, exceptionScopeInstance);
+            if (!exceptionHandled) {
+                handleException(faultName, exceptionScopeInstance);
+            }
         } else {
 
         	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED, faultName);

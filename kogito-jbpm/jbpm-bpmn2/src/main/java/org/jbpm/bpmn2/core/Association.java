@@ -27,6 +27,7 @@ public class Association implements Serializable {
 	private String id;
 	private String sourceRef;
 	private String targetRef;
+	private String direction = "none";
 	
 	public String getId() {
 		return id;
@@ -51,4 +52,12 @@ public class Association implements Serializable {
 	public void setTargetRef(String targetRef) {
 		this.targetRef = targetRef;
 	}
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
 }

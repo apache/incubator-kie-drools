@@ -38,6 +38,7 @@ import org.jbpm.process.core.timer.impl.GlobalTimerService.DisposableCommandServ
  */
 public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
 
+    private static final long serialVersionUID = -5383556604449217342L;
     private String timerServiceId;
 
     public GlobalJpaTimerJobInstance(Job job, JobContext ctx, Trigger trigger,
@@ -59,7 +60,7 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
             
             return null;
         } catch( Exception e ) { 
-            e.printStackTrace();
+
             throw e;
         } finally {
             if (commandService != null && commandService instanceof DisposableCommandService) {

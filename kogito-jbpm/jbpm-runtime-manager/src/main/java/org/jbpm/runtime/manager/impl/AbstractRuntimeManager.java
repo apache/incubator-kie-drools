@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.runtime.manager.impl;
 
 import java.util.List;
@@ -10,7 +25,7 @@ import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
-import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
+import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.tx.ExtendedJTATransactionManager;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -21,6 +36,19 @@ import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 
+/**
+ * Common implementation that all <code>RuntimeManager</code> implementation should inherit from.
+ * Provides following capabilities:
+ * <ul>
+ *  <li>keeps track of all active managers by its identifier and prevents of having multiple managers with same id</li>
+ *  <li>provides common close operation</li>
+ *  <li>injects RuntimeManager into ksession's environment for further reference</li>
+ *  <li>registers dispose callbacks (via transaction synchronization) 
+ *  to dispose runtime engine automatically on transaction completion</li>
+ *  <li>registers all defined items (work item handlers, event listeners)</li>
+ * </ul>
+ * Additionally, provides abstract <code>init</code> method that will be called on RuntimeManager instantiation. 
+ */
 public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
 
     protected volatile static List<String> activeManagers = new CopyOnWriteArrayList<String>();
@@ -36,6 +64,8 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         }
         
     }
+    
+    public abstract void init();
     
     protected void registerItems(RuntimeEngine runtime) {
         RegisterableItemsFactory factory = environment.getRegisterableItemsFactory();

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.runtime.manager.impl;
 
 import java.lang.reflect.Constructor;
@@ -17,6 +32,23 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 
+/**
+ * The most basic <code>RegisterableItemsFactory</code> implementation that allows to define listeners and work
+ * item handlers by their class and whenever they will be required new instance will be created out of the given
+ * <code>Class</code> instance.
+ * It's construction is limited to only two options:
+ * <ul>
+ *  <li>default - no argument constructor</li>
+ *  <li>single argument constructor of type <code>KieSession</code></li>
+ * </ul> 
+ * to populate this factory with class definitions use halper methods:
+ * <ul>
+ *  <li>addWorkItemHandler</li>
+ *  <li>addProcessListener</li>
+ *  <li>addAgendaListener</li>
+ *  <li>addWorkingMemoryListener</li>
+ * </ul>
+ */
 public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory {
 
     private Map<String, Class<? extends WorkItemHandler>> workItemHandlersClasses = new ConcurrentHashMap<String, Class<? extends WorkItemHandler>>();

@@ -19,8 +19,8 @@ package org.jbpm.workflow.instance.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.api.definition.process.Node;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.CompositeNode;
@@ -44,6 +44,7 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.impl.factory.CreateNewNodeFactory;
 import org.jbpm.workflow.instance.impl.factory.ReuseNodeFactory;
 import org.jbpm.workflow.instance.node.ActionNodeInstance;
+import org.jbpm.workflow.instance.node.BoundaryEventNodeInstance;
 import org.jbpm.workflow.instance.node.CatchLinkNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
@@ -64,6 +65,7 @@ import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.jbpm.workflow.instance.node.ThrowLinkNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
+import org.kie.api.definition.process.Node;
 
 public class NodeInstanceFactoryRegistry {
 	
@@ -113,6 +115,8 @@ public class NodeInstanceFactoryRegistry {
                   new CreateNewNodeFactory( StateNodeInstance.class ) );
         register( DynamicNode.class,
                   new CreateNewNodeFactory( DynamicNodeInstance.class ) );
+        register( BoundaryEventNode.class,
+                new CreateNewNodeFactory( BoundaryEventNodeInstance.class ) );
         
         register(CatchLinkNode.class, new CreateNewNodeFactory(
 				CatchLinkNodeInstance.class));

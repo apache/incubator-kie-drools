@@ -169,7 +169,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     }
 
     @Override
-    public ProcessDesc findProcessId(final String bpmn2Content) {
+    public ProcessDesc findProcessId(final String bpmn2Content, ClassLoader classLoader) {
         if (bpmn2Content == null || "".equals(bpmn2Content)) {
             return null;
         }
@@ -179,8 +179,13 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
             BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
         }
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-       
+        KnowledgeBuilder kbuilder = null;
+        if (classLoader != null) {
+            PackageBuilderConfiguration pconf = new PackageBuilderConfiguration(classLoader);
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pconf);
+        } else {
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        }
         kbuilder.add(new ByteArrayResource(bpmn2Content.getBytes()), ResourceType.BPMN2);
         if (kbuilder.hasErrors()) {
             for(KnowledgeBuilderError error: kbuilder.getErrors()){

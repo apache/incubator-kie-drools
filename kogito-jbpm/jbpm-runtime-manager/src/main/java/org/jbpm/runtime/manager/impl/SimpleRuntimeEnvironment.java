@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.runtime.manager.impl;
 
 import java.util.Properties;
@@ -6,6 +21,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
+import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
@@ -22,6 +38,23 @@ import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.task.api.UserGroupCallback;
 
+/**
+ * The most basic implementation of <code>RuntimeEnvironment</code> that at the same time serves as base 
+ * implementation for all extensions. Encapsulates all important configuration that <code>RuntimeManager</code>
+ * requires for execution.
+ * <ul>
+ *  <li>EntityManagerFactory - shared for all runtime engine build based on same <code>RuntimeEnvironment</code></li>
+ *  <li>Environment - Drools/jBPM environment object - will be cloned for every <code>RuntimeEngine</code></li>
+ *  <li>KieSessionConfiguration - will be build passed on defined properties - cloned for every <code>RuntimeEngine</code></li>
+ *  <li>KieBase - resulting knowledge base build on given assets or returned if it was preset</li>
+ *  <li>RegisterableItemsFactory - factory used to provide listeners and work item handlers</li>
+ *  <li>Mapper - mapper used to keep context information</li>
+ *  <li>UserGroupCallback - user group callback, if not given null will be returned</li>
+ *  <li>GlobalSchedulerService - since this environment implements <code>SchedulerProvider</code>
+ *  it allows to get <code>GlobalTimerService</code> if available</li>
+ * </ul>
+ *
+ */
 public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerProvider {
     
     protected boolean usePersistence;
@@ -55,6 +88,11 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
         }
     }
     
+    /**
+     * Adds given asset to knowledge builder to produce KieBase
+     * @param resource asset to be added 
+     * @param type type of the asset
+     */
     public void addAsset(Resource resource, ResourceType type) {
         this.kbuilder.add(resource, type);
         if (this.kbuilder.hasErrors()) {            
@@ -67,10 +105,21 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
         }
     }
     
+    /**
+     * Adds element to the drools/jbpm environment - the value must be thread save as it will be shared between all 
+     * <code>RuntimeEngine</code> instances
+     * @param name name of the environment entry
+     * @param value value of the environment entry
+     */
     public void addToEnvironment(String name, Object value) {
         this.environment.set(name, value);
     }
     
+    /**
+     * Adds configuration property that will be part of <code>KieSessionConfiguration</code>
+     * @param name name of the property
+     * @param value value of the property
+     */
     public void addToConfiguration(String name, String value) {
         if (this.sessionConfigProperties == null) {
             this.sessionConfigProperties = new Properties();
@@ -174,6 +223,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     public GlobalSchedulerService getSchedulerService() {
         return this.schedulerService;
     }
+    
     public void setSchedulerService(GlobalSchedulerService schedulerService) {
         this.schedulerService = schedulerService;
     }

@@ -17,12 +17,14 @@
 package org.jbpm.workflow.core.impl;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.api.definition.process.Node;
 import org.jbpm.process.core.Context;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.node.CompositeNode;
 
 /**
  * 
@@ -59,9 +61,33 @@ public class NodeContainerImpl implements Serializable, NodeContainer {
     public Node getNode(final long id) {
         Node node = this.nodes.get(id);
         if (node == null) {
+            node = getInnerNode(id, this.nodes.values().toArray(new Node[this.nodes.size()]));
+        }
+        if (node == null) {
             throw new IllegalArgumentException("Unknown node id: " + id);
         }
         return node; 
+    }
+
+    /**
+     * If any of the inner nodes are CompositeNodes: 
+     * 1. Check if they contain Node[id]
+     * 2. Otherwise, call this on the nodes of the inner CompositeNode
+     * @param id The id of the Node we're searching for
+     * @param nodes The list of nodes from the CompositeNode we encountered in the method above us.
+     * @return The searched for Node, or null, if it could not be found. 
+     */
+    private Node getInnerNode(final long id, Node [] nodes) { 
+        for( Node node : nodes ) { 
+            if( node instanceof CompositeNode ) { 
+                Node innerNode = ((CompositeNode) node).getNode(id);
+                if( innerNode != null ) { 
+                    return innerNode;
+                }
+                return getInnerNode(id, ((CompositeNode) node).getNodes() );
+            }
+        }
+        return null;
     }
     
     public Node internalGetNode(long id) {

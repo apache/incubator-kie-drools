@@ -127,7 +127,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
                     resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
                 if (exceptionScopeInstance == null) {
-                    throw new WorkflowRuntimeException(this, "Unable to execute Action: " + e.getMessage(), e);
+                    throw new WorkflowRuntimeException(this, getProcessInstance(), "Unable to execute Action: " + e.getMessage(), e);
                 }
                 // workItemId must be set otherwise cancel activity will not find the right work item
                 this.workItemId = workItem.getId();

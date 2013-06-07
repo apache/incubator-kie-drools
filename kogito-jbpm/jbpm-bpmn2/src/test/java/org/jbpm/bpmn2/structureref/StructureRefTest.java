@@ -15,19 +15,40 @@
  */
 package org.jbpm.bpmn2.structureref;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbpm.bpmn2.NewJbpmBpmn2TestBase;
+import org.jbpm.bpmn2.JbpmBpmn2TestCase;
+import org.jbpm.bpmn2.StartEventTest;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class StructureRefTest extends NewJbpmBpmn2TestBase {
+@RunWith(Parameterized.class)
+public class StructureRefTest extends JbpmBpmn2TestCase {
 
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false } };
+        return Arrays.asList(data);
+    };
+
+    private Logger logger = LoggerFactory.getLogger(StartEventTest.class);
+
+    public StructureRefTest(boolean persistence) {
+        super(persistence);
+    }
+    
     @Test
     public void testStringStructureRef() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-StringStructureRef.bpmn2");

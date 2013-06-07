@@ -129,6 +129,9 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
             return;
         } 
 		writeNode("task", workItemNode, xmlDump, metaDataType);
+        if( (Boolean) workItemNode.getMetaData("isForCompensation") ) { 
+            xmlDump.append("isForCompensation=\"true\" ");
+        }	
 		xmlDump.append("tns:taskName=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" >" + EOL);
 		writeScripts(workItemNode, xmlDump);
 		writeIO(workItemNode, xmlDump);

@@ -112,8 +112,8 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
         
-        System.out.println(xml);
-        System.out.println("-------------------");
+        // System.out.println(xml);
+        // System.out.println("-------------------");
         
         SemanticModules modules = new SemanticModules();
         modules.addSemanticModule(new ProcessSemanticModule());
@@ -132,7 +132,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
         
-        System.out.println(xml2);
+        // System.out.println(xml2);
         
 //        assertEquals(xml, xml2);
     }
@@ -543,7 +543,7 @@ public class XMLPersistenceTest extends TestCase {
             throw new IllegalArgumentException("Failed to persist full nodes!");
         }
         
-        System.out.println(xml);
+        // System.out.println(xml);
         
         SemanticModules modules = new SemanticModules();
         modules.addSemanticModule(new ProcessSemanticModule());
@@ -563,14 +563,14 @@ public class XMLPersistenceTest extends TestCase {
         assertEquals(2, process.getSwimlaneContext().getSwimlanes().size());
         assertEquals(2, process.getExceptionScope().getExceptionHandlers().size());
         
-        System.out.println("************************************");
+        // System.out.println("************************************");
         
         String xml2 = XmlRuleFlowProcessDumper.INSTANCE.dump(process, true);
         if (xml2 == null) {
             throw new IllegalArgumentException("Failed to persist empty nodes!");
         }
         
-        System.out.println(xml2);
+        // System.out.println(xml2);
         
         assertEquals(xml, xml2);
         

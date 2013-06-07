@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalRuleBase;
@@ -90,6 +91,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         if (workFlow.getProcessXml() != null) {
             _instance.setProcessXml( workFlow.getProcessXml());
         }
+        
+        _instance.addAllCompletedNodeIds(workFlow.getCompletedNodeIds());
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
         if ( swimlaneContextInstance != null ) {
@@ -431,6 +434,10 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setParentProcessInstanceId(_instance.getParentProcessInstanceId());
         long nodeInstanceCounter = _instance.getNodeInstanceCounter();
         processInstance.setKnowledgeRuntime( wm.getKnowledgeRuntime() );
+        List<String> completedNodeIds = processInstance.getCompletedNodeIds();
+        for( String completedNodeId : _instance.getCompletedNodeIdsList() ) { 
+            completedNodeIds.add(completedNodeId);
+        }
 
         if ( _instance.getSwimlaneContextCount() > 0 ) {
             Context swimlaneContext = ((org.jbpm.process.core.Process) process).getDefaultContext( SwimlaneContext.SWIMLANE_SCOPE );

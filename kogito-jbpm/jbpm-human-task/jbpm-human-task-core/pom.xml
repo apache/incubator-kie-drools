@@ -148,6 +148,11 @@
       <artifactId>subethasmtp-wiser</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>javax.ejb</groupId>
+      <artifactId>ejb-api</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

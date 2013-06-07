@@ -70,7 +70,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
             
         }
         System.clearProperty("org.quartz.properties");
-    }
+    }   
     
     @Override
     protected RuntimeManager getManager(RuntimeEnvironment environment) {
@@ -85,21 +85,6 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
         }
     }
 
-    private void testCreateQuartzSchema() {
-        Scanner scanner = new Scanner(this.getClass().getResourceAsStream("/quartz_tables_h2.sql")).useDelimiter(";");
-        try {
-            Connection connection = ((DataSource)InitialContext.doLookup("jdbc/jbpm-ds")).getConnection();
-            Statement stmt = connection.createStatement();
-            while (scanner.hasNext()) {
-                String sql = scanner.next();
-                stmt.executeUpdate(sql);
-            }
-            stmt.close();
-            connection.close();
-        } catch (Exception e) {
-            
-        }
-    }
     
     
     /**

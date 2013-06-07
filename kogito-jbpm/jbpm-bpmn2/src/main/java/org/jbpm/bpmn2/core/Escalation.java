@@ -18,22 +18,22 @@ package org.jbpm.bpmn2.core;
 
 import java.io.Serializable;
 
-public class Escalation implements Serializable {
+public class Escalation extends Signal implements Serializable {
     
 	private static final long serialVersionUID = 510l;
 	
-    private String id;
     private String escalationCode;
     
-    public Escalation(String id, String escalationCode) {
-        this.id = id;
+    public Escalation(String id, String structureRef, String escalationCode) {
+        super(id, structureRef);
         this.escalationCode = escalationCode;
     }
     
-    public String getId() {
-        return id;
+    public Escalation(String id, String escalationCode) {
+        super(id, null);
+        this.escalationCode = escalationCode;
     }
-
+    
     public String getEscalationCode() {
         return escalationCode;
     }

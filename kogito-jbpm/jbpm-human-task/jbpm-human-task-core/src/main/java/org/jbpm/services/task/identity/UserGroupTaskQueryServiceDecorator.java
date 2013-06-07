@@ -2,6 +2,7 @@ package org.jbpm.services.task.identity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
@@ -207,6 +208,34 @@ public class UserGroupTaskQueryServiceDecorator extends
     public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
 
         return delegate.getTasksByProcessInstanceId(processInstanceId);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(String userId, List<Status> status, Date expirationDate) {
+        
+        List<String> groupIds = doUserGroupCallbackOperation(userId, null);
+        return delegate.getTasksAssignedAsPotentialOwnerByExpirationDate(userId, groupIds, status, expirationDate);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(String userId, List<Status> status, Date expirationDate) {
+        List<String> groupIds = doUserGroupCallbackOperation(userId, null);
+        return delegate.getTasksAssignedAsPotentialOwnerByExpirationDateOptional(userId, groupIds, status, expirationDate);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(String userId, List<String> groupIds, List<Status> status, Date expirationDate) {
+        return delegate.getTasksAssignedAsPotentialOwnerByExpirationDate(userId, groupIds, status, expirationDate);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(String userId, List<String> groupIds, List<Status> status, Date expirationDate) {
+        return delegate.getTasksAssignedAsPotentialOwnerByExpirationDateOptional(userId, groupIds, status, expirationDate);
+    }
+
+    @Override
+    public Map<Long, List<String>> getPotentialOwnersForTaskIds(List<Long> taskIds) {
+        return delegate.getPotentialOwnersForTaskIds(taskIds);
     }
 
 }

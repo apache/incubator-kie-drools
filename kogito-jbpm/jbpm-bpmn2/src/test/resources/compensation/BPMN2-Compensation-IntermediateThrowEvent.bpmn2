@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_xItem" structureRef="org.jbpm.bpmn2.objects.StringHolder" />
+  
+  <process processType="Private" isExecutable="true" id="CompensateIntermediateThrowEvent" name="Compensate Intermediate Throw Event Process" >
+
+    <!-- process variables -->
+    <property id="x" itemSubjectRef="_xItem"/>
+    
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    
+    <scriptTask id="_2" name="Task" >
+      <script>System.out.println("Executing task");</script>
+    </scriptTask>
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    
+    <intermediateThrowEvent id="_3" name="CompensateEvent" >
+      <compensateEventDefinition activityRef="_2"/>
+    </intermediateThrowEvent>
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
+    
+    <endEvent id="_4" name="EndEvent" />
+
+    <!-- attached to node _2 (Task) -->    
+    <boundaryEvent id="_5" name="CompensateEvent" attachedToRef="_2" >
+      <compensateEventDefinition/>
+    </boundaryEvent>
+    <association id="_5-_6" sourceRef="_5" targetRef="_6" />
+    
+    <scriptTask id="_6" name="Compensate" isForCompensation="true" >
+      <script>x.setVal("true");</script>
+    </scriptTask>
+
+ </process>
+
+</definitions>

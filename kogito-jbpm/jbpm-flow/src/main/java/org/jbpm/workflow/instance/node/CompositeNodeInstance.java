@@ -23,10 +23,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
@@ -64,7 +66,16 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 					getProcessInstance().addEventListener(
 						((EventNode) node).getType(), new DoNothingEventListener(), true);
 				}
-			}
+			} else if (node instanceof EventSubProcessNode) {
+                List<String> events = ((EventSubProcessNode) node).getEvents();
+                for (String type : events) {
+                    //exclude compensation as they are only valid within process instance scope
+                    if (type.startsWith("Compensate-")) {
+                        continue;
+                    }
+                    getProcessInstance().addEventListener(type, new DoNothingEventListener(), true);
+                }
+            }
     	}
     }
     

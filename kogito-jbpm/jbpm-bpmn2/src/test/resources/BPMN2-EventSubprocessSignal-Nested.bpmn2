@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.omg.org/spec/BPMN/20100524/DI http://www.omg.org/spec/BPMN/20100524/DI-XMI http://www.omg.org/spec/DD/20100524/DC http://www.omg.org/spec/DD/20100524/DC-XMI http://www.omg.org/spec/DD/20100524/DI http://www.omg.org/spec/DD/20100524/DI-XMI" id="Definitions_1" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:process id="BPMN2-EventSubprocessSignal" tns:version="1" tns:packageName="defaultPackage" name="Default Process">
+
+    <bpmn2:startEvent id="_1" name="Start" />
+    <bpmn2:sequenceFlow id="SequenceFlow_5" name="" sourceRef="_1" targetRef="_2"/>
+
+    <bpmn2:subProcess id="_2" name="Sub Process">
+
+      <bpmn2:startEvent id="_2-1" name="Sub Start" />
+      <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="_2-1" targetRef="_2-2"/>
+
+      <bpmn2:subProcess id="_2-2" name="Sub Sub Process">
+        <bpmn2:startEvent id="_2-2-1" name="Sub Sub Start" />
+        <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="_2-2-1" targetRef="_2-2-2"/>
+        <bpmn2:userTask id="_2-2-2" name="Sub Sub User Task" />
+        <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" sourceRef="_2-2-2" targetRef="_2-2-4"/>
+        <bpmn2:endEvent id="_2-2-4" name="Sub Sub End" />
+
+        <bpmn2:subProcess id="_2-2-3" name="Sub Sub Sub Process" triggeredByEvent="true">
+          <bpmn2:startEvent id="_2-2-3-1" name="start-sub" isInterrupting="false">
+            <bpmn2:signalEventDefinition id="SignalEventDefinition_1" signalRef="MySignal"/>
+          </bpmn2:startEvent>
+          <bpmn2:scriptTask id="_2-2-3-2" name="sub-script">
+            <bpmn2:script>System.out.println(&quot;Event sub process triggered&quot;);</bpmn2:script>
+          </bpmn2:scriptTask>
+          <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" sourceRef="_2-2-3-1" targetRef="_2-2-3-2"/>
+          <bpmn2:endEvent id="_2-2-3-3" name="end-sub" />
+          <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" sourceRef="_2-2-3-2" targetRef="_2-2-3-3"/>
+        </bpmn2:subProcess>
+
+      </bpmn2:subProcess>
+      <bpmn2:sequenceFlow id="SequenceFlow_8" name="" sourceRef="_2-2" targetRef="_2-3"/>
+
+      <bpmn2:endEvent id="_2-3" name="Sub End " />
+    </bpmn2:subProcess>
+    <bpmn2:sequenceFlow id="SequenceFlow_6" name="" sourceRef="_2" targetRef="_3"/>
+
+    <bpmn2:endEvent id="_3" name="End" />
+  </bpmn2:process>
+ 
+</bpmn2:definitions>

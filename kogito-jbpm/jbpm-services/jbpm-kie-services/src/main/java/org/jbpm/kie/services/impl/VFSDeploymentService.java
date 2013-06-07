@@ -87,7 +87,7 @@ public class VFSDeploymentService extends AbstractDeploymentService {
             try {
                 processString = new String(fs.loadFile(p));
                 builder.addAsset(ResourceFactory.newByteArrayResource(processString.getBytes()), ResourceType.BPMN2);
-                ProcessDesc process = bpmn2Service.findProcessId(processString);
+                ProcessDesc process = bpmn2Service.findProcessId(processString, null);
                 process.setOriginalPath(p.toUri().toString());
                 process.setDeploymentId(vfsUnit.getIdentifier());
                 deployedUnit.addAssetLocation(process.getId(), process);

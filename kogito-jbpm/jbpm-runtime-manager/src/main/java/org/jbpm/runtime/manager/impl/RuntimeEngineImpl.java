@@ -1,8 +1,20 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.runtime.manager.impl;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -13,6 +25,14 @@ import org.kie.api.task.TaskService;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.DisposeListener;
 
+/**
+ * Implementation of the <code>RuntimeEngine</code> that additionally implement <code>Disposable</code>
+ * interface to allow other components to register listeners on it. Usual case is that listeners
+ * and work item handlers might be interested in receiving notification when runtime engine is disposed
+ * to deactivate itself too and not receive other events.
+ * 
+ *
+ */
 public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 
     private KieSession ksession;
@@ -54,6 +74,8 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
             }
             try {
                 ksession.dispose();
+            } catch(IllegalStateException e){
+                // do nothing most likely ksession was already disposed
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -77,27 +99,4 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
         this.manager = manager;
     }
 
-    private static class KieSessionProxyHandler implements InvocationHandler {
-
-        private static final List<String> NO_OP_METHODS = Arrays.asList(new String[]{"dispose"}); 
-        
-        private KieSession delegate;
-        
-        public KieSessionProxyHandler(KieSession delegate) {
-            this.delegate = delegate;            
-        }
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args)
-                throws Throwable {
-            if (NO_OP_METHODS.contains(method.getName())) {
-                return null;
-            }
-            return method.invoke(delegate, args);
-        }
-        
-        protected KieSession getDelegate() {
-            return this.delegate;
-        }
-        
-    }
 }

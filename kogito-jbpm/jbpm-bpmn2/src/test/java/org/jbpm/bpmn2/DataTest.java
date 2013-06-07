@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -29,6 +30,7 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
+import org.jbpm.bpmn2.xml.ProcessHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -49,7 +51,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 @RunWith(Parameterized.class)
-public class DataTest extends JbpmTestCase {
+public class DataTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
@@ -80,7 +82,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testImport() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-Import.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-Import.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("Import");
         assertProcessInstanceCompleted(processInstance);
@@ -121,11 +123,10 @@ public class DataTest extends JbpmTestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-Association.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("Evaluation");
-        Definitions def = (Definitions) processInstance.getProcess()
-                .getMetaData().get("Definitions");
-        assertNotNull(def.getAssociations());
-        assertTrue(def.getAssociations().size() == 1);
-        Association assoc = def.getAssociations().get(0);
+        List<Association> associations = (List<Association>) processInstance.getProcess().getMetaData().get(ProcessHandler.ASSOCIATIONS);
+        assertNotNull(associations);
+        assertTrue(associations.size() == 1);
+        Association assoc = associations.get(0);
         assertEquals("_1234", assoc.getId());
         assertEquals("_1", assoc.getSourceRef());
         assertEquals("_2", assoc.getTargetRef());
@@ -198,7 +199,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataInputAssociations() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataInputAssociations.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {
@@ -227,7 +228,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataInputAssociationsWithStringObject() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataInputAssociations-string-object.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-string-object.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {
@@ -251,8 +252,7 @@ public class DataTest extends JbpmTestCase {
     }
 
     /**
-     * FIXME
-     * @throws Exception
+     * FIXME testDataInputAssociationsWithLazyLoading
      */
     @Test
     @Ignore
@@ -270,11 +270,9 @@ public class DataTest extends JbpmTestCase {
 
                     public void executeWorkItem(WorkItem workItem,
                             WorkItemManager mgr) {
-                        assertEquals("mydoc", ((Element) workItem
-                                .getParameter("coId")).getNodeName());
-                        assertEquals("mynode", ((Element) workItem
-                                .getParameter("coId")).getFirstChild()
-                                .getNodeName());
+                        Object coIdParamObj = workItem.getParameter("coId");
+                        assertEquals("mydoc", ((Element) coIdParamObj).getNodeName());
+                        assertEquals("mynode", ((Element) workItem.getParameter("coId")).getFirstChild().getNodeName());
                         assertEquals("user",
                                 ((Element) workItem.getParameter("coId"))
                                         .getFirstChild().getFirstChild()
@@ -348,7 +346,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataInputAssociationsWithXMLLiteral() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataInputAssociations-xml-literal.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-xml-literal.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {
@@ -374,8 +372,7 @@ public class DataTest extends JbpmTestCase {
     }
 
     /**
-     * FIXME
-     * @throws Exception
+     * FIXME testDataInputAssociationsWithTwoAssigns
      */
     @Test
     @Ignore
@@ -417,7 +414,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataOutputAssociationsforHumanTask() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataOutputAssociations-HumanTask.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations-HumanTask.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {
@@ -435,8 +432,6 @@ public class DataTest extends JbpmTestCase {
                         try {
                             builder = factory.newDocumentBuilder();
                         } catch (ParserConfigurationException e) {
-                            // TODO Auto-generated catch block
-                            // e.printStackTrace();
                             throw new RuntimeException(e);
                         }
                         final Map<String, Object> results = new HashMap<String, Object>();
@@ -466,7 +461,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataOutputAssociations() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataOutputAssociations.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {
@@ -502,7 +497,7 @@ public class DataTest extends JbpmTestCase {
 
     @Test
     public void testDataOutputAssociationsXmlNode() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-DataOutputAssociations-xml-node.bpmn2");
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations-xml-node.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 new WorkItemHandler() {

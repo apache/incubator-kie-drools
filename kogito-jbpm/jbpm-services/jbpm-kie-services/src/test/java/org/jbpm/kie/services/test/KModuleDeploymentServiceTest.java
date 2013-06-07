@@ -176,6 +176,8 @@ public class KModuleDeploymentServiceTest {
         assertNotNull(deployed.getDeploymentUnit());
         assertNotNull(deployed.getRuntimeManager());
         assertNull(deployed.getDeployedAssetLocation("customtask"));
+        assertEquals(GROUP_ID+":"+ARTIFACT_ID+":"+VERSION+":"+"KBase-test"+":"+"ksession-test", 
+                deployed.getDeploymentUnit().getIdentifier());
 
         assertNotNull(runtimeDataService);
         Collection<ProcessDesc> processes = runtimeDataService.getProcesses();
@@ -221,6 +223,8 @@ public class KModuleDeploymentServiceTest {
         assertNotNull(deployed.getDeploymentUnit());
         assertNotNull(deployed.getRuntimeManager());
         assertNull(deployed.getDeployedAssetLocation("customtask"));
+        assertEquals(GROUP_ID+":"+ARTIFACT_ID+":"+VERSION, 
+                deployed.getDeploymentUnit().getIdentifier());
 
         assertNotNull(runtimeDataService);
         Collection<ProcessDesc> processes = runtimeDataService.getProcesses();

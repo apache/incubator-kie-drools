@@ -11,10 +11,9 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_stringItem" structureRef="String" />
+  <itemDefinition id="_stringItem" structureRef="java.lang.String" />
   
-  <itemDefinition id="_messageType" structureRef="java.lang.String"/>
-  <message id="_message" itemRef="_messageType" />
+  <message id="_message" itemRef="_stringItem" />
   <interface id="_serviceInterface" name="org.jbpm.bpmn2.objects.ExceptionService">
     <operation id="_serviceOperation" name="throwException">
       <inMessageRef>_message</inMessageRef>
@@ -39,33 +38,47 @@
 
     <!-- nodes -->
     <startEvent id="_1" name="Start" />
-    <serviceTask id="_2" name="Throw Exception" operationRef="_serviceOperation" implementation="Other" >
+    <userTask id="_2" name="Hello" >
       <ioSpecification>
-        <dataInput id="_2_input" name="Parameter" />
-        <dataOutput id="_2_result" name="Result" />
         <inputSet>
-          <dataInputRefs>_2_input</dataInputRefs>
         </inputSet>
         <outputSet>
-          <dataOutputRefs>_2_result</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <serviceTask id="_3" name="Throw Exception" operationRef="_serviceOperation" implementation="Other" >
+      <ioSpecification>
+        <dataInput id="_3_input" name="Parameter" />
+        <dataOutput id="_3_result" name="Result" />
+        <inputSet>
+          <dataInputRefs>_3_input</dataInputRefs>
+        </inputSet>
+        <outputSet>
+          <dataOutputRefs>_3_result</dataOutputRefs>
         </outputSet>
       </ioSpecification>
       <dataInputAssociation>
         <sourceRef>serviceInputItem</sourceRef>
-        <targetRef>_2_input</targetRef>
+        <targetRef>_3_input</targetRef>
       </dataInputAssociation>
       <dataOutputAssociation>
-        <sourceRef>_2_result</sourceRef>
+        <sourceRef>_3_result</sourceRef>
         <targetRef>serviceInputItem</targetRef>
       </dataOutputAssociation>
     </serviceTask>
-    <endEvent id="_3" name="End">
+    <endEvent id="_4" name="End">
         <terminateEventDefinition/>
     </endEvent>
 
     <!-- connections -->
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
 
     <subProcess id="_X" name="Exception Handler" triggeredByEvent="true" >
       <startEvent id="_X-1" name="subStart">

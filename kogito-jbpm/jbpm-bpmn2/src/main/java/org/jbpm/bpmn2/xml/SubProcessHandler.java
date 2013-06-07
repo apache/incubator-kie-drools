@@ -17,15 +17,10 @@
 package org.jbpm.bpmn2.xml;
 
 import java.util.List;
-import java.util.Map;
 
-import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.IntermediateLink;
-import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.SequenceFlow;
-import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -41,15 +36,20 @@ public class SubProcessHandler extends AbstractNodeHandler {
     
     
     protected Node createNode(Attributes attrs) {
-    	CompositeContextNode result = new CompositeContextNode();    	
+    	CompositeContextNode subProcessNode = new CompositeContextNode();    	
         String eventSubprocessAttribute = attrs.getValue("triggeredByEvent");
         if (eventSubprocessAttribute != null && Boolean.parseBoolean(eventSubprocessAttribute)) {            
-            result = new EventSubProcessNode();
+            subProcessNode = new EventSubProcessNode();
     	}
         VariableScope variableScope = new VariableScope();
-        result.addContext(variableScope);
-        result.setDefaultContext(variableScope);
-        return result;
+        subProcessNode.addContext(variableScope);
+        subProcessNode.setDefaultContext(variableScope);
+        
+        String compensation = attrs.getValue("isForCompensation");
+        if( compensation != null ) {
+            subProcessNode.setMetaData("isForCompensation", Boolean.parseBoolean(compensation) );
+        }
+        return subProcessNode;
     }
     
     @SuppressWarnings("unchecked")
@@ -61,8 +61,8 @@ public class SubProcessHandler extends AbstractNodeHandler {
             final ExtensibleXmlParser parser) throws SAXException {
 		final Element element = parser.endElementBuilder();
 		Node node = (Node) parser.getCurrent();
-		// determine type of event definition, so the correct type of node
-		// can be generated
+
+		// determine type of event definition, so the correct type of node can be generated
 		boolean found = false;		
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
@@ -89,8 +89,10 @@ public class SubProcessHandler extends AbstractNodeHandler {
 		if (!found) {
 			handleCompositeContextNode(node, element, uri, localName, parser);
 		}
-		NodeContainer nodeContainer = (NodeContainer) parser.getParent();
-		nodeContainer.addNode(node);
+		
+        NodeContainer nodeContainer = (NodeContainer) parser.getParent();
+        nodeContainer.addNode(node);
+
 		return node;
 	}
     

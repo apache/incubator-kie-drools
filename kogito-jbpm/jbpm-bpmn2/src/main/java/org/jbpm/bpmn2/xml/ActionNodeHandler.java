@@ -16,6 +16,8 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.util.Map;
+
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.jbpm.workflow.core.Node;
@@ -102,6 +104,10 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 writeNode("scriptTask", actionNode, xmlDump, metaDataType);
                 if (JavaDialect.ID.equals(action.getDialect())) {
                     xmlDump.append("scriptFormat=\"" + XmlBPMNProcessDumper.JAVA_LANGUAGE + "\" ");
+                }
+                Object compensationObj = actionNode.getMetaData("isForCompensation");
+                if( compensationObj != null && (Boolean) compensationObj ) { 
+                    xmlDump.append("isForCompensation=\"true\" ");
                 }
                 if (action.getConsequence() != null) {
                     xmlDump.append(">" + EOL + 
