@@ -1,0 +1,8 @@
+"RuleSet","DeclaresWorkbook"
+"Declare","declare Smurf name : String end"
+
+"RuleTable declares",
+"CONDITION"
+
+"Smurf( name == "$param" )"
+"Pupa"
