@@ -432,7 +432,11 @@ public class Scenario {
     public boolean isInclusive() {
         return inclusive;
     }
-    
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return this.name;
     }
