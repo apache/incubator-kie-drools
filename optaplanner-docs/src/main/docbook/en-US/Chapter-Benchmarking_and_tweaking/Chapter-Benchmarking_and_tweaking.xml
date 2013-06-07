@@ -306,9 +306,9 @@
       <title>Summary statistics</title>
 
       <section>
-        <title>Best score summary</title>
+        <title>Best score summary (graph and table)</title>
 
-        <para>Shows the best score per <literal>inputSolutionFile</literal> and solver configuration.</para>
+        <para>Shows the best score per <literal>inputSolutionFile</literal> for each solver configuration.</para>
 
         <figure>
           <title>Best score summary statistic</title>
@@ -319,6 +319,51 @@
             </imageobject>
           </mediaobject>
         </figure>
+      </section>
+
+      <section>
+        <title>Best score scalability summary (graph and table)</title>
+
+        <para>Shows the best score per problem scale for each solver configuration.</para>
+      </section>
+
+      <section>
+        <title>Winning score difference summary (graph and table)</title>
+
+        <para>Shows the winning score difference score per <literal>inputSolutionFile</literal> for each solver
+        configuration. The winning score difference is the score difference with the score of the winning solver
+        configuration for that particular <literal>inputSolutionFile</literal>.</para>
+      </section>
+
+      <section>
+        <title>Worst score difference percentage (ROI) summary (graph and table)</title>
+
+        <para>Shows the return on investment (ROI) per <literal>inputSolutionFile</literal> for each solver
+        configuration if you'd upgrade from the worst solver configuration for that particular
+        <literal>inputSolutionFile</literal>.</para>
+      </section>
+
+      <section>
+        <title>Time spend summary (graph and table)</title>
+
+        <para>Shows the time spend per <literal>inputSolutionFile</literal> for each solver configuration. This is not
+        useful if it's benchmarking against a fixed time limit.</para>
+      </section>
+
+      <section>
+        <title>Time spend scalability summary (graph and table)</title>
+
+        <para>Shows the time spend per problem scale for each solver configuration. This is not useful if it's
+        benchmarking against a fixed time limit.</para>
+      </section>
+
+      <section>
+        <title>Average calculation count summary (graph and table)</title>
+
+        <para>Shows the average calculation count per second per problem scale for each solver configuration.</para>
+
+        <para>This is very useful to compare the performance and scalability of different score calculators and/or score
+        rules.</para>
       </section>
     </section>
 
@@ -367,14 +412,14 @@
           </mediaobject>
         </figure>
 
-        <para><emphasis role="bold">The best score over time statistic is very useful to detect abnormalities, such as
-        score traps.</emphasis></para>
+        <para><emphasis role="bold">The best score over time statistic is very useful to detect abnormalities, such as a
+        potential <link linkend="scoreTrap">score trap</link>.</emphasis></para>
 
         <note>
-          <para>Don't be fooled by the simulated annealing line in this graph. If you give simulated annealing only 5
-          minutes, it might still be better than 5 minutes of tabu search. That's because this simulated annealing
-          implementation automatically determines its velocity based on the amount of time that can be spend. On the
-          other hand, for the tabu search and late annealing, what you see is what you'd get.</para>
+          <para>A time gradient based algorithm (such as Simulated Annealing) will have a different statistic if it's
+          run with a different time limit configuration. That's because this Simulated Annealing implementation
+          automatically determines its velocity based on the amount of time that can be spend. On the other hand, for
+          the Tabu Search and Late Annealing, what you see is what you'd get.</para>
         </note>
       </section>
 
@@ -393,6 +438,10 @@
             </imageobject>
           </mediaobject>
         </figure>
+
+        <para>Compare the step score statistic with the best score statistic (especially on parts for which the best
+        score flatlines). If it hits a local optima, the solver should take deteriorating steps to escape it. But it
+        shouldn't deteriorate too much</para>
       </section>
 
       <section>
@@ -413,9 +462,11 @@
         </figure>
 
         <note>
-          <para>The initial high calculate count is typical during solution initialization. In this example, it's far
-          easier to calculate the score of a solution if only a handful exams have been added, in contrast to all of
-          them. After those few seconds of initialization, the calculate count is relatively stable, apart from an
+          <para>The initial high calculate count is typical during solution initialization: it's far easier to calculate
+          the score of a solution if only a handful planning entities have been initialized, than when all the planning
+          entities are initialized.</para>
+
+          <para>After those few seconds of initialization, the calculate count is relatively stable, apart from an
           occasional stop-the-world garbage collector disruption.</para>
         </note>
       </section>
