@@ -43,6 +43,9 @@ public class MVELDialectRuntimeData
     implements
     DialectRuntimeData,
     Externalizable {
+
+    private static final long              serialVersionUID = 510l;
+
     private final MapFunctionResolverFactory functionFactory;
 
     private Map<Wireable, MVELCompileable>   invokerLookups;
