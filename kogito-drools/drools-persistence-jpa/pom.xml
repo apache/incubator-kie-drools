@@ -34,7 +34,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.drools.persistence.jpa;singleton:=true</Bundle-SymbolicName>
+            <Bundle-SymbolicName>org.drools.persistence.jpa</Bundle-SymbolicName>
             <Import-Package>
               javax.transaction;resolution:=optional,
               javax.naming;resolution:=optional,
