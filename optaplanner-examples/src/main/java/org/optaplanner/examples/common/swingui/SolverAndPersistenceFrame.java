@@ -216,7 +216,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         private ExecutorService solvingExecutor = Executors.newFixedThreadPool(1);
 
         public SolveAction() {
-            super("Solve");
+            super("Solve", new ImageIcon(SolverAndPersistenceFrame.class.getResource("solveAction.png")));
         }
 
         public void actionPerformed(ActionEvent e) {
