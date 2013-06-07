@@ -1,5 +1,6 @@
 package org.drools.compiler;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -69,7 +70,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test
+    @Test @Ignore
     public void testNestedAccessorWithInlineCast() throws Exception {
         String str = "import org.drools.compiler.*;\n" +
                 "rule R1 when\n" +

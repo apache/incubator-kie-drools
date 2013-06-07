@@ -10,22 +10,21 @@ options {
     package org.drools.compiler.lang;
 
     import java.util.LinkedList;
-    import org.drools.compiler.DroolsParserException;
-    import ParserHelper;
-    import DroolsParserExceptionFactory;
-    import Location;
+    import org.drools.compiler.compiler.DroolsParserException;
+    import org.drools.compiler.lang.ParserHelper;
+    import org.drools.compiler.lang.DroolsParserExceptionFactory;
+    import org.drools.compiler.lang.Location;
     import org.drools.core.CheckedDroolsException;
 
-    import AnnotatedDescrBuilder;
+    import org.drools.compiler.lang.api.AnnotatedDescrBuilder;
 
-    import AtomicExprDescr;
-    import AnnotatedBaseDescr;
-    import AnnotationDescr;
-    import BaseDescr;
-    import ConstraintConnectiveDescr;
-    import RelationalExprDescr;
-    import BindingDescr;
-
+    import org.drools.compiler.lang.descr.AtomicExprDescr;
+    import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
+    import org.drools.compiler.lang.descr.AnnotationDescr;
+    import org.drools.compiler.lang.descr.BaseDescr;
+    import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
+    import org.drools.compiler.lang.descr.RelationalExprDescr;
+    import org.drools.compiler.lang.descr.BindingDescr;
 }
 
 @members {
@@ -532,7 +531,14 @@ primary returns [BaseDescr result]
         (
             ( (DOT ID)=>DOT i2=ID { helper.emit($DOT, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
             |
+            ( (DOT LEFT_PAREN)=>DOT LEFT_PAREN { helper.emit($DOT, DroolsEditorType.SYMBOL); helper.emit($LEFT_PAREN, DroolsEditorType.SYMBOL); }
+                                    expression (COMMA { helper.emit($COMMA, DroolsEditorType.SYMBOL); } expression)*
+                                    RIGHT_PAREN { helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL); }
+            )
+            |
             ( (SHARP ID)=>SHARP i2=ID { helper.emit($SHARP, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
+            |
+            ( (HASH ID)=>HASH i2=ID { helper.emit($HASH, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
             |
             ( (NULL_SAFE_DOT ID)=>NULL_SAFE_DOT i2=ID { helper.emit($NULL_SAFE_DOT, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
         )* ((identifierSuffix)=>identifierSuffix)?
