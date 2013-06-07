@@ -8,6 +8,8 @@
     <version>6.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbpm-human-task-core</artifactId>
+  <packaging>bundle</packaging>
+
   <name>jBPM :: Human Task Core</name>
 
   <dependencies>
@@ -98,7 +100,7 @@
       <artifactId>weld-se-core</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-persistence-jpa</artifactId>
@@ -159,6 +161,26 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.jbpm.services.task</Bundle-SymbolicName>
+            <Import-Package>
+              !org.jbpm.services.task,
+              *
+            </Import-Package>
+            <Private-Package></Private-Package>
+            <Export-Package>
+              org.jbpm.services.task*
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
 
   </build>
 </project>

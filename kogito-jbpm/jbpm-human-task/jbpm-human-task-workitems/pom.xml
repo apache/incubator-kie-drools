@@ -10,6 +10,7 @@
   </parent>
 
   <artifactId>jbpm-human-task-workitems</artifactId>
+  <packaging>bundle</packaging>
 
   <name>jBPM :: Human Task WorkItems</name>
 
@@ -35,7 +36,7 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.kie.commons</groupId>
       <artifactId>kie-commons-io</artifactId>
     </dependency>
@@ -118,6 +119,7 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
+
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -138,6 +140,24 @@
             <export>false</export>
             <format>true</format>
           </componentProperties>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.jbpm.services.task.wih</Bundle-SymbolicName>
+            <Import-Package>
+              !org.jbpm.services.task.wih,
+              *
+            </Import-Package>
+            <Private-Package></Private-Package>
+            <Export-Package>
+              org.jbpm.services.task.wih*
+            </Export-Package>
+          </instructions>
         </configuration>
       </plugin>
     </plugins>

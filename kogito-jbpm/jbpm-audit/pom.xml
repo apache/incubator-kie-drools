@@ -11,6 +11,7 @@
   </parent>
 
   <artifactId>jbpm-audit</artifactId>
+  <packaging>bundle</packaging>
 
   <name>jBPM :: Audit</name>
 
@@ -41,6 +42,24 @@
               </includes>
             </fileset>
          </filesets>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.jbpm.process.audit</Bundle-SymbolicName>
+            <Import-Package>
+              !org.jbpm.process.audit,
+              *
+            </Import-Package>
+            <Private-Package></Private-Package>
+            <Export-Package>
+              org.jbpm.process.audit*
+            </Export-Package>
+          </instructions>
         </configuration>
       </plugin>
     </plugins>
@@ -132,7 +151,6 @@
  
   <properties>
     <maven.jdbc.url>jdbc:h2:mem:bamTest;MVCC=TRUE</maven.jdbc.url>
-
   </properties>
-  
+
 </project>

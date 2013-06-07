@@ -11,7 +11,8 @@
   </parent>
 
   <artifactId>jbpm-bpmn2</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
+  <packaging>bundle</packaging>
+  <!-- bundle = jar + OSGi metadata -->
 
   <name>jBPM :: BPMN2</name>
   <description>jBPM BPMN2</description>
@@ -81,7 +82,7 @@
       <groupId>org.codehaus.btm</groupId>
       <artifactId>btm</artifactId>
       <scope>test</scope>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
@@ -115,7 +116,7 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
-    
+
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -124,15 +125,25 @@
           <instructions>
             <Bundle-SymbolicName>org.jbpm.bpmn2</Bundle-SymbolicName>
             <Bundle-Activator>org.jbpm.osgi.bpmn2.Activator</Bundle-Activator>
+            <Import-Package>
+              !org.jbpm.compiler
+              org.drools.core*;version=6.0.0,
+              org.drools.compiler*;version=6.0.0,
+              org.kie.api*;version=6.0.0,
+              *
+            </Import-Package>
+            <Export-Package>
+              *
+            </Export-Package>
           </instructions>
         </configuration>
       </plugin>
-       <plugin>
+      <plugin>
         <!--  ensure that db files are deleted before _any_ run
               otherwise we get tests failing because of leftover db's -->
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
-         <filesets>
+          <filesets>
             <fileset>
               <directory>${basedir}</directory>
               <includes>
@@ -140,7 +151,7 @@
                 <include>*.db</include>
               </includes>
             </fileset>
-         </filesets>
+          </filesets>
         </configuration>
       </plugin>
     </plugins>
