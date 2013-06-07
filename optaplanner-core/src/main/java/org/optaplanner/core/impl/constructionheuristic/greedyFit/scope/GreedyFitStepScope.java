@@ -49,12 +49,18 @@ public class GreedyFitStepScope extends AbstractStepScope {
     }
 
     /**
-     * Should not be called because {@link #isBestSolutionCloningDelayed} return true
+     * Should not be called because {@link #isBestSolutionCloningDelayed} returns true
      * @return throws exception
      */
     @Override
     public int getUninitializedVariableCount() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean hasNoUninitializedVariables() {
+        // TODO might be true in the last step of a construction heuristic
+        return false;
     }
 
     public Object getPlanningEntity() {

@@ -21,8 +21,6 @@ import java.util.List;
 
 import org.optaplanner.benchmark.impl.statistic.AbstractSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
-import org.optaplanner.core.impl.event.SolverEventListener;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -53,8 +51,10 @@ public class StepScoreSingleStatistic extends AbstractSingleStatistic {
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
-            long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            pointList.add(new StepScoreSingleStatisticPoint(timeMillisSpend, stepScope.getScore()));
+            if (stepScope.hasNoUninitializedVariables()) {
+                long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
+                pointList.add(new StepScoreSingleStatisticPoint(timeMillisSpend, stepScope.getScore()));
+            }
         }
 
     }

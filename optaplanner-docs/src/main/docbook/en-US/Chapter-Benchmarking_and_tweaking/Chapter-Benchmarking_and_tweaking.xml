@@ -393,11 +393,6 @@
             </imageobject>
           </mediaobject>
         </figure>
-
-        <note>
-          <para>This statistic will also show the score of uninitialized solutions, which might cause confusion when
-          comparing it with the <literal>BEST_SCORE</literal> statistic.</para>
-        </note>
       </section>
 
       <section>

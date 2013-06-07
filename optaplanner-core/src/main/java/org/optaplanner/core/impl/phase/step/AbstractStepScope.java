@@ -46,6 +46,10 @@ public abstract class AbstractStepScope {
 
     public abstract int getUninitializedVariableCount();
 
+    public boolean hasNoUninitializedVariables() {
+        return getUninitializedVariableCount() == 0;
+    }
+
     public Score getScore() {
         return score;
     }
