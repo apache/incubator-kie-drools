@@ -531,7 +531,14 @@ primary returns [BaseDescr result]
         (
             ( (DOT ID)=>DOT i2=ID { helper.emit($DOT, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
             |
+            ( (DOT LEFT_PAREN)=>DOT LEFT_PAREN { helper.emit($DOT, DroolsEditorType.SYMBOL); helper.emit($LEFT_PAREN, DroolsEditorType.SYMBOL); }
+                                    expression (COMMA { helper.emit($COMMA, DroolsEditorType.SYMBOL); } expression)*
+                                    RIGHT_PAREN { helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL); }
+            )
+            |
             ( (SHARP ID)=>SHARP i2=ID { helper.emit($SHARP, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
+            |
+            ( (HASH ID)=>HASH i2=ID { helper.emit($HASH, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
             |
             ( (NULL_SAFE_DOT ID)=>NULL_SAFE_DOT i2=ID { helper.emit($NULL_SAFE_DOT, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
         )* ((identifierSuffix)=>identifierSuffix)?

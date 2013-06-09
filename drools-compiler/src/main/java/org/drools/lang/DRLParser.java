@@ -3362,7 +3362,7 @@ public class DRLParser {
     }
 
     /**
-     * nestedConstraint := ( ID ( DOT | SHARP ) )* ID DOT LEFT_PAREN constraints RIGHT_PAREN
+     * nestedConstraint := ( ID ( DOT | HASH ) )* ID DOT LEFT_PAREN constraints RIGHT_PAREN
      * @param pattern
      * @throws RecognitionException
      */
@@ -3390,7 +3390,7 @@ public class DRLParser {
             int nextToken = input.LA( ++cursor );
             switch (lastToken) {
                 case DRLLexer.ID:
-                    if ( nextToken != DRLLexer.DOT && nextToken != DRLLexer.SHARP ) {
+                    if ( nextToken != DRLLexer.DOT && nextToken != DRLLexer.HASH ) {
                         return -1;
                     }
                     break;
@@ -3398,7 +3398,7 @@ public class DRLParser {
                     if ( nextToken == DRLLexer.LEFT_PAREN ) {
                         return cursor;
                     }
-                case DRLLexer.SHARP:
+                case DRLLexer.HASH:
                     if ( nextToken != DRLLexer.ID ) {
                         return -1;
                     }
