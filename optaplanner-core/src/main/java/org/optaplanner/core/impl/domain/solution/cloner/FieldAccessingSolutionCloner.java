@@ -44,9 +44,9 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {
 
-    protected SolutionDescriptor solutionDescriptor;
-    protected Map<Class, Constructor> constructorCache = new HashMap<Class, Constructor>();
-    protected Map<Class, Field[]> fieldsCache = new HashMap<Class, Field[]>();
+    protected final SolutionDescriptor solutionDescriptor;
+    protected final Map<Class, Constructor> constructorCache = new HashMap<Class, Constructor>();
+    protected final Map<Class, Field[]> fieldsCache = new HashMap<Class, Field[]>();
 
     public FieldAccessingSolutionCloner(SolutionDescriptor solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
