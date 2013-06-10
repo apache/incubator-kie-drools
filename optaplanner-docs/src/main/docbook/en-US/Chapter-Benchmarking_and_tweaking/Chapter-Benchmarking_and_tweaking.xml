@@ -360,10 +360,11 @@
       <section>
         <title>Average calculation count summary (graph and table)</title>
 
-        <para>Shows the average calculation count per second per problem scale for each solver configuration.</para>
+        <para>Shows the score calculation speed: the average calculation count per second per problem scale for each
+        solver configuration.</para>
 
-        <para>This is very useful to compare the performance and scalability of different score calculators and/or score
-        rules.</para>
+        <para>This is very useful to compare the performance and scalability of different score calculator and/or score
+        rule implementations.</para>
       </section>
     </section>
 
@@ -399,8 +400,12 @@
       <section>
         <title>Best score over time statistic (graph and CSV)</title>
 
-        <para>To see how the best score evolves over time, add <literal>BEST_SCORE</literal> as <literal>a
-        problemStatisticType</literal>.</para>
+        <para>To see how the best score evolves over time, add:</para>
+
+        <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
 
         <figure>
           <title>Best score over time statistic</title>
@@ -426,8 +431,12 @@
       <section>
         <title>Step score over time statistic (graph and CSV)</title>
 
-        <para>To see how the step score evolves over time, add <literal>STEP_SCORE</literal> as <literal>a
-        problemStatisticType</literal>.</para>
+        <para>To see how the step score evolves over time, add:</para>
+
+        <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;STEP_SCORE&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
 
         <figure>
           <title>Step score over time statistic</title>
@@ -441,14 +450,18 @@
 
         <para>Compare the step score statistic with the best score statistic (especially on parts for which the best
         score flatlines). If it hits a local optima, the solver should take deteriorating steps to escape it. But it
-        shouldn't deteriorate too much</para>
+        shouldn't deteriorate too much either.</para>
       </section>
 
       <section>
         <title>Calculate count per second statistic (graph and CSV)</title>
 
-        <para>To see how fast the scores are calculated, add <literal>CALCULATE_COUNT_PER_SECOND</literal> as a
-        <literal>problemStatisticType</literal>.</para>
+        <para>To see how fast the scores are calculated, add:</para>
+
+        <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;CALCULATE_COUNT_PER_SECOND&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
 
         <figure>
           <title>Calculate count per second statistic</title>
@@ -472,10 +485,41 @@
       </section>
 
       <section>
+        <title>Best solution mutation over time statistic (graph and CSV)</title>
+
+        <para>To see how much each new best solution differs from the <emphasis>previous best solution</emphasis>, by
+        counting the number of planning variables which have a different value (not including the variables that have
+        changed multiple times but still end up with the same value), add:</para>
+
+        <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;BEST_SOLUTION_MUTATION&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+        <figure>
+          <title>Best solution mutation over time statistic</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestSolutionMutationStatistic.png"
+                         format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>Use Tabu Search - an algorithm that behaves like a human - to get an estimation on how difficult it would
+        be for a human to improve the previous best solution to that new best solution.</para>
+      </section>
+
+      <section>
         <title>Memory use statistic (graph and CSV)</title>
 
-        <para>To see how much memory is used, add <literal>MEMORY_USE</literal> as <literal>a
-        problemStatisticType</literal>.</para>
+        <para>To see how much memory is used, add:</para>
+
+        <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;MEMORY_USE&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
 
         <figure>
           <title>Memory use statistic</title>
