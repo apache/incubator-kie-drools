@@ -18,6 +18,7 @@
       <problemStatisticType>BEST_SCORE</problemStatisticType>
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
+      <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->
       <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
     </problemBenchmarks>
 
