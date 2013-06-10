@@ -29,7 +29,7 @@ public enum ProblemStatisticType implements StatisticType {
     STEP_SCORE,
     CALCULATE_COUNT_PER_SECOND,
     BEST_SOLUTION_MUTATION,
-    IMPROVING_STEP_PERCENTAGE,
+    @Deprecated IMPROVING_STEP_PERCENTAGE,
     MEMORY_USE;
 
     public ProblemStatistic create(ProblemBenchmark problemBenchmark) {
