@@ -79,6 +79,8 @@ public class KModuleDeploymentServiceTest {
                 .addPackage("org.jbpm.services.task.deadlines") // deadlines
                 .addPackage("org.jbpm.services.task.deadlines.notifications.impl")
                 .addPackage("org.jbpm.services.task.subtask")
+                .addPackage("org.jbpm.services.task.rule")
+                .addPackage("org.jbpm.services.task.rule.impl")
 
                 .addPackage("org.kie.api.runtime.manager")
                 .addPackage("org.kie.internal.runtime.manager")

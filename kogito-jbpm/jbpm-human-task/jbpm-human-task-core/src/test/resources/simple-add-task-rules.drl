@@ -1,0 +1,77 @@
+//created on: Jan 11, 2013
+package defaultPackage
+
+//list any import classes here.
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.PeopleAssignments;
+import org.jbpm.services.task.rule.TaskServiceRequest;
+
+import org.jbpm.services.task.impl.model.*;
+import org.jbpm.services.task.internals.rule.AssignmentService;
+
+import java.util.HashMap;
+import java.util.List;
+
+
+//declare any global variables here
+global TaskServiceRequest request;
+global AssignmentService assignmentService;
+
+
+
+rule "Exclude john"
+
+    when
+        $task : Task()
+        $actualOwner : User( id == 'john') from $task.getTaskData().getActualOwner()
+    then
+        $task.getPeopleAssignments().getPotentialOwners().remove($actualOwner);
+        ((TaskDataImpl)$task.getTaskData()).setActualOwner(null);
+        ((TaskDataImpl)$task.getTaskData()).setStatus(Status.Created);
+        ((TaskDataImpl)$task.getTaskData()).assignOwnerAndStatus($task.getPeopleAssignments().getPotentialOwners());
+end
+
+rule "Assign to mary"
+
+    when
+        $task : Task()
+        PeopleAssignments(potentialOwners contains new UserImpl('mary')) from $task.getPeopleAssignments()
+    then
+        ((TaskDataImpl)$task.getTaskData()).setActualOwner(new UserImpl('mary'));
+        ((TaskDataImpl)$task.getTaskData()).setStatus(Status.Reserved);
+end
+
+rule "Dont allow tasks for peter"
+
+    when
+        $task : Task()
+        PeopleAssignments(potentialOwners contains new UserImpl('peter')) from $task.getPeopleAssignments()
+    then
+        request.setAllowed(false);
+        request.addReason("peter does not work here any more");
+end
+
+rule "Dont allow tasks for manager John"
+
+    when
+        $task : Task()
+        $params : HashMap(this["manager"] == 'John')
+        
+    then
+        request.setAllowed(false);
+        request.addReason("John (manager) does not work here any more");
+end
+
+rule "Assign using service"
+
+    when
+        $task : Task()
+        PeopleAssignments(eval(potentialOwners.isEmpty())) from $task.getPeopleAssignments()
+    then
+        assignmentService.assignTask($task);
+        ((TaskDataImpl)$task.getTaskData()).setStatus(Status.Created);
+        ((TaskDataImpl)$task.getTaskData()).assignOwnerAndStatus($task.getPeopleAssignments().getPotentialOwners());
+end
+

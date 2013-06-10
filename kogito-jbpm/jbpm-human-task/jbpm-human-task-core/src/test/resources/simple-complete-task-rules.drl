@@ -1,0 +1,34 @@
+//created on: Jan 11, 2013
+package defaultPackage
+
+//list any import classes here.
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.PeopleAssignments;
+import org.jbpm.services.task.rule.TaskServiceRequest;
+import org.jbpm.services.task.exception.PermissionDeniedException;
+
+import org.jbpm.services.task.impl.model.*;
+import org.jbpm.services.task.internals.rule.AssignmentService;
+
+import java.util.HashMap;
+import java.util.List;
+
+
+//declare any global variables here
+global TaskServiceRequest request;
+
+rule "Don't allow Mary to complete task when rejected"
+
+    when
+        $task : Task()
+        $actualOwner : User( id == 'mary') from $task.getTaskData().getActualOwner()
+        $params : HashMap(this["approved"] == false)
+    then
+        request.setAllowed(false);
+        request.setExceptionClass(PermissionDeniedException.class);
+        request.addReason("Mary is not allowed to complete task with approved false");
+end
+
+

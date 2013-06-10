@@ -36,6 +36,10 @@ import org.jbpm.services.task.impl.TaskQueryServiceImpl;
 import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.services.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.services.task.internals.lifecycle.MVELLifeCycleManager;
+import org.jbpm.services.task.rule.RuleContextProvider;
+import org.jbpm.services.task.rule.TaskRuleService;
+import org.jbpm.services.task.rule.impl.RuleContextProviderImpl;
+import org.jbpm.services.task.rule.impl.TaskRuleServiceImpl;
 import org.jbpm.services.task.subtask.SubTaskDecorator;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
@@ -151,6 +155,12 @@ public class NoCDILifeCycleLocalTest extends LifeCycleBaseTest {
         deadlinesDecorator.setInstanceService(subTaskDecorator);
         
         ((TaskServiceEntryPointImpl)taskService).setTaskInstanceService(deadlinesDecorator);
+        
+        RuleContextProvider ruleProvider = new RuleContextProviderImpl();
+        ((RuleContextProviderImpl)ruleProvider).initialize();
+        TaskRuleService taskRuleService = new TaskRuleServiceImpl();
+        ((TaskRuleServiceImpl)taskRuleService).setRuleContextProvider(ruleProvider);
+        ((TaskServiceEntryPointImpl)taskService).setTaskRuleService(taskRuleService);
 
         super.setUp();
         

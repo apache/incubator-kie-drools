@@ -48,6 +48,9 @@ public class ContentMarshallerHelper {
     private static final Logger logger = LoggerFactory.getLogger(ContentMarshallerHelper.class);
 
     public static ContentDataImpl marshal(Object o, Environment env) {
+        if (o == null) {
+            return null;
+        }
         MarshallerWriteContext context = null;
         ContentDataImpl content = null;
         byte[] toByteArray = marshallContent(env, o);

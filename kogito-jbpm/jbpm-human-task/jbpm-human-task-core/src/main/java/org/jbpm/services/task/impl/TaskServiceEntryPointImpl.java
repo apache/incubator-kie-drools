@@ -19,6 +19,7 @@ import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
+import org.jbpm.services.task.rule.TaskRuleService;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
@@ -83,6 +84,8 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
     private TaskAttachmentService taskAttachmentService;
     @Inject 
     private TaskStatisticsService taskStatisticService;
+    @Inject
+    private TaskRuleService taskRuleService;
     // External NON CDI event Listeners for Task Lifecycle
     private Event<Task> taskEvents = new JbpmServicesEventImpl<Task>();
     // External NON CDI event listener for Task Deadline and Email notifications
@@ -243,6 +246,8 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
     }
 
     public void complete(long taskId, String userId, Map<String, Object> data) {
+        Task task = taskQueryService.getTaskInstanceById(taskId);
+        this.taskRuleService.executeRules(task, userId, data, TaskRuleService.COMPLETE_TASK_SCOPE);
         taskInstanceService.complete(taskId, userId, data);
     }
 
@@ -383,13 +388,15 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
         return taskEventsService.getTaskEventsById(taskId);
     }
 
-    public long addTask(Task task, Map<String, Object> params){
+    public long addTask(Task task, Map<String, Object> params){        
         initializeTask(task);
+        this.taskRuleService.executeRules(task, null, params, TaskRuleService.ADD_TASK_SCOPE);
         return this.taskInstanceService.addTask(task, params);
     }
     
-    public long addTask(Task task, ContentData data){
+    public long addTask(Task task, ContentData data){        
         initializeTask(task);
+        this.taskRuleService.executeRules(task, null, data, TaskRuleService.ADD_TASK_SCOPE);
         return this.taskInstanceService.addTask(task, data);
     }
     
@@ -684,6 +691,14 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
     
     public <T> T execute(Command<T> command) {
     	return ((TaskCommand<T>) command).execute(new TaskContext(this));
+    }
+
+    public TaskRuleService getTaskRuleService() {
+        return taskRuleService;
+    }
+
+    public void setTaskRuleService(TaskRuleService taskRuleService) {
+        this.taskRuleService = taskRuleService;
     }   
 
    
