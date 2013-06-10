@@ -119,7 +119,7 @@ public class BestSolutionMutationProblemStatistic extends AbstractProblemStatist
         }
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " best solution mutation statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "CalculateCountStatistic");
+        graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "BestSolutionMutationStatistic");
     }
 
 }
