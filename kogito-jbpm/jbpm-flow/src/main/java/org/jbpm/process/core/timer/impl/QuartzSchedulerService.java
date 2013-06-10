@@ -202,6 +202,17 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
             scheduler = null;
         }
     }
+    
+    public void forceShutdown() {
+        if (scheduler != null) {
+            try {
+                scheduler.shutdown();
+            } catch (SchedulerException e) {
+//                e.printStackTrace();
+            }
+            scheduler = null;
+        }
+    }
 
     public static class GlobalQuartzJobHandle extends GlobalJobHandle {
         
@@ -242,7 +253,18 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
             try {
                 ((Callable<Void>)timerJobInstance).call();
             } catch (Exception e) {
-                throw new RuntimeException("Exception when executing scheduled job", e);
+                boolean reschedule = true;
+                Integer failedCount = (Integer) quartzContext.getJobDetail().getJobDataMap().get("failedCount");
+                if (failedCount == null) {
+                    failedCount = new Integer(0);
+                }
+                failedCount++;
+                quartzContext.getJobDetail().getJobDataMap().put("failedCount", failedCount);
+                if (failedCount > 5) {
+                    System.err.println("Timer execution failed 5 times in a roll, unscheduling (" + quartzContext.getJobDetail().getFullName()+")");
+                    reschedule = false;
+                }
+                throw new JobExecutionException("Exception when executing scheduled job", e, reschedule);
             }
             
         }

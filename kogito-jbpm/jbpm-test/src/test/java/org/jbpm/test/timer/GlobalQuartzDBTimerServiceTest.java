@@ -2,16 +2,10 @@ package org.jbpm.test.timer;
 
 import static org.junit.Assert.assertNull;
 
-import java.sql.Connection;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Scanner;
-
-import javax.naming.InitialContext;
-import javax.sql.DataSource;
 
 import org.drools.core.time.TimerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
@@ -59,6 +53,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
         System.setProperty("org.quartz.properties", "quartz-db.properties");
         testCreateQuartzSchema();
         globalScheduler = new QuartzSchedulerService();
+        ((QuartzSchedulerService)globalScheduler).forceShutdown();
     }
     
     @After

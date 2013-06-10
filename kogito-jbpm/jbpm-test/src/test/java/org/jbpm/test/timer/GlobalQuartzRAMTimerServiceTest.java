@@ -36,6 +36,7 @@ public class GlobalQuartzRAMTimerServiceTest extends GlobalTimerServiceBaseTest 
         cleanupSingletonSessionId();
         System.setProperty("org.quartz.properties", "quartz-ram.properties");
         globalScheduler = new QuartzSchedulerService();
+        ((QuartzSchedulerService)globalScheduler).forceShutdown();
     }
     
     @After
