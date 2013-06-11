@@ -59,7 +59,6 @@ public class KModuleDeploymentServiceTest {
     @Deployment()
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "domain-services.jar")
-                .addPackage("org.jboss.seam.persistence") //seam-persistence
                 .addPackage("org.jboss.seam.transaction") //seam-persistence
                 .addPackage("org.jbpm.services.task")
                 .addPackage("org.jbpm.services.task.wih") // work items org.jbpm.services.task.wih

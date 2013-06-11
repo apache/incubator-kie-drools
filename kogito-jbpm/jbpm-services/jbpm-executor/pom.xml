@@ -29,8 +29,8 @@
       <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.seam.persistence</groupId>
-      <artifactId>seam-persistence</artifactId>
+      <groupId>org.jboss.seam.transaction</groupId>
+      <artifactId>seam-transaction</artifactId>
     </dependency>
 
     <dependency>
