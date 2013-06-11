@@ -63,18 +63,18 @@ public class DefaultKieSessionFromByteArrayExampleTest {
 		try {
 			InputStream is = new FileInputStream(file);
 
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
-        int nRead;
-        byte[] data = new byte[16384];
+            int nRead;
+            byte[] data = new byte[16384];
 
-        while ((nRead = is.read(data, 0, data.length)) != -1) {
-          buffer.write(data, 0, nRead);
-        }
+            while ((nRead = is.read(data, 0, data.length)) != -1) {
+              buffer.write(data, 0, nRead);
+            }
 
-        buffer.flush();
+            buffer.flush();
 
-        return buffer.toByteArray();
+            return buffer.toByteArray();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -32,6 +32,8 @@ import org.kie.internal.utils.ServiceRegistryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+
 public class KieRepositoryImpl
     implements
     KieRepository {
@@ -172,6 +174,8 @@ public class KieRepositoryImpl
                 MemoryFileSystem mfs = MemoryFileSystem.readFromJar( res.getInputStream() );
                 byte[] bytes = mfs.getBytes( KieModuleModelImpl.KMODULE_JAR_PATH );
                 KieModuleModel kieProject = KieModuleModelImpl.fromXML( new ByteArrayInputStream( bytes ) );
+                setDefaultsforEmptyKieModule(kieProject);
+
                 String pomProperties = mfs.findPomProperties();
                 ReleaseId releaseId = ReleaseIdImpl.fromPropertiesString(pomProperties);
                 kModule = new MemoryKieModule( releaseId, kieProject, mfs );
