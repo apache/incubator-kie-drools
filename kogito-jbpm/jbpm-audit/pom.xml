@@ -127,7 +127,7 @@
     </dependency>
     <dependency>
       <groupId>org.hornetq</groupId>
-      <artifactId>hornetq-core</artifactId>
+      <artifactId>hornetq-server</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
