@@ -402,7 +402,7 @@ public class KieBuilderImpl
         }
     }
 
-    static boolean setDefaultsforEmptyKieModule(KieModuleModel kModuleModel) {
+    public static boolean setDefaultsforEmptyKieModule(KieModuleModel kModuleModel) {
         if ( kModuleModel != null && kModuleModel.getKieBaseModels().isEmpty() ) {
             // would be null if they pass a corrupted kModuleModel
             KieBaseModel kieBaseModel = kModuleModel.newKieBaseModel( "defaultKieBase" ).addPackage( "*" ).setDefault( true );

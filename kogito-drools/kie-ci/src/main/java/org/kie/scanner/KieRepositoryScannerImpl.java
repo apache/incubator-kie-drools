@@ -29,6 +29,7 @@ import java.util.TimerTask;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
 import static org.kie.scanner.ArtifactResolver.getResolverFor;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
 
@@ -131,7 +132,9 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         try {
             zipFile = new ZipFile( jar );
             ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH);
-            return KieModuleModelImpl.fromXML(zipFile.getInputStream(zipEntry));
+            KieModuleModel kieModuleModel = KieModuleModelImpl.fromXML(zipFile.getInputStream(zipEntry));
+            setDefaultsforEmptyKieModule(kieModuleModel);
+            return kieModuleModel;
         } catch ( Exception e ) {
         } finally {
 			if (zipFile != null) {
