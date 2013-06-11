@@ -394,7 +394,16 @@
 &lt;/plannerBenchmark&gt;</programlisting>
 
         <para>Multiple <literal>problemStatisticType</literal> elements are allowed. Some statistic types might
-        influence performance and benchmark results noticeably. The following types are supported:</para>
+        influence performance and benchmark results noticeably.</para>
+
+        <note>
+          <para>These statistic per data set can slow down the solver noticeably, which can affect the benchmark
+          results. That's why they are optional and not enabled by default.</para>
+
+          <para>The non-optional summary statistics cannot slow down the solver noticeably.</para>
+        </note>
+
+        <para>The following types are supported:</para>
       </section>
 
       <section>
@@ -451,6 +460,11 @@
         <para>Compare the step score statistic with the best score statistic (especially on parts for which the best
         score flatlines). If it hits a local optima, the solver should take deteriorating steps to escape it. But it
         shouldn't deteriorate too much either.</para>
+
+        <warning>
+          <para>The step score statistic has been seen to slow down the solver noticeably due to GC stress, especially
+          for fast stepping algorithms (such as Simulated Annealing and Late Acceptance).</para>
+        </warning>
       </section>
 
       <section>
@@ -530,6 +544,10 @@
             </imageobject>
           </mediaobject>
         </figure>
+
+        <warning>
+          <para>The memory use statistic has been seen to affect the solver noticeably.</para>
+        </warning>
       </section>
     </section>
 
