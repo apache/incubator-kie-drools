@@ -18,17 +18,27 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -42,20 +52,15 @@ import org.kie.api.runtime.rule.SessionEntryPoint;
  */
 public class MultithreadTest extends CommonTestMethodBase {
 
-    @Test @Ignore
-    public void testDummy() {
-        
-    }
-
     @Test(timeout = 10000)
     public void testConcurrentInsertions() {
-        String str = "import " + MultithreadTest.Bean.class.getCanonicalName() + "\n" +
-                "\n" +
-                "rule \"R\"\n" +
-                "when\n" +
-                "    $a : Bean( seed != 1 )\n" +
-                "then\n" +
-                "end";
+        String str = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
+                     "\n" +
+                     "rule \"R\"\n" +
+                     "when\n" +
+                     "    $a : Bean( seed != 1 )\n" +
+                     "then\n" +
+                     "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -132,19 +137,19 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 15000) @Ignore("Having intermitent failures... :(")
+    @Test(timeout = 15000)
     public void testSlidingTimeWindows() {
-        String str = "package org.drools.compiler.test\n" +
-                "declare StockTick @role(event) end\n" +
-                "rule R\n" +
-                " duration(1s)" +
-                "when\n" +
-                " accumulate( $st : StockTick() over window:time(2s)\n" +
-                "             from entry-point X,\n" +
-                "             $c : count(1) )" +
-                "then\n" +
-                "    //System.out.println( $c );\n" +
-                "end";
+        String str = "package org.drools\n" +
+                     "declare StockTick @role(event) end\n" +
+                     "rule R\n" +
+                     " duration(1s)" +
+                     "when\n" +
+                     " accumulate( $st : StockTick() over window:time(2s)\n" +
+                     "             from entry-point X,\n" +
+                     "             $c : count(1) )" +
+                     "then\n" +
+                     "    //System.out.println( $c );\n" +
+                     "end";
 
         KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption(EventProcessingOption.STREAM);
@@ -213,8 +218,256 @@ public class MultithreadTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+
+    @Test( timeout = 10000 )
+    public void testClassLoaderRace() throws InterruptedException {
+
+        String drl = "package org.drools.integrationtests;\n" +
+                     "" +
+                     "rule \"average temperature\"\n" +
+                     "when\n" +
+                     " $avg := Number( ) from accumulate ( " +
+                     "      $x : Integer ( ) " +
+                     "      average ($x) )\n" +
+                     "then\n" +
+                     "  System.out.println( $avg );\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        Thread t = new Thread() {
+            public void run()
+            { session.fireUntilHalt(); }
+
+        };
+        t.start();
+
+        session.fireAllRules();
+
+
+        for ( int j = 0; j < 100; j++ ) {
+            session.insert( j );
+        }
+
+        try {
+            Thread.sleep( 1000 );
+            System.out.println( "Halting .." );
+            session.halt();
+        } catch ( Exception e ) {
+            fail( e.getMessage() );
+        }
+    }
+
+
+
+    public static class IntEvent {
+        private int data;
+        public IntEvent( int j ) { data = j; }
+        public int getData() { return data; }
+        public void setData( int data ) { this.data = data; }
+    }
+
+    public class Server {
+        public int currentTemp;
+        public double avgTemp;
+        public String hostname;
+        public int readingCount;
+
+        public Server( String hiwaesdk ) { hostname = hiwaesdk; }
+
+        public String toString() {
+            return "Server{" +
+                   "currentTemp=" + currentTemp +
+                   ", avgTemp=" + avgTemp +
+                   ", hostname='" + hostname + '\'' +
+                   '}';
+        }
+    }
+
+    @Test(timeout = 5000)
+    public void testRaceOnAccumulateNodeSimple() throws InterruptedException {
+
+        String drl = "package org.drools.integrationtests;\n" +
+                     "" +
+                     "import org.drools.compiler.integrationtests.MultithreadTest.IntEvent; \n" +
+                     "import org.drools.compiler.integrationtests.MultithreadTest.Server; \n" +
+                     "" +
+                     "declare IntEvent\n" +
+                     "  @role ( event )\n" +
+                     "  @expires( 15s )\n" +
+                     "end\n" +
+                     "\n" +
+                     "" +
+                     "rule \"average temperature\"\n" +
+                     "when\n" +
+                     "  $s : Server (hostname == \"hiwaesdk\")\n" +
+                     " $avg := Number( ) from accumulate ( " +
+                     "      IntEvent ( $temp : data ) over window:length(10) from entry-point ep01, " +
+                     "      average ($temp)\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  $s.avgTemp = $avg.intValue();\n" +
+                     "  System.out.println( $avg );\n" +
+                     "end\n" +
+                     "\n";
+
+        KieBaseConfiguration kbconfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconfig.setOption(EventProcessingOption.STREAM);
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconfig, drl);
+
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        SessionEntryPoint ep01 = session.getEntryPoint("ep01");
+
+        Runner t = new Runner(session);
+        t.start();
+
+        Thread.sleep( 1000 );
+
+        Server hiwaesdk = new Server ("hiwaesdk");
+        session.insert( hiwaesdk );
+        long LIMIT = 20;
+
+        for ( long i = LIMIT; i > 0; i-- ) {
+            ep01.insert ( new IntEvent ( (int) i ) ); //Thread.sleep (0x1); }
+            if ( i % 1000 == 0 ) {
+                System.out.println( i );
+            }
+        }
+
+        try {
+            Thread.sleep( 1000 );
+            System.out.println( "Halting .." );
+            session.halt();
+        } catch ( Exception e ) {
+            fail( e.getMessage() );
+        }
+
+        if (t.getError() != null) {
+            fail(t.getError().getMessage());
+        }
+    }
+
+
+
+    public static class MyFact {
+        Date timestamp = new Date();
+        String id = UUID.randomUUID().toString();
+
+        public MyFact() {}
+
+        public String getId() {
+            return id;
+        }
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
+
+
+
+    @Test @Ignore
+    public void testConcurrencyWithChronThreads() throws InterruptedException {
+
+        String drl = "package it.intext.drools.fusion.bug;\n" +
+                     "\n" +
+                     "import org.drools.compiler.integrationtests.MultithreadTest.MyFact;\n" +
+                     " global java.util.List list; \n" +
+                     "\n" +
+                     "declare MyFact\n" +
+                     "\t@role( event )\n" +
+                     "\t@expires( 1s )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Dummy\"\n" +
+                     "timer( cron: 0/1 * * * * ? )\n" +
+                     "when\n" +
+                     "  Number( $count : intValue ) from accumulate( MyFact( ) over window:time(1s), sum(1) )\n" +
+                     "then\n" +
+                     "    System.out.println($count+\" myfact(s) seen in the last 1 seconds\");\n" +
+                     "    list.add( $count ); \n" +
+                     "end";
+
+        KieBaseConfiguration kbconfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconfig.setOption(EventProcessingOption.STREAM);
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconfig, drl);
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get("REALTIME"));
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(conf,null);
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        Runner t = new Runner(ksession);
+        t.start();
+
+        final int FACTS_PER_POLL = 1000;
+        final int POLL_INTERVAL = 500;
+
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(
+                new Runnable() {
+
+                    public void run() {
+                        for ( int j = 0; j < FACTS_PER_POLL; j++ ) {
+                            ksession.insert( new MyFact() );
+                        }
+                    }
+                },
+                0,
+                POLL_INTERVAL,
+                TimeUnit.MILLISECONDS );
+
+
+        Thread.sleep( 10200 );
+
+        executor.shutdownNow();
+        ksession.halt();
+        t.join();
+
+        if (t.getError() != null) {
+            fail(t.getError().getMessage());
+        }
+
+        System.out.println( "Final size " + ksession.getObjects().size() );
+        //assertEquals( 2000, ksession.getObjects().size() );
+
+        ksession.dispose();
+    }
+
+    public static class Runner extends Thread {
+
+        private final StatefulKnowledgeSession ksession;
+        private Throwable error;
+
+        public Runner(StatefulKnowledgeSession ksession) {
+            this.ksession = ksession;
+        }
+
+        @Override
+        public void run() {
+            try {
+                ksession.fireUntilHalt();
+            } catch (Throwable t) {
+                error = t;
+                throw new RuntimeException(t);
+            }
+        }
+
+        public Throwable getError() {
+            return error;
+        }
+    }
+
+
     // FIXME
-//    
+//
 //    public void testRuleBaseConcurrentCompilation() {
 //        final int THREAD_COUNT = 30;
 //        try {
@@ -499,7 +752,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 //        final String KEY = "REPLACE";
 //        final int SIZE = 100;
 //        final Package[] pkgs = new Package[SIZE];
-//        final String DRL = "package org.drools.compiler.testols\n" + "    no-loop true\n" + "    dialect \"java\"\n" + "rule \"" + KEY + "\"\n" + "salience 1\n" + "when\n" + "    $fact:Cheese(price == " + KEY + ", oldPrice not in (11,5))\n" + // thread-lock
+//        final String DRL = "package org.drools\n" + "    no-loop true\n" + "    dialect \"java\"\n" + "rule \"" + KEY + "\"\n" + "salience 1\n" + "when\n" + "    $fact:Cheese(price == " + KEY + ", oldPrice not in (11,5))\n" + // thread-lock
 //                           "then\n" + "    //$fact.excludeProduct(" + KEY + ", 1, null, null);\n" + "end\n";
 //        System.out.print( "Building " + pkgs.length + " packages" );
 //        for ( int i = 0; i < pkgs.length; i++ ) {
@@ -526,12 +779,12 @@ public class MultithreadTest extends CommonTestMethodBase {
 //        }
 //        return pkgBuilder.getPackage();
 //    }
-//    
+//
 //    public void testEventExpiration() {
-//        String rule = 
-//            "package org.drools.compiler.test\n" +
+//        String rule =
+//            "package org.drools\n" +
 //            "declare StockTick @role(event) @expires(0s) end\n" +
-//            "rule test no-loop true\n" + 
+//            "rule test no-loop true\n" +
 //            "when\n" +
 //            "   $f : StockTick() from entry-point EntryPoint\n" +
 //            "then\n" +
@@ -544,45 +797,45 @@ public class MultithreadTest extends CommonTestMethodBase {
 //        KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory
 //            .newKnowledgeBaseConfiguration();
 //        kbaseConf.setOption(EventProcessingOption.STREAM);
-//            
+//
 //        KnowledgeBuilder builder = KnowledgeBuilderFactory
 //            .newKnowledgeBuilder();
-//            
+//
 //        builder.add(ResourceFactory.newReaderResource(new StringReader(rule)),
 //            ResourceType.DRL);
 //
 //        if (builder.hasErrors()) {
 //            throw new RuntimeException(builder.getErrors().toString());
 //        }
-//            
+//
 //        final KnowledgeBase knowledgeBase = KnowledgeBaseFactory
 //            .newKnowledgeBase(kbaseConf);
 //
 //        knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
-//            
-//        session = knowledgeBase.newKieSession();
+//
+//        session = knowledgeBase.newStatefulKnowledgeSession();
 //        WorkingMemoryEventListener wmel = Mockito.mock( WorkingMemoryEventListener.class );
 //        session.addEventListener( wmel );
-//            
+//
 //        entryPoint = session
 //            .getWorkingMemoryEntryPoint("EntryPoint");
-//            
+//
 //        new Thread(new Runnable() {
 //            public void run() {
 //                session.fireUntilHalt();
 //            }
 //        }).start();
-//            
+//
 //        for (int x = 0; x < 10000; x++) {
 //            entryPoint.insert(new StockTick(x, "RHT", 10, 10+x));
 //            Thread.yield();
 //        }
-//        
+//
 //        session.halt();
 //        session.fireAllRules();
-//        
+//
 //        // facts are being expired
-//        verify( wmel, atLeastOnce() ).objectDeleted( any( ObjectDeletedEvent.class ) );
+//        verify( wmel, atLeastOnce() ).objectRetracted( any( ObjectRetractedEvent.class ) );
 //    }
 
 
