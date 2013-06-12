@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable;
+package org.optaplanner.core.impl.domain.variable.shadow;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -26,6 +26,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 
@@ -165,6 +166,10 @@ public class ShadowVariableDescriptor {
                     + ") which is not a valid planning variable on ("
                     + mappedByEntityDescriptor.getPlanningEntityClass() + ").");
         }
+    }
+
+    public PlanningVariableDescriptor getMappedByVariableDescriptor() {
+        return mappedByVariableDescriptor;
     }
 
     // ************************************************************************
