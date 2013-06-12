@@ -64,18 +64,6 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     }
 
     @Override
-    public void beforeAllVariablesChanged(Object entity) {
-        incrementalScoreCalculator.beforeAllVariablesChanged(entity);
-        super.beforeAllVariablesChanged(entity);
-    }
-
-    @Override
-    public void afterAllVariablesChanged(Object entity) {
-        super.afterAllVariablesChanged(entity);
-        incrementalScoreCalculator.afterAllVariablesChanged(entity);
-    }
-
-    @Override
     public void beforeVariableChanged(Object entity, String variableName) {
         incrementalScoreCalculator.beforeVariableChanged(entity, variableName);
         super.beforeVariableChanged(entity, variableName);

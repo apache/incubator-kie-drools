@@ -38,10 +38,12 @@ public class ExaminationMoveHelper {
     }
 
     public static void moveExam(ScoreDirector scoreDirector, Exam exam, Period period, Room room) {
-        scoreDirector.beforeAllVariablesChanged(exam);
+        scoreDirector.beforeVariableChanged(exam, "period");
+        scoreDirector.beforeVariableChanged(exam, "room");
         exam.setPeriod(period);
         exam.setRoom(room);
-        scoreDirector.afterAllVariablesChanged(exam);
+        scoreDirector.afterVariableChanged(exam, "period");
+        scoreDirector.afterVariableChanged(exam, "room");
 
         movePeriodCoincidence(scoreDirector, exam, period);
     }

@@ -107,18 +107,6 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         kieSession.insert(entity);
     }
 
-    // public void beforeAllVariablesChanged(Object entity) // Do nothing
-
-    @Override
-    public void afterAllVariablesChanged(Object entity) {
-        super.afterAllVariablesChanged(entity);
-        FactHandle factHandle = kieSession.getFactHandle(entity);
-        if (factHandle == null) {
-            throw new IllegalArgumentException("The entity (" + entity + ") was never added to this ScoreDirector.");
-        }
-        kieSession.update(factHandle, entity);
-    }
-
     // public void beforeVariableChanged(Object entity, String variableName) // Do nothing
 
     @Override

@@ -177,14 +177,6 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         insertInTrailingEntityMap(entity);
     }
 
-    public void beforeAllVariablesChanged(Object entity) {
-        retractFromTrailingEntityMap(entity);
-    }
-
-    public void afterAllVariablesChanged(Object entity) {
-        insertInTrailingEntityMap(entity);
-    }
-
     public void beforeVariableChanged(Object entity, String variableName) {
         retractFromTrailingEntityMap(entity);
     }

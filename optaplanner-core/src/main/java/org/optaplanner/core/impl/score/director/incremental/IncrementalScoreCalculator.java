@@ -36,10 +36,6 @@ public interface IncrementalScoreCalculator<Sol extends Solution> {
 
     void afterEntityAdded(Object entity);
 
-    void beforeAllVariablesChanged(Object entity);
-
-    void afterAllVariablesChanged(Object entity);
-
     void beforeVariableChanged(Object entity, String variableName);
 
     void afterVariableChanged(Object entity, String variableName);

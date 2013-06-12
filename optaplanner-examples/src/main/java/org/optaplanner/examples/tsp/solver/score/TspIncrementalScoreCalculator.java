@@ -49,14 +49,6 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
         insert((Visit) entity);
     }
 
-    public void beforeAllVariablesChanged(Object entity) {
-        retract((Visit) entity);
-    }
-
-    public void afterAllVariablesChanged(Object entity) {
-        insert((Visit) entity);
-    }
-
     public void beforeVariableChanged(Object entity, String variableName) {
         retract((Visit) entity);
     }

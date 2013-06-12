@@ -36,10 +36,12 @@ public class CurriculumCourseMoveHelper {
     }
 
     public static void moveLecture(ScoreDirector scoreDirector, Lecture lecture, Period period, Room room) {
-        scoreDirector.beforeAllVariablesChanged(lecture);
+        scoreDirector.beforeVariableChanged(lecture, "period");
+        scoreDirector.beforeVariableChanged(lecture, "room");
         lecture.setPeriod(period);
         lecture.setRoom(room);
-        scoreDirector.afterAllVariablesChanged(lecture);
+        scoreDirector.afterVariableChanged(lecture, "period");
+        scoreDirector.afterVariableChanged(lecture, "room");
     }
 
     private CurriculumCourseMoveHelper() {

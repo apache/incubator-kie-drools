@@ -552,10 +552,6 @@
 
     void afterEntityAdded(Object entity);
 
-    void beforeAllVariablesChanged(Object entity);
-
-    void afterAllVariablesChanged(Object entity);
-
     void beforeVariableChanged(Object entity, String variableName);
 
     void afterVariableChanged(Object entity, String variableName);
@@ -603,14 +599,6 @@
     }
 
     public void afterEntityAdded(Object entity) {
-        insert((Queen) entity);
-    }
-
-    public void beforeAllVariablesChanged(Object entity) {
-        retract((Queen) entity);
-    }
-
-    public void afterAllVariablesChanged(Object entity) {
         insert((Queen) entity);
     }
 

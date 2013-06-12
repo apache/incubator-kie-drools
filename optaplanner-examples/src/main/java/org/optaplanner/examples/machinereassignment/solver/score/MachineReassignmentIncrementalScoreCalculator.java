@@ -92,14 +92,6 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
         insert((MrProcessAssignment) entity);
     }
 
-    public void beforeAllVariablesChanged(Object entity) {
-        retract((MrProcessAssignment) entity);
-    }
-
-    public void afterAllVariablesChanged(Object entity) {
-        insert((MrProcessAssignment) entity);
-    }
-
     public void beforeVariableChanged(Object entity, String variableName) {
         retract((MrProcessAssignment) entity);
     }

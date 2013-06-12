@@ -3278,3 +3278,31 @@ After in *BenchmarkConfig.xml:
        ...
       <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
+
+[MAJOR] The methods beforeAllVariablesChanged() and afterAllVariablesChanged() have been removed
+from IncrementalScoreCalculator and ScoreDirector.
+This was needed to make planning variable listeners work efficiently.
+Before in *IncrementalScoreCalculator.java:
+    public void beforeAllVariablesChanged(Object entity) {
+        ...
+    }
+
+    public void afterAllVariablesChanged(Object entity) {
+        ...
+    }
+Before in *Move.java:
+    public void doMove(ScoreDirector scoreDirector) {
+        scoreDirector.beforeAllVariablesChanged(lecture);
+        lecture.setPeriod(period);
+        lecture.setRoom(room);
+        scoreDirector.afterAllVariablesChanged(lecture);
+    }
+After in *Move.java:
+    public void doMove(ScoreDirector scoreDirector) {
+        scoreDirector.beforeVariableChanged(lecture, "period"); // because setPeriod() will be called
+        scoreDirector.beforeVariableChanged(lecture, "room"); // because setRoom() will be called
+        lecture.setPeriod(period);
+        lecture.setRoom(room);
+        scoreDirector.afterVariableChanged(lecture, "period");
+        scoreDirector.afterVariableChanged(lecture, "room");
+    }

@@ -63,14 +63,6 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
         insert((CloudProcess) entity);
     }
 
-    public void beforeAllVariablesChanged(Object entity) {
-        retract((CloudProcess) entity);
-    }
-
-    public void afterAllVariablesChanged(Object entity) {
-        insert((CloudProcess) entity);
-    }
-
     public void beforeVariableChanged(Object entity, String variableName) {
         retract((CloudProcess) entity);
     }

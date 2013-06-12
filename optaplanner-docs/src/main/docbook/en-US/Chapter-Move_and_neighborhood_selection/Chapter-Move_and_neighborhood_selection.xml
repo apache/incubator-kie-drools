@@ -1009,9 +1009,7 @@
 
       <para>You need to call the methods <literal>scoreDirector.beforeVariableChanged(Object, String)</literal> and
       <literal>scoreDirector.afterVariableChanged(Object, String)</literal> directly before and after modifying the
-      entity. Alternatively, you can also call the methods
-      <literal>scoreDirector.beforeAllVariablesChanged(Object)</literal> and
-      <literal>scoreDirector.afterAllVariablesChanged(Object)</literal>.</para>
+      entity.</para>
 
       <note>
         <para>You can alter multiple entities in a single move and effectively create a big move (also known as a

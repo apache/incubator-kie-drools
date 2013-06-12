@@ -63,14 +63,6 @@ public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrement
         insert((Queen) entity);
     }
 
-    public void beforeAllVariablesChanged(Object entity) {
-        retract((Queen) entity);
-    }
-
-    public void afterAllVariablesChanged(Object entity) {
-        insert((Queen) entity);
-    }
-
     public void beforeVariableChanged(Object entity, String variableName) {
         retract((Queen) entity);
     }
