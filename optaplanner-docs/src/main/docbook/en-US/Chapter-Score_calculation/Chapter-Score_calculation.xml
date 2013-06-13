@@ -1180,7 +1180,17 @@ ScoreDirector guiScoreDirector = scoreDirectorFactory.buildScoreDirector();</pro
     <programlisting language="java">guiScoreDirector.setWorkingSolution(solution);
 Score score = guiScoreDirector.calculateScore();</programlisting>
 
-    <para>Tto explain in the GUI what entities are causing which part of the <literal>Score</literal>, get the
-    <literal>ConstraintMatch</literal> objects from the <literal>ScoreDirector</literal>.</para>
+    <para>To explain in the GUI what entities are causing which part of the <literal>Score</literal>, get the
+    <literal>ConstraintMatch</literal> objects from the <literal>ScoreDirector</literal>:</para>
+
+    <programlisting language="java">for (ConstraintMatchTotal constraintMatchTotal : guiScoreDirector.getConstraintMatchTotals()) {
+    String constraintName = constraintMatchTotal.getConstraintName();
+    Number weightTotal = constraintMatchTotal.getWeightTotalAsNumber();
+    for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+        List&lt;Object&gt; justificationList = constraintMatch.getJustificationList();
+        Number weight = constraintMatch.getWeightAsNumber();
+        ...
+    }
+}</programlisting>
   </section>
 </chapter>
