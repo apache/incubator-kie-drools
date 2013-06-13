@@ -80,8 +80,7 @@ public class ClasspathKieProject extends AbstractKieProject {
             URL url = e.nextElement();
             System.out.println( "kmodules: " + url);
             try {
-                String fixedURL = fixURLFromKProjectPath( url ); 
-                InternalKieModule kModule = fetchKModule(url, fixedURL);
+                InternalKieModule kModule = fetchKModule(url);
 
                 ReleaseId releaseId = kModule.getReleaseId();
                 kieModules.put(releaseId, kModule);
@@ -95,11 +94,25 @@ public class ClasspathKieProject extends AbstractKieProject {
             }
         }
     }
+
     public static InternalKieModule fetchKModule(URL url) {
+        if (url.toString().startsWith("bundle:")) {
+            return fetchOsgiKModule(url);
+        }
         return fetchKModule(url, fixURLFromKProjectPath(url));
     }
-    
-    public static InternalKieModule fetchKModule(URL url, String fixedURL) {
+
+    private static InternalKieModule fetchOsgiKModule(URL url) {
+        try {
+            Class<?> c = Class.forName("org.drools.osgi.compiler.OsgiKieModule");
+            Method m = c.getMethod("create", URL.class);
+            return (InternalKieModule) m.invoke(null, url);
+        } catch (Exception e) {
+            throw new RuntimeException("It is necessary to have the drools-osgi-integration module on the path in order to create a KieProject from an ogsi bundle", e);
+        }
+}
+
+    private static InternalKieModule fetchKModule(URL url, String fixedURL) {
         KieModuleModel kieProject = KieModuleModelImpl.fromXML( url );
 
         setDefaultsforEmptyKieModule(kieProject);
