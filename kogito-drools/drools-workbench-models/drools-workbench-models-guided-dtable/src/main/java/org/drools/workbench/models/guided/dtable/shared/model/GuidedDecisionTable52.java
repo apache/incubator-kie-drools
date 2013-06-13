@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.workbench.models.commons.shared.auditlog.AuditLog;
-import org.drools.workbench.models.commons.shared.auditlog.DefaultAuditLog;
 import org.drools.workbench.models.commons.shared.imports.HasImports;
 import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.drools.workbench.models.commons.shared.packages.HasPackageName;
@@ -352,7 +351,7 @@ public class GuidedDecisionTable52 implements HasImports,
      */
     public AuditLog getAuditLog() {
         if ( this.auditLog == null ) {
-            this.auditLog = new DefaultAuditLog( new DecisionTableAuditLogFilter() );
+            this.auditLog = new AuditLog( new DecisionTableAuditLogFilter() );
         }
         return this.auditLog;
     }

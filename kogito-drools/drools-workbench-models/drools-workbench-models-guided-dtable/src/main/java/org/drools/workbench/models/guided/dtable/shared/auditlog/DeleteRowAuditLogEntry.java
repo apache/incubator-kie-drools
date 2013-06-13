@@ -15,12 +15,12 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.auditlog;
 
-import org.drools.workbench.models.commons.shared.auditlog.DefaultAuditLogEntry;
+import org.drools.workbench.models.commons.shared.auditlog.AuditLogEntry;
 
 /**
  * An Audit Event when a row is deleted
  */
-public class DeleteRowAuditLogEntry extends DefaultAuditLogEntry {
+public class DeleteRowAuditLogEntry extends AuditLogEntry {
 
     private static final long serialVersionUID = 8049692773593046770L;
 
