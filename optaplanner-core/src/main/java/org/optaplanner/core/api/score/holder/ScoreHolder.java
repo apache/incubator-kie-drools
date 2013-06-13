@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
@@ -40,8 +41,22 @@ public interface ScoreHolder {
      */
     Score extractScore();
 
+    /**
+     * Must be in sync with {@link ScoreDirector#isConstraintMatchEnabled()}
+     * for the {@link ScoreDirector} which contains this {@link ScoreHolder}.
+     * <p/>
+     * Defaults to true.
+     * @return false if the {@link ConstraintMatch}s and {@link ConstraintMatchTotal}s do not need to be collected
+     * which is a performance boost
+     * @see #getConstraintMatchTotals()
+     */
     boolean isConstraintMatchEnabled();
 
+    /**
+     * Explains the {@link Score} of {@link #extractScore()}.
+     * @return never null
+     * @throws RuntimeException if {@link #isConstraintMatchEnabled()} is false
+     */
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
 
 }
