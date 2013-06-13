@@ -1,4 +1,4 @@
-#this will show error line numbers post expansion
+//this will show error line numbers post expansion
 expander foo.dsl
 
 rule simple_rule 

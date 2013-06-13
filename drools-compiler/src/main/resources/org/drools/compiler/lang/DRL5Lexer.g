@@ -311,18 +311,9 @@ MINUS	:	'-'
 
 PLUS	:	'+'
     ;
-
-SH_STYLE_SINGLE_LINE_COMMENT
-    :   '#'
-    {
-        if ( !isValidBashComment() ) {
-            state.type = SHARP;
-            return;
-        }
-    }
-     (~('\r'|'\n'))* (EOL|EOF)
-        { $channel=HIDDEN; setText("//"+getText().substring(1)); }
-    ;
+    
+HASH    :   '#'
+    ;    
 
 C_STYLE_SINGLE_LINE_COMMENT
     :	'//' (~('\r'|'\n'))* (EOL|EOF)
