@@ -85,6 +85,8 @@ public class GuidedDTXMLPersistence {
                   ActionInsertFactCol52.class );
         xt.alias( "value",
                   DTCellValue52.class );
+        xt.alias( "Pattern52",
+        		Pattern52.class );
         
         //See https://issues.jboss.org/browse/GUVNOR-1115
         xt.aliasPackage( "org.drools.guvnor.client",
