@@ -20,20 +20,58 @@ import java.util.Date;
 /**
  * An entry in an Audit Log
  */
-public interface AuditLogEntry {
+public abstract class AuditLogEntry {
 
-    public Date getDateOfEntry();
+    private static final long serialVersionUID = -6751253344147726552L;
 
-    public String getUserName();
+    private Date dateOfEntry;
+    private String userName;
+    private String userComment;
+    private boolean isDeleted;
 
-    public String getUserComment();
+    public AuditLogEntry() {
+        this.dateOfEntry = new Date();
+        this.userName = "";
+        this.userComment = "";
+        this.isDeleted = false;
+    }
 
-    public String getGenericType();
+    public AuditLogEntry( final String userName ) {
+        this.dateOfEntry = new Date();
+        this.userName = userName;
+        this.userComment = "";
+        this.isDeleted = false;
+    }
 
-    public boolean isDeleted();
+    //@Override
+    public Date getDateOfEntry() {
+        return new Date( dateOfEntry.getTime() );
+    }
 
-    public void setUserComment( String userComment );
+    //@Override
+    public String getUserName() {
+        return userName;
+    }
 
-    public void setDeleted( boolean isDeleted );
+    //@Override
+    public String getUserComment() {
+        return userComment;
+    }
 
+    //@Override
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    //@Override
+    public void setUserComment( String userComment ) {
+        this.userComment = userComment;
+    }
+
+    //@Override
+    public void setDeleted( boolean isDeleted ) {
+        this.isDeleted = isDeleted;
+    }
+
+    public abstract String getGenericType();
 }

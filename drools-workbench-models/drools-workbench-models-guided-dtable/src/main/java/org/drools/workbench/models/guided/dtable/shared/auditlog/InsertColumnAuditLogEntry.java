@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.auditlog;
 
-import org.drools.workbench.models.commons.shared.auditlog.DefaultAuditLogEntry;
+import org.drools.workbench.models.commons.shared.auditlog.AuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
@@ -31,7 +31,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 /**
  * An Audit Event for when a column is inserted
  */
-public class InsertColumnAuditLogEntry extends DefaultAuditLogEntry {
+public class InsertColumnAuditLogEntry extends AuditLogEntry {
 
     private static final long serialVersionUID = -7525789306354393393L;
 

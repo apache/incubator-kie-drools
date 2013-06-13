@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.auditlog;
 
-import org.drools.workbench.models.commons.shared.auditlog.DefaultAuditLogEntry;
+import org.drools.workbench.models.commons.shared.auditlog.AuditLogEntry;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
@@ -23,7 +23,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 /**
  * An Audit Event for when a column is deleted
  */
-public class DeleteColumnAuditLogEntry extends DefaultAuditLogEntry {
+public class DeleteColumnAuditLogEntry extends AuditLogEntry {
 
     private static final long serialVersionUID = 2118763458557017503L;
 
@@ -50,7 +50,7 @@ public class DeleteColumnAuditLogEntry extends DefaultAuditLogEntry {
         }
     }
 
-    @Override
+    //@Override
     public String getGenericType() {
         return TYPE;
     }

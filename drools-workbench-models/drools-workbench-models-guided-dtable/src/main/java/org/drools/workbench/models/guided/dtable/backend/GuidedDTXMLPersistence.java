@@ -29,6 +29,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.ActionInsertFactCol;
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.ActionRetractFactCol;
 import org.drools.workbench.models.guided.dtable.shared.model.legacy.ActionSetFieldCol;
@@ -84,11 +85,20 @@ public class GuidedDTXMLPersistence {
                   ActionInsertFactCol52.class );
         xt.alias( "value",
                   DTCellValue52.class );
-
+        
         //See https://issues.jboss.org/browse/GUVNOR-1115
         xt.aliasPackage( "org.drools.guvnor.client",
-                         "org.drools.ide.common.client" );
+                         "org.drools.ide.common.client");
+                         
+        //this is for migrating org.drools.ide.common.client.modeldriven.auditlog.AuditLog to org.drools.workbench.models.commons.shared.auditlog.AuditLog
+		xt.aliasPackage("org.drools.guvnor.client.modeldriven.dt52.auditlog",
+				"org.drools.workbench.models.guided.dtable.shared.auditlog");
 
+	    //this is for migrating org.drools.ide.common.client.modeldriven.dt52.auditlog.DecisionTableAuditLogFilter
+		//to org.drools.workbench.models.guided.dtable.shared.auditlog.DecisionTableAuditLogFilter
+		xt.aliasPackage("org.drools.guvnor.client.modeldriven.dt52",
+				" org.drools.workbench.models.guided.dtable.shared.model");
+        
         //All numerical values are historically BigDecimal
         xt.alias( "valueNumeric",
                   Number.class,
