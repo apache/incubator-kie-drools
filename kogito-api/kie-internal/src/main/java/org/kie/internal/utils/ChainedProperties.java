@@ -128,6 +128,16 @@ public class ChainedProperties
                                           confClassLoader ),
                             this.defaultProps );
         }
+
+        // this happens only in OSGi: for some reason doing ClassLoader.getResources() doesn't work
+        // but doing Class.getResourse() does
+        if (this.defaultProps.isEmpty()) {
+            try {
+                Class<?> c = Class.forName("org.drools.compiler.lang.MVELDumper", false, classLoader);
+                URL confURL = c.getResource("/META-INF/drools.default." + confFileName);
+                loadProperties(confURL, this.defaultProps);
+            } catch (ClassNotFoundException e) { }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -146,7 +156,7 @@ public class ChainedProperties
                                           ClassLoader classLoader) {
         Enumeration<URL> enumeration = null;
         try {
-            enumeration = classLoader.getResources( name );
+            enumeration = classLoader.getResources(name);
         } catch ( IOException e ) {
             logger.error("error", e);
         }
