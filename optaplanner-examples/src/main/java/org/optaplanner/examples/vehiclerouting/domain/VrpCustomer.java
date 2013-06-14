@@ -26,6 +26,7 @@ import org.optaplanner.core.api.domain.value.ValueRangeType;
 import org.optaplanner.core.api.domain.value.ValueRanges;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.vehiclerouting.domain.solver.VehicleUpdatingVariableListener;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VrpCustomerDifficultyComparator;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
 
@@ -43,6 +44,9 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
     protected VrpStandstill previousStandstill;
     protected VrpCustomer nextCustomer;
 
+    // Shadow variables
+    protected VrpVehicle vehicle;
+
     public VrpLocation getLocation() {
         return location;
     }
@@ -59,7 +63,7 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
         this.demand = demand;
     }
 
-    @PlanningVariable(chained = true)
+    @PlanningVariable(chained = true, variableListenerClasses = {VehicleUpdatingVariableListener.class})
     @ValueRanges({
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "vehicleList"),
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "customerList",
@@ -81,21 +85,17 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
         this.nextCustomer = nextCustomer;
     }
 
+    public VrpVehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(VrpVehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    public VrpVehicle getVehicle() {
-        // HACK TODO Invent a system like DependentPlanningVariable or PlanningVariableListener to cope with this
-        VrpStandstill firstStandstill = getPreviousStandstill();
-        while (firstStandstill instanceof VrpCustomer) {
-            if (firstStandstill == this) {
-                throw new IllegalStateException("Impossible state"); // fail fast during infinite loop
-            }
-            firstStandstill = ((VrpCustomer) firstStandstill).getPreviousStandstill();
-        }
-        return (VrpVehicle) firstStandstill;
-    }
 
     public int getDistanceToPreviousStandstill() {
         if (previousStandstill == null) {

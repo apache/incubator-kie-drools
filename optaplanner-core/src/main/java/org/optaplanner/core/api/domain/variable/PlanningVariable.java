@@ -22,6 +22,7 @@ import java.util.Comparator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -133,5 +134,16 @@ public @interface PlanningVariable {
      * @return true if changes to this variable need to trigger chain correction
      */
     boolean chained() default false;
+
+    /**
+     * A {@link PlanningVariableListener} gets notified before and after a planning variable has changed.
+     * That listener changes shadow variables (often on other planning entities) accordingly,
+     * Those shadow variables can make the score calculation more natural to write.
+     * <p/>
+     * For example: VRP with time windows uses a {@link PlanningVariableListener} to update the arrival times
+     * of all the trailing entities when an entity is changed.
+     * @return never null
+     */
+    Class<? extends PlanningVariableListener>[] variableListenerClasses() default {};
 
 }

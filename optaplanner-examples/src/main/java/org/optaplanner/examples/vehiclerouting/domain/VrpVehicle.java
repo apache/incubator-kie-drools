@@ -57,6 +57,10 @@ public class VrpVehicle extends AbstractPersistable implements VrpStandstill {
     // Complex methods
     // ************************************************************************
 
+    public VrpVehicle getVehicle() {
+        return this;
+    }
+
     public VrpLocation getLocation() {
         return depot.getLocation();
     }

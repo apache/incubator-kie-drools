@@ -23,4 +23,9 @@ public interface VrpStandstill {
      */
     VrpLocation getLocation();
 
+    /**
+     * @return sometimes null
+     */
+    VrpVehicle getVehicle();
+
 }

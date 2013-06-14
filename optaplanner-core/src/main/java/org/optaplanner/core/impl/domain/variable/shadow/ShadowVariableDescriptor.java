@@ -57,6 +57,7 @@ public class ShadowVariableDescriptor {
         processNullable(planningVariableAnnotation);
         processStrength(planningVariableAnnotation);
         processChained(planningVariableAnnotation);
+        processVariableListeners(planningVariableAnnotation);
         processValueRangeAnnotation(planningVariableAnnotation);
     }
 
@@ -118,6 +119,18 @@ public class ShadowVariableDescriptor {
                     + ") has shadow PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with mappedBy (" + planningVariableAnnotation.mappedBy()
                     + ") which also has chained (" + chained + ").");
+        }
+    }
+
+    private void processVariableListeners(PlanningVariable planningVariableAnnotation) {
+        Class<? extends PlanningVariableListener>[] variableListenerClasses
+                = planningVariableAnnotation.variableListenerClasses();
+        if (variableListenerClasses.length != 0) {
+            throw new IllegalArgumentException("The planningEntityClass ("
+                    + entityDescriptor.getPlanningEntityClass()
+                    + ") has shadow PlanningVariable annotated property (" + variablePropertyAccessor.getName()
+                    + ") with mappedBy (" + planningVariableAnnotation.mappedBy()
+                    + ") which also has variableListenerClasses (" + variableListenerClasses + ").");
         }
     }
 

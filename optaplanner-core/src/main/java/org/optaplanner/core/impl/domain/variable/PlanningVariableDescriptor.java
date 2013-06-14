@@ -56,6 +56,7 @@ public class PlanningVariableDescriptor {
     private PlanningValueSorter valueSorter;
 
     private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
+    private List<PlanningVariableListener> nonMappedByVariableListeners;
 
     public PlanningVariableDescriptor(PlanningEntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
@@ -76,6 +77,7 @@ public class PlanningVariableDescriptor {
         processNullable(planningVariableAnnotation);
         processStrength(planningVariableAnnotation);
         processChained(planningVariableAnnotation);
+        processVariableListeners(planningVariableAnnotation);
         processValueRangeAnnotation(planningVariableAnnotation);
     }
 
@@ -156,6 +158,16 @@ public class PlanningVariableDescriptor {
                     + entityDescriptor.getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with chained (" + chained + "), which is not compatible with nullable (" + nullable + ").");
+        }
+    }
+
+    private void processVariableListeners(PlanningVariable planningVariableAnnotation) {
+        Class<? extends PlanningVariableListener>[] variableListenerClasses
+                = planningVariableAnnotation.variableListenerClasses();
+        nonMappedByVariableListeners = new ArrayList<PlanningVariableListener>(variableListenerClasses.length);
+        for (Class<? extends PlanningVariableListener> variableListenerClass : variableListenerClasses) {
+            nonMappedByVariableListeners.add(
+                    ConfigUtils.newInstance(this, "variableListenerClass", variableListenerClass));
         }
     }
 
@@ -255,6 +267,10 @@ public class PlanningVariableDescriptor {
         // Always trigger the build-in shadow variables first
         for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
             variableListenerMap.put(this, shadowVariableDescriptor.buildPlanningVariableListener());
+        }
+        // Always trigger the non build-in shadow variables last
+        for (PlanningVariableListener variableListener : nonMappedByVariableListeners) {
+            variableListenerMap.put(this, variableListener);
         }
     }
 
