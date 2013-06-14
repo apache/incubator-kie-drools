@@ -30,23 +30,7 @@ public class AcceptedSelectedMoveCountSingleStatistic extends AbstractSingleStat
 
     private ASMoveCountSingleStatisticListener listener = new ASMoveCountSingleStatisticListener();
 
-    private long timeMillisThresholdInterval;
-    private long nextTimeMillisThreshold;
-
     private List<AcceptedSelectedMoveCountSingleStatisticPoint> pointList = new ArrayList<AcceptedSelectedMoveCountSingleStatisticPoint>();
-
-    public AcceptedSelectedMoveCountSingleStatistic() {
-        this(1000L);
-    }
-
-    public AcceptedSelectedMoveCountSingleStatistic(long timeMillisThresholdInterval) {
-        if (timeMillisThresholdInterval <= 0L) {
-            throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
-                    + ") must be bigger than 0.");
-        }
-        this.timeMillisThresholdInterval = timeMillisThresholdInterval;
-        nextTimeMillisThreshold = timeMillisThresholdInterval;
-    }
 
     public List<AcceptedSelectedMoveCountSingleStatisticPoint> getPointList() {
         return pointList;
@@ -75,15 +59,7 @@ public class AcceptedSelectedMoveCountSingleStatistic extends AbstractSingleStat
         
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
             long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            if (timeMillisSpend >= nextTimeMillisThreshold) {
-                
-                pointList.add(new AcceptedSelectedMoveCountSingleStatisticPoint(timeMillisSpend, new AcceptedSelectedMoveCountMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())));                           
-
-                nextTimeMillisThreshold += timeMillisThresholdInterval;
-                if (nextTimeMillisThreshold < timeMillisSpend) {
-                    nextTimeMillisThreshold = timeMillisSpend;
-                }
-            }
+            pointList.add(new AcceptedSelectedMoveCountSingleStatisticPoint(timeMillisSpend, new AcceptedSelectedMoveCountMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())));                           
         }
     }
 
