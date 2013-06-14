@@ -123,6 +123,31 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
         assertTrue( ((String) list.get(2)).equals("Message length is not 17") );
     }
 
+    @Test
+    public void testStrWithLogicalOr() {
+        String drl = "package org.drools.compiler.integrationtests\n"
+                     + "import org.drools.compiler.RoutingMessage\n"
+                     + "rule R1\n"
+                     + " when\n"
+                     + " RoutingMessage( routingValue == \"R2\" || routingValue str[startsWith] \"R1\" )\n"
+                     + " then\n"
+                     + "end\n";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        try {
+            for (String msgValue : new String[]{ "R1something", "R2something", "R2" }) {
+                RoutingMessage msg = new RoutingMessage();
+                msg.setRoutingValue(msgValue);
+                ksession.insert(msg);
+            }
+
+            assertEquals("Wrong number of rules fired", 2, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
     private KnowledgeBase readKnowledgeBase() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("strevaluator_test.drl")),

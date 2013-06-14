@@ -139,9 +139,9 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
          */
         public boolean evaluate(InternalWorkingMemory workingMemory,
                 InternalReadAccessor extractor, InternalFactHandle factHandle, FieldValue value) {
-            final Object objectValue = extractor
-                    .getValue(workingMemory, factHandle);
-                switch (parameter) {
+            final Object objectValue = extractor.getValue(workingMemory, factHandle.getObject());
+
+            switch (parameter) {
                 case startsWith:
                     return this.getOperator().isNegated() ^ (((String)objectValue).startsWith( (String)value.getValue() ));
                 case endsWith:
@@ -150,16 +150,16 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
                     return this.getOperator().isNegated() ^ (((String)objectValue).length() == value.getLongValue() );
                 default:
                     throw new IllegalAccessError("Illegal str comparison parameter");
-                }
+            }
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                 InternalReadAccessor leftExtractor, InternalFactHandle left,
                 InternalReadAccessor rightExtractor, InternalFactHandle right) {
-            final Object value1 = leftExtractor.getValue(workingMemory, left);
-            final Object value2 = rightExtractor.getValue(workingMemory, right);
+            final Object value1 = leftExtractor.getValue(workingMemory, left.getObject());
+            final Object value2 = rightExtractor.getValue(workingMemory, right.getObject());
 
-                switch (parameter) {
+            switch (parameter) {
                 case startsWith:
                     return this.getOperator().isNegated() ^ (((String)value1).startsWith( (String) value2 ));
                 case endsWith:
@@ -168,7 +168,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
                     return this.getOperator().isNegated() ^ (((String)value1).length() == ((Number) value2).longValue() );
                 default:
                     throw new IllegalAccessError("Illegal str comparison parameter");
-                }
+            }
 
         }
 

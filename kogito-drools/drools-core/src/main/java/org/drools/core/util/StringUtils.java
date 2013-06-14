@@ -1392,6 +1392,11 @@ public class StringUtils {
         return count;
     }
 
+    public static boolean isIdentifier(String expr) {
+        return !expr.equals("true") && !expr.equals("false") &&
+               !expr.equals("null") && expr.matches("[a-zA-Z_\\$][a-zA-Z_\\$0-9]*");
+    }
+
     // To be extended in the future with more comparison strategies
     public static enum SIMILARITY_STRATS { DICE };
 
