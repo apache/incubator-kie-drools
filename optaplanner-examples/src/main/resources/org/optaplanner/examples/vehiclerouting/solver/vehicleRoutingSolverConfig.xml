@@ -23,10 +23,10 @@
       <changeMoveSelector/>
       <swapMoveSelector/>
       <subChainChangeMoveSelector>
-        <selectReversingMoveToo>false</selectReversingMoveToo>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
       </subChainChangeMoveSelector>
       <subChainSwapMoveSelector>
-        <selectReversingMoveToo>false</selectReversingMoveToo>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
       </subChainSwapMoveSelector>
     </unionMoveSelector>
     <acceptor>
