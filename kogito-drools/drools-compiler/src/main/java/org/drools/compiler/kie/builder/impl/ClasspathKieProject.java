@@ -129,13 +129,13 @@ public class ClasspathKieProject extends AbstractKieProject {
         InternalKieModule kJar;
         File file = new File( rootPath );
         if ( fixedURL.endsWith( ".jar" ) ) {
-            kJar = new ZipKieModule(releaseId,
-                                  kieProject,
-                                  file );
+            kJar = new ZipKieModule( releaseId,
+                                     kieProject,
+                                     file );
         } else if ( file.isDirectory() ) {
-            kJar = new FileKieModule(releaseId,
-                                   kieProject,
-                                   file );
+            kJar = new FileKieModule( releaseId,
+                                      kieProject,
+                                      file );
         } else {
             // if it's a file it must be zip and end with .jar, otherwise we log an error
             log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" );
@@ -269,8 +269,6 @@ public class ClasspathKieProject extends AbstractKieProject {
             }
         } else if ( "vfs".equals( urlType ) ) {
             urlPath = getPathForVFS(url);
-            urlPath = urlPath.substring( 0,
-                                         urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
         } else {
             urlPath = urlPath.substring( 0,
                                          urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
@@ -290,17 +288,32 @@ public class ClasspathKieProject extends AbstractKieProject {
                                                 e );
         }
 
-        log.debug( "KieModule URL type=" + urlType + " url=" + urlPath );
+        log.debug("KieModule URL type=" + urlType + " url=" + urlPath);
 
         return urlPath;
     }
 
     private static String getPathForVFS(URL url) {
+        String urlString = url.toString();
+        int kModulePos = urlString.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length();
+        boolean isInJar = urlString.substring(kModulePos - 4, kModulePos).equals(".jar");
+
         try {
             Method m = Class.forName("org.jboss.vfs.VirtualFile").getMethod("getPhysicalFile");
             Object content = url.openConnection().getContent();
             File f = (File)m.invoke(content);
-            return f.getPath();
+            String path = f.getPath();
+
+            if (isInJar) {
+                String jarName = urlString.substring(0, kModulePos);
+                jarName = jarName.substring(jarName.lastIndexOf('/')+1);
+                path = path.substring( 0, path.length() - ("contents/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
+                path += jarName;
+            } else {
+                path = path.substring( 0, path.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
+            }
+            log.info( "Virtual file physical path = " + path );
+            return path;
         } catch (Exception e) {
             log.error( "Error when reading virtual file from " + url.toString(), e );
         }
