@@ -1523,6 +1523,21 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(2, ksession.fireAllRules());
     }
 
+    @Test @Ignore("mvel does a numerically comparison (when possible), jit a lexicographic one. Which one is correct?")
+    public void testStringCoercionComparison() {
+        // DROOLS-167
+        String str = "import " + Person.class.getName() + ";\n" +
+                     "rule R1 when\n" +
+                     " $p : Person( name < \"90201304122000000000000017\" )\n" +
+                     "then end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new Person( "90201304122000000000000015", 38 ) );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
     @Test
     public void testAvoidUnwantedSemicolonWhenDelimitingExpression() {
         // DROOLS-86
