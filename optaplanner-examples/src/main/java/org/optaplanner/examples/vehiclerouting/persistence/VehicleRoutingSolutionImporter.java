@@ -251,10 +251,10 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                     }
                     depot.setReadyTime(Integer.parseInt(lineTokens[4]));
                     depot.setDueTime(Integer.parseInt(lineTokens[5]));
-                    int serviceTime = Integer.parseInt(lineTokens[6]);
-                    if (serviceTime != 0) {
+                    int serviceDuration = Integer.parseInt(lineTokens[6]);
+                    if (serviceDuration != 0) {
                         throw new IllegalArgumentException("The depot with id (" + id
-                                + ") has a serviceTime (" + serviceTime + ").");
+                                + ") has a serviceDuration (" + serviceDuration + ").");
                     }
                     depotList.add(depot);
                     first = false;
@@ -266,7 +266,7 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                     customer.setDemand(demand);
                     customer.setReadyTime(Integer.parseInt(lineTokens[4]));
                     customer.setDueTime(Integer.parseInt(lineTokens[5]));
-                    customer.setServiceTime(Integer.parseInt(lineTokens[6]));
+                    customer.setServiceDuration(Integer.parseInt(lineTokens[6]));
                     // Notice that we leave the PlanningVariable properties on null
                     // Do not add a customer that has no demand
                     if (demand != 0) {

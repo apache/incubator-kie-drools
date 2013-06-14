@@ -17,23 +17,14 @@
 package org.optaplanner.examples.vehiclerouting.domain.timewindowed;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.api.domain.value.ValueRangeType;
-import org.optaplanner.core.api.domain.value.ValueRanges;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.solver.VrpCustomerDifficultyComparator;
 
 @XStreamAlias("VrpTimeWindowedCustomer")
 public class VrpTimeWindowedCustomer extends VrpCustomer {
 
     private int readyTime;
     private int dueTime;
-    private int serviceTime;
+    private int serviceDuration;
 
     public int getReadyTime() {
         return readyTime;
@@ -51,12 +42,12 @@ public class VrpTimeWindowedCustomer extends VrpCustomer {
         this.dueTime = dueTime;
     }
 
-    public int getServiceTime() {
-        return serviceTime;
+    public int getServiceDuration() {
+        return serviceDuration;
     }
 
-    public void setServiceTime(int serviceTime) {
-        this.serviceTime = serviceTime;
+    public void setServiceDuration(int serviceDuration) {
+        this.serviceDuration = serviceDuration;
     }
 
     // ************************************************************************
