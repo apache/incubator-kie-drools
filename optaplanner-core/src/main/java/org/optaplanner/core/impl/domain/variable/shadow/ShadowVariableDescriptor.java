@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 
@@ -166,6 +167,7 @@ public class ShadowVariableDescriptor {
                     + ") which is not a valid planning variable on ("
                     + mappedByEntityDescriptor.getPlanningEntityClass() + ").");
         }
+        mappedByVariableDescriptor.registerShadowVariableDescriptor(this);
     }
 
     public PlanningVariableDescriptor getMappedByVariableDescriptor() {
@@ -187,6 +189,14 @@ public class ShadowVariableDescriptor {
     public Class<?> getVariablePropertyType() {
         return variablePropertyAccessor.getPropertyType();
     }
+
+    public PlanningVariableListener buildPlanningVariableListener() {
+        return new ChainedMappedByVariableListener(this);
+    }
+
+    // ************************************************************************
+    // Extraction methods
+    // ************************************************************************
 
     public Object getValue(Object entity) {
         return variablePropertyAccessor.executeGetter(entity);

@@ -330,8 +330,8 @@ public class ScoreDirectorFactoryConfig {
                     kieBaseConfiguration.setProperty(entry.getKey(), entry.getValue());
                 }
             }
-            // TODO remove this commented line once Phreak is stable
-//            kieBaseConfiguration.setOption(PhreakOption.ENABLED);
+            // TODO remove this line once Phreak is the default
+            kieBaseConfiguration.setOption(PhreakOption.ENABLED);
             KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
 
             return kieBase;

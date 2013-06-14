@@ -30,6 +30,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListenerSupport;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 import org.slf4j.Logger;
@@ -52,6 +53,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     protected final F scoreDirectorFactory;
 
     protected boolean constraintMatchEnabledPreference = true;
+
+    protected PlanningVariableListenerSupport variableListenerSupport;
     protected boolean hasChainedVariables;
     // TODO it's unproven that this caching system is actually faster:
     // it happens for every step for every move, but is only needed for every step (with correction for composite moves)
@@ -63,7 +66,9 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     protected AbstractScoreDirector(F scoreDirectorFactory) {
         this.scoreDirectorFactory = scoreDirectorFactory;
-        Collection<PlanningVariableDescriptor> chainedVariableDescriptors = getSolutionDescriptor()
+        SolutionDescriptor solutionDescriptor = getSolutionDescriptor();
+        variableListenerSupport = solutionDescriptor.buildVariableListenerSupport();
+        Collection<PlanningVariableDescriptor> chainedVariableDescriptors = solutionDescriptor
                 .getChainedVariableDescriptors();
         hasChainedVariables = !chainedVariableDescriptors.isEmpty();
         chainedVariableToTrailingEntitiesMap = new LinkedHashMap<PlanningVariableDescriptor, Map<Object, Set<Object>>>(
@@ -125,7 +130,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 PlanningVariableDescriptor variableDescriptor = entry.getKey();
-                if (variableDescriptor.getEntityDescriptor().appliesToPlanningEntity(entity)) {
+                if (variableDescriptor.getEntityDescriptor().matchesEntity(entity)) {
                     Object value = variableDescriptor.getValue(entity);
                     Map<Object, Set<Object>> valueToTrailingEntityMap = entry.getValue();
                     Set<Object> trailingEntities = valueToTrailingEntityMap.get(value);
@@ -150,7 +155,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 PlanningVariableDescriptor variableDescriptor = entry.getKey();
-                if (variableDescriptor.getEntityDescriptor().appliesToPlanningEntity(entity)) {
+                if (variableDescriptor.getEntityDescriptor().matchesEntity(entity)) {
                     Object value = variableDescriptor.getValue(entity);
                     Map<Object, Set<Object>> valueToTrailingEntityMap = entry.getValue();
                     Set<Object> trailingEntities = valueToTrailingEntityMap.get(value);
@@ -170,27 +175,31 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void beforeEntityAdded(Object entity) {
-        // Do nothing
+        variableListenerSupport.beforeEntityAdded(entity);
     }
 
     public void afterEntityAdded(Object entity) {
         insertInTrailingEntityMap(entity);
+        variableListenerSupport.afterEntityAdded(entity);
     }
 
     public void beforeVariableChanged(Object entity, String variableName) {
         retractFromTrailingEntityMap(entity);
+        variableListenerSupport.beforeVariableChanged(entity, variableName);
     }
 
     public void afterVariableChanged(Object entity, String variableName) {
         insertInTrailingEntityMap(entity);
+        variableListenerSupport.afterVariableChanged(entity, variableName);
     }
 
     public void beforeEntityRemoved(Object entity) {
         retractFromTrailingEntityMap(entity);
+        variableListenerSupport.beforeEntityRemoved(entity);
     }
 
     public void afterEntityRemoved(Object entity) {
-        // Do nothing
+        variableListenerSupport.afterEntityRemoved(entity);
     }
 
     public void beforeProblemFactAdded(Object problemFact) {

@@ -32,6 +32,8 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListenerSupport;
 import org.optaplanner.core.impl.domain.variable.shadow.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
@@ -172,7 +174,7 @@ public class PlanningEntityDescriptor {
         return planningEntityClass;
     }
     
-    public boolean appliesToPlanningEntity(Object entity) {
+    public boolean matchesEntity(Object entity) {
         return planningEntityClass.isAssignableFrom(entity.getClass());
     }
 
@@ -208,6 +210,17 @@ public class PlanningEntityDescriptor {
     public PlanningVariableDescriptor getVariableDescriptor(String propertyName) {
         return variableDescriptorMap.get(propertyName);
     }
+
+    public void addVariableListenersToMap(
+            Map<PlanningVariableDescriptor, PlanningVariableListener> variableListenerMap) {
+        for (PlanningVariableDescriptor variableDescriptor : variableDescriptorMap.values()) {
+            variableDescriptor.addVariableListenersToMap(variableListenerMap);
+        }
+    }
+
+    // ************************************************************************
+    // Extraction methods
+    // ************************************************************************
 
     public List<Object> extractEntities(Solution solution) {
         return solutionDescriptor.getEntityListByPlanningEntityClass(solution, planningEntityClass);

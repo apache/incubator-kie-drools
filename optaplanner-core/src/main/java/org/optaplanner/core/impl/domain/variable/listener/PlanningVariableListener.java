@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.listener;
 
+/**
+ * @see AbstractPlanningVariableListener
+ */
 public interface PlanningVariableListener<EntityG> {
 
     void beforeEntityAdded(EntityG entity);

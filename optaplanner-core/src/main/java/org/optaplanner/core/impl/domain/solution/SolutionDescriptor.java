@@ -40,6 +40,8 @@ import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutionCloner;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListenerSupport;
 import org.optaplanner.core.impl.solution.Solution;
 
 public class SolutionDescriptor {
@@ -218,6 +220,16 @@ public class SolutionDescriptor {
             }
         }
         return chainedVariableDescriptors;
+    }
+
+    public PlanningVariableListenerSupport buildVariableListenerSupport() {
+        // Order is important, hence LinkedHashMap
+        Map<PlanningVariableDescriptor, PlanningVariableListener> variableListenerMap
+                = new LinkedHashMap<PlanningVariableDescriptor, PlanningVariableListener>();
+        for (PlanningEntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
+            entityDescriptor.addVariableListenersToMap(variableListenerMap);
+        }
+        return new PlanningVariableListenerSupport(variableListenerMap);
     }
 
     // ************************************************************************

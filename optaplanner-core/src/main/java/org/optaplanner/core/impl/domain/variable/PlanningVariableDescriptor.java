@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.api.domain.value.ValueRanges;
@@ -35,6 +36,8 @@ import org.optaplanner.core.impl.domain.value.FromEntityPropertyPlanningValueRan
 import org.optaplanner.core.impl.domain.value.FromSolutionPropertyPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.value.PlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.value.UndefinedPlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
+import org.optaplanner.core.impl.domain.variable.shadow.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
@@ -51,6 +54,8 @@ public class PlanningVariableDescriptor {
     private boolean nullable;
     private SelectionFilter reinitializeVariableEntityFilter;
     private PlanningValueSorter valueSorter;
+
+    private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
 
     public PlanningVariableDescriptor(PlanningEntityDescriptor entityDescriptor,
             PropertyDescriptor propertyDescriptor) {
@@ -201,6 +206,10 @@ public class PlanningVariableDescriptor {
         // Do nothing
     }
 
+    public void registerShadowVariableDescriptor(ShadowVariableDescriptor shadowVariableDescriptor) {
+        shadowVariableDescriptorList.add(shadowVariableDescriptor);
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -215,6 +224,10 @@ public class PlanningVariableDescriptor {
 
     public Class<?> getVariablePropertyType() {
         return variablePropertyAccessor.getPropertyType();
+    }
+
+    public boolean matchesEntityVariable(Object entity, String variableName) {
+        return variableName.equals(getVariableName()) && entityDescriptor.matchesEntity(entity);
     }
 
     /**
@@ -236,6 +249,18 @@ public class PlanningVariableDescriptor {
     public PlanningValueRangeDescriptor getValueRangeDescriptor() {
         return valueRangeDescriptor;
     }
+
+    public void addVariableListenersToMap(
+            Map<PlanningVariableDescriptor, PlanningVariableListener> variableListenerMap) {
+        // Always trigger the build-in shadow variables first
+        for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
+            variableListenerMap.put(this, shadowVariableDescriptor.buildPlanningVariableListener());
+        }
+    }
+
+    // ************************************************************************
+    // Extraction methods
+    // ************************************************************************
 
     /**
      * A {@link PlanningVariable#nullable()} value is always considered initialized, but it can still be reinitialized

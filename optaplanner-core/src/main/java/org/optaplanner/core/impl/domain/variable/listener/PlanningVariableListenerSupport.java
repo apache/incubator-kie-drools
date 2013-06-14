@@ -17,34 +17,67 @@
 package org.optaplanner.core.impl.domain.variable.listener;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 
 public class PlanningVariableListenerSupport {
 
-    private List<PlanningVariableListener> variableListenerList = new ArrayList<PlanningVariableListener>();
+    private final Map<PlanningVariableDescriptor, PlanningVariableListener> variableListenerMap;
+
+    public PlanningVariableListenerSupport(
+            Map<PlanningVariableDescriptor, PlanningVariableListener> variableListenerMap) {
+        this.variableListenerMap = variableListenerMap;
+    }
 
     public void beforeEntityAdded(Object entity) {
-
+        for (Map.Entry<PlanningVariableDescriptor, PlanningVariableListener> entry : variableListenerMap.entrySet()) {
+            if (entry.getKey().getEntityDescriptor().matchesEntity(entity)) {
+                entry.getValue().beforeEntityAdded(entity);
+            }
+        }
     }
 
     public void afterEntityAdded(Object entity) {
-
+        for (Map.Entry<PlanningVariableDescriptor, PlanningVariableListener> entry : variableListenerMap.entrySet()) {
+            if (entry.getKey().getEntityDescriptor().matchesEntity(entity)) {
+                entry.getValue().afterEntityAdded(entity);
+            }
+        }
     }
 
     public void beforeVariableChanged(Object entity, String variableName) {
-
+        for (Map.Entry<PlanningVariableDescriptor, PlanningVariableListener> entry : variableListenerMap.entrySet()) {
+            if (entry.getKey().matchesEntityVariable(entity, variableName)) {
+                entry.getValue().beforeVariableChanged(entity);
+            }
+        }
     }
 
     public void afterVariableChanged(Object entity, String variableName) {
-
+        for (Map.Entry<PlanningVariableDescriptor, PlanningVariableListener> entry : variableListenerMap.entrySet()) {
+            if (entry.getKey().matchesEntityVariable(entity, variableName)) {
+                entry.getValue().afterVariableChanged(entity);
+            }
+        }
     }
 
     public void beforeEntityRemoved(Object entity) {
-
+        for (Map.Entry<PlanningVariableDescriptor, PlanningVariableListener> entry : variableListenerMap.entrySet()) {
+            if (entry.getKey().getEntityDescriptor().matchesEntity(entity)) {
+                entry.getValue().beforeEntityRemoved(entity);
+            }
+        }
     }
 
     public void afterEntityRemoved(Object entity) {
-
+        for (Map.Entry<PlanningVariableDescriptor, PlanningVariableListener> entry : variableListenerMap.entrySet()) {
+            if (entry.getKey().getEntityDescriptor().matchesEntity(entity)) {
+                entry.getValue().afterEntityRemoved(entity);
+            }
+        }
     }
 
 }
