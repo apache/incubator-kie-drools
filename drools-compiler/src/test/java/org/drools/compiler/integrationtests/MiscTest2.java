@@ -2122,4 +2122,19 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertTrue(list.containsAll(asList("B", "C")));
         list.clear();
     }
+
+    @Test
+    public void testStringCoercionComparison() {
+        // DROOLS-167
+        String str = "import " + Person.class.getName() + ";\n" +
+                     "rule R1 when\n" +
+                     "   $p : Person( name < \"90201304122000000000000017\" )\n" +
+                     "then end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new Person( "90201304122000000000000015", 38 ) );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }
