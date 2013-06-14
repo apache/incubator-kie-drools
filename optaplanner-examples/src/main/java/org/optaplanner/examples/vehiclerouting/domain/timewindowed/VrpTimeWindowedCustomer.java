@@ -26,6 +26,9 @@ public class VrpTimeWindowedCustomer extends VrpCustomer {
     private int dueTime;
     private int serviceDuration;
 
+    // Shadow variable
+    private Integer arrivalTime;
+
     public int getReadyTime() {
         return readyTime;
     }
@@ -50,12 +53,26 @@ public class VrpTimeWindowedCustomer extends VrpCustomer {
         this.serviceDuration = serviceDuration;
     }
 
+    public Integer getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(Integer arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
     public String getTimeWindowLabel() {
         return readyTime + "-" + dueTime;
+    }
+
+    public boolean isArrivalTimeValid() {
+        return arrivalTime != null
+                && readyTime <= arrivalTime
+                && arrivalTime + serviceDuration <= dueTime;
     }
 
 }

@@ -44,7 +44,7 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
     protected VrpStandstill previousStandstill;
     protected VrpCustomer nextCustomer;
 
-    // Shadow variables
+    // Shadow variable
     protected VrpVehicle vehicle;
 
     public VrpLocation getLocation() {

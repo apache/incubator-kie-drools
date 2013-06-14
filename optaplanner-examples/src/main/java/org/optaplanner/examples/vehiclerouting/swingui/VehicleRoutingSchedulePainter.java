@@ -86,17 +86,24 @@ public class VehicleRoutingSchedulePainter {
         translator.prepareFor(width, height);
 
         Graphics g = createCanvas(width, height);
-        g.setColor(TangoColorFactory.ORANGE_2);
         g.setFont(g.getFont().deriveFont((float) TEXT_SIZE));
         for (VrpCustomer customer : schedule.getCustomerList()) {
             VrpLocation location = customer.getLocation();
             int x = translator.translateLongitudeToX(location.getLongitude());
             int y = translator.translateLatitudeToY(location.getLatitude());
+            g.setColor(TangoColorFactory.ORANGE_2);
             g.fillRect(x - 1, y - 1, 3, 3);
-            g.drawString(Integer.toString(customer.getDemand()), x + 3, y - 3);
+            g.drawString(Integer.toString(customer.getDemand()), x + 3, y - (TEXT_SIZE/2) - TEXT_SPACING_SIZE);
             if (customer instanceof VrpTimeWindowedCustomer) {
                 VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
-                g.drawString(timeWindowedCustomer.getTimeWindowLabel(), x + 3, y - 3 + TEXT_SIZE + TEXT_SPACING_SIZE);
+                g.drawString(timeWindowedCustomer.getTimeWindowLabel(), x + 3, y + (TEXT_SIZE/2));
+                if (timeWindowedCustomer.getArrivalTime() != null) {
+                    if (!timeWindowedCustomer.isArrivalTimeValid()) {
+                        g.setColor(TangoColorFactory.SCARLET_2);
+                    }
+                    g.drawString(Integer.toString(timeWindowedCustomer.getArrivalTime()),
+                            x + 3, y + (TEXT_SIZE/2) + TEXT_SPACING_SIZE + TEXT_SIZE);
+                }
             }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_4);
@@ -185,7 +192,7 @@ public class VehicleRoutingSchedulePainter {
         g.setColor(TangoColorFactory.ORANGE_2);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
         g.drawString((schedule instanceof VrpTimeWindowedSchedule)
-                ? "Customer: demand and time window" : "Customer: demand", 15, (int) height - 5);
+                ? "Customer: demand, time window and arrival time" : "Customer: demand", 15, (int) height - 5);
         // Show soft score
         g.setColor(TangoColorFactory.SCARLET_2);
         HardSoftScore score = schedule.getScore();
