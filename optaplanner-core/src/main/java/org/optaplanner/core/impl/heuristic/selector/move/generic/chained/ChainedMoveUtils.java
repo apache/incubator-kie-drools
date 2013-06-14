@@ -125,7 +125,7 @@ public class ChainedMoveUtils {
 
         Object oldTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, lastEntity);
         Object newTrailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, toPlanningValue);
-        boolean unmovedReverse = firstEntity.equals(newTrailingEntity); // TODO bug?
+        boolean unmovedReverse = firstEntity == newTrailingEntity;
         List<Object> entityList = subChain.getEntityList();
 
         // Close the old chain
