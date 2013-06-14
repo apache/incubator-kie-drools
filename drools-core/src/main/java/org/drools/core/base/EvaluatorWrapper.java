@@ -17,6 +17,7 @@
 package org.drools.core.base;
 
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
@@ -69,8 +70,8 @@ public class EvaluatorWrapper
     }
 
     private void init() {
-        leftExtractor = leftBinding == null || leftBinding.isPatternDeclaration() ? extractor : leftBinding.getExtractor();
-        rightExtractor = rightBinding == null || rightBinding.isPatternDeclaration() ? extractor : rightBinding.getExtractor();
+        leftExtractor = leftBinding == null || leftBinding.getExtractor() == null ? extractor : leftBinding.getExtractor();
+        rightExtractor = rightBinding == null || rightBinding.getExtractor() == null ? extractor : rightBinding.getExtractor();
         selfLeft = leftBinding == null || leftBinding.getIdentifier().equals("this");
         selfRight = rightBinding == null || rightBinding.getIdentifier().equals("this");
     }
@@ -88,6 +89,12 @@ public class EvaluatorWrapper
      */
     public boolean evaluate(Object left,
                             Object right) {
+        if (rightBinding == null) {
+            return evaluator.evaluate( workingMemory,
+                                       leftExtractor,
+                                       leftHandle,
+                                       new ObjectFieldImpl(right) );
+        }
         return evaluator.evaluate( workingMemory,
                                    leftExtractor,
                                    leftHandle,
