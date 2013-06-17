@@ -35,11 +35,11 @@ public class ArrivalTimeUpdatingVariableListener implements PlanningVariableList
 
     protected void updateVehicle(ScoreDirector scoreDirector, VrpTimeWindowedCustomer sourceCustomer) {
         VrpStandstill previousStandstill = sourceCustomer.getPreviousStandstill();
-        int departureTime = (previousStandstill instanceof VrpTimeWindowedCustomer)
+        Integer departureTime = (previousStandstill instanceof VrpTimeWindowedCustomer)
                 ? ((VrpTimeWindowedCustomer) previousStandstill).getDepartureTime() : 0;
         VrpTimeWindowedCustomer shadowCustomer = sourceCustomer;
-        int arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
-        while (shadowCustomer != null && shadowCustomer.getArrivalTime() != arrivalTime) {
+        Integer arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
+        while (shadowCustomer != null && !shadowCustomer.getArrivalTime().equals(arrivalTime)) {
             scoreDirector.beforeVariableChanged(shadowCustomer, "arrivalTime");
             shadowCustomer.setArrivalTime(arrivalTime);
             scoreDirector.afterVariableChanged(shadowCustomer, "arrivalTime");
