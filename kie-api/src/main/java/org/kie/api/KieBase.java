@@ -115,7 +115,7 @@ public interface KieBase extends KieBaseEventManager {
     Process getProcess( String processId );
     
     /**
-     * Removes a process from the specified package.
+     * Removes a process.
      * 
      * @param processId the id of the process
      */

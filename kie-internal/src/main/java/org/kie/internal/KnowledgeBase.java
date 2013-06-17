@@ -135,7 +135,7 @@ public interface KnowledgeBase
     Process getProcess( String processId );
     
     /**
-     * Remove a process from the specified package.
+     * Remove a process.
      * @param processId
      */
     void removeProcess(String processId);
