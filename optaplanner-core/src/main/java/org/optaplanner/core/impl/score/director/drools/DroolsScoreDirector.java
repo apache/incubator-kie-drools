@@ -132,7 +132,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
                     + ") was never added to this ScoreDirector."
                     + " Usually the cause is that that specific instance was not in your Solution's entities.");
         }
-        kieSession.retract(factHandle);
+        kieSession.delete(factHandle);
     }
 
     // public void beforeProblemFactAdded(Object problemFact) // Do nothing
@@ -168,7 +168,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
                     + ") was never added to this ScoreDirector."
                     + " Usually the cause is that that specific instance was not in your Solution's getProblemFacts().");
         }
-        kieSession.retract(factHandle);
+        kieSession.delete(factHandle);
     }
 
     public Score calculateScore() {
