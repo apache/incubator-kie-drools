@@ -33,7 +33,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListenerSupport;
 import org.optaplanner.core.impl.domain.variable.shadow.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
@@ -212,9 +211,12 @@ public class PlanningEntityDescriptor {
     }
 
     public void addVariableListenersToMap(
-            Map<PlanningVariableDescriptor, PlanningVariableListener> variableListenerMap) {
+            Map<PlanningVariableDescriptor, List<PlanningVariableListener>> variableListenerMap) {
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptorMap.values()) {
-            variableDescriptor.addVariableListenersToMap(variableListenerMap);
+            List<PlanningVariableListener> variableListenerList = variableDescriptor.buildVariableListenerList();
+            if (!variableListenerList.isEmpty()) {
+                variableListenerMap.put(variableDescriptor, variableListenerList);
+            }
         }
     }
 

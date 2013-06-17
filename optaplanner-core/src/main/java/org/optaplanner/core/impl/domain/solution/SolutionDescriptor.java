@@ -224,8 +224,8 @@ public class SolutionDescriptor {
 
     public PlanningVariableListenerSupport buildVariableListenerSupport() {
         // Order is important, hence LinkedHashMap
-        Map<PlanningVariableDescriptor, PlanningVariableListener> variableListenerMap
-                = new LinkedHashMap<PlanningVariableDescriptor, PlanningVariableListener>();
+        Map<PlanningVariableDescriptor, List<PlanningVariableListener>> variableListenerMap
+                = new LinkedHashMap<PlanningVariableDescriptor, List<PlanningVariableListener>>();
         for (PlanningEntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
             entityDescriptor.addVariableListenersToMap(variableListenerMap);
         }

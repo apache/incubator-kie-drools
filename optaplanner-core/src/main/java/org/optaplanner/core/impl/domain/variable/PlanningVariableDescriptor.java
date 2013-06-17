@@ -262,16 +262,18 @@ public class PlanningVariableDescriptor {
         return valueRangeDescriptor;
     }
 
-    public void addVariableListenersToMap(
-            Map<PlanningVariableDescriptor, PlanningVariableListener> variableListenerMap) {
+    public List<PlanningVariableListener> buildVariableListenerList() {
+        List<PlanningVariableListener> variableListenerList = new ArrayList<PlanningVariableListener>(
+                shadowVariableDescriptorList.size() + nonMappedByVariableListeners.size());
         // Always trigger the build-in shadow variables first
         for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
-            variableListenerMap.put(this, shadowVariableDescriptor.buildPlanningVariableListener());
+            variableListenerList.add(shadowVariableDescriptor.buildPlanningVariableListener());
         }
         // Always trigger the non build-in shadow variables last
         for (PlanningVariableListener variableListener : nonMappedByVariableListeners) {
-            variableListenerMap.put(this, variableListener);
+            variableListenerList.add(variableListener);
         }
+        return variableListenerList;
     }
 
     // ************************************************************************
