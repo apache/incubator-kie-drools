@@ -1,5 +1,6 @@
 package org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
@@ -39,7 +40,7 @@ public class ArrivalTimeUpdatingVariableListener implements PlanningVariableList
                 ? ((VrpTimeWindowedCustomer) previousStandstill).getDepartureTime() : 0;
         VrpTimeWindowedCustomer shadowCustomer = sourceCustomer;
         Integer arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
-        while (shadowCustomer != null && !shadowCustomer.getArrivalTime().equals(arrivalTime)) {
+        while (shadowCustomer != null && ObjectUtils.notEqual(shadowCustomer.getArrivalTime(), arrivalTime)) {
             scoreDirector.beforeVariableChanged(shadowCustomer, "arrivalTime");
             shadowCustomer.setArrivalTime(arrivalTime);
             scoreDirector.afterVariableChanged(shadowCustomer, "arrivalTime");
