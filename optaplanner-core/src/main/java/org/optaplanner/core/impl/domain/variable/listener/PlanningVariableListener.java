@@ -16,21 +16,26 @@
 
 package org.optaplanner.core.impl.domain.variable.listener;
 
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+
 /**
+ * Changes shadow variables when a real planning variable changes.
+ * <p/>
+ * Important: it must never change a real planning variable!
  * @see AbstractPlanningVariableListener
  */
 public interface PlanningVariableListener<EntityG> {
 
-    void beforeEntityAdded(EntityG entity);
+    void beforeEntityAdded(ScoreDirector scoreDirector, EntityG entity);
 
-    void afterEntityAdded(EntityG entity);
+    void afterEntityAdded(ScoreDirector scoreDirector, EntityG entity);
 
-    void beforeVariableChanged(EntityG entity);
+    void beforeVariableChanged(ScoreDirector scoreDirector, EntityG entity);
 
-    void afterVariableChanged(EntityG entity);
+    void afterVariableChanged(ScoreDirector scoreDirector, EntityG entity);
 
-    void beforeEntityRemoved(EntityG entity);
+    void beforeEntityRemoved(ScoreDirector scoreDirector, EntityG entity);
 
-    void afterEntityRemoved(EntityG entity);
+    void afterEntityRemoved(ScoreDirector scoreDirector, EntityG entity);
 
 }

@@ -175,31 +175,31 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void beforeEntityAdded(Object entity) {
-        variableListenerSupport.beforeEntityAdded(entity);
+        variableListenerSupport.beforeEntityAdded(this, entity);
     }
 
     public void afterEntityAdded(Object entity) {
         insertInTrailingEntityMap(entity);
-        variableListenerSupport.afterEntityAdded(entity);
+        variableListenerSupport.afterEntityAdded(this, entity);
     }
 
     public void beforeVariableChanged(Object entity, String variableName) {
         retractFromTrailingEntityMap(entity);
-        variableListenerSupport.beforeVariableChanged(entity, variableName);
+        variableListenerSupport.beforeVariableChanged(this, entity, variableName);
     }
 
     public void afterVariableChanged(Object entity, String variableName) {
         insertInTrailingEntityMap(entity);
-        variableListenerSupport.afterVariableChanged(entity, variableName);
+        variableListenerSupport.afterVariableChanged(this, entity, variableName);
     }
 
     public void beforeEntityRemoved(Object entity) {
         retractFromTrailingEntityMap(entity);
-        variableListenerSupport.beforeEntityRemoved(entity);
+        variableListenerSupport.beforeEntityRemoved(this, entity);
     }
 
     public void afterEntityRemoved(Object entity) {
-        variableListenerSupport.afterEntityRemoved(entity);
+        variableListenerSupport.afterEntityRemoved(this, entity);
     }
 
     public void beforeProblemFactAdded(Object problemFact) {

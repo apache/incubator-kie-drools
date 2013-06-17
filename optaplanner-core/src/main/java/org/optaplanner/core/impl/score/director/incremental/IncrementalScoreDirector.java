@@ -59,8 +59,8 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
 
     @Override
     public void afterEntityAdded(Object entity) {
-        super.afterEntityAdded(entity);
         incrementalScoreCalculator.afterEntityAdded(entity);
+        super.afterEntityAdded(entity);
     }
 
     @Override
@@ -71,8 +71,8 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
 
     @Override
     public void afterVariableChanged(Object entity, String variableName) {
-        super.afterVariableChanged(entity, variableName);
         incrementalScoreCalculator.afterVariableChanged(entity, variableName);
+        super.afterVariableChanged(entity, variableName);
     }
 
     @Override
@@ -83,8 +83,8 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
 
     @Override
     public void afterEntityRemoved(Object entity) {
-        super.afterEntityRemoved(entity);
         incrementalScoreCalculator.afterEntityRemoved(entity);
+        super.afterEntityRemoved(entity);
     }
 
     @Override
@@ -94,8 +94,8 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
 
     @Override
     public void afterProblemFactAdded(Object problemFact) {
-        super.afterProblemFactAdded(problemFact);
         incrementalScoreCalculator.resetWorkingSolution(workingSolution); // TODO do not nuke it
+        super.afterProblemFactAdded(problemFact);
     }
 
     @Override
@@ -105,8 +105,8 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
 
     @Override
     public void afterProblemFactChanged(Object problemFact) {
-        super.afterProblemFactChanged(problemFact);
         incrementalScoreCalculator.resetWorkingSolution(workingSolution); // TODO do not nuke it
+        super.afterProblemFactChanged(problemFact);
     }
 
     @Override
@@ -116,8 +116,8 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
 
     @Override
     public void afterProblemFactRemoved(Object problemFact) {
-        super.afterProblemFactRemoved(problemFact);
         incrementalScoreCalculator.resetWorkingSolution(workingSolution); // TODO do not nuke it
+        super.afterProblemFactRemoved(problemFact);
     }
 
     public Score calculateScore() {

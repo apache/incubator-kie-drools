@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.domain.variable.shadow;
 
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.AbstractPlanningVariableListener;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ChainedMappedByVariableListener extends AbstractPlanningVariableListener<Object> {
 
@@ -29,31 +30,31 @@ public class ChainedMappedByVariableListener extends AbstractPlanningVariableLis
         mappedByVariableDescriptor = shadowVariableDescriptor.getMappedByVariableDescriptor();
     }
 
-    public void beforeEntityAdded(Object entity) {
+    public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
 
-    public void afterEntityAdded(Object entity) {
-        insert(entity);
+    public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
+        insert(scoreDirector, entity);
     }
 
-    public void beforeVariableChanged(Object entity) {
-        retract(entity);
+    public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
+        retract(scoreDirector, entity);
     }
 
-    public void afterVariableChanged(Object entity) {
-        insert(entity);
+    public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
+        insert(scoreDirector, entity);
     }
 
-    public void beforeEntityRemoved(Object entity) {
-        retract(entity);
+    public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
+        retract(scoreDirector, entity);
     }
 
-    public void afterEntityRemoved(Object entity) {
+    public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
 
-    private void insert(Object entity) {
+    protected void insert(ScoreDirector scoreDirector, Object entity) {
         Object shadowEntity = mappedByVariableDescriptor.getValue(entity);
         if (shadowEntity != null) {
             Object shadowValue = shadowVariableDescriptor.getValue(shadowEntity);
@@ -65,11 +66,13 @@ public class ChainedMappedByVariableListener extends AbstractPlanningVariableLis
                         + ") with a value (" + shadowValue + ") which is not null.\n"
                         + "Verify the consistency of your input problem for that mappedBy variable.");
             }
+            scoreDirector.beforeVariableChanged(entity, shadowVariableDescriptor.getVariableName());
             shadowVariableDescriptor.setValue(shadowEntity, entity);
+            scoreDirector.afterVariableChanged(entity, shadowVariableDescriptor.getVariableName());
         }
     }
 
-    private void retract(Object entity) {
+    protected void retract(ScoreDirector scoreDirector, Object entity) {
         Object shadowEntity = mappedByVariableDescriptor.getValue(entity);
         if (shadowEntity != null) {
             Object shadowValue = shadowVariableDescriptor.getValue(shadowEntity);
@@ -81,7 +84,9 @@ public class ChainedMappedByVariableListener extends AbstractPlanningVariableLis
                         + ") with a value (" + shadowValue + ") which is not that entity.\n"
                         + "Verify the consistency of your input problem for that mappedBy variable.");
             }
+            scoreDirector.beforeVariableChanged(entity, shadowVariableDescriptor.getVariableName());
             shadowVariableDescriptor.setValue(shadowEntity, null);
+            scoreDirector.afterVariableChanged(entity, shadowVariableDescriptor.getVariableName());
         }
     }
 
