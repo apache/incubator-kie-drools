@@ -37,7 +37,7 @@ public interface KieRuntime
     public <T extends SessionClock> T getSessionClock();
 
     /**
-     * Sets a global value on the internal collection
+     * Sets a global value in this session
      * @param identifier the global identifier
      * @param value the value assigned to the global identifier
      */

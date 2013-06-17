@@ -26,7 +26,7 @@ public interface KieSessionModel {
     KieSessionModel setType(KieSessionType type);
 
     /**
-     * Returns the EqualityBehavior of this KieSessionModel
+     * Returns the ClockType of this KieSessionModel
      */
     ClockTypeOption getClockType();
 

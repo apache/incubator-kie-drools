@@ -17,7 +17,7 @@
 package org.kie.api.runtime;
 
 /**
- * Filters Objects by Class, only accepting Classes of the specified type
+ * Filters objects by class, only accepting objects of the class specified in the constructor
  */
 public class ClassObjectFilter
     implements
@@ -33,7 +33,7 @@ public class ClassObjectFilter
     }
 
     /**
-     * Returning true means the Iterator accepts, and thus returns, the current Object's Class type.
+     * Returns true if the Iterator accepts the given object according to its class.
      * @param object
      * @return
      */
