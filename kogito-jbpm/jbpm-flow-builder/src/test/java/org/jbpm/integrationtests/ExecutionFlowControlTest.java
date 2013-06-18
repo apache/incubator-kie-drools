@@ -35,10 +35,8 @@ public class ExecutionFlowControlTest extends TestCase {
                       list.size() );
         assertEquals( "Rule1",
                       list.get( 0 ) );
-        assertEquals( "Rule3",
-                      list.get( 1 ) );
-        assertEquals( "Rule2",
-                      list.get( 2 ) );
+        list.subList(1,2).contains( "Rule2" );
+        list.subList(1,2).contains( "Rule3" );
         assertEquals( "Rule4",
                       list.get( 3 ) );
         assertEquals( ProcessInstance.STATE_COMPLETED,
