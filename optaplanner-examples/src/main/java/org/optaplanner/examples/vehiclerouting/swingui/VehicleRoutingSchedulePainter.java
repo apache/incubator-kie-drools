@@ -91,22 +91,24 @@ public class VehicleRoutingSchedulePainter {
             VrpLocation location = customer.getLocation();
             int x = translator.translateLongitudeToX(location.getLongitude());
             int y = translator.translateLatitudeToY(location.getLatitude());
-            g.setColor(TangoColorFactory.ORANGE_2);
+            g.setColor(TangoColorFactory.ALUMINIUM_4);
             g.fillRect(x - 1, y - 1, 3, 3);
             g.drawString(Integer.toString(customer.getDemand()), x + 3, y - (TEXT_SIZE/2) - TEXT_SPACING_SIZE);
             if (customer instanceof VrpTimeWindowedCustomer) {
                 VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
                 g.drawString(timeWindowedCustomer.getTimeWindowLabel(), x + 3, y + (TEXT_SIZE/2));
                 if (timeWindowedCustomer.getArrivalTime() != null) {
-                    if (!timeWindowedCustomer.isArrivalTimeValid()) {
+                    if (!timeWindowedCustomer.isDepartureTimeBeforeDueTime()) {
                         g.setColor(TangoColorFactory.SCARLET_2);
+                    } else if (!timeWindowedCustomer.isArrivalTimeAfterReadyTime()) {
+                        g.setColor(TangoColorFactory.ORANGE_2);
                     }
                     g.drawString(Integer.toString(timeWindowedCustomer.getArrivalTime()),
                             x + 3, y + (TEXT_SIZE/2) + TEXT_SPACING_SIZE + TEXT_SIZE);
                 }
             }
         }
-        g.setColor(TangoColorFactory.ALUMINIUM_4);
+        g.setColor(TangoColorFactory.ALUMINIUM_3);
         for (VrpDepot depot : schedule.getDepotList()) {
             int x = translator.translateLongitudeToX(depot.getLocation().getLongitude());
             int y = translator.translateLatitudeToY(depot.getLocation().getLatitude());
@@ -185,11 +187,11 @@ public class VehicleRoutingSchedulePainter {
         }
 
         // Legend
-        g.setColor(TangoColorFactory.ALUMINIUM_4);
+        g.setColor(TangoColorFactory.ALUMINIUM_3);
         g.fillRect(5, (int) height - 12 - TEXT_SIZE - (TEXT_SIZE / 2), 5, 5);
         g.drawString((schedule instanceof VrpTimeWindowedSchedule)
                 ? "Depot: time window" : "Depot", 15, (int) height - 10 - TEXT_SIZE);
-        g.setColor(TangoColorFactory.ORANGE_2);
+        g.setColor(TangoColorFactory.ALUMINIUM_4);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
         g.drawString((schedule instanceof VrpTimeWindowedSchedule)
                 ? "Customer: demand, time window and arrival time" : "Customer: demand", 15, (int) height - 5);

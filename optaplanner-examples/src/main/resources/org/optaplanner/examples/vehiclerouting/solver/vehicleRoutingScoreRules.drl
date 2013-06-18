@@ -78,3 +78,14 @@ rule "afterDueTime"
     then
         scoreHolder.addHardConstraintMatch(kcontext, $dueTime - $departureTime.intValue());
 end
+
+// ############################################################################
+// TimeWindowed: extra soft constraints
+// ############################################################################
+
+rule "beforeReadyTime"
+    when
+        VrpTimeWindowedCustomer(arrivalTime < readyTime, $readyTime : readyTime, $arrivalTime : arrivalTime)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, $arrivalTime.intValue() - $readyTime);
+end

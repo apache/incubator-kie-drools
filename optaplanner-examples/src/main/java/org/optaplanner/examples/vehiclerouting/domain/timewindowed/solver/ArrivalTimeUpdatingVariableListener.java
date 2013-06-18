@@ -54,11 +54,7 @@ public class ArrivalTimeUpdatingVariableListener implements PlanningVariableList
         if (customer == null) {
             return -1;
         }
-        int arrivalTime = previousDepartureTime + customer.getDistanceToPreviousStandstill();
-        if (arrivalTime < customer.getReadyTime()) {
-            arrivalTime = customer.getReadyTime();
-        }
-        return arrivalTime;
+        return previousDepartureTime + customer.getDistanceToPreviousStandstill();
     }
 
 }
