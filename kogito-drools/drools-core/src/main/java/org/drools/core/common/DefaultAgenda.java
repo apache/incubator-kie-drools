@@ -1281,10 +1281,7 @@ public class DefaultAgenda
         int localFireCount = 0;
         try {
             do {
-                while ( !eager.isEmpty() ) {
-                    RuleAgendaItem item = eager.removeFirst();
-                    item.getRuleExecutor().evaluateNetwork(this.workingMemory);
-                }
+                evaluateEagerList();
                 this.workingMemory.prepareToFireActivation();
                 tryagain = false;
                 final InternalAgendaGroup group = (InternalAgendaGroup) getNextFocus();
@@ -1341,6 +1338,12 @@ public class DefaultAgenda
         return localFireCount;
     }
 
+    public void evaluateEagerList() {
+        while ( !eager.isEmpty() ) {
+            RuleAgendaItem item = eager.removeFirst();
+            item.getRuleExecutor().evaluateNetwork(this.workingMemory);
+        }
+    }
 
     /**
      * Fire this item.
