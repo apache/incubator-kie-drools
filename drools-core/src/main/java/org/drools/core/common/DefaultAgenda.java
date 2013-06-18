@@ -785,11 +785,11 @@ public class DefaultAgenda
 
             // No populated queues found so pop the focusStack and repeat
             if ( empty && (this.focusStack.size() > 1) ) {
+                agendaGroup.setActive( false );
+                this.focusStack.removeLast();
                 if ( agendaGroup.isAutoDeactivate() && !agendaGroup.getNodeInstances().isEmpty() ) {
                     innerDeactiveRuleFlowGroup((InternalRuleFlowGroup) agendaGroup);
                 }
-                agendaGroup.setActive( false );
-                this.focusStack.removeLast();
                 final EventSupport eventsupport = (EventSupport) this.workingMemory;
                 eventsupport.getAgendaEventSupport().fireAgendaGroupPopped( agendaGroup,
                                                                             this.workingMemory );
@@ -939,7 +939,6 @@ public class DefaultAgenda
             group.addNodeInstance( processInstanceId, nodeInstanceId );
             group.setActive( true );
         }
-        System.out.println( "activate" + group.getName() );
         setFocus( (InternalAgendaGroup)  group);
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupActivated( group,
                                                                                                      this.workingMemory );
