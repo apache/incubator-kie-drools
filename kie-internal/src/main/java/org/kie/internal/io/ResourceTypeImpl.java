@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ResourceTypeImpl {
-    private static final String                    KIE_RESOURCE_CONF_CLASS = "kie.resource.conf.class";
+    public static final String                    KIE_RESOURCE_CONF_CLASS = "kie.resource.conf.class";
     
     private static final Logger                    logger                  = LoggerFactory.getLogger( ResourceTypeImpl.class );
 
