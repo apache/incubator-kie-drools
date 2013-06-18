@@ -1,7 +1,9 @@
 package org.optaplanner.examples.vehiclerouting.domain.timewindowed;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
 
+@XStreamAlias("VrpTimeWindowedDepot")
 public class VrpTimeWindowedDepot extends VrpDepot {
 
     private int readyTime;
