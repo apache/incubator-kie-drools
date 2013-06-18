@@ -51,6 +51,16 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
         incrementalScoreCalculator.resetWorkingSolution(workingSolution);
     }
 
+    public Score calculateScore() {
+        Score score = incrementalScoreCalculator.calculateScore();
+        setCalculatedScore(score);
+        return score;
+    }
+
+    // ************************************************************************
+    // Entity/variable add/change/remove methods
+    // ************************************************************************
+
     @Override
     public void beforeEntityAdded(Object entity) {
         incrementalScoreCalculator.beforeEntityAdded(entity);
@@ -87,6 +97,10 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
         super.afterEntityRemoved(entity);
     }
 
+    // ************************************************************************
+    // Problem fact add/change/remove methods
+    // ************************************************************************
+
     @Override
     public void beforeProblemFactAdded(Object problemFact) {
         super.beforeProblemFactAdded(problemFact);
@@ -120,11 +134,9 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
         super.afterProblemFactRemoved(problemFact);
     }
 
-    public Score calculateScore() {
-        Score score = incrementalScoreCalculator.calculateScore();
-        setCalculatedScore(score);
-        return score;
-    }
+    // ************************************************************************
+    // Assert methods
+    // ************************************************************************
 
     @Override
     protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {

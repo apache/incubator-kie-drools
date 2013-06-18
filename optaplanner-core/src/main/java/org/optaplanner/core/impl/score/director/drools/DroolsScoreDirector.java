@@ -92,6 +92,44 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         return getSolutionDescriptor().getAllFacts(workingSolution);
     }
 
+    public Score calculateScore() {
+        kieSession.fireAllRules();
+        Score score = workingScoreHolder.extractScore();
+        setCalculatedScore(score);
+        return score;
+    }
+
+    public boolean isConstraintMatchEnabled() {
+        return workingScoreHolder.isConstraintMatchEnabled();
+    }
+
+    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+        return workingScoreHolder.getConstraintMatchTotals();
+    }
+
+    @Override
+    public AbstractScoreDirector clone() {
+        // TODO experiment with serializing the KieSession to clone it and its entities but not its other facts.
+        // See drools-compiler's test SerializationHelper.getSerialisedStatefulKnowledgeSession(...)
+        // and use an identity FactFactory that:
+        // - returns the reference for a non-@PlanningEntity fact
+        // - returns a clone for a @PlanningEntity fact (Pitfall: chained planning entities)
+        // Note: currently that will break incremental score calculation, but future drools versions might fix that
+        return super.clone();
+    }
+
+    @Override
+    public void dispose() {
+        if (kieSession != null) {
+            kieSession.dispose();
+            kieSession = null;
+        }
+    }
+
+    // ************************************************************************
+    // Entity/variable add/change/remove methods
+    // ************************************************************************
+
     // public void beforeEntityAdded(Object entity) // Do nothing
 
     @Override
@@ -135,6 +173,10 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         super.afterEntityRemoved(entity);
     }
 
+    // ************************************************************************
+    // Problem fact add/change/remove methods
+    // ************************************************************************
+
     // public void beforeProblemFactAdded(Object problemFact) // Do nothing
 
     @Override
@@ -171,31 +213,9 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         super.afterProblemFactRemoved(problemFact);
     }
 
-    public Score calculateScore() {
-        kieSession.fireAllRules();
-        Score score = workingScoreHolder.extractScore();
-        setCalculatedScore(score);
-        return score;
-    }
-
-    public boolean isConstraintMatchEnabled() {
-        return workingScoreHolder.isConstraintMatchEnabled();
-    }
-
-    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        return workingScoreHolder.getConstraintMatchTotals();
-    }
-
-    @Override
-    public AbstractScoreDirector clone() {
-        // TODO experiment with serializing the KieSession to clone it and its entities but not its other facts.
-        // See drools-compiler's test SerializationHelper.getSerialisedStatefulKnowledgeSession(...)
-        // and use an identity FactFactory that:
-        // - returns the reference for a non-@PlanningEntity fact
-        // - returns a clone for a @PlanningEntity fact (Pitfall: chained planning entities)
-        // Note: currently that will break incremental score calculation, but future drools versions might fix that
-        return super.clone();
-    }
+    // ************************************************************************
+    // Assert methods
+    // ************************************************************************
 
     @Deprecated // TODO remove in 6.1.0
     @Override
@@ -253,14 +273,6 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         }
         for (Map.Entry<List<Object>, Double> entry : scoreTotalMap.entrySet()) {
             analysis.append("    ").append(entry.getKey()).append(" = ").append(entry.getValue()).append("\n");
-        }
-    }
-
-    @Override
-    public void dispose() {
-        if (kieSession != null) {
-            kieSession.dispose();
-            kieSession = null;
         }
     }
 

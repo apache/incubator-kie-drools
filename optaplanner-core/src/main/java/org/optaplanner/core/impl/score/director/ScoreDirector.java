@@ -68,32 +68,6 @@ public interface ScoreDirector {
 
     Solution cloneWorkingSolution();
 
-    void beforeEntityAdded(Object entity);
-
-    void afterEntityAdded(Object entity);
-
-    void beforeVariableChanged(Object entity, String variableName);
-
-    void afterVariableChanged(Object entity, String variableName);
-
-    void beforeEntityRemoved(Object entity);
-
-    void afterEntityRemoved(Object entity);
-
-    // TODO extract this set of methods into a separate interface, only used by ProblemFactChange
-
-    void beforeProblemFactAdded(Object problemFact);
-
-    void afterProblemFactAdded(Object problemFact);
-
-    void beforeProblemFactChanged(Object problemFact);
-
-    void afterProblemFactChanged(Object problemFact);
-
-    void beforeProblemFactRemoved(Object problemFact);
-
-    void afterProblemFactRemoved(Object problemFact);
-
     /**
      * @return >= 0
      */
@@ -149,12 +123,43 @@ public interface ScoreDirector {
     ScoreDirector clone();
 
     /**
+     * Needs to be called after use because some implementations needs to clean up their resources.
+     */
+    void dispose();
+
+    /**
      * @param chainedVariableDescriptor never null, must be {@link PlanningVariableDescriptor#isChained()} true
      * and known to the {@link SolutionDescriptor}
      * @param planningValue sometimes null
      * @return never null
      */
     Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue);
+
+    void beforeEntityAdded(Object entity);
+
+    void afterEntityAdded(Object entity);
+
+    void beforeVariableChanged(Object entity, String variableName);
+
+    void afterVariableChanged(Object entity, String variableName);
+
+    void beforeEntityRemoved(Object entity);
+
+    void afterEntityRemoved(Object entity);
+
+    // TODO extract this set of methods into a separate interface, only used by ProblemFactChange
+
+    void beforeProblemFactAdded(Object problemFact);
+
+    void afterProblemFactAdded(Object problemFact);
+
+    void beforeProblemFactChanged(Object problemFact);
+
+    void afterProblemFactChanged(Object problemFact);
+
+    void beforeProblemFactRemoved(Object problemFact);
+
+    void afterProblemFactRemoved(Object problemFact);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}
@@ -180,10 +185,5 @@ public interface ScoreDirector {
      * @see ScoreDirectorFactory#assertScoreFromScratch(Solution)
      */
     void assertWorkingScoreFromScratch(Score workingScore, Object completedAction);
-
-    /**
-     * Needs to be called after use because some implementations needs to clean up their resources.
-     */
-    void dispose();
 
 }

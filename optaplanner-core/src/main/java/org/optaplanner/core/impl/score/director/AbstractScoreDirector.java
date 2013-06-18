@@ -111,6 +111,62 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return getSolutionDescriptor().getSolutionCloner().cloneSolution(workingSolution);
     }
 
+    public int getWorkingEntityCount() {
+        return getSolutionDescriptor().getEntityCount(workingSolution);
+    }
+
+    public List<Object> getWorkingEntityList() {
+        return getSolutionDescriptor().getEntityList(workingSolution);
+    }
+
+    public int getWorkingValueCount() {
+        return getSolutionDescriptor().getValueCount(workingSolution);
+    }
+
+    public int countWorkingSolutionUninitializedVariables() {
+        return getSolutionDescriptor().countUninitializedVariables(workingSolution);
+    }
+
+    public boolean isWorkingSolutionInitialized() {
+        return getSolutionDescriptor().isInitialized(workingSolution);
+    }
+
+    protected void setCalculatedScore(Score score) {
+        workingSolution.setScore(score);
+        calculateCount++;
+    }
+
+    public boolean isConstraintMatchEnabled() {
+        // Doesn't return constraintMatchEnabledPreference because the implementation needs to implement it
+        return false;
+    }
+
+    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
+        if (isConstraintMatchEnabled()) {
+            throw new IllegalStateException("Subclass (" + getClass()
+                    + ") which overwrote constraintMatchEnabled (" + isConstraintMatchEnabled()
+                    + ") should also overwrite this method.");
+        }
+        throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
+                + ") is disabled, this method should not be called.");
+    }
+
+    public AbstractScoreDirector clone() {
+        // Breaks incremental score calculation.
+        // Subclasses should overwrite this method to avoid breaking it if possible.
+        AbstractScoreDirector clone = (AbstractScoreDirector) scoreDirectorFactory.buildScoreDirector();
+        clone.setWorkingSolution(cloneWorkingSolution());
+        return clone;
+    }
+
+    public void dispose() {
+        // Do nothing
+    }
+
+    // ************************************************************************
+    // Trailing entity methods
+    // ************************************************************************
+
     private void resetTrailingEntityMap() {
         if (hasChainedVariables) {
             List<Object> entityList = getSolutionDescriptor().getEntityList(workingSolution);
@@ -174,6 +230,26 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         }
     }
 
+    public Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue) {
+        Set<Object> trailingEntities = chainedVariableToTrailingEntitiesMap.get(chainedVariableDescriptor)
+                .get(planningValue);
+        if (trailingEntities == null) {
+            return null;
+        }
+        // trailingEntities can never be an empty list
+        if (trailingEntities.size() > 1) {
+            throw new IllegalStateException("The planningValue (" + planningValue
+                    + ") has multiple trailing entities (" + trailingEntities
+                    + ") pointing to it for chained planningVariable ("
+                    + chainedVariableDescriptor.getVariableName() + ").");
+        }
+        return trailingEntities.iterator().next();
+    }
+
+    // ************************************************************************
+    // Entity/variable add/change/remove methods
+    // ************************************************************************
+
     public void beforeEntityAdded(Object entity) {
         variableListenerSupport.beforeEntityAdded(this, entity);
     }
@@ -202,6 +278,10 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         variableListenerSupport.afterEntityRemoved(this, entity);
     }
 
+    // ************************************************************************
+    // Problem fact add/change/remove methods
+    // ************************************************************************
+
     public void beforeProblemFactAdded(Object problemFact) {
         // Do nothing
     }
@@ -226,69 +306,9 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         resetTrailingEntityMap(); // TODO do not nuke it
     }
 
-    public int getWorkingEntityCount() {
-        return getSolutionDescriptor().getEntityCount(workingSolution);
-    }
-
-    public List<Object> getWorkingEntityList() {
-        return getSolutionDescriptor().getEntityList(workingSolution);
-    }
-
-    public int getWorkingValueCount() {
-        return getSolutionDescriptor().getValueCount(workingSolution);
-    }
-
-    public int countWorkingSolutionUninitializedVariables() {
-        return getSolutionDescriptor().countUninitializedVariables(workingSolution);
-    }
-
-    public boolean isWorkingSolutionInitialized() {
-        return getSolutionDescriptor().isInitialized(workingSolution);
-    }
-
-    protected void setCalculatedScore(Score score) {
-        workingSolution.setScore(score);
-        calculateCount++;
-    }
-
-    public boolean isConstraintMatchEnabled() {
-        // Doesn't return constraintMatchEnabledPreference because the implementation needs to implement it
-        return false;
-    }
-
-    public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        if (isConstraintMatchEnabled()) {
-            throw new IllegalStateException("Subclass (" + getClass()
-                    + ") which overwrote constraintMatchEnabled (" + isConstraintMatchEnabled()
-                    + ") should also overwrite this method.");
-        }
-        throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
-                + ") is disabled, this method should not be called.");
-    }
-
-    public AbstractScoreDirector clone() {
-        // Breaks incremental score calculation.
-        // Subclasses should overwrite this method to avoid breaking it if possible.
-        AbstractScoreDirector clone = (AbstractScoreDirector) scoreDirectorFactory.buildScoreDirector();
-        clone.setWorkingSolution(cloneWorkingSolution());
-        return clone;
-    }
-
-    public Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue) {
-        Set<Object> trailingEntities = chainedVariableToTrailingEntitiesMap.get(chainedVariableDescriptor)
-                .get(planningValue);
-        if (trailingEntities == null) {
-            return null;
-        }
-        // trailingEntities can never be an empty list
-        if (trailingEntities.size() > 1) {
-            throw new IllegalStateException("The planningValue (" + planningValue
-                    + ") has multiple trailing entities (" + trailingEntities
-                    + ") pointing to it for chained planningVariable ("
-                    + chainedVariableDescriptor.getVariableName() + ").");
-        }
-        return trailingEntities.iterator().next();
-    }
+    // ************************************************************************
+    // Assert methods
+    // ************************************************************************
 
     public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
         Score workingScore = calculateScore();
@@ -415,10 +435,6 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             }
         }
         return constraintMatchMap;
-    }
-
-    public void dispose() {
-        // Do nothing
     }
 
     @Override
