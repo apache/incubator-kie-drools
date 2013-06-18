@@ -33,10 +33,12 @@ import javax.inject.Inject;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.test.MyObject;
 import org.jbpm.services.task.test.TestStatefulKnowledgeSession;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.services.task.utils.OnErrorAction;
+import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.junit.Test;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -69,7 +71,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
@@ -98,10 +100,11 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader, Dalai Lama");
+        workItem.setProcessInstanceId(10);
         getHandler().executeWorkItem(workItem, manager);
 
         
@@ -129,10 +132,11 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("GroupId", "Crusaders");
+        workItem.setProcessInstanceId(10);
         getHandler().executeWorkItem(workItem, manager);
 
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Luke Cage", "en-UK");
@@ -170,16 +174,17 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task One");
-        workItem.setParameter("TaskName", "TaskNameOne");
+        workItem.setParameter("NodeName", "TaskNameOne");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("GroupId", "Crusaders");
+        workItem.setProcessInstanceId(10);
         getHandler().executeWorkItem(workItem, manager);
   
 
         workItem = new WorkItemImpl();
         workItem.setName("Human Task Two");
-        workItem.setParameter("TaskName", "TaskNameTwo");
+        workItem.setParameter("NodeName", "TaskNameTwo");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
@@ -194,10 +199,11 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setProcessInstanceId(10);
         getHandler().executeWorkItem(workItem, manager);
 
         
@@ -223,10 +229,11 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setProcessInstanceId(10);
         getHandler().executeWorkItem(workItem, manager);
 
         
@@ -251,10 +258,11 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setProcessInstanceId(10);
         getHandler().executeWorkItem(workItem, manager);
         
         Task task = taskService.getTaskByWorkItemId(workItem.getId());
@@ -276,10 +284,11 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setProcessInstanceId(10);
         getHandler().executeWorkItem(workItem, manager);
         
         Task task = taskService.getTaskByWorkItemId(workItem.getId());
@@ -306,10 +315,11 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setProcessInstanceId(10);
         getHandler().executeWorkItem(workItem, manager);
 
         
@@ -325,11 +335,12 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
         workItem.setParameter("Skippable", "false");
+        workItem.setProcessInstanceId(10);
         getHandler().executeWorkItem(workItem, manager);
 
         
@@ -348,11 +359,12 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
         workItem.setParameter("Content", "This is the content");
+        workItem.setProcessInstanceId(10);
         getHandler().executeWorkItem(workItem, manager);
 
         List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
@@ -395,7 +407,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
@@ -405,7 +417,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         mapParameter.put("MyObjectInsideTheMap", myObject);
         workItem.setParameter("MyMap", mapParameter);
         workItem.setParameter("MyObject", myObject);
-
+        workItem.setProcessInstanceId(10);
         getHandler().executeWorkItem(workItem, manager);
 
        
@@ -465,7 +477,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "DoesNotExist");
@@ -483,7 +495,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "DoesNotExist");
@@ -501,7 +513,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "DoesNotExist");
@@ -523,7 +535,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
@@ -555,7 +567,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
@@ -586,7 +598,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("GroupId", "Crusaders");
@@ -618,7 +630,7 @@ public abstract class HTWorkItemHandlerBaseTest {
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
-        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("NodeName", "TaskName");
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("GroupId", "Crusaders");
@@ -717,7 +729,7 @@ public abstract class HTWorkItemHandlerBaseTest {
     }
     
     @ApplicationScoped
-    public static class AddedTaskListener {
+    public static class AddedTaskListener extends JbpmServicesEventListener<Task> {
         public AddedTaskListener() {
             
         }
