@@ -70,6 +70,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	private Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
 	private Map<String, List<EventListener>> externalEventListeners = new HashMap<String, List<EventListener>>();
 	private List<String> completedNodeIds = new ArrayList<String>();
+	private Map<String, Integer> iterationLevels = new HashMap<String, Integer>();
+	private int currentLevel;
 
 	public NodeContainer getNodeContainer() {
 		return getWorkflowProcess();
@@ -79,6 +81,25 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		((NodeInstanceImpl) nodeInstance).setId(nodeInstanceCounter++);
 		this.nodeInstances.add(nodeInstance);
 	}
+	
+    @Override
+    public int getLevelForNode(String uniqueID) {
+        if ("true".equalsIgnoreCase(System.getProperty("jbpm.loop.level.disabled"))) {
+            return 1;
+        }
+        
+        Integer value = iterationLevels.get(uniqueID);
+        if (value == null && currentLevel == 0) {
+           value = new Integer(1);
+        } else if ((value == null && currentLevel > 0) || (value != null && currentLevel > 0 && value > currentLevel)) {
+            value = new Integer(currentLevel);
+        } else {
+            value++;
+        }
+
+        iterationLevels.put(uniqueID, value);
+        return value;
+    }
 
 	public void removeNodeInstance(final NodeInstance nodeInstance) {
 		if (((NodeInstanceImpl) nodeInstance).isInversionOfControl()) {
@@ -137,7 +158,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		for (final Iterator<NodeInstance> iterator = this.nodeInstances
 				.iterator(); iterator.hasNext();) {
 			final NodeInstance nodeInstance = iterator.next();
-			if (nodeInstance.getNodeId() == nodeId) {
+			if (nodeInstance.getNodeId() == nodeId && nodeInstance.getLevel() == getCurrentLevel()) {
 				return nodeInstance;
 			}
 		}
@@ -539,5 +560,17 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	public List<String> getCompletedNodeIds() { 
 	    return this.completedNodeIds;
 	}
+
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public void setCurrentLevel(int currentLevel) {
+        this.currentLevel = currentLevel;
+    }
+
+    public Map<String, Integer> getIterationLevels() {
+        return iterationLevels;
+    }
 	
 }

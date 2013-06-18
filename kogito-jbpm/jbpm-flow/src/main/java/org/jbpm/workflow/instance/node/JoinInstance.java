@@ -16,12 +16,19 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.Join;
-import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
@@ -63,13 +70,9 @@ public class JoinInstance extends NodeInstanceImpl {
                                        count.intValue() + 1 );
                 }
                 if (checkAllActivated()) {
-                    // make sure there are no active paths - loop case
-                    NodeInstanceContainer nodeInstanceContainer = (NodeInstanceContainer) getNodeInstanceContainer();
-                    boolean activePathExists = existsActiveDirectFlow(nodeInstanceContainer, getJoin(), false);
-                    if (!activePathExists) {
-                        decreaseAllTriggers();
-                        triggerCompleted();
-                    }
+                    decreaseAllTriggers();
+                    triggerCompleted();
+                    
                 }
                 break;
             case Join.TYPE_DISCRIMINATOR :
@@ -124,8 +127,8 @@ public class JoinInstance extends NodeInstanceImpl {
                 break;
             case Join.TYPE_OR :
                 NodeInstanceContainer nodeInstanceContainer = (NodeInstanceContainer) getNodeInstanceContainer();
-                boolean activePathExists = existsActiveDirectFlow(nodeInstanceContainer, getJoin(), true);
-                if (!activePathExists) {
+                boolean activePathExists = existsActiveDirectFlow(nodeInstanceContainer, getJoin());
+                if (!activePathExists ) {
                     triggerCompleted();
                 }
                 break;
@@ -157,7 +160,7 @@ public class JoinInstance extends NodeInstanceImpl {
         }
     }
     
-    private boolean existsActiveDirectFlow(NodeInstanceContainer nodeInstanceContainer, final Node lookFor, boolean skipOrSplit) {
+    private boolean existsActiveDirectFlow(NodeInstanceContainer nodeInstanceContainer, final Node lookFor) {
         boolean activeDirectPathExists = false;
         
         Collection<NodeInstance> activeNodeInstancesOrig = nodeInstanceContainer.getNodeInstances();
@@ -176,17 +179,24 @@ public class JoinInstance extends NodeInstanceImpl {
             }
         });
         Set<Long> vistedNodes = new HashSet<Long>();
-        for (NodeInstance nodeInstance : activeNodeInstances) {            
+        for (NodeInstance nodeInstance : activeNodeInstances) {              
             if (nodeInstance instanceof NodeInstanceContainer) {
-                boolean nestedCheck = existsActiveDirectFlow((NodeInstanceContainer) nodeInstance, lookFor, skipOrSplit);
+                boolean nestedCheck = existsActiveDirectFlow((NodeInstanceContainer) nodeInstance, lookFor);
                 if (nestedCheck) {
                     return true;
                 }
             }
-            
-            Node node = nodeInstance.getNode();
+            if (((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getLevel() != ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).getCurrentLevel()) {
+                continue;
+            }
+            Node node = nodeInstance.getNode();            
             vistedNodes.add(node.getId());
-            activeDirectPathExists = checkNodes(vistedNodes, node, lookFor, skipOrSplit);
+            
+            if (hasLoop(node, lookFor)) {
+                continue;
+            }
+            
+            activeDirectPathExists = checkNodes(vistedNodes, node, lookFor);
             if (activeDirectPathExists) {
                 return true;
             }
@@ -194,14 +204,40 @@ public class JoinInstance extends NodeInstanceImpl {
         
         return activeDirectPathExists;
     }
-
-    private boolean checkNodes(Set<Long> vistedNodes, Node currentNode, Node lookFor, boolean orGatewayCheck) {
-        if (orGatewayCheck && currentNode instanceof Split) {
-            // in case this method is used for OR converging, skip OR diverging as they will produce new paths any way
-            if (((Split) currentNode).getType() == Split.TYPE_OR) {
-                return false;
-            }
+    
+    protected boolean hasLoop(Node startAt, final Node lookFor) {
+        Set<Long> nodes = new HashSet<Long>();
+        
+        nodes = collectCompletedNodes(startAt, lookFor, nodes);
+        
+        if (nodes.contains(startAt.getId())) {
+            return true;
         }
+        
+        return false;
+    }
+    
+    protected Set<Long> collectCompletedNodes(Node startAt, final Node lookFor, Set<Long> comletedNodes) {
+        if(startAt == null || startAt.getId() == lookFor.getId()) {
+            return Collections.emptySet();
+        }
+        
+        
+        List<Connection> connections = startAt.getIncomingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+        for (Connection conn : connections) {
+            Node prevNode = conn.getFrom();
+            
+            if (prevNode == null || comletedNodes.contains(prevNode.getId())) {
+                continue;
+            }
+            comletedNodes.add(prevNode.getId());
+            collectCompletedNodes(prevNode, lookFor, comletedNodes);
+        }
+        
+        return comletedNodes;
+    }
+
+    private boolean checkNodes(Set<Long> vistedNodes, Node currentNode, Node lookFor) {
         List<Connection> connections = currentNode.getOutgoingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
         
         for (Connection conn : connections) {
@@ -216,7 +252,7 @@ public class JoinInstance extends NodeInstanceImpl {
                 if (nextNode.getId() == lookFor.getId()) {
                     return true;
                 } else {
-                    boolean nestedCheck = checkNodes(vistedNodes, nextNode, lookFor, orGatewayCheck);
+                    boolean nestedCheck = checkNodes(vistedNodes, nextNode, lookFor);
                     if (nestedCheck) {
                         return true;
                     }

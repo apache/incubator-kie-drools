@@ -47,6 +47,7 @@ message ProcessInstance {
     repeated Variable variable = 8;
     repeated ExclusiveGroupInstance exclusive_group = 10;
     repeated string completedNodeIds = 13;
+    repeated IterationLevel iterationLevels = 14;
 
     message SwimlaneContextInstance {
         optional string swimlane = 1;
@@ -57,6 +58,7 @@ message ProcessInstance {
         optional int64 id = 1;
         optional int64 node_id = 2;
         optional NodeInstanceContent content = 4;
+        optional int32 level = 5;
     }
 
     message ExclusiveGroupInstance {
@@ -115,10 +117,12 @@ message ProcessInstance {
             repeated Variable variable = 3;
             repeated NodeInstance node_instance = 4;
             repeated ExclusiveGroupInstance exclusive_group = 5;
+            repeated IterationLevel iterationLevels = 6;
         }
         message ForEachNode {
             repeated NodeInstance node_instance = 1;
             repeated Variable variable = 2;
+            repeated IterationLevel iterationLevels = 3;
         }
     }
 
@@ -173,5 +177,10 @@ message ProcessTimer {
         optional int64 last_triggered = 7;
         optional int32 sessionId = 8;
     }
+}
+
+message IterationLevel {
+    optional string id = 1;
+    optional int32 level = 2;
 }
 

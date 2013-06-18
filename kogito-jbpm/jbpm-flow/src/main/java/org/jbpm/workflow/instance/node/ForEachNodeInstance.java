@@ -58,6 +58,12 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
             nodeInstance.setNodeId(node.getId());
             nodeInstance.setNodeInstanceContainer(this);
             nodeInstance.setProcessInstance(getProcessInstance());
+            String uniqueID = (String) node.getMetaData().get("UniqueId");
+            if (uniqueID == null) {
+                uniqueID = node.getId()+"";
+            }
+            int level = this.getLevelForNode(uniqueID);
+            nodeInstance.setLevel(level);
             return nodeInstance;
         } else if (node instanceof ForEachJoinNode) {
             ForEachJoinNodeInstance nodeInstance = (ForEachJoinNodeInstance)
@@ -67,6 +73,12 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                 nodeInstance.setNodeId(node.getId());
                 nodeInstance.setNodeInstanceContainer(this);
                 nodeInstance.setProcessInstance(getProcessInstance());
+                String uniqueID = (String) node.getMetaData().get("UniqueId");
+                if (uniqueID == null) {
+                    uniqueID = node.getId()+"";
+                }
+                int level = this.getLevelForNode(uniqueID);
+                nodeInstance.setLevel(level);
             }
             return nodeInstance;
         }
@@ -233,5 +245,11 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
         }
         
         return contextInstance;
-    }    
+    }
+
+    @Override
+    public int getLevelForNode(String uniqueID) {
+        // always 1 for for each
+        return 1;
+    }  
 }

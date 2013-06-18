@@ -37,4 +37,6 @@ public interface NodeInstance extends org.kie.api.runtime.process.NodeInstance {
     
     ContextInstance resolveContextInstance(String contextId, Object param);
     
+    int getLevel();
+    
 }

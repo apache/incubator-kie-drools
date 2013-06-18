@@ -49,11 +49,11 @@
     </inclusiveGateway>
     <parallelGateway id="_8" name="ANDGateway-converging" gatewayDirection="Converging">
       <incoming>_7-_8</incoming>
-      <incoming>_13-_8</incoming>
-      <outgoing>_8-_10</outgoing>
+      <incoming>_12-_8</incoming>
+      <outgoing>_8-_13</outgoing>
     </parallelGateway>
     <task id="_10" tns:taskName="testWI" name="testWI6">
-      <incoming>_8-_10</incoming>
+      <incoming>_13-_10</incoming>
       <outgoing>_10-_11</outgoing>
       <ioSpecification id="InputOutputSpecification_4">
         <inputSet id="InputSet_4"/>
@@ -66,7 +66,7 @@
     </endEvent>
     <task id="_12" tns:taskName="testWI2" name="Script">
       <incoming>_2-_12</incoming>
-      <outgoing>_12-_13</outgoing>
+      <outgoing>_12-_8</outgoing>
       <ioSpecification id="InputOutputSpecification_5">
         <dataInput id="DataInput_1" itemSubjectRef="_xItem" name="input1"/>
         <dataOutput id="DataOutput_1" itemSubjectRef="_xItem" name="output1"/>
@@ -87,8 +87,8 @@
       </dataOutputAssociation>
     </task>
     <exclusiveGateway id="_13" name="XORGateway-diverging" gatewayDirection="Diverging">
-      <incoming>_12-_13</incoming>
-      <outgoing>_13-_8</outgoing>
+      <incoming>_8-_13</incoming>
+      <outgoing>_13-_10</outgoing>
       <outgoing>_13-_14</outgoing>
     </exclusiveGateway>
     <exclusiveGateway id="_14" name="XORGateway-converging" gatewayDirection="Converging">
@@ -111,13 +111,13 @@
     <sequenceFlow id="_5-_7" tns:priority="1" sourceRef="_5" targetRef="_7"/>
     <sequenceFlow id="_6-_7" tns:priority="1" sourceRef="_6" targetRef="_7"/>
     <sequenceFlow id="_7-_8" tns:priority="1" sourceRef="_7" targetRef="_8"/>
-    <sequenceFlow id="_13-_8" tns:priority="1" name="constraint" sourceRef="_13" targetRef="_8">
+    <sequenceFlow id="_8-_13" tns:priority="1" name="constraint" sourceRef="_8" targetRef="_13"/>
+    <sequenceFlow id="_13-_10" tns:priority="1" sourceRef="_13" targetRef="_10">
       <conditionExpression xsi:type="tFormalExpression" id="FormalExpression_4" language="http://www.java.com/java">return x == 1;</conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="_8-_10" tns:priority="1" sourceRef="_8" targetRef="_10"/>
     <sequenceFlow id="_10-_11" tns:priority="1" sourceRef="_10" targetRef="_11"/>
     <sequenceFlow id="_2-_12" tns:priority="1" sourceRef="_2" targetRef="_12"/>
-    <sequenceFlow id="_12-_13" tns:priority="1" sourceRef="_12" targetRef="_13"/>
+    <sequenceFlow id="_12-_8" tns:priority="1" sourceRef="_12" targetRef="_8"/>
     <sequenceFlow id="_13-_14" tns:priority="1" name="constraint2" sourceRef="_13" targetRef="_14">
       <conditionExpression xsi:type="tFormalExpression" id="FormalExpression_5" language="http://www.java.com/java">return x == 0;</conditionExpression>
     </sequenceFlow>
@@ -150,16 +150,16 @@
         <dc:Bounds height="48.0" width="48.0" x="751.0" y="283.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_Task_4" bpmnElement="_10">
-        <dc:Bounds height="48.0" width="100.0" x="863.0" y="281.0"/>
+        <dc:Bounds height="48.0" width="100.0" x="1040.0" y="281.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_11">
-        <dc:Bounds height="48.0" width="48.0" x="1010.0" y="278.0"/>
+        <dc:Bounds height="48.0" width="48.0" x="1190.0" y="281.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_Task_5" bpmnElement="_12">
         <dc:Bounds height="48.0" width="100.0" x="300.0" y="282.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_1" bpmnElement="_13" isMarkerVisible="true">
-        <dc:Bounds height="48.0" width="48.0" x="629.0" y="281.0"/>
+        <dc:Bounds height="48.0" width="48.0" x="900.0" y="283.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ExclusiveGateway_2" bpmnElement="_14" isMarkerVisible="true">
         <dc:Bounds height="48.0" width="48.0" x="99.0" y="187.0"/>
@@ -206,31 +206,31 @@
         <di:waypoint xsi:type="dc:Point" x="774.0" y="99.0"/>
         <di:waypoint xsi:type="dc:Point" x="775.0" y="283.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="_13-_8" sourceElement="BPMNShape_ExclusiveGateway_1" targetElement="BPMNShape_ParallelGateway_2">
-        <di:waypoint xsi:type="dc:Point" x="678.0" y="305.0"/>
-        <di:waypoint xsi:type="dc:Point" x="751.0" y="307.0"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="_8-_10" sourceElement="BPMNShape_ParallelGateway_2" targetElement="BPMNShape_Task_4">
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_10" bpmnElement="_8-_13" sourceElement="BPMNShape_ExclusiveGateway_1" targetElement="BPMNShape_ParallelGateway_2">
         <di:waypoint xsi:type="dc:Point" x="800.0" y="307.0"/>
-        <di:waypoint xsi:type="dc:Point" x="863.0" y="305.0"/>
+        <di:waypoint xsi:type="dc:Point" x="900.0" y="307.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="_13-_10" sourceElement="BPMNShape_ParallelGateway_2" targetElement="BPMNShape_Task_4">
+        <di:waypoint xsi:type="dc:Point" x="949.0" y="307.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1040.0" y="305.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_12" bpmnElement="_10-_11" sourceElement="BPMNShape_Task_4" targetElement="BPMNShape_EndEvent_1">
-        <di:waypoint xsi:type="dc:Point" x="963.0" y="305.0"/>
-        <di:waypoint xsi:type="dc:Point" x="1010.0" y="302.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1140.0" y="305.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1190.0" y="305.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_13" bpmnElement="_2-_12" sourceElement="BPMNShape_ParallelGateway_1" targetElement="BPMNShape_Task_5">
         <di:waypoint xsi:type="dc:Point" x="200.0" y="236.0"/>
         <di:waypoint xsi:type="dc:Point" x="198.0" y="305.0"/>
         <di:waypoint xsi:type="dc:Point" x="300.0" y="306.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_14" bpmnElement="_12-_13" sourceElement="BPMNShape_Task_5" targetElement="BPMNShape_ExclusiveGateway_1">
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_14" bpmnElement="_12-_8" sourceElement="BPMNShape_Task_5" targetElement="BPMNShape_ExclusiveGateway_1">
         <di:waypoint xsi:type="dc:Point" x="400.0" y="306.0"/>
-        <di:waypoint xsi:type="dc:Point" x="629.0" y="305.0"/>
+        <di:waypoint xsi:type="dc:Point" x="751.0" y="307.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_15" bpmnElement="_13-_14" sourceElement="BPMNShape_ExclusiveGateway_1" targetElement="BPMNShape_ExclusiveGateway_2">
-        <di:waypoint xsi:type="dc:Point" x="653.0" y="330.0"/>
-        <di:waypoint xsi:type="dc:Point" x="656.0" y="397.0"/>
-        <di:waypoint xsi:type="dc:Point" x="124.0" y="397.0"/>
+        <di:waypoint xsi:type="dc:Point" x="924.0" y="332.0"/>
+        <di:waypoint xsi:type="dc:Point" x="923.0" y="391.0"/>
+        <di:waypoint xsi:type="dc:Point" x="123.0" y="391.0"/>
         <di:waypoint xsi:type="dc:Point" x="123.0" y="236.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_16" bpmnElement="_1-_14" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_ExclusiveGateway_2">
@@ -239,208 +239,4 @@
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-  <relationship id="Relationship_1">
-    <extensionElements>
-      <tns:ProcessAnalysisData>
-        <tns:Scenario xsi:type="tns:Scenario" id="Scenario_1" name="Scenario 1">
-          <tns:ScenarioParameters xsi:type="tns:ScenarioParameters" baseTimeUnit="ms"/>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_1" id="ElementParameters_1">
-            <tns:TimeParameters xsi:type="tns:TimeParameters">
-              <tns:WaitTime xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="1.0"/>
-              </tns:WaitTime>
-              <tns:TimeUnit>s</tns:TimeUnit>
-            </tns:TimeParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_4" id="ElementParameters_2">
-            <tns:TimeParameters xsi:type="tns:TimeParameters">
-              <tns:ProcessingTime xsi:type="tns:Parameter">
-                <tns:RandomDistribution max="1.0" min="0.0"/>
-              </tns:ProcessingTime>
-              <tns:TimeUnit>s</tns:TimeUnit>
-            </tns:TimeParameters>
-            <tns:CostParameters xsi:type="tns:CostParameters">
-              <tns:UnitCost xsi:type="tns:Parameter">
-                <tns:DecimalParameter value="0"/>
-              </tns:UnitCost>
-            </tns:CostParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_5" id="ElementParameters_3">
-            <tns:TimeParameters xsi:type="tns:TimeParameters">
-              <tns:ProcessingTime xsi:type="tns:Parameter">
-                <tns:RandomDistribution max="1.0" min="0.0"/>
-              </tns:ProcessingTime>
-              <tns:TimeUnit>s</tns:TimeUnit>
-            </tns:TimeParameters>
-            <tns:CostParameters xsi:type="tns:CostParameters">
-              <tns:UnitCost xsi:type="tns:Parameter">
-                <tns:DecimalParameter value="0"/>
-              </tns:UnitCost>
-            </tns:CostParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_6" id="ElementParameters_4">
-            <tns:TimeParameters xsi:type="tns:TimeParameters">
-              <tns:ProcessingTime xsi:type="tns:Parameter">
-                <tns:RandomDistribution max="1.0" min="0.0"/>
-              </tns:ProcessingTime>
-              <tns:TimeUnit>s</tns:TimeUnit>
-            </tns:TimeParameters>
-            <tns:CostParameters xsi:type="tns:CostParameters">
-              <tns:UnitCost xsi:type="tns:Parameter">
-                <tns:DecimalParameter value="0"/>
-              </tns:UnitCost>
-            </tns:CostParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_10" id="ElementParameters_5">
-            <tns:TimeParameters xsi:type="tns:TimeParameters">
-              <tns:ProcessingTime xsi:type="tns:Parameter">
-                <tns:RandomDistribution max="1.0" min="0.0"/>
-              </tns:ProcessingTime>
-              <tns:TimeUnit>s</tns:TimeUnit>
-            </tns:TimeParameters>
-            <tns:CostParameters xsi:type="tns:CostParameters">
-              <tns:UnitCost xsi:type="tns:Parameter">
-                <tns:DecimalParameter value="0"/>
-              </tns:UnitCost>
-            </tns:CostParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_11" id="ElementParameters_6">
-            <tns:TimeParameters xsi:type="tns:TimeParameters">
-              <tns:ProcessingTime xsi:type="tns:Parameter">
-                <tns:RandomDistribution max="1.0" min="0.0"/>
-              </tns:ProcessingTime>
-              <tns:TimeUnit>s</tns:TimeUnit>
-            </tns:TimeParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_12" id="ElementParameters_7">
-            <tns:TimeParameters xsi:type="tns:TimeParameters">
-              <tns:ProcessingTime xsi:type="tns:Parameter">
-                <tns:RandomDistribution max="1.0" min="0.0"/>
-              </tns:ProcessingTime>
-              <tns:TimeUnit>s</tns:TimeUnit>
-            </tns:TimeParameters>
-            <tns:CostParameters xsi:type="tns:CostParameters">
-              <tns:UnitCost xsi:type="tns:Parameter">
-                <tns:DecimalParameter value="0"/>
-              </tns:UnitCost>
-            </tns:CostParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_14-_2" id="ElementParameters_8">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_2-_3" id="ElementParameters_9">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_3-_4" id="ElementParameters_10">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_3-_5" id="ElementParameters_11">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_3-_6" id="ElementParameters_12">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_4-_7" id="ElementParameters_13">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_5-_7" id="ElementParameters_14">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_6-_7" id="ElementParameters_15">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_7-_8" id="ElementParameters_16">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_13-_8" id="ElementParameters_17">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_8-_10" id="ElementParameters_18">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_10-_11" id="ElementParameters_19">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_2-_12" id="ElementParameters_20">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_12-_13" id="ElementParameters_21">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_13-_14" id="ElementParameters_22">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-          <tns:ElementParameters xsi:type="tns:ElementParameters" elementId="_1-_14" id="ElementParameters_23">
-            <tns:ControlParameters xsi:type="tns:ControlParameters">
-              <tns:Probability xsi:type="tns:Parameter">
-                <tns:FloatingParameter value="100.0"/>
-              </tns:Probability>
-            </tns:ControlParameters>
-          </tns:ElementParameters>
-        </tns:Scenario>
-      </tns:ProcessAnalysisData>
-    </extensionElements>
-    <source>Definition</source>
-    <target>Definition</target>
-  </relationship>
 </definitions>

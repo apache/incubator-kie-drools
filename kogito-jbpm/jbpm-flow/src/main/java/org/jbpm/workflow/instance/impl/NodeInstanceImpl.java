@@ -63,6 +63,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     private WorkflowProcessInstance processInstance;
     private org.jbpm.workflow.instance.NodeInstanceContainer nodeInstanceContainer;
     private Map<String, Object> metaData = new HashMap<String, Object>();
+    private int level;
 
     public void setId(final long id) {
         this.id = id;
@@ -83,6 +84,14 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     public String getNodeName() {
     	Node node = getNode();
     	return node == null ? "" : node.getName();
+    }
+    
+    public int getLevel() {
+        return this.level;
+    }
+    
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public void setProcessInstance(final WorkflowProcessInstance processInstance) {
@@ -124,6 +133,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     	}
     	
     	if (from != null) {
+    	    int level = ((org.jbpm.workflow.instance.NodeInstance)from).getLevel();
+    	    ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(level);
 	    	Collection<Connection> incoming = getNode().getIncomingConnections(type);
 	    	for (Connection conn : incoming) {
 	    	    if (conn.getFrom().getId() == from.getNodeId()) {

@@ -44,5 +44,11 @@ public interface NodeInstanceContainer extends org.kie.api.runtime.process.NodeI
     int getState();
     
     void setState(int state);
+    
+    int getLevelForNode(String uniqueID);
+    
+    void setCurrentLevel(int level);
+    
+    int getCurrentLevel();
 
 }

@@ -44,6 +44,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.KieSession;
@@ -584,7 +585,6 @@ public class FlowTest extends JbpmBpmn2TestCase {
                 value++;
                 nodeInstanceExecutionCounter.put(event.getNodeInstance().getNodeName(), value);
             }
-
             
         });
         Map<String, Object> params = new HashMap<String, Object>();
@@ -602,7 +602,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertEquals(4, (int)nodeInstanceExecutionCounter.get("ORGateway-converging"));
         assertEquals(2, (int)nodeInstanceExecutionCounter.get("Script"));
         assertEquals(2, (int)nodeInstanceExecutionCounter.get("XORGateway-diverging"));
-        assertEquals(3, (int)nodeInstanceExecutionCounter.get("ANDGateway-converging"));
+        assertEquals(4, (int)nodeInstanceExecutionCounter.get("ANDGateway-converging"));
         assertEquals(1, (int)nodeInstanceExecutionCounter.get("testWI6"));
         assertEquals(1, (int)nodeInstanceExecutionCounter.get("End"));
     }
@@ -720,7 +720,16 @@ public class FlowTest extends JbpmBpmn2TestCase {
         
         List<WorkItem> workItems = handler.getWorkItems();
         assertNotNull(workItems);
-        assertEquals(4, workItems.size());
+        assertEquals(2, workItems.size());
+        // complete work items within OR gateway
+        for (WorkItem workItem : workItems) {
+            ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        }
+        assertProcessInstanceActive(processInstance);
+        
+        workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(2, workItems.size());
         // complete work items within OR gateway
         for (WorkItem workItem : workItems) {
             ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
@@ -746,9 +755,42 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertEquals(4, (int)nodeInstanceExecutionCounter.get("ORGateway-converging"));
         assertEquals(2, (int)nodeInstanceExecutionCounter.get("Script"));
         assertEquals(2, (int)nodeInstanceExecutionCounter.get("XORGateway-diverging"));
-        assertEquals(2, (int)nodeInstanceExecutionCounter.get("ANDGateway-converging"));
+        assertEquals(4, (int)nodeInstanceExecutionCounter.get("ANDGateway-converging"));
         assertEquals(1, (int)nodeInstanceExecutionCounter.get("testWI6"));
         assertEquals(1, (int)nodeInstanceExecutionCounter.get("End"));
+    }
+    
+    @Test
+    public void testInclusiveSplitNested() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayNested.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        TestWorkItemHandler handler2 = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
+        ksession.getWorkItemManager().registerWorkItemHandler("testWI2", handler2);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", -5);
+        ProcessInstance processInstance = ksession.startProcess("Process_1", params);
+        
+        assertProcessInstanceActive(processInstance);
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        ksession.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getId(), null);
+        
+        assertProcessInstanceActive(processInstance);
+        
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(2, workItems.size());
+        
+        for (WorkItem wi : workItems) {
+            assertProcessInstanceActive(processInstance);
+            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        }
+        assertProcessInstanceActive(processInstance);
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        
+        assertProcessInstanceCompleted(processInstance);
+
     }
 
     @Test

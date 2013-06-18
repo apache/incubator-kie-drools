@@ -20,10 +20,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
@@ -53,6 +54,26 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
     private long nodeInstanceCounter = 0;
     private int state = ProcessInstance.STATE_ACTIVE;
+    private Map<String, Integer> iterationLevels = new HashMap<String, Integer>();
+    private int currentLevel;
+    
+    @Override
+    public int getLevelForNode(String uniqueID) {
+        if ("true".equalsIgnoreCase(System.getProperty("jbpm.loop.level.disabled"))) {
+            return 1;
+        }
+        Integer value = iterationLevels.get(uniqueID);
+        if (value == null && currentLevel == 0) {
+           value = new Integer(1);
+        } else if ((value == null && currentLevel > 0) || (value != null && currentLevel > 0 && value > currentLevel)) {
+            value = new Integer(currentLevel);
+        } else {
+            value++;
+        }
+
+        iterationLevels.put(uniqueID, value);
+        return value;
+    }
     
     public void setProcessInstance(WorkflowProcessInstance processInstance) {
     	super.setProcessInstance(processInstance);
@@ -193,7 +214,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     public NodeInstance getFirstNodeInstance(final long nodeId) {
         for ( final Iterator<NodeInstance> iterator = this.nodeInstances.iterator(); iterator.hasNext(); ) {
             final NodeInstance nodeInstance = iterator.next();
-            if ( nodeInstance.getNodeId() == nodeId ) {
+            if ( nodeInstance.getNodeId() == nodeId && nodeInstance.getLevel() == getCurrentLevel()) {
                 return nodeInstance;
             }
         }
@@ -348,6 +369,18 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 
     public int getState() {
         return this.state;
+    }
+
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
+    public void setCurrentLevel(int currentLevel) {
+        this.currentLevel = currentLevel;
+    }
+
+    public Map<String, Integer> getIterationLevels() {
+        return iterationLevels;
     }
 
 

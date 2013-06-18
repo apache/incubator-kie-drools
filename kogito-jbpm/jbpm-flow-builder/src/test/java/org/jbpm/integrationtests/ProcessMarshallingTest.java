@@ -438,6 +438,7 @@ public class ProcessMarshallingTest extends TestCase {
         ruleBase.addPackage(pkg);
 
         StatefulSession session = ruleBase.newStatefulSession();
+        
         TestListWorkItemHandler handler = new TestListWorkItemHandler();
         session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         List<String> list = new ArrayList<String>();
@@ -451,8 +452,8 @@ public class ProcessMarshallingTest extends TestCase {
         assertEquals(1, session.getProcessInstances().size());
         assertEquals(3, handler.getWorkItems().size());
         
-        session = getSerialisedStatefulSession( session );
-        session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+//        session = getSerialisedStatefulSession( session );
+//        session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
         List<WorkItem> workItems = new ArrayList<WorkItem>(handler.getWorkItems());
         handler.reset();
@@ -467,7 +468,6 @@ public class ProcessMarshallingTest extends TestCase {
         for (WorkItem workItem: handler.getWorkItems()) {
         	session.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         }
-        
         assertEquals(0, session.getProcessInstances().size());
     }
     

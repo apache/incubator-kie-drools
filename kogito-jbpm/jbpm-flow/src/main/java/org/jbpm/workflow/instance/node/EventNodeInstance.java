@@ -63,6 +63,7 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
     }
 
     public void triggerCompleted() {
+        ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(getLevel());
         triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
     }
     
