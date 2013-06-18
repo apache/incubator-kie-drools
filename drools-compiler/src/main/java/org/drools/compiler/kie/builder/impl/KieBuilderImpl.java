@@ -569,14 +569,16 @@ public class KieBuilderImpl
     }
 
     public static File recurseToPomProperties(File file) {
-        for ( java.io.File child : file.listFiles() ) {
-            if ( child.isDirectory() ) {
-                File returnedFile = recurseToPomProperties( child );
-                if ( returnedFile != null ) {
-                    return returnedFile;
+        if( file.isDirectory() ) {
+            for ( java.io.File child : file.listFiles() ) {
+                if ( child.isDirectory() ) {
+                    File returnedFile = recurseToPomProperties( child );
+                    if ( returnedFile != null ) {
+                        return returnedFile;
+                    }
+                } else if ( child.getName().endsWith( "pom.properties" ) ) {
+                    return child;
                 }
-            } else if ( child.getName().endsWith( "pom.properties" ) ) {
-                return child;
             }
         }
         return null;
