@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.domain.solution.cloner;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -71,16 +72,27 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
     }
 
     protected <C> Field[] retrieveCachedFields(Class<C> clazz) {
-        Field[]fields = fieldsCache.get(clazz);
+        Field[] fields = fieldsCache.get(clazz);
         if (fields == null) {
-            fields = clazz.getDeclaredFields();
-            for (Field field : fields) {
-                // no need to reset because getDeclaredFields() creates new Field instances
-                field.setAccessible(true);
-            }
+            List<Field> fieldList = new LinkedList<Field>();
+            getAllFields(clazz, fieldList);
+            fields = fieldList.toArray(new Field[fieldList.size()]);
             fieldsCache.put(clazz, fields);
         }
         return fields;
+    }
+
+    private static void getAllFields(Class<?> clazz, List<Field> fields) {
+        for (Field field : clazz.getDeclaredFields()) {
+            if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers())) {
+                field.setAccessible(true);
+                fields.add(field);
+            }
+        }
+
+        if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
+            getAllFields(clazz.getSuperclass(), fields);
+        }
     }
 
     protected class FieldAccessingSolutionClonerRun {
