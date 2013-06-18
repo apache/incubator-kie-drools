@@ -66,3 +66,15 @@ rule "distanceFromLastCustomerToDepot"
         VrpVehicle vehicle = $customer.getVehicle();
         scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));
 end
+
+
+// ############################################################################
+// TimeWindowed: extra hard constraints
+// ############################################################################
+
+rule "afterDueTime"
+    when
+        VrpTimeWindowedCustomer(dueTime < departureTime, $dueTime : dueTime, $departureTime : departureTime)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, $dueTime - $departureTime.intValue());
+end
