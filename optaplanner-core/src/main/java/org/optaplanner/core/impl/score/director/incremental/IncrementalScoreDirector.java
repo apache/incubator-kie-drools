@@ -17,6 +17,8 @@
 package org.optaplanner.core.impl.score.director.incremental;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
@@ -62,39 +64,39 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     // ************************************************************************
 
     @Override
-    public void beforeEntityAdded(Object entity) {
+    public void beforeEntityAdded(PlanningEntityDescriptor entityDescriptor, Object entity) {
         incrementalScoreCalculator.beforeEntityAdded(entity);
-        super.beforeEntityAdded(entity);
+        super.beforeEntityAdded(entityDescriptor, entity);
     }
 
     @Override
-    public void afterEntityAdded(Object entity) {
+    public void afterEntityAdded(PlanningEntityDescriptor entityDescriptor, Object entity) {
         incrementalScoreCalculator.afterEntityAdded(entity);
-        super.afterEntityAdded(entity);
+        super.afterEntityAdded(entityDescriptor, entity);
     }
 
     @Override
-    public void beforeVariableChanged(Object entity, String variableName) {
-        incrementalScoreCalculator.beforeVariableChanged(entity, variableName);
-        super.beforeVariableChanged(entity, variableName);
+    public void beforeVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
+        incrementalScoreCalculator.beforeVariableChanged(entity, variableDescriptor.getVariableName());
+        super.beforeVariableChanged(variableDescriptor, entity);
     }
 
     @Override
-    public void afterVariableChanged(Object entity, String variableName) {
-        incrementalScoreCalculator.afterVariableChanged(entity, variableName);
-        super.afterVariableChanged(entity, variableName);
+    public void afterVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
+        incrementalScoreCalculator.afterVariableChanged(entity, variableDescriptor.getVariableName());
+        super.afterVariableChanged(variableDescriptor, entity);
     }
 
     @Override
-    public void beforeEntityRemoved(Object entity) {
+    public void beforeEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) {
         incrementalScoreCalculator.beforeEntityRemoved(entity);
-        super.beforeEntityRemoved(entity);
+        super.beforeEntityRemoved(entityDescriptor, entity);
     }
 
     @Override
-    public void afterEntityRemoved(Object entity) {
+    public void afterEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) {
         incrementalScoreCalculator.afterEntityRemoved(entity);
-        super.afterEntityRemoved(entity);
+        super.afterEntityRemoved(entityDescriptor, entity);
     }
 
     // ************************************************************************

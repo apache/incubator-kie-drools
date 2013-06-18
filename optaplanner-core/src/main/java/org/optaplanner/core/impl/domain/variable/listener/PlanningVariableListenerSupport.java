@@ -21,75 +21,73 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class PlanningVariableListenerSupport {
 
     private final Map<PlanningVariableDescriptor, List<PlanningVariableListener>> variableListenerMap;
+    private final Map<PlanningEntityDescriptor, List<PlanningVariableListener>> entityVariableListenerMap;
 
     public PlanningVariableListenerSupport(
             Map<PlanningVariableDescriptor, List<PlanningVariableListener>> variableListenerMap) {
         this.variableListenerMap = variableListenerMap;
-    }
-
-    public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
-        for (Map.Entry<PlanningVariableDescriptor, List<PlanningVariableListener>> entry : variableListenerMap.entrySet()) {
-            if (entry.getKey().getEntityDescriptor().matchesEntity(entity)) {
-                for (PlanningVariableListener variableListener : entry.getValue()) {
-                    variableListener.beforeEntityAdded(scoreDirector, entity);
-                }
+        entityVariableListenerMap = new LinkedHashMap<PlanningEntityDescriptor, List<PlanningVariableListener>>(
+                variableListenerMap.size());
+        for (Map.Entry<PlanningVariableDescriptor, List<PlanningVariableListener>> entry
+                : variableListenerMap.entrySet()) {
+            PlanningEntityDescriptor entityDescriptor = entry.getKey().getEntityDescriptor();
+            List<PlanningVariableListener> variableListenerList = entry.getValue();
+            List<PlanningVariableListener> entityVariableListenerList = entityVariableListenerMap.get(entityDescriptor);
+            if (entityVariableListenerList == null) {
+                entityVariableListenerList = new ArrayList<PlanningVariableListener>(variableListenerList);
+                entityVariableListenerMap.put(entityDescriptor, entityVariableListenerList);
+            } else {
+                entityVariableListenerList.addAll(variableListenerList);
             }
         }
     }
 
-    public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
-        for (Map.Entry<PlanningVariableDescriptor, List<PlanningVariableListener>> entry : variableListenerMap.entrySet()) {
-            if (entry.getKey().getEntityDescriptor().matchesEntity(entity)) {
-                for (PlanningVariableListener variableListener : entry.getValue()) {
-                    variableListener.afterEntityAdded(scoreDirector, entity);
-                }
-            }
+    public void beforeEntityAdded(ScoreDirector scoreDirector, PlanningEntityDescriptor entityDescriptor,
+            Object entity) {
+        for (PlanningVariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
+            variableListener.beforeEntityAdded(scoreDirector, entity);
         }
     }
 
-    public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity, String variableName) {
-        for (Map.Entry<PlanningVariableDescriptor, List<PlanningVariableListener>> entry : variableListenerMap.entrySet()) {
-            if (entry.getKey().matchesEntityVariable(entity, variableName)) {
-                for (PlanningVariableListener variableListener : entry.getValue()) {
-                    variableListener.beforeVariableChanged(scoreDirector, entity);
-                }
-            }
+    public void afterEntityAdded(ScoreDirector scoreDirector, PlanningEntityDescriptor entityDescriptor,
+            Object entity) {
+        for (PlanningVariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
+            variableListener.afterEntityAdded(scoreDirector, entity);
         }
     }
 
-    public void afterVariableChanged(ScoreDirector scoreDirector, Object entity, String variableName) {
-        for (Map.Entry<PlanningVariableDescriptor, List<PlanningVariableListener>> entry : variableListenerMap.entrySet()) {
-            if (entry.getKey().matchesEntityVariable(entity, variableName)) {
-                for (PlanningVariableListener variableListener : entry.getValue()) {
-                    variableListener.afterVariableChanged(scoreDirector, entity);
-                }
-            }
+    public void beforeVariableChanged(ScoreDirector scoreDirector, PlanningVariableDescriptor variableDescriptor,
+            Object entity) {
+        for (PlanningVariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
+            variableListener.beforeVariableChanged(scoreDirector, entity);
         }
     }
 
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
-        for (Map.Entry<PlanningVariableDescriptor, List<PlanningVariableListener>> entry : variableListenerMap.entrySet()) {
-            if (entry.getKey().getEntityDescriptor().matchesEntity(entity)) {
-                for (PlanningVariableListener variableListener : entry.getValue()) {
-                    variableListener.beforeEntityRemoved(scoreDirector, entity);
-                }
-            }
+    public void afterVariableChanged(ScoreDirector scoreDirector, PlanningVariableDescriptor variableDescriptor,
+            Object entity) {
+        for (PlanningVariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
+            variableListener.afterVariableChanged(scoreDirector, entity);
         }
     }
 
-    public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
-        for (Map.Entry<PlanningVariableDescriptor, List<PlanningVariableListener>> entry : variableListenerMap.entrySet()) {
-            if (entry.getKey().getEntityDescriptor().matchesEntity(entity)) {
-                for (PlanningVariableListener variableListener : entry.getValue()) {
-                    variableListener.afterEntityRemoved(scoreDirector, entity);
-                }
-            }
+    public void beforeEntityRemoved(ScoreDirector scoreDirector, PlanningEntityDescriptor entityDescriptor,
+            Object entity) {
+        for (PlanningVariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
+            variableListener.beforeEntityRemoved(scoreDirector, entity);
+        }
+    }
+
+    public void afterEntityRemoved(ScoreDirector scoreDirector, PlanningEntityDescriptor entityDescriptor,
+            Object entity) {
+        for (PlanningVariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
+            variableListener.afterEntityRemoved(scoreDirector, entity);
         }
     }
 

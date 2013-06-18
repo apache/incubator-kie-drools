@@ -30,6 +30,8 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.score.constraint.ConstraintOccurrence;
 import org.optaplanner.core.impl.score.constraint.DoubleConstraintOccurrence;
 import org.optaplanner.core.impl.score.constraint.IntConstraintOccurrence;
@@ -130,10 +132,10 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     // Entity/variable add/change/remove methods
     // ************************************************************************
 
-    // public void beforeEntityAdded(Object entity) // Do nothing
+    // public void beforeEntityAdded(PlanningEntityDescriptor entityDescriptor, Object entity) // Do nothing
 
     @Override
-    public void afterEntityAdded(Object entity) {
+    public void afterEntityAdded(PlanningEntityDescriptor entityDescriptor, Object entity) {
         if (entity == null) {
             throw new IllegalArgumentException("The entity (" + entity + ") cannot be added to the ScoreDirector.");
         }
@@ -142,13 +144,13 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
                     + ") is not a configured @PlanningEntity.");
         }
         kieSession.insert(entity);
-        super.afterEntityAdded(entity);
+        super.afterEntityAdded(entityDescriptor, entity);
     }
 
-    // public void beforeVariableChanged(Object entity, String variableName) // Do nothing
+    // public void beforeVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) // Do nothing
 
     @Override
-    public void afterVariableChanged(Object entity, String variableName) {
+    public void afterVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
         FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity instance (" + entity
@@ -156,13 +158,13 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
                     + " Usually the cause is that that specific instance was not in your Solution's entities.");
         }
         kieSession.update(factHandle, entity);
-        super.afterVariableChanged(entity, variableName);
+        super.afterVariableChanged(variableDescriptor, entity);
     }
 
-    // public void beforeEntityRemoved(Object entity) // Do nothing
+    // public void beforeEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) // Do nothing
 
     @Override
-    public void afterEntityRemoved(Object entity) {
+    public void afterEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) {
         FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity instance (" + entity
@@ -170,7 +172,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
                     + " Usually the cause is that that specific instance was not in your Solution's entities.");
         }
         kieSession.delete(factHandle);
-        super.afterEntityRemoved(entity);
+        super.afterEntityRemoved(entityDescriptor, entity);
     }
 
     // ************************************************************************

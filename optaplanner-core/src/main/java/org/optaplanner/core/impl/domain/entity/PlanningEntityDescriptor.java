@@ -213,10 +213,7 @@ public class PlanningEntityDescriptor {
     public void addVariableListenersToMap(
             Map<PlanningVariableDescriptor, List<PlanningVariableListener>> variableListenerMap) {
         for (PlanningVariableDescriptor variableDescriptor : variableDescriptorMap.values()) {
-            List<PlanningVariableListener> variableListenerList = variableDescriptor.buildVariableListenerList();
-            if (!variableListenerList.isEmpty()) {
-                variableListenerMap.put(variableDescriptor, variableListenerList);
-            }
+            variableListenerMap.put(variableDescriptor, variableDescriptor.buildVariableListenerList());
         }
     }
 

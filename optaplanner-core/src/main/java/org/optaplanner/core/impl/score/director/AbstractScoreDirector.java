@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.api.score.Score;
@@ -167,7 +168,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     // Trailing entity methods
     // ************************************************************************
 
-    private void resetTrailingEntityMap() {
+    protected void resetTrailingEntityMap() {
         if (hasChainedVariables) {
             List<Object> entityList = getSolutionDescriptor().getEntityList(workingSolution);
             for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
@@ -181,7 +182,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         }
     }
 
-    private void insertInTrailingEntityMap(Object entity) {
+    protected void insertInTrailingEntityMap(Object entity) {
         if (hasChainedVariables) {
             for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
@@ -206,7 +207,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         }
     }
 
-    private void retractFromTrailingEntityMap(Object entity) {
+    protected void retractFromTrailingEntityMap(Object entity) {
         if (hasChainedVariables) {
             for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
                     : chainedVariableToTrailingEntitiesMap.entrySet()) {
@@ -250,32 +251,60 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     // Entity/variable add/change/remove methods
     // ************************************************************************
 
-    public void beforeEntityAdded(Object entity) {
-        variableListenerSupport.beforeEntityAdded(this, entity);
+    public final void beforeEntityAdded(Object entity) {
+        beforeEntityAdded(getSolutionDescriptor().getEntityDescriptor(entity.getClass()), entity);
     }
 
-    public void afterEntityAdded(Object entity) {
+    public final void afterEntityAdded(Object entity) {
+        afterEntityAdded(getSolutionDescriptor().getEntityDescriptor(entity.getClass()), entity);
+    }
+
+    public final void beforeVariableChanged(Object entity, String variableName) {
+        beforeVariableChanged(
+                getSolutionDescriptor().getEntityDescriptor(entity.getClass()).getVariableDescriptor(variableName),
+                entity);
+    }
+
+    public final void afterVariableChanged(Object entity, String variableName) {
+        afterVariableChanged(
+                getSolutionDescriptor().getEntityDescriptor(entity.getClass()).getVariableDescriptor(variableName),
+                entity);
+    }
+
+    public final void beforeEntityRemoved(Object entity) {
+        beforeEntityRemoved(getSolutionDescriptor().getEntityDescriptor(entity.getClass()), entity);
+    }
+
+    public final void afterEntityRemoved(Object entity) {
+        afterEntityRemoved(getSolutionDescriptor().getEntityDescriptor(entity.getClass()), entity);
+    }
+
+    public void beforeEntityAdded(PlanningEntityDescriptor entityDescriptor, Object entity) {
+        variableListenerSupport.beforeEntityAdded(this, entityDescriptor, entity);
+    }
+
+    public void afterEntityAdded(PlanningEntityDescriptor entityDescriptor, Object entity) {
         insertInTrailingEntityMap(entity);
-        variableListenerSupport.afterEntityAdded(this, entity);
+        variableListenerSupport.afterEntityAdded(this, entityDescriptor, entity);
     }
 
-    public void beforeVariableChanged(Object entity, String variableName) {
+    public void beforeVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
         retractFromTrailingEntityMap(entity);
-        variableListenerSupport.beforeVariableChanged(this, entity, variableName);
+        variableListenerSupport.beforeVariableChanged(this, variableDescriptor, entity);
     }
 
-    public void afterVariableChanged(Object entity, String variableName) {
+    public void afterVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
         insertInTrailingEntityMap(entity);
-        variableListenerSupport.afterVariableChanged(this, entity, variableName);
+        variableListenerSupport.afterVariableChanged(this, variableDescriptor, entity);
     }
 
-    public void beforeEntityRemoved(Object entity) {
+    public void beforeEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) {
         retractFromTrailingEntityMap(entity);
-        variableListenerSupport.beforeEntityRemoved(this, entity);
+        variableListenerSupport.beforeEntityRemoved(this, entityDescriptor, entity);
     }
 
-    public void afterEntityRemoved(Object entity) {
-        variableListenerSupport.afterEntityRemoved(this, entity);
+    public void afterEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) {
+        variableListenerSupport.afterEntityRemoved(this, entityDescriptor, entity);
     }
 
     // ************************************************************************
