@@ -64,7 +64,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
     protected <C> Constructor<C> retrieveCachedConstructor(Class<C> clazz) throws NoSuchMethodException {
         Constructor<C> constructor = constructorCache.get(clazz);
         if (constructor == null) {
-            constructor = clazz.getConstructor();
+            constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
             constructorCache.put(clazz, constructor);
         }
