@@ -33,6 +33,7 @@ import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListenerSupport;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.common.TrailingEntityMapSupport;
 import org.optaplanner.core.impl.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,11 +56,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     protected boolean constraintMatchEnabledPreference = true;
 
+    protected TrailingEntityMapSupport trailingEntityMapSupport;
     protected PlanningVariableListenerSupport variableListenerSupport;
-    protected boolean hasChainedVariables;
-    // TODO it's unproven that this caching system is actually faster:
-    // it happens for every step for every move, but is only needed for every step (with correction for composite moves)
-    protected Map<PlanningVariableDescriptor, Map<Object, Set<Object>>> chainedVariableToTrailingEntitiesMap;
 
     protected Solution workingSolution;
 
@@ -68,15 +66,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     protected AbstractScoreDirector(F scoreDirectorFactory) {
         this.scoreDirectorFactory = scoreDirectorFactory;
         SolutionDescriptor solutionDescriptor = getSolutionDescriptor();
+        trailingEntityMapSupport = new TrailingEntityMapSupport(solutionDescriptor);
         variableListenerSupport = solutionDescriptor.buildVariableListenerSupport();
-        Collection<PlanningVariableDescriptor> chainedVariableDescriptors = solutionDescriptor
-                .getChainedVariableDescriptors();
-        hasChainedVariables = !chainedVariableDescriptors.isEmpty();
-        chainedVariableToTrailingEntitiesMap = new LinkedHashMap<PlanningVariableDescriptor, Map<Object, Set<Object>>>(
-                chainedVariableDescriptors.size());
-        for (PlanningVariableDescriptor chainedVariableDescriptor : chainedVariableDescriptors) {
-            chainedVariableToTrailingEntitiesMap.put(chainedVariableDescriptor, null);
-        }
     }
 
     public F getScoreDirectorFactory() {
@@ -105,7 +96,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     public void setWorkingSolution(Solution workingSolution) {
         this.workingSolution = workingSolution;
-        resetTrailingEntityMap();
+        trailingEntityMapSupport.resetTrailingEntityMap(workingSolution);
     }
 
     public Solution cloneWorkingSolution() {
@@ -164,87 +155,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         // Do nothing
     }
 
-    // ************************************************************************
-    // Trailing entity methods
-    // ************************************************************************
-
-    protected void resetTrailingEntityMap() {
-        if (hasChainedVariables) {
-            List<Object> entityList = getSolutionDescriptor().getEntityList(workingSolution);
-            for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
-                    : chainedVariableToTrailingEntitiesMap.entrySet()) {
-                entry.setValue(new IdentityHashMap<Object, Set<Object>>(entityList.size()));
-            }
-            // TODO Remove when all starting entities call afterEntityAdded too
-            for (Object entity : entityList) {
-                insertInTrailingEntityMap(entity);
-            }
-        }
-    }
-
-    protected void insertInTrailingEntityMap(Object entity) {
-        if (hasChainedVariables) {
-            for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
-                    : chainedVariableToTrailingEntitiesMap.entrySet()) {
-                PlanningVariableDescriptor variableDescriptor = entry.getKey();
-                if (variableDescriptor.getEntityDescriptor().matchesEntity(entity)) {
-                    Object value = variableDescriptor.getValue(entity);
-                    Map<Object, Set<Object>> valueToTrailingEntityMap = entry.getValue();
-                    Set<Object> trailingEntities = valueToTrailingEntityMap.get(value);
-                    if (trailingEntities == null) {
-                        trailingEntities = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
-                        valueToTrailingEntityMap.put(value, trailingEntities);
-                    }
-                    boolean addSucceeded = trailingEntities.add(entity);
-                    if (!addSucceeded) {
-                        throw new IllegalStateException("The ScoreDirector (" + getClass() + ") is corrupted,"
-                                + " because the entity (" + entity + ") for chained planningVariable ("
-                                + variableDescriptor.getVariableName()
-                                + ") cannot be inserted: it was already inserted.");
-                    }
-                }
-            }
-        }
-    }
-
-    protected void retractFromTrailingEntityMap(Object entity) {
-        if (hasChainedVariables) {
-            for (Map.Entry<PlanningVariableDescriptor, Map<Object, Set<Object>>> entry
-                    : chainedVariableToTrailingEntitiesMap.entrySet()) {
-                PlanningVariableDescriptor variableDescriptor = entry.getKey();
-                if (variableDescriptor.getEntityDescriptor().matchesEntity(entity)) {
-                    Object value = variableDescriptor.getValue(entity);
-                    Map<Object, Set<Object>> valueToTrailingEntityMap = entry.getValue();
-                    Set<Object> trailingEntities = valueToTrailingEntityMap.get(value);
-                    boolean removeSucceeded = trailingEntities != null && trailingEntities.remove(entity);
-                    if (!removeSucceeded) {
-                        throw new IllegalStateException("The ScoreDirector (" + getClass() + ") is corrupted,"
-                                + " because the entity (" + entity + ") for chained planningVariable ("
-                                + variableDescriptor.getVariableName()
-                                + ") cannot be retracted: it was never inserted.");
-                    }
-                    if (trailingEntities.isEmpty()) {
-                        valueToTrailingEntityMap.put(value, null);
-                    }
-                }
-            }
-        }
-    }
-
     public Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue) {
-        Set<Object> trailingEntities = chainedVariableToTrailingEntitiesMap.get(chainedVariableDescriptor)
-                .get(planningValue);
-        if (trailingEntities == null) {
-            return null;
-        }
-        // trailingEntities can never be an empty list
-        if (trailingEntities.size() > 1) {
-            throw new IllegalStateException("The planningValue (" + planningValue
-                    + ") has multiple trailing entities (" + trailingEntities
-                    + ") pointing to it for chained planningVariable ("
-                    + chainedVariableDescriptor.getVariableName() + ").");
-        }
-        return trailingEntities.iterator().next();
+        return trailingEntityMapSupport.getTrailingEntity(chainedVariableDescriptor, planningValue);
     }
 
     // ************************************************************************
@@ -284,22 +196,22 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterEntityAdded(PlanningEntityDescriptor entityDescriptor, Object entity) {
-        insertInTrailingEntityMap(entity);
+        trailingEntityMapSupport.insertInTrailingEntityMap(entity);
         variableListenerSupport.afterEntityAdded(this, entityDescriptor, entity);
     }
 
     public void beforeVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
-        retractFromTrailingEntityMap(entity);
+        trailingEntityMapSupport.retractFromTrailingEntityMap(entity);
         variableListenerSupport.beforeVariableChanged(this, variableDescriptor, entity);
     }
 
     public void afterVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
-        insertInTrailingEntityMap(entity);
+        trailingEntityMapSupport.insertInTrailingEntityMap(entity);
         variableListenerSupport.afterVariableChanged(this, variableDescriptor, entity);
     }
 
     public void beforeEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) {
-        retractFromTrailingEntityMap(entity);
+        trailingEntityMapSupport.retractFromTrailingEntityMap(entity);
         variableListenerSupport.beforeEntityRemoved(this, entityDescriptor, entity);
     }
 
@@ -316,7 +228,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterProblemFactAdded(Object problemFact) {
-        resetTrailingEntityMap(); // TODO do not nuke it
+        trailingEntityMapSupport.resetTrailingEntityMap(workingSolution); // TODO do not nuke it
     }
 
     public void beforeProblemFactChanged(Object problemFact) {
@@ -324,7 +236,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterProblemFactChanged(Object problemFact) {
-        resetTrailingEntityMap(); // TODO do not nuke it
+        trailingEntityMapSupport.resetTrailingEntityMap(workingSolution); // TODO do not nuke it
     }
 
     public void beforeProblemFactRemoved(Object problemFact) {
@@ -332,7 +244,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterProblemFactRemoved(Object problemFact) {
-        resetTrailingEntityMap(); // TODO do not nuke it
+        trailingEntityMapSupport.resetTrailingEntityMap(workingSolution); // TODO do not nuke it
     }
 
     // ************************************************************************
