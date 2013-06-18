@@ -172,15 +172,23 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public final void beforeVariableChanged(Object entity, String variableName) {
-        beforeVariableChanged(
-                getSolutionDescriptor().getEntityDescriptor(entity.getClass()).getVariableDescriptor(variableName),
-                entity);
+        PlanningEntityDescriptor entityDescriptor = getSolutionDescriptor().getEntityDescriptor(entity.getClass());
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
+        if (variableDescriptor != null) {
+            beforeVariableChanged(variableDescriptor, entity);
+        } else {
+            // Shadow variable (either a mappedBy or a not registered shadow variable)
+        }
     }
 
     public final void afterVariableChanged(Object entity, String variableName) {
-        afterVariableChanged(
-                getSolutionDescriptor().getEntityDescriptor(entity.getClass()).getVariableDescriptor(variableName),
-                entity);
+        PlanningEntityDescriptor entityDescriptor = getSolutionDescriptor().getEntityDescriptor(entity.getClass());
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
+        if (variableDescriptor != null) {
+            afterVariableChanged(variableDescriptor, entity);
+        } else {
+            // Shadow variable (either a mappedBy or a not registered shadow variable)
+        }
     }
 
     public final void beforeEntityRemoved(Object entity) {
@@ -196,22 +204,22 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterEntityAdded(PlanningEntityDescriptor entityDescriptor, Object entity) {
-        trailingEntityMapSupport.insertInTrailingEntityMap(entity);
+        trailingEntityMapSupport.insertInTrailingEntityMap(entityDescriptor, entity);
         variableListenerSupport.afterEntityAdded(this, entityDescriptor, entity);
     }
 
     public void beforeVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
-        trailingEntityMapSupport.retractFromTrailingEntityMap(entity);
+        trailingEntityMapSupport.retractFromTrailingEntityMap(variableDescriptor, entity);
         variableListenerSupport.beforeVariableChanged(this, variableDescriptor, entity);
     }
 
     public void afterVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
-        trailingEntityMapSupport.insertInTrailingEntityMap(entity);
+        trailingEntityMapSupport.insertInTrailingEntityMap(variableDescriptor, entity);
         variableListenerSupport.afterVariableChanged(this, variableDescriptor, entity);
     }
 
     public void beforeEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) {
-        trailingEntityMapSupport.retractFromTrailingEntityMap(entity);
+        trailingEntityMapSupport.retractFromTrailingEntityMap(entityDescriptor, entity);
         variableListenerSupport.beforeEntityRemoved(this, entityDescriptor, entity);
     }
 

@@ -205,9 +205,17 @@ public class PlanningEntityDescriptor {
     public Collection<PlanningVariableDescriptor> getVariableDescriptors() {
         return variableDescriptorMap.values();
     }
+
+    public boolean hasVariableDescriptor(String propertyName) {
+        return variableDescriptorMap.containsKey(propertyName);
+    }
     
     public PlanningVariableDescriptor getVariableDescriptor(String propertyName) {
         return variableDescriptorMap.get(propertyName);
+    }
+
+    public boolean hasShadowVariableDescriptor(String propertyName) {
+        return shadowVariableDescriptorMap.containsKey(propertyName);
     }
 
     public void addVariableListenersToMap(
