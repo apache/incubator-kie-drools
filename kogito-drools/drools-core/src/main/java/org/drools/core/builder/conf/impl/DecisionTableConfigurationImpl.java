@@ -18,13 +18,16 @@ package org.drools.core.builder.conf.impl;
 
 import java.util.Properties;
 
+import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
-import org.kie.api.io.ResourceConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DecisionTableConfigurationImpl implements DecisionTableConfiguration {
+    public static final String DROOLS_DT_TYPE = "drools.dt.type";
+    public static final String DROOLS_DT_WORKSHEET = "drools.dt.worksheet";
+
     private final Logger logger = LoggerFactory.getLogger( DecisionTableConfigurationImpl.class ); 
     
     private DecisionTableInputType inputType;
@@ -52,14 +55,14 @@ public class DecisionTableConfigurationImpl implements DecisionTableConfiguratio
     
     public Properties toProperties() {
         Properties prop = new Properties();
-        prop.setProperty( "drools.dt.type", inputType.toString() );
-        prop.setProperty( "drools.dt.worksheet", worksheetName );
+        prop.setProperty( DROOLS_DT_TYPE, inputType.toString() );
+        prop.setProperty( DROOLS_DT_WORKSHEET, worksheetName );
         return prop;
     }
 
     public ResourceConfiguration fromProperties(Properties prop) {
-        inputType = DecisionTableInputType.valueOf( prop.getProperty( "drools.dt.type", "XLS" ) );
-        worksheetName = prop.getProperty( "drools.dt.worksheet", null );
+        inputType = DecisionTableInputType.valueOf( prop.getProperty( DROOLS_DT_TYPE, DecisionTableInputType.XLS.toString() ) );
+        worksheetName = prop.getProperty( DROOLS_DT_WORKSHEET, null );
         return this;
     }
   

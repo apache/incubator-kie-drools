@@ -17,6 +17,7 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.util.StringUtils;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -25,6 +26,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
+import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -207,6 +209,13 @@ public abstract class AbstractKieModule
                 log.error( "Error loading resource configuration from file: "+fileName+".properties" );
             }
             conf = ResourceTypeImpl.fromProperties(prop);
+        } else if( ResourceType.DTABLE.matchesExtension( fileName ) ) {
+            if( fileName.endsWith( ".csv" ) ) {
+                Properties prop = new Properties();
+                prop.setProperty( ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName() );
+                prop.setProperty( DecisionTableConfigurationImpl.DROOLS_DT_TYPE, DecisionTableInputType.CSV.toString() );
+                conf = ResourceTypeImpl.fromProperties(prop);
+            }
         }
         return conf;
     }
