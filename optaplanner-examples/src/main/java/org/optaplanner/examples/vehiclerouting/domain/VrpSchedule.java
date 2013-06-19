@@ -70,6 +70,7 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardSof
         this.depotList = depotList;
     }
 
+    @PlanningEntityCollectionProperty
     public List<VrpVehicle> getVehicleList() {
         return vehicleList;
     }
@@ -103,7 +104,6 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardSof
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(locationList);
         facts.addAll(depotList);
-        facts.addAll(vehicleList);
         // Do not add the planning entity's (customerList) because that will be done automatically
         return facts;
     }

@@ -16,6 +16,10 @@
 
 package org.optaplanner.examples.vehiclerouting.domain;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
+
+@PlanningEntity
 public interface VrpStandstill {
 
     /**
@@ -27,5 +31,12 @@ public interface VrpStandstill {
      * @return sometimes null
      */
     VrpVehicle getVehicle();
+
+    /**
+     * @return sometimes null
+     */
+    @PlanningVariable(mappedBy = "previousStandstill")
+    VrpCustomer getNextCustomer();
+    void setNextCustomer(VrpCustomer nextCustomer);
 
 }

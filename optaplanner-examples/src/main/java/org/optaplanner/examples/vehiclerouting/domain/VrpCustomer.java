@@ -77,7 +77,6 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
         this.previousStandstill = previousStandstill;
     }
 
-    @PlanningVariable(mappedBy = "previousStandstill")
     public VrpCustomer getNextCustomer() {
         return nextCustomer;
     }

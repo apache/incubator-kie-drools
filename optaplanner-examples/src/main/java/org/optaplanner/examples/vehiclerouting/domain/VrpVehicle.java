@@ -44,7 +44,6 @@ public class VrpVehicle extends AbstractPersistable implements VrpStandstill {
         this.depot = depot;
     }
 
-    @PlanningVariable(mappedBy = "previousStandstill")
     public VrpCustomer getNextCustomer() {
         return nextCustomer;
     }
