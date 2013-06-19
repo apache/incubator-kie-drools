@@ -84,6 +84,11 @@ public class DrlParser {
         return compile(isEditor, parser);
     }
 
+    public PackageDescr parse(final Resource resource, final Reader reader) throws DroolsParserException {
+        this.resource = resource;
+        return parse(false, reader);
+    }
+
     public PackageDescr parse(final Reader reader) throws DroolsParserException {
         return parse(false, reader);
     }

@@ -443,7 +443,7 @@ public class PackageBuilder
                                                                 IOException {
         this.resource = sourceResource;
         final DrlParser parser = new DrlParser( configuration.getLanguageLevel() );
-        final PackageDescr pkg = parser.parse( reader );
+        final PackageDescr pkg = parser.parse( sourceResource, reader );
         this.results.addAll( parser.getErrors() );
         if ( pkg == null ) {
             this.results.add( new ParserError( sourceResource, "Parser returned a null Package", 0, 0 ) );
@@ -470,7 +470,7 @@ public class PackageBuilder
         String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(), dtableConfiguration );
 
         DrlParser parser = new DrlParser( this.configuration.getLanguageLevel() );
-        PackageDescr pkg = parser.parse( new StringReader( string ) );
+        PackageDescr pkg = parser.parse( resource, new StringReader( string ) );
         this.results.addAll( parser.getErrors() );
         if ( pkg == null ) {
             this.results.add( new ParserError( resource, "Parser returned a null Package", 0, 0 ) );
@@ -753,7 +753,7 @@ public class PackageBuilder
                                           getPackageRegistry() );
 
         DrlParser parser = new DrlParser( configuration.getLanguageLevel() );
-        PackageDescr pkg = parser.parse( new StringReader( theory ) );
+        PackageDescr pkg = parser.parse( resource, new StringReader( theory ) );
         this.results.addAll( parser.getErrors() );
         if ( pkg == null ) {
             this.results.add( new ParserError( resource, "Parser returned a null Package", 0, 0 ) );
