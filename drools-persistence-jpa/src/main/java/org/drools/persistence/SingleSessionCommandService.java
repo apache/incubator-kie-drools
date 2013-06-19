@@ -201,6 +201,10 @@ public class SingleSessionCommandService
                           persistenceContext );
 
             txm.commit( transactionOwner );
+        } catch (SessionNotFoundException e){
+          // do not rollback transaction otherwise it will mark it as aborted
+          // making the whole operation to fail
+            throw e;
         } catch ( RuntimeException re ) {
             rollbackTransaction( re,
                                  transactionOwner );
@@ -226,12 +230,12 @@ public class SingleSessionCommandService
         try {
             this.sessionInfo = persistenceContext.findSessionInfo( sessionId );
         } catch ( Exception e ) {
-            throw new RuntimeException( "Could not find session data for id " + sessionId,
+            throw new SessionNotFoundException( "Could not find session data for id " + sessionId,
                                         e );
         }
 
         if ( sessionInfo == null ) {
-            throw new RuntimeException( "Could not find session data for id " + sessionId );
+            throw new SessionNotFoundException( "Could not find session data for id " + sessionId );
         }
 
         if ( this.marshallingHelper == null ) {
