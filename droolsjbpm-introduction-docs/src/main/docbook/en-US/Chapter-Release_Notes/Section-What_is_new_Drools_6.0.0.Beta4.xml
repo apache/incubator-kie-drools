@@ -16,6 +16,7 @@
   </section>
 
   <section xml:id="releaseNotes_6.0.0.Beta4_DroolsWorkbench">
+    <title>Drools Workbench</title>
     <section>
       <title>TODO</title>
       <para>TODO</para>
@@ -23,6 +24,7 @@
   </section>
 
   <section xml:id="releaseNotes_6.0.0.Beta4_OptaPlanner">
+    <title>OptaPlanner (AKA Drools Planner)</title>
     <section>
       <title>TODO</title>
       <para>TODO</para>
