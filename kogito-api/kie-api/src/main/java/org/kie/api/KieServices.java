@@ -12,8 +12,10 @@ import org.kie.api.logger.KieLoggers;
 import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.persistence.jpa.KieStoreServices;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSessionConfiguration;
 
 import java.io.File;
+import java.util.Properties;
 
 /**
  * <p>
@@ -100,6 +102,27 @@ public interface KieServices {
      * Creates a new KieModuleModel to programmatically define a KieModule
      */
     KieModuleModel newKieModuleModel();
+
+    /**
+     * Create a KieBaseConfiguration on which properties can be set.
+     */
+    KieBaseConfiguration newKnowledgeBaseConfiguration();
+
+    /**
+     * Create a KieBaseConfiguration on which properties can be set. Use
+     * the given properties file and ClassLoader - either of which can be null.
+     */
+    KieBaseConfiguration newKnowledgeBaseConfiguration(Properties properties, ClassLoader classLoader);
+
+    /**
+     * Create a KieSessionConfiguration on which properties can be set.
+     */
+    KieSessionConfiguration newKnowledgeSessionConfiguration();
+
+    /**
+     * Create a KieSessionConfiguration on which properties can be set.
+     */
+    KieSessionConfiguration newKnowledgeSessionConfiguration(Properties properties);
 
     /**
      * A Factory for this KieServices
