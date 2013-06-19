@@ -41,6 +41,7 @@ import org.drools.core.FactHandle;
 import org.drools.core.spi.PropagationContext;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -233,7 +234,7 @@ public class ReteTest extends DroolsTestCase {
                       rete.getObjectTypeNodes().size() );
     }
 
-    @Test
+    @Test @Ignore
     public void testHierarchy() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
@@ -281,9 +282,9 @@ public class ReteTest extends DroolsTestCase {
         final MockObjectSink arraySink = new MockObjectSink();
         listOtn.addObjectSink( arraySink );
 
-        workingMemory.insert( new ArrayList() );
-        assertEquals( 1,
-                      listSink.getAsserted().size() );
+        workingMemory.insert(new ArrayList());
+        assertEquals(1,
+                     listSink.getAsserted().size());
         assertEquals( 1,
                       arraySink.getAsserted().size() );
 

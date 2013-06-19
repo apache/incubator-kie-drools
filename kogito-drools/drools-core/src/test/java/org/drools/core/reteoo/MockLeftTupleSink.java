@@ -80,7 +80,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
-        return null;
+        return new PathMemory(null);
     }
 
     public void updateSink(final LeftTupleSink sink,
@@ -150,7 +150,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public short getType() {
-        return 0;
+        return NodeTypeEnums.RuleTerminalNode;
     }
 
     public void modifyLeftTuple(InternalFactHandle factHandle,
@@ -198,7 +198,12 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public LeftTupleSource getLeftTupleSource() {
-        return null;
+        return new MockLeftTupleSink() {
+            @Override
+            public short getType() {
+                return NodeTypeEnums.LeftInputAdapterNode;
+            }
+        };
     }
 
     @Override

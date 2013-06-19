@@ -39,6 +39,7 @@ import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.event.ActivationCancelledEvent;
@@ -58,6 +59,7 @@ import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.time.impl.DurationTimer;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
@@ -71,7 +73,9 @@ public class AgendaTest extends DroolsTestCase {
 
     @Before
     public void setUp() throws Exception {
-        ruleBase = (InternalRuleBase) RuleBaseFactory.newRuleBase();
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setPhreakEnabled(false);
+        ruleBase = (InternalRuleBase) RuleBaseFactory.newRuleBase(config);
         buildContext = new BuildContext( ruleBase,
                                          ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
     }
@@ -777,8 +781,6 @@ public class AgendaTest extends DroolsTestCase {
 
     @Test
     public void testAgendaGroupLockOnActive() {
-        final InternalRuleBase ruleBase = (InternalRuleBase) RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
@@ -843,8 +845,6 @@ public class AgendaTest extends DroolsTestCase {
 
     @Test
     public void testActivationGroup() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
@@ -1064,8 +1064,6 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
@@ -1242,8 +1240,6 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup1() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
@@ -1370,8 +1366,6 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup2() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
@@ -1504,8 +1498,6 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup3() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
@@ -1603,7 +1595,6 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup4() {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();;
 
@@ -1728,8 +1719,6 @@ public class AgendaTest extends DroolsTestCase {
      */
     @Test
     public void testRuleFlowGroup5() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
@@ -1785,8 +1774,6 @@ public class AgendaTest extends DroolsTestCase {
 
     @Test
     public void testRuleFlowGroupLockOnActive() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
 
@@ -1849,7 +1836,8 @@ public class AgendaTest extends DroolsTestCase {
     @Test
     public void testSequentialAgenda() {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setSequential( true );
+        conf.setPhreakEnabled( false );
+        conf.setSequential(true);
         InternalRuleBase ruleBase = (InternalRuleBase) RuleBaseFactory.newRuleBase( conf );
 
         // create the consequence

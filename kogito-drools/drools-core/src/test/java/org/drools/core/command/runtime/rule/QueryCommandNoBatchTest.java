@@ -35,6 +35,7 @@ import static org.junit.Assert.*;
  *
  * @author salaboy
  */
+@Ignore("phreak")
 public class QueryCommandNoBatchTest {
 
     private StatefulKnowledgeSession ksession;

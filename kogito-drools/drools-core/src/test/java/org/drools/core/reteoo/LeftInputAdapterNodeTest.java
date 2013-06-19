@@ -27,10 +27,12 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+@Ignore("phreak")
 public class LeftInputAdapterNodeTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext buildContext;

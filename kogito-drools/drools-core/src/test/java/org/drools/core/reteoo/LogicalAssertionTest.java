@@ -55,6 +55,7 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -75,7 +76,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         this.entryPoint.attach( buildContext );
     }
 
-    @Test
+    @Test @Ignore
     public void testSingleLogicalRelationship() throws Exception {
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
