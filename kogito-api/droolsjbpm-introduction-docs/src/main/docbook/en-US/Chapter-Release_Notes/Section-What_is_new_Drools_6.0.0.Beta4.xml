@@ -455,7 +455,7 @@
             <mediaobject>
               <imageobject>
                 <imagedata align="center"
-                           fileref="images/Chapter-Release_Notes/PE-repository.png"
+                           fileref="images/Chapter-Release_Notes/PE-dependencies.png"
                            format="PNG"/>
               </imageobject>
             </mediaobject>
@@ -502,7 +502,7 @@
             <mediaobject>
               <imageobject>
                 <imagedata align="center"
-                           fileref="images/Chapter-Release_Notes/PE-kbases-and-sessions.png"
+                           fileref="images/Chapter-Release_Notes/PE-kbases-and-ksessions.png"
                            format="PNG"/>
               </imageobject>
             </mediaobject>
