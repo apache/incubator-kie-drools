@@ -63,6 +63,7 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
         this.demand = demand;
     }
 
+//    @PlanningVariable(chained = true, variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class}) // TODO
     @PlanningVariable(chained = true, variableListenerClasses = {VehicleUpdatingVariableListener.class})
     @ValueRanges({
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "vehicleList"),
