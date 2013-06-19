@@ -52,7 +52,7 @@ public class KnowledgeBaseConfigurationTest {
      */
     @Before
     public void setUp() throws Exception {
-        config = KieServices.Factory.get().newKnowledgeBaseConfiguration();
+        config = KieServices.Factory.get().newKieBaseConfiguration();
     }
 
     @Test

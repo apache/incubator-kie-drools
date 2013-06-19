@@ -142,19 +142,19 @@ public class KieServicesImpl implements KieServices {
         return new KieFileSystemImpl();
     }
 
-    public KieBaseConfiguration newKnowledgeBaseConfiguration() {
+    public KieBaseConfiguration newKieBaseConfiguration() {
         return new RuleBaseConfiguration();
     }
 
-    public KieBaseConfiguration newKnowledgeBaseConfiguration(Properties properties, ClassLoader classLoader) {
+    public KieBaseConfiguration newKieBaseConfiguration(Properties properties, ClassLoader classLoader) {
         return new RuleBaseConfiguration(properties, classLoader);
    }
 
-    public KieSessionConfiguration newKnowledgeSessionConfiguration() {
+    public KieSessionConfiguration newKieSessionConfiguration() {
         return new SessionConfiguration();
     }
 
-    public KieSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
+    public KieSessionConfiguration newKieSessionConfiguration(Properties properties) {
         return new SessionConfiguration(properties);
     }
 }
