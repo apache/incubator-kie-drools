@@ -142,7 +142,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
+      <groupId>org.jboss.netty</groupId>
       <artifactId>netty</artifactId>
       <scope>test</scope>
     </dependency>
