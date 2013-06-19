@@ -251,6 +251,86 @@
       </section>
 
       <section>
+        <title>Editing</title>
+
+        <para>By and large, other than the specific changes mentioned in this document, all of the old Guvnor asset
+        editors have been ported to 6.0 with no or little change.</para>
+
+        <para>The layout of the workbench has however changed and the following screen-shots give an example of the new,
+        common layout for most editors.</para>
+
+        <section>
+          <title>The Editor itself</title>
+
+          <para>Asset editors have been ported to 6.0 with no or little change.</para>
+
+          <figure>
+            <title>The Editor</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/Chapter-Release_Notes/drools-wb-guided-rule-editor.png"
+                           format="PNG"></imagedata>
+              </imageobject>
+            </mediaobject>
+          </figure>
+        </section>
+
+        <section>
+          <title>The Source View</title>
+
+          <para>The (DRL) Source View of the asset has been moved to a mini-tab within the editor.</para>
+
+          <figure>
+            <title>The Source View</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/Chapter-Release_Notes/drools-wb-source-view.png" format="PNG"></imagedata>
+              </imageobject>
+            </mediaobject>
+          </figure>
+        </section>
+
+        <section>
+          <title>The Imports View</title>
+
+          <para>Types not within the package that contains the asset being authored need to be imported before they can
+          be used.</para>
+
+          <para>Guvnor 5.5 had the user define package-wide imports from the Package Screen. Drools Workbench 6.0 has
+          moved the selection of imports from the Package level to the Asset level; positioning the facility on a
+          mini-tab within the editor.</para>
+
+          <figure>
+            <title>The Imports View</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/Chapter-Release_Notes/drools-wb-imports.png" format="PNG"></imagedata>
+              </imageobject>
+            </mediaobject>
+          </figure>
+        </section>
+
+        <section>
+          <title>The Meta Data</title>
+
+          <para>Meta Data has been moved to a mini-tab within the editor.</para>
+
+          <figure>
+            <title>The Meta Data</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/Chapter-Release_Notes/drools-wb-metadata.png" format="PNG"></imagedata>
+              </imageobject>
+            </mediaobject>
+          </figure>
+        </section>
+      </section>
+
+      <section>
         <title>Project Editor</title>
 
         <para>[rikkola] TODO</para>
