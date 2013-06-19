@@ -3346,7 +3346,6 @@ After in *.java:
 
         // Planning variables: changes during planning, between score calculations.
         protected VrpStandstill previousStandstill;
-        protected VrpCustomer nextCustomer;
 
         // Shadow variable
         protected VrpVehicle vehicle;
@@ -3356,16 +3355,55 @@ After in *.java:
             return previousStandstill;
         }
 
-        @PlanningVariable(mappedBy = "previousStandstill") // Bi-directional relationship
-        public VrpCustomer getNextCustomer() {
-            return nextCustomer;
-        }
-
         public VrpVehicle getVehicle() {
             return vehicle;
         }
         ...
     }
+To make it easier to implement that listener, a bi-directional relationship was introduced on VrpStandstill,
+which made VrpStandstill a @PlanningEntity (which effectively makes VrpVehicle a planning entity too)
+and Solution.getVehicleList()'s method annotated with @PlanningEntityCollectionProperty:
+Before in VrpStandstill.java:
+    public interface VrpStandstill {
+        ...
+    }
+After in VrpStandstill.java:
+    @PlanningEntity
+    public interface VrpStandstill {
+        ...
+        @PlanningVariable(mappedBy = "previousStandstill") // Bi-directional relationship. This is the shadow side
+        VrpCustomer getNextCustomer();
+        void setNextCustomer(VrpCustomer nextCustomer);
+    }
+Before in VrpSchedule.java:
+    public List<VrpVehicle> getVehicleList() {
+        return vehicleList;
+    }
+
+    public Collection<? extends Object> getProblemFacts() {
+        ...
+        facts.addAll(vehicleList);
+        return facts;
+    }
+After in VrpSchedule.java:
+    @PlanningEntityCollectionProperty
+    public List<VrpVehicle> getVehicleList() {
+        return vehicleList;
+    }
+
+    public Collection<? extends Object> getProblemFacts() {
+        ...
+        return facts;
+    }
+Before in *SolverConfig.java and *BenchmarkConfig.java:
+    <solver>
+      ...
+      <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
+After in *SolverConfig.java and *BenchmarkConfig.java:
+    <solver>
+      ...
+      <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
+      <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.VrpStandstill</planningEntityClass>
 
 [MINOR] SolverConfig's method setPlanningEntityClassSet() has changed into setPlanningEntityClassList()
 because the order is important.
