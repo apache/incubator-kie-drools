@@ -34,7 +34,6 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.conf.PhreakOption;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -324,7 +323,7 @@ public class ScoreDirectorFactoryConfig {
             }
             KieContainer kieContainer = kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
 
-            KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            KieBaseConfiguration kieBaseConfiguration = kieServices.newKieBaseConfiguration();
             if (kieBaseConfigurationProperties != null) {
                 for (Map.Entry<String, String> entry : kieBaseConfigurationProperties.entrySet()) {
                     kieBaseConfiguration.setProperty(entry.getKey(), entry.getValue());
