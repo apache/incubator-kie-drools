@@ -76,15 +76,14 @@ public class VrpTimeWindowedCustomer extends VrpCustomer {
         return Math.max(arrivalTime, readyTime) + serviceDuration;
     }
 
-    public boolean isArrivalTimeAfterReadyTime() {
+    public boolean isArrivalBeforeReadyTime() {
         return arrivalTime != null
-                && readyTime <= arrivalTime;
+                && arrivalTime < readyTime;
     }
 
-    public boolean isDepartureTimeBeforeDueTime() {
-        Integer departureTime = getDepartureTime();
-        return departureTime != null
-                && departureTime <= dueTime;
+    public boolean isArrivalAfterDueTime() {
+        return arrivalTime != null
+                && dueTime < arrivalTime;
     }
 
     @Override

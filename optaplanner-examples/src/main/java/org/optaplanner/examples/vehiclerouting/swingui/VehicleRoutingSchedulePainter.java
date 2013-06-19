@@ -98,9 +98,9 @@ public class VehicleRoutingSchedulePainter {
                 VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
                 g.drawString(timeWindowedCustomer.getTimeWindowLabel(), x + 3, y + (TEXT_SIZE/2));
                 if (timeWindowedCustomer.getArrivalTime() != null) {
-                    if (!timeWindowedCustomer.isDepartureTimeBeforeDueTime()) {
+                    if (timeWindowedCustomer.isArrivalAfterDueTime()) {
                         g.setColor(TangoColorFactory.SCARLET_2);
-                    } else if (!timeWindowedCustomer.isArrivalTimeAfterReadyTime()) {
+                    } else if (timeWindowedCustomer.isArrivalBeforeReadyTime()) {
                         g.setColor(TangoColorFactory.ORANGE_2);
                     }
                     g.drawString(Integer.toString(timeWindowedCustomer.getArrivalTime()),
@@ -203,7 +203,8 @@ public class VehicleRoutingSchedulePainter {
             if (!score.isFeasible()) {
                 totalDistanceString = "Not feasible";
             } else {
-                totalDistanceString = numberFormat.format(- score.getSoftScore()) + " fuel";
+                totalDistanceString = numberFormat.format(- score.getSoftScore())
+                        + ((schedule instanceof VrpTimeWindowedSchedule) ? " time" : " fuel");
             }
             g.setFont( g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
             g.drawString(totalDistanceString,
