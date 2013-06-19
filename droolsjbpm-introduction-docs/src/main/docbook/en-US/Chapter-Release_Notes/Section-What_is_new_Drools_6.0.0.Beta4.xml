@@ -181,7 +181,7 @@
         Package.<itemizedlist>
             <listitem>
               <para>Group : The top level logical entitiy within the KIE world. This can represent a Company,
-              Organization, Department etc. </para>
+              Organization, Department etc.</para>
             </listitem>
 
             <listitem>
@@ -220,9 +220,46 @@
       </section>
 
       <section>
+        <title>Creating new things</title>
+
+        <para>Creation of anything "new" is accomplished using the "New" menu option.</para>
+
+        <para>The types of thing that can be created from the "New" menu option depends upon the selected context.
+        Projects require a Repository; rules, tests etc require a Package within a Project. New things are created in
+        the context selected in the Project Explorer. I.E. if Repository 1, Project X is selected new items will be
+        created in Project X.</para>
+
+        <figure>
+          <title>New Menu</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/Chapter-Release_Notes/drools-wb-newitem-menu.png" format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>New Popup</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/Chapter-Release_Notes/drools-wb-newitem-popup.png" format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
         <title>Project Editor</title>
 
         <para>[rikkola] TODO</para>
+      </section>
+
+      <section>
+        <title>Data Modeller</title>
+
+        <para>[wmedvede] TODO</para>
       </section>
 
       <section>
