@@ -199,25 +199,19 @@ public class SolutionDescriptor {
     }
 
     public boolean hasEntityDescriptor(Class<?> entitySubclass) {
-        Class<?> entityClass = entitySubclass;
-        while (entityClass != null) {
-            if (entityDescriptorMap.containsKey(entityClass)) {
+        for (Map.Entry<Class<?>, PlanningEntityDescriptor> entry : entityDescriptorMap.entrySet()) {
+            if (entry.getKey().isAssignableFrom(entitySubclass)) {
                 return true;
             }
-            entityClass = entityClass.getSuperclass();
         }
         return false;
     }
 
     public PlanningEntityDescriptor getEntityDescriptor(Class<?> entitySubclass) {
-        PlanningEntityDescriptor entityDescriptor = null;
-        Class<?> entityClass = entitySubclass;
-        while (entityClass != null) {
-            entityDescriptor = entityDescriptorMap.get(entityClass);
-            if (entityDescriptor != null) {
-                return entityDescriptor;
+        for (Map.Entry<Class<?>, PlanningEntityDescriptor> entry : entityDescriptorMap.entrySet()) {
+            if (entry.getKey().isAssignableFrom(entitySubclass)) {
+                return entry.getValue();
             }
-            entityClass = entityClass.getSuperclass();
         }
         // TODO move this into the client methods
         throw new IllegalArgumentException("A planning entity is an instance of a entitySubclass ("
