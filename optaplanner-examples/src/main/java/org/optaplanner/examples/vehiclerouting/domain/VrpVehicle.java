@@ -26,6 +26,7 @@ public class VrpVehicle extends AbstractPersistable implements VrpStandstill {
     protected int capacity;
     protected VrpDepot depot;
 
+    // Shadow variables
     protected VrpCustomer nextCustomer;
 
     public int getCapacity() {

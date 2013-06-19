@@ -42,9 +42,9 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
 
     // Planning variables: changes during planning, between score calculations.
     protected VrpStandstill previousStandstill;
-    protected VrpCustomer nextCustomer;
 
-    // Shadow variable
+    // Shadow variables
+    protected VrpCustomer nextCustomer;
     protected VrpVehicle vehicle;
 
     public VrpLocation getLocation() {
