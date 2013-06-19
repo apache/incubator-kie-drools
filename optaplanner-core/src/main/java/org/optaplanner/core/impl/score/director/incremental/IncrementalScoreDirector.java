@@ -88,6 +88,18 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     }
 
     @Override
+    public void beforeShadowVariableChanged(Object entity, String variableName) {
+        incrementalScoreCalculator.beforeVariableChanged(entity, variableName);
+        super.beforeShadowVariableChanged(entity, variableName);
+    }
+
+    @Override
+    public void afterShadowVariableChanged(Object entity, String variableName) {
+        incrementalScoreCalculator.afterVariableChanged(entity, variableName);
+        super.afterShadowVariableChanged(entity, variableName);
+    }
+
+    @Override
     public void beforeEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) {
         incrementalScoreCalculator.beforeEntityRemoved(entity);
         super.beforeEntityRemoved(entityDescriptor, entity);

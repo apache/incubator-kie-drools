@@ -178,6 +178,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             beforeVariableChanged(variableDescriptor, entity);
         } else {
             // Shadow variable (either a mappedBy or a not registered shadow variable)
+            beforeShadowVariableChanged(entity, variableName);
         }
     }
 
@@ -188,6 +189,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
             afterVariableChanged(variableDescriptor, entity);
         } else {
             // Shadow variable (either a mappedBy or a not registered shadow variable)
+            afterShadowVariableChanged(entity, variableName);
         }
     }
 
@@ -216,6 +218,14 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     public void afterVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
         trailingEntityMapSupport.insertInTrailingEntityMap(variableDescriptor, entity);
         variableListenerSupport.afterVariableChanged(this, variableDescriptor, entity);
+    }
+
+    public void beforeShadowVariableChanged(Object entity, String variableName) {
+        // Hook
+    }
+
+    public void afterShadowVariableChanged(Object entity, String variableName) {
+        // Hook
     }
 
     public void beforeEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) {

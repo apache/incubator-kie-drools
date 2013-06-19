@@ -151,6 +151,19 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
 
     @Override
     public void afterVariableChanged(PlanningVariableDescriptor variableDescriptor, Object entity) {
+        update(entity);
+        super.afterVariableChanged(variableDescriptor, entity);
+    }
+
+    // public void beforeShadowVariableChanged(Object entity, String variableName) // Do nothing
+
+    @Override
+    public void afterShadowVariableChanged(Object entity, String variableName) {
+        update(entity);
+        super.afterShadowVariableChanged(entity, variableName);
+    }
+
+    private void update(Object entity) {
         FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity instance (" + entity
@@ -158,7 +171,6 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
                     + " Usually the cause is that that specific instance was not in your Solution's entities.");
         }
         kieSession.update(factHandle, entity);
-        super.afterVariableChanged(variableDescriptor, entity);
     }
 
     // public void beforeEntityRemoved(PlanningEntityDescriptor entityDescriptor, Object entity) // Do nothing
@@ -175,7 +187,8 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         super.afterEntityRemoved(entityDescriptor, entity);
     }
 
-    // ************************************************************************
+
+        // ************************************************************************
     // Problem fact add/change/remove methods
     // ************************************************************************
 
