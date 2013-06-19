@@ -311,24 +311,28 @@
       <section>
         <title>Editing</title>
 
-        <para>By and large, other than the specific changes mentioned in this document, all of the old Guvnor asset
-        editors have been ported to 6.0 with no or little change.</para>
+        <para>By and large, other than the specific changes mentioned in this
+        document, all of the old Guvnor asset editors have been ported to 6.0
+        with no or little change.</para>
 
-        <para>The layout of the workbench has however changed and the following screen-shots give an example of the new,
-        common layout for most editors.</para>
+        <para>The layout of the workbench has however changed and the
+        following screen-shots give an example of the new, common layout for
+        most editors.</para>
 
         <section>
           <title>The Editor itself</title>
 
-          <para>Asset editors have been ported to 6.0 with no or little change.</para>
+          <para>Asset editors have been ported to 6.0 with no or little
+          change.</para>
 
           <figure>
             <title>The Editor</title>
 
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="images/Chapter-Release_Notes/drools-wb-guided-rule-editor.png"
-                           format="PNG"></imagedata>
+                <imagedata align="center"
+                           fileref="images/Chapter-Release_Notes/drools-wb-guided-rule-editor.png"
+                           format="PNG"/>
               </imageobject>
             </mediaobject>
           </figure>
@@ -337,14 +341,17 @@
         <section>
           <title>The Source View</title>
 
-          <para>The (DRL) Source View of the asset has been moved to a mini-tab within the editor.</para>
+          <para>The (DRL) Source View of the asset has been moved to a
+          mini-tab within the editor.</para>
 
           <figure>
             <title>The Source View</title>
 
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="images/Chapter-Release_Notes/drools-wb-source-view.png" format="PNG"></imagedata>
+                <imagedata align="center"
+                           fileref="images/Chapter-Release_Notes/drools-wb-source-view.png"
+                           format="PNG"/>
               </imageobject>
             </mediaobject>
           </figure>
@@ -353,19 +360,22 @@
         <section>
           <title>The Imports View</title>
 
-          <para>Types not within the package that contains the asset being authored need to be imported before they can
-          be used.</para>
+          <para>Types not within the package that contains the asset being
+          authored need to be imported before they can be used.</para>
 
-          <para>Guvnor 5.5 had the user define package-wide imports from the Package Screen. Drools Workbench 6.0 has
-          moved the selection of imports from the Package level to the Asset level; positioning the facility on a
-          mini-tab within the editor.</para>
+          <para>Guvnor 5.5 had the user define package-wide imports from the
+          Package Screen. Drools Workbench 6.0 has moved the selection of
+          imports from the Package level to the Asset level; positioning the
+          facility on a mini-tab within the editor.</para>
 
           <figure>
             <title>The Imports View</title>
 
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="images/Chapter-Release_Notes/drools-wb-imports.png" format="PNG"></imagedata>
+                <imagedata align="center"
+                           fileref="images/Chapter-Release_Notes/drools-wb-imports.png"
+                           format="PNG"/>
               </imageobject>
             </mediaobject>
           </figure>
@@ -374,14 +384,17 @@
         <section>
           <title>The Meta Data</title>
 
-          <para>Meta Data has been moved to a mini-tab within the editor.</para>
+          <para>Meta Data has been moved to a mini-tab within the
+          editor.</para>
 
           <figure>
             <title>The Meta Data</title>
 
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="images/Chapter-Release_Notes/drools-wb-metadata.png" format="PNG"></imagedata>
+                <imagedata align="center"
+                           fileref="images/Chapter-Release_Notes/drools-wb-metadata.png"
+                           format="PNG"/>
               </imageobject>
             </mediaobject>
           </figure>
@@ -391,112 +404,153 @@
       <section>
         <title>Project Editor</title>
 
-        <para>Project editor does what Package Editor did previously. It manages the the KIE projects. You can access the Project Editor from the menu bar Tools->Project Editor. 
-        The editor shows the configurations for the current active project and the content changes when you move around in your code repository.
-        </para>
+        <para>Project editor does what Package Editor did previously. It
+        manages the the KIE projects. You can access the Project Editor from
+        the menu bar Tools-&gt;Project Editor. The editor shows the
+        configurations for the current active project and the content changes
+        when you move around in your code repository.</para>
 
-           <figure>
-            <title>How to access the Project Editor</title>
+        <figure>
+          <title>How to access the Project Editor</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Release_Notes/PE-menu.png"
+                         format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <section>
+          <title>Group artifact version options</title>
+
+          <para>Allows you to set the group, artifact and version id's for the
+          project. Basically this screen is editing a pom.xml since we use
+          Maven to build our KIE projects.</para>
+
+          <figure>
+            <title>Panel for editing group, artifact and version id</title>
 
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="images/Chapter-Release_Notes/PE-menu.png" format="PNG"></imagedata>
+                <imagedata align="center"
+                           fileref="images/Chapter-Release_Notes/PE-GAV.png"
+                           format="PNG"/>
               </imageobject>
             </mediaobject>
           </figure>
-       
-        <section>
-        <title>Group artifact version options</title>
-        <para>
-        Allows you to set the group, artifact and version id's for the project. Basically this screen is editing a pom.xml since we use Maven to build our KIE projects.
-        </para>
-
-
-           <figure>
-            <title>Panel for editing group, artifact and version id</title>
-           <mediaobject>
-              <imageobject>
-                <imagedata align="center" fileref="images/Chapter-Release_Notes/PE-GAV.png" format="PNG"></imagedata>
-              </imageobject>
-            </mediaobject>
-           </figure>
         </section>
 
         <section>
-        <title>Dependencies options</title>
-        <para>
-        Lets you set the dependencies for the current project. It is possible to pick the the resources from an internal repository.
-        </para>
+          <title>Dependencies options</title>
+
+          <para>Lets you set the dependencies for the current project. It is
+          possible to pick the the resources from an internal
+          repository.</para>
 
           <figure>
-           <title>Dependencies for the current project</title>
-           <mediaobject>
-              <imageobject>
-                <imagedata align="center" fileref="images/Chapter-Release_Notes/PE-repository.png" format="PNG"></imagedata>
-              </imageobject>
-            </mediaobject>
-           </figure>
-        </section>
+            <title>Dependencies for the current project</title>
 
-        <section>
-        <title>Metadata</title>
-        <para>
-        </para>
-        The different files used by the Project Editor still have metadata like they did in Guvnor 5.x.
-           <figure>
-           <title>Metadata for pom.xml</title>
-          <mediaobject>
-              <imageobject>
-                <imagedata align="center" fileref="images/Chapter-Release_Notes/PE-metadata.png" format="PNG"></imagedata>
-              </imageobject>
-            </mediaobject>
-           </figure>
-        </section>
-        
-        <section>
-        <title>Knowledge bases and sessions options</title>
-        <para>Editor for kmodule.xml explained more detail in the KIE core documentation. Editors for knowledge bases and knowledge session inside.
-        </para>
-           <figure>
-           <title>Knowledge bases and sessions defined in the current project</title>
-          <mediaobject>
-              <imageobject>
-                <imagedata align="center" fileref="images/Chapter-Release_Notes/PE-kbases-and-sessions.png" format="PNG"></imagedata>
-              </imageobject>
-            </mediaobject>
-           </figure>
-        </section>
-
-        <section>
-        <title>Import suggestions</title>
-        <para>In import suggestions it is possible to specify a set of imports used in the project. Each editor has it's own imports now. Because of this these imports differ from what Guvnor 5.x Package Editor had, the imports are no longer automatically used in each asset, they just make use automated editor in KIE workbench easier and suggest fact types that the user might want to use.
-        </para>
-           <figure>
-            <title>Imports that will be used as suggestions in the editors</title>
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="images/Chapter-Release_Notes/PE-imports.png" format="PNG"></imagedata>
+                <imagedata align="center"
+                           fileref="images/Chapter-Release_Notes/PE-repository.png"
+                           format="PNG"/>
               </imageobject>
             </mediaobject>
-           </figure>
+          </figure>
+        </section>
+
+        <section>
+           
+
+          <title>Metadata</title>
+
+           
+
+          <para/>
+
+           The different files used by the Project Editor still have metadata like they did in Guvnor 5.x. 
+
+          <figure>
+            <title>Metadata for pom.xml</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center"
+                           fileref="images/Chapter-Release_Notes/PE-metadata.png"
+                           format="PNG"/>
+              </imageobject>
+            </mediaobject>
+          </figure>
+
+           
+        </section>
+
+        <section>
+          <title>Knowledge bases and sessions options</title>
+
+          <para>Editor for kmodule.xml explained more detail in the KIE core
+          documentation. Editors for knowledge bases and knowledge session
+          inside.</para>
+
+          <figure>
+            <title>Knowledge bases and sessions defined in the current
+            project</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center"
+                           fileref="images/Chapter-Release_Notes/PE-kbases-and-sessions.png"
+                           format="PNG"/>
+              </imageobject>
+            </mediaobject>
+          </figure>
+        </section>
+
+        <section>
+          <title>Import suggestions</title>
+
+          <para>In import suggestions it is possible to specify a set of
+          imports used in the project. Each editor has it's own imports now.
+          Because of this these imports differ from what Guvnor 5.x Package
+          Editor had, the imports are no longer automatically used in each
+          asset, they just make use automated editor in KIE workbench easier
+          and suggest fact types that the user might want to use.</para>
+
+          <figure>
+            <title>Imports that will be used as suggestions in the
+            editors</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center"
+                           fileref="images/Chapter-Release_Notes/PE-imports.png"
+                           format="PNG"/>
+              </imageobject>
+            </mediaobject>
+          </figure>
         </section>
       </section>
 
       <section>
         <title>Incremental Builds</title>
 
-        <para>Whenever a Project is built or an asset saved they are validated.</para>
+        <para>Whenever a Project is built or an asset saved they are
+        validated.</para>
 
-        <para>In the example below, the Fact Type "Smurf" has not been imported into the project and hence cannot be
-        resolved.</para>
+        <para>In the example below, the Fact Type "Smurf" has not been
+        imported into the project and hence cannot be resolved.</para>
 
         <figure>
           <title>The Problems panel</title>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/Chapter-Release_Notes/drools-wb-incremental-build.png"
-                         format="PNG"></imagedata>
+              <imagedata align="center"
+                         fileref="images/Chapter-Release_Notes/drools-wb-incremental-build.png"
+                         format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -510,7 +564,10 @@
 
       <section>
         <title>M2 Repository</title>
-        <para>Upload, download and manage artifacts with Guvnor M2 repository. </para>
+
+        <para>Upload, download and manage KJars with Guvnor M2 repository.
+        </para>
+
         <figure>
           <title>M2 Repository</title>
 
@@ -522,10 +579,18 @@
             </imageobject>
           </mediaobject>
         </figure>
-        
-        <para>Upload KJars to Guvnor M2 repository. The KJar has to contain a valid pom.xml file otherwise you will be prompted to input GAV info so that M2 repo editor can generate a pom for the KJar.</para>
+
+        <para>Upload KJars to Guvnor M2 repository:</para>
+
+        <para>A KJar has a pom.xml (and pom.properties) that define the GAV
+        and POJO model dependencies. If the pom.properties is missing the user
+        is prompted for the GAV and a pom.properties file is appended to the
+        JAR before being uploaded to Guvnor M2 repo.</para>
+
+        <para/>
+
         <figure>
-          <title>M2 Repository</title>
+          <title>2 Repository</title>
 
           <mediaobject>
             <imageobject>
@@ -535,7 +600,7 @@
             </imageobject>
           </mediaobject>
         </figure>
-        
+
         <figure>
           <title>M2 Repository</title>
 
@@ -547,8 +612,9 @@
             </imageobject>
           </mediaobject>
         </figure>
-        
-        <para>Guvnor M2 repository </para>
+
+        <para>The Guvnor M2 REPO is exposed via REST with URL pattern
+        http://{ServerName}/{httpPort}/{droolsWBWarFilename}/rest</para>
 
         <para/>
       </section>
@@ -557,19 +623,19 @@
         <title>Data Migration</title>
 
         <para>jcr2vfs is a cli tool that migrates legancys Guvnor repository
-        to 6.0. </para>
+        to 6.0.</para>
 
-        <para>runMigration --help </para>
+        <para>runMigration --help</para>
 
-        <para>usage: runMigration [options...] </para>
+        <para>usage: runMigration [options...]</para>
 
         <para>-f,--forceOverwriteOutputVfsRepository Force overwriting the
-        Guvnor 6 VFS repository </para>
+        Guvnor 6 VFS repository</para>
 
-        <para>-h,--help help for the command. </para>
+        <para>-h,--help help for the command.</para>
 
-        <para>-i,--inputJcrRepository &lt;arg&gt; The Guvnor 5 JCR repository
-        </para>
+        <para>-i,--inputJcrRepository &lt;arg&gt; The Guvnor 5 JCR
+        repository</para>
 
         <para>-o,--outputVfsRepository &lt;arg&gt; The Guvnor 6 VFS
         repository</para>
@@ -582,7 +648,7 @@
 
         <para>The GuvnorNG Rest API provides access to project "service"
         resources, i.e., any "service" that is not part of the underlying
-        persistence mechanism (i.e, Git, VFS). </para>
+        persistence mechanism (i.e, Git, VFS).</para>
 
         <para>The http address to use as base address is
         http://{ServerName}/{httpPort}/{droolsWBWarFilename}/rest where
