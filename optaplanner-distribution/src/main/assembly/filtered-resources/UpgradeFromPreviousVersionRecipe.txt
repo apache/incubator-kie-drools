@@ -3306,3 +3306,63 @@ After in *Move.java:
         scoreDirector.afterVariableChanged(lecture, "period");
         scoreDirector.afterVariableChanged(lecture, "room");
     }
+
+[README] The VehicleRouting example has been rewritten to take advantage of Variable Listeners.
+This makes it easier to implement time windowed vehicle routing.
+A variable listener is triggered when the variable (previousStandstill) changes
+and updates a shadow variable (vehicle, arrivalTime) accordingly.
+
+[MAJOR] The generic moves <subChainChangeMoveSelector> and <subChainSwapMoveSelector>
+no longer signal Drools/IncrementalScoreCalculator that an entity has changed when the anchor of an entity changes
+if none of the actual planning variables of the entity changed.
+So if you have shadow variable representing the anchor (for example the vehicle in VRP) this might cause score corruption.
+Instead, add a variable listener to update the shadow variable and signal the ScoreDirector accordingly.
+Before in *.java:
+    public class VrpCustomer ... {
+
+        // Planning variables: changes during planning, between score calculations.
+        protected VrpStandstill previousStandstill;
+
+        @PlanningVariable(chained = true) ...
+        public VrpStandstill getPreviousStandstill() {
+            return previousStandstill;
+        }
+
+        public VrpVehicle getVehicle() {
+            // HACK
+            VrpStandstill firstStandstill = getPreviousStandstill();
+            while (firstStandstill instanceof VrpCustomer) {
+                if (firstStandstill == this) {
+                    throw new IllegalStateException("Impossible state"); // fail fast during infinite loop
+                }
+                firstStandstill = ((VrpCustomer) firstStandstill).getPreviousStandstill();
+            }
+            return (VrpVehicle) firstStandstill;
+        }
+        ...
+    }
+After in *.java:
+    public class VrpCustomer ... {
+
+        // Planning variables: changes during planning, between score calculations.
+        protected VrpStandstill previousStandstill;
+        protected VrpCustomer nextCustomer;
+
+        // Shadow variable
+        protected VrpVehicle vehicle;
+
+        @PlanningVariable(chained = true, variableListenerClasses = {VehicleUpdatingVariableListener.class}) ...
+        public VrpStandstill getPreviousStandstill() {
+            return previousStandstill;
+        }
+
+        @PlanningVariable(mappedBy = "previousStandstill") // Bi-directional relationship
+        public VrpCustomer getNextCustomer() {
+            return nextCustomer;
+        }
+
+        public VrpVehicle getVehicle() {
+            return vehicle;
+        }
+        ...
+    }

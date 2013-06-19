@@ -82,10 +82,7 @@ public class ChainedMoveUtils {
             scoreDirector.beforeVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
         }
         // Change the entity
-        for (Object entity : subChain.getEntityList()) { // TODO only firstEntity has changed
-            // When firstEntity changes, other entities in the chain can get a new anchor, so they are changed too
-            scoreDirector.beforeVariableChanged(entity, variableDescriptor.getVariableName());
-        }
+        scoreDirector.beforeVariableChanged(firstEntity, variableDescriptor.getVariableName());
         // Reroute the new chain
         if (newTrailingEntity != null) {
             scoreDirector.beforeVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
@@ -107,10 +104,7 @@ public class ChainedMoveUtils {
             scoreDirector.afterVariableChanged(oldTrailingEntity, variableDescriptor.getVariableName());
         }
         // Change the entity
-        for (Object entity : subChain.getEntityList()) { // TODO only firstEntity has changed
-            // When firstEntity changes, other entities in the chain can get a new anchor, so they are changed too
-            scoreDirector.afterVariableChanged(entity, variableDescriptor.getVariableName());
-        }
+        scoreDirector.afterVariableChanged(firstEntity, variableDescriptor.getVariableName());
         // Reroute the new chain
         if (newTrailingEntity != null) {
             scoreDirector.afterVariableChanged(newTrailingEntity, variableDescriptor.getVariableName());
