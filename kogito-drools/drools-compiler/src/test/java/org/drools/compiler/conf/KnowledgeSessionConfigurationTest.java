@@ -34,7 +34,7 @@ public class KnowledgeSessionConfigurationTest {
      */
     @Before
     public void setUp() throws Exception {
-        config = KieServices.Factory.get().newKnowledgeSessionConfiguration();
+        config = KieServices.Factory.get().newKieSessionConfiguration();
     }
 
     @Test
