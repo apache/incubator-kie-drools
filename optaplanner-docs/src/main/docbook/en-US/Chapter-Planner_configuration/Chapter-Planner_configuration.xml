@@ -118,7 +118,7 @@
       <programlisting language="java">        SolverConfig solverConfig = new SolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);
-        solverConfig.setPlanningEntityClassSet(Collections.&lt;Class&lt;?&gt;&gt;singleton(Queen.class));
+        solverConfig.setPlanningEntityClassList(Collections.&lt;Class&lt;?&gt;&gt;singletonList(Queen.class));
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);

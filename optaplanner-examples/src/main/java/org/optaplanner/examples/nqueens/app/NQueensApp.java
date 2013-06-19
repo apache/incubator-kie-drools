@@ -77,7 +77,7 @@ public class NQueensApp extends CommonApp {
         SolverConfig solverConfig = new SolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);
-        solverConfig.setPlanningEntityClassSet(Collections.<Class<?>>singleton(Queen.class));
+        solverConfig.setPlanningEntityClassList(Collections.<Class<?>>singletonList(Queen.class));
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);

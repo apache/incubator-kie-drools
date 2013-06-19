@@ -3366,3 +3366,12 @@ After in *.java:
         }
         ...
     }
+
+[MINOR] SolverConfig's method setPlanningEntityClassSet() has changed into setPlanningEntityClassList()
+because the order is important.
+Before in *.java:
+    ... = solverConfig.getPlanningEntityClassSet()
+    solverConfig.setPlanningEntityClassSet(...)
+After in *.java:
+    ... = solverConfig.getPlanningEntityClassList()
+    solverConfig.setPlanningEntityClassList(...)

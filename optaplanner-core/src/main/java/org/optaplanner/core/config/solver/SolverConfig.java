@@ -53,7 +53,7 @@ public class SolverConfig {
 
     protected Class<? extends Solution> solutionClass = null;
     @XStreamImplicit(itemFieldName = "planningEntityClass")
-    protected Set<Class<?>> planningEntityClassSet = null;
+    protected List<Class<?>> planningEntityClassList = null;
 
     @XStreamAlias("scoreDirectorFactory")
     protected ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = null;
@@ -88,12 +88,12 @@ public class SolverConfig {
         this.solutionClass = solutionClass;
     }
 
-    public Set<Class<?>> getPlanningEntityClassSet() {
-        return planningEntityClassSet;
+    public List<Class<?>> getPlanningEntityClassList() {
+        return planningEntityClassList;
     }
 
-    public void setPlanningEntityClassSet(Set<Class<?>> planningEntityClassSet) {
-        this.planningEntityClassSet = planningEntityClassSet;
+    public void setPlanningEntityClassList(List<Class<?>> planningEntityClassList) {
+        this.planningEntityClassList = planningEntityClassList;
     }
 
     public ScoreDirectorFactoryConfig getScoreDirectorFactoryConfig() {
@@ -182,11 +182,11 @@ public class SolverConfig {
         }
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
         solutionDescriptor.processAnnotations();
-        if (CollectionUtils.isEmpty(planningEntityClassSet)) {
+        if (CollectionUtils.isEmpty(planningEntityClassList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <planningEntityClass> in the solver configuration.");
         }
-        for (Class<?> planningEntityClass : planningEntityClassSet) {
+        for (Class<?> planningEntityClass : planningEntityClassList) {
             PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
                     solutionDescriptor, planningEntityClass);
             solutionDescriptor.addPlanningEntityDescriptor(entityDescriptor);
@@ -206,11 +206,8 @@ public class SolverConfig {
         if (solutionClass == null) {
             solutionClass = inheritedConfig.getSolutionClass();
         }
-        if (planningEntityClassSet == null) {
-            planningEntityClassSet = inheritedConfig.getPlanningEntityClassSet();
-        } else if (inheritedConfig.getPlanningEntityClassSet() != null) {
-            planningEntityClassSet.addAll(inheritedConfig.getPlanningEntityClassSet());
-        }
+        planningEntityClassList = ConfigUtils.inheritMergeableListProperty(
+                planningEntityClassList, inheritedConfig.getPlanningEntityClassList());
         if (scoreDirectorFactoryConfig == null) {
             scoreDirectorFactoryConfig = inheritedConfig.getScoreDirectorFactoryConfig();
         } else if (inheritedConfig.getScoreDirectorFactoryConfig() != null) {
