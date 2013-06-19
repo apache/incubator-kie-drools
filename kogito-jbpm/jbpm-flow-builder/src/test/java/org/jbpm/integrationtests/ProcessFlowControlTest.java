@@ -225,10 +225,11 @@ public class ProcessFlowControlTest extends TestCase {
 
         // We need to call fireAllRules here to get the InitialFact into the system, to the eval(true)'s kick in
         workingMemory.fireAllRules();
+        agenda.evaluateEagerList();
 
         // Now we have 4 in the RuleFlow, but not yet in the agenda
         assertEquals( 4,
-                      agenda.getRuleFlowGroup( "flowgroup-1" ).size() );
+                      agenda.sizeOfRuleFlowGroup( "flowgroup-1" ) );
 
         // Check they aren't in the Agenda
         assertEquals( 0,
@@ -244,7 +245,7 @@ public class ProcessFlowControlTest extends TestCase {
         assertEquals( 0,
                       agenda.getAgendaGroup( "MAIN" ).size() );
         assertEquals( 0,
-                      agenda.getRuleFlowGroup( "flowgroup-1" ).size() );
+                      agenda.sizeOfRuleFlowGroup( "flowgroup-1" ) );
 
         // Check we have four activation cancellation events
         assertEquals( 4,

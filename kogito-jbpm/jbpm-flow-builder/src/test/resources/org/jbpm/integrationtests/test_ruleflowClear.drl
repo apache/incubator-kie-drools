@@ -4,28 +4,28 @@ import java.util.List;
 
 global List list
 
-rule "Rule1" ruleflow-group "flowgroup-1"
+rule "Rule1" @Eager(true) ruleflow-group "flowgroup-1"
 	when
 		eval(true)
 	then
 		list.add("Rule1");
 end
 
-rule "Rule2" ruleflow-group "flowgroup-1"
+rule "Rule2" @Eager(true) ruleflow-group "flowgroup-1"
 	when
 		eval(true)
 	then
 		list.add("Rule2");
 end
 
-rule "Rule3" ruleflow-group "flowgroup-1" salience 10
+rule "Rule3" @Eager(true) ruleflow-group "flowgroup-1" salience 10
 	when
 		eval(true)
 	then
 		list.add("Rule3");
 end
 
-rule "Rule4" ruleflow-group "flowgroup-1" salience 20
+rule "Rule4" @Eager(true) ruleflow-group "flowgroup-1" salience 20
 	when
 		eval(true)
 	then
