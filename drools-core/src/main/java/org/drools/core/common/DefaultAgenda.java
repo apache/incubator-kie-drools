@@ -1345,6 +1345,24 @@ public class DefaultAgenda
         }
     }
 
+    public int sizeOfRuleFlowGroup(String name) {
+        InternalAgendaGroup group = (InternalAgendaGroup) agendaGroups.get(name);
+        if (group == null) {
+            return 0;
+        }
+        int count = 0;
+        for ( Activation item : group.getActivations() ) {
+            if ( this.unlinkingEnabled && item.isRuleAgendaItem() ) {
+                if (!((RuleAgendaItem) item).getRuleExecutor().getLeftTupleList().isEmpty()) {
+                    count++;
+                }
+            } else {
+                count++;
+            }
+        }
+        return count;
+    }
+
     /**
      * Fire this item.
      * 
