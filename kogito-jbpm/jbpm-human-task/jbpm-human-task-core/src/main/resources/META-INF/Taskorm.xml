@@ -598,7 +598,7 @@ where
           <query>
 select
      t.id,         
-     potentialOwners.id
+     potentialOwners
 from
     TaskImpl t, 
     OrganizationalEntityImpl potentialOwners        

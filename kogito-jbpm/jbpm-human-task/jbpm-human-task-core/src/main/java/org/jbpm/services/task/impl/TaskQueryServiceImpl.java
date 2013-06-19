@@ -32,6 +32,7 @@ import javax.inject.Named;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.TaskQueryService;
@@ -146,21 +147,21 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         return new ArrayList<TaskSummary>();
     }
 
-    public Map<Long, List<String>> getPotentialOwnersForTaskIds(List<Long> taskIds){
+    public Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds){
         ArrayList<Object[]> potentialOwners = (ArrayList<Object[]>) pm.queryWithParametersInTransaction("GetPotentialOwnersForTaskIds", 
                 pm.addParametersToMap("taskIds", taskIds));
         
-        Map<Long, List<String>> potentialOwnersMap = new HashMap<Long, List<String>>();
+        Map<Long, List<OrganizationalEntity>> potentialOwnersMap = new HashMap<Long, List<OrganizationalEntity>>();
         Long currentTaskId = 0L;
         for(Object[] item : potentialOwners){
             Long taskId = (Long) item[0];
-            String potentialOwner = (String)item[1];
+            OrganizationalEntity potentialOwner = (OrganizationalEntity)item[1];
             if(currentTaskId != taskId){
                 currentTaskId = taskId;
             }
             
             if(potentialOwnersMap.get(currentTaskId) == null){
-                potentialOwnersMap.put(currentTaskId, new ArrayList<String>());
+                potentialOwnersMap.put(currentTaskId, new ArrayList<OrganizationalEntity>());
             }
             potentialOwnersMap.get(currentTaskId).add(potentialOwner);
         }

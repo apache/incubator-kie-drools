@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
+import org.kie.api.task.model.OrganizationalEntity;
 
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
@@ -234,7 +235,7 @@ public class UserGroupTaskQueryServiceDecorator extends
     }
 
     @Override
-    public Map<Long, List<String>> getPotentialOwnersForTaskIds(List<Long> taskIds) {
+    public Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds) {
         return delegate.getPotentialOwnersForTaskIds(taskIds);
     }
 

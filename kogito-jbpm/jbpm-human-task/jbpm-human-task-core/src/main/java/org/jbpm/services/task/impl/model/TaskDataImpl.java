@@ -59,13 +59,13 @@ public class TaskDataImpl implements InternalTaskData {
     @ManyToOne(targetEntity=UserImpl.class)
     private User createdBy;
 
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date createdOn;
 
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date activationTime;
 
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date expirationTime;
 
     private boolean skipable;

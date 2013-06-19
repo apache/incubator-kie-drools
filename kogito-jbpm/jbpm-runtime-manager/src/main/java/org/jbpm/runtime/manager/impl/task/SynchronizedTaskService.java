@@ -891,7 +891,7 @@ public class SynchronizedTaskService
     }
 
     @Override
-    public Map<Long, List<String>> getPotentialOwnersForTaskIds(List<Long> taskIds) {
+    public Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds) {
        synchronized (ksession) {
             return  taskService.getPotentialOwnersForTaskIds(taskIds);
        } 

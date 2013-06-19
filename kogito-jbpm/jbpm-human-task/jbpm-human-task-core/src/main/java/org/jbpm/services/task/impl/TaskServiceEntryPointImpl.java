@@ -352,7 +352,7 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
         return taskQueryService.getTasksOwned(userId, language);
     }
  
-    public Map<Long, List<String>> getPotentialOwnersForTaskIds(List<Long> taskIds) {
+    public Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds) {
         return taskQueryService.getPotentialOwnersForTaskIds(taskIds);
     }
     
