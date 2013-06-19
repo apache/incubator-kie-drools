@@ -106,23 +106,23 @@ public interface KieServices {
     /**
      * Create a KieBaseConfiguration on which properties can be set.
      */
-    KieBaseConfiguration newKnowledgeBaseConfiguration();
+    KieBaseConfiguration newKieBaseConfiguration();
 
     /**
      * Create a KieBaseConfiguration on which properties can be set. Use
      * the given properties file and ClassLoader - either of which can be null.
      */
-    KieBaseConfiguration newKnowledgeBaseConfiguration(Properties properties, ClassLoader classLoader);
+    KieBaseConfiguration newKieBaseConfiguration(Properties properties, ClassLoader classLoader);
 
     /**
      * Create a KieSessionConfiguration on which properties can be set.
      */
-    KieSessionConfiguration newKnowledgeSessionConfiguration();
+    KieSessionConfiguration newKieSessionConfiguration();
 
     /**
      * Create a KieSessionConfiguration on which properties can be set.
      */
-    KieSessionConfiguration newKnowledgeSessionConfiguration(Properties properties);
+    KieSessionConfiguration newKieSessionConfiguration(Properties properties);
 
     /**
      * A Factory for this KieServices
