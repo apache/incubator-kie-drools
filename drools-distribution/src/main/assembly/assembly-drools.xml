@@ -159,6 +159,7 @@
         </dependencySet>
         <dependencySet>
             <includes>
+                <include>org.kie:*:jar:sources</include>
                 <include>org.drools:*:jar:sources</include>
             </includes>
             <excludes>
