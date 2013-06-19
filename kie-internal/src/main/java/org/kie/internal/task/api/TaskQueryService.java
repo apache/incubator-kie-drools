@@ -19,6 +19,7 @@ package org.kie.internal.task.api;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.kie.api.task.model.OrganizationalEntity;
 
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
@@ -96,6 +97,6 @@ public interface TaskQueryService {
     
     List<Long> getTasksByProcessInstanceId(long processInstanceId);
     
-    Map<Long, List<String>> getPotentialOwnersForTaskIds(List<Long> taskIds);
+    Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds);
     
 }

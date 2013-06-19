@@ -112,7 +112,7 @@ public interface InternalTaskService extends TaskService, CommandExecutor {
     
     List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(long processInstanceId, List<Status> status, String taskName, String language);
     
-    Map<Long, List<String>> getPotentialOwnersForTaskIds(List<Long> taskIds);
+    Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds);
     
     User getUserById(String userId);
 
