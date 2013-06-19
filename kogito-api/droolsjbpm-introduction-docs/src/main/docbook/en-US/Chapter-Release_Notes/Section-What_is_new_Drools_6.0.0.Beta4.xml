@@ -591,7 +591,7 @@
             </listitem>
 
             <listitem>
-              <para>Single representation anables developer roundtrip</para>
+              <para>Single representation enables developer roundtrip</para>
             </listitem>
           </itemizedlist>
         </section>
@@ -641,7 +641,7 @@
 
           <listitem>
             <para>Object browser: the middle section, which displays a table
-            with the attributes of the data object that has been selected in
+            with the fields of the data object that has been selected in
             the Model browser. This section also enables creating new
             attributes for the currently selected object.</para>
           </listitem>
