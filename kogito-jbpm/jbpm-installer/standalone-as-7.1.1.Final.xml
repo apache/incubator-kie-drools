@@ -104,40 +104,9 @@
                 <datasource jta="true" jndi-name="java:jboss/datasources/jbpmDS" pool-name="H2DS" enabled="true" use-java-context="true" use-ccm="true">
                     <connection-url>jdbc:h2:~/jbpm</connection-url>
                     <driver>h2</driver>
-                    <pool>
-                        <min-pool-size>1</min-pool-size>
-                        <max-pool-size>4</max-pool-size>
-                        <prefill>false</prefill>
-                        <use-strict-min>false</use-strict-min>
-                        <flush-strategy>FailingConnectionOnly</flush-strategy>
-                    </pool>
                     <security>
                         <user-name>sa</user-name>
                     </security>
-                    <validation>
-                        <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
-                        <validate-on-match>false</validate-on-match>
-                        <background-validation>false</background-validation>
-                    </validation>
-                </datasource>
-                <datasource jta="true" jndi-name="java:jboss/datasources/BamAppDS" pool-name="BamAppDS" enabled="true" use-java-context="true" use-ccm="true">
-                    <connection-url>jdbc:h2:~/jbpm</connection-url>
-                    <driver>h2</driver>
-                    <pool>
-                        <min-pool-size>1</min-pool-size>
-                        <max-pool-size>4</max-pool-size>
-                        <prefill>false</prefill>
-                        <use-strict-min>false</use-strict-min>
-                        <flush-strategy>FailingConnectionOnly</flush-strategy>
-                    </pool>
-                    <security>
-                        <user-name>sa</user-name>
-                    </security>
-                    <validation>
-                        <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
-                        <validate-on-match>false</validate-on-match>
-                        <background-validation>false</background-validation>
-                    </validation>
                 </datasource>
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
@@ -259,27 +228,6 @@
         <subsystem xmlns="urn:jboss:domain:security:1.1">
             <security-domains>
                 <security-domain name="other" cache-type="default">
-                    <authentication>
-                        <login-module code="Remoting" flag="optional">
-                            <module-option name="password-stacking" value="useFirstPass"/>
-                        </login-module>
-                        <login-module code="RealmUsersRoles" flag="required">
-                            <module-option name="usersProperties" value="${jboss.server.config.dir}/application-users.properties"/>
-                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/application-roles.properties"/>
-                            <module-option name="realm" value="ApplicationRealm"/>
-                            <module-option name="password-stacking" value="useFirstPass"/>
-                        </login-module>
-                    </authentication>
-                </security-domain>
-                <security-domain name="jbpm-console-ng" cache-type="default">
-                    <authentication>
-                        <login-module code="UsersRoles" flag="required">
-                            <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
-                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/roles.properties"/>
-                        </login-module>
-                    </authentication>
-                </security-domain>
-                <security-domain name="kie-ide" cache-type="default">
                     <authentication>
                         <login-module code="UsersRoles" flag="required">
                             <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>

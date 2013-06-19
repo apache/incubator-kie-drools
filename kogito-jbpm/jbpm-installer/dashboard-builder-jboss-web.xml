@@ -8,5 +8,5 @@
     <res-type>javax.sql.DataSource</res-type>
     <jndi-name>java:jboss/datasources/jbpmDS</jndi-name>
   </resource-ref>
-  <security-domain>java:/jaas/jbpm-console-ng</security-domain>
+  <security-domain>other</security-domain>
 </jboss-web>

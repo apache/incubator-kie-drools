@@ -94,14 +94,14 @@
     <echo message="Checking JBoss AS download ..." />
     <condition property="jboss.not.available">
       <not>
-        <available file="${install.home}/lib/jboss-as-${jboss.server.version}.zip" />
+        <available file="${install.home}/lib/jboss-${jboss.server.version}.zip" />
       </not>
     </condition>
   </target>
   <target name="download.jboss" depends="download.jboss.check" if="jboss.not.available">
     <echo message="Getting JBoss AS ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${jboss.download.url}" dest="${install.home}/lib/jboss-as-${jboss.server.version}.zip"  />
+    <get src="${jboss.download.url}" dest="${install.home}/lib/jboss-${jboss.server.version}.zip"  />
   </target>
 
   <!-- Download Eclipse -->
@@ -216,36 +216,6 @@
     <get src="${jBPM.url}" dest="${install.home}/lib/jbpm-${jBPM.version}-bin.zip"  />
   </target>
 
-  <!-- Download Drools Guvnor -->
-  <target name="download.drools.guvnor.check">
-    <echo message="Checking Drools Guvnor download ..." />
-    <condition property="drools.guvnor.not.available">
-      <not>
-        <available file="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}.war" />
-      </not>
-    </condition>
-  </target>  
-  <target name="download.drools.guvnor" depends="download.drools.guvnor.check" if="drools.guvnor.not.available">
-    <echo message="Getting Drools Guvnor ..." />
-    <mkdir dir="${install.home}/lib"/>
-    <get src="${drools.guvnor.url}" dest="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}.war"/>
-  </target>
-
-  <!-- Download Designer -->
-  <target name="download.designer.check">
-    <echo message="Checking Designer download ..." />
-    <condition property="designer.not.available">
-      <not>
-        <available file="${install.home}/lib/jbpm-designer-${designer.version}.war" />
-      </not>
-    </condition>
-  </target>  
-  <target name="download.designer" depends="download.designer.check" if="designer.not.available">
-    <echo message="Getting Designer ..." />
-    <mkdir dir="${install.home}/lib"/>
-    <get src="${designer.url}" dest="${install.home}/lib/jbpm-designer-${designer.version}.war" />
-  </target>
-
   <!-- Download Dashboard -->
   <target name="download.dashboard.check">
     <echo message="Checking Dashboard download ..." />
@@ -297,46 +267,13 @@
 
   <!-- Install JBoss AS -->
   <target name="install.jboss" depends="download.jboss">
-    <unzip src="${install.home}/lib/jboss-as-${jboss.server.version}.zip" dest="${install.home}" />
+    <unzip src="${install.home}/lib/jboss-${jboss.server.version}.zip" dest="${install.home}" />
     <chmod perm="a+x" file="${jboss.home}/bin/run.sh" />
     <chmod perm="a+x" file="${jboss.home}/bin/shutdown.sh" />
     <chmod perm="a+x" file="${jboss.home}/bin/standalone.sh" />
-  	<chmod perm="a+x" file="${jboss.home}/bin/jboss-cli.sh" />
+    <chmod perm="a+x" file="${jboss.home}/bin/jboss-cli.sh" />
   </target>
 	
-  <!-- Install guvnor -->
-  <target name="install.guvnor.into.jboss" depends="download.drools.guvnor">
-    <mkdir dir="${install.home}/target"/>
-    <mkdir dir="${install.home}/target/guvnor-war"/>
-    <unzip src="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}.war"
-           dest="${install.home}/target/guvnor-war"/>
-  	<copy tofile="${install.home}/target/guvnor-war/WEB-INF/classes/preferences.properties" overwrite="true" 
-  		file="${install.home}/guvnor.preferences.properties" failonerror="false"/>
-    <zip basedir="${install.home}/target/guvnor-war"
-         destfile="${install.home}/target/guvnor-${drools.guvnor.version}.war"/>
-    <copy file="${install.home}/target/guvnor-${drools.guvnor.version}.war"
-          tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
-          overwrite="true" />
-    <delete dir="${install.home}/target"/>
-  </target>  	
-
-  <!-- Install designer -->
-  <target name="install.designer.into.jboss" depends="download.designer">
-    <mkdir dir="${install.home}/target"/>
-    <mkdir dir="${install.home}/target/jbpm-designer-war"/>
-    <unzip src="${install.home}/lib/jbpm-designer-${designer.version}.war"
-           dest="${install.home}/target/jbpm-designer-war"/>
-  	<copy tofile="${install.home}/target/jbpm-designer-war/profiles/jbpm.xml" overwrite="true" 
-  		file="${install.home}/designer.jbpm.xml" failonerror="false"/>
-    <zip basedir="${install.home}/target/jbpm-designer-war"
-         destfile="${install.home}/target/jbpm-designer-${designer.version}.war"/>
-    <copy file="${install.home}/target/jbpm-designer-${designer.version}.war"
-          tofile="${jboss.server.deploy.dir}/designer.war"
-          overwrite="true" />
-    <delete dir="${install.home}/target"/>
-  	<touch file="${jboss.server.deploy.dir}/designer.war.dodeploy"/>
-  </target>
-
   <!-- Install gwt-console -->
   <target name="install.jBPM-console.into.jboss" depends="download.db.driver,download.jBPM.console">
     <mkdir dir="${install.home}/target"/>
@@ -362,7 +299,7 @@
           tofile="${jboss.server.deploy.dir}/jbpm-console.war"
           overwrite="true" />
     <delete dir="${install.home}/target"/>
-    <copy file="${install.home}/standalone.xml"
+    <copy file="${install.home}/standalone-${jboss.server.version}.xml"
           tofile="${jboss.home}/standalone/configuration/standalone.xml"
           overwrite="true" />
     <!-- authentication configuration -->
@@ -447,7 +384,7 @@
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/site,http://download.eclipse.org/releases/juno,http://download.eclipse.org/bpmn2-modeler/bpmn2/site" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/juno,http://download.eclipse.org/releases/juno,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
       <arg value="-destination" />
       <arg value="${eclipse.home}" />
       <arg value="-installIU" />
@@ -460,7 +397,7 @@
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/site,http://download.eclipse.org/releases/juno,http://download.eclipse.org/bpmn2-modeler/bpmn2/site" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/juno,http://download.eclipse.org/releases/juno,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
       <arg value="-destination" />
       <arg value="${eclipse.home}" />
       <arg value="-installIU" />
@@ -473,7 +410,7 @@
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
       <arg value="-repository" />
-      <arg value="http://download.eclipse.org/bpmn2-modeler/site,http://download.eclipse.org/releases/juno,http://download.eclipse.org/bpmn2-modeler/bpmn2/site" />
+      <arg value="http://download.eclipse.org/bpmn2-modeler/updates/juno,http://download.eclipse.org/releases/juno,http://download.eclipse.org/modeling/mdt/bpmn2/updates/milestones/S20130423" />
       <arg value="-destination" />
       <arg value="${eclipse.home}" />
       <arg value="-installIU" />
@@ -484,13 +421,13 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
+  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.dashboard.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (Eclipse) -->
-  <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
+  <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.jBPM.runtime" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.dashboard.into.jboss,install.jBPM.runtime" />
   
   <!-- ############ START/STOP ############ -->
   <target name="start.h2.check">
@@ -525,8 +462,6 @@
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
-      <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
-      <arg value="-Dreporting.needcontext=true" />
       <arg value="-Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false" />
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/standalone.sh" />
@@ -534,15 +469,13 @@
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
-      <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
-      <arg value="-Dreporting.needcontext=true" />
-	  <arg value="-Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false" />
+      <arg value="-Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false" />
     </exec>
     <waitfor maxwait="5" maxwaitunit="minute" checkevery="10"
              checkeveryunit="second" timeoutproperty="jboss.timeout">
       <socket server="${jboss.bind.address}" port="8080" />
     </waitfor>
-    <fail if="jboss.timeout" message="JBoss AS7 did not start within 5 minutes"/>
+    <fail if="jboss.timeout" message="JBoss application server did not start within 5 minutes"/>
   </target>
 
   <!-- Stop JBoss AS -->
@@ -602,11 +535,13 @@
   <!-- Stop Demo -->
   <target name="stop.demo" depends="stop.h2,stop.jboss" />
 
+  <target name="stop.demo.eclipse" depends="stop.h2" />
+
 
   <!-- ############ CLEAN ############ -->
 	
   <!-- Clean jboss -->
-  <target name="clean.jboss" depends="check.clean.repository">
+  <target name="clean.jboss">
     <delete dir="${jboss.home}"/>
   	<antcall target="clean.jboss.repository" />    
   </target>
@@ -616,21 +551,29 @@
   	<delete file="${user.home}/jbpm.trace.db" failonerror="false"/>
   </target>
 
-  <target name="clean.jboss.repository" if="clean.repository">
-  	<delete dir="${install.home}/.niogit"/>
-  </target>
-	
   <target name="check.clean.repository">
     <condition property="clean.repository">
 	  <equals arg1="${jboss.clean.repository}" arg2="true" />
 	</condition>
   </target>
 
+  <target name="clean.jboss.repository" if="clean.repository" depends="check.clean.repository">
+  	<delete dir="${install.home}/.niogit"/>
+    <delete dir="${install.home}/.index"/>
+    <delete dir="${install.home}/repository"/>
+  </target>
+	
+  <target name="check.clean.eclipse.workspace">
+    <condition property="clean.eclipse.workspace">
+	  <equals arg1="${eclipse.clean.workspace}" arg2="true" />
+	</condition>
+  </target>
+
   <!-- Clean eclipse -->
-  <target name="clean.eclipse">
+  <target name="clean.eclipse" if="clean.eclipse.workspace" depends="check.clean.eclipse.workspace">
     <delete dir="${install.home}/eclipse"/>
     <delete dir="${install.home}/runtime"/>
-    <delete dir="${eclipse.workspace.dir}"/>
+    <delete dir="${install.home}/workspace"/>
   </target>
 
   <!-- Clean Demo -->
