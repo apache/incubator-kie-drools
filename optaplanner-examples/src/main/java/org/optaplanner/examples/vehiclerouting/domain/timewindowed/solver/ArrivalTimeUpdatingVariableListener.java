@@ -37,7 +37,7 @@ public class ArrivalTimeUpdatingVariableListener implements PlanningVariableList
     protected void updateVehicle(ScoreDirector scoreDirector, VrpTimeWindowedCustomer sourceCustomer) {
         VrpStandstill previousStandstill = sourceCustomer.getPreviousStandstill();
         Integer departureTime = (previousStandstill instanceof VrpTimeWindowedCustomer)
-                ? ((VrpTimeWindowedCustomer) previousStandstill).getDepartureTime() : 0;
+                ? ((VrpTimeWindowedCustomer) previousStandstill).getDepartureTime() : null;
         VrpTimeWindowedCustomer shadowCustomer = sourceCustomer;
         Integer arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
         while (shadowCustomer != null && ObjectUtils.notEqual(shadowCustomer.getArrivalTime(), arrivalTime)) {
@@ -50,9 +50,13 @@ public class ArrivalTimeUpdatingVariableListener implements PlanningVariableList
         }
     }
 
-    private int calculateArrivalTime(VrpTimeWindowedCustomer customer, int previousDepartureTime) {
+    private Integer calculateArrivalTime(VrpTimeWindowedCustomer customer, Integer previousDepartureTime) {
         if (customer == null) {
-            return -1;
+            return null;
+        }
+        if (previousDepartureTime == null) {
+            // PreviousStandstill is the Vehicle, so we leave from the Depot at the best suitable time
+            return Math.max(customer.getReadyTime(), customer.getDistanceToPreviousStandstill());
         }
         return previousDepartureTime + customer.getDistanceToPreviousStandstill();
     }
