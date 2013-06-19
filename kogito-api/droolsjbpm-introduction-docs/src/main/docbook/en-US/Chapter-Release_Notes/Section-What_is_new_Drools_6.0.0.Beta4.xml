@@ -23,37 +23,162 @@
     <section>
       <title>General</title>
 
-      <para>[manstis] TODO</para>
+      <para>Many things are changing for Drools 6.0.</para>
+
+      <para>Along with the functional and feature changes we have restructured the <link
+      xlink:href="https://github.com/droolsjbpm/guvnor">Guvnor</link> github repository to better reflect our new
+      architecture. Guvnor has historically been the web application for Drools. It was a composition of editors
+      specific to Drools, a back-end repository and a simplistic asset management system.</para>
+
+      <para>Things are now different.</para>
+
+      <para>For Drools 6.0 the web application has been extensively re-written to use <link
+      xlink:href="http://droolsjbpm.github.io/uberfire/">UberFire</link> that provides a generic Workbench environment,
+      a Metadata Engine, Security Framework, a VFS API and clustering support.</para>
+
+      <para>Guvnor has become a generic asset management framework providing common services for generic projects and
+      their dependencies. Drools use of both UberFire and Guvnor has born the Drools Workbench.</para>
+
+      <para>A picture always helps:</para>
+
+      <figure>
+        <title>New structue</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/kie-structure.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para></para>
+
+      <section>
+        <title><link xlink:href="https://github.com/droolsjbpm/uberfire">uberfire</link></title>
+
+        <para>UberFire is the foundation of all components for both Drools and jBPM. Every editor and service leverages
+        UberFire. Components can be mixed and matched into either a full featured application of used in
+        isolation.</para>
+      </section>
+
+      <section>
+        <title><link xlink:href="https://github.com/droolsjbpm/guvnor">guvnor</link></title>
+
+        <para>Guvnor adds project services and dependency management to the mix.</para>
+
+        <para>At present Guvnor consists of few parts; being principally a port of common project services that existed
+        in the old Guvnor. As things settle down and the module matures pluggable workflow will be supported allowing
+        for sensitive operations to be controlled by jBPM processes and rules. Work is already underway to include this
+        for 6.0.</para>
+      </section>
+
+      <section>
+        <title><link xlink:href="https://github.com/droolsjbpm/kie-wb-common">kie-wb-common</link></title>
+
+        <para>Both Drools and jBPM editors and services share the need for a common set of re-usable screens, services
+        and widgets.</para>
+
+        <para>Rather than pollute Guvnor with screens and services needed only by Drools and jBPM this module contains
+        such common dependencies.</para>
+
+        <para>It is possible to just re-use the UberFire and Guvnor stack to create your own project-based workbench
+        type application and take advantage of the underlying services.</para>
+      </section>
+
+      <section>
+        <title><link xlink:href="https://github.com/droolsjbpm/drools-wb">Drools Workbench (drools-wb)</link></title>
+
+        <para>Drools Workbench is the end product for people looking for a web application that is composed of all
+        Drools related editors, screens and services. It is equivalent to the old Guvnor.</para>
+
+        <para>Looking for the web application to accompany Drools Expert and Drools Fusion; an environment to author,
+        test and deploy rules. This is what you're looking for.</para>
+      </section>
+
+      <section>
+        <title><link xlink:href="https://github.com/droolsjbpm/kie-wb-distributions/tree/master/kie-drools-wb">KIE
+        Drools Workbench (kie-drools-wb)</link></title>
+
+        <para>KIE Drools Workbench (for want of a better name - it's amazing how difficult names can be) is an extension
+        of Drools Workbench including jBPM Designer to support Rule Flow.</para>
+
+        <para>jBPM Designer, now being an UberFire compatible component, does not need to be deployed as a separate web
+        application. We bundle it here, along with Drools as a convenience for people looking to author Rule Flows along
+        side their rules.</para>
+      </section>
+
+      <section>
+        <title><link xlink:href="https://github.com/droolsjbpm/kie-wb-distributions/tree/master/kie-wb">KIE Workbench
+        (kie-wb)</link></title>
+
+        <para>This is the daddy of them all.</para>
+
+        <para>KIE Workbench is the composition of everything known to man; from both the Drools and jBPM worlds. It
+        provides for authoring of projects, data models, guided rules, decision tables etc, test services, process
+        authoring, a process run-time execution environment and human task interaction.</para>
+
+        <para>KIE Workbench is the old Guvnor, jBPM Designer and jBPM Console applications combined. On steroids.
+        </para>
+      </section>
+
+      <section>
+        <title>The World is not enough?</title>
+
+        <para>You may have noticed; KIE Drools Workbench and KIE Workbench are in the same repository. This highlights a
+        great thing about the new module design we have with UberFire. Web applications are just a composition of
+        dependencies.</para>
+
+        <para>You want your own web application that consists of just the Guided Rule Editor and jBPM Designer? You want
+        your own web application that has the the Data Modeller and some of your own screens?</para>
+
+        <para>Pick your dependencies and add them to your own UberFire compliant web application and, as the saying
+        goes, the world is your oyster.</para>
+      </section>
     </section>
 
     <section>
-      <title>Project Explorer</title>
+      <title>Drools Workbench - In depth</title>
 
-      <para>[manstis] TODO</para>
-    </section>
+      <para>Drools Workbench is the corner stone of the new function and features for 6.0.</para>
 
-    <section>
-      <title>Project Editor</title>
+      <para>Many of the new concepts and functions are described in more detail in the following sections.</para>
 
-      <para>[rikkola] TODO</para>
-    </section>
+      <important>
+        <para>Remember Drools Workbench is integrated into other distributions. Therefore many of the core concepts and
+        functions are also within the other distributions. Furthemore jBPM web-based Tooling extends from UberFire and
+        re-use features from Drools Workbench that are common across the KIE platform; such as Project Explorer, Project
+        Editor and the M2 Repository. </para>
+      </important>
 
-    <section>
-      <title>M2 Repository</title>
+      <section>
+        <title>Project Explorer</title>
 
-      <para>[jliu] TODO</para>
-    </section>
+        <para>[manstis] TODO</para>
+      </section>
 
-    <section>
-      <title>Data Migration</title>
+      <section>
+        <title>Project Editor</title>
 
-      <para>[jliu] TODO</para>
-    </section>
+        <para>[rikkola] TODO</para>
+      </section>
 
-    <section>
-      <title>REST</title>
+      <section>
+        <title>M2 Repository</title>
 
-      <para>[jliu] TODO</para>
+        <para>[jliu] TODO</para>
+      </section>
+
+      <section>
+        <title>Data Migration</title>
+
+        <para>[jliu] TODO</para>
+      </section>
+
+      <section>
+        <title>REST</title>
+
+        <para>[jliu] TODO</para>
+      </section>
     </section>
   </section>
 
