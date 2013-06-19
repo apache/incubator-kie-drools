@@ -115,7 +115,7 @@ public class ExecuteCommandDisconnectedTest {
         
     }
     
-    @Test
+    @Test @Ignore("phreak")
     public void executeCmdContextPropagationCastTest() {
          KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 

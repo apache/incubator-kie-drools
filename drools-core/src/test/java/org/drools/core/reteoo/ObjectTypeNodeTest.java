@@ -152,6 +152,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null );
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setPhreakEnabled( false );
         conf.setSequential( true );
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
         buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );

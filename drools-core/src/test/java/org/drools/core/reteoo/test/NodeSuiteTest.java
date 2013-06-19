@@ -24,12 +24,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.reteoo.test.dsl.NodeTestCase;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 /**
  * A test case suite to manage and run all node test cases
  */
-@RunWith(JUnitNodeTestRunner.class)
+@Ignore("phreak") @RunWith(JUnitNodeTestRunner.class)
 public class NodeSuiteTest
     implements
     NodeTestCasesSource {

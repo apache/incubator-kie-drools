@@ -40,11 +40,13 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * A test case for AccumulateNode
  */
+@Ignore("phreak")
 public class AccumulateNodeTest extends DroolsTestCase {
 
     Rule                    rule;
@@ -338,6 +340,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     @Test
     public void testAssertTupleSequentialMode() throws Exception {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setPhreakEnabled(false);
         conf.setSequential( true );
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();

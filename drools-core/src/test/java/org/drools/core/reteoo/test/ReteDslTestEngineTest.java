@@ -55,8 +55,10 @@ import org.drools.core.reteoo.test.dsl.NodeTestCaseResult.Result;
 import org.drools.core.reteoo.test.dsl.NodeTestDef;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PropagationContext;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("phreak")
 public class ReteDslTestEngineTest {
 
     @Test
