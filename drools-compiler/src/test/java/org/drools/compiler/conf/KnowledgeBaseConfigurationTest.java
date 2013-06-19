@@ -18,10 +18,12 @@ package org.drools.compiler.conf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.api.conf.EqualityBehaviorOption;
@@ -50,11 +52,13 @@ public class KnowledgeBaseConfigurationTest {
      */
     @Before
     public void setUp() throws Exception {
-        config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config = KieServices.Factory.get().newKnowledgeBaseConfiguration();
     }
 
     @Test
     public void testSequentialConfiguration() {
+        ((RuleBaseConfiguration)config).setPhreakEnabled(false);
+
         // setting the option using the type safe method
         config.setOption( SequentialOption.YES );
 
