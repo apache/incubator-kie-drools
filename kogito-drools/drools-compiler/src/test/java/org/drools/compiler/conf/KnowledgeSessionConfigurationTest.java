@@ -17,6 +17,7 @@ package org.drools.compiler.conf;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieServices;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
@@ -33,7 +34,7 @@ public class KnowledgeSessionConfigurationTest {
      */
     @Before
     public void setUp() throws Exception {
-        config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        config = KieServices.Factory.get().newKnowledgeSessionConfiguration();
     }
 
     @Test
