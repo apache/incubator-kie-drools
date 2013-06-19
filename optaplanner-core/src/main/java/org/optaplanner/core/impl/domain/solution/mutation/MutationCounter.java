@@ -40,7 +40,7 @@ public class MutationCounter {
      */
     public int countMutations(Solution a, Solution b) {
         int mutationCount = 0;
-        for (PlanningEntityDescriptor entityDescriptor : solutionDescriptor.getEntityDescriptors()) {
+        for (PlanningEntityDescriptor entityDescriptor : solutionDescriptor.getGenuineEntityDescriptors()) {
             List<Object> aEntities = entityDescriptor.extractEntities(a);
             List<Object> bEntities = entityDescriptor.extractEntities(b);
             for (Iterator aIt = aEntities.iterator(), bIt = bEntities.iterator() ; aIt.hasNext() && bIt.hasNext(); ) {

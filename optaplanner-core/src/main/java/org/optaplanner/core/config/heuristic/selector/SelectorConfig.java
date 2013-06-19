@@ -76,7 +76,7 @@ public abstract class SelectorConfig {
                         + "), check your Solution implementation's annotated methods too.");
             }
         } else {
-            Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getEntityDescriptors();
+            Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
             if (entityDescriptors.size() != 1) {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has no entityClass (" + entityClass

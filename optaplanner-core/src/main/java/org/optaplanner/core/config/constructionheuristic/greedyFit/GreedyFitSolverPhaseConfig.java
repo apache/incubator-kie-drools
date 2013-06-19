@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.constructionheuristic.greedyFit;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -103,14 +104,13 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType = (this.constructionHeuristicPickEarlyType == null)
                 ? ConstructionHeuristicPickEarlyType.NEVER : this.constructionHeuristicPickEarlyType;
 
-        Set<Class<?>> planningEntityClassSet = solutionDescriptor.getPlanningEntityClassSet();
-        if (planningEntityClassSet.size() != 1) {
+        Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
+        if (entityDescriptors.size() != 1) {
             // TODO Multiple MUST BE SUPPORTED TOO
             throw new UnsupportedOperationException("Currently the greedyFit implementation only supports " +
                     "1 planningEntityClass.");
         }
-        Class<?> planningEntityClass = planningEntityClassSet.iterator().next();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(planningEntityClass);
+        PlanningEntityDescriptor entityDescriptor = entityDescriptors.iterator().next();
         PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(entityDescriptor);
         List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>();
         for (PlanningVariableDescriptor variableDescriptor

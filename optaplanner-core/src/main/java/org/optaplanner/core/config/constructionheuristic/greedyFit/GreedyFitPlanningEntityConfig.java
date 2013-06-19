@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.config.constructionheuristic.greedyFit;
 
+import java.util.Collection;
 import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -49,24 +50,22 @@ public class GreedyFitPlanningEntityConfig {
 
     public PlanningEntitySelector buildPlanningEntitySelector(SolutionDescriptor solutionDescriptor) {
         PlanningEntityDescriptor entityDescriptor;
-        Class<?> resolvedEntityClass;
+
         if (planningEntityClass != null) {
-            resolvedEntityClass = planningEntityClass;
-        } else {
-            Set<Class<?>> planningEntityClassSet
-                    = solutionDescriptor.getPlanningEntityClassSet();
-            if (planningEntityClassSet.size() != 1) {
-                throw new IllegalArgumentException(
-                        "The greedyFitPlanningEntity has no planningEntityClass but there are multiple ("
-                                + planningEntityClassSet.size() + ") planningEntityClasses.");
+            if (!solutionDescriptor.hasEntityDescriptor(planningEntityClass)) {
+                throw new IllegalArgumentException("The greedyFitPlanningEntity has a planningEntityClass ("
+                        + planningEntityClass + ") that has not been configured as a planningEntity.");
             }
-            resolvedEntityClass = planningEntityClassSet.iterator().next();
+            entityDescriptor = solutionDescriptor.getEntityDescriptor(planningEntityClass);
+        } else {
+            Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
+            if (entityDescriptors.size() != 1) {
+                throw new IllegalArgumentException(
+                        "The greedyFitPlanningEntity has no planningEntityClass but there are multiple"
+                        + " planningEntityClasses (" + solutionDescriptor.getPlanningEntityClassSet() + ").");
+            }
+            entityDescriptor = entityDescriptors.iterator().next();
         }
-        if (!solutionDescriptor.hasEntityDescriptor(planningEntityClass)) {
-            throw new IllegalArgumentException("The greedyFitPlanningEntity has a planningEntityClass ("
-                    + planningEntityClass + ") that has not been configured as a planningEntity.");
-        }
-        entityDescriptor = solutionDescriptor.getEntityDescriptor(planningEntityClass);
         PlanningEntitySelector planningEntitySelector = new PlanningEntitySelector(entityDescriptor);
         planningEntitySelector.setSelectionOrder(selectionOrder != null ? selectionOrder
                 : PlanningEntitySelectionOrder.ORIGINAL);

@@ -171,6 +171,17 @@ public class SolutionDescriptor {
         return entityDescriptorMap.values();
     }
 
+    public Collection<PlanningEntityDescriptor> getGenuineEntityDescriptors() {
+        List<PlanningEntityDescriptor> genuineEntityDescriptorList = new ArrayList<PlanningEntityDescriptor>(
+                entityDescriptorMap.size());
+        for (PlanningEntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
+            if (entityDescriptor.hasGenuineVariableDescriptor()) {
+                genuineEntityDescriptorList.add(entityDescriptor);
+            }
+        }
+        return genuineEntityDescriptorList;
+    }
+
     public boolean hasEntityDescriptorStrict(Class<?> planningEntityClass) {
         return entityDescriptorMap.containsKey(planningEntityClass);
     }
