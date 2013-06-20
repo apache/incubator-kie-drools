@@ -50,6 +50,8 @@ import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.marshalling.impl.ProtobufMessages.RuleData;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.phreak.RuleExecutor;
+import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -754,11 +756,11 @@ public class ProtobufInputMarshaller {
         }
 
         public void fireRNEAs(final InternalWorkingMemory wm) {
-            RuleAgendaItem rnea = null;
-            while ( (rnea = rneaToFire.poll()) != null ) {
-                rnea.remove();
-                rnea.setQueued( false );
-                rnea.getRuleExecutor().evaluateNetworkAndFire( wm, this, 0, -1 );
+            RuleAgendaItem rai = null;
+            while ( (rai = rneaToFire.poll()) != null ) {
+                RuleExecutor ruleExecutor = rai.getRuleExecutor();
+                ruleExecutor.reEvaluateNetwork( wm, new org.drools.core.util.LinkedList<StackEntry>(), false );
+                ruleExecutor.removeRuleAgendaItemWhenEmpty( wm );
             }
         }
 

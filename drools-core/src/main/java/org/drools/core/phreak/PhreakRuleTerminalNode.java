@@ -101,6 +101,11 @@ public class PhreakRuleTerminalNode {
             }
         }
 
+        if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept( rtnLeftTuple, wm, rtnNode)) {
+            // only relevant for seralization, to not refire Matches already fired
+            return;
+        }
+        
         ((DefaultAgenda)wm.getAgenda()).addItemToActivationGroup( rtnLeftTuple );
 
         executor.addLeftTuple(leftTuple);
