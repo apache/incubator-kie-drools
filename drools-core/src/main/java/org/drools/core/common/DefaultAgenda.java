@@ -16,16 +16,27 @@
 
 package org.drools.core.common;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
-import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPoint;
@@ -41,6 +52,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.drools.core.time.impl.Timer;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.event.rule.MatchCancelledCause;
@@ -48,18 +60,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Rule-firing Agenda.
@@ -195,7 +195,7 @@ public class DefaultAgenda
 
     public RuleAgendaItem createRuleAgendaItem(final int salience,
                                                final PathMemory rs,
-                                               final TerminalNode rtn) {
+                                               final TerminalNode rtn ) {
         String agendaGroupName = rtn.getRule().getAgendaGroup();
         String ruleFlowGroupName = rtn.getRule().getRuleFlowGroup();
 
@@ -204,6 +204,12 @@ public class DefaultAgenda
             lazyAgendaItem = new RuleAgendaItem( activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda(), (InternalAgendaGroup) getAgendaGroup( ruleFlowGroupName ));
         }  else {
             lazyAgendaItem = new RuleAgendaItem( activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda(), (InternalAgendaGroup) getRuleFlowGroup( agendaGroupName ));
+        }
+        
+        if ( activationsFilter != null && !activationsFilter.accept( lazyAgendaItem,
+                                                                     workingMemory,
+                                                                     rtn ) ) {
+            return null;
         }
 
         return lazyAgendaItem;
@@ -553,7 +559,6 @@ public class DefaultAgenda
                                                 rtn, null, null);
             tuple.setObject( item );
             if ( activationsFilter != null && !activationsFilter.accept( item,
-                                                                         context,
                                                                          workingMemory,
                                                                          rtn ) ) {
                 return false;
@@ -611,7 +616,6 @@ public class DefaultAgenda
         }
 
         if ( activationsFilter != null && !activationsFilter.accept( item,
-                                                                     context,
                                                                      workingMemory,
                                                                      rtn ) ) {
             return false;
@@ -659,7 +663,6 @@ public class DefaultAgenda
                                                        workingMemory ) );
 
         if ( activationsFilter != null && !activationsFilter.accept( item,
-                                                                     context,
                                                                      workingMemory,
                                                                      rtn ) ) {
             return false;

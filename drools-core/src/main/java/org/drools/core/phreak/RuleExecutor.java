@@ -1,5 +1,7 @@
 package org.drools.core.phreak;
 
+import java.util.Comparator;
+
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
@@ -22,8 +24,6 @@ import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Comparator;
 
 public class RuleExecutor {
     protected static transient Logger               log              = LoggerFactory.getLogger(RuleExecutor.class);
@@ -88,6 +88,7 @@ public class RuleExecutor {
                     tupleList.remove(leftTuple);
                 } else {
                     leftTuple = tupleList.removeFirst();
+                    ((Activation)leftTuple).setQueued( false );
                 }
 
                 rtn = (RuleTerminalNode) leftTuple.getSink(); // branches result in multiple RTN's for a given rule, so unwrap per LeftTuple
@@ -105,7 +106,7 @@ public class RuleExecutor {
                 }
 
                 AgendaItem item = (AgendaItem) leftTuple;
-                if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept(item, pctx, wm, rtn)) {
+                if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept(item, wm, rtn)) {
                     // only relevant for seralization, to not refire Matches already fired
                     continue;
                 }

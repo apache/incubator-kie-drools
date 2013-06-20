@@ -103,6 +103,8 @@ public class ProtobufOutputMarshaller {
     public static void writeSession(MarshallerWriteContext context) throws IOException {
 
         ProtobufMessages.KnowledgeSession _session = serializeSession( context );
+        
+        //System.out.println(_session);
 
         PersisterHelper.writeToStreamWithHeader( context,
                                                  _session );
