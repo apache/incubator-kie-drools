@@ -9,7 +9,6 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.drools</groupId>
   <artifactId>drools-workbench-models-test-scenarios</artifactId>
 
   <name>Drools Workbench - Test Scenarios Model</name>
