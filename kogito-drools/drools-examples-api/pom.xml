@@ -2,28 +2,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>drools-multiproject</artifactId>
-        <groupId>org.drools</groupId>
-        <version>6.0.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-multiproject</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>drools-examples-api</artifactId>
-    <name>Drools API examples</name>
+  <artifactId>drools-examples-api</artifactId>
+  <name>Drools API examples</name>
 
-    <packaging>pom</packaging>
-    <modules>
-        <module>default-kiesession</module>
-        <module>named-kiesession</module>
-        <module>kiebase-inclusion</module>
-        <module>default-kiesession-from-file</module>
-        <module>named-kiesession-from-file</module>
-        <module>kie-module-from-multiple-files</module>
-        <module>kiefilesystem-example</module>
-        <module>kiemodulemodel-example</module>
-        <module>kiecontainer-from-kierepo</module>
-    </modules>
+  <packaging>pom</packaging>
+  <modules>
+    <module>default-kiesession</module>
+    <module>named-kiesession</module>
+    <module>kiebase-inclusion</module>
+    <module>default-kiesession-from-file</module>
+    <module>named-kiesession-from-file</module>
+    <module>kie-module-from-multiple-files</module>
+    <module>kiefilesystem-example</module>
+    <module>kiemodulemodel-example</module>
+    <module>kiecontainer-from-kierepo</module>
+  </modules>
 
 
 </project>

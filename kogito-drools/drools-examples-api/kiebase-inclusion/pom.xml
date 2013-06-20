@@ -2,27 +2,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>drools-examples-api</artifactId>
-        <groupId>org.drools</groupId>
-        <version>6.0.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-examples-api</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>kiebase-inclusion</artifactId>
-    <name>Drools API examples - KieBase Inclusion</name>
+  <artifactId>kiebase-inclusion</artifactId>
+  <name>Drools API examples - KieBase Inclusion</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-compiler</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>named-kiesession</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>named-kiesession</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
-    </dependencies>
+  </dependencies>
 
 </project>
