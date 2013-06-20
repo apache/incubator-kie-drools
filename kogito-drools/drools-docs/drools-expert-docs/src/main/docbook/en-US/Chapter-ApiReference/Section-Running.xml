@@ -1681,7 +1681,7 @@ ds.init();
     we will try and fix for 5.3.</para>
 
     <para>Deftemplates are working, the knowledge base handles multiple name
-    spaces and you can attach the knoweldge base to the session for interative
+    spaces and you can attach the knowledge base to the session for interactive
     building, to provide a more "shell" like environment suitable for
     Clips.</para>
 
