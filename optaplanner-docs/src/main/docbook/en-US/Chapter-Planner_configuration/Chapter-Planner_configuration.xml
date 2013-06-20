@@ -809,10 +809,48 @@ public class Visit ... implements Standstill {
         </itemizedlist>
       </section>
 
-      <section xml:id="bidirectionalPlanningVariables">
-        <title>Bi-directional planning variables</title>
+      <section xml:id="bidirectionalVariable">
+        <title>Bi-directional variable</title>
 
-        <para><literal>TODO</literal></para>
+        <para><literal>To map a bi-directional relationship between 2 planning variables, annotate the master side as a
+        normal (= genuine) planning variable:</literal></para>
+
+        <programlisting language="java">@PlanningEntity
+public class VrpCustomer ... {
+
+    @PlanningVariable(chained = true, ...)
+    @ValueRange...
+    public VrpStandstill getPreviousStandstill() {
+        return previousStandstill;
+    }
+
+    public void setPreviousStandstill(VrpStandstill previousStandstill) {...}
+
+}</programlisting>
+
+        <para>And then annotate the other side as a <literal>@PlanningVariable</literal> with only a
+        <literal>mappedBy</literal> annotation (and no <literal>@ValueRange</literal>). </para>
+
+        <programlisting language="java">@PlanningEntity
+public interface VrpStandstill {
+
+    @PlanningVariable(mappedBy = "previousStandstill")
+    VrpCustomer getNextCustomer();
+    void setNextCustomer(VrpCustomer nextCustomer);
+
+}</programlisting>
+
+        <para>The <literal>mappedBy</literal> variable is a form of a shadow variable. A shadow variable is a variables
+        who's correct value can be detected from the state of the genuine planning variables.</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Planner_configuration/bidirectionalVariable.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>From an optimization perspective, Planner effectively only optimizes the genuine variables: only when a
+        genuine variable changes, it changes any dependent shadow variables accordingly.</para>
       </section>
 
       <section xml:id="planningVariableListener">
