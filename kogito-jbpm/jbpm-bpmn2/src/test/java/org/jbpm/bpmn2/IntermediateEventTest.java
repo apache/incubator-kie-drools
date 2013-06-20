@@ -417,6 +417,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Email2",
                 new SystemOutWorkItemHandler());
         ksession.insert(jack);
+        ksession.fireAllRules();
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
@@ -926,6 +927,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         Person person = new Person();
         person.setName("john");
         ksession.insert(person);
+        ksession.fireAllRules();
 
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
@@ -1487,6 +1489,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         Person person = new Person();
         person.setName("Jack");
         ksession.insert(person);
+        ksession.fireAllRules();
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
@@ -1529,6 +1532,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         person1.setName("John");
         ksession.update(personHandle1, person1);
+        ksession.fireAllRules();
 
         assertNull("First process should be completed",
                 ksession.getProcessInstance(pi1id));
@@ -1666,6 +1670,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         Person person = new Person();
         person.setName("john");
         ksession.insert(person);
+        ksession.fireAllRules();
         assertProcessInstanceFinished(processInstance, ksession);
         assertNodeTriggered(processInstance.getId(), "StartProcess",
                 "User Task", "Boundary event", "Condition met", "End2");
@@ -1709,6 +1714,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         Person person = new Person();
         person.setName("john");
         ksession.insert(person);
+        ksession.fireAllRules();
 
         assertProcessInstanceCompleted(processInstance);
         assertNodeTriggered(processInstance.getId(), "StartProcess",
@@ -1730,6 +1736,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         Person person = new Person();
         person.setName("john");
         ksession.insert(person);
+        ksession.fireAllRules();
+
         assertProcessInstanceFinished(processInstance, ksession);
         assertNodeTriggered(processInstance.getId(), "StartProcess", "Hello",
                 "StartSubProcess", "Task", "BoundaryEvent", "Goodbye",

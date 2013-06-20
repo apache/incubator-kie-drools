@@ -28,6 +28,7 @@ import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
@@ -158,7 +159,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
 
     }
 
-    @Test
+    @Test @Ignore
     public void testTimerRule() throws Exception {
         // prepare listener to assert results
         final List<String> timerExporations = new ArrayList<String>();

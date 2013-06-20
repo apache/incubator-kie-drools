@@ -432,7 +432,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         } else {
             return 
                 "rule \"RuleFlowStateEvent-" + process.getId() + "-" + event.getUniqueId() + "-" + 
-                    attachedTo + "\" \n" + 
+                    attachedTo + "\" @Eager(true) \n" +
                 "      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
                 "    when \n" + 
                 "      " + condition + "\n" + 
@@ -449,7 +449,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             return "";
         } else {
             return 
-                "rule \"RuleFlowStateEventSubProcess-" + process.getId() + "-" + compositeNode.getUniqueId() + "\" \n" + 
+                "rule \"RuleFlowStateEventSubProcess-" + process.getId() + "-" + compositeNode.getUniqueId() + "\" @Eager(true) \n" +
                 "      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
                 "    when \n" + 
                 "      " + condition + "\n" + 
