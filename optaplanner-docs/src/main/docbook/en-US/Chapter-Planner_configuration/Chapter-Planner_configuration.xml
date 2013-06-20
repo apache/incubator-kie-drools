@@ -263,11 +263,11 @@
       </note>
     </section>
 
-    <section>
-      <title>Planning entity and planning variables</title>
+    <section xml:id="planningEntity">
+      <title>Planning entity</title>
 
-      <section xml:id="planningEntity">
-        <title>Planning entity</title>
+      <section>
+        <title>Planning entity annotation</title>
 
         <para>A planning entity is a JavaBean (POJO) that changes during solving, for example a <literal>Queen</literal>
         that changes to another row. A planning problem has multiple planning entities, for example for a single n
@@ -389,9 +389,13 @@ public class Queen {
         difficult.</emphasis> During construction heuristics, those variables are likely to be <literal>null</literal>
         anyway. For example, a <literal>Queen</literal>'s <literal>row</literal> variable should not be used.</para>
       </section>
+    </section>
+
+    <section xml:id="planningVariable">
+      <title>Planning variable</title>
 
       <section>
-        <title>Planning variable</title>
+        <title>Planning variable annotation</title>
 
         <para>A planning variable is a property (including getter and setter) on a planning entity. It points to a
         planning value, which changes during planning. For example, a <literal>Queen</literal>'s <literal>row</literal>
@@ -426,8 +430,8 @@ public class Queen {
         <title>Nullable planning variable</title>
 
         <para>By default, an initialized planning variable cannot be <literal>null</literal>, so an initialized solution
-        will never use <literal>null</literal> for any of its planning variables. In over-constrained use case, this can
-        be contra productive. For example: in task assignment with too many tasks for the workforce, we would rather
+        will never use <literal>null</literal> for any of its planning variables. In an over-constrained use case, this
+        can be contra productive. For example: in task assignment with too many tasks for the workforce, we would rather
         leave low priority tasks unassigned instead of assigning them to an overloaded worker.</para>
 
         <para>To allow an initialized planning variable to be <literal>null</literal>, set <literal>nullable</literal>
@@ -610,6 +614,65 @@ public class Queen {
         </section>
       </section>
 
+      <section xml:id="planningValueStrength">
+        <title>Planning value strength</title>
+
+        <para>Some optimization algorithms work more efficiently if they have an estimation of which planning values are
+        stronger, which means they are more likely to satisfy a planning entity. For example: in bin packing bigger
+        containers are more likely to fit an item and in course scheduling bigger rooms are less likely to break the
+        student capacity constraint.</para>
+
+        <para>Therefore, you can set a <literal>strengthComparatorClass</literal> to the
+        <literal>@PlanningVariable</literal> annotation:</para>
+
+        <programlisting language="java">    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
+    // ...
+    public CloudComputer getComputer() {
+        // ...
+    }</programlisting>
+
+        <programlisting language="java">public class CloudComputerStrengthComparator implements Comparator&lt;CloudComputer&gt; {
+
+    public int compare(CloudComputer a, CloudComputer b) {
+        return new CompareToBuilder()
+                .append(a.getMultiplicand(), b.getMultiplicand())
+                .append(b.getCost(), a.getCost()) // Descending (but this is debatable)
+                .append(a.getId(), b.getId())
+                .toComparison();
+    }
+
+}</programlisting>
+
+        <note>
+          <para>If you have multiple planning value classes in the <emphasis>same</emphasis> value range, the
+          <literal>strengthComparatorClass</literal> needs to implement a <literal>Comparator</literal> of a common
+          superclass (for example <literal>Comparator&lt;Object&gt;</literal>) and be able to handle comparing instances
+          of those different classes.</para>
+        </note>
+
+        <para>Alternatively, you can also set a <literal>strengthWeightFactoryClass</literal> to the
+        <literal>@PlanningVariable</literal> annotation, so you have access to the rest of the problem facts from the
+        solution too:</para>
+
+        <programlisting language="java">    @PlanningVariable(strengthWeightFactoryClass = RowStrengthWeightFactory.class)
+    // ...
+    public Row getRow() {
+        // ...
+    }</programlisting>
+
+        <para>See <link linkend="sortedSelection">Sorted Selection</link> for more information.</para>
+
+        <important>
+          <para>Strength should be implemented ascending: weaker values are lower, stronger values are higher. For
+          example in bin packing: small container &lt; medium container &lt; big container.</para>
+        </important>
+
+        <para><emphasis>None of the current planning variable state in any of the planning entities should be used to
+        compare planning values.</emphasis> During construction heuristics, those variables are likely to be
+        <literal>null</literal> anyway. For example, none of the <literal>row</literal> variables of any
+        <literal>Queen</literal> may be used to determine the strength of a <literal>Row</literal>.</para>
+      </section>
+
       <section xml:id="chainedPlanningVariable">
         <title>Chained planning variable</title>
 
@@ -672,8 +735,8 @@ public class Queen {
           in a database) and implement a score constraint for the last entity back to the anchor.</para>
         </note>
 
-        <para>The optimization algorithms and build-in <literal>Move</literal>'s do chain correction to guarantee
-        that the model stays valid:</para>
+        <para>The optimization algorithms and build-in <literal>Move</literal>'s do chain correction to guarantee that
+        the model stays valid:</para>
 
         <mediaobject>
           <imageobject>
@@ -746,63 +809,16 @@ public class Visit ... implements Standstill {
         </itemizedlist>
       </section>
 
-      <section xml:id="planningValueStrength">
-        <title>Planning value strength</title>
+      <section xml:id="bidirectionalPlanningVariables">
+        <title>Bi-directional planning variables</title>
 
-        <para>Some optimization algorithms work more efficiently if they have an estimation of which planning values are
-        stronger, which means they are more likely to satisfy a planning entity. For example: in bin packing bigger
-        containers are more likely to fit an item and in course scheduling bigger rooms are less likely to break the
-        student capacity constraint.</para>
+        <para><literal>TODO</literal></para>
+      </section>
 
-        <para>Therefore, you can set a <literal>strengthComparatorClass</literal> to the
-        <literal>@PlanningVariable</literal> annotation:</para>
+      <section xml:id="planningVariableListener">
+        <title>Planning variable listener that updates shadow variables</title>
 
-        <programlisting language="java">    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
-    // ...
-    public CloudComputer getComputer() {
-        // ...
-    }</programlisting>
-
-        <programlisting language="java">public class CloudComputerStrengthComparator implements Comparator&lt;CloudComputer&gt; {
-
-    public int compare(CloudComputer a, CloudComputer b) {
-        return new CompareToBuilder()
-                .append(a.getMultiplicand(), b.getMultiplicand())
-                .append(b.getCost(), a.getCost()) // Descending (but this is debatable)
-                .append(a.getId(), b.getId())
-                .toComparison();
-    }
-
-}</programlisting>
-
-        <note>
-          <para>If you have multiple planning value classes in the <emphasis>same</emphasis> value range, the
-          <literal>strengthComparatorClass</literal> needs to implement a <literal>Comparator</literal> of a common
-          superclass (for example <literal>Comparator&lt;Object&gt;</literal>) and be able to handle comparing instances
-          of those different classes.</para>
-        </note>
-
-        <para>Alternatively, you can also set a <literal>strengthWeightFactoryClass</literal> to the
-        <literal>@PlanningVariable</literal> annotation, so you have access to the rest of the problem facts from the
-        solution too:</para>
-
-        <programlisting language="java">    @PlanningVariable(strengthWeightFactoryClass = RowStrengthWeightFactory.class)
-    // ...
-    public Row getRow() {
-        // ...
-    }</programlisting>
-
-        <para>See <link linkend="sortedSelection">Sorted Selection</link> for more information.</para>
-
-        <important>
-          <para>Strength should be implemented ascending: weaker values are lower, stronger values are higher. For
-          example in bin packing: small container &lt; medium container &lt; big container.</para>
-        </important>
-
-        <para><emphasis>None of the current planning variable state in any of the planning entities should be used to
-        compare planning values.</emphasis> During construction heuristics, those variables are likely to be
-        <literal>null</literal> anyway. For example, none of the <literal>row</literal> variables of any
-        <literal>Queen</literal> may be used to determine the strength of a <literal>Row</literal>.</para>
+        <para><literal>TODO</literal></para>
       </section>
     </section>
 
@@ -1253,9 +1269,9 @@ public class Visit ... implements Standstill {
       <section>
         <title>FULL_ASSERT</title>
 
-        <para>The FULL_ASSERT mode turns on all assertions (such as
-        assert that the incremental score calculation is uncorrupted for each move) to fail-fast on a bug in a Move
-        implementation, a score rule, the rule engine itself, ...</para>
+        <para>The FULL_ASSERT mode turns on all assertions (such as assert that the incremental score calculation is
+        uncorrupted for each move) to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself,
+        ...</para>
 
         <para>This mode is reproducible (see the reproducible mode). It is also intrusive because it calls the method
         <literal>calculateScore()</literal> more frequently than a non assert mode.</para>
@@ -1266,8 +1282,8 @@ public class Visit ... implements Standstill {
       <section>
         <title>NON_INTRUSIVE_FULL_ASSERT</title>
 
-        <para>The NON_INTRUSIVE_FULL_ASSERT turns on several
-        assertions to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself, ...</para>
+        <para>The NON_INTRUSIVE_FULL_ASSERT turns on several assertions to fail-fast on a bug in a Move implementation,
+        a score rule, the rule engine itself, ...</para>
 
         <para>This mode is reproducible (see the reproducible mode). It is non-intrusive because it does not call the
         method <literal>calculateScore()</literal> more frequently than a non assert mode.</para>
@@ -1279,9 +1295,9 @@ public class Visit ... implements Standstill {
       <section>
         <title>FAST_ASSERT</title>
 
-        <para>The FAST_ASSERT mode turns on most assertions (such
-        as assert that an undo Move's score is the same as before the Move) to fail-fast on a bug in a Move
-        implementation, a score rule, the rule engine itself, ...</para>
+        <para>The FAST_ASSERT mode turns on most assertions (such as assert that an undo Move's score is the same as
+        before the Move) to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself,
+        ...</para>
 
         <para>This mode is reproducible (see the reproducible mode). It is also intrusive because it calls the method
         <literal>calculateScore()</literal> more frequently than a non assert mode.</para>
@@ -1331,8 +1347,8 @@ public class Visit ... implements Standstill {
       <section>
         <title>PRODUCTION</title>
 
-        <para>The production mode is the fastest, but not reproducible. It is recommended for a
-        production environment, unless reproducibility is required.</para>
+        <para>The production mode is the fastest, but not reproducible. It is recommended for a production environment,
+        unless reproducibility is required.</para>
 
         <para>The random seed is different on every run, which makes it more robust against an unlucky random seed. An
         unlucky random seed gives a bad result on a certain data set with a certain solver configuration. Note that in
