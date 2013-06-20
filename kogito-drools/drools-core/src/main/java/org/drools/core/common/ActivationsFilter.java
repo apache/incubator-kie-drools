@@ -2,7 +2,6 @@ package org.drools.core.common;
 
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.PropagationContext;
 
 /**
  * A filter interface for agenda activations
@@ -20,7 +19,6 @@ public interface ActivationsFilter {
      * @return
      */
     boolean accept(Activation activation,
-                   PropagationContext context,
                    InternalWorkingMemory workingMemory,
                    TerminalNode rtn );
 

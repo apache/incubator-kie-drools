@@ -58,6 +58,7 @@ import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
@@ -144,7 +145,7 @@ public class ProtobufInputMarshaller {
                                                                                 ClassNotFoundException {
 
         ProtobufMessages.KnowledgeSession _session = loadAndParseSession( context );
-
+        
         ReteooStatefulSession session = createAndInitializeSession( context,
                                                                     id,
                                                                     environment,
@@ -708,7 +709,8 @@ public class ProtobufInputMarshaller {
 
     public static class PBActivationsFilter
             implements
-            ActivationsFilter {
+            ActivationsFilter,
+            AgendaFilter {
         private Map<ActivationKey, ProtobufMessages.Activation> dormantActivations;
         private Map<ActivationKey, ProtobufMessages.Activation> rneActivations;
         private Map<ActivationKey, LeftTuple>                   tuplesCache;
@@ -726,7 +728,6 @@ public class ProtobufInputMarshaller {
         }
 
         public boolean accept(Activation activation,
-                              PropagationContext context,
                               InternalWorkingMemory workingMemory,
                               TerminalNode rtn) {
             if ( activation.isRuleAgendaItem() ) {
@@ -757,8 +758,19 @@ public class ProtobufInputMarshaller {
             while ( (rnea = rneaToFire.poll()) != null ) {
                 rnea.remove();
                 rnea.setQueued( false );
-                rnea.getRuleExecutor().evaluateNetworkAndFire( wm, null, 0, -1 );
+                rnea.getRuleExecutor().evaluateNetworkAndFire( wm, this, 0, -1 );
             }
+        }
+
+        @Override
+        public boolean accept(Activation match) {
+            ActivationKey key = PersisterHelper.createActivationKey( match.getRule().getPackageName(), 
+                                                                     match.getRule().getName(), 
+                                                                     match.getTuple() );
+            // add the tuple to the cache for correlation
+            this.tuplesCache.put( key, match.getTuple() );
+            // check if there was an active activation for it
+            return !this.dormantActivations.containsKey( key );
         }
     }
 

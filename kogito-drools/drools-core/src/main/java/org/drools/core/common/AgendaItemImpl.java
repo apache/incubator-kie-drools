@@ -16,6 +16,10 @@
 
 package org.drools.core.common;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.FactHandle;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
@@ -29,13 +33,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Item entry in the <code>Agenda</code>.
@@ -74,7 +71,6 @@ public class AgendaItemImpl
     private           LinkedList<LogicalDependency>                  blocked;
     private           LinkedList<LinkedListEntry<LogicalDependency>> blockers;
     private           InternalAgendaGroup                            agendaGroup;
-    private           InternalRuleFlowGroup                          ruleFlowGroup;
     private           ActivationGroupNode                            activationGroupNode;
     private           ActivationNode                                 activationNode;
     private           InternalFactHandle                             factHandle;
@@ -114,8 +110,6 @@ public class AgendaItemImpl
         this.matched = true;
         this.ruleAgendaItem = ruleAgendaItem;
         this.agendaGroup = agendaGroup;
-        this.ruleFlowGroup = ruleFlowGroup;
-
     }
 
     @Override

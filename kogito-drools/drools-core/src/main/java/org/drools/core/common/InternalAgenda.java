@@ -18,7 +18,6 @@ package org.drools.core.common;
 
 import org.drools.core.Agenda;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
@@ -167,7 +166,7 @@ public interface InternalAgenda
         
     public RuleAgendaItem createRuleAgendaItem(final int salience,
                                                final PathMemory rs,
-                                               final TerminalNode rtn);
+                                               final TerminalNode rtn );
 
     public RuleAgendaItem peekNextRule();
 
