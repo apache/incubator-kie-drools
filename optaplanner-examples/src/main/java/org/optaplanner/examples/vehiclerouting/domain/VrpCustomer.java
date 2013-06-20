@@ -29,6 +29,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VehicleUpdatingVariableListener;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VrpCustomerDifficultyComparator;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver.ArrivalTimeUpdatingVariableListener;
 
 @PlanningEntity(difficultyComparatorClass = VrpCustomerDifficultyComparator.class)
 @XStreamAlias("VrpCustomer")
@@ -63,8 +64,8 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
         this.demand = demand;
     }
 
-//    @PlanningVariable(chained = true, variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class}) // TODO
-    @PlanningVariable(chained = true, variableListenerClasses = {VehicleUpdatingVariableListener.class})
+    // HACK TODO remove ArrivalTimeUpdatingVariableListener.class and add it only for VrpTimeWindowedCustomer
+    @PlanningVariable(chained = true, variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
     @ValueRanges({
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "vehicleList"),
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "customerList",

@@ -8,29 +8,34 @@ import org.optaplanner.examples.vehiclerouting.domain.VrpStandstill;
 import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
 
-public class ArrivalTimeUpdatingVariableListener implements PlanningVariableListener<VrpTimeWindowedCustomer> {
+// TODO When this class is added only for VrpTimeWindowedCustomer, use VrpTimeWindowedCustomer instead of VrpCustomer
+public class ArrivalTimeUpdatingVariableListener implements PlanningVariableListener<VrpCustomer> {
 
-    public void beforeEntityAdded(ScoreDirector scoreDirector, VrpTimeWindowedCustomer customer) {
+    public void beforeEntityAdded(ScoreDirector scoreDirector, VrpCustomer customer) {
         // Do nothing
     }
 
-    public void afterEntityAdded(ScoreDirector scoreDirector, VrpTimeWindowedCustomer customer) {
-        updateVehicle(scoreDirector, customer);
+    public void afterEntityAdded(ScoreDirector scoreDirector, VrpCustomer customer) {
+        if (customer instanceof VrpTimeWindowedCustomer) {
+            updateVehicle(scoreDirector, (VrpTimeWindowedCustomer) customer);
+        }
     }
 
-    public void beforeVariableChanged(ScoreDirector scoreDirector, VrpTimeWindowedCustomer customer) {
+    public void beforeVariableChanged(ScoreDirector scoreDirector, VrpCustomer customer) {
         // Do nothing
     }
 
-    public void afterVariableChanged(ScoreDirector scoreDirector, VrpTimeWindowedCustomer customer) {
-        updateVehicle(scoreDirector, customer);
+    public void afterVariableChanged(ScoreDirector scoreDirector, VrpCustomer customer) {
+        if (customer instanceof VrpTimeWindowedCustomer) {
+            updateVehicle(scoreDirector, (VrpTimeWindowedCustomer) customer);
+        }
     }
 
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, VrpTimeWindowedCustomer customer) {
+    public void beforeEntityRemoved(ScoreDirector scoreDirector, VrpCustomer customer) {
         // Do nothing
     }
 
-    public void afterEntityRemoved(ScoreDirector scoreDirector, VrpTimeWindowedCustomer customer) {
+    public void afterEntityRemoved(ScoreDirector scoreDirector, VrpCustomer customer) {
         // Do nothing
     }
 
