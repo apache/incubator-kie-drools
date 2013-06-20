@@ -399,7 +399,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     private String createMilestoneRule(Process process,
                                        MilestoneNode milestone) {
         return 
-        	"rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getUniqueId() + "\" \n" + 
+        	"rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getUniqueId() + "\" @Eager(true) \n" +
         	"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
         	"    when \n" + 
         	"      " + milestone.getConstraint() + "\n" + 
@@ -414,7 +414,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     	} else {
 	        return 
 	        	"rule \"RuleFlowStateNode-" + process.getId() + "-" + state.getUniqueId() + "-" + 
-	        		key.getNodeId() + "-" + key.getToType() + "\" \n" + 
+	        		key.getNodeId() + "-" + key.getToType() + "\" @Eager(true) \n" +
 	    		"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
 	    		"    when \n" + 
 	    		"      " + state.getConstraints().get(key).getConstraint() + "\n" + 

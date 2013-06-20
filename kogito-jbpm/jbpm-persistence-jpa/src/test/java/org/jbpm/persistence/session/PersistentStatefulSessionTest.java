@@ -18,6 +18,7 @@ import java.util.Map;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
@@ -26,6 +27,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -87,9 +89,9 @@ public class PersistentStatefulSessionTest {
         + "global java.util.List list\n"
         + "rule rule1\n"
         + "when\n"
-        + "  Integer(intValue > 0)\n"
+        + "  Integer($i : intValue > 0)\n"
         + "then\n"
-        + "  list.add( 1 );\n"
+        + "  list.add( $i );\n"
         + "end\n"
         + "\n";
         
@@ -128,7 +130,11 @@ public class PersistentStatefulSessionTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(ruleString.getBytes()),
                       ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        KieBaseConfiguration kBaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+//        ((RuleBaseConfiguration)kBaseConf).setPhreakEnabled(false);
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConf);
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -360,6 +366,7 @@ public class PersistentStatefulSessionTest {
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
         ksession.insert(new ArrayList<Object>());
+        ksession.fireAllRules();
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
         processInstance = ksession.getProcessInstance( processInstance.getId() );

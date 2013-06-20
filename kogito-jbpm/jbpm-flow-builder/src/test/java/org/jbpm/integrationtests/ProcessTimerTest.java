@@ -650,6 +650,7 @@ public class ProcessTimerTest extends TestCase {
         assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
 		
         session.insert(new Message());
+        session.fireAllRules();
         assertEquals(0, myList.size());
         assertEquals(0, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
         

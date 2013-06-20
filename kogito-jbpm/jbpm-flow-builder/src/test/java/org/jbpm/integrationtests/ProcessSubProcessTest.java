@@ -27,6 +27,7 @@ public class ProcessSubProcessTest extends TestCase {
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(2, workingMemory.getProcessInstances().size());
         workingMemory.insert(new Person());
+        workingMemory.fireAllRules();
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(0, workingMemory.getProcessInstances().size());
     }
@@ -75,6 +76,7 @@ public class ProcessSubProcessTest extends TestCase {
         	}
         }
         workingMemory.insert(new Person());
+        workingMemory.fireAllRules();
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
 			processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
@@ -184,6 +186,7 @@ public class ProcessSubProcessTest extends TestCase {
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(2, workingMemory.getProcessInstances().size());
         workingMemory.insert(new Person());
+        workingMemory.fireAllRules();
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(0, workingMemory.getProcessInstances().size());
     }

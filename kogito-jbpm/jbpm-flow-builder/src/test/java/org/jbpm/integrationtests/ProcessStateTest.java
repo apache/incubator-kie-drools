@@ -331,6 +331,7 @@ public class ProcessStateTest extends TestCase {
         assertTrue(list.isEmpty());
         Person person = new Person("John Doe", 30);
         ksession.insert(person);
+        ksession.fireAllRules();
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("1", list.get(0));
@@ -395,6 +396,7 @@ public class ProcessStateTest extends TestCase {
         assertTrue(list.isEmpty());
         Person person = new Person("John Doe", 20);
         ksession.insert(person);
+        ksession.fireAllRules();
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(1, list.size());
         assertEquals("2", list.get(0));

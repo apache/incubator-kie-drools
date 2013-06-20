@@ -62,6 +62,7 @@ public class ProcessMilestoneTest extends TestCase {
         workingMemory.insert(new Person("Jane Doe", 20));
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         workingMemory.insert(new Person("John Doe", 50));
+        workingMemory.fireAllRules();
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
@@ -128,10 +129,12 @@ public class ProcessMilestoneTest extends TestCase {
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceJane.getState());
         
         workingMemory.insert(jane);
+        workingMemory.fireAllRules();
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstanceJohn.getState());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstanceJane.getState());
         
         workingMemory.insert(john);
+        workingMemory.fireAllRules();
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstanceJohn.getState());
     }
     
