@@ -33,6 +33,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
+import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.PathMemory;
@@ -1039,28 +1040,19 @@ public class DefaultAgenda
         // reset staged activations
         getStageActivationsGroup().clear();
 
-        List<RuleAgendaItem> lazyItems = null;
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
             if ( this.unlinkingEnabled ) {
                 // preserve lazy items.
                 ((InternalAgendaGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
-                lazyItems = new ArrayList<RuleAgendaItem>();
                 for ( Match a : group.getActivations() ) {
                     if ( ((Activation) a).isRuleAgendaItem() ) {
-                        lazyItems.add( (RuleAgendaItem) a );
+                        ((RuleAgendaItem) a).getRuleExecutor().reEvaluateNetwork( this.workingMemory, new org.drools.core.util.LinkedList<StackEntry>(), false );
                     }
                 }
             }
 
             group.clear();
-
-            if ( this.unlinkingEnabled ) {
-                // restore lazy items
-                for ( RuleAgendaItem lazyItem : lazyItems ) {
-                    group.add( lazyItem );
-                }
-            }
         }
 
         // reset all activation groups.
