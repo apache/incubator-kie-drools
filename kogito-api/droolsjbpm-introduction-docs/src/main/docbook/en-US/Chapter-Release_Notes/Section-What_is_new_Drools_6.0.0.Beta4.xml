@@ -807,5 +807,97 @@
         </listitem>
       </itemizedlist>
     </section>
+	<para/>
+  </section>
+
+  <section>
+    <title>Dashboard Builder</title>
+
+    <section>
+      <title>What is JBoss Dashboard Builder?</title>
+
+      <para>The Dashboard Builder is a full featured web application which allows non-technical users to visually create
+      business dashboards. Dashboard data can be extracted from heterogeneous sources of information such as JDBC
+      databases or regular text files. It also provides a generic process dashboard for the jBPM Human Task module.
+      Such dashboard can display multiple key performance indicators regarding process instances, tasks and users.</para>
+
+      <para>Some ready-to-use sample dashboards are provided as well, for demo and learning purposes.</para>
+
+      <section>
+        <title>Key features:</title>
+
+        <itemizedlist spacing="compact">
+          <listitem>
+            <para>Visual configuration of dashboards (Drag'n'drop).</para>
+          </listitem>
+
+          <listitem>
+            <para>Graphical representation of KPIs (Key Performance
+            Indicators).</para>
+          </listitem>
+
+          <listitem>
+            <para>Configuration of interactive report tables.</para>
+          </listitem>
+
+          <listitem>
+            <para>Data export to Excel and CSV format.</para>
+          </listitem>
+
+          <listitem>
+            <para>Filtering and search, both in-memory or SQL based.</para>
+          </listitem>
+
+          <listitem>
+            <para>Process and tasks dashboards with jBPM.</para>
+          </listitem>
+
+          <listitem>
+            <para>Data extraction from external systems, through different
+            protocols.</para>
+          </listitem>
+
+          <listitem>
+            <para>Granular access control for different user profiles.</para>
+          </listitem>
+
+          <listitem>
+            <para>Look'n'feel customization tools.</para>
+          </listitem>
+
+          <listitem>
+            <para>Pluggable chart library architecture.</para>
+          </listitem>
+
+          <listitem>
+            <para>Chart libraries provided: NVD3 &amp; OFC2.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Target users:</title>
+
+        <itemizedlist spacing="compact">
+          <listitem>
+            <para>Managers / Business owners. Consumer of dashboards and reports.</para>
+          </listitem>
+
+          <listitem>
+            <para>IT / System architects. Connectivity and data extraction.</para>
+          </listitem>
+
+          <listitem>
+            <para>Analysts. Dashboard composition &amp; configuration.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>More info:</title>
+    		<para>For more info on the Dashboard Builder application, please refer to: <link xlink:href="https://github.com/
+    		droolsjbpm/dashboard-builder/blob/master/docs/quick-start-guide/index.html">Dash Builder Quick Start Guide</link>.</para>
+      </section>
+    </section>
   </section>
 </section>
