@@ -171,6 +171,94 @@
     </section>
 
     <section>
+      <title>UberFire Provided Infrastructure</title>
+
+      <section>
+        <title>Virtual File System</title>
+
+        <para>UberFire VFS is a <link
+        xlink:href="http://jcp.org/en/jsr/detail?id=203">NIO.2</link> based
+        API that provides a unified interface to access different file systems
+        - by default it uses <link xlink:href="http://git-scm.com/">Git</link>
+        as its primary backend implematation. Resources (ie. files and
+        directories) are represented, as proposed by NIO.2, as URIs. Here are
+        some examples:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>file:///path/to/some/file.txt</para>
+          </listitem>
+
+          <listitem>
+            <para>git://repository-name/path/to/file.txt</para>
+          </listitem>
+
+          <listitem>
+            <para>git://repository-name/path/to/dir/</para>
+          </listitem>
+
+          <listitem>
+            <para>git://my_branch@repository-name/path/to/file.txt</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>By using Git as its default implementation, UberFire VFS
+        provides out-of-box a versioned system, which means that every
+        information stored/deleted has its history preserved.</para>
+
+        <important>
+          <para>Your system doesn't need to have GIT installed, UberFire uses
+          <link xlink:href="http://www.eclipse.org/jgit/">JGIT</link>
+          internally, a 100% Java based Git implementation.</para>
+        </important>
+      </section>
+
+      <section>
+        <title>Metadata Engine</title>
+
+        <para>Metadata engine provides two complementary services: Indexing
+        and Searching. Both services were designed to be as minimum invasive
+        as possible and, in the same time, providing all the complex features
+        needed by the subject.</para>
+
+        <section>
+          <title>Index</title>
+
+          <para>Indexing is automatically handled on VFS layer in completely
+          transparent way. In order to agregate metadata to a VFS resource
+          using the NIO.2 based API, all you need to do is set a resource
+          attributes.</para>
+
+          <important>
+            <para>All metadata are stored on dot files alongside its resource.
+            So if anything bad happens to your index and it get corrupted, you
+            can always recreate the index based on those persistent dot
+            files.</para>
+          </important>
+
+          <para>The metadata engine is not only for VFS resources, behind the
+          scenes there's a powerfull metadata API that you can define your own
+          MetaModel with custom MetaTypes, MetaObjects and
+          MetaProperties.</para>
+        </section>
+
+        <section>
+          <title>Search</title>
+
+          <para>The Metadata Search API is very simple and yet powerful. It
+          provides basically two methods, one that allows a full text search
+          (including wildcards and boolean operations) or by a set of
+          predefined attributes.</para>
+        </section>
+
+        <para>For those curious to know what is under the hood, Metadata
+        engine uses <link xlink:href="http://lucene.apache.org/">Apache Lucene
+        4</link> as its default backend, but was designed to be able to have
+        different and eventually mixed/composed backends.</para>
+      </section>
+    </section>
+
+    <section>
       <title>Drools Workbench - In depth</title>
 
       <para>Drools Workbench is the corner stone of the new function and
