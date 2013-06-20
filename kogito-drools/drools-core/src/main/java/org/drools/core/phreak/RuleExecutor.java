@@ -138,6 +138,12 @@ public class RuleExecutor {
             }
         }
 
+        removeRuleAgendaItemWhenEmpty( wm );
+
+        return localFireCount;
+    }
+
+    public void removeRuleAgendaItemWhenEmpty(InternalWorkingMemory wm) {
         if (!dirty && tupleList.isEmpty()) {
             // dirty check, before doing the synced check and removal
             synchronized (ruleAgendaItem) {
@@ -152,11 +158,9 @@ public class RuleExecutor {
                 }
             }
         }
-
-        return localFireCount;
     }
 
-    private void reEvaluateNetwork(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack, boolean fireUntilHalt) {
+    public void reEvaluateNetwork(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack, boolean fireUntilHalt) {
         if (isDirty() || (pmem.getQueue() != null && !pmem.getQueue().isEmpty())) {
             setDirty(false);
 

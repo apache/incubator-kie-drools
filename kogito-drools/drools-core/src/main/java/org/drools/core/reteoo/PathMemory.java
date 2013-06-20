@@ -1,6 +1,11 @@
 package org.drools.core.reteoo;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.drools.core.base.mvel.MVELSalienceExpression;
+import org.drools.core.common.ActivationsFilter;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
@@ -11,9 +16,6 @@ import org.drools.core.phreak.TupleEntry;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         implements
@@ -113,6 +115,14 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     public void queueRuleAgendaItem(InternalWorkingMemory wm) {
         synchronized ( agendaItem ) {
             agendaItem.getRuleExecutor().setDirty(true);
+            
+            ActivationsFilter activationFilter = ((DefaultAgenda) wm.getAgenda()).getActivationsFilter();
+            if ( activationFilter != null && !activationFilter.accept( agendaItem,
+                                                                       wm,
+                                                                       agendaItem.getTerminalNode() ) ) {
+                return;
+            }
+            
             if (!agendaItem.isQueued() && !agendaItem.isBlocked()) {
                 if ( log.isTraceEnabled() ) {
                     log.trace("Queue RuleAgendaItem {}", agendaItem);

@@ -104,7 +104,8 @@ public class ProtobufOutputMarshaller {
 
         ProtobufMessages.KnowledgeSession _session = serializeSession( context );
         
-        //System.out.println(_session);
+        System.out.println("=============================================================================");
+        System.out.println(_session);
 
         PersisterHelper.writeToStreamWithHeader( context,
                                                  _session );

@@ -206,12 +206,6 @@ public class DefaultAgenda
             lazyAgendaItem = new RuleAgendaItem( activationCounter++, null, salience, null, rs, rtn, isDeclarativeAgenda(), (InternalAgendaGroup) getRuleFlowGroup( agendaGroupName ));
         }
         
-        if ( activationsFilter != null && !activationsFilter.accept( lazyAgendaItem,
-                                                                     workingMemory,
-                                                                     rtn ) ) {
-            return null;
-        }
-
         return lazyAgendaItem;
     }
 
