@@ -1,34 +1,33 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.core.impl.InternalKnowledgeBase;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
-import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
+import static org.drools.compiler.kie.builder.impl.AbstractKieModule.*;
+import static org.drools.compiler.kie.util.CDIHelper.*;
 
 public class KieContainerImpl
     implements
@@ -65,7 +64,7 @@ public class KieContainerImpl
     public KieBase getKieBase() {
         KieBaseModel defaultKieBaseModel = kProject.getDefaultKieBaseModel();
         if (defaultKieBaseModel == null) {
-            throw new RuntimeException("Cannot find a defualt KieBase");
+            throw new RuntimeException("Cannot find a default KieBase");
         }
         return getKieBase( defaultKieBaseModel.getName() );
     }
