@@ -812,36 +812,8 @@ public class Visit ... implements Standstill {
       <section xml:id="bidirectionalVariable">
         <title>Bi-directional variable</title>
 
-        <para><literal>To map a bi-directional relationship between 2 planning variables, annotate the master side as a
-        normal (= genuine) planning variable:</literal></para>
-
-        <programlisting language="java">@PlanningEntity
-public class VrpCustomer ... {
-
-    @PlanningVariable(chained = true, ...)
-    @ValueRange...
-    public VrpStandstill getPreviousStandstill() {
-        return previousStandstill;
-    }
-
-    public void setPreviousStandstill(VrpStandstill previousStandstill) {...}
-
-}</programlisting>
-
-        <para>And then annotate the other side as a <literal>@PlanningVariable</literal> with only a
-        <literal>mappedBy</literal> annotation (and no <literal>@ValueRange</literal>). </para>
-
-        <programlisting language="java">@PlanningEntity
-public interface VrpStandstill {
-
-    @PlanningVariable(mappedBy = "previousStandstill")
-    VrpCustomer getNextCustomer();
-    void setNextCustomer(VrpCustomer nextCustomer);
-
-}</programlisting>
-
-        <para>The <literal>mappedBy</literal> variable is a form of a shadow variable. A shadow variable is a variables
-        who's correct value can be detected from the state of the genuine planning variables.</para>
+        <para>2 variables are bi-directional if their instances always point to each other (unless they point to null).
+        So if A references B, then B references A.</para>
 
         <mediaobject>
           <imageobject>
@@ -849,14 +821,94 @@ public interface VrpStandstill {
           </imageobject>
         </mediaobject>
 
-        <para>From an optimization perspective, Planner effectively only optimizes the genuine variables: only when a
-        genuine variable changes, it changes any dependent shadow variables accordingly.</para>
+        <para><literal>To map a bi-directional relationship between 2 planning variables, annotate the master side as a
+        normal (= genuine) planning variable:</literal></para>
+
+        <programlisting language="java">@PlanningEntity
+public class Customer ... {
+
+    @PlanningVariable(chained = true, ...)
+    @ValueRange...
+    public Standstill getPreviousStandstill() {
+        return previousStandstill;
+    }
+
+    public void setPreviousStandstill(Standstill previousStandstill) {...}
+
+}</programlisting>
+
+        <para>And then annotate the other side as a <literal>@PlanningVariable</literal> with only a
+        <literal>mappedBy</literal> annotation (and no <literal>@ValueRange</literal>).</para>
+
+        <programlisting language="java">@PlanningEntity
+public interface Standstill {
+
+    @PlanningVariable(mappedBy = "previousStandstill")
+    Customer getNextCustomer();
+    void setNextCustomer(Customer nextCustomer);
+
+}</programlisting>
+
+        <para>The <literal>mappedBy</literal> variable is a form of a shadow variable: Planner uses a build-in
+        <literal>PlanningVariableListener</literal> to update its state.</para>
       </section>
 
       <section xml:id="planningVariableListener">
         <title>Planning variable listener that updates shadow variables</title>
 
-        <para><literal>TODO</literal></para>
+        <para>A shadow variable is a variables who's correct value can be deduced from the state of the genuine planning
+        variables. Even though such a variable violates the principle of normalization by definition, in some use cases
+        it can be very practical to use a shadow variable. For example in vehicle routing with time windows: the arrival
+        time at a customer for a vehicle can be calculated based on the previously visited customers of that vehicle
+        (and the known travel times between 2 locations).</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Planner_configuration/planningVariableListener.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>To use custom <literal>PlanningVariableListener</literal>, implement the interface and annotate it on the
+        genuine planning variable(s) that trigger changes in the shadow variable(s):</para>
+
+        <programlisting language="java">    @PlanningVariable(..., variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
+    ...
+    public Standstill getPreviousStandstill() {
+        return previousStandstill;
+    }</programlisting>
+
+        <para>For example, the VehicleUpdatingVariableListener assures that every <literal>Customer</literal> in a chain
+        has the same <literal>Vehicle</literal>, namely the chain's anchor.</para>
+
+        <programlisting language="java">public class VehicleUpdatingVariableListener implements PlanningVariableListener&lt;Customer&gt; {
+
+    public void afterEntityAdded(ScoreDirector scoreDirector, Customer customer) {
+        updateVehicle(scoreDirector, customer);
+    }
+
+    public void afterVariableChanged(ScoreDirector scoreDirector, Customer customer) {
+        updateVehicle(scoreDirector, customer);
+    }
+
+    ...
+
+    protected void updateVehicle(ScoreDirector scoreDirector, Customer sourceCustomer) {
+        Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
+        Vehicle vehicle = previousStandstill == null ? null : previousStandstill.getVehicle();
+        Customer shadowCustomer = sourceCustomer;
+        while (shadowCustomer != null &amp;&amp; shadowCustomer.getVehicle() != vehicle) {
+            scoreDirector.beforeVariableChanged(shadowCustomer, "vehicle");
+            shadowCustomer.setVehicle(vehicle);
+            scoreDirector.afterVariableChanged(shadowCustomer, "vehicle");
+            shadowCustomer = shadowCustomer.getNextCustomer();
+        }
+    }
+
+}</programlisting>
+
+        <para>From an optimization perspective, Planner effectively only optimizes the genuine variables (and mostly
+        ignores the shadow variables): only when a genuine variable changes, it changes any dependent shadow variables
+        accordingly.</para>
       </section>
     </section>
 
