@@ -2637,7 +2637,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                       ksession.getObjects().size() );
     }
 
-    @Test
+    @Test @Ignore("This test is suspicious to say the least...")
     public void testScheduledActivation() {
         KnowledgeBaseImpl knowledgeBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgePackageImp impl = new KnowledgePackageImp();

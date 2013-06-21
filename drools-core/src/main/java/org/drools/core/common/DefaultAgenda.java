@@ -1284,12 +1284,14 @@ public class DefaultAgenda
                         }   else {
                             item = (RuleAgendaItem) group.peek();
                         }
-                        localFireCount = item.getRuleExecutor().evaluateNetworkAndFire(this.workingMemory, filter,
-                                                                                       fireCount, fireLimit);
-                        if ( localFireCount == 0 ) {
-                            // nothing matched
-                            tryagain = true; // will force the next Activation of the agenda, without going to outer loop which checks halt
-                            this.workingMemory.executeQueuedActions(); // There may actions to process, which create new rule matches
+                        if (item != null) {
+                            localFireCount = item.getRuleExecutor().evaluateNetworkAndFire(this.workingMemory, filter,
+                                                                                           fireCount, fireLimit);
+                            if ( localFireCount == 0 ) {
+                                // nothing matched
+                                tryagain = true; // will force the next Activation of the agenda, without going to outer loop which checks halt
+                                this.workingMemory.executeQueuedActions(); // There may actions to process, which create new rule matches
+                            }
                         }
                     } else {
                         final AgendaItem item = (AgendaItem) group.remove();
