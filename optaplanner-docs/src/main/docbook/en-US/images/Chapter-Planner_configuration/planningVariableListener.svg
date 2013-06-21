@@ -249,7 +249,7 @@
      inkscape:cx="310.26616"
      inkscape:cy="269.58175"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -329,14 +329,14 @@
            height="80"
            width="579.99982"
            id="rect4167" /></flowRegion><flowPara
-         id="flowPara4169">When the <flowSpan
+         id="flowPara4169">When a <flowSpan
    style="fill:#ce5c00"
    id="flowSpan4175">genuine planning variable</flowSpan> changes,</flowPara><flowPara
          id="flowPara4173">then the <flowSpan
    style="fill:#a40000"
-   id="flowSpan4279">Listener</flowSpan> changes the<flowSpan
+   id="flowSpan4279">Listener(s)</flowSpan> change the<flowSpan
    style="fill:#5c3566"
-   id="flowSpan4179"> shadow variable</flowSpan> accordingly.</flowPara></flowRoot>    <flowRoot
+   id="flowSpan4179"> shadow variable(s)</flowSpan> accordingly.</flowPara></flowRoot>    <flowRoot
        transform="translate(-20.000004,372.36182)"
        xml:space="preserve"
        id="flowRoot4302-6"

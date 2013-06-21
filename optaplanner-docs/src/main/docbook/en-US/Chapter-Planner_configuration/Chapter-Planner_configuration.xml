@@ -906,9 +906,22 @@ public interface Standstill {
 
 }</programlisting>
 
-        <para>From an optimization perspective, Planner effectively only optimizes the genuine variables (and mostly
-        ignores the shadow variables): only when a genuine variable changes, it changes any dependent shadow variables
-        accordingly.</para>
+        <para>Any class that has a shadow variable, is a planning entity class, even it has no genuine planning
+        variables.</para>
+
+        <warning>
+          <para>A PlanningVariableListener can only change shadow variables. It must never change a genuine planning
+          variable or a problem fact.</para>
+        </warning>
+
+        <warning>
+          <para>Any change of a shadow variable must be told to the <literal>ScoreDirector</literal>.</para>
+        </warning>
+
+        <para>From a score calculation perspective, a shadow variable is like any other planning variable. From an
+        optimization perspective, Planner effectively only optimizes the genuine variables (and mostly ignores the
+        shadow variables): it just assures that when a genuine variable changes, it changes any dependent shadow
+        variables accordingly.</para>
       </section>
     </section>
 
