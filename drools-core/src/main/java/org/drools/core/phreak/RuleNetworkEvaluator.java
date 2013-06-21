@@ -269,25 +269,7 @@ public class RuleNetworkEvaluator {
                 return;
             }
 
-            LeftTupleSets stagedLeftTuples;
-            if (node == smem.getTipNode() ) {
-                // we are about to process the segment tip, allow it to merge insert/update/delete clashes
-                if ( smem.isEmpty() ) {
-                    // Can happen if the next segments have not yet been initialized, only when there are no right inputs
-                    synchronized ( smem ) {
-                        if ( smem.isEmpty() ) {
-                            SegmentUtilities.createChildSegments( wm,
-                                                                  smem,
-                                                                  ((LeftTupleSource) node).getSinkPropagator() );
-                        }
-                        stagedLeftTuples = smem.getFirst().getStagedLeftTuples();
-                    }
-                } else {
-                    stagedLeftTuples = smem.getFirst().getStagedLeftTuples();
-                }
-            } else {
-                stagedLeftTuples = null;
-            }
+            LeftTupleSets stagedLeftTuples = getStagedLeftTuples(node, wm, smem);
 
             LeftTupleSinkNode sink = ((LeftTupleSource) node).getSinkPropagator().getFirstLeftTupleSink();
 
@@ -383,7 +365,39 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    private boolean evalQueryNode(LeftInputAdapterNode liaNode, PathMemory pmem, NetworkNode node, Memory nodeMem, SegmentMemory[] smems, int smemIndex, LeftTupleSets trgTuples, InternalWorkingMemory wm, LinkedList<StackEntry> stack, Set<String> visitedRules, LeftTupleSets srcTuples, LeftTupleSinkNode sink) {
+    private LeftTupleSets getStagedLeftTuples(NetworkNode node, InternalWorkingMemory wm, SegmentMemory smem) {
+        if (node == smem.getTipNode() ) {
+            // we are about to process the segment tip, allow it to merge insert/update/delete clashes
+            if ( smem.isEmpty() ) {
+                // Can happen if the next segments have not yet been initialized, only when there are no right inputs
+                synchronized ( smem ) {
+                    if ( smem.isEmpty() ) {
+                        SegmentUtilities.createChildSegments(wm,
+                                                             smem,
+                                                             ((LeftTupleSource) node).getSinkPropagator());
+                    }
+                    return smem.getFirst().getStagedLeftTuples();
+                }
+            } else {
+                return smem.getFirst().getStagedLeftTuples();
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private boolean evalQueryNode(LeftInputAdapterNode liaNode,
+                                  PathMemory pmem,
+                                  NetworkNode node,
+                                  Memory nodeMem,
+                                  SegmentMemory[] smems,
+                                  int smemIndex,
+                                  LeftTupleSets trgTuples,
+                                  InternalWorkingMemory wm,
+                                  LinkedList<StackEntry> stack,
+                                  Set<String> visitedRules,
+                                  LeftTupleSets srcTuples,
+                                  LeftTupleSinkNode sink) {
         QueryElementNodeMemory qmem = (QueryElementNodeMemory) nodeMem;
 
         if (srcTuples.isEmpty() && qmem.getResultLeftTuples().isEmpty()) {
@@ -410,7 +424,7 @@ public class RuleNetworkEvaluator {
             stack.add(stackEntry);
 
             pQueryNode.doNode(qnode, (QueryElementNodeMemory) nodeMem, stackEntry, sink,
-                              wm, srcTuples);
+                              wm, srcTuples, trgTuples, getStagedLeftTuples(node, wm, smems[smemIndex]));
 
             SegmentMemory qsmem = ((QueryElementNodeMemory) nodeMem).getQuerySegmentMemory();
             List<PathMemory> qpmems = qsmem.getPathMemories();

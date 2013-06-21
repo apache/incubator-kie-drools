@@ -2090,4 +2090,40 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertTrue(list.containsAll(asList("B", "C")));
         list.clear();
     }
+
+    @Test
+    public void testQueryAndRetract() {
+        // DROOLS-7
+        String str =
+                "global java.util.List list\n" +
+                "\n" +
+                "query q (String $s)\n" +
+                "    String( this == $s )\n" +
+                "end" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $x : String( this == \"x\" )\n" +
+                "    ?q( \"x\"; )\n" +
+                "then\n" +
+                "    final java.util.List l = list;" +
+                "    org.drools.core.common.AgendaItem item = ( org.drools.core.common.AgendaItem ) drools.getMatch();\n" +
+                "    item.setActivationUnMatchListener( new org.kie.internal.event.rule.ActivationUnMatchListener() {\n" +
+                "        public void unMatch(org.kie.api.runtime.rule.Session wm, org.kie.api.runtime.rule.Match activation) {\n" +
+                "            l.add(\"pippo\");\n" +
+                "        }\n" +
+                "    } );" +
+                "    retract( \"x\" );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+
+        ksession.insert("x");
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+    }
 }
