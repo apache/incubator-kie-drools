@@ -29,10 +29,12 @@ public class PhreakQueryNode {
                        StackEntry stackEntry,
                        LeftTupleSink sink,
                        InternalWorkingMemory wm,
-                       LeftTupleSets srcLeftTuples) {
+                       LeftTupleSets srcLeftTuples,
+                       LeftTupleSets trgLeftTuples,
+                       LeftTupleSets stagedLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(qmem, wm, srcLeftTuples);
+            doLeftDeletes(qmem, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
@@ -152,7 +154,9 @@ public class PhreakQueryNode {
 
     public void doLeftDeletes(QueryElementNodeMemory qmem,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples) {
+                              LeftTupleSets srcLeftTuples,
+                              LeftTupleSets trgLeftTuples,
+                              LeftTupleSets stagedLeftTuples) {
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
@@ -163,7 +167,12 @@ public class PhreakQueryNode {
                 LiaNodeMemory lm = (LiaNodeMemory) qmem.getQuerySegmentMemory().getNodeMemories().get(0);
                 LeftTuple childLeftTuple = fh.getFirstLeftTuple(); // there is only one, all other LTs are peers
                 LeftInputAdapterNode.doDeleteObject(childLeftTuple, childLeftTuple.getPropagationContext(), qmem.getQuerySegmentMemory(), wm, lian, false, lm);
-            } // else do nothing, no state is maintained
+            } else {
+                LeftTuple childLeftTuple = leftTuple.getFirstChild();
+                while (childLeftTuple != null) {
+                    childLeftTuple = RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                }
+            }
 
             leftTuple.clearStaged();
             leftTuple = next;
