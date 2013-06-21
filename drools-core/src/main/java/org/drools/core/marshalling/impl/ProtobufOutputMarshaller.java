@@ -22,10 +22,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.InitialFact;
 import org.drools.core.beliefsystem.BeliefSet;
@@ -51,6 +53,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.marshalling.impl.ProtobufMessages.ProcessData.Builder;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
+import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.FromNode.FromMemory;
@@ -114,6 +117,8 @@ public class ProtobufOutputMarshaller {
     private static ProtobufMessages.KnowledgeSession serializeSession(MarshallerWriteContext context) throws IOException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
         wm.getAgenda().unstageActivations();
+        
+        evaluateRuleActivations( wm );
 
         ProtobufMessages.RuleData.Builder _ruleData = ProtobufMessages.RuleData.newBuilder();
 
@@ -186,6 +191,29 @@ public class ProtobufOutputMarshaller {
         return _session.build();
     }
 
+    private static void evaluateRuleActivations(ReteooWorkingMemory wm) {
+        // ET: NOTE: initially we were only resolving partially evaluated rules
+        // but some tests fail because of that. Have to resolve all rule agenda items
+        // in order to fix the tests
+        
+        // find all partially evaluated rule activations
+//        ActivationIterator it = ActivationIterator.iterator( wm );
+//        Set<String> evaluated = new HashSet<String>();
+//        for ( org.drools.core.spi.Activation item = (org.drools.core.spi.Activation) it.next(); item != null; item = (org.drools.core.spi.Activation) it.next() ) {
+//            if ( !item.isRuleAgendaItem() ) {
+//                evaluated.add( item.getRule().getPackageName()+"."+item.getRule().getName() );
+//            }
+//        }
+        // need to evaluate all lazy partially evaluated activations before serializing
+        for ( Activation activation : wm.getAgenda().getActivations() ) {
+            if ( activation.isRuleAgendaItem() /*&& evaluated.contains( activation.getRule().getPackageName()+"."+activation.getRule().getName() )*/ ) {
+                // evaluate it
+                ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm, null, false );
+                ((RuleAgendaItem)activation).getRuleExecutor().removeRuleAgendaItemWhenEmpty( wm );
+            }
+        }
+    }
+
     private static void writeAgenda(MarshallerWriteContext context,
                                     ProtobufMessages.RuleData.Builder _ksb) throws IOException {
         InternalWorkingMemory wm = context.wm;
@@ -236,14 +264,14 @@ public class ProtobufOutputMarshaller {
         }
         Collections.sort( dormant, ActivationsSorter.INSTANCE );
         for ( org.drools.core.spi.Activation activation : dormant ) {
-            _ab.addActivation( writeActivation( context, (AgendaItem) activation ) );
+            _ab.addMatch( writeActivation( context, (AgendaItem) activation ) );
         }
 
         // serialize all network evaluator activations
         for ( Activation activation : agenda.getActivations() ) {
             if ( activation.isRuleAgendaItem() ) {
                 // serialize it
-                _ab.addRnea( writeActivation( context, (AgendaItem) activation ) );
+                _ab.addRuleActivation( writeActivation( context, (AgendaItem) activation ) );
             }
         }
 
@@ -701,6 +729,7 @@ public class ProtobufOutputMarshaller {
 
         _activation.setSalience( agendaItem.getSalience() );
         _activation.setIsActivated( agendaItem.isQueued() );
+        _activation.setEvaluated( agendaItem.isRuleAgendaItem() );
 
         if ( agendaItem.getActivationGroupNode() != null ) {
             _activation.setActivationGroup( agendaItem.getActivationGroupNode().getActivationGroup().getName() );
