@@ -176,7 +176,11 @@
             <Export-Package>
               org.drools.core.*
             </Export-Package>
+            <Import-Package>
+              *
+            </Import-Package>
             <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>
+            <_removeheaders>Private-Package</_removeheaders>
           </instructions>
         </configuration>
       </plugin>
