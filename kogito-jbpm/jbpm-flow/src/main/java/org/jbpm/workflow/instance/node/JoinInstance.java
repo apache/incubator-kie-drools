@@ -29,6 +29,7 @@ import java.util.Set;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
@@ -161,7 +162,6 @@ public class JoinInstance extends NodeInstanceImpl {
     }
     
     private boolean existsActiveDirectFlow(NodeInstanceContainer nodeInstanceContainer, final Node lookFor) {
-        boolean activeDirectPathExists = false;
         
         Collection<NodeInstance> activeNodeInstancesOrig = nodeInstanceContainer.getNodeInstances();
         List<NodeInstance> activeNodeInstances = new ArrayList<NodeInstance>(activeNodeInstancesOrig);
@@ -178,83 +178,70 @@ public class JoinInstance extends NodeInstanceImpl {
                 return 0;
             }
         });
-        Set<Long> vistedNodes = new HashSet<Long>();
+        
         for (NodeInstance nodeInstance : activeNodeInstances) {              
-            if (nodeInstance instanceof NodeInstanceContainer) {
-                boolean nestedCheck = existsActiveDirectFlow((NodeInstanceContainer) nodeInstance, lookFor);
-                if (nestedCheck) {
-                    return true;
-                }
-            }
-            if (((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getLevel() != ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).getCurrentLevel()) {
+            // do not consider NodeInstanceContainers to be checked, enough to treat is as black box
+            if (((org.jbpm.workflow.instance.NodeInstance)nodeInstance).getLevel() != getLevel()) {
                 continue;
             }
             Node node = nodeInstance.getNode();            
-            vistedNodes.add(node.getId());
-            
-            if (hasLoop(node, lookFor)) {
-                continue;
-            }
-            
-            activeDirectPathExists = checkNodes(vistedNodes, node, lookFor);
-            if (activeDirectPathExists) {
+            Set<Long> vistedNodes = new HashSet<Long>();
+            checkNodes(vistedNodes,node,  node, lookFor);
+            if (vistedNodes.contains(lookFor.getId()) && !vistedNodes.contains(node.getId())) {
                 return true;
             }
         }
         
-        return activeDirectPathExists;
-    }
-    
-    protected boolean hasLoop(Node startAt, final Node lookFor) {
-        Set<Long> nodes = new HashSet<Long>();
-        
-        nodes = collectCompletedNodes(startAt, lookFor, nodes);
-        
-        if (nodes.contains(startAt.getId())) {
-            return true;
-        }
-        
         return false;
     }
-    
-    protected Set<Long> collectCompletedNodes(Node startAt, final Node lookFor, Set<Long> comletedNodes) {
-        if(startAt == null || startAt.getId() == lookFor.getId()) {
-            return Collections.emptySet();
-        }
-        
-        
-        List<Connection> connections = startAt.getIncomingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-        for (Connection conn : connections) {
-            Node prevNode = conn.getFrom();
-            
-            if (prevNode == null || comletedNodes.contains(prevNode.getId())) {
-                continue;
-            }
-            comletedNodes.add(prevNode.getId());
-            collectCompletedNodes(prevNode, lookFor, comletedNodes);
-        }
-        
-        return comletedNodes;
-    }
 
-    private boolean checkNodes(Set<Long> vistedNodes, Node currentNode, Node lookFor) {
+
+    private boolean checkNodes(Set<Long> vistedNodes, Node startAt, Node currentNode, Node lookFor) {
         List<Connection> connections = currentNode.getOutgoingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-        
-        for (Connection conn : connections) {
-            Node nextNode = conn.getTo();
-            if (nextNode == null) {
-                continue;
-            } else {
-                if (vistedNodes.contains(nextNode.getId())) {
+        // special handling for XOR split as it usually is used for arbitrary loops
+        if (currentNode instanceof Split && ((Split) currentNode).getType() == Split.TYPE_XOR) {            
+            for (Connection conn : connections) {
+                Set<Long> xorCopy = new HashSet<Long>();
+                Node nextNode = conn.getTo();
+                if (nextNode == null) {
                     continue;
-                }
-                vistedNodes.add(nextNode.getId());
-                if (nextNode.getId() == lookFor.getId()) {
-                    return true;
                 } else {
-                    boolean nestedCheck = checkNodes(vistedNodes, nextNode, lookFor);
-                    if (nestedCheck) {
+                    xorCopy.add(nextNode.getId());
+                    if (nextNode.getId() != lookFor.getId()) {
+                        checkNodes(xorCopy, currentNode, nextNode, lookFor);
+                    }
+                }  
+                
+                if (xorCopy.contains(lookFor.getId()) && !xorCopy.contains(currentNode.getId())) {
+                    vistedNodes.addAll(xorCopy);
+                    return true;
+                }
+            }
+        } else {
+            for (Connection conn : connections) {
+                Node nextNode = conn.getTo();
+                if (nextNode == null) {
+                    continue;
+                } else {
+                    
+                    if (vistedNodes.contains(nextNode.getId())) {
+                        // we have already been here so let's continue
+                        continue;
+                    }
+                    if (nextNode.getId() == lookFor.getId()) {
+                        // we found the node that we are looking for, add it and continue to find out other parts
+                        // as it could be part of a loop
+                        vistedNodes.add(nextNode.getId());
+                        continue;
+                    }
+                    vistedNodes.add(nextNode.getId());
+                    if (startAt.getId() == nextNode.getId()) {
                         return true;
+                    } else {
+                        boolean nestedCheck = checkNodes(vistedNodes, startAt, nextNode, lookFor);
+                        if (nestedCheck) {
+                            return true;
+                        }
                     }
                 }
             }

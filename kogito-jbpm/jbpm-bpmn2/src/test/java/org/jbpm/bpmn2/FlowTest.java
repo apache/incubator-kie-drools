@@ -32,6 +32,7 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.ForEachNodeInstance;
@@ -44,7 +45,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
-import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.KieSession;
@@ -523,7 +523,8 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ksession.addEventListener(new DefaultProcessEventListener(){
 
             @Override
-            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {                
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {   
+                System.out.println(event.getNodeInstance().getNodeName());
                 Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
                 if (value == null) {
                     value = new Integer(0);
@@ -764,6 +765,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     public void testInclusiveSplitNested() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayNested.bpmn2");
         ksession = createKnowledgeSession(kbase);
+
         TestWorkItemHandler handler = new TestWorkItemHandler();
         TestWorkItemHandler handler2 = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
@@ -790,7 +792,133 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
         
         assertProcessInstanceCompleted(processInstance);
+    }
+    
+    @Test
+    public void testInclusiveSplitWithLoopInside() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayWithLoopInside.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>(); 
+        ksession.addEventListener(new DefaultProcessEventListener(){
 
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {                 
+                System.out.println(event.getNodeInstance().getNodeName() + " " + ((NodeInstanceImpl) event.getNodeInstance()).getLevel());
+                Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
+                if (value == null) {
+                    value = new Integer(0);
+                }
+                
+                value++;
+                nodeInstanceExecutionCounter.put(event.getNodeInstance().getNodeName(), value);
+            }
+
+            
+        });
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        TestWorkItemHandler handler2 = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
+        ksession.getWorkItemManager().registerWorkItemHandler("testWI2", handler2);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", -1);
+        ProcessInstance processInstance = ksession.startProcess("Process_1", params);
+        
+        assertProcessInstanceActive(processInstance);
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(2, workItems.size());
+        
+        for (WorkItem wi : workItems) {
+            assertProcessInstanceActive(processInstance);
+            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        }
+        
+        assertProcessInstanceActive(processInstance);
+        ksession.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getId(), null);
+        
+        assertProcessInstanceActive(processInstance);
+        ksession.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getId(), null);
+        
+        assertProcessInstanceActive(processInstance);
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        
+        assertProcessInstanceCompleted(processInstance);
+        assertEquals(10, nodeInstanceExecutionCounter.size());
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("Start"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("OR diverging"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("tareaWorkflow3"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("tareaWorkflow2"));
+        assertEquals(3, (int)nodeInstanceExecutionCounter.get("OR converging"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("tareaWorkflow6"));
+        assertEquals(2, (int)nodeInstanceExecutionCounter.get("Script"));
+        assertEquals(2, (int)nodeInstanceExecutionCounter.get("XOR diverging"));
+        assertEquals(2, (int)nodeInstanceExecutionCounter.get("XOR converging"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("End"));
+    }
+    
+    @Test
+    public void testInclusiveSplitWithLoopInsideSubprocess() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-InclusiveGatewayWithLoopInsideSubprocess.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        final Map<String, Integer> nodeInstanceExecutionCounter = new HashMap<String, Integer>(); 
+        ksession.addEventListener(new DefaultProcessEventListener(){
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {                 
+                System.out.println(event.getNodeInstance().getNodeName() + " " + ((NodeInstanceImpl) event.getNodeInstance()).getLevel());
+                Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
+                if (value == null) {
+                    value = new Integer(0);
+                }
+                
+                value++;
+                nodeInstanceExecutionCounter.put(event.getNodeInstance().getNodeName(), value);
+            }
+
+            
+        });
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        TestWorkItemHandler handler2 = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("testWI", handler);
+        ksession.getWorkItemManager().registerWorkItemHandler("testWI2", handler2);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", -1);
+        ProcessInstance processInstance = ksession.startProcess("Process_1", params);
+        
+        assertProcessInstanceActive(processInstance);
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(2, workItems.size());
+        
+        for (WorkItem wi : workItems) {
+            assertProcessInstanceActive(processInstance);
+            ksession.getWorkItemManager().completeWorkItem(wi.getId(), null);
+        }
+        
+        assertProcessInstanceActive(processInstance);
+        ksession.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getId(), null);
+        
+        assertProcessInstanceActive(processInstance);
+        ksession.getWorkItemManager().completeWorkItem(handler2.getWorkItem().getId(), null);
+        
+        assertProcessInstanceActive(processInstance);
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        
+        assertProcessInstanceCompleted(processInstance);
+        assertEquals(13, nodeInstanceExecutionCounter.size());
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("Start"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("Sub Process 1"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("sb-start"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("sb-end"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("OR diverging"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("tareaWorkflow3"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("tareaWorkflow2"));
+        assertEquals(3, (int)nodeInstanceExecutionCounter.get("OR converging"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("tareaWorkflow6"));
+        assertEquals(2, (int)nodeInstanceExecutionCounter.get("Script"));
+        assertEquals(2, (int)nodeInstanceExecutionCounter.get("XOR diverging"));
+        assertEquals(2, (int)nodeInstanceExecutionCounter.get("XOR converging"));
+        assertEquals(1, (int)nodeInstanceExecutionCounter.get("End"));
     }
 
     @Test

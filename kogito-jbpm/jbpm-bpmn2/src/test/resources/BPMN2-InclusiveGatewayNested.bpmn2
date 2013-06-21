@@ -12,7 +12,7 @@
         <outputSet id="OutputSet_1"/>
       </ioSpecification>
     </task>
-    <inclusiveGateway id="_3" name="Gateway" gatewayDirection="Diverging">
+    <inclusiveGateway id="_3" name="ORDiverging-1" gatewayDirection="Diverging">
       <incoming>_1-_3</incoming>
       <outgoing>_3-_16</outgoing>
       <outgoing>_3-_4</outgoing>
@@ -25,7 +25,7 @@
         <outputSet id="OutputSet_2"/>
       </ioSpecification>
     </task>
-    <inclusiveGateway id="_7" name="Gateway" gatewayDirection="Converging">
+    <inclusiveGateway id="_7" name="ORConverging-1" gatewayDirection="Converging">
       <incoming>_4-_7</incoming>
       <incoming>_15-_7</incoming>
       <outgoing>_7-_10</outgoing>
@@ -42,7 +42,7 @@
       <incoming>_10-_11</incoming>
       <terminateEventDefinition id="TerminateEventDefinition_1"/>
     </endEvent>
-    <inclusiveGateway id="_12" name="Gateway" gatewayDirection="Diverging">
+    <inclusiveGateway id="_12" name="ORDiverging-2" gatewayDirection="Diverging">
       <incoming>_16-_12</incoming>
       <outgoing>_12-_13</outgoing>
       <outgoing>_12-_14</outgoing>
@@ -63,7 +63,7 @@
         <outputSet id="OutputSet_5"/>
       </ioSpecification>
     </task>
-    <inclusiveGateway id="_15" name="Gateway" gatewayDirection="Converging">
+    <inclusiveGateway id="_15" name="ORConverging-2" gatewayDirection="Converging">
       <incoming>_13-_15</incoming>
       <incoming>_14-_15</incoming>
       <outgoing>_15-_7</outgoing>
@@ -182,7 +182,7 @@
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-  <relationship>
+  <relationship id="Relationship_1">
     <extensionElements>
       <tns:ProcessAnalysisData>
         <tns:Scenario xsi:type="tns:Scenario" id="Scenario_1" name="Scenario 1">

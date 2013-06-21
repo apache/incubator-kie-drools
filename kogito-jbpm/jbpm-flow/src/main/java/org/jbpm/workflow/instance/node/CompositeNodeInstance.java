@@ -157,6 +157,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 
     public void triggerCompleted(String outType) {
     	boolean cancelRemainingInstances = getCompositeNode().isCancelRemainingInstances();
+    	((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(getLevel());
         triggerCompleted(outType, cancelRemainingInstances);
         if (cancelRemainingInstances) {
 	        while (!nodeInstances.isEmpty()) {

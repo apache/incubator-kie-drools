@@ -18,9 +18,11 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.kie.api.definition.process.Connection;
@@ -107,6 +109,10 @@ public class SplitInstance extends NodeInstanceImpl {
                 }
                 if ( selected == null ) {
                 	throw new IllegalArgumentException( "XOR split could not find at least one valid outgoing connection for split " + getSplit().getName() );
+                }
+                if (!hasLoop(selected.getTo(), split)) {
+                    setLevel(1);
+                    ((NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(1);
                 }
                 triggerConnection(selected);
                 break;
@@ -218,6 +224,38 @@ public class SplitInstance extends NodeInstanceImpl {
             default :
                 throw new IllegalArgumentException( "Illegal split type " + split.getType() );
         }
+    }
+    
+    
+    protected boolean hasLoop(Node startAt, final Node lookFor) {
+        Set<Long> vistedNodes = new HashSet<Long>();
+        
+        return checkNodes(startAt, lookFor, vistedNodes);
+        
+    }
+    
+    protected boolean checkNodes(Node currentNode, final Node lookFor, Set<Long> vistedNodes) {
+        List<Connection> connections = currentNode.getOutgoingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+
+        for (Connection conn : connections) {
+            Node nextNode = conn.getTo();
+            if (nextNode == null) {
+                continue;
+            } else {
+                vistedNodes.add(nextNode.getId());
+                if (nextNode.getId() == lookFor.getId()) {                    
+                    return true;
+                } 
+                                
+                boolean nestedCheck = checkNodes(nextNode, lookFor, vistedNodes);
+                if (nestedCheck) {
+                    return true;
+                }
+                
+            }
+        }
+        
+        return false;
     }
     
 }
