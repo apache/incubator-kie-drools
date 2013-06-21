@@ -104,8 +104,8 @@ message Agenda {
     optional FocusStack focus_stack = 4;
     repeated RuleFlowGroup rule_flow_group = 5;
 
-    repeated Activation activation = 6;
-    repeated Activation rnea = 7;
+    repeated Activation match = 6;
+    repeated Activation rule_activation = 7;
 
     message AgendaGroup {
         optional string name = 1;
@@ -114,7 +114,7 @@ message Agenda {
         optional int64 activated_for_recency = 4;
         optional int64 cleared_for_recency = 5;
 
-        repeated Activation activation = 6;
+        repeated Activation match = 6;
         repeated NodeInstance node_instance = 7;
 
         optional bool has_rule_flow_lister = 8;
@@ -133,7 +133,7 @@ message Agenda {
         optional string name = 1;
         optional bool is_active = 2;
         optional bool is_auto_deactivate = 3;
-        repeated Activation activation = 4;
+        repeated Activation match = 4;
         repeated NodeInstance node_instance = 5;
 
         message NodeInstance {
@@ -244,6 +244,7 @@ message Activation {
     optional bool is_activated = 8;
     optional int32 handle_id = 9;
     repeated int32 logical_dependency = 10;
+    optional bool evaluated = 11;
 }
 
 message Tuple {

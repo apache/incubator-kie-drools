@@ -164,6 +164,12 @@ public class PhreakRuleTerminalNode {
             salienceInt = salience.getValue( new DefaultKnowledgeHelper(rtnLeftTuple, wm),
                                              rtnNode.getRule(), wm);
         }
+        
+        if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept( rtnLeftTuple, wm, rtnNode)) {
+            // only relevant for serialization, to not re-fire Matches already fired
+            return;
+        }
+        
         if ( !blocked ) {
             boolean addToExector = true;
             if (  rtnNode.getRule().isLockOnActive() &&
