@@ -409,8 +409,8 @@ public class ProtobufInputMarshaller {
         }
 
         readActivations( context,
-                         _agenda.getActivationList(),
-                         _agenda.getRneaList() );
+                         _agenda.getMatchList(),
+                         _agenda.getRuleActivationList() );
         agenda.setActivationsFilter( context.filter );
     }
 
@@ -734,7 +734,7 @@ public class ProtobufInputMarshaller {
                               TerminalNode rtn) {
             if ( activation.isRuleAgendaItem() ) {
                 ActivationKey key = PersisterHelper.createActivationKey( activation.getRule().getPackageName(), activation.getRule().getName(), activation.getTuple() );
-                if ( !this.rneActivations.containsKey( key ) ) {
+                if ( !this.rneActivations.containsKey( key ) || this.rneActivations.get( key ).getEvaluated() ) {
                     rneaToFire.add( (RuleAgendaItem) activation );
                 }
                 return true;
