@@ -28,6 +28,7 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.ReteooWorkingMemory.QueryRiaFixerNodeFixer;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.Iterator;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -187,9 +188,9 @@ public class QueryRiaFixerNode extends LeftTupleSource
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        LeftTupleIterator it = LeftTupleIterator.iterator( workingMemory, this );
+        Iterator<LeftTuple> it = LeftTupleIterator.iterator( workingMemory, this );
         
-        for ( LeftTuple leftTuple =  ( LeftTuple ) it.next(); leftTuple != null; leftTuple =  ( LeftTuple ) it.next() ) {
+        for ( LeftTuple leftTuple =  it.next(); leftTuple != null; leftTuple = it.next() ) {
             LeftTuple childLeftTuple = leftTuple.getFirstChild();
             while ( childLeftTuple != null ) {
                 RightTuple rightParent = childLeftTuple.getRightParent();            
