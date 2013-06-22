@@ -520,6 +520,7 @@ public class BenchmarkReport {
         String templateFilename = "benchmarkReport.html.ftl";
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("benchmarkReport", this);
+        model.put("reportHelper", new ReportHelper());
 
         Writer writer = null;
         try {

@@ -1,4 +1,5 @@
 <#-- @ftlvariable name="benchmarkHistoryReport" type="org.optaplanner.benchmark.impl.history.BenchmarkHistoryReport" -->
+<#-- @ftlvariable name="reportHelper" type="org.optaplanner.benchmark.impl.report.ReportHelper" -->
 <!DOCTYPE html>
 <html lang="en">
 <head>

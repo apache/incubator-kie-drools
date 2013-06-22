@@ -34,6 +34,7 @@ import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.jfree.chart.JFreeChart;
+import org.optaplanner.benchmark.impl.report.ReportHelper;
 
 public abstract class AbstractProblemStatistic implements ProblemStatistic {
 
@@ -57,7 +58,7 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     }
 
     public String getAnchorId() {
-        return problemBenchmark.getName() + "_" + problemStatisticType.name();
+        return ReportHelper.escapeHtmlId(problemBenchmark.getName() + "_" + problemStatisticType.name());
     }
 
     public String getCsvFilePath() {

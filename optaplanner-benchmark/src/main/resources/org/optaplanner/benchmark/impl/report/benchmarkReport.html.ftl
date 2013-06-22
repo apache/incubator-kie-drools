@@ -1,4 +1,5 @@
 <#-- @ftlvariable name="benchmarkReport" type="org.optaplanner.benchmark.impl.report.BenchmarkReport" -->
+<#-- @ftlvariable name="reportHelper" type="org.optaplanner.benchmark.impl.report.ReportHelper" -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -498,10 +499,8 @@
                                                 <ul class="nav nav-tabs">
                                                     <#assign itemIndex = 0>
                                                     <#list problemStatistic.moveClasses as moveClass>
-                                                        <#-- Escape illegal html element id characters -->
-                                                        <#assign moveClassId = moveClass.canonicalName?replace('.', '_')?replace('$', '__')>
                                                         <li<#if itemIndex == 0> class="active"</#if>>
-                                                            <a href="#problemStatistic_${problemStatistic.anchorId}_${moveClassId}" data-toggle="tab">${moveClass.getSimpleName()}</a>
+                                                            <a href="#problemStatistic_${problemStatistic.anchorId}_${reportHelper.escapeHtmlId(moveClass.canonicalName)}" data-toggle="tab">${moveClass.getSimpleName()}</a>
                                                         </li>
                                                         <#assign itemIndex = itemIndex + 1>
                                                     </#list>
@@ -509,9 +508,7 @@
                                                 <div class="tab-content">
                                                     <#assign itemIndex = 0>
                                                     <#list problemStatistic.moveClasses as moveClass>
-                                                        <#-- Escape illegal html element id characters -->
-                                                        <#assign moveClassId = moveClass.canonicalName?replace('.', '_')?replace('$', '__')>
-                                                        <div class="tab-pane<#if itemIndex == 0> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${moveClassId}">
+                                                        <div class="tab-pane<#if itemIndex == 0> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${reportHelper.escapeHtmlId(moveClass.canonicalName)}">
                                                             <div class="benchmark-chart">
                                                                 <img src="${problemStatistic.getGraphFilePath(moveClass)}"/>
                                                             </div>

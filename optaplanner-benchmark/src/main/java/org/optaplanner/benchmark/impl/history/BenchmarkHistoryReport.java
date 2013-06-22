@@ -31,6 +31,7 @@ import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.report.WebsiteResourceUtils;
 
 public class BenchmarkHistoryReport {
@@ -100,6 +101,7 @@ public class BenchmarkHistoryReport {
         String templateFilename = "benchmarkHistory.html.ftl";
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("benchmarkHistoryReport", this);
+        model.put("reportHelper", new ReportHelper());
 
         Writer writer = null;
         try {
