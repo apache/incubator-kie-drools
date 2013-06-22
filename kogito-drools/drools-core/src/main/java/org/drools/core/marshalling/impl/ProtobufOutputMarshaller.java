@@ -414,10 +414,10 @@ public class ProtobufOutputMarshaller {
     private static ProtobufMessages.NodeMemory writeQueryElementNodeMemory(final int nodeId,
                                                                            final Memory memory,
                                                                            final InternalWorkingMemory wm) {
-        LeftTupleIterator it = LeftTupleIterator.iterator( wm, ((QueryElementNodeMemory) memory).getNode() );
+        org.drools.core.util.Iterator<LeftTuple> it = LeftTupleIterator.iterator( wm, ((QueryElementNodeMemory) memory).getNode() );
 
         ProtobufMessages.NodeMemory.QueryElementNodeMemory.Builder _query = ProtobufMessages.NodeMemory.QueryElementNodeMemory.newBuilder();
-        for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
+        for ( LeftTuple leftTuple = it.next(); leftTuple != null; leftTuple = it.next() ) {
             InternalFactHandle handle = (InternalFactHandle) leftTuple.getObject();
             FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
                     .setId( handle.getId() )

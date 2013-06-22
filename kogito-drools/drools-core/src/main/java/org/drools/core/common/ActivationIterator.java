@@ -18,7 +18,7 @@ public class ActivationIterator
 
     private TerminalNode          node;
     
-    private LeftTupleIterator leftTupleIter;
+    private Iterator<LeftTuple>   leftTupleIter;
 
     private LeftTuple             currentLeftTuple;
 
@@ -38,7 +38,7 @@ public class ActivationIterator
                 continue;
             }
             leftTupleIter = LeftTupleIterator.iterator( wm, node );            
-            this.currentLeftTuple = (LeftTuple) leftTupleIter.next();
+            this.currentLeftTuple = leftTupleIter.next();
         }
     }
 
@@ -57,14 +57,14 @@ public class ActivationIterator
         if ( this.currentLeftTuple != null ) {
             Object obj = currentLeftTuple.getObject();
             acc = obj == Boolean.TRUE ? null : (Activation)obj;
-            currentLeftTuple = ( LeftTuple ) leftTupleIter.next();
+            currentLeftTuple = leftTupleIter.next();
 
             while ( currentLeftTuple == null && (node = (TerminalNode) nodeIter.next()) != null ) {
                 if ( !(node instanceof RuleTerminalNode) ) {
                     continue;
                 }                    
                 leftTupleIter = LeftTupleIterator.iterator( wm, node );            
-                this.currentLeftTuple = (LeftTuple) leftTupleIter.next();
+                this.currentLeftTuple = leftTupleIter.next();
             }
         }
 

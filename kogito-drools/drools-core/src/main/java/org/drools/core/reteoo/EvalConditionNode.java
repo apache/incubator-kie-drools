@@ -30,6 +30,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
+import org.drools.core.util.Iterator;
 import org.kie.api.definition.rule.Rule;
 
 import java.io.Externalizable;
@@ -277,9 +278,9 @@ public class EvalConditionNode extends LeftTupleSource
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        LeftTupleIterator it = LeftTupleIterator.iterator( workingMemory, this );
+        Iterator<LeftTuple> it = LeftTupleIterator.iterator( workingMemory, this );
         
-        for ( LeftTuple leftTuple =  ( LeftTuple ) it.next(); leftTuple != null; leftTuple =  ( LeftTuple ) it.next() ) {
+        for ( LeftTuple leftTuple =  it.next(); leftTuple != null; leftTuple = it.next() ) {
             LeftTuple childLeftTuple = leftTuple.getFirstChild();
             while ( childLeftTuple != null ) {
                 RightTuple rightParent = childLeftTuple.getRightParent();            

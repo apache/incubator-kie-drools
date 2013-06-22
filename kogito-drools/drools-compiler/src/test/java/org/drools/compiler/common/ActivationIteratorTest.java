@@ -6,6 +6,8 @@ import java.util.List;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.DefaultAgenda;
+import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -22,11 +24,11 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testSingleLian() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 when\n" +
+                     "rule rule1 @Eager(true) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule6 when\n" +
+                     "rule rule6 @Eager(true) when\n" +
                      "     java.util.Map()\n" +
                      "then\n" +
                      "end\n" +
@@ -47,6 +49,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
+
+        evaluateEagerList(ksession);
 
         ActivationIterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
@@ -67,16 +71,20 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                         list );
     }
 
+    private void evaluateEagerList(StatefulKnowledgeSession ksession) {
+        ((DefaultAgenda) ((AgendaImpl) ksession.getAgenda()).getAgenda()).evaluateEagerList();
+    }
+
     @Test
     public void testLianPlusEvaln() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 when\n" +
+                     "rule rule1 @Eager(true) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule6 when\n" +
+                     "rule rule6 @Eager(true) when\n" +
                      "     java.util.Map()\n" +
                      "then\n" +
                      "end\n" +
@@ -97,6 +105,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
+
+        evaluateEagerList(ksession);
 
         ActivationIterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
@@ -125,38 +135,38 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         // Rule 4 Shares the eval with 3
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule0 when\n" +
+                     "rule rule0 @Eager(true) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule1 when\n" +
-                     "    $s : String( this != 'xx' )\n" +
-                     "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
-                     "then\n" +
-                     "end\n" +
-                     "rule rule2 when\n" +
+                     "rule rule1 @Eager(true) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule3 when\n" +
+                     "rule rule2 @Eager(true) when\n" +
+                     "    $s : String( this != 'xx' )\n" +
+                     "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule rule3 @Eager(true) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) > 2 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule4 when\n" +
+                     "rule rule4 @Eager(true) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) > 2 ) \n" +
                      "    eval( Integer.parseInt( $s ) > 3 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule5 when\n" +
+                     "rule rule5 @Eager(true) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) > 2 ) \n" +
                      "    eval( Integer.parseInt( $s ) > 3 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule6 when\n" +
+                     "rule rule6 @Eager(true) when\n" +
                      "     java.util.Map()\n" +
                      "then\n" +
                      "end\n" +
@@ -178,6 +188,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
             ksession.insert( new String( "" + i ) );
         }
 
+        evaluateEagerList(ksession);
+
         ActivationIterator it = ActivationIterator.iterator( ksession );
 
         List list = new ArrayList();
@@ -187,7 +199,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         assertContains( new String[]{"rule0:0:true", "rule0:1:true", "rule0:2:true", "rule0:3:true", "rule0:4:true",
                                 "rule1:0:true", "rule1:1:true", "rule1:2:true", "rule2:0:true", "rule2:1:true", "rule2:2:true",
                                 "rule3:3:true", "rule3:4:true",
-                                "rule3:4:true"},
+                                "rule4:4:true", "rule5:4:true"},
                         list );
 
         ksession.fireAllRules();
@@ -200,7 +212,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         assertContains( new String[]{"rule0:0:false", "rule0:1:false", "rule0:2:false", "rule0:3:false", "rule0:4:false",
                                 "rule1:0:false", "rule1:1:false", "rule1:2:false", "rule2:0:false", "rule2:1:false", "rule2:2:false",
                                 "rule3:3:false", "rule3:4:false",
-                                "rule3:4:false"},
+                                "rule4:4:false", "rule5:4:false"},
                         list );
     }
 
