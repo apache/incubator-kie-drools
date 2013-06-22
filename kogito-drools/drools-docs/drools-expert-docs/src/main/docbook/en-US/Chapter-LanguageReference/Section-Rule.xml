@@ -331,6 +331,25 @@ then
 end</programlisting>
     </example>
 
+    <para>A rule controlled by a timer becomes active when it matches, and
+    once for each individual match. Its consequence is executed
+    repeatedly, according to the timer's settings. This stops as soon
+    as the condition doesn't match any more.</para>
+
+    <para>Consequences are executed even after control returns from a call
+    to fireUntilHalt. Moreover, the Engine remains reactive to any
+    changes made to the Working Memory. For instance, removing a fact
+    that was involved in triggering the timer rule's execution causes
+    the repeated execution to terminate, or inserting a fact so that
+    some rule matches will cause that rule to fire. But the Engine is
+    not continually active, only after a rule fires, for whatever
+    reason. Thus, reactions to an insertion done asynchronously will
+    not happen until the next execution of a timer-controlled rule.</para>
+
+    <para>Disposing a session puts an end to all timer activity.</para>
+
+
+
     <para>Calendars are used to control when rules can fire. The Calendar API
     is modelled on <link
     xlink:href="http://www.quartz-scheduler.org/">Quartz</link>:</para>
