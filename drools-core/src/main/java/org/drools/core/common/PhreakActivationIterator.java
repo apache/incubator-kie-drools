@@ -1,26 +1,49 @@
 package org.drools.core.common;
 
-import org.drools.core.util.Iterator;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.FromNode.FromMemory;
+import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleMemory;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
+import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.kie.api.KieBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PhreakActivationIterator
     implements
     Iterator {
     private InternalWorkingMemory wm;
 
-    private Iterator              nodeIter;
+    private java.util.Iterator<AgendaItem> agendaItemIter;
 
-    private TerminalNode          node;
+    private LeftTuple currentLeftTuple;
 
-    private Iterator<LeftTuple>   leftTupleIter;
-
-    private LeftTuple             currentLeftTuple;
+    List<AgendaItem> agendaItems;
 
     PhreakActivationIterator() {
 
@@ -29,46 +52,143 @@ public class PhreakActivationIterator
     private PhreakActivationIterator(InternalWorkingMemory wm,
                                      KieBase kbase) {
         this.wm = wm;
-
-        nodeIter = TerminalNodeIterator.iterator( kbase );
-
-        // Find the first node with Activations an set it.
-        while ( currentLeftTuple == null && (node = (TerminalNode) nodeIter.next()) != null ) {
-            if ( !(node instanceof RuleTerminalNode) ) {
-                continue;
-            }
-            leftTupleIter = LeftTupleIterator.iterator( wm, node );            
-            this.currentLeftTuple = leftTupleIter.next();
-        }
+        agendaItems = collectAgendaItems((InternalKnowledgeBase) kbase, wm);
+        agendaItemIter =  agendaItems.iterator();
     }
+
 
     public static PhreakActivationIterator iterator(InternalWorkingMemory wm) {
         return new PhreakActivationIterator( wm,
-                                       new KnowledgeBaseImpl( wm.getRuleBase() ) );
+                                             new KnowledgeBaseImpl( wm.getRuleBase() ) );
     }
 
     public static PhreakActivationIterator iterator(StatefulKnowledgeSession ksession) {
         return new PhreakActivationIterator( ((InternalWorkingMemoryEntryPoint) ksession).getInternalWorkingMemory(),
-                                       ksession.getKieBase() );
+                                             ksession.getKieBase() );
     }
 
-    public Object next() {
-        Activation acc = null;
-        if ( this.currentLeftTuple != null ) {
-            Object obj = currentLeftTuple.getObject();
-            acc = obj == Boolean.TRUE ? null : (Activation)obj;
-            currentLeftTuple = leftTupleIter.next();
 
-            while ( currentLeftTuple == null && (node = (TerminalNode) nodeIter.next()) != null ) {
-                if ( !(node instanceof RuleTerminalNode) ) {
-                    continue;
-                }                    
-                leftTupleIter = LeftTupleIterator.iterator( wm, node );            
-                this.currentLeftTuple = leftTupleIter.next();
+    public Object next() {
+        if ( agendaItemIter.hasNext() ) {
+            return agendaItemIter.next();
+        } else {
+            return null;
+        }
+    }
+
+
+    public static List<RuleTerminalNode> populateRuleTerminalNodes(InternalKnowledgeBase kbase, Set<RuleTerminalNode>  nodeSet) {
+        Collection<BaseNode[]> nodesWithArray = ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).getReteooBuilder().getTerminalNodes().values();
+
+        for (BaseNode[] nodeArray : nodesWithArray) {
+            for (BaseNode node : nodeArray) {
+                if (node.getType() == NodeTypeEnums.RuleTerminalNode) {
+                    nodeSet.add((RuleTerminalNode) node);
+                }
             }
         }
 
-        return acc;
+        return Arrays.asList(nodeSet.toArray(new RuleTerminalNode[nodeSet.size()]));
+    }
+
+    public static List<AgendaItem> collectAgendaItems(InternalKnowledgeBase kbase, InternalWorkingMemory wm) {
+        Set<RuleTerminalNode> nodeSet = new HashSet<RuleTerminalNode>();
+        List<RuleTerminalNode> nodeList = populateRuleTerminalNodes(kbase, nodeSet);
+
+        List<AgendaItem> agendaItems = new ArrayList<AgendaItem>();
+        for ( RuleTerminalNode rtn : nodeList ) {
+            if ( !nodeSet.contains(rtn) ) {
+                // this node has already been processed
+                continue;
+            }
+            processLeftTuples( rtn.getLeftTupleSource(), agendaItems, nodeSet, wm);
+        }
+        return agendaItems;
+    }
+
+    public static void processLeftTuples(LeftTupleSource node, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
+        while (NodeTypeEnums.LeftInputAdapterNode != node.getType()) {
+            Memory memory = wm.getNodeMemory((MemoryFactory) node);
+            if (memory.getSegmentMemory() == null) {
+                // segment has never been initialized, which means the rule has never been linked.
+                return;
+            }
+            if (NodeTypeEnums.isBetaNode(node)) {
+                BetaMemory bm;
+                if (NodeTypeEnums.AccumulateNode == node.getType()) {
+                    AccumulateMemory am = (AccumulateMemory) memory;
+                    bm = am.getBetaMemory();
+                } else {
+                    bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
+                }
+                FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
+                RightTuple rt = ((BetaNode) node).getFirstRightTuple(bm.getRightTupleMemory(), it);
+                for (; rt != null; rt = (RightTuple) it.next(rt)) {
+                    collectFromRightInput(rt.getFirstChild(), agendaItems, nodeSet, wm);
+                }
+                return;
+            } else if (NodeTypeEnums.FromNode == node.getType()) {
+                FromMemory fm = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
+                LeftTupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
+                FastIterator it = ltm.fullFastIterator();
+                for (LeftTuple lt = (LeftTuple) it.next(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                    collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                }
+                return;
+            }
+            node = node.getLeftTupleSource();
+        }
+
+        // No beta or from nodes, so must retrieve LeftTuples from the LiaNode.
+        // This is done by scanning all the LeftTuples referenced from the FactHandles in the ObjectTypeNode
+        LeftInputAdapterNode lian = (LeftInputAdapterNode) node;
+        Memory memory = wm.getNodeMemory((MemoryFactory) node);
+        if (memory.getSegmentMemory() == null) {
+            // segment has never been initialized, which means the rule has never been linked.
+            return;
+        }
+
+        ObjectSource os = lian.getObjectSource();
+        while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
+            os = os.getParentObjectSource();
+        }
+        ObjectTypeNode otn = (ObjectTypeNode) os;
+        final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory(otn);
+        Iterator it = omem.getObjectHashSet().iterator();
+        LeftTupleSink firstLiaSink = lian.getSinkPropagator().getFirstLeftTupleSink();
+
+        for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
+            InternalFactHandle fh = (InternalFactHandle) entry.getValue();
+            if (fh.getFirstLeftTuple() != null ) {
+                collectFromLeftInput(fh.getFirstLeftTuple(), agendaItems, nodeSet, wm);
+            }
+        }
+    }
+
+    private static void collectFromRightInput(LeftTuple lt, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
+        for (; lt != null; lt = lt.getRightParentNext()) {
+            LeftTuple peer = lt;
+            collectFromPeers(peer, agendaItems, nodeSet, wm);
+        }
+    }
+
+    private static void collectFromLeftInput(LeftTuple lt, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
+        for (; lt != null; lt = lt.getLeftParentNext()) {
+            LeftTuple peer = lt;
+            collectFromPeers(peer, agendaItems, nodeSet, wm);
+        }
+    }
+
+    private static void collectFromPeers(LeftTuple peer, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
+        while (peer != null) {
+            if ( peer.getFirstChild() != null ) {
+                collectFromLeftInput(peer.getFirstChild(), agendaItems, nodeSet, wm);
+            } else {
+                agendaItems.add((AgendaItem) peer);
+                nodeSet.remove(peer.getLeftTupleSink()); // remove this RuleTerminalNode, as we know we've visited it already
+            }
+            peer = peer.getPeer();
+        }
     }
 
 }
