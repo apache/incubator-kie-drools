@@ -28,4 +28,6 @@ public interface ChecklistManager {
 	
 	void completeTask(String userId, long taskId);
 	
+	void abortTask(String userId, long taskId);
+	
 }

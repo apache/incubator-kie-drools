@@ -228,6 +228,13 @@ public class DefaultChecklistManager implements ChecklistManager {
 		runtime.getTaskService().complete(taskId, userId, null);
 		manager.disposeRuntimeEngine(runtime);
 	}
+	
+	public void abortTask(String userId, long taskId) {
+		RuntimeEngine runtime = getRuntime();
+		runtime.getTaskService().start(taskId, userId);
+		runtime.getTaskService().fail(taskId, userId, null);
+		manager.disposeRuntimeEngine(runtime);
+	}
 
 	protected RuntimeEngine getRuntime() {
 		if (manager == null) {

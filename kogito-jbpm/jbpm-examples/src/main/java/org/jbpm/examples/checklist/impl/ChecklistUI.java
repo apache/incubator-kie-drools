@@ -24,6 +24,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +47,11 @@ import org.jbpm.examples.checklist.ChecklistContextConstraint;
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistItem.Status;
 import org.jbpm.examples.checklist.ChecklistManager;
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.test.JBPMHelper;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.task.api.UserGroupCallback;
 
 /**
@@ -68,9 +71,10 @@ public class ChecklistUI extends JFrame {
     private ChecklistManager checklistManager;
 	List<ChecklistItem> items = null;
     
-    private JComboBox contexts;
+    private JComboBox<String> contexts;
     private JTable itemTable;
     private JTextField userNameTextField;
+    private boolean ctrl = false;
     
     public ChecklistUI() {
         setSize(new Dimension(400, 300));
@@ -80,25 +84,24 @@ public class ChecklistUI extends JFrame {
         
 		JBPMHelper.startH2Server();
 		JBPMHelper.setupDataSource();
-        DefaultRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-		environment.setUserGroupCallback(new UserGroupCallback() {
-			public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
-				List<String> result = new ArrayList<String>();
-				if ("actor4".equals(userId)) {
-					result.add("group1");
-				}
-				return result;
-			}
-			public boolean existsUser(String arg0) {
-				return true;
-			}
-			public boolean existsGroup(String arg0) {
-				return true;
-			}
-		});
-		environment.addAsset(
-			ResourceFactory.newClassPathResource("checklist/SampleChecklistProcess.bpmn"),
-			ResourceType.BPMN2);
+		RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+            .userGroupCallback(new UserGroupCallback() {
+    			public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
+    				List<String> result = new ArrayList<String>();
+    				if ("actor4".equals(userId)) {
+    					result.add("group1");
+    				}
+    				return result;
+    			}
+    			public boolean existsUser(String arg0) {
+    				return true;
+    			}
+    			public boolean existsGroup(String arg0) {
+    				return true;
+    			}
+    		})
+            .addAsset(ResourceFactory.newClassPathResource("checklist/SampleChecklistProcess.bpmn"), ResourceType.BPMN2)
+            .get();
 		checklistManager = new DefaultChecklistManager(environment);
     }
     
@@ -119,7 +122,7 @@ public class ChecklistUI extends JFrame {
         c.anchor = GridBagConstraints.WEST;
         panel.add(createButton, c);
         
-        contexts = new JComboBox();
+        contexts = new JComboBox<String>();
         contexts.setPreferredSize(new Dimension(80, 24));
         contexts.setSize(new Dimension(80, 24));
         c = new GridBagConstraints();
@@ -143,6 +146,18 @@ public class ChecklistUI extends JFrame {
         itemTable.setRowHeight(30);
         itemTable.setShowHorizontalLines(false);
         itemTable.setShowVerticalLines(false);
+        itemTable.addKeyListener(new KeyListener() {
+			public void keyTyped(KeyEvent e) {
+			}
+			public void keyReleased(KeyEvent e) {
+				ctrl = false;
+			}
+			public void keyPressed(KeyEvent e) {
+				if (e.isControlDown()) {
+					ctrl = true;
+				}
+			}
+		});
         itemTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				int index = e.getFirstIndex();
@@ -152,7 +167,11 @@ public class ChecklistUI extends JFrame {
 						String actorId = getActorId();
 						try {
 							checklistManager.claimTask(actorId, item.getTaskId());
-							checklistManager.completeTask(actorId, item.getTaskId());
+							if (ctrl) {
+								checklistManager.abortTask(actorId, item.getTaskId());
+							} else {
+								checklistManager.completeTask(actorId, item.getTaskId());
+							}
 						} catch (Throwable t) {
 							// Do nothing
 						}
@@ -161,7 +180,11 @@ public class ChecklistUI extends JFrame {
 						String actorId = getActorId();
 						if (item.getActors().equals(actorId)) {
 							try {
-								checklistManager.completeTask(actorId, item.getTaskId());
+								if (ctrl) {
+									checklistManager.abortTask(actorId, item.getTaskId());
+								} else {
+									checklistManager.completeTask(actorId, item.getTaskId());
+								}
 							} catch (Throwable t) {
 								// Do nothing
 							}

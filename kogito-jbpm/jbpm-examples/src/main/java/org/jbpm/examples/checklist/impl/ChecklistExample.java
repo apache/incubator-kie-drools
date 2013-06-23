@@ -5,10 +5,11 @@ import java.util.List;
 
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistManager;
-import org.jbpm.runtime.manager.impl.DefaultRuntimeEnvironment;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.test.JBPMHelper;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.task.api.UserGroupCallback;
 
 public class ChecklistExample {
@@ -18,25 +19,24 @@ public class ChecklistExample {
 			
 			JBPMHelper.startH2Server();
 			JBPMHelper.setupDataSource();
-			DefaultRuntimeEnvironment environment = new DefaultRuntimeEnvironment();
-			environment.setUserGroupCallback(new UserGroupCallback() {
-				public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
-					List<String> result = new ArrayList<String>();
-					if ("actor4".equals(userId)) {
-						result.add("group1");
-					}
-					return result;
-				}
-				public boolean existsUser(String arg0) {
-					return true;
-				}
-				public boolean existsGroup(String arg0) {
-					return true;
-				}
-			});
-			environment.addAsset(
-				ResourceFactory.newClassPathResource("checklist/SampleChecklistProcess.bpmn"),
-				ResourceType.BPMN2);
+			RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+	            .userGroupCallback(new UserGroupCallback() {
+	    			public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
+	    				List<String> result = new ArrayList<String>();
+	    				if ("actor4".equals(userId)) {
+	    					result.add("group1");
+	    				}
+	    				return result;
+	    			}
+	    			public boolean existsUser(String arg0) {
+	    				return true;
+	    			}
+	    			public boolean existsGroup(String arg0) {
+	    				return true;
+	    			}
+	    		})
+	            .addAsset(ResourceFactory.newClassPathResource("checklist/SampleChecklistProcess.bpmn"), ResourceType.BPMN2)
+	            .get();
 			ChecklistManager checklistManager = new DefaultChecklistManager(environment);
 	
 			long c1 = checklistManager.createContext("org.jbpm.examples.checklist.sample1");
