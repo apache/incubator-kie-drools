@@ -14,23 +14,46 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain;
+package org.optaplanner.core.impl.testdata.domain.accessmodifier;
 
 import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataUtils;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataPrivateSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataAccessModifierSolution extends TestdataObject implements Solution<SimpleScore> {
+
+    private static final String STATIC_FINAL_FIELD = "staticFinalFieldValue";
+
+    private static Object staticField;
+
+    public static String getStaticFinalField() {
+        return STATIC_FINAL_FIELD;
+    }
+
+    public static Object getStaticField() {
+        return staticField;
+    }
+
+    public static void setStaticField(Object staticField) {
+        TestdataAccessModifierSolution.staticField = staticField;
+    }
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return TestdataUtils.buildSolutionDescriptor(TestdataPrivateSolution.class, TestdataEntity.class);
+        return TestdataUtils.buildSolutionDescriptor(TestdataAccessModifierSolution.class, TestdataEntity.class);
     }
+
+    private final String finalField;
+    private String readWriteOnlyField;
 
     private List<TestdataValue> valueList;
     private List<TestdataEntity> entityList;
@@ -38,11 +61,28 @@ public class TestdataPrivateSolution extends TestdataObject implements Solution<
     private SimpleScore score;
 
     @SuppressWarnings("unused")
-    private TestdataPrivateSolution() {
+    private TestdataAccessModifierSolution() {
+        finalField = "No-argument constructor";
     }
 
-    public TestdataPrivateSolution(String code) {
+    public TestdataAccessModifierSolution(String code) {
         super(code);
+        finalField = "Constructor with argument code (" + code + ")";
+    }
+
+    public String getFinalField() {
+        return finalField;
+    }
+
+    public String getReadOnlyField() {
+        return "read" + readWriteOnlyField;
+    }
+
+    public void setWriteOnlyField(String writeOnlyField) {
+        if (!writeOnlyField.startsWith("write")) {
+            throw new IllegalArgumentException("The writeOnlyField (" + writeOnlyField + ") should start with write.");
+        }
+        readWriteOnlyField = writeOnlyField.substring("write".length());
     }
 
     public List<TestdataValue> getValueList() {

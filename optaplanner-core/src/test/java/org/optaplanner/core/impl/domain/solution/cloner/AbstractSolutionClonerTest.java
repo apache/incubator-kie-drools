@@ -28,8 +28,7 @@ import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-import org.optaplanner.core.impl.testdata.domain.TestdataImmutableSolution;
-import org.optaplanner.core.impl.testdata.domain.TestdataPrivateSolution;
+import org.optaplanner.core.impl.testdata.domain.accessmodifier.TestdataAccessModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
@@ -68,12 +67,13 @@ public abstract class AbstractSolutionClonerTest {
         original.setEntityList(originalEntityList);
 
         TestdataSolution clone = cloner.cloneSolution(original);
+
         assertNotSame(original, clone);
+        assertCode("solution", clone);
         assertSame(valueList, clone.getValueList());
 
         List<TestdataEntity> cloneEntityList = clone.getEntityList();
         assertNotSame(originalEntityList, cloneEntityList);
-        assertCode("solution", clone);
         assertEquals(4, cloneEntityList.size());
         TestdataEntity cloneA = cloneEntityList.get(0);
         TestdataEntity cloneB = cloneEntityList.get(1);
@@ -91,9 +91,12 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     @Test
-    public void clonePrivateSolution() {
-        SolutionDescriptor solutionDescriptor = TestdataPrivateSolution.buildSolutionDescriptor();
-        SolutionCloner<TestdataPrivateSolution> cloner = createSolutionCloner(solutionDescriptor);
+    public void cloneAccessModifierSolution() {
+        Object staticObject = new Object();
+        TestdataAccessModifierSolution.setStaticField(staticObject);
+
+        SolutionDescriptor solutionDescriptor = TestdataAccessModifierSolution.buildSolutionDescriptor();
+        SolutionCloner<TestdataAccessModifierSolution> cloner = createSolutionCloner(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");
@@ -103,61 +106,26 @@ public abstract class AbstractSolutionClonerTest {
         TestdataEntity c = new TestdataEntity("c", val3);
         TestdataEntity d = new TestdataEntity("d", val3);
 
-        TestdataPrivateSolution original = new TestdataPrivateSolution("solution");
+        TestdataAccessModifierSolution original = new TestdataAccessModifierSolution("solution");
+        original.setWriteOnlyField("writeHello");
         List<TestdataValue> valueList = Arrays.asList(val1, val2, val3);
         original.setValueList(valueList);
         List<TestdataEntity> originalEntityList = Arrays.asList(a, b, c, d);
         original.setEntityList(originalEntityList);
 
-        TestdataPrivateSolution clone = cloner.cloneSolution(original);
+        TestdataAccessModifierSolution clone = cloner.cloneSolution(original);
+
+        assertSame("staticFinalFieldValue", TestdataAccessModifierSolution.getStaticFinalField());
+        assertSame(staticObject, TestdataAccessModifierSolution.getStaticField());
+
         assertNotSame(original, clone);
+        assertCode("solution", clone);
+        assertEquals(original.getFinalField(), clone.getFinalField());
+        assertEquals("readHello", clone.getReadOnlyField());
         assertSame(valueList, clone.getValueList());
 
         List<TestdataEntity> cloneEntityList = clone.getEntityList();
         assertNotSame(originalEntityList, cloneEntityList);
-        assertCode("solution", clone);
-        assertEquals(4, cloneEntityList.size());
-        TestdataEntity cloneA = cloneEntityList.get(0);
-        TestdataEntity cloneB = cloneEntityList.get(1);
-        TestdataEntity cloneC = cloneEntityList.get(2);
-        TestdataEntity cloneD = cloneEntityList.get(3);
-        assertEntityClone(a, cloneA, "a", "1");
-        assertEntityClone(b, cloneB, "b", "1");
-        assertEntityClone(c, cloneC, "c", "3");
-        assertEntityClone(d, cloneD, "d", "3");
-
-        b.setValue(val2);
-        assertCode("2", b.getValue());
-        // Clone remains unchanged
-        assertCode("1", cloneB.getValue());
-    }
-
-    @Test
-    public void cloneImmutableSolution() {
-        SolutionDescriptor solutionDescriptor = TestdataImmutableSolution.buildSolutionDescriptor();
-        SolutionCloner<TestdataImmutableSolution> cloner = createSolutionCloner(solutionDescriptor);
-
-        TestdataValue val1 = new TestdataValue("1");
-        TestdataValue val2 = new TestdataValue("2");
-        TestdataValue val3 = new TestdataValue("3");
-        TestdataEntity a = new TestdataEntity("a", val1);
-        TestdataEntity b = new TestdataEntity("b", val1);
-        TestdataEntity c = new TestdataEntity("c", val3);
-        TestdataEntity d = new TestdataEntity("d", val3);
-
-        TestdataImmutableSolution original = new TestdataImmutableSolution("solution");
-        List<TestdataValue> valueList = Arrays.asList(val1, val2, val3);
-        original.setValueList(valueList);
-        List<TestdataEntity> originalEntityList = Arrays.asList(a, b, c, d);
-        original.setEntityList(originalEntityList);
-
-        TestdataImmutableSolution clone = cloner.cloneSolution(original);
-        assertNotSame(original, clone);
-        assertSame(valueList, clone.getValueList());
-
-        List<TestdataEntity> cloneEntityList = clone.getEntityList();
-        assertNotSame(originalEntityList, cloneEntityList);
-        assertCode("solution", clone);
         assertEquals(4, cloneEntityList.size());
         TestdataEntity cloneA = cloneEntityList.get(0);
         TestdataEntity cloneB = cloneEntityList.get(1);
