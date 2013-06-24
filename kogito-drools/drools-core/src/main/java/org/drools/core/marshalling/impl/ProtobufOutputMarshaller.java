@@ -22,12 +22,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.core.InitialFact;
 import org.drools.core.beliefsystem.BeliefSet;
@@ -523,7 +521,7 @@ public class ProtobufOutputMarshaller {
                     }
                 }
 
-                if ( key.getBeliefSet() != null && !key.getBeliefSet().isEmpty() ) {
+                if ( key.getBeliefSet() != null ) {
                     writeBeliefSet( context, key.getBeliefSet(), _key );
                 }
 

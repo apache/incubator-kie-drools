@@ -296,7 +296,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             }
         }
 
-        if( context.getReaderContext() != null && sm != null ) {
+        if( context.getReaderContext() != null /*&& sm != null*/ ) {
             // we are deserializing a session, so we might need to evaluate
             // rule activations immediately
             MarshallerReaderContext mrc = (MarshallerReaderContext) context.getReaderContext();

@@ -592,41 +592,46 @@ public class ProtobufInputMarshaller {
                                       ProtobufMessages.BeliefSet _beliefSet) throws IOException,
                                                                             ClassNotFoundException {
         InternalFactHandle handle = (InternalFactHandle) context.handles.get( _beliefSet.getHandleId() );
-        for ( ProtobufMessages.LogicalDependency _logicalDependency : _beliefSet.getLogicalDependencyList() ) {
-            ProtobufMessages.Activation _activation = _logicalDependency.getActivation();
-            Activation activation = (Activation) context.filter.getTuplesCache().get(
-                                                                                      PersisterHelper.createActivationKey( _activation.getPackageName(),
-                                                                                                                           _activation.getRuleName(),
-                                                                                                                           _activation.getTuple() ) ).getObject();
+        // phreak might serialize empty belief sets, so he have to handle it during deserialization 
+        if( _beliefSet.getLogicalDependencyCount() > 0 ) {
+            for ( ProtobufMessages.LogicalDependency _logicalDependency : _beliefSet.getLogicalDependencyList() ) {
+                ProtobufMessages.Activation _activation = _logicalDependency.getActivation();
+                Activation activation = (Activation) context.filter.getTuplesCache().get(
+                                                                                          PersisterHelper.createActivationKey( _activation.getPackageName(),
+                                                                                                                               _activation.getRuleName(),
+                                                                                                                               _activation.getTuple() ) ).getObject();
 
-            Object object = null;
-            ObjectMarshallingStrategy strategy = null;
-            if ( _logicalDependency.hasObjectStrategyIndex() ) {
-                strategy = context.usedStrategies.get( _logicalDependency.getObjectStrategyIndex() );
-                object = strategy.unmarshal( context.strategyContexts.get( strategy ),
-                                             context,
-                                             _logicalDependency.getObject().toByteArray(),
-                                             (context.ruleBase == null) ? null : context.ruleBase.getRootClassLoader() );
+                Object object = null;
+                ObjectMarshallingStrategy strategy = null;
+                if ( _logicalDependency.hasObjectStrategyIndex() ) {
+                    strategy = context.usedStrategies.get( _logicalDependency.getObjectStrategyIndex() );
+                    object = strategy.unmarshal( context.strategyContexts.get( strategy ),
+                                                 context,
+                                                 _logicalDependency.getObject().toByteArray(),
+                                                 (context.ruleBase == null) ? null : context.ruleBase.getRootClassLoader() );
+                }
+
+                Object value = null;
+                if ( _logicalDependency.hasValueStrategyIndex() ) {
+                    strategy = context.usedStrategies.get( _logicalDependency.getValueStrategyIndex() );
+                    value = strategy.unmarshal( context.strategyContexts.get( strategy ),
+                                                context,
+                                                _logicalDependency.getValue().toByteArray(),
+                                                (context.ruleBase == null) ? null : context.ruleBase.getRootClassLoader() );
+                }
+
+                ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint) handle.getEntryPoint()).getEntryPoint(),
+                                                                                                             handle.getObject() );
+                tms.readLogicalDependency( handle,
+                                           object,
+                                           value,
+                                           activation,
+                                           activation.getPropagationContext(),
+                                           activation.getRule(),
+                                           typeConf );
             }
-
-            Object value = null;
-            if ( _logicalDependency.hasValueStrategyIndex() ) {
-                strategy = context.usedStrategies.get( _logicalDependency.getValueStrategyIndex() );
-                value = strategy.unmarshal( context.strategyContexts.get( strategy ),
-                                            context,
-                                            _logicalDependency.getValue().toByteArray(),
-                                            (context.ruleBase == null) ? null : context.ruleBase.getRootClassLoader() );
-            }
-
-            ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint) handle.getEntryPoint()).getEntryPoint(),
-                                                                                                         handle.getObject() );
-            tms.readLogicalDependency( handle,
-                                       object,
-                                       value,
-                                       activation,
-                                       activation.getPropagationContext(),
-                                       activation.getRule(),
-                                       typeConf );
+        } else {
+            handle.getEqualityKey().setBeliefSet( tms.getBeliefSystem().newBeliefSet( handle ) );
         }
     }
 
