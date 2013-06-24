@@ -537,6 +537,171 @@
         </figure>
       </section>
 
+       <section>
+        <title>BPM Console</title>
+        <para>The following sections describe the improvements for the different components provided by the jBPM Console NG or the BPM related
+        screens inside KIE Workbench for Beta4.</para>
+
+        <section>
+          <title>General Integration with Drools and Core Uberfire Components</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>Business Oriented access to projects structures</para>
+            </listitem>
+
+            <listitem>
+              <para>Build and deploy projects containing processes with the standard Kmodule structure</para>
+            </listitem>
+
+            <listitem>
+              <para>Improvements on security domain configuration</para>
+            </listitem>
+
+            <listitem>
+              <para>Improvements on single sign on with the Dashboards application</para>
+            </listitem>
+
+            
+          </itemizedlist>
+          <figure>
+            <title>Process Authoring Perspective </title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="left" fileref="images/Chapter-Release_Notes/BPM-ProcessAuthoring.png"/>
+              </imageobject>
+            </mediaobject>
+          </figure>
+        </section>
+        
+       
+        
+        <section>
+          <title>Process Management</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>Improved lists with search/filter capabilities</para>
+            </listitem>
+
+            <listitem>
+              <para>Access to the process model and process instance graph through the Process Designer</para>
+            </listitem>
+
+            
+          </itemizedlist>
+          <figure>
+            <title>Process Instance Details</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="left" fileref="images/Chapter-Release_Notes/BPM-ProcessInstanceDetails.png"/>
+              </imageobject>
+            </mediaobject>
+          </figure>
+          <figure>
+            <title>Process Instances Lists</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="left" fileref="images/Chapter-Release_Notes/BPM-ProcessInstanceslist.png"/>
+              </imageobject>
+            </mediaobject>
+          </figure>
+          
+        </section>
+        
+         <section>
+          <title>Tasks List</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>Calendar and Grid View merged into a single view</para>
+            </listitem>
+            <listitem>
+              <para>Filter capabilities improved</para>
+            </listitem>
+            <listitem>
+              <para>Search and filter is now possible</para>
+            </listitem>
+            <listitem>
+              <para>New task creation allows to set up multiple users and groups for the task</para>
+            </listitem>
+            <listitem>
+              <para>Now you can release every task that you have assigned (WS-HT conformance)</para>
+            </listitem>
+            <listitem>
+              <para>Initial version of the assignments tab added</para>
+            </listitem>
+            
+          </itemizedlist>
+          <figure>
+            <title>Unified Filters</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="left" fileref="images/Chapter-Release_Notes/BPM-TasksListUnifiedDetails.png"/>
+              </imageobject>
+            </mediaobject>
+          </figure>
+          <figure>
+            <title>Day View</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="left" fileref="images/Chapter-Release_Notes/BPM-TasksListDayView.png"/>
+              </imageobject>
+            </mediaobject>
+          </figure>
+          <figure>
+            <title>Month View</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="left" fileref="images/Chapter-Release_Notes/BPM-TasksListMonthView.png"/>
+              </imageobject>
+            </mediaobject>
+          </figure>
+          
+        </section>
+        
+         <section>
+          <title>Deployments</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>Deployments screen added for admins</para>
+            </listitem>
+            <listitem>
+              <para>Automatic deployments by default</para>
+            </listitem>
+            <listitem>
+              <para>Custom deployments based on available KModules</para>
+            </listitem>
+            <listitem>
+              <para>Filter capabilities</para>
+            </listitem>
+            <listitem>
+              <para>Undeploy possible only on KModules with no active process instances</para>
+            </listitem>
+          
+          </itemizedlist>
+          <figure>
+            <title>Deployed Units</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="left" fileref="images/Chapter-Release_Notes/BPM-DeployedUnitsList.png"/>
+              </imageobject>
+            </mediaobject>
+          </figure>
+         
+          
+        </section>
+        
+       </section>
+
       <section>
         <title>Data Modeller</title>
 
