@@ -576,9 +576,9 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertEquals( "Only sensor is there",
                       1,
                       list.size() );
-        assertEquals( "Exactly seven events",
-                      7,
-                      events.size() );
+
+        TruthMaintenanceSystem tms =  ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        assertTrue(tms.getEqualityKeyMap().isEmpty());
     }
 
     @Test
@@ -1038,17 +1038,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         
         assertEquals( 2, count );
 
-        ArgumentCaptor<ObjectInsertedEvent> insertsCaptor = ArgumentCaptor.forClass( ObjectInsertedEvent.class );
-        verify( wmel, times(4) ).objectInserted( insertsCaptor.capture() );
-        List<ObjectInsertedEvent> inserts = insertsCaptor.getAllValues();
-        assertThat( inserts.get( 0 ).getObject(), is(  (Object) bob ) );
-        assertThat( inserts.get( 1 ).getObject(), is(  (Object) mark) );
-        assertThat( inserts.get( 2 ).getObject(), is( (Object) "rule 2" ) );
-        
-        ArgumentCaptor<ObjectDeletedEvent> retractsCaptor = ArgumentCaptor.forClass( ObjectDeletedEvent.class );
-        verify( wmel, times(1) ).objectDeleted(retractsCaptor.capture());
-        List<ObjectDeletedEvent> retracts = retractsCaptor.getAllValues();
-        assertThat( retracts.get( 0 ).getOldObject(), is( (Object) "rule 2" ) );
+        assertEquals( 2, session.getObjects().size());
+
+        TruthMaintenanceSystem tms =  ((NamedEntryPoint)session.getEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        assertTrue(tms.getEqualityKeyMap().isEmpty());
     }
     
     @Test
