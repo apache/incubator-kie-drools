@@ -427,6 +427,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( leftTuple.getStagedType() != LeftTuple.INSERT ) {
             // things staged as inserts, are left as inserts and use the pctx associated from the time of insertion
             leftTuple.setPropagationContext( context );
+            if (leftTuple.getFirstChild() != null) {
+                leftTuple.getFirstChild().setPropagationContext( context );
+            }
         }
         synchronized ( ((SynchronizedLeftTupleSets)leftTuples).getLock() ) {
             // @TODO I synchronized this, as I'm not 100% of the thread interactions here, it might be possible to remove this later.
