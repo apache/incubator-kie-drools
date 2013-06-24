@@ -1593,9 +1593,9 @@ public class MarshallingTest extends CommonTestMethodBase {
         rule2 += "when\n";
         rule2 += "    $c : Cheese( ) \n";
         rule2 += "    $p : Person( cheese == $c ) \n";
-        rule2 += "    Cell( value == $p.age ) \n";
+        rule2 += "    $x : Cell( value == $p.age ) \n";
         rule2 += "then\n";
-        rule2 += "    list.add( $p );\n";
+        rule2 += "    list.add( $x );\n";
         rule2 += "end";
 
         String rule3 = "package org.drools.compiler.test;\n";
@@ -1656,55 +1656,47 @@ public class MarshallingTest extends CommonTestMethodBase {
         session = getSerialisedStatefulSession( session );
         session.fireAllRules();
 
+        list = (List) session.getGlobal( "list" );
         assertEquals( 3,
-                      ((List) session.getGlobal( "list" )).size() );
-        assertEquals( r2d2,
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
-        assertEquals( c3po,
-                      ((List) session.getGlobal( "list" )).get( 1 ) );
-        assertEquals( bobba,
-                      ((List) session.getGlobal( "list" )).get( 2 ) );
+                      list.size() );
+        assertTrue( list.contains( r2d2 ) );
+        assertTrue( list.contains( c3po ) );
+        assertTrue( list.contains( bobba ) );
 
         session = getSerialisedStatefulSession( session );
 
-        session.insert( new Cell( 30 ) );
-        session.insert( new Cell( 58 ) );
+        Cell cell30 = new Cell( 30 );
+        session.insert( cell30 );
+        Cell cell58 = new Cell( 58 );
+        session.insert( cell58 );
 
         session = getSerialisedStatefulSession( session );
 
         session.fireAllRules();
 
         assertEquals( 5,
-                      ((List) session.getGlobal( "list" )).size() );
-        assertEquals( bobba,
-                      ((List) session.getGlobal( "list" )).get( 4 ) );
-        assertEquals( r2d2,
-                      ((List) session.getGlobal( "list" )).get( 3 ) );
+                      list.size() );
+        assertTrue( list.contains( cell30 ) );
+        assertTrue( list.contains( cell58 ) );
 
         session = getSerialisedStatefulSession( session );
 
         session.insert( new FactA( 15 ) );
         session.insert( new FactB( 20 ) );
-        session.insert( new FactC( 27 ) );
-        session.insert( new FactC( 52 ) );
+        FactC factC27 = new FactC( 27 );
+        session.insert( factC27 );
+        FactC factC52 = new FactC( 52 );
+        session.insert( factC52 );
 
         session = getSerialisedStatefulSession( session );
 
         session.fireAllRules();
-
-        assertEquals( 6,
-                      ((List) session.getGlobal( "list" )).size() );
-        assertEquals( new FactC( 52 ),
-                      ((List) session.getGlobal( "list" )).get( 5 ) );
-
-        session = getSerialisedStatefulSession( session );
-
         session.fireAllRules();
 
         assertEquals( 7,
-                      ((List) session.getGlobal( "list" )).size() );
-        assertEquals( new FactC( 27 ),
-                      ((List) session.getGlobal( "list" )).get( 6 ) );
+                      list.size() );
+        assertTrue( list.contains( factC52 ) );
+        assertTrue( list.contains( factC27 ) );
     }
 
     @Test
