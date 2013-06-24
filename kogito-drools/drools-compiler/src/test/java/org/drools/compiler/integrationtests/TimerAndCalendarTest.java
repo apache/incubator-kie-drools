@@ -1324,7 +1324,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
 
 
-    @Test //(timeout=10000)
+    @Test (timeout=10000)
     public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
         if ( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
             return; // fails randomly for Rete

@@ -41,9 +41,11 @@ import org.drools.compiler.PersonInterface;
 import org.drools.compiler.Precondition;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.compiler.StockTick;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.impl.EnvironmentFactory;
@@ -325,7 +327,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       list.get( 2 ) );
     }
 
-    @Test//(timeout=10000)
+    @Test (timeout=10000)
     public void testRemovePackage() throws Exception {
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackages(  "test_RemovePackage.drl" ) );
         final String packageName = kpkgs.iterator().next().getName();
@@ -879,7 +881,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout=10000)
+    @Test (timeout=10000)
     public void testDynamicRuleAdditionsWithEntryPoints() throws Exception {
         Collection<KnowledgePackage> kpkgs = loadKnowledgePackages("test_DynamicWithEntryPoint.drl" );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -1158,7 +1160,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         
     }
 
-    @Test(timeout=10000)
+    @Test// (timeout=10000)
     public void testJBRULES_2206() {
         KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );
@@ -1173,6 +1175,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         }
 
         kbase.addKnowledgePackages( loadKnowledgePackages( "test_JBRULES_2206_1.drl" ));
+        ((DefaultAgenda) ((AgendaImpl) session.getAgenda()).getAgenda()).evaluateEagerList();
 
         // two matching rules were added, so 2 activations should have been created 
         verify( ael, times( 2 ) ).matchCreated(any(MatchCreatedEvent.class));
@@ -1181,6 +1184,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 2, fireCount );
 
         kbase.addKnowledgePackages( loadKnowledgePackages( "test_JBRULES_2206_2.drl" ));
+        ((DefaultAgenda) ((AgendaImpl) session.getAgenda()).getAgenda()).evaluateEagerList();
 
         // one rule was overridden and should activate 
         verify( ael, times( 3 ) ).matchCreated(any(MatchCreatedEvent.class));

@@ -752,7 +752,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         execTestAccumulateSum( "test_AccumulateSumMVEL.drl" );
     }
 
-    @Test  //(timeout = 10000)
+    @Test  (timeout = 10000)
     public void testAccumulateMultiPatternWithFunctionJava() throws Exception {
         execTestAccumulateSum( "test_AccumulateMultiPatternFunctionJava.drl" );
     }

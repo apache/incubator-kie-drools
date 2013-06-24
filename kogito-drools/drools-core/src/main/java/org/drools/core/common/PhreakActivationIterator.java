@@ -189,12 +189,6 @@ public class PhreakActivationIterator
         }
     }
 
-    private static void collectFromRightInput(LeftTuple lt, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
-        for (; lt != null; lt = lt.getRightParentNext()) {
-            collectFromPeers(lt, agendaItems, nodeSet, wm);
-        }
-    }
-
     private static void collectFromLeftInput(LeftTuple lt, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
         for (; lt != null; lt = lt.getLeftParentNext()) {
             collectFromPeers(lt, agendaItems, nodeSet, wm);

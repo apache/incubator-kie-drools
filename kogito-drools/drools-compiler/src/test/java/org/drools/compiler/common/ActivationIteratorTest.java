@@ -315,7 +315,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
-        ((DefaultAgenda)((StatefulKnowledgeSessionImpl)ksession).session.getAgenda()).evaluateEagerList();
+        evaluateEagerList(ksession);
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
@@ -363,7 +363,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
-        ((DefaultAgenda)((StatefulKnowledgeSessionImpl)ksession).session.getAgenda()).evaluateEagerList();
+        evaluateEagerList(ksession);
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
@@ -422,7 +422,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
-        ((DefaultAgenda)((StatefulKnowledgeSessionImpl)ksession).session.getAgenda()).evaluateEagerList();
+        evaluateEagerList(ksession);
 
         Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();

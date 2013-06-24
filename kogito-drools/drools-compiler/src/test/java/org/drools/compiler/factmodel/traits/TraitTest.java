@@ -259,7 +259,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
-    @Test //(timeout = 10000)
+    @Test (timeout = 10000)
     public void testTraitShedTriple() {
         traitShed( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
