@@ -30,21 +30,22 @@ import org.drools.core.common.Scheduler.ActivationTimerInputMarshaller;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.phreak.PhreakTimerNode.TimerNodeTimerInputMarshaller;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 import org.drools.core.spi.GlobalResolver;
 import org.kie.api.KieBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.MarshallingConfiguration;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.time.SessionClock;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * A Marshaller implementation that uses ProtoBuf as the marshalling
@@ -62,6 +63,7 @@ public class ProtobufMarshaller
         TIMER_READERS.put( ProtobufMessages.Timers.TimerType.BEHAVIOR_VALUE, new BehaviorJobContextTimerInputMarshaller() );
         TIMER_READERS.put( ProtobufMessages.Timers.TimerType.ACTIVATION_VALUE, new ActivationTimerInputMarshaller() );
         TIMER_READERS.put( ProtobufMessages.Timers.TimerType.EXPIRE_VALUE, new ExpireJobContextTimerInputMarshaller() );
+        TIMER_READERS.put( ProtobufMessages.Timers.TimerType.TIMER_NODE_VALUE, new TimerNodeTimerInputMarshaller() );
     }
     
     KieBase                       kbase;

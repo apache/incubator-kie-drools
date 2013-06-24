@@ -29,16 +29,18 @@ import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Scheduler.ActivationTimerJobContext;
 import org.drools.core.common.Scheduler.ActivationTimerOutputMarshaller;
+import org.drools.core.phreak.PhreakTimerNode.TimerNodeJobContext;
+import org.drools.core.phreak.PhreakTimerNode.TimerNodeTimerOutputMarshaller;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContext;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContextTimerOutputMarshaller;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerOutputMarshaller;
-import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.internal.marshalling.MarshallerFactory;
 
 public class MarshallerWriteContext extends ObjectOutputStream {
     public final MarshallerWriteContext                                            stream;
@@ -100,6 +102,8 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         this.writersByClass.put( ActivationTimerJobContext.class, new ActivationTimerOutputMarshaller() );
 
         this.writersByClass.put( ExpireJobContext.class, new ExpireJobContextTimerOutputMarshaller() );
+        
+        this.writersByClass.put( TimerNodeJobContext.class, new TimerNodeTimerOutputMarshaller() );
 
         if ( resolverStrategyFactory == null ) {
             ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );

@@ -69,7 +69,7 @@ public class PersisterEnums {
     public static final short ACTIVATION_TIMER          = 52;
     public static final short PROCESS_TIMER             = 53;
     public static final short EXPIRE_TIMER              = 54;
-    
+    public static final short TIMER_NODE_TIMER          = 55;
     
     public static final short CRON_TRIGGER              = 70;
     public static final short INT_TRIGGER               = 71;
