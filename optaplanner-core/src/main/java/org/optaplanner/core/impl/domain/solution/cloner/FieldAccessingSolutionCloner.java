@@ -47,7 +47,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
 
     protected final SolutionDescriptor solutionDescriptor;
     protected final Map<Class, Constructor> constructorCache = new HashMap<Class, Constructor>();
-    protected final Map<Class, Field[]> fieldsCache = new HashMap<Class, Field[]>();
+    protected final Map<Class, List<Field>> fieldListCache = new HashMap<Class, List<Field>>();
 
     public FieldAccessingSolutionCloner(SolutionDescriptor solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -71,28 +71,20 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         return constructor;
     }
 
-    protected <C> Field[] retrieveCachedFields(Class<C> clazz) {
-        Field[] fields = fieldsCache.get(clazz);
-        if (fields == null) {
-            List<Field> fieldList = new LinkedList<Field>();
-            getAllFields(clazz, fieldList);
-            fields = fieldList.toArray(new Field[fieldList.size()]);
-            fieldsCache.put(clazz, fields);
-        }
-        return fields;
-    }
-
-    private static void getAllFields(Class<?> clazz, List<Field> fields) {
-        for (Field field : clazz.getDeclaredFields()) {
-            if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isFinal(field.getModifiers())) {
-                field.setAccessible(true);
-                fields.add(field);
+    protected <C> List<Field> retrieveCachedFields(Class<C> clazz) {
+        List<Field> fieldList = fieldListCache.get(clazz);
+        if (fieldList == null) {
+            Field[] fields = clazz.getDeclaredFields();
+            fieldList = new ArrayList<Field>(fields.length);
+            for (Field field : fields) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    field.setAccessible(true);
+                    fieldList.add(field);
+                }
             }
+            fieldListCache.put(clazz, fieldList);
         }
-
-        if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
-            getAllFields(clazz.getSuperclass(), fields);
-        }
+        return fieldList;
     }
 
     protected class FieldAccessingSolutionClonerRun {
