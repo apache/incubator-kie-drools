@@ -19,7 +19,7 @@ public class KModuleDeploymentUnit implements DeploymentUnit {
         this.artifactId = artifactId;
         this.version = version;
     }
-
+    
     public KModuleDeploymentUnit(String groupId, String artifactId, 
             String version, String kbaseName, String ksessionName) {
         this.artifactId = artifactId;
@@ -27,6 +27,16 @@ public class KModuleDeploymentUnit implements DeploymentUnit {
         this.version = version;
         this.kbaseName = kbaseName;
         this.ksessionName = ksessionName;
+    }
+
+    public KModuleDeploymentUnit(String groupId, String artifactId, 
+            String version, String kbaseName, String ksessionName, String strategy) {
+        this.artifactId = artifactId;
+        this.groupId = groupId;
+        this.version = version;
+        this.kbaseName = kbaseName;
+        this.ksessionName = ksessionName;
+        this.strategy = RuntimeStrategy.valueOf(strategy);
     }
 
     @Override
@@ -46,6 +56,10 @@ public class KModuleDeploymentUnit implements DeploymentUnit {
         return strategy;
     }
 
+    public void setStrategy(RuntimeStrategy strategy) {
+        this.strategy = strategy;
+    }
+    
     public String getArtifactId() {
         return artifactId;
     }
@@ -84,6 +98,11 @@ public class KModuleDeploymentUnit implements DeploymentUnit {
 
     public void setKbaseName(String kbaseName) {
         this.kbaseName = kbaseName;
+    }
+
+    @Override
+    public String toString() {
+        return getIdentifier() + " [strategy=" + strategy + "]";
     }
 
 }
