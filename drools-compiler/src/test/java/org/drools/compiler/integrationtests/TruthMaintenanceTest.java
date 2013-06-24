@@ -194,6 +194,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         h = getFactHandle( h, ksession );
         ksession.update( h,
                          c2 );
+        ksession.fireAllRules();
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );        
         list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
@@ -279,7 +280,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         brieHandle = getFactHandle( brieHandle, session );
         session.retract( brieHandle );
-        
+
         session = getSerialisedStatefulKnowledgeSession( session,
                                                          true );         
 
@@ -288,6 +289,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         provoloneHandle = getFactHandle( provoloneHandle, session );
         session.retract( provoloneHandle );
+        session.fireAllRules();
 
         assertEquals( 0,
                       session.getObjects().size() );
@@ -609,11 +611,14 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                       list.get( 0 ) );
 
         FactHandle h = workingMemory.insert( a );
-        workingMemory = getSerialisedStatefulSession( workingMemory );      
+
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         // no need to fire rules, assertion alone removes justification for i,
         // so it should be retracted.
         // workingMemory.fireAllRules();
+        workingMemory.fireAllRules();
         list = IteratorToList.convert( workingMemory.iterateObjects() );
+
         assertEquals( "a was not asserted or i not retracted.",
                       1,
                       list.size() );
@@ -1034,7 +1039,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertEquals( 2, count );
 
         ArgumentCaptor<ObjectInsertedEvent> insertsCaptor = ArgumentCaptor.forClass( ObjectInsertedEvent.class );
-        verify( wmel, times(3) ).objectInserted( insertsCaptor.capture() );
+        verify( wmel, times(4) ).objectInserted( insertsCaptor.capture() );
         List<ObjectInsertedEvent> inserts = insertsCaptor.getAllValues();
         assertThat( inserts.get( 0 ).getObject(), is(  (Object) bob ) );
         assertThat( inserts.get( 1 ).getObject(), is(  (Object) mark) );

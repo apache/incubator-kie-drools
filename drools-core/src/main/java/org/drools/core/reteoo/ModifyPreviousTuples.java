@@ -62,8 +62,10 @@ public class ModifyPreviousTuples {
             for ( LeftTuple current = this.leftTuple; current != null; current = (LeftTuple) current.getLeftParentNext() ) {
                 if ( unlinkingEnabled ) {
                     LeftInputAdapterNode liaNode = (LeftInputAdapterNode) current.getLeftTupleSink().getLeftTupleSource();
-                    LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
-                    LeftInputAdapterNode.doDeleteObject( current, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm );
+                    if (liaNode != null) { // can be null only in tests
+                        LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
+                        LeftInputAdapterNode.doDeleteObject( current, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm );
+                    }
                 } else {
                     current.getLeftTupleSink().retractLeftTuple( current,
                                                                  pctx,

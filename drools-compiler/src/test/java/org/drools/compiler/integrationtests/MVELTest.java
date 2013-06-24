@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -272,13 +273,13 @@ public class MVELTest extends CommonTestMethodBase {
         ruleBase.newStatelessSession().execute( new TestObject( list ) );
         
         assertEquals( 6, list.size() );
-        
-        assertEquals("TestObject.checkHighestPriority: java|2", list.get(0));
-        assertEquals("TestObject.stayHasDaysOfWeek: java|false|[2008-04-01, 2008-04-10]", list.get(1));
-        assertEquals("TestObject.checkHighestPriority: mvel|2", list.get(2));
-        assertEquals("TestObject.stayHasDaysOfWeek: mvel|false|[2008-04-01, 2008-04-10]", list.get(3));
-        assertEquals("TestObject.applyValueAddPromo: 1|2|3|4|mvel", list.get(4));
-        assertEquals("TestObject.applyValueAddPromo: 1|2|3|4|java", list.get(5));
+
+        assertTrue(list.containsAll( Arrays.asList("TestObject.checkHighestPriority: java|2",
+                                                   "TestObject.stayHasDaysOfWeek: java|false|[2008-04-01, 2008-04-10]",
+                                                   "TestObject.checkHighestPriority: mvel|2",
+                                                   "TestObject.stayHasDaysOfWeek: mvel|false|[2008-04-01, 2008-04-10]",
+                                                   "TestObject.applyValueAddPromo: 1|2|3|4|mvel",
+                                                   "TestObject.applyValueAddPromo: 1|2|3|4|java") ));
     }
     
     @Test
