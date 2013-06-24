@@ -60,7 +60,6 @@ public class TestdataAccessModifierSolution extends TestdataObject implements So
 
     private SimpleScore score;
 
-    @SuppressWarnings("unused")
     private TestdataAccessModifierSolution() {
         finalField = "No-argument constructor";
     }
