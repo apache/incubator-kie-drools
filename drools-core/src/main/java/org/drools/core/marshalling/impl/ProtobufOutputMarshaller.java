@@ -255,7 +255,7 @@ public class ProtobufOutputMarshaller {
         _ab.setFocusStack( _fsb.build() );
 
         // serialize all dormant activations
-        ActivationIterator it = ActivationIterator.iterator( wm );
+        org.drools.core.util.Iterator it = ActivationIterator.iterator( wm );
         List<org.drools.core.spi.Activation> dormant = new ArrayList<org.drools.core.spi.Activation>();
         for ( org.drools.core.spi.Activation item = (org.drools.core.spi.Activation) it.next(); item != null; item = (org.drools.core.spi.Activation) it.next() ) {
             if ( !item.isQueued() ) {

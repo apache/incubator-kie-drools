@@ -42,12 +42,21 @@ public class ActiveActivationIterator
 
     }
 
-    public static ActiveActivationIterator iterator(InternalWorkingMemory wm) {
-        return new ActiveActivationIterator( wm );
+    public static Iterator iterator(InternalWorkingMemory wm) {
+        if (((InternalRuleBase)wm.getRuleBase()).getConfiguration().isPhreakEnabled()) {
+            return PhreakActiveActivationIterator.iterator(wm);
+        } else {
+            return new ActiveActivationIterator( wm );
+        }
     }
     
-    public static ActiveActivationIterator iterator(StatefulKnowledgeSession ksession) {
-        return new ActiveActivationIterator( ((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory() );
+    public static Iterator iterator(StatefulKnowledgeSession ksession) {
+        InternalWorkingMemory wm = ((InternalWorkingMemoryEntryPoint) ksession).getInternalWorkingMemory();
+        if (((InternalRuleBase)wm.getRuleBase()).getConfiguration().isPhreakEnabled()) {
+            return PhreakActiveActivationIterator.iterator(wm);
+        } else {
+            return new ActiveActivationIterator( ((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory() );
+        }
     }
 
     public Object next() {
