@@ -356,7 +356,8 @@ public class RuleNetworkEvaluator {
                 }
 
                 if (log.isTraceEnabled()) {
-                    log.trace("Segment {}", smemIndex);
+                    int offset = getOffset(node);
+                    log.trace("{} Segment {}", indent(offset), smemIndex);
                 }
                 node = (LeftTupleSink) smem.getRootNode();
                 nodeMem = smem.getNodeMemories().getFirst();

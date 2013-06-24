@@ -311,7 +311,7 @@ public class OutputMarshaller {
         List<InternalFactHandle> matchFactHandles = null;
         
         if ( ((InternalAgenda) wm.getAgenda()).isDeclarativeAgenda() ) {
-            ActivationIterator it = ActivationIterator.iterator( wm );
+            org.drools.core.util.Iterator it = ActivationIterator.iterator( wm );
             matchFactHandles = new ArrayList<InternalFactHandle>( 100 );
             for ( Activation item = (Activation) it.next(); item != null; item = (Activation) it.next() ) {
                 matchFactHandles.add( item.getFactHandle() );

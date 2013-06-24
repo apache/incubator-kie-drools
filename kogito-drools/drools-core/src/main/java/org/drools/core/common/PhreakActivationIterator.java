@@ -2,6 +2,7 @@ package org.drools.core.common;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -107,34 +108,57 @@ public class PhreakActivationIterator
     }
 
     public static void processLeftTuples(LeftTupleSource node, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
+        LeftTupleSource node1 = node;
+        while (NodeTypeEnums.LeftInputAdapterNode != node1.getType()) {
+            node1 = node1.getLeftTupleSource();
+        }
+        int maxShareCount = node1.getAssociations().size();
+
         while (NodeTypeEnums.LeftInputAdapterNode != node.getType()) {
             Memory memory = wm.getNodeMemory((MemoryFactory) node);
             if (memory.getSegmentMemory() == null) {
                 // segment has never been initialized, which means the rule has never been linked.
                 return;
             }
-            if (NodeTypeEnums.isBetaNode(node)) {
-                BetaMemory bm;
-                if (NodeTypeEnums.AccumulateNode == node.getType()) {
-                    AccumulateMemory am = (AccumulateMemory) memory;
-                    bm = am.getBetaMemory();
-                } else {
-                    bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
+            if ( node.getAssociations().size() == maxShareCount ) {
+                // the recurse must start from the first split node, otherwise we get partial overlaps in propagations
+                if (NodeTypeEnums.isBetaNode(node)) {
+                    BetaMemory bm;
+                    if (NodeTypeEnums.AccumulateNode == node.getType()) {
+                        AccumulateMemory am = (AccumulateMemory) memory;
+                        bm = am.getBetaMemory();
+                        FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
+                        LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                        for (; lt != null; lt = (LeftTuple) it.next(lt)) {
+                            collectFromPeers(lt, agendaItems, nodeSet, wm);
+                        }
+                    } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
+                        bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
+                        FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
+                        RightTuple rt = ((BetaNode) node).getFirstRightTuple(bm.getRightTupleMemory(), it);
+                        for (; rt != null; rt = (RightTuple) it.next(rt)) {
+                            for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
+                                collectFromPeers(lt, agendaItems, nodeSet, wm);
+                            }
+                        }
+                    } else {
+                        bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
+                        FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
+                        LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                        for (; lt != null; lt = (LeftTuple) it.next(lt)) {
+                            collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                        }
+                    }
+                    return;
+                } else if (NodeTypeEnums.FromNode == node.getType()) {
+                    FromMemory fm = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
+                    LeftTupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
+                    FastIterator it = ltm.fullFastIterator();
+                    for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                        collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                    }
+                    return;
                 }
-                FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                RightTuple rt = ((BetaNode) node).getFirstRightTuple(bm.getRightTupleMemory(), it);
-                for (; rt != null; rt = (RightTuple) it.next(rt)) {
-                    collectFromRightInput(rt.getFirstChild(), agendaItems, nodeSet, wm);
-                }
-                return;
-            } else if (NodeTypeEnums.FromNode == node.getType()) {
-                FromMemory fm = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
-                LeftTupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
-                FastIterator it = ltm.fullFastIterator();
-                for (LeftTuple lt = (LeftTuple) it.next(null); lt != null; lt = (LeftTuple) it.next(lt)) {
-                    collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
-                }
-                return;
             }
             node = node.getLeftTupleSource();
         }
@@ -167,23 +191,24 @@ public class PhreakActivationIterator
 
     private static void collectFromRightInput(LeftTuple lt, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
         for (; lt != null; lt = lt.getRightParentNext()) {
-            LeftTuple peer = lt;
-            collectFromPeers(peer, agendaItems, nodeSet, wm);
+            collectFromPeers(lt, agendaItems, nodeSet, wm);
         }
     }
 
     private static void collectFromLeftInput(LeftTuple lt, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
         for (; lt != null; lt = lt.getLeftParentNext()) {
-            LeftTuple peer = lt;
-            collectFromPeers(peer, agendaItems, nodeSet, wm);
+            collectFromPeers(lt, agendaItems, nodeSet, wm);
         }
     }
 
     private static void collectFromPeers(LeftTuple peer, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
         while (peer != null) {
-            if ( peer.getFirstChild() != null ) {
+            if ( peer.getLeftTupleSink().getType() == NodeTypeEnums.AccumulateNode ) {
+                AccumulateContext accctx = (AccumulateContext) peer.getObject();
+                collectFromLeftInput(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
+            } else if ( peer.getFirstChild() != null ) {
                 collectFromLeftInput(peer.getFirstChild(), agendaItems, nodeSet, wm);
-            } else {
+            } else if ( peer.getLeftTupleSink().getType() == NodeTypeEnums.RuleTerminalNode ) {
                 agendaItems.add((AgendaItem) peer);
                 nodeSet.remove(peer.getLeftTupleSink()); // remove this RuleTerminalNode, as we know we've visited it already
             }

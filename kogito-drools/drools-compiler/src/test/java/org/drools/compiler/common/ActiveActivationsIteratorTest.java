@@ -6,6 +6,8 @@ import java.util.List;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.ActiveActivationIterator;
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.DefaultAgenda;
+import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ReteooWorkingMemory;
@@ -25,38 +27,38 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
     public void testActiveActivationsIteratorTest() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule0 agenda-group 'a1' salience ( Integer.parseInt('1'+$s) ) when\n" +
+                     "rule rule0 @Eager(true) agenda-group 'a1' salience ( Integer.parseInt('1'+$s) ) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule1 agenda-group 'a2' salience ( Integer.parseInt('1'+$s)) when\n" +
+                     "rule rule1 @Eager(true) agenda-group 'a2' salience ( Integer.parseInt('1'+$s)) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule2 agenda-group 'a3' salience ( Integer.parseInt('1'+$s)) when\n" +
+                     "rule rule2 @Eager(true) agenda-group 'a3' salience ( Integer.parseInt('1'+$s)) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
                      "then\n" +
                      "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
-                     "rule rule3 ruleflow-group 'r1' salience ( Integer.parseInt('1'+$s)) when\n" +
+                     "rule rule3 @Eager(true) ruleflow-group 'r1' salience ( Integer.parseInt('1'+$s)) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) > 2 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule4 ruleflow-group 'r1' salience ( Integer.parseInt('1'+$s) ) when\n" +
+                     "rule rule4 @Eager(true) ruleflow-group 'r1' salience ( Integer.parseInt('1'+$s) ) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) > 2 ) \n" +
                      "    eval( Integer.parseInt( $s ) > 3 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule6 when\n" +
+                     "rule rule6 @Eager(true) when\n" +
                      "     java.util.Map()\n" +
                      "then\n" +
                      "end\n" +
                      "\n" +
-                     "rule rule7 when\n" +
+                     "rule rule7 @Eager(true) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "then\n" +
                      "end\n" +
@@ -80,6 +82,8 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
 
         ReteooWorkingMemory wm = (ReteooWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession).session;
         wm.getAgenda().unstageActivations();
+
+        ((DefaultAgenda) ((AgendaImpl) ksession.getAgenda()).getAgenda()).evaluateEagerList();
 
         Iterator it = ActiveActivationIterator.iterator(ksession);
         List list = new ArrayList();
