@@ -1,6 +1,5 @@
 package org.drools.core.common;
 
-import org.drools.core.common.LeftTupleIterator.PhreakLeftTupleIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.LeftTuple;

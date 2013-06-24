@@ -2126,4 +2126,31 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals(1, list.size());
     }
+
+    @Test(timeout = 5000)
+    public void testPhreakNoLoop() {
+        // DROOLS-7
+        String str =
+                "declare Person \n" +
+                "    name : String\n" +
+                "    age : int\n" +
+                "end\n" +
+                "\n" +
+                "rule Init when \n" +
+                "then\n" +
+                "    insert( new Person( \"Mario\", 39 ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule R no-loop when\n" +
+                "    $p: Person( name == \"Mario\" )\n" +
+                "    not String( this == \"go\" )\n" +
+                "then\n" +
+                "    modify( $p ) { setAge( 40 ) };\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        assertEquals(2, ksession.fireAllRules());
+    }
 }
