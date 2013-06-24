@@ -79,4 +79,8 @@ public class FactC implements Serializable {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "FactC [f1=" + f1 + ", f2=" + f2 + ", f3=" + f3 + "]";
+    }
 }
