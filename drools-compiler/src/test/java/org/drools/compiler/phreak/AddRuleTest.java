@@ -7,6 +7,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
@@ -126,7 +127,7 @@ public class AddRuleTest {
 
     @Test
     public void testPopulatedRuleMidwayShare() throws Exception {
-        KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C(1;) D() E()\n");
+        KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a : A() B() C(1;) D() E()\n");
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession()).session;
         List list = new ArrayList();
         wm.setGlobal("list", list);
@@ -151,6 +152,67 @@ public class AddRuleTest {
 
         JoinNode c1Node = (JoinNode) bNode.getSinkPropagator().getFirstLeftTupleSink();
         JoinNode c2Node = (JoinNode) bNode.getSinkPropagator().getLastLeftTupleSink();
+
+        LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
+        SegmentMemory sm = lm.getSegmentMemory();
+
+        BetaMemory c1Mem = ( BetaMemory ) wm.getNodeMemory(c1Node);
+        assertSame( sm.getFirst(), c1Mem.getSegmentMemory());
+        assertEquals( 3, c1Mem.getLeftTupleMemory().size() );
+        assertEquals( 1, c1Mem.getRightTupleMemory().size() );
+
+        BetaMemory c2Mem = ( BetaMemory ) wm.getNodeMemory(c2Node);
+        SegmentMemory c2Smem =  sm.getFirst().getNext();
+        assertSame( c2Smem, c2Mem.getSegmentMemory());
+        assertEquals( 0, c2Mem.getLeftTupleMemory().size() );
+        assertEquals( 0, c2Mem.getRightTupleMemory().size() );
+        assertEquals(3, c2Smem.getStagedLeftTuples().insertSize());
+
+        wm.fireAllRules();
+        assertEquals( 3, c2Mem.getLeftTupleMemory().size() );
+        assertEquals( 1, c2Mem.getRightTupleMemory().size() );
+        assertEquals( 0, c2Smem.getStagedLeftTuples().insertSize());
+        assertEquals(6, list.size() );
+
+        assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
+        assertEquals( "r1", ((Match)list.get(1)).getRule().getName() );
+        assertEquals( "r1", ((Match)list.get(2)).getRule().getName() );
+        assertEquals( "r2", ((Match)list.get(3)).getRule().getName() );
+        assertEquals( 3, ((A)((Match)list.get(3)).getDeclarationValue("a")).getObject() );
+        assertEquals( "r2", ((Match)list.get(4)).getRule().getName() );
+        assertEquals( 2, ((A)((Match)list.get(4)).getDeclarationValue("a")).getObject() );
+        assertEquals( "r2", ((Match)list.get(5)).getRule().getName() );
+        assertEquals( 1, ((A)((Match)list.get(5)).getDeclarationValue("a")).getObject() );
+    }
+
+    @Test
+    public void testPopulatedRuleWithEvals() throws Exception {
+        KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a:A() B() eval(1==1) eval(1==1) C(1;) \n");
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession()).session;
+        List list = new ArrayList();
+        wm.setGlobal("list", list);
+
+        wm.insert(new A(1));
+        wm.insert(new A(2));
+        wm.insert(new A(3));
+        wm.insert(new B(1));
+        wm.insert(new C(1));
+        wm.insert(new C(2));
+
+        wm.fireAllRules();
+        assertEquals( 3, list.size() );
+
+        kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   a:A() B() eval(1==1) eval(1==1) C(2;) \n") );
+
+        ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+        JoinNode bNode = (JoinNode) liaNode.getSinkPropagator().getFirstLeftTupleSink();
+
+        EvalConditionNode e1 = (EvalConditionNode) bNode.getSinkPropagator().getFirstLeftTupleSink();
+        EvalConditionNode e2 = (EvalConditionNode) e1.getSinkPropagator().getFirstLeftTupleSink();
+
+        JoinNode c1Node = (JoinNode) e2.getSinkPropagator().getFirstLeftTupleSink();
+        JoinNode c2Node = (JoinNode) e2.getSinkPropagator().getLastLeftTupleSink();
 
         LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
