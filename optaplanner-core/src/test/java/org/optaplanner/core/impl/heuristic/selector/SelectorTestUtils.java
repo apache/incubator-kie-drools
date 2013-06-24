@@ -93,6 +93,11 @@ public class SelectorTestUtils {
                 }
             });
         }
+        when(entitySelector.endingIterator()).thenAnswer(new Answer<Iterator<Object>>() {
+            public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
+                return entityList.iterator();
+            }
+        });
         when(entitySelector.isContinuous()).thenReturn(false);
         when(entitySelector.isNeverEnding()).thenReturn(false);
         when(entitySelector.getSize()).thenReturn((long) entityList.size());
