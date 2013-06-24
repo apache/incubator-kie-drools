@@ -114,6 +114,10 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector implement
         }
     }
 
+    public Iterator<Object> endingIterator() {
+        return cachedEntityList.iterator();
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + entityDescriptor.getPlanningEntityClass().getSimpleName() + ")";

@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity;
 
+import java.util.Iterator;
+
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
@@ -31,5 +33,14 @@ public interface EntitySelector extends ListIterableSelector<Object> {
      * @return never null
      */
     PlanningEntityDescriptor getEntityDescriptor();
+
+    /**
+     * If {@link #isNeverEnding()} is true, then {@link #iterator()} will never end.
+     * This returns an ending {@link Iterator}, that tries to match {@link #iterator()} as much as possible,
+     * but might not respect the configuration of this {@link EntitySelector} entirely.
+     * @return never null
+     * @see #iterator()
+     */
+    Iterator<Object> endingIterator();
 
 }

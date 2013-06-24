@@ -132,6 +132,10 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
         throw new UnsupportedOperationException();
     }
 
+    public Iterator<Object> endingIterator() {
+        return childEntitySelector.endingIterator();
+    }
+
     private boolean accept(ScoreDirector scoreDirector, Object entity) {
         for (SelectionFilter filter : filterList) {
             if (!filter.accept(scoreDirector, entity)) {

@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -76,6 +77,10 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
 
     public long getSize() {
         return cachedEntityList.size();
+    }
+
+    public Iterator<Object> endingIterator() {
+        return cachedEntityList.iterator();
     }
 
 }

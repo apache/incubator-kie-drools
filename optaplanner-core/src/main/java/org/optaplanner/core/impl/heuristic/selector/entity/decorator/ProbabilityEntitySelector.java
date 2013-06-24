@@ -131,6 +131,10 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
                 + ") does not support a ListIterator with randomSelection (true).");
     }
 
+    public Iterator<Object> endingIterator() {
+        return childEntitySelector.endingIterator();
+    }
+
     @Override
     public String toString() {
         return "Probability(" + childEntitySelector + ")";
