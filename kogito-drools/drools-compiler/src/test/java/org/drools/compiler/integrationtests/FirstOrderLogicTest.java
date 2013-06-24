@@ -65,39 +65,6 @@ import org.slf4j.LoggerFactory;
 public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     private static Logger logger = LoggerFactory.getLogger(FirstOrderLogicTest.class);
-    
-//    private KnowledgeBase loadKnowledgeBase( String fileName ) {
-//        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-//        kbuilder.add( ResourceFactory.newClassPathResource(fileName,
-//                getClass()),
-//                      ResourceType.DRL );
-//        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-//        if ( errors.size() > 0 ) {
-//            for ( KnowledgeBuilderError error : errors ) {
-//                logger.warn( error.toString() );
-//            }
-//            throw new IllegalArgumentException( "Could not parse knowledge." );
-//        }
-//        assertFalse( kbuilder.hasErrors() );
-//
-//        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-//        Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
-//        kbase.addKnowledgePackages( knowledgePackages );
-//        return kbase;
-//    }
-//
-//    private KnowledgeBase loadKnowledgeBaseFromString( String drl ) {
-//        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-//        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-//
-//        if ( kbuilder.hasErrors() ) {
-//            fail( kbuilder.getErrors().toString() );
-//        }
-//
-//        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-//        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-//        return kbase;
-//    }
 
     protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) { 
         return kbase.newStatefulKnowledgeSession();

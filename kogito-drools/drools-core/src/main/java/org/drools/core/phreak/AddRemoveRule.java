@@ -9,7 +9,8 @@ import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.reteoo.AbstractTerminalNode;
  import org.drools.core.reteoo.AccumulateNode;
- import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
  import org.drools.core.reteoo.BetaMemory;
  import org.drools.core.reteoo.BetaNode;
  import org.drools.core.reteoo.FromNode.FromMemory;
@@ -291,7 +292,15 @@ public class AddRemoveRule {
              newSmem.setStagedTuples( new SynchronizedLeftTupleSets() );
          }
 
-         processLeftTuples((LeftTupleSource) sm.getTipNode(), peerLts, newSmem, wm, true);
+         LeftTupleSource lts = null;
+         if ( NodeTypeEnums.isTerminalNode(sm.getTipNode() ) ) {
+             // if tip is RTN, then use parent
+             lts = ((TerminalNode)sm.getTipNode()).getLeftTupleSource();
+         } else {
+             lts = (LeftTupleSource) sm.getTipNode();
+         }
+
+         processLeftTuples(lts, peerLts, newSmem, wm, true);
      }
 
      private static void correctSegmentOnSplitOnRemove(InternalWorkingMemory wm, SegmentMemory sm1,SegmentMemory sm2,  PathMemory pmem, PathMemory removedPmem, int p) {
@@ -488,13 +497,31 @@ public class AddRemoveRule {
                 if (NodeTypeEnums.AccumulateNode == node.getType()) {
                     AccumulateMemory am = (AccumulateMemory) memory;
                     bm = am.getBetaMemory();
+                    FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
+                    LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                    for (; lt != null; lt = (LeftTuple) it.next(lt)) {
+                        AccumulateContext accctx = (AccumulateContext) lt.getObject();
+                        //collectFromPeers(lt, agendaItems, nodeSet, wm);
+                        followPeer(accctx.getResultLeftTuple(), smem, sinks,  sinks.size()-1, insert, wm);
+                    }
+                } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
+                    bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
+                    FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
+                    RightTuple rt = ((BetaNode) node).getFirstRightTuple(bm.getRightTupleMemory(), it);
+                    for (; rt != null; rt = (RightTuple) it.next(rt)) {
+                        for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
+                            //collectFromPeers(lt, agendaItems, nodeSet, wm);
+                            followPeer(lt, smem, sinks,  sinks.size()-1, insert, wm);
+                        }
+                    }
                 } else {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
-                }
-                FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                RightTuple rt = ((BetaNode) node).getFirstRightTuple(bm.getRightTupleMemory(), it);
-                for (; rt != null; rt = (RightTuple) it.next(rt)) {
-                    followPeerFromRightInput(rt.getFirstChild(), peerNode, smem, sinks, insert, wm);
+                    FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
+                    LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                    for (; lt != null; lt = (LeftTuple) it.next(lt)) {
+                        //collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                        followPeer(lt, smem, sinks,  sinks.size()-1, insert, wm);
+                    }
                 }
                 return;
             } else if (NodeTypeEnums.FromNode == node.getType()) {
