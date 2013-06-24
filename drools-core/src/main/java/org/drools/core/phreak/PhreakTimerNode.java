@@ -463,10 +463,7 @@ public class PhreakTimerNode {
             Scheduler scheduler = inCtx.removeTimerNodeScheduler( timerNodeId, tuple );
             if( scheduler != null ) {
                 scheduler.schedule( trigger );
-            } else {
-                //scheduler.schedule( scheduler.getTrigger() );
             }
-            
         }
     }
 
