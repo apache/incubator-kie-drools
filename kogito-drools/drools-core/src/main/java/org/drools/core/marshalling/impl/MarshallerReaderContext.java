@@ -28,22 +28,25 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.PBActivationsFilter;
+import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
+import org.drools.core.phreak.PhreakTimerNode;
+import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.PropagationContext;
-import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.internal.marshalling.MarshallerFactory;
+import org.kie.internal.runtime.KnowledgeRuntime;
 
 public class MarshallerReaderContext extends ObjectInputStream {
     public final MarshallerReaderContext                                           stream;
     public final InternalRuleBase                                                  ruleBase;
     public InternalWorkingMemory                                                   wm;
-    public KnowledgeRuntime kruntime;
+    public KnowledgeRuntime                                                        kruntime;
     public final Map<Integer, BaseNode>                                            sinks;
 
     public Map<Integer, InternalFactHandle>                                        handles;
@@ -71,6 +74,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
 
     public Object                                                                  parameterObject;
     public ClassLoader                                                             classLoader;
+    public Map<Integer, Map<TupleKey, Scheduler>>                                  timerNodeSchedulers;
 
     public MarshallerReaderContext(InputStream stream,
                                    InternalRuleBase ruleBase,
@@ -127,6 +131,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
         this.env = env;
 
         this.nodeMemories = new HashMap<Integer, Object>();
+        this.timerNodeSchedulers = new HashMap<Integer, Map<ProtobufInputMarshaller.TupleKey, PhreakTimerNode.Scheduler>>();
 
         this.parameterObject = null;
     }
@@ -136,14 +141,35 @@ public class MarshallerReaderContext extends ObjectInputStream {
                                                              ClassNotFoundException {
         String name = desc.getName();
         try {
-	    if(this.classLoader == null){
-              if(this.ruleBase != null){
-                  this.classLoader = this.ruleBase.getRootClassLoader();
-              }
+            if ( this.classLoader == null ) {
+                if ( this.ruleBase != null ) {
+                    this.classLoader = this.ruleBase.getRootClassLoader();
+                }
             }
             return Class.forName( name, false, this.classLoader );
         } catch ( ClassNotFoundException ex ) {
             return super.resolveClass( desc );
         }
+    }
+    
+    public void addTimerNodeScheduler( int nodeId, TupleKey key, Scheduler scheduler ) {
+        Map<TupleKey, Scheduler> timers = timerNodeSchedulers.get( nodeId );
+        if( timers == null ) {
+            timers = new HashMap<ProtobufInputMarshaller.TupleKey, PhreakTimerNode.Scheduler>();
+            timerNodeSchedulers.put( nodeId, timers );
+        }
+        timers.put( key, scheduler );
+    }
+    
+    public Scheduler removeTimerNodeScheduler( int nodeId, TupleKey key ) {
+        Map<TupleKey, Scheduler> timers = timerNodeSchedulers.get( nodeId );
+        if( timers != null ) {
+            Scheduler scheduler = timers.remove( key );
+            if( timers.isEmpty() ) {
+                timerNodeSchedulers.remove( nodeId );
+            }
+            return scheduler;
+        } 
+        return null;
     }
 }

@@ -353,6 +353,7 @@ message Timers {
         optional ExpireTimer expire = 2;
         optional ActivationTimer activation = 3;
         optional BehaviorTimer behavior = 4;
+        optional TimerNodeTimer timer_node = 5;
     }
 
     enum TimerType {
@@ -360,6 +361,7 @@ message Timers {
         ACTIVATION = 2;
         BEHAVIOR = 3;
         PROCESS = 4;
+        TIMER_NODE = 5;
     }
 
     message ExpireTimer {
@@ -376,6 +378,11 @@ message Timers {
         optional int32 DEPRECATED_node_id = 1;
         optional int32 DEPRECATED_behavior_index = 2;
         optional int32 handle_id = 3;
+    }
+    message TimerNodeTimer {
+        optional int32 node_id = 1;
+        optional Tuple tuple = 2;
+        optional Trigger trigger = 3;
     }
 }
 

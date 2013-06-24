@@ -37121,6 +37121,10 @@ public final class ProtobufMessages {
        * <code>PROCESS = 4;</code>
        */
       PROCESS(3, 4),
+      /**
+       * <code>TIMER_NODE = 5;</code>
+       */
+      TIMER_NODE(4, 5),
       ;
 
       /**
@@ -37139,6 +37143,10 @@ public final class ProtobufMessages {
        * <code>PROCESS = 4;</code>
        */
       public static final int PROCESS_VALUE = 4;
+      /**
+       * <code>TIMER_NODE = 5;</code>
+       */
+      public static final int TIMER_NODE_VALUE = 5;
 
 
       public final int getNumber() { return value; }
@@ -37149,6 +37157,7 @@ public final class ProtobufMessages {
           case 2: return ACTIVATION;
           case 3: return BEHAVIOR;
           case 4: return PROCESS;
+          case 5: return TIMER_NODE;
           default: return null;
         }
       }
@@ -37255,6 +37264,20 @@ public final class ProtobufMessages {
        * <code>optional .org.drools.core.marshalling.Timers.BehaviorTimer behavior = 4;</code>
        */
       org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimerOrBuilder getBehaviorOrBuilder();
+
+      // optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;
+      /**
+       * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+       */
+      boolean hasTimerNode();
+      /**
+       * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+       */
+      org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer getTimerNode();
+      /**
+       * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+       */
+      org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimerOrBuilder getTimerNodeOrBuilder();
     }
     /**
      * Protobuf type {@code org.drools.core.marshalling.Timers.Timer}
@@ -37355,6 +37378,19 @@ public final class ProtobufMessages {
                   behavior_ = subBuilder.buildPartial();
                 }
                 bitField0_ |= 0x00000008;
+                break;
+              }
+              case 42: {
+                org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000010) == 0x00000010)) {
+                  subBuilder = timerNode_.toBuilder();
+                }
+                timerNode_ = input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(timerNode_);
+                  timerNode_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000010;
                 break;
               }
             }
@@ -37479,11 +37515,34 @@ public final class ProtobufMessages {
         return behavior_;
       }
 
+      // optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;
+      public static final int TIMER_NODE_FIELD_NUMBER = 5;
+      private org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer timerNode_;
+      /**
+       * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+       */
+      public boolean hasTimerNode() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer getTimerNode() {
+        return timerNode_;
+      }
+      /**
+       * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimerOrBuilder getTimerNodeOrBuilder() {
+        return timerNode_;
+      }
+
       private void initFields() {
         type_ = org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerType.EXPIRE;
         expire_ = org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer.getDefaultInstance();
         activation_ = org.drools.core.marshalling.impl.ProtobufMessages.Timers.ActivationTimer.getDefaultInstance();
         behavior_ = org.drools.core.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer.getDefaultInstance();
+        timerNode_ = org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.getDefaultInstance();
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -37516,6 +37575,9 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           output.writeMessage(4, behavior_);
         }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          output.writeMessage(5, timerNode_);
+        }
         extensionWriter.writeUntil(200, output);
         getUnknownFields().writeTo(output);
       }
@@ -37541,6 +37603,10 @@ public final class ProtobufMessages {
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(4, behavior_);
+        }
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(5, timerNode_);
         }
         size += extensionsSerializedSize();
         size += getUnknownFields().getSerializedSize();
@@ -37654,6 +37720,7 @@ public final class ProtobufMessages {
             getExpireFieldBuilder();
             getActivationFieldBuilder();
             getBehaviorFieldBuilder();
+            getTimerNodeFieldBuilder();
           }
         }
         private static Builder create() {
@@ -37682,6 +37749,12 @@ public final class ProtobufMessages {
             behaviorBuilder_.clear();
           }
           bitField0_ = (bitField0_ & ~0x00000008);
+          if (timerNodeBuilder_ == null) {
+            timerNode_ = org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.getDefaultInstance();
+          } else {
+            timerNodeBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000010);
           return this;
         }
 
@@ -37738,6 +37811,14 @@ public final class ProtobufMessages {
           } else {
             result.behavior_ = behaviorBuilder_.build();
           }
+          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+            to_bitField0_ |= 0x00000010;
+          }
+          if (timerNodeBuilder_ == null) {
+            result.timerNode_ = timerNode_;
+          } else {
+            result.timerNode_ = timerNodeBuilder_.build();
+          }
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -37765,6 +37846,9 @@ public final class ProtobufMessages {
           }
           if (other.hasBehavior()) {
             mergeBehavior(other.getBehavior());
+          }
+          if (other.hasTimerNode()) {
+            mergeTimerNode(other.getTimerNode());
           }
           this.mergeExtensionFields(other);
           this.mergeUnknownFields(other.getUnknownFields());
@@ -38183,6 +38267,123 @@ public final class ProtobufMessages {
             behavior_ = null;
           }
           return behaviorBuilder_;
+        }
+
+        // optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;
+        private org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer timerNode_ = org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer, org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.Builder, org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimerOrBuilder> timerNodeBuilder_;
+        /**
+         * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+         */
+        public boolean hasTimerNode() {
+          return ((bitField0_ & 0x00000010) == 0x00000010);
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer getTimerNode() {
+          if (timerNodeBuilder_ == null) {
+            return timerNode_;
+          } else {
+            return timerNodeBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+         */
+        public Builder setTimerNode(org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer value) {
+          if (timerNodeBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            timerNode_ = value;
+            onChanged();
+          } else {
+            timerNodeBuilder_.setMessage(value);
+          }
+          bitField0_ |= 0x00000010;
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+         */
+        public Builder setTimerNode(
+            org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.Builder builderForValue) {
+          if (timerNodeBuilder_ == null) {
+            timerNode_ = builderForValue.build();
+            onChanged();
+          } else {
+            timerNodeBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000010;
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+         */
+        public Builder mergeTimerNode(org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer value) {
+          if (timerNodeBuilder_ == null) {
+            if (((bitField0_ & 0x00000010) == 0x00000010) &&
+                timerNode_ != org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.getDefaultInstance()) {
+              timerNode_ =
+                org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.newBuilder(timerNode_).mergeFrom(value).buildPartial();
+            } else {
+              timerNode_ = value;
+            }
+            onChanged();
+          } else {
+            timerNodeBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000010;
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+         */
+        public Builder clearTimerNode() {
+          if (timerNodeBuilder_ == null) {
+            timerNode_ = org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.getDefaultInstance();
+            onChanged();
+          } else {
+            timerNodeBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000010);
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.Builder getTimerNodeBuilder() {
+          bitField0_ |= 0x00000010;
+          onChanged();
+          return getTimerNodeFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimerOrBuilder getTimerNodeOrBuilder() {
+          if (timerNodeBuilder_ != null) {
+            return timerNodeBuilder_.getMessageOrBuilder();
+          } else {
+            return timerNode_;
+          }
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Timers.TimerNodeTimer timer_node = 5;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilder<
+            org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer, org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.Builder, org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimerOrBuilder> 
+            getTimerNodeFieldBuilder() {
+          if (timerNodeBuilder_ == null) {
+            timerNodeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer, org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.Builder, org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimerOrBuilder>(
+                    timerNode_,
+                    getParentForChildren(),
+                    isClean());
+            timerNode_ = null;
+          }
+          return timerNodeBuilder_;
         }
 
         // @@protoc_insertion_point(builder_scope:org.drools.core.marshalling.Timers.Timer)
@@ -40240,6 +40441,786 @@ public final class ProtobufMessages {
       }
 
       // @@protoc_insertion_point(class_scope:org.drools.core.marshalling.Timers.BehaviorTimer)
+    }
+
+    public interface TimerNodeTimerOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+
+      // optional int32 node_id = 1;
+      /**
+       * <code>optional int32 node_id = 1;</code>
+       */
+      boolean hasNodeId();
+      /**
+       * <code>optional int32 node_id = 1;</code>
+       */
+      int getNodeId();
+
+      // optional .org.drools.core.marshalling.Tuple tuple = 2;
+      /**
+       * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+       */
+      boolean hasTuple();
+      /**
+       * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+       */
+      org.drools.core.marshalling.impl.ProtobufMessages.Tuple getTuple();
+      /**
+       * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+       */
+      org.drools.core.marshalling.impl.ProtobufMessages.TupleOrBuilder getTupleOrBuilder();
+
+      // optional .org.drools.core.marshalling.Trigger trigger = 3;
+      /**
+       * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+       */
+      boolean hasTrigger();
+      /**
+       * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+       */
+      org.drools.core.marshalling.impl.ProtobufMessages.Trigger getTrigger();
+      /**
+       * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+       */
+      org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder getTriggerOrBuilder();
+    }
+    /**
+     * Protobuf type {@code org.drools.core.marshalling.Timers.TimerNodeTimer}
+     */
+    public static final class TimerNodeTimer extends
+        com.google.protobuf.GeneratedMessage
+        implements TimerNodeTimerOrBuilder {
+      // Use TimerNodeTimer.newBuilder() to construct.
+      private TimerNodeTimer(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
+      }
+      private TimerNodeTimer(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final TimerNodeTimer defaultInstance;
+      public static TimerNodeTimer getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public TimerNodeTimer getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private TimerNodeTimer(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 8: {
+                bitField0_ |= 0x00000001;
+                nodeId_ = input.readInt32();
+                break;
+              }
+              case 18: {
+                org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                  subBuilder = tuple_.toBuilder();
+                }
+                tuple_ = input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.Tuple.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(tuple_);
+                  tuple_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000002;
+                break;
+              }
+              case 26: {
+                org.drools.core.marshalling.impl.ProtobufMessages.Trigger.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                  subBuilder = trigger_.toBuilder();
+                }
+                trigger_ = input.readMessage(org.drools.core.marshalling.impl.ProtobufMessages.Trigger.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(trigger_);
+                  trigger_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000004;
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.class, org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.Builder.class);
+      }
+
+      public static com.google.protobuf.Parser<TimerNodeTimer> PARSER =
+          new com.google.protobuf.AbstractParser<TimerNodeTimer>() {
+        public TimerNodeTimer parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new TimerNodeTimer(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<TimerNodeTimer> getParserForType() {
+        return PARSER;
+      }
+
+      private int bitField0_;
+      // optional int32 node_id = 1;
+      public static final int NODE_ID_FIELD_NUMBER = 1;
+      private int nodeId_;
+      /**
+       * <code>optional int32 node_id = 1;</code>
+       */
+      public boolean hasNodeId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional int32 node_id = 1;</code>
+       */
+      public int getNodeId() {
+        return nodeId_;
+      }
+
+      // optional .org.drools.core.marshalling.Tuple tuple = 2;
+      public static final int TUPLE_FIELD_NUMBER = 2;
+      private org.drools.core.marshalling.impl.ProtobufMessages.Tuple tuple_;
+      /**
+       * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+       */
+      public boolean hasTuple() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.Tuple getTuple() {
+        return tuple_;
+      }
+      /**
+       * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.TupleOrBuilder getTupleOrBuilder() {
+        return tuple_;
+      }
+
+      // optional .org.drools.core.marshalling.Trigger trigger = 3;
+      public static final int TRIGGER_FIELD_NUMBER = 3;
+      private org.drools.core.marshalling.impl.ProtobufMessages.Trigger trigger_;
+      /**
+       * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+       */
+      public boolean hasTrigger() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.Trigger getTrigger() {
+        return trigger_;
+      }
+      /**
+       * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+       */
+      public org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder getTriggerOrBuilder() {
+        return trigger_;
+      }
+
+      private void initFields() {
+        nodeId_ = 0;
+        tuple_ = org.drools.core.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance();
+        trigger_ = org.drools.core.marshalling.impl.ProtobufMessages.Trigger.getDefaultInstance();
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeInt32(1, nodeId_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeMessage(2, tuple_);
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeMessage(3, trigger_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(1, nodeId_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(2, tuple_);
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, trigger_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code org.drools.core.marshalling.Timers.TimerNodeTimer}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimerOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.class, org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.Builder.class);
+        }
+
+        // Construct using org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+            getTupleFieldBuilder();
+            getTriggerFieldBuilder();
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          nodeId_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          if (tupleBuilder_ == null) {
+            tuple_ = org.drools.core.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance();
+          } else {
+            tupleBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000002);
+          if (triggerBuilder_ == null) {
+            trigger_ = org.drools.core.marshalling.impl.ProtobufMessages.Trigger.getDefaultInstance();
+          } else {
+            triggerBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000004);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return org.drools.core.marshalling.impl.ProtobufMessages.internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_descriptor;
+        }
+
+        public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer getDefaultInstanceForType() {
+          return org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.getDefaultInstance();
+        }
+
+        public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer build() {
+          org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer buildPartial() {
+          org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer result = new org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.nodeId_ = nodeId_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          if (tupleBuilder_ == null) {
+            result.tuple_ = tuple_;
+          } else {
+            result.tuple_ = tupleBuilder_.build();
+          }
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          if (triggerBuilder_ == null) {
+            result.trigger_ = trigger_;
+          } else {
+            result.trigger_ = triggerBuilder_.build();
+          }
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer) {
+            return mergeFrom((org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer other) {
+          if (other == org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer.getDefaultInstance()) return this;
+          if (other.hasNodeId()) {
+            setNodeId(other.getNodeId());
+          }
+          if (other.hasTuple()) {
+            mergeTuple(other.getTuple());
+          }
+          if (other.hasTrigger()) {
+            mergeTrigger(other.getTrigger());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // optional int32 node_id = 1;
+        private int nodeId_ ;
+        /**
+         * <code>optional int32 node_id = 1;</code>
+         */
+        public boolean hasNodeId() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>optional int32 node_id = 1;</code>
+         */
+        public int getNodeId() {
+          return nodeId_;
+        }
+        /**
+         * <code>optional int32 node_id = 1;</code>
+         */
+        public Builder setNodeId(int value) {
+          bitField0_ |= 0x00000001;
+          nodeId_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int32 node_id = 1;</code>
+         */
+        public Builder clearNodeId() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          nodeId_ = 0;
+          onChanged();
+          return this;
+        }
+
+        // optional .org.drools.core.marshalling.Tuple tuple = 2;
+        private org.drools.core.marshalling.impl.ProtobufMessages.Tuple tuple_ = org.drools.core.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            org.drools.core.marshalling.impl.ProtobufMessages.Tuple, org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder, org.drools.core.marshalling.impl.ProtobufMessages.TupleOrBuilder> tupleBuilder_;
+        /**
+         * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+         */
+        public boolean hasTuple() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Tuple getTuple() {
+          if (tupleBuilder_ == null) {
+            return tuple_;
+          } else {
+            return tupleBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+         */
+        public Builder setTuple(org.drools.core.marshalling.impl.ProtobufMessages.Tuple value) {
+          if (tupleBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            tuple_ = value;
+            onChanged();
+          } else {
+            tupleBuilder_.setMessage(value);
+          }
+          bitField0_ |= 0x00000002;
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+         */
+        public Builder setTuple(
+            org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder builderForValue) {
+          if (tupleBuilder_ == null) {
+            tuple_ = builderForValue.build();
+            onChanged();
+          } else {
+            tupleBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000002;
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+         */
+        public Builder mergeTuple(org.drools.core.marshalling.impl.ProtobufMessages.Tuple value) {
+          if (tupleBuilder_ == null) {
+            if (((bitField0_ & 0x00000002) == 0x00000002) &&
+                tuple_ != org.drools.core.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance()) {
+              tuple_ =
+                org.drools.core.marshalling.impl.ProtobufMessages.Tuple.newBuilder(tuple_).mergeFrom(value).buildPartial();
+            } else {
+              tuple_ = value;
+            }
+            onChanged();
+          } else {
+            tupleBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000002;
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+         */
+        public Builder clearTuple() {
+          if (tupleBuilder_ == null) {
+            tuple_ = org.drools.core.marshalling.impl.ProtobufMessages.Tuple.getDefaultInstance();
+            onChanged();
+          } else {
+            tupleBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder getTupleBuilder() {
+          bitField0_ |= 0x00000002;
+          onChanged();
+          return getTupleFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.TupleOrBuilder getTupleOrBuilder() {
+          if (tupleBuilder_ != null) {
+            return tupleBuilder_.getMessageOrBuilder();
+          } else {
+            return tuple_;
+          }
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Tuple tuple = 2;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilder<
+            org.drools.core.marshalling.impl.ProtobufMessages.Tuple, org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder, org.drools.core.marshalling.impl.ProtobufMessages.TupleOrBuilder> 
+            getTupleFieldBuilder() {
+          if (tupleBuilder_ == null) {
+            tupleBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                org.drools.core.marshalling.impl.ProtobufMessages.Tuple, org.drools.core.marshalling.impl.ProtobufMessages.Tuple.Builder, org.drools.core.marshalling.impl.ProtobufMessages.TupleOrBuilder>(
+                    tuple_,
+                    getParentForChildren(),
+                    isClean());
+            tuple_ = null;
+          }
+          return tupleBuilder_;
+        }
+
+        // optional .org.drools.core.marshalling.Trigger trigger = 3;
+        private org.drools.core.marshalling.impl.ProtobufMessages.Trigger trigger_ = org.drools.core.marshalling.impl.ProtobufMessages.Trigger.getDefaultInstance();
+        private com.google.protobuf.SingleFieldBuilder<
+            org.drools.core.marshalling.impl.ProtobufMessages.Trigger, org.drools.core.marshalling.impl.ProtobufMessages.Trigger.Builder, org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder> triggerBuilder_;
+        /**
+         * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+         */
+        public boolean hasTrigger() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Trigger getTrigger() {
+          if (triggerBuilder_ == null) {
+            return trigger_;
+          } else {
+            return triggerBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+         */
+        public Builder setTrigger(org.drools.core.marshalling.impl.ProtobufMessages.Trigger value) {
+          if (triggerBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            trigger_ = value;
+            onChanged();
+          } else {
+            triggerBuilder_.setMessage(value);
+          }
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+         */
+        public Builder setTrigger(
+            org.drools.core.marshalling.impl.ProtobufMessages.Trigger.Builder builderForValue) {
+          if (triggerBuilder_ == null) {
+            trigger_ = builderForValue.build();
+            onChanged();
+          } else {
+            triggerBuilder_.setMessage(builderForValue.build());
+          }
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+         */
+        public Builder mergeTrigger(org.drools.core.marshalling.impl.ProtobufMessages.Trigger value) {
+          if (triggerBuilder_ == null) {
+            if (((bitField0_ & 0x00000004) == 0x00000004) &&
+                trigger_ != org.drools.core.marshalling.impl.ProtobufMessages.Trigger.getDefaultInstance()) {
+              trigger_ =
+                org.drools.core.marshalling.impl.ProtobufMessages.Trigger.newBuilder(trigger_).mergeFrom(value).buildPartial();
+            } else {
+              trigger_ = value;
+            }
+            onChanged();
+          } else {
+            triggerBuilder_.mergeFrom(value);
+          }
+          bitField0_ |= 0x00000004;
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+         */
+        public Builder clearTrigger() {
+          if (triggerBuilder_ == null) {
+            trigger_ = org.drools.core.marshalling.impl.ProtobufMessages.Trigger.getDefaultInstance();
+            onChanged();
+          } else {
+            triggerBuilder_.clear();
+          }
+          bitField0_ = (bitField0_ & ~0x00000004);
+          return this;
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.Trigger.Builder getTriggerBuilder() {
+          bitField0_ |= 0x00000004;
+          onChanged();
+          return getTriggerFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+         */
+        public org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder getTriggerOrBuilder() {
+          if (triggerBuilder_ != null) {
+            return triggerBuilder_.getMessageOrBuilder();
+          } else {
+            return trigger_;
+          }
+        }
+        /**
+         * <code>optional .org.drools.core.marshalling.Trigger trigger = 3;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilder<
+            org.drools.core.marshalling.impl.ProtobufMessages.Trigger, org.drools.core.marshalling.impl.ProtobufMessages.Trigger.Builder, org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder> 
+            getTriggerFieldBuilder() {
+          if (triggerBuilder_ == null) {
+            triggerBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+                org.drools.core.marshalling.impl.ProtobufMessages.Trigger, org.drools.core.marshalling.impl.ProtobufMessages.Trigger.Builder, org.drools.core.marshalling.impl.ProtobufMessages.TriggerOrBuilder>(
+                    trigger_,
+                    getParentForChildren(),
+                    isClean());
+            trigger_ = null;
+          }
+          return triggerBuilder_;
+        }
+
+        // @@protoc_insertion_point(builder_scope:org.drools.core.marshalling.Timers.TimerNodeTimer)
+      }
+
+      static {
+        defaultInstance = new TimerNodeTimer(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:org.drools.core.marshalling.Timers.TimerNodeTimer)
     }
 
     // repeated .org.drools.core.marshalling.Timers.Timer timer = 1;
@@ -44545,6 +45526,11 @@ public final class ProtobufMessages {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_org_drools_core_marshalling_Timers_BehaviorTimer_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_org_drools_core_marshalling_Trigger_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -44740,46 +45726,52 @@ public final class ProtobufMessages {
       "tionType\022\023\n\017BEHAVIOR_EXPIRE\020\001\022\027\n\023DEACTIV" +
       "ATE_CALLBACK\020\002\022\023\n\017LOGICAL_RETRACT\020\003\022\r\n\tP" +
       "ROPAGATE\020\004\022\n\n\006ASSERT\020\005\022\n\n\006EXPIRE\020\006\022\n\n\006SI" +
-      "GNAL\020\007\022\033\n\027SIGNAL_PROCESS_INSTANCE\020\010\"\371\005\n\006" +
+      "GNAL\020\007\022\033\n\027SIGNAL_PROCESS_INSTANCE\020\010\"\337\007\n\006" +
       "Timers\0228\n\005timer\030\001 \003(\0132).org.drools.core." +
-      "marshalling.Timers.Timer\032\232\002\n\005Timer\022;\n\004ty",
+      "marshalling.Timers.Timer\032\342\002\n\005Timer\022;\n\004ty",
       "pe\030\001 \001(\0162-.org.drools.core.marshalling.T" +
       "imers.TimerType\022?\n\006expire\030\002 \001(\0132/.org.dr" +
       "ools.core.marshalling.Timers.ExpireTimer" +
       "\022G\n\nactivation\030\003 \001(\01323.org.drools.core.m" +
       "arshalling.Timers.ActivationTimer\022C\n\010beh" +
       "avior\030\004 \001(\01321.org.drools.core.marshallin" +
-      "g.Timers.BehaviorTimer*\005\010d\020\310\001\032i\n\013ExpireT" +
-      "imer\022\021\n\thandle_id\030\001 \001(\005\022\026\n\016entry_point_i" +
-      "d\030\002 \001(\t\022\022\n\nclass_name\030\003 \001(\t\022\033\n\023next_fire" +
-      "_timestamp\030\004 \001(\003\032\205\001\n\017ActivationTimer\022;\n\n",
-      "activation\030\001 \001(\0132\'.org.drools.core.marsh" +
-      "alling.Activation\0225\n\007trigger\030\002 \001(\0132$.org" +
-      ".drools.core.marshalling.Trigger\032a\n\rBeha" +
-      "viorTimer\022\032\n\022DEPRECATED_node_id\030\001 \001(\005\022!\n" +
-      "\031DEPRECATED_behavior_index\030\002 \001(\005\022\021\n\thand" +
-      "le_id\030\003 \001(\005\"B\n\tTimerType\022\n\n\006EXPIRE\020\001\022\016\n\n" +
-      "ACTIVATION\020\002\022\014\n\010BEHAVIOR\020\003\022\013\n\007PROCESS\020\004\"" +
-      "\316\005\n\007Trigger\022>\n\004type\030\001 \001(\01620.org.drools.c" +
-      "ore.marshalling.Trigger.TriggerType\022>\n\004c" +
-      "ron\030\002 \001(\01320.org.drools.core.marshalling.",
-      "Trigger.CronTrigger\022F\n\010interval\030\003 \001(\01324." +
-      "org.drools.core.marshalling.Trigger.Inte" +
-      "rvalTrigger\022D\n\003pit\030\004 \001(\01327.org.drools.co" +
-      "re.marshalling.Trigger.PointInTimeTrigge" +
-      "r\032\247\001\n\013CronTrigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n" +
-      "\010end_time\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n" +
-      "\014repeat_count\030\004 \001(\005\022\027\n\017cron_expression\030\005" +
-      " \001(\t\022\026\n\016next_fire_time\030\006 \001(\003\022\025\n\rcalendar" +
-      "_name\030\007 \003(\t\032\242\001\n\017IntervalTrigger\022\022\n\nstart" +
-      "_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_",
-      "limit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\026\n\016nex" +
-      "t_fire_time\030\006 \001(\003\022\016\n\006period\030\007 \001(\003\022\025\n\rcal" +
-      "endar_name\030\010 \003(\t\032,\n\022PointInTimeTrigger\022\026" +
-      "\n\016next_fire_time\030\001 \001(\003\"8\n\013TriggerType\022\010\n" +
-      "\004CRON\020\000\022\014\n\010INTERVAL\020\001\022\021\n\rPOINT_IN_TIME\020\002" +
-      "B4\n org.drools.core.marshalling.implB\020Pr" +
-      "otobufMessages"
+      "g.Timers.BehaviorTimer\022F\n\ntimer_node\030\005 \001" +
+      "(\01322.org.drools.core.marshalling.Timers." +
+      "TimerNodeTimer*\005\010d\020\310\001\032i\n\013ExpireTimer\022\021\n\t" +
+      "handle_id\030\001 \001(\005\022\026\n\016entry_point_id\030\002 \001(\t\022",
+      "\022\n\nclass_name\030\003 \001(\t\022\033\n\023next_fire_timesta" +
+      "mp\030\004 \001(\003\032\205\001\n\017ActivationTimer\022;\n\nactivati" +
+      "on\030\001 \001(\0132\'.org.drools.core.marshalling.A" +
+      "ctivation\0225\n\007trigger\030\002 \001(\0132$.org.drools." +
+      "core.marshalling.Trigger\032a\n\rBehaviorTime" +
+      "r\022\032\n\022DEPRECATED_node_id\030\001 \001(\005\022!\n\031DEPRECA" +
+      "TED_behavior_index\030\002 \001(\005\022\021\n\thandle_id\030\003 " +
+      "\001(\005\032\213\001\n\016TimerNodeTimer\022\017\n\007node_id\030\001 \001(\005\022" +
+      "1\n\005tuple\030\002 \001(\0132\".org.drools.core.marshal" +
+      "ling.Tuple\0225\n\007trigger\030\003 \001(\0132$.org.drools",
+      ".core.marshalling.Trigger\"R\n\tTimerType\022\n" +
+      "\n\006EXPIRE\020\001\022\016\n\nACTIVATION\020\002\022\014\n\010BEHAVIOR\020\003" +
+      "\022\013\n\007PROCESS\020\004\022\016\n\nTIMER_NODE\020\005\"\316\005\n\007Trigge" +
+      "r\022>\n\004type\030\001 \001(\01620.org.drools.core.marsha" +
+      "lling.Trigger.TriggerType\022>\n\004cron\030\002 \001(\0132" +
+      "0.org.drools.core.marshalling.Trigger.Cr" +
+      "onTrigger\022F\n\010interval\030\003 \001(\01324.org.drools" +
+      ".core.marshalling.Trigger.IntervalTrigge" +
+      "r\022D\n\003pit\030\004 \001(\01327.org.drools.core.marshal" +
+      "ling.Trigger.PointInTimeTrigger\032\247\001\n\013Cron",
+      "Trigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030" +
+      "\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014repeat_co" +
+      "unt\030\004 \001(\005\022\027\n\017cron_expression\030\005 \001(\t\022\026\n\016ne" +
+      "xt_fire_time\030\006 \001(\003\022\025\n\rcalendar_name\030\007 \003(" +
+      "\t\032\242\001\n\017IntervalTrigger\022\022\n\nstart_time\030\001 \001(" +
+      "\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_limit\030\003 \001(" +
+      "\005\022\024\n\014repeat_count\030\004 \001(\005\022\026\n\016next_fire_tim" +
+      "e\030\006 \001(\003\022\016\n\006period\030\007 \001(\003\022\025\n\rcalendar_name" +
+      "\030\010 \003(\t\032,\n\022PointInTimeTrigger\022\026\n\016next_fir" +
+      "e_time\030\001 \001(\003\"8\n\013TriggerType\022\010\n\004CRON\020\000\022\014\n",
+      "\010INTERVAL\020\001\022\021\n\rPOINT_IN_TIME\020\002B4\n org.dr" +
+      "ools.core.marshalling.implB\020ProtobufMess" +
+      "ages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -45043,7 +46035,7 @@ public final class ProtobufMessages {
           internal_static_org_drools_core_marshalling_Timers_Timer_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_drools_core_marshalling_Timers_Timer_descriptor,
-              new java.lang.String[] { "Type", "Expire", "Activation", "Behavior", });
+              new java.lang.String[] { "Type", "Expire", "Activation", "Behavior", "TimerNode", });
           internal_static_org_drools_core_marshalling_Timers_ExpireTimer_descriptor =
             internal_static_org_drools_core_marshalling_Timers_descriptor.getNestedTypes().get(1);
           internal_static_org_drools_core_marshalling_Timers_ExpireTimer_fieldAccessorTable = new
@@ -45062,6 +46054,12 @@ public final class ProtobufMessages {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_drools_core_marshalling_Timers_BehaviorTimer_descriptor,
               new java.lang.String[] { "DEPRECATEDNodeId", "DEPRECATEDBehaviorIndex", "HandleId", });
+          internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_descriptor =
+            internal_static_org_drools_core_marshalling_Timers_descriptor.getNestedTypes().get(4);
+          internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_org_drools_core_marshalling_Timers_TimerNodeTimer_descriptor,
+              new java.lang.String[] { "NodeId", "Tuple", "Trigger", });
           internal_static_org_drools_core_marshalling_Trigger_descriptor =
             getDescriptor().getMessageTypes().get(19);
           internal_static_org_drools_core_marshalling_Trigger_fieldAccessorTable = new

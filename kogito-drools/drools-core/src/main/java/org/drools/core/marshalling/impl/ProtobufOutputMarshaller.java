@@ -51,6 +51,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.marshalling.impl.ProtobufMessages.ProcessData.Builder;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
+import org.drools.core.marshalling.impl.ProtobufMessages.Tuple;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -717,14 +718,7 @@ public class ProtobufOutputMarshaller {
         Rule rule = agendaItem.getRule();
         _activation.setPackageName( rule.getPackage() );
         _activation.setRuleName( rule.getName() );
-
-        ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
-        for ( LeftTuple entry = agendaItem.getTuple(); entry != null; entry = entry.getParent() ) {
-            InternalFactHandle handle = entry.getLastHandle();
-            _tb.addHandleId( handle.getId() );
-        }
-        _activation.setTuple( _tb.build() );
-
+        _activation.setTuple( writeTuple( agendaItem.getTuple() ) );
         _activation.setSalience( agendaItem.getSalience() );
         _activation.setIsActivated( agendaItem.isQueued() );
         _activation.setEvaluated( agendaItem.isRuleAgendaItem() );
@@ -744,6 +738,15 @@ public class ProtobufOutputMarshaller {
             }
         }
         return _activation.build();
+    }
+
+    public static Tuple writeTuple(LeftTuple tuple) {
+        ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
+        for ( LeftTuple entry = tuple; entry != null; entry = entry.getParent() ) {
+            InternalFactHandle handle = entry.getLastHandle();
+            _tb.addHandleId( handle.getId() );
+        }
+        return _tb.build();
     }
 
     private static ProtobufMessages.Timers writeTimers(Collection<TimerJobInstance> timers,
