@@ -7,7 +7,10 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.DefaultAgenda;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
+import org.drools.core.util.Iterator;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -52,7 +55,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         evaluateEagerList(ksession);
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
@@ -108,7 +111,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         evaluateEagerList(ksession);
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
@@ -190,7 +193,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         evaluateEagerList(ksession);
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
 
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
@@ -274,7 +277,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         }
         ksession.fireAllRules();
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
 
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
@@ -291,12 +294,11 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testSingleJoinNode() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 when\n" +
+                     "rule rule1  @Eager(true)  when\n" +
                      "    $s1 : String( )\n" +
                      "    $s2 : String( )\n" +
                      "then\n" +
-                     "end\n" +
-                     "\n";
+                     "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
@@ -313,8 +315,9 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
+        ((DefaultAgenda)((StatefulKnowledgeSessionImpl)ksession).session.getAgenda()).evaluateEagerList();
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isQueued() );
@@ -322,8 +325,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         assertContains( new String[]{"rule1:0:1:true", "rule1:1:0:true", "rule1:1:1:true", "rule1:0:0:true"},
                         list );
 
-        ksession.fireAllRules();
 
+        ksession.fireAllRules();
         it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
@@ -337,7 +340,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testSingleJoinNodePlusEvaln() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 when\n" +
+                     "rule rule1 @Eager(true) when\n" +
                      "    $s1 : String( )\n" +
                      "    $s2 : String( )\n" +
                      "    eval( 1 == 1 ) \n" +
@@ -360,8 +363,9 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
+        ((DefaultAgenda)((StatefulKnowledgeSessionImpl)ksession).session.getAgenda()).evaluateEagerList();
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isQueued() );
@@ -384,17 +388,17 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testSingleJoinNodePlusEvalnWithSharing() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 when\n" +
+                     "rule rule1  @Eager(true)  when\n" +
                      "    $s1 : String( )\n" +
                      "    $s2 : String( )\n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule2 when\n" +
+                     "rule rule2  @Eager(true)  when\n" +
                      "    $s1 : String( )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule3 when\n" +
+                     "rule rule3  @Eager(true)  when\n" +
                      "    $s1 : String( )\n" +
                      "    $s2 : String( )\n" +
                      "    $s3 : String( )\n" +
@@ -418,8 +422,9 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
+        ((DefaultAgenda)((StatefulKnowledgeSessionImpl)ksession).session.getAgenda()).evaluateEagerList();
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
@@ -497,7 +502,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
@@ -519,17 +524,17 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testNotSharingWithMixedDormantAndActive() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 salience 10 when\n" +
+                     "rule rule1  @Eager(true)  salience 10 when\n" +
                      "    not String( this == '1' )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule2  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
+                     "rule rule2   @Eager(true)  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
                      "    not String( this == '1' )\n" +
                      "    $s1 : String( )\n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule3 salience ( Integer.parseInt( $s1+'2' ) ) when\n" +
+                     "rule rule3  @Eager(true)  salience ( Integer.parseInt( $s1+'2' ) ) when\n" +
                      "    $s1 : String( )\n" +
                      "    not String( this == '1' )\n" +
                      "    eval( 1 == 1 ) \n" +
@@ -556,7 +561,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
@@ -576,17 +581,17 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testExistsSharingWithMixedDormantAndActive() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 salience 100 when\n" +
+                     "rule rule1  @Eager(true)  salience 100 when\n" +
                      "    exists String( this == '1' )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule2  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
+                     "rule rule2   @Eager(true)  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
                      "    exists String( this == '1' )\n" +
                      "    $s1 : String( )\n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule3 salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
+                     "rule rule3  @Eager(true)  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
                      "    $s1 : String( )\n" +
                      "    exists String( this == '1' )\n" +
                      "    eval( 1 == 1 ) \n" +
@@ -614,7 +619,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
@@ -625,6 +630,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                 list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isQueued() );
             }
         }
+
+        System.out.println( list );
 
         assertContains( new String[]{"rule1:false", "rule2:0:true", "rule2:1:true", "rule2:2:true", "rule3:2:false"},
                         list );
@@ -675,7 +682,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isQueued() );
@@ -689,11 +696,11 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testAccnSharingWithMixedDormantAndActive() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 when\n" +
+                     "rule rule1 @Eager(true) when\n" +
                      "    $s1 : Double() from accumulate( $i : Integer(), sum ( $i ) )    " +
                      "then\n" +
                      "end\n" +
-                     "rule rule2  when\n" +
+                     "rule rule2 @Eager(true) when\n" +
                      "    $s1 : Double() from accumulate( $i : Integer(), sum ( $i ) )    " +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
@@ -725,7 +732,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        ActivationIterator it = ActivationIterator.iterator( ksession );
+        Iterator it = ActivationIterator.iterator( ksession );
         List list = new ArrayList();
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {

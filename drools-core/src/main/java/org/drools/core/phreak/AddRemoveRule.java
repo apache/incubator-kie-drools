@@ -501,7 +501,7 @@ public class AddRemoveRule {
                 FromMemory fm = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
                 LeftTupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
                 FastIterator it = ltm.fullFastIterator();
-                for (LeftTuple lt = (LeftTuple) it.next(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
                     followPeerFromLeftInput(lt.getFirstChild(), peerNode, smem, sinks, insert, wm);
                 }
                 return;
