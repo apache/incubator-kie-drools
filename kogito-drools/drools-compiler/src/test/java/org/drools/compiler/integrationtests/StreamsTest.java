@@ -277,7 +277,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
         SessionEntryPoint entry = session.getEntryPoint( "stream1" );
 
-        InternalFactHandle handle5 = (InternalFactHandle) entry.insert( tick5 );
+       InternalFactHandle handle5 = (InternalFactHandle) entry.insert( tick5 );
         InternalFactHandle handle6 = (InternalFactHandle) entry.insert( tick6 );
         InternalFactHandle handle7 = (InternalFactHandle) entry.insert( tick7 );
         InternalFactHandle handle8 = (InternalFactHandle) entry.insert( tick8 );
@@ -514,6 +514,9 @@ public class StreamsTest extends CommonTestMethodBase {
         ksession.insert(st1);
         ksession.insert(st2);
 
+        assertThat(ksession.fireAllRules(),
+                   equalTo(2));
+
         verify(wml,
                times(2)).objectInserted(any(org.kie.api.event.rule.ObjectInsertedEvent.class));
         verify(ael,
@@ -523,11 +526,6 @@ public class StreamsTest extends CommonTestMethodBase {
         assertThat((Collection<Object>) ksession.getObjects(),
                    hasItems((Object) st1,
                             st2));
-
-        int fired = ksession.fireAllRules();
-
-        assertThat(fired,
-                equalTo(2));
 
         clock.advanceTime(3,
                           TimeUnit.SECONDS);
