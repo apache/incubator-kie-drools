@@ -1496,7 +1496,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.fireAllRules();
     }
 
-    @Test @Ignore("mvel does a numerically comparison (when possible), jit a lexicographic one. Which one is correct?")
+    @Test
     public void testNumberInQuotes() throws Exception {
         // DROOLS-68
         String str =
@@ -1526,7 +1526,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(2, ksession.fireAllRules());
     }
 
-    @Test @Ignore("mvel does a numerically comparison (when possible), jit a lexicographic one. Which one is correct?")
+    @Test
     public void testStringCoercionComparison() {
         // DROOLS-167
         String str = "import " + Person.class.getName() + ";\n" +
