@@ -68,6 +68,7 @@ public class JpaPersistenceTraitTest {
                 "global java.util.List list; \n" +
                 "" +
                 "declare TBean \n" +
+                "  @propertyReactive \n" +
                 "  @Traitable \n" +
                 "  fld : String \n" +
                 "end \n " +
@@ -127,6 +128,7 @@ public class JpaPersistenceTraitTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+        //StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<?> list = new ArrayList<Object>();
 
         ksession.setGlobal("list",
@@ -140,6 +142,7 @@ public class JpaPersistenceTraitTest {
 
 
         StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
+        //StatefulKnowledgeSession ksession2 = kbase.newStatefulKnowledgeSession();
 
         ksession2.fireAllRules();
 
@@ -170,6 +173,7 @@ public class JpaPersistenceTraitTest {
                 "global java.util.List list; \n" +
                 "" +
                 "declare TBean2 \n" +
+                "  @propertyReactive \n" +
                 "  @Traitable \n" +
                 "  fld : String \n" +
                 "end \n " +
