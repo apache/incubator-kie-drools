@@ -4766,6 +4766,7 @@ public class MiscTest extends CommonTestMethodBase {
     @Test
     public void testNotInStatelessSession() throws Exception {
         KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbc.setOption( PhreakOption.DISABLED );
         kbc.setOption( SequentialOption.YES );
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc, "test_NotInStatelessSession.drl" ) );
         StatelessKnowledgeSession session = createStatelessKnowledgeSession( kbase );

@@ -84,6 +84,7 @@ public class DroolsEventListTest extends CommonTestMethodBase {
         // alter the price to remove the last row
         stilton3.setPrice( 4 );
         ksession.update(  s3Fh, stilton3 );
+        ksession.fireAllRules();
         
         assertEquals( 2, sorted.size() );
         assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
@@ -92,7 +93,8 @@ public class DroolsEventListTest extends CommonTestMethodBase {
         // alter the price to put the last row back in
         stilton3.setPrice( 3 );
         ksession.update(  s3Fh, stilton3 );
-        
+        ksession.fireAllRules();
+
         assertEquals( 3, sorted.size() );
         assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
         assertEquals( 2, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
@@ -101,7 +103,8 @@ public class DroolsEventListTest extends CommonTestMethodBase {
         // alter the price to remove the middle row
         stilton2.setPrice( 4 );
         ksession.update(  s2Fh, stilton2 );
-        
+        ksession.fireAllRules();
+
         assertEquals( 2, sorted.size() );
         assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
         assertEquals( 3, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
@@ -109,6 +112,7 @@ public class DroolsEventListTest extends CommonTestMethodBase {
         // alter the price to add the previous middle rows to the end
         cheddar2.setPrice( 4 );
         ksession.update(  c2Fh, cheddar2 );
+        ksession.fireAllRules();
 
         assertEquals( 3, sorted.size() );
         assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
@@ -117,6 +121,8 @@ public class DroolsEventListTest extends CommonTestMethodBase {
             
         // Check a standard retract
         ksession.retract( s1Fh );
+        ksession.fireAllRules();
+
         assertEquals( 2, sorted.size() );
         assertEquals( 3, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
         assertEquals( 4, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );

@@ -230,6 +230,7 @@ public class JTMSTest {
         assertEquals( new Integer(1), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
         
         kSession.retract( fhGo1 );
+        kSession.fireAllRules();
         it = equalityMap.iterator();
         key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
@@ -240,6 +241,7 @@ public class JTMSTest {
         assertEquals( new Integer(2), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
         
         kSession.retract( fhGo2 );
+        kSession.fireAllRules();
         it = equalityMap.iterator();
         key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
@@ -332,6 +334,7 @@ public class JTMSTest {
         assertEquals( new Integer(1), ((Person)((JTMSBeliefSet)key.getBeliefSet()).getNegativeFactHandle().getObject()).getNotInEqualTestObject() );
         
         kSession.retract( fhGo1 );
+        kSession.fireAllRules();
         it = equalityMap.iterator();
         key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {
@@ -342,6 +345,7 @@ public class JTMSTest {
         assertEquals( new Integer(3), ((Person)((JTMSBeliefSet)key.getBeliefSet()).getNegativeFactHandle().getObject()).getNotInEqualTestObject() );
 
         kSession.retract( fhGo3 );
+        kSession.fireAllRules();
         it = equalityMap.iterator();
         key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
         while ( !key.getFactHandle().getObject().equals( new Person( "darth") ) ) {

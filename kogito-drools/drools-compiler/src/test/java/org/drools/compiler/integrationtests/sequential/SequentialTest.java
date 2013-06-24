@@ -12,12 +12,14 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.integrationtests.DynamicRulesTest;
 import org.drools.core.rule.Package;
 import org.drools.core.util.IoUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -47,11 +49,17 @@ import java.util.Properties;
 
 public class SequentialTest extends CommonTestMethodBase {
 
+    private KieBaseConfiguration kconf;
+
+    @Before
+    public void setup() {
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( PhreakOption.DISABLED );
+        kconf.setOption( SequentialOption.YES );
+    }
+
     @Test
     public void testBasicOperation() throws Exception {
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( SequentialOption.YES );
-
         KnowledgeBase kbase = loadKnowledgeBase(kconf, "simpleSequential.drl");
         StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
         final List list = new ArrayList();
@@ -79,8 +87,6 @@ public class SequentialTest extends CommonTestMethodBase {
     
     @Test
     public void testSalience() throws Exception {
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption(SequentialOption.YES);
         KnowledgeBase kbase = loadKnowledgeBase(kconf, "simpleSalience.drl");
         StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
 
@@ -110,8 +116,6 @@ public class SequentialTest extends CommonTestMethodBase {
         str +="    System.out.println( drools.getKieRuntime() );\n";
         str +="end\n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( SequentialOption.YES );
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, str);
         StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
         
@@ -130,8 +134,6 @@ public class SequentialTest extends CommonTestMethodBase {
         str +="    System.out.println( drools.getKieRuntime() );\n";
         str +="end\n";
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption(SequentialOption.YES);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, str);
         StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
         
@@ -219,8 +221,6 @@ public class SequentialTest extends CommonTestMethodBase {
     // JBRULES-1567 - ArrayIndexOutOfBoundsException in sequential execution after calling RuleBase.addPackage(..)
     @Test
     public void testSequentialWithRulebaseUpdate() throws Exception {
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption(SequentialOption.YES);
         KnowledgeBase kbase = loadKnowledgeBase(kconf, "simpleSalience.drl");
         StatelessKnowledgeSession ksession = createStatelessKnowledgeSession( kbase );
 
@@ -306,6 +306,7 @@ public class SequentialTest extends CommonTestMethodBase {
                                                  String file) throws DroolsParserException, IOException, Exception {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         if ( sequentialMode ) {
+            kconf.setOption( PhreakOption.DISABLED );
             kconf.setOption( SequentialOption.YES );
         }   else {
             kconf.setOption( SequentialOption.NO );
