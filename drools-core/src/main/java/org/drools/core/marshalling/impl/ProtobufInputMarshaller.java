@@ -49,6 +49,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.marshalling.impl.ProtobufMessages.RuleData;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
+import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.StackEntry;
@@ -292,6 +293,15 @@ public class ProtobufInputMarshaller {
                 readTimer( context,
                            _timer );
             }
+        }
+        // need to process any eventual left over timer node timers
+        if( ! context.timerNodeSchedulers.isEmpty() ) {
+            for( Map<TupleKey, Scheduler> schedulers : context.timerNodeSchedulers.values() ) {
+                for( Scheduler scheduler : schedulers.values() ) {
+                    scheduler.schedule( scheduler.getTrigger() );
+                }
+            }
+            context.timerNodeSchedulers.clear();
         }
 
         // remove the activations filter
