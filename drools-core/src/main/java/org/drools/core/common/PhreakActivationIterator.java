@@ -130,7 +130,8 @@ public class PhreakActivationIterator
                         FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                         LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
-                            collectFromPeers(lt, agendaItems, nodeSet, wm);
+                            AccumulateContext accctx = (AccumulateContext) lt.getObject();
+                            collectFromPeers(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
                         }
                     } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
                         bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
@@ -138,7 +139,7 @@ public class PhreakActivationIterator
                         RightTuple rt = ((BetaNode) node).getFirstRightTuple(bm.getRightTupleMemory(), it);
                         for (; rt != null; rt = (RightTuple) it.next(rt)) {
                             for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
-                                collectFromPeers(lt, agendaItems, nodeSet, wm);
+                                collectFromPeers(lt.getFirstChild(), agendaItems, nodeSet, wm);
                             }
                         }
                     } else {

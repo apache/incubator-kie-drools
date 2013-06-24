@@ -501,7 +501,6 @@ public class AddRemoveRule {
                     LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getObject();
-                        //collectFromPeers(lt, agendaItems, nodeSet, wm);
                         followPeer(accctx.getResultLeftTuple(), smem, sinks,  sinks.size()-1, insert, wm);
                     }
                 } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
@@ -510,8 +509,7 @@ public class AddRemoveRule {
                     RightTuple rt = ((BetaNode) node).getFirstRightTuple(bm.getRightTupleMemory(), it);
                     for (; rt != null; rt = (RightTuple) it.next(rt)) {
                         for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
-                            //collectFromPeers(lt, agendaItems, nodeSet, wm);
-                            followPeer(lt, smem, sinks,  sinks.size()-1, insert, wm);
+                            followPeer(lt.getFirstChild(), smem, sinks,  sinks.size()-1, insert, wm);
                         }
                     }
                 } else {
@@ -519,8 +517,7 @@ public class AddRemoveRule {
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                     LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
-                        //collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
-                        followPeer(lt, smem, sinks,  sinks.size()-1, insert, wm);
+                        followPeerFromLeftInput(lt.getFirstChild(), peerNode, smem, sinks, insert, wm);
                     }
                 }
                 return;
@@ -609,7 +606,14 @@ public class AddRemoveRule {
             while (peer.getSink() != sink) {
                 peer = peer.getPeer();
             }
-            followPeer(peer, smem, sinks, i-1, insert, wm);
+
+            if (NodeTypeEnums.AccumulateNode == peer.getLeftTupleSink().getType()) {
+                AccumulateContext accctx = (AccumulateContext) lt.getObject();
+                followPeer(accctx.getResultLeftTuple(), smem, sinks,  sinks.size()-1, insert, wm);
+            } else if ( peer.getFirstChild() != null ) {
+                followPeer(peer.getFirstChild(), smem, sinks, i-1, insert, wm);
+            }
+
         }
 
 
