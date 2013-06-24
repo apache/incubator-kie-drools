@@ -87,7 +87,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
                 any(AfterMatchFiredEvent.class));
     }
 
-    @Test //(timeout = 6000)
+    @Test (timeout = 6000)
     public void testEvenFirePseudoClockRuleB() throws Exception {
 
         AgendaEventListener ael = mock(AgendaEventListener.class);

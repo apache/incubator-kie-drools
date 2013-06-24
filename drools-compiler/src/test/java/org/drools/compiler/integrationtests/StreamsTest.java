@@ -695,7 +695,7 @@ public class StreamsTest extends CommonTestMethodBase {
                           is(33));
     }
     
-    @Test //(timeout=10000)
+    @Test (timeout=10000)
     public void testMultipleWindows() throws Exception {
         String drl = "package org.drools.compiler\n" +
                      "declare StockTick\n" + 
@@ -755,7 +755,7 @@ public class StreamsTest extends CommonTestMethodBase {
     }
     
     
-    @Test //(timeout=10000)
+    @Test (timeout=10000)
     public void testAtomicActivationFiring() throws Exception {
         // JBRULES-3383
         String str = "package org.drools.compiler.test\n" +

@@ -432,7 +432,13 @@ public class EntryPointNode extends ObjectSource
 
     public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+        if (context == null ) {
+            return;
+        }
+        if ( context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
+            for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
+                workingMemory.updateEntryPointsCache();
+            }
             return;
         }
 

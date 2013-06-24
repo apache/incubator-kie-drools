@@ -1191,7 +1191,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test //(timeout=10000)
+    @Test (timeout=10000)
     public void testSimpleLengthWindow() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -2182,7 +2182,7 @@ public class CepEspTest extends CommonTestMethodBase {
                       rules );
     }
 
-    @Test //(timeout=10000)
+    @Test (timeout=10000)
     public void testMultipleSlidingWindows() throws IOException,
                                             ClassNotFoundException {
         String str = "declare A\n" +
@@ -2860,7 +2860,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test //(timeout=10000)
+    @Test (timeout=10000)
     public void testTimeAndLengthWindowConflict() throws Exception {
         // JBRULES-3671
         String drl = "package org.drools.compiler;\n" +
@@ -2938,7 +2938,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
-    @Test //(timeout=10000)
+    @Test (timeout=10000)
     public void testTimeWindowWithPastEvents() throws Exception {
         // JBRULES-2258 
         String drl = "package org.drools.compiler;\n" +

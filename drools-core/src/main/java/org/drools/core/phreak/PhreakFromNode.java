@@ -200,21 +200,24 @@ public class PhreakFromNode {
             for (RightTuple rightTuple : previousMatches.values()) {
                 for (RightTuple current = rightTuple; current != null; current = (RightTuple) rightIt.next(current)) {
                     LeftTuple childLeftTuple = current.getFirstChild();
-                    childLeftTuple.unlinkFromLeftParent();
-                    childLeftTuple.unlinkFromRightParent();
+                    if (childLeftTuple != null) {
+                        // childLeftTuple is null, if the constraints in the 'from' pattern fail
+                        childLeftTuple.unlinkFromLeftParent();
+                        childLeftTuple.unlinkFromRightParent();
 
-                    switch (childLeftTuple.getStagedType()) {
-                        // handle clash with already staged entries
-                        case LeftTuple.INSERT:
-                            stagedLeftTuples.removeInsert(childLeftTuple);
-                            break;
-                        case LeftTuple.UPDATE:
-                            stagedLeftTuples.removeUpdate(childLeftTuple);
-                            break;
+                        switch (childLeftTuple.getStagedType()) {
+                            // handle clash with already staged entries
+                            case LeftTuple.INSERT:
+                                stagedLeftTuples.removeInsert(childLeftTuple);
+                                break;
+                            case LeftTuple.UPDATE:
+                                stagedLeftTuples.removeUpdate(childLeftTuple);
+                                break;
+                        }
+
+                        childLeftTuple.setPropagationContext(propagationContext);
+                        trgLeftTuples.addDelete(childLeftTuple);
                     }
-
-                    childLeftTuple.setPropagationContext(propagationContext);
-                    trgLeftTuples.addDelete(childLeftTuple);
                 }
             }
 
