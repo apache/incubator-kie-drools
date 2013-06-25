@@ -14,12 +14,12 @@ import java.util.Properties;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.RESOURCES_ROOT;
+
 public class KieFileSystemImpl
         implements
         KieFileSystem {
     
-    private static final String RESOURCE_PATH_PREFIX = "src/main/resources/";
-
     private final MemoryFileSystem mfs;
 
     public KieFileSystemImpl() {
@@ -54,13 +54,13 @@ public class KieFileSystemImpl
         try {
             String target = resource.getTargetPath() != null ? resource.getTargetPath() : resource.getSourcePath();
             if( target != null ) {
-                write( RESOURCE_PATH_PREFIX+target, readBytesFromInputStream(resource.getInputStream()) );
+                write( RESOURCES_ROOT+target, readBytesFromInputStream(resource.getInputStream()) );
                 ResourceConfiguration conf = resource.getConfiguration();
                 if( conf != null ) {
                     Properties prop = ResourceTypeImpl.toProperties(conf);
                     ByteArrayOutputStream buff = new ByteArrayOutputStream();
                     prop.store( buff, "Configuration properties for resource: "+target );
-                    write( RESOURCE_PATH_PREFIX+target+".properties", buff.toByteArray() );
+                    write( RESOURCES_ROOT+target+".properties", buff.toByteArray() );
                 }
                 return this;
             } else {
