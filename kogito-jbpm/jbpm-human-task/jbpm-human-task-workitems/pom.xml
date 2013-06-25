@@ -151,6 +151,8 @@
             <Bundle-SymbolicName>org.jbpm.services.task.wih</Bundle-SymbolicName>
             <Import-Package>
               !org.jbpm.services.task.wih,
+              org.jboss.solder.core;resolution:=optional,
+              org.jboss.seam.transaction;resolution:=optional,
               *
             </Import-Package>
             <Private-Package></Private-Package>
