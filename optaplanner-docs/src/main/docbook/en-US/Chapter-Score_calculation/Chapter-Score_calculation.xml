@@ -797,13 +797,27 @@
         </section>
 
         <section>
-          <title>A KieBase (possibly defined by Guvnor)</title>
+          <title>A KieBase (possibly defined by Drools Workbench)</title>
 
           <para>If you prefer to build the <literal>KieBase</literal> yourself or if you're combining Planner with
-          Guvnor, you can set the <literal>KieBase</literal> on the <literal>SolverFactory</literal> before building the
-          <literal>Solver</literal>:</para>
+          Drools Workbench (formerly known as Guvnor), you can set the <literal>KieBase</literal> on the
+          <literal>SolverFactory</literal> before building the <literal>Solver</literal>:</para>
 
           <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);</programlisting>
+
+          <note>
+            <para>To be able to define your score rules in Drools Workbench, you'll want to: </para>
+
+            <orderedlist>
+              <listitem>
+                <para>Upload the optaplanner-core jar as a POJO model.</para>
+              </listitem>
+
+              <listitem>
+                <para>Add a global variable called <literal>scoreHolder</literal> (see below).</para>
+              </listitem>
+            </orderedlist>
+          </note>
         </section>
       </section>
 
