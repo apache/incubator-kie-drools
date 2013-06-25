@@ -1,7 +1,5 @@
 package org.drools.core.common;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -14,8 +12,11 @@ public class UpgradableReentrantReadWriteLock {
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private final Map<Long, IntegerRef> readCounters = new ConcurrentHashMap<Long, IntegerRef>();
-    private final Map<Long, IntegerRef> upgradedReadCounters = new ConcurrentHashMap<Long, IntegerRef>();
+    private final ThreadLocal<LockRequestCounter> lockCounters = new ThreadLocal<LockRequestCounter>() {
+        protected LockRequestCounter initialValue() {
+            return new LockRequestCounter();
+        }
+    };
 
     private AtomicBoolean tryingLockUpgrade = new AtomicBoolean(false);
 
@@ -32,9 +33,11 @@ public class UpgradableReentrantReadWriteLock {
     }
 
     public void readLock() {
-        if (increaseUpgradedReadCounter()) return;
+        LockRequestCounter lockCounter = lockCounters.get();
 
-        if (shouldTryAtomicUpgrade && tryingLockUpgrade.get() && readCounters.get(Thread.currentThread().getId()) == null) {
+        if (increaseUpgradedReadCounter(lockCounter)) return;
+
+        if (shouldTryAtomicUpgrade && tryingLockUpgrade.get() && lockCounter.readCounter == 0) {
             // if another thread is trying a lock upgrade and the current thread still doesn't hold a read one make it wait
             try {
                 synchronized (lowPriotityMonitor) {
@@ -46,13 +49,14 @@ public class UpgradableReentrantReadWriteLock {
         }
 
         lock.readLock().lock();
-        increaseReadCounter();
+        increaseReadCounter(lockCounter);
     }
 
     public void readUnlock() {
-        if (decreaseUpgradedReadCounter()) return;
+        LockRequestCounter lockCounter = lockCounters.get();
+        if (decreaseUpgradedReadCounter(lockCounter)) return;
         lock.readLock().unlock();
-        decreaseReadCounters();
+        decreaseReadCounters(lockCounter);
         notifyUpgradingThread();
     }
 
@@ -73,17 +77,17 @@ public class UpgradableReentrantReadWriteLock {
             return;
         }
 
-        IntegerRef readHoldCount = readCounters.get(Thread.currentThread().getId());
+        LockRequestCounter lockCounter = lockCounters.get();
 
         // Check if it's upgrading a read lock
-        if (readHoldCount != null) {
-            upgradedReadCounters.put(Thread.currentThread().getId(), new IntegerRef(readHoldCount.get()));
+        if (lockCounter.readCounter > 0) {
+            lockCounter.upgradedReadCounter = lockCounter.readCounter;
             if (shouldTryAtomicUpgrade && tryingLockUpgrade.compareAndSet(false, true)) {
-                atomicLockUpgrade(readHoldCount.get());
+                atomicLockUpgrade(lockCounter.readCounter);
             } else {
                 // this lock shouldn't work atomically or there's another thread trying to atomically upgrade
                 // its lock, so release all the read locks of this thread before to acquire a write one
-                for (int i = readHoldCount.get(); i > 0; i--) lock.readLock().unlock();
+                for (int i = lockCounter.readCounter; i > 0; i--) lock.readLock().unlock();
                 notifyUpgradingThread();
                 lowPriorityWriteLock();
             }
@@ -134,10 +138,12 @@ public class UpgradableReentrantReadWriteLock {
     public void writeUnlock() {
         // Check if unlocking an upgraded read lock and if so downgrade it back
         if (lock.getWriteHoldCount() == 1) {
-            IntegerRef upgradedReadCount = upgradedReadCounters.get(Thread.currentThread().getId());
-            if (upgradedReadCount != null) {
-                for (int i = upgradedReadCount.get(); i > 0; i--) lock.readLock().lock();
-                upgradedReadCounters.remove(Thread.currentThread().getId());
+            LockRequestCounter lockCounter = lockCounters.get();
+            if (lockCounter.upgradedReadCounter > 0) {
+                for (int i = lockCounter.upgradedReadCounter; i > 0; i--) {
+                    lock.readLock().lock();
+                }
+                lockCounter.upgradedReadCounter = 0;
             }
         }
 
@@ -153,58 +159,35 @@ public class UpgradableReentrantReadWriteLock {
         return lock.getWriteHoldCount();
     }
 
-    private void increaseReadCounter() {
-        long threadId = Thread.currentThread().getId();
-        IntegerRef readCount = readCounters.get(threadId);
-        if (readCount != null) {
-            readCount.inc();
-        } else {
-            readCounters.put(threadId, new IntegerRef());
-        }
-
+    private void increaseReadCounter(LockRequestCounter lockCounter) {
+        lockCounter.readCounter++;
     }
 
-    private boolean increaseUpgradedReadCounter() {
+    private boolean increaseUpgradedReadCounter(LockRequestCounter lockCounter) {
         // increase the read locks counter if it belongs to a thread that upgraded its lock
-        long threadId = Thread.currentThread().getId();
-        IntegerRef upgradedReadCount = upgradedReadCounters.get(threadId);
-        if (upgradedReadCount == null) return false;
-        upgradedReadCount.inc();
+        if (lockCounter.upgradedReadCounter == 0) {
+            return false;
+        }
+        lockCounter.upgradedReadCounter++;
         return true;
     }
 
-    private void decreaseReadCounters() {
-        long threadId = Thread.currentThread().getId();
-        IntegerRef readCount = readCounters.get(threadId);
-        if (readCount != null) {
-            if (readCount.get() < 2) {
-                readCounters.remove(threadId);
-            } else {
-                readCount.dec();
-            }
-        }
+    private void decreaseReadCounters(LockRequestCounter lockCounter) {
+        lockCounter.readCounter--;
     }
 
-    private boolean decreaseUpgradedReadCounter() {
+    private boolean decreaseUpgradedReadCounter(LockRequestCounter lockCounter) {
         // decrease the read locks counter if it belongs to a thread that upgraded its lock
-        long threadId = Thread.currentThread().getId();
-        IntegerRef upgradedReadCount = upgradedReadCounters.get(threadId);
-        if (upgradedReadCount == null) return false;
-        if (upgradedReadCount.get() < 2) {
-            upgradedReadCounters.remove(threadId);
-        } else {
-            upgradedReadCount.dec();
+        if (lockCounter.upgradedReadCounter == 0) {
+            return false;
         }
+        lockCounter.upgradedReadCounter--;
         // this read lock has been upgraded in a write one, so no need to unlock it
         return true;
     }
 
-    private static class IntegerRef {
-        private int i = 1;
-        public IntegerRef() { }
-        public IntegerRef(int i) { this.i = i; }
-        private int get() { return i; }
-        private void inc() { i++; }
-        private void dec() { i--; }
+    private static class LockRequestCounter {
+        private int readCounter = 0;
+        private int upgradedReadCounter = 0;
     }
 }
