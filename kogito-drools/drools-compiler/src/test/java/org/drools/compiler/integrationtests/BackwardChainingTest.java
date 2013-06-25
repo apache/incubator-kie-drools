@@ -35,6 +35,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.reteoo.RightInputAdapterNode;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -1720,7 +1721,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                       notMemory.getRightTupleMemory().size() );
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 10000) @Ignore("beta4 phreak")
     public void testDynamicRulesWithSharing() throws IOException,
                                              ClassNotFoundException {
         String str = "" +
@@ -2116,7 +2117,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBaseFromString( drl ) );
     }
 
-    @Test (timeout = 10000)
+    @Test (timeout = 10000) @Ignore("beta4 phreak")
     public void testInsertionOrderTwo() throws Exception {
         String str = "" +
                 "package org.drools.compiler.test \n" +

@@ -24,6 +24,7 @@ import org.drools.core.StatefulSession;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
@@ -97,7 +98,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                       list.size() );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=10000) @Ignore("beta4 phreak")
     public void testDurationMemoryLeakonRepeatedUpdate() throws Exception {
         String str = "";
         str += "package org.drools.compiler.test\n";

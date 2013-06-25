@@ -114,6 +114,8 @@ public class RuleBaseConfiguration
     Externalizable {
     private static final long serialVersionUID = 510l;
 
+    public static final boolean DEFAULT_PHREAK = true;
+
     public static final String DEFAULT_SIGN_ON_SERIALIZATION = "false";
 
     protected static transient Logger logger = LoggerFactory.getLogger(RuleBaseConfiguration.class);
@@ -322,7 +324,7 @@ public class RuleBaseConfiguration
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
         } else if ( name.equals( PhreakOption.PROPERTY_NAME ) ) {
-            setPhreakEnabled(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
+            setPhreakEnabled(StringUtils.isEmpty(value) ? DEFAULT_PHREAK : Boolean.valueOf(value));
         }
     }
 
@@ -471,7 +473,7 @@ public class RuleBaseConfiguration
                                                                                          "true" ) ) );
         
         setPhreakEnabled(Boolean.valueOf(this.chainedProperties.getProperty(PhreakOption.PROPERTY_NAME,
-                                                                            "false")));
+                                                                            "" + DEFAULT_PHREAK)));
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );        
 
