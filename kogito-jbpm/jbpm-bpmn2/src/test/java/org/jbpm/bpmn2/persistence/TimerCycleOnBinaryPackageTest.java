@@ -22,6 +22,7 @@ import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
@@ -154,7 +155,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         assertEquals(4, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
     }
 
-    @Test
+    @Test @Ignore("beta4 phreak")
     public void testStartTimerCycleFromDiscDRL() throws Exception {
         KieBase kbase = createKnowledgeBaseFromDisc("rules-timer.drl");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -195,7 +196,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         assertEquals(3, list2.size());
     }
 
-    @Test
+    @Test @Ignore("beta4 phreak")
     public void testStartTimerCycleFromClasspathDRL() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("rules-timer.drl");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
