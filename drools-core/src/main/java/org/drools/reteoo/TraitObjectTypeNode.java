@@ -23,6 +23,7 @@ import org.drools.factmodel.traits.TraitProxy;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.drools.util.HierarchyEncoderImpl;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -51,6 +52,22 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         out.writeObject( typeMask );
     }
 
+    @Override
+    public void assertObject( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
+        if ( factHandle.getObject() instanceof TraitProxy )  {
+            BitSet vetoMask = ((TraitProxy) factHandle.getObject()).getTypeFilter();
+            if ( vetoMask == null || typeMask.isEmpty() || ! HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) ) {
+                //System.out.println(" PASS Redundancy " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                super.assertObject( factHandle, context, workingMemory );
+            } else {
+                //System.out.println(" BLOCK Redundancy " + factHandle.getObject() + " >> " + vetoMask + " checks in " + typeMask );
+            }
+        } else {
+            super.assertObject( factHandle, context, workingMemory );
+        }
+
+    }
+
     public void modifyObject( InternalFactHandle factHandle,
                               ModifyPreviousTuples modifyPreviousTuples,
                               PropagationContext context,
@@ -65,30 +82,24 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         if ( compiledNetwork != null ) {
             compiledNetwork.modifyObject( factHandle,
                     modifyPreviousTuples,
-                    context.getModificationMask() != 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
+                    context.getModificationMask() > 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
                     workingMemory );
         } else {
             if ( factHandle.getObject() instanceof TraitProxy )  {
                 BitSet vetoMask = ((TraitProxy) factHandle.getObject()).getTypeFilter();
-                if ( vetoMask == null ) {
+                if ( vetoMask == null || typeMask.isEmpty() || ! HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) ) {
+                    //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                     this.sink.propagateModifyObject( factHandle,
                             modifyPreviousTuples,
-                            context.getModificationMask() != 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
+                            context.getModificationMask() > 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
                             workingMemory );
                 } else {
-                    BitSet checkMask = (BitSet) typeMask.clone();
-                    checkMask.and( vetoMask );
-                    if ( ! checkMask.equals( typeMask ) ) {
-                        this.sink.propagateModifyObject( factHandle,
-                                modifyPreviousTuples,
-                                context.getModificationMask() != 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
-                                workingMemory );
-                    }
+                    //System.out.println(" MODIFY BLOCK !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                 }
             } else {
                 this.sink.propagateModifyObject( factHandle,
                         modifyPreviousTuples,
-                        context.getModificationMask() != 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
+                        context.getModificationMask() > 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
                         workingMemory );
             }
 

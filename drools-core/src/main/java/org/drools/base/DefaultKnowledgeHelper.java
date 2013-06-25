@@ -49,6 +49,7 @@ import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitProxy;
 import org.drools.factmodel.traits.TraitType;
+import org.drools.factmodel.traits.TraitTypeMap;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.impl.KnowledgeBaseImpl;
@@ -367,7 +368,7 @@ public class DefaultKnowledgeHelper
         if ( h.isTrait() ) {
             if ( ( (TraitFactHandle) h ).isTraitable() ) {
                 // this is a traitable core object, so its traits must be updated as well
-                updateTraits( h.getObject(), mask, null, modifiedClass );
+                updateTraits( h.getObject(), mask, null, modifiedClass, null );
             } else {
                 Thing x = (Thing) h.getObject();
                 // in case this is a proxy
@@ -380,17 +381,16 @@ public class DefaultKnowledgeHelper
                             mask,
                             modifiedClass,
                             this.activation );
-                    updateTraits( core, mask, x, modifiedClass );
+                    updateTraits( core, mask, x, modifiedClass, null );
                 }
             }
         }
     }
 
-    private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass ) {
+    private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass, BitSet veto ) {
         TraitableBean txBean = (TraitableBean) object;
 
         Collection<Thing> px = txBean.getMostSpecificTraits();
-        BitSet veto = null;
         if ( originator != null ) {
             veto = (BitSet) ((TraitProxy) originator).getTypeCode().clone();
         }
@@ -598,11 +598,17 @@ public class DefaultKnowledgeHelper
 
     public <T, K> T don( K core, Class<T> trait, boolean logical ) {
         try {
+            BitSet currentType = core instanceof TraitableBean ? ( (TraitableBean) core ).getCurrentTypeCode() : null;
+            BitSet veto =  currentType != null ? (BitSet) currentType.clone() : null;
+
             T thing = applyTrait( core, trait, logical );
             if ( thing == core ) {
                 return thing;
             } else {
-                return doInsertTrait( thing, logical );
+                ((TraitProxy) thing).setTypeFilter( veto );
+                T t = doInsertTrait( thing, logical );
+                ( (TraitProxy) thing ).setTypeFilter( null );
+                return t;
             }
         } catch ( LogicalTypeInconsistencyException ltie ) {
             ltie.printStackTrace();
@@ -662,6 +668,12 @@ public class DefaultKnowledgeHelper
                                      TraitableBean<K,? extends TraitableBean> inner,
                                      boolean logical ) throws LogicalTypeInconsistencyException {
         T thing;
+        BitSet veto = inner.getCurrentTypeCode() != null ? (BitSet) inner.getCurrentTypeCode().clone() : null;
+        if ( veto != null ) {
+            TraitTypeMap line = (( TraitTypeMap ) inner._getTraitMap());
+            veto = line.metMembersCode( line.immediateParents( veto ) );
+        }
+
         boolean refresh = false;
         if ( trait.isAssignableFrom( inner.getClass() ) ) {
             thing = (T) inner;
@@ -684,8 +696,14 @@ public class DefaultKnowledgeHelper
 
         if ( refresh ) {
             FactHandle handle = lookupFactHandle( inner );
+            InternalFactHandle h = (InternalFactHandle) handle;
             if ( handle != null ) {
-                update( handle, 0L, core.getClass() );
+                ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
+                                                                              ((InternalFactHandle)handle).getObject(),
+                                                                              Long.MIN_VALUE,
+                                                                              core.getClass(),
+                                                                              this.activation );
+                updateTraits( inner, Long.MIN_VALUE, null, trait, veto );
             } else {
                 handle = this.workingMemory.insert( inner,
                                                     null,
@@ -722,7 +740,7 @@ public class DefaultKnowledgeHelper
     public <T,K,X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait ) {
         if ( trait.isAssignableFrom( core.getClass() ) ) {
             core.removeTrait( trait.getName() );
-            update( core );
+            updateTraits( core, Long.MIN_VALUE, null, Object.class, null );
             return (Thing<K>) core;
         } else {
             Collection<Thing<K>> removedTypes;
@@ -741,7 +759,7 @@ public class DefaultKnowledgeHelper
             }
 
             Thing<K> thing = core.getTrait( Thing.class.getName() );
-            update( thing );
+            updateTraits( core, Long.MIN_VALUE, null, Object.class, null );
             return thing;
         }
     }

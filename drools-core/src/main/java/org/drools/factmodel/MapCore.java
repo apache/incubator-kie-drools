@@ -112,11 +112,12 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
     }
 
     public Collection<Thing> getMostSpecificTraits() {
-        return ((TraitTypeMap) __$$dynamic_traits_map$$).getMostSpecificTraits();
+        return ((TraitTypeMap) _getTraitMap()).getMostSpecificTraits();
     }
 
     public BitSet getCurrentTypeCode() {
-        return ((TraitTypeMap) __$$dynamic_traits_map$$).getCurrentTypeCode();
+        TraitTypeMap map = ((TraitTypeMap) _getTraitMap());
+        return map != null ? map.getCurrentTypeCode() : null;
     }
 
     @Override
@@ -142,7 +143,7 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
 
 
     public void _setBottomTypeCode( BitSet bottomTypeCode ) {
-        ((TraitTypeMap) __$$dynamic_traits_map$$).setBottomCode( bottomTypeCode );
+        ((TraitTypeMap) _getTraitMap()).setBottomCode( bottomTypeCode );
     }
 
     public void init( MapCore core ) {

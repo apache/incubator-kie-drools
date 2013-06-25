@@ -391,6 +391,9 @@ public class PropagationContextImpl
             return this;
         }
 
+        long typeBit = modificationMask & Long.MIN_VALUE;
+        modificationMask &= Long.MAX_VALUE;
+
         ClassObjectType classObjectType = (ClassObjectType)type;
         Class<?> classType = classObjectType.getClassType();
         String pkgName = classType.getPackage().getName();
@@ -402,6 +405,7 @@ public class PropagationContextImpl
         Long cachedMask = classObjectType.getTransformedMask(modifiedClass, originalMask);
         if (cachedMask != null) {
             modificationMask = cachedMask;
+            modificationMask |= typeBit;
             return this;
         }
 
@@ -417,6 +421,9 @@ public class PropagationContextImpl
                 }
             }
         }
+
+        modificationMask |= typeBit;
+
         classObjectType.storeTransformedMask(modifiedClass, originalMask, modificationMask);
 
         return this;

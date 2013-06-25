@@ -47,7 +47,7 @@ end
 
 rule "Trait2"
 when
-    $s : Student( )
+    $s : Student( this not isA Worker )
     String( this == "hire" )
 then
     System.out.println( "Don worker" );

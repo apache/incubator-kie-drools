@@ -48,6 +48,7 @@ import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.definition.type.FactType;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.DebugAgendaEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
@@ -59,6 +60,8 @@ import org.drools.runtime.ClassObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.util.CodedHierarchyImpl;
 import org.drools.util.HierarchyEncoder;
 import org.junit.AfterClass;
@@ -2759,9 +2762,10 @@ public class TraitTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
         int k = ksession.fireAllRules();
 
-        assertEquals( 15, k );
+        assertEquals( 11, k );
 
     }
 
@@ -2791,6 +2795,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "  $p : Person( name == \"john\" ) \n" +
                 "then \n" +
                 "  System.out.println( $p ); \n" +
+                "  don( $p, Worker.class ); \n" +
                 "  don( $p, StudentWorker.class ); \n" +
                 "  don( $p, Assistant.class ); \n" +
                 "end \n" +
@@ -2850,7 +2855,7 @@ public class TraitTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         int k = ksession.fireAllRules();
 
-        assertEquals( 9, k );
+        assertEquals( 7, k );
 
         ksession.insert( "go" );
         k = ksession.fireAllRules();
@@ -3667,4 +3672,219 @@ public class TraitTest extends CommonTestMethodBase {
         ks.fireAllRules();
         System.out.println( list );
     }
+
+
+
+
+
+
+    @Test
+    public void testTypeRefractionOnInsert(  ) {
+        String source = "package t.x \n" +
+                        "import java.util.*; \n" +
+                        "import org.drools.factmodel.traits.Thing \n" +
+                        "import org.drools.factmodel.traits.Traitable \n" +
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "\n" +
+                        "" +
+                        "declare trait A @propertyReactive end\n" +
+                        "declare trait B extends A @propertyReactive end\n" +
+                        "declare trait C extends B @propertyReactive end\n" +
+                        "declare trait D extends A @propertyReactive end\n" +
+                        "declare trait E extends C, D @propertyReactive end\n" +
+                        "declare trait F extends E @propertyReactive end\n" +
+                        "" +
+                        "declare Kore\n" +
+                        "   @Traitable\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        "   Kore k = new Kore();\n" +
+                        "   don( k, B.class ); \n" +
+                        "   don( k, C.class ); \n" +
+                        "   don( k, D.class ); \n" +
+                        "   don( k, E.class ); \n" +
+                        "   don( k, A.class ); \n" +
+                        "   don( k, F.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule Check_1 when\n" +
+                        "   $x : A(  ) \n" +
+                        "then \n" +
+                        "   list.add( $x ); \n" +
+                        "   System.out.println( \" A by \" + $x ); \n" +
+                        "end\n" +
+                        "";
+
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        assertEquals( 1, list.size() );
+
+    }
+
+
+    @Test
+    public void testTypeRefractionOnQuery(  ) {
+        String source = "declare BaseObject\n" +
+                        "@Traitable\n" +
+                        "id : String @key\n" +
+                        "end\n" +
+                        "\n" +
+                        "declare trait A\n" +
+                        "id : String @key\n" +
+                        "end\n" +
+                        "\n" +
+                        "declare trait B extends A\n" +
+                        "end\n" +
+                        "\n" +
+                        "declare trait C extends A\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"init\"\n" +
+                        "when\n" +
+                        "then\n" +
+                        "BaseObject $obj = new BaseObject(\"testid123\");\n" +
+                        "insert ($obj);\n" +
+                        "don($obj, B.class, true);\n" +
+                        "don($obj, C.class, true);\n" +
+                        "end\n" +
+                        "\n" +
+                        "query \"QueryTraitA\"\n" +
+                        "a : A()\n" +
+                        "end";
+
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+
+        ks.fireAllRules();
+
+        QueryResults res = ks.getQueryResults( "QueryTraitA" );
+
+        assertEquals( 1, res.size() );
+
+    }
+
+    @Test
+    public void testTypeRefractionOnQuery2(  ) {
+        String source = "package t.x \n" +
+                        "import java.util.*; \n" +
+                        "import org.drools.factmodel.traits.Thing \n" +
+                        "import org.drools.factmodel.traits.Traitable \n" +
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "\n" +
+                        "" +
+                        "declare trait A @propertyReactive end\n" +
+                        "declare trait B extends A @propertyReactive end\n" +
+                        "declare trait C extends B @propertyReactive end\n" +
+                        "declare trait D extends A @propertyReactive end\n" +
+                        "declare trait E extends C, D @propertyReactive end\n" +
+                        "declare trait F extends E @propertyReactive end\n" +
+                        "" +
+                        "declare Kore\n" +
+                        "   @Traitable\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        "   Kore k = new Kore();\n" +
+                        "   don( k, C.class ); \n" +
+                        "   don( k, D.class ); \n" +
+                        "   don( k, E.class ); \n" +
+                        "   don( k, B.class ); \n" +
+                        "   don( k, A.class ); \n" +
+                        "   don( k, F.class ); \n" +
+                        "   shed( k, B.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule RuleA\n" +
+                        "when \n" +
+                        "   $x : A(  ) \n" +
+                        "then \n" +
+                        "   System.out.println( $x ); \n " +
+                        "end\n" +
+                        " \n" +
+                        "query queryA\n" +
+                        "   $x := A(  ) \n" +
+                        "end\n" +
+                        "";
+
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        QueryResults res = ks.getQueryResults( "queryA" );
+        Iterator<QueryResultsRow> iter = res.iterator();
+        Object a = iter.next().get( "$x" );
+        assertFalse( iter.hasNext() );
+
+        assertEquals( 1, res.size() );
+
+    }
+
+    @Test
+    public void testTypeRefractionOnQueryWithIsA(  ) {
+        String source = "package t.x \n" +
+                        "import java.util.*; \n" +
+                        "import org.drools.factmodel.traits.Thing \n" +
+                        "import org.drools.factmodel.traits.Traitable \n" +
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "\n" +
+                        "" +
+                        "declare trait A @propertyReactive end\n" +
+                        "declare trait B extends A @propertyReactive end\n" +
+                        "declare trait C extends B @propertyReactive end\n" +
+                        "declare trait D extends A @propertyReactive end\n" +
+                        "declare trait E extends C, D @propertyReactive end\n" +
+                        "declare trait F extends E @propertyReactive end\n" +
+                        "" +
+                        "declare Kore\n" +
+                        "   @Traitable\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        "   Kore k = new Kore();\n" +
+                        "   don( k, C.class ); \n" +
+                        "   don( k, D.class ); \n" +
+                        "   don( k, E.class ); \n" +
+                        "   don( k, B.class ); \n" +
+                        "   don( k, A.class ); \n" +
+                        "   don( k, F.class ); \n" +
+                        "   shed( k, B.class ); \n" +
+                        "end\n" +
+                        "" +
+                        " \n" +
+                        "query queryA\n" +
+                        "   $x := Kore( this isA A ) \n" +
+                        "end\n" +
+                        "";
+
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        QueryResults res = ks.getQueryResults( "queryA" );
+        Iterator<QueryResultsRow> iter = res.iterator();
+        Object a = iter.next().get( "$x" );
+        assertFalse( iter.hasNext() );
+
+        assertEquals( 1, res.size() );
+
+    }
+
 }
