@@ -635,9 +635,6 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         scenarioRunner.run(scenario);
 
-        assertEquals(1,
-                executionTrace.getNumberOfRulesFired().intValue());
-
         assertTrue(scenario.wasSuccessful());
 
         Thread.currentThread().setContextClassLoader(cl_);
