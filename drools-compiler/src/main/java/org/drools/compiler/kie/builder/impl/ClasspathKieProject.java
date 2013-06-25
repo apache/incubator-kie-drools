@@ -275,7 +275,8 @@ public class ClasspathKieProject extends AbstractKieProject {
         }
 
         // remove any remaining protocols, normally only if it was a jar
-        colonIndex = urlPath.lastIndexOf( ":" );
+        int firstSlash = urlPath.indexOf( '/' );
+        colonIndex = firstSlash > 0 ? urlPath.lastIndexOf( ":", firstSlash ) : urlPath.lastIndexOf( ":" );
         if ( colonIndex >= 0 ) {
             urlPath = urlPath.substring( colonIndex + 1 );
         }
