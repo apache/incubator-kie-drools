@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_QhMx0dpxEeKmYvTYL7kDig" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:process id="test3.src.main.resources.testprocess3" drools:packageName="test3.src.main.resources" name="TestProcess3" isExecutable="true">
+    <bpmn2:startEvent id="_019D2260-3747-4C43-9D9F-38AA34F95B21" drools:bgcolor="#9acd32" drools:selectable="true" name="">
+      <bpmn2:outgoing>_052D0F24-65D0-4B25-B42D-CC25A6F8D64A</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="_F1D1970E-CBE3-4B37-AE38-F1D2A226038D" drools:bgcolor="#ff6347" drools:selectable="true" name="">
+      <bpmn2:incoming>_052D0F24-65D0-4B25-B42D-CC25A6F8D64A</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_052D0F24-65D0-4B25-B42D-CC25A6F8D64A" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_019D2260-3747-4C43-9D9F-38AA34F95B21" targetRef="_F1D1970E-CBE3-4B37-AE38-F1D2A226038D"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_QhN_8NpxEeKmYvTYL7kDig">
+    <bpmndi:BPMNPlane id="_QhN_8dpxEeKmYvTYL7kDig" bpmnElement="test3.src.main.resources.testprocess3">
+      <bpmndi:BPMNShape id="_QhN_8tpxEeKmYvTYL7kDig" bpmnElement="_019D2260-3747-4C43-9D9F-38AA34F95B21">
+        <dc:Bounds height="30.0" width="30.0" x="37.0" y="214.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_QhN_89pxEeKmYvTYL7kDig" bpmnElement="_F1D1970E-CBE3-4B37-AE38-F1D2A226038D">
+        <dc:Bounds height="28.0" width="28.0" x="111.0" y="214.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_QhN_9NpxEeKmYvTYL7kDig" bpmnElement="_052D0F24-65D0-4B25-B42D-CC25A6F8D64A">
+        <di:waypoint xsi:type="dc:Point" x="52.0" y="229.0"/>
+        <di:waypoint xsi:type="dc:Point" x="125.0" y="228.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmn2:relationship id="_QhN_9dpxEeKmYvTYL7kDig" type="BPSimData">
+    <bpmn2:extensionElements>
+      <bpsim:BPSimData>
+        <bpsim:Scenario xsi:type="bpsim:Scenario" id="default" name="Simulationscenario">
+          <bpsim:ScenarioParameters xsi:type="bpsim:ScenarioParameters" baseTimeUnit="s"/>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_019D2260-3747-4C43-9D9F-38AA34F95B21" id="_QhN_9tpxEeKmYvTYL7kDig">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:WaitTime xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="0.0"/>
+              </bpsim:WaitTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_052D0F24-65D0-4B25-B42D-CC25A6F8D64A" id="_QhN_99pxEeKmYvTYL7kDig">
+            <bpsim:ControlParameters xsi:type="bpsim:ControlParameters">
+              <bpsim:Probability xsi:type="bpsim:Parameter">
+                <bpsim:FloatingParameter value="100.0"/>
+              </bpsim:Probability>
+            </bpsim:ControlParameters>
+          </bpsim:ElementParameters>
+          <bpsim:ElementParameters xsi:type="bpsim:ElementParameters" elementRef="_F1D1970E-CBE3-4B37-AE38-F1D2A226038D" id="_QhN_-NpxEeKmYvTYL7kDig">
+            <bpsim:TimeParameters xsi:type="bpsim:TimeParameters">
+              <bpsim:ProcessingTime xsi:type="bpsim:Parameter">
+                <bpsim:NormalDistribution mean="0.0" standardDeviation="0.0"/>
+              </bpsim:ProcessingTime>
+            </bpsim:TimeParameters>
+          </bpsim:ElementParameters>
+        </bpsim:Scenario>
+      </bpsim:BPSimData>
+    </bpmn2:extensionElements>
+    <bpmn2:source>_QhMx0dpxEeKmYvTYL7kDig</bpmn2:source>
+    <bpmn2:target>_QhMx0dpxEeKmYvTYL7kDig</bpmn2:target>
+  </bpmn2:relationship>
+</bpmn2:definitions>
