@@ -38,7 +38,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.drools.templates;singleton:=true</Bundle-SymbolicName>
+            <Bundle-SymbolicName>org.drools.templates</Bundle-SymbolicName>
             <Export-Package>
               org.drools.template.*
             </Export-Package>
