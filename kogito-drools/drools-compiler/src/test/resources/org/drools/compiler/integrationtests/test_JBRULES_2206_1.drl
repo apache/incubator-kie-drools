@@ -2,14 +2,14 @@ package org.drools.compiler
 
 rule "notNotRule" @Eager(true)
     when        
-        exists ( Cheese() );        
+        exists ( Cheese() )
     then     
         //System.out.println("Rule fired...");      
 end
 
 rule "existsRule"  @Eager(true)
     when        
-        exists ( Cheese() );        
+        exists ( Cheese() )
     then     
         //System.out.println("exists rule fired...");      
 end
