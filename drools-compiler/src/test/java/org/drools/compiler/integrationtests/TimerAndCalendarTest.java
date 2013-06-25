@@ -22,6 +22,7 @@ import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -112,26 +113,25 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "    update($alarm);\n";
         str += "end\n";
 
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( str ) );
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
 
-        StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
-        session.insert( new Alarm() );
+        ksession.insert( new Alarm() );
 
-        session.fireAllRules();
+        ksession.fireAllRules();
 
         Thread.sleep( 1000 );
 
         assertEquals( 5,
                       list.size() );
         assertEquals( 0,
-                      session.getAgenda().getScheduledActivations().length );
+                      ((AgendaImpl)ksession.getAgenda()).getAgenda().getScheduledActivations().length );
     }
     
     @Test(timeout=10000)

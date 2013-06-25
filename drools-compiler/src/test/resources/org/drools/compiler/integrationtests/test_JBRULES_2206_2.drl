@@ -2,7 +2,7 @@ package org.drools.compiler
 
 rule "notNotRule" @Eager(true)
     when        
-        not ( not ( Cheese() ) );        
+        not ( not ( Cheese() ) )
     then     
         //System.out.println("Rule fired...");      
 end
