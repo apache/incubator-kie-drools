@@ -1160,7 +1160,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         
     }
 
-    @Test// (timeout=10000)
+    @Test(timeout=10000)
     public void testJBRULES_2206() {
         KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );

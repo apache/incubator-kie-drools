@@ -139,7 +139,9 @@ public class PhreakActivationIterator
                         RightTuple rt = ((BetaNode) node).getFirstRightTuple(bm.getRightTupleMemory(), it);
                         for (; rt != null; rt = (RightTuple) it.next(rt)) {
                             for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
-                                collectFromPeers(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                                if ( lt.getFirstChild() != null ) {
+                                    collectFromPeers(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                                }
                             }
                         }
                     } else {
@@ -147,7 +149,9 @@ public class PhreakActivationIterator
                         FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                         LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
-                            collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                            if ( lt.getFirstChild() != null ) {
+                                collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                            }
                         }
                     }
                     return;
@@ -155,8 +159,10 @@ public class PhreakActivationIterator
                     FromMemory fm = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
                     LeftTupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
                     FastIterator it = ltm.fullFastIterator();
-                    for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
-                        collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                    for (LeftTuple lt = ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                        if ( lt.getFirstChild() != null ) {
+                            collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
+                        }
                     }
                     return;
                 }
