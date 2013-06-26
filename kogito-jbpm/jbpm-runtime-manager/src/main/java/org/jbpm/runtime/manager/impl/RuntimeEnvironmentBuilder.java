@@ -130,4 +130,9 @@ public class RuntimeEnvironmentBuilder {
         this.runtimeEnvironment.setSchedulerService(globalScheduler);
         return this;
     }
+    
+    public RuntimeEnvironmentBuilder classLoader(ClassLoader cl) {
+        this.runtimeEnvironment.setClassLoader(cl);        
+        return this;
+    }
 }

@@ -29,6 +29,7 @@ import org.jbpm.services.task.wih.util.HumanTaskHandlerHelper;
 import org.jbpm.services.task.wih.util.PeopleAssignmentHelper;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -98,6 +99,11 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         taskData.setProcessInstanceId(workItem.getProcessInstanceId());
         if (session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
             taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
+            RuntimeManager runtimeManager = (RuntimeManager) session.getEnvironment().get("RuntimeManager");
+            if (runtimeManager != null) {
+             
+                taskData.setDeploymentId(runtimeManager.getIdentifier());
+            }
         }
         if (session != null && (session instanceof KieSession)) {
             taskData.setProcessSessionId(((KieSession) session).getId());

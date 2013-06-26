@@ -45,10 +45,11 @@ import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.kie.api.runtime.Environment;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskData;
 import org.kie.commons.services.cdi.Startup;
+import org.kie.internal.task.api.ContentMarshallerContext;
+import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.TaskDeadlinesService;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Escalation;
@@ -75,7 +76,8 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
     @Inject 
     private JbpmServicesPersistenceManager pm;
- 
+    @Inject
+    private TaskContentService taskContentService;
     @Inject
     private Event<NotificationEvent> notificationEvents;
     
@@ -95,9 +97,12 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
     public void setLogger(Logger logger) {
         this.logger = logger;
+    }    
+
+    public void setTaskContentService(TaskContentService taskContentService) {
+        this.taskContentService = taskContentService;
     }
-    
-    
+
 
     @PostConstruct
     public void init() {
@@ -142,7 +147,8 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     ContentImpl content = (ContentImpl) pm.find(ContentImpl.class, taskData.getDocumentContentId());
 
                     if (content != null) {
-                        Object objectFromBytes = ContentMarshallerHelper.unmarshall(content.getContent(), getEnvironment(), getClassLoader());
+                        ContentMarshallerContext context = taskContentService.getMarshallerContext(task);
+                        Object objectFromBytes = ContentMarshallerHelper.unmarshall(content.getContent(), context.getEnvironment(), context.getClassloader());
 
                         if (objectFromBytes instanceof Map) {
                             variables = (Map) objectFromBytes;
@@ -231,14 +237,6 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                 logger.log(Level.SEVERE," XXX :Error while cancelling scheduled deadline task for Task with id " + taskId + " -> " + e);
             }
         }
-    }
-    
-    protected Environment getEnvironment() {
-        return null;
-    }
-    
-    protected ClassLoader getClassLoader() {
-        return null;
     }
 
     public class ScheduledTaskDeadline implements

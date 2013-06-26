@@ -66,6 +66,7 @@ public class CDIDomainKnowledgeServiceWorkItemsTest extends DomainKnowledgeServi
                 
                 .addPackage("org.jbpm.shared.services.api")
                 .addPackage("org.jbpm.shared.services.impl")
+                .addPackage("org.jbpm.shared.services.impl.tx")
                 
                 .addPackage("org.jbpm.kie.services.api")
                 .addPackage("org.jbpm.kie.services.impl")
@@ -73,7 +74,6 @@ public class CDIDomainKnowledgeServiceWorkItemsTest extends DomainKnowledgeServi
                 .addPackage("org.jbpm.kie.services.impl.bpmn2")
                 .addPackage("org.jbpm.kie.services.impl.event.listeners")
                 .addPackage("org.jbpm.kie.services.impl.audit")
-                .addPackage("org.jbpm.kie.services.impl.util")
                 
                 .addPackage("org.jbpm.kie.services.impl.vfs")
                 

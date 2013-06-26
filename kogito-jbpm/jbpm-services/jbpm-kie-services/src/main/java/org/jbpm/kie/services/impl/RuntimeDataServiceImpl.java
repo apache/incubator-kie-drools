@@ -25,13 +25,11 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.jbpm.kie.services.api.DeploymentService;
+import org.jboss.seam.transaction.Transactional;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.event.Deploy;
 import org.jbpm.kie.services.impl.event.DeploymentEvent;
@@ -40,9 +38,7 @@ import org.jbpm.kie.services.impl.model.NodeInstanceDesc;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.kie.services.impl.model.ProcessInstanceDesc;
 import org.jbpm.kie.services.impl.model.VariableStateDesc;
-import org.jboss.seam.transaction.Transactional;
 import org.jbpm.process.audit.NodeInstanceLog;
-import org.jbpm.services.task.wih.RuntimeFinder;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
 
@@ -52,7 +48,7 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
  */
 @ApplicationScoped
 @Transactional
-public class RuntimeDataServiceImpl implements RuntimeDataService, RuntimeFinder {
+public class RuntimeDataServiceImpl implements RuntimeDataService {
 
     @Inject
     private JbpmServicesPersistenceManager pm;
@@ -80,6 +76,16 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, RuntimeFinder
         CollectionUtils.select(availableProcesses, new ByDeploymentIdPredicate(deploymentId), outputCollection);
         
         return Collections.unmodifiableCollection(outputCollection);
+    }
+    
+    public ProcessDesc getProcessesByDeploymentIdProcessId(String deploymentId, String processId) {
+        Collection<ProcessDesc> outputCollection = new HashSet<ProcessDesc>();
+        CollectionUtils.select(availableProcesses, new ByDeploymentIdProcessIdPredicate(deploymentId, processId), outputCollection);
+        
+        if (!outputCollection.isEmpty()) {
+            return outputCollection.iterator().next();
+        }
+        return null; 
     }
     
     public Collection<ProcessDesc> getProcessesByFilter(String filter) {
@@ -243,12 +249,6 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, RuntimeFinder
         return variablesState;
     }
 
-    @Override
-    public String findName(long id) {
-        ProcessInstanceDesc piDesc = getProcessInstanceById(id);
-        return piDesc.getDeploymentId();
-    }
-
     private class RegExPredicate implements Predicate {
         private String pattern;
         
@@ -305,6 +305,29 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, RuntimeFinder
                 ProcessDesc pDesc = (ProcessDesc) object;
                 
                 if (pDesc.getId().equals(processId)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+    }
+    
+    private class ByDeploymentIdProcessIdPredicate implements Predicate {
+        private String processId;
+        private String depoymentId;
+        
+        private ByDeploymentIdProcessIdPredicate(String depoymentId, String processId) {
+            this.depoymentId = depoymentId;
+            this.processId = processId;
+        }
+        
+        @Override
+        public boolean evaluate(Object object) {
+            if (object instanceof ProcessDesc) {
+                ProcessDesc pDesc = (ProcessDesc) object;
+                
+                if (pDesc.getId().equals(processId) && pDesc.getDeploymentId().equals(depoymentId)) {
                     return true;
                 }
             }

@@ -68,6 +68,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     protected Mapper mapper;
     protected UserGroupCallback userGroupCallback;
     protected GlobalSchedulerService schedulerService;
+    protected ClassLoader classLoader;
     
     protected Properties sessionConfigProperties;
     
@@ -237,5 +238,13 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     }
     public void setEmf(EntityManagerFactory emf) {
         this.emf = emf;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 }

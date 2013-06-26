@@ -64,4 +64,6 @@ public interface RuntimeDataService {
     Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId);
 
     ProcessDesc getProcessById(String processId);
+    
+    ProcessDesc getProcessesByDeploymentIdProcessId(String deploymentId, String processId);
 }

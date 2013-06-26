@@ -4,7 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.scanner.MavenRepository.getMavenRepository;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,31 +17,49 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.jbpm.kie.services.api.DeployedUnit;
-import org.jbpm.kie.services.api.DeploymentService;
-import org.jbpm.kie.services.api.DeploymentUnit;
-import org.jbpm.kie.services.api.RuntimeDataService;
-import org.jbpm.kie.services.api.Vfs;
-import org.jbpm.kie.services.impl.VFSDeploymentUnit;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jbpm.kie.services.api.DeployedUnit;
+import org.jbpm.kie.services.api.DeploymentService;
+import org.jbpm.kie.services.api.DeploymentUnit;
+import org.jbpm.kie.services.api.DeploymentUnit.RuntimeStrategy;
+import org.jbpm.kie.services.api.Kjar;
+import org.jbpm.kie.services.api.RuntimeDataService;
+import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
+import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.task.api.InternalTaskService;
+import org.kie.scanner.MavenRepository;
 
 @RunWith(Arquillian.class)
-public class DeploymentServiceTest {
+public class ClassloaderKModuleDeploymentServiceTest {
     
     @Deployment()
     public static Archive<?> createDeployment() {
@@ -100,13 +122,27 @@ public class DeploymentServiceTest {
     }
     
     @Inject
-    @Vfs
+    @Kjar
     private DeploymentService deploymentService;
     
     @Inject
     private RuntimeDataService runtimeDataService;
     
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
+    
+    private static final String ARTIFACT_ID = "jbpm-module";
+    private static final String GROUP_ID = "org.jbpm.test";
+    private static final String VERSION = "1.0";
+    
+    @Before
+    public void prepare() {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
+        File kjar = new File("src/test/resources/kjar/jbpm-module.jar");
+        File pom = new File("src/test/resources/kjar/pom.xml");
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId, kjar, pom);
+    }
     
     @After
     public void cleanup() {
@@ -120,11 +156,12 @@ public class DeploymentServiceTest {
     }
     
     @Test
-    public void testDeploymentOfProcesses() {
+    public void testDeploymentOfProcesses() throws Exception {
         
         assertNotNull(deploymentService);
         
-        DeploymentUnit deploymentUnit = new VFSDeploymentUnit("general", "", "processes/general");
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION, "defaultKieBase", "defaultKieSession");
+        deploymentUnit.setStrategy(RuntimeStrategy.PER_REQUEST);
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
@@ -133,23 +170,13 @@ public class DeploymentServiceTest {
         assertNotNull(deployed);
         assertNotNull(deployed.getDeploymentUnit());
         assertNotNull(deployed.getRuntimeManager());
-        assertNotNull(deployed.getDeployedAssetLocation("customtask"));
-        assertTrue(deployed.getDeployedAssetLocation("customtask").endsWith("repo/processes/general/customtask.bpmn"));
-        
+        assertEquals("org.jbpm.test:jbpm-module:1.0:defaultKieBase:defaultKieSession", 
+                deployed.getDeploymentUnit().getIdentifier());
+
         assertNotNull(runtimeDataService);
         Collection<ProcessDesc> processes = runtimeDataService.getProcesses();
         assertNotNull(processes);
-        assertEquals(4, processes.size());
-        
-        processes = runtimeDataService.getProcessesByFilter("custom");
-        assertNotNull(processes);
         assertEquals(1, processes.size());
-        
-        processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier());
-        assertNotNull(processes);
-        assertEquals(4, processes.size());
-        
-        ProcessDesc process = runtimeDataService.getProcessById("customtask");
         
         RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
         assertNotNull(manager);
@@ -157,87 +184,32 @@ public class DeploymentServiceTest {
         RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
         assertNotNull(engine);
         
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("id", "test");
-        ProcessInstance processInstance = engine.getKieSession().startProcess("customtask", params);
-        
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        
-    }
-    
-    
-    @Test
-    public void testDeploymentOfAllProcesses() {
-        
-        assertNotNull(deploymentService);
-        // deploy first unit
-        DeploymentUnit deploymentUnitGeneral = new VFSDeploymentUnit("general", "", "processes/general");        
-        deploymentService.deploy(deploymentUnitGeneral);
-        units.add(deploymentUnitGeneral);
-        
-        RuntimeManager managerGeneral = deploymentService.getRuntimeManager(deploymentUnitGeneral.getIdentifier());
-        assertNotNull(managerGeneral);
-        
-        // deploy second unit
-        DeploymentUnit deploymentUnitSupport = new VFSDeploymentUnit("support", "", "processes/support");        
-        deploymentService.deploy(deploymentUnitSupport);
-        units.add(deploymentUnitSupport);
-        
-        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnitGeneral.getIdentifier());
-        assertNotNull(deployedGeneral);
-        assertNotNull(deployedGeneral.getDeploymentUnit());
-        assertNotNull(deployedGeneral.getRuntimeManager());
-        assertNotNull(deployedGeneral.getDeployedAssetLocation("customtask"));
-        assertTrue(deployedGeneral.getDeployedAssetLocation("customtask").endsWith("repo/processes/general/customtask.bpmn"));
-        
-        RuntimeManager managerSupport = deploymentService.getRuntimeManager(deploymentUnitSupport.getIdentifier());
-        assertNotNull(managerSupport);
-        
-        DeployedUnit deployedSupport = deploymentService.getDeployedUnit(deploymentUnitSupport.getIdentifier());
-        assertNotNull(deployedSupport);
-        assertNotNull(deployedSupport.getDeploymentUnit());
-        assertNotNull(deployedSupport.getRuntimeManager());
-        assertNotNull(deployedSupport.getDeployedAssetLocation("support.process"));
-        assertTrue(deployedSupport.getDeployedAssetLocation("support.process").endsWith("repo/processes/support/support.bpmn"));
-        
-        // execute process that is bundled in first deployment unit
-        RuntimeEngine engine = managerGeneral.getRuntimeEngine(EmptyContext.get());
-        assertNotNull(engine);
+        Class<?> clazz = Class.forName("org.jbpm.test.Person", true, ((InternalRuntimeManager)manager).getEnvironment().getClassLoader());
+        Object instance = clazz.newInstance();
         
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("id", "test");
-        ProcessInstance processInstance = engine.getKieSession().startProcess("customtask", params);
+        params.put("person", instance);
+        ProcessInstance processInstance = engine.getKieSession().startProcess("testkjar.src.main.resources.process", params);
         
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         
-        // execute process that is in second deployment unit
-        RuntimeEngine engineSupport = managerSupport.getRuntimeEngine(EmptyContext.get());
-        assertNotNull(engineSupport);
-        
-        ProcessInstance supportPI = engineSupport.getKieSession().startProcess("support.process");
-        assertEquals(ProcessInstance.STATE_ACTIVE, supportPI.getState());
-        
-        List<TaskSummary> tasks = engineSupport.getTaskService().getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
-        assertNotNull(tasks);
+        List<TaskSummary> tasks = engine.getTaskService().getTasksOwned("salaboy", "en-UK");
         assertEquals(1, tasks.size());
         
-        engineSupport.getKieSession().abortProcessInstance(supportPI.getId());
-        assertNull(engineSupport.getKieSession().getProcessInstance(supportPI.getState()));
-    }
-    
-    @Test(expected=IllegalStateException.class)
-    public void testDuplicatedDeployment() {
-            
-        assertNotNull(deploymentService);
+        long taskId = tasks.get(0).getId();
         
-        DeploymentUnit deploymentUnit = new VFSDeploymentUnit("general", "", "processes/general");        
-        deploymentService.deploy(deploymentUnit);
-        units.add(deploymentUnit);
-        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
-        assertNotNull(deployedGeneral);
-        assertNotNull(deployedGeneral.getDeploymentUnit());
-        assertNotNull(deployedGeneral.getRuntimeManager());
-        // duplicated deployment of the same deployment unit should fail
-        deploymentService.deploy(deploymentUnit);
+        Map<String, Object> content = ((InternalTaskService)engine.getTaskService()).getTaskContent(taskId);
+        assertTrue(content.containsKey("personIn"));
+        Object person = content.get("personIn");
+        assertEquals(clazz.getName(), person.getClass().getName());
+        
+        engine.getTaskService().start(taskId, "salaboy");
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("personOut", instance);
+        engine.getTaskService().complete(taskId, "salaboy", data);
+        
+        processInstance = engine.getKieSession().getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
     }
+ 
 }

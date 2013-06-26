@@ -98,6 +98,8 @@ public class TaskDataImpl implements InternalTaskData {
     
     private String processId;
     
+    private String deploymentId;
+    
     private int processSessionId;
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity=CommentImpl.class)
@@ -827,10 +829,23 @@ public class TaskDataImpl implements InternalTaskData {
         if (processId == null) {
             if (other.processId != null) return false;
         } else if (!processId.equals(other.processId)) return false;
-        if (processSessionId != other.processSessionId) return false;
+        if (processSessionId != other.processSessionId) return false;        
+        if (deploymentId == null) {
+            if (other.deploymentId != null) return false;
+        } else if (!deploymentId.equals(other.deploymentId)) return false;        
         return CollectionUtils.equals(attachments,
                 other.attachments) && CollectionUtils.equals(comments,
                 other.comments);
+    }
+
+    @Override
+    public String getDeploymentId() {
+        return deploymentId;
+    }
+
+    @Override
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
     }
 
 }

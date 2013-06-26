@@ -18,6 +18,7 @@ package org.jbpm.services.task.wih;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.services.task.test.TestStatefulKnowledgeSession;
@@ -35,6 +36,7 @@ public class HTWorkItemHandlerCDITest extends HTWorkItemHandlerBaseTest {
     public void setUp() throws Exception {
         emf = Persistence.createEntityManagerFactory("org.jbpm.services.task");
         ksession = new TestStatefulKnowledgeSession();
+        ksession.setEnvironment(EnvironmentFactory.newEnvironment());
         taskService = HumanTaskServiceFactory.newTaskServiceConfigurator()
         .entityManagerFactory(emf)
         .getTaskService();

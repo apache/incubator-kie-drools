@@ -15,6 +15,7 @@
  */
 package org.jbpm.runtime.manager.impl;
 
+import org.jbpm.runtime.manager.impl.factory.CDITaskServiceFactory;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
 import org.kie.api.runtime.KieSession;
@@ -24,6 +25,9 @@ import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.task.api.ContentMarshallerContext;
+import org.kie.internal.task.api.InternalTaskService;
 
 /**
  * RuntimeManager implementation that is backed by "Per Request" strategy - meaning that for every call to 
@@ -55,7 +59,9 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
         if (local.get() != null) {
             return local.get();
         }
-        RuntimeEngine runtime = new RuntimeEngineImpl(factory.newKieSession(), taskServiceFactory.newTaskService());
+        InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
+        configureRuntimeOnTaskService(internalTaskService);
+        RuntimeEngine runtime = new RuntimeEngineImpl(factory.newKieSession(), internalTaskService);
         ((RuntimeEngineImpl) runtime).setManager(this);
         registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime));
         registerDisposeCallback(runtime, new DestroySessionTransactionSynchronization(runtime.getKieSession()));
@@ -89,6 +95,14 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void close() {
+        try {
+            if (taskServiceFactory instanceof CDITaskServiceFactory) {
+                // if it's CDI based (meaning single application scoped bean) we need to unregister context
+                removeRuntimeFromTaskService((InternalTaskService) taskServiceFactory.newTaskService());
+            }
+        } catch(Exception e) {
+           // do nothing 
+        }
         super.close();
         factory.close();
     }
@@ -111,9 +125,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void init() {
-        // currently nothing to do
-        
+        configureRuntimeOnTaskService((InternalTaskService) taskServiceFactory.newTaskService());
     }
-
 
 }

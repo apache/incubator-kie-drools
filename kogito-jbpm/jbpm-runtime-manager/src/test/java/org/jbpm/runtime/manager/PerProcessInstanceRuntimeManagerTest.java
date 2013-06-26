@@ -72,7 +72,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         assertNotNull(ksession);       
         int ksession1Id = ksession.getId();
-        assertTrue(ksession1Id == 0);
+        assertTrue(ksession1Id == 1);
         
         // FIXME quick hack to overcome problems with same pi ids when not using persistence
         ksession.startProcess("ScriptTask");
@@ -84,7 +84,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         assertNotNull(ksession2);       
         int ksession2Id = ksession2.getId();
-        assertTrue(ksession2Id == 1);
+        assertTrue(ksession2Id == 2);
         
         ProcessInstance pi1 = ksession.startProcess("UserTask");
         
@@ -121,7 +121,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         assertNotNull(ksession);       
         int ksession1Id = ksession.getId();
-        assertTrue(ksession1Id == 1);
+        assertTrue(ksession1Id == 2);
 
         // ksession for process instance #2
         // since there is no process instance yet we need to get new session
@@ -130,7 +130,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         assertNotNull(ksession2);       
         int ksession2Id = ksession2.getId();
-        assertTrue(ksession2Id == 2);
+        assertTrue(ksession2Id == 3);
         
         ProcessInstance pi1 = ksession.startProcess("UserTask");
         
@@ -188,7 +188,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         assertNotNull(ksession);       
         int ksession1Id = ksession.getId();
-        assertTrue(ksession1Id == 1);
+        assertTrue(ksession1Id == 2);
 
         // ksession for process instance #2
         // since there is no process instance yet we need to get new session
@@ -198,7 +198,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         assertNotNull(ksession2);       
         int ksession2Id = ksession2.getId();
-        assertTrue(ksession2Id == 2);
+        assertTrue(ksession2Id == 3);
         
         ProcessInstance pi1 = ((CorrelationAwareProcessRuntime)ksession).startProcess("UserTask", key, null);
         
@@ -253,7 +253,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         assertNotNull(ksession);       
         int ksession1Id = ksession.getId();
-        assertTrue(ksession1Id == 1);
+        assertTrue(ksession1Id == 2);
 
         // ksession for process instance #2
         // since there is no process instance yet we need to get new session
@@ -262,7 +262,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         assertNotNull(ksession2);       
         int ksession2Id = ksession2.getId();
-        assertTrue(ksession2Id == 2);
+        assertTrue(ksession2Id == 3);
         
         ProcessInstance pi1 = ksession.startProcess("UserTask");
         
@@ -310,7 +310,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         assertNotNull(ksession);       
         int ksession1Id = ksession.getId();
-        assertTrue(ksession1Id == 1);
+        assertTrue(ksession1Id == 2);
 
         ProcessInstance pi1 = ksession.startProcess("ParentProcess");
         
@@ -364,7 +364,7 @@ public class PerProcessInstanceRuntimeManagerTest {
 
         assertNotNull(ksession);       
         int ksession1Id = ksession.getId();
-        assertTrue(ksession1Id == 1);
+        assertTrue(ksession1Id == 2);
 
         ProcessInstance pi1 = ksession.startProcess("UserTask");
   

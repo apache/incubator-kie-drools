@@ -17,14 +17,12 @@ package org.jbpm.services.task.rule;
 
 import org.jbpm.services.task.exception.TaskException;
 import org.kie.api.task.model.Task;
-import org.kie.internal.task.api.model.ContentData;
 
 public interface TaskRuleService {
     
     public static final String ADD_TASK_SCOPE = "addTask";
     public static final String COMPLETE_TASK_SCOPE = "completeTask";
 
-    void executeRules(final Task task, String userId, final ContentData contentData, String scope) throws TaskException;
     void executeRules(final Task task, String userId, final Object params, String scope) throws TaskException;
     
 }

@@ -34,6 +34,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.TaskAdminService;
@@ -86,6 +87,7 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
     private TaskStatisticsService taskStatisticService;
     @Inject
     private TaskRuleService taskRuleService;
+    
     // External NON CDI event Listeners for Task Lifecycle
     private Event<Task> taskEvents = new JbpmServicesEventImpl<Task>();
     // External NON CDI event listener for Task Deadline and Email notifications
@@ -396,7 +398,10 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
     
     public long addTask(Task task, ContentData data){        
         initializeTask(task);
-        this.taskRuleService.executeRules(task, null, data, TaskRuleService.ADD_TASK_SCOPE);
+        ContentMarshallerContext context = getMarshallerContext(task);
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(data.getContent(), context.getEnvironment(), context.getClassloader());
+        
+        this.taskRuleService.executeRules(task, null, unmarshalledObject, TaskRuleService.ADD_TASK_SCOPE);
         return this.taskInstanceService.addTask(task, data);
     }
     
@@ -616,8 +621,8 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
     public Map<String, Object> getTaskContent(long taskId){
         Task taskById = taskQueryService.getTaskInstanceById(taskId);
         Content contentById = taskContentService.getContentById(taskById.getTaskData().getDocumentContentId());
-
-        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(contentById.getContent(), null);
+        ContentMarshallerContext context = getMarshallerContext(taskById);
+        Object unmarshalledObject = ContentMarshallerHelper.unmarshall(contentById.getContent(), context.getEnvironment(), context.getClassloader());
         if (!(unmarshalledObject instanceof Map)) {
             throw new IllegalStateException(" The Task Content Needs to be a Map in order to use this method and it was: "+unmarshalledObject.getClass());
 
@@ -699,8 +704,25 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
 
     public void setTaskRuleService(TaskRuleService taskRuleService) {
         this.taskRuleService = taskRuleService;
+    }
+
+    @Override
+    public void addMarshallerContext(String ownerId, ContentMarshallerContext context) {
+        this.taskContentService.addMarshallerContext(ownerId, context);
+    }
+
+    @Override
+    public void removeMarshallerContext(String ownerId) {
+        this.taskContentService.removeMarshallerContext(ownerId);
     }   
 
-   
+    public ContentMarshallerContext getMarshallerContext(Task task) {
+        ContentMarshallerContext context = this.taskContentService.getMarshallerContext(task);
+        if (context != null) {
+            return context;
+        }
+        
+        return new ContentMarshallerContext();
+    }
     
 }

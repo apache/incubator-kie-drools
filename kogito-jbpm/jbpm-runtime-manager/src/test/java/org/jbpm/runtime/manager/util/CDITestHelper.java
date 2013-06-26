@@ -1,24 +1,29 @@
 package org.jbpm.runtime.manager.util;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.inject.Inject;
 import javax.inject.Named;
+import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.transaction.Status;
+import javax.transaction.UserTransaction;
 
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.services.task.HumanTaskServiceFactory;
+import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.services.task.wih.RuntimeFinder;
-import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.kie.api.io.ResourceType;
-import org.kie.api.task.TaskService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
 import org.kie.internal.io.ResourceFactory;
@@ -26,10 +31,12 @@ import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
 import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
+import org.kie.internal.task.api.UserGroupCallback;
 
 @ApplicationScoped
 public class CDITestHelper {
-
+    @Inject
+    private BeanManager beanManager;
     private EntityManagerFactory emf;
     
     
@@ -38,12 +45,11 @@ public class CDITestHelper {
     @PerRequest
     @PerProcessInstance
     public RuntimeEnvironment produceEnvironment(EntityManagerFactory emf) {
-        Properties properties= new Properties();
-        properties.setProperty("mary", "HR");
-        properties.setProperty("john", "HR");
+        
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
                 .entityManagerFactory(emf)
-                .userGroupCallback(new JBossUserGroupCallbackImpl(properties))
+                .userGroupCallback(getUserGroupCallback())
+                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null))
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
                 .get();
@@ -62,15 +68,16 @@ public class CDITestHelper {
     @Produces
     @ApplicationScoped
     public EntityManager getEntityManager() {
-        EntityManager em = produceEntityManagerFactory().createEntityManager();
-        em.getTransaction().begin();
-        return em;
+        final EntityManager em = produceEntityManagerFactory().createEntityManager();
+        EntityManager emProxy = (EntityManager) 
+                Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[]{EntityManager.class}, new EmInvocationHandler(em));
+        return emProxy;
     }
 
     @ApplicationScoped
     public void commitAndClose(@Disposes EntityManager em) {
         try {
-            em.getTransaction().commit();
+            
             em.close();
         } catch (Exception e) {
 
@@ -90,26 +97,37 @@ public class CDITestHelper {
     }
     
     @Produces
-    public TaskService newTaskService(@Singleton RuntimeEnvironment runtimeEnvironment) {
-
-        TaskService internalTaskService =   HumanTaskServiceFactory.newTaskServiceConfigurator()
-        .transactionManager(new JbpmJTATransactionManager())
-        .entityManagerFactory(emf)
-        .userGroupCallback(runtimeEnvironment.getUserGroupCallback())
-        .getTaskService();
-                    
-        return internalTaskService;
-
+    public UserGroupCallback getUserGroupCallback() {
+        Properties properties= new Properties();
+        properties.setProperty("mary", "HR");
+        properties.setProperty("john", "HR");
+        return new JBossUserGroupCallbackImpl(properties);
     }
     
-    @Produces
-    public RuntimeFinder getRuntimeFinder() {
-        return new RuntimeFinder() {
-            
-            @Override
-            public String findName(long id) {
-                return "";
+    private class EmInvocationHandler implements InvocationHandler {
+
+        private EntityManager delegate;
+        
+        EmInvocationHandler(EntityManager em) {
+            this.delegate = em;
+        }
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args)
+                throws Throwable {
+            joinTransactionIfNeeded();
+            return method.invoke(delegate, args);
+        }
+        
+        private void joinTransactionIfNeeded() {
+            try {
+                UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+                if (ut.getStatus() == Status.STATUS_ACTIVE) {
+                    delegate.joinTransaction();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        };
+        }
+        
     }
 }

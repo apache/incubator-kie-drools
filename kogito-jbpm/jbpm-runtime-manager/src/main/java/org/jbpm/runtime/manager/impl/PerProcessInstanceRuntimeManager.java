@@ -18,6 +18,7 @@ package org.jbpm.runtime.manager.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jbpm.runtime.manager.impl.factory.CDITaskServiceFactory;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
 import org.kie.api.event.process.DefaultProcessEventListener;
@@ -34,6 +35,7 @@ import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.InternalTaskService;
 
 /**
  * RuntimeManager that is backed by "Per Process Instance" strategy - that means that every process instance will
@@ -89,8 +91,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             }
             ksession = factory.findKieSessionById(ksessionId);
         }
-        
-        RuntimeEngine runtime = new RuntimeEngineImpl(ksession, taskServiceFactory.newTaskService());
+        InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
+        configureRuntimeOnTaskService(internalTaskService);
+        RuntimeEngine runtime = new RuntimeEngineImpl(ksession, internalTaskService);
         ((RuntimeEngineImpl) runtime).setManager(this);
         registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime));
         registerItems(runtime);
@@ -134,6 +137,14 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void close() {
+        try {
+            if (taskServiceFactory instanceof CDITaskServiceFactory) {
+                // if it's CDI based (meaning single application scoped bean) we need to unregister context
+                removeRuntimeFromTaskService((InternalTaskService) taskServiceFactory.newTaskService());
+            }
+        } catch(Exception e) {
+           // do nothing 
+        }
         super.close();
         factory.close();
     }
@@ -245,6 +256,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     public void init() {
         // need to init one session to bootstrap all case - such as start timers
         RuntimeEngine engine = getRuntimeEngine(EmptyContext.get());
+        configureRuntimeOnTaskService((InternalTaskService) engine.getTaskService());
         try {
             engine.getKieSession().destroy();
         } finally {

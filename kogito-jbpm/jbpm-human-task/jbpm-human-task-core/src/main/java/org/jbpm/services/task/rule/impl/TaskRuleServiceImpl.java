@@ -25,24 +25,15 @@ import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.rule.RuleContextProvider;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.jbpm.services.task.rule.TaskServiceRequest;
-import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.task.model.Task;
-import org.kie.internal.task.api.model.ContentData;
 
 @ApplicationScoped
 public class TaskRuleServiceImpl implements TaskRuleService {
 
     @Inject
     private RuleContextProvider ruleContextProvider;
-    
-    @Override
-    public void executeRules(Task task, String userId, ContentData contentData, String scope) throws TaskException {
-        Object params = ContentMarshallerHelper.unmarshall(contentData.getContent(), null);
-        executeRules(task, userId, params, scope);
-
-    }
     
     @Override
     public void executeRules(Task task, String userId, Object params, String scope) throws TaskException {

@@ -36,6 +36,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.UserInfo;
@@ -895,6 +896,38 @@ public class SynchronizedTaskService
        synchronized (ksession) {
             return  taskService.getPotentialOwnersForTaskIds(taskIds);
        } 
+    }
+
+
+    @Override
+    public void addMarshallerContext(String ownerId, ContentMarshallerContext context) {
+       synchronized (ksession) {
+           if (taskService != null) {
+               taskService.addMarshallerContext(ownerId, context);
+           }
+       }   
+    }
+
+
+    @Override
+    public void removeMarshallerContext(String ownerId) {
+       synchronized (ksession) {
+           if (taskService != null) { 
+               taskService.removeMarshallerContext(ownerId);
+           }
+       }
+    }
+
+
+    @Override
+    public ContentMarshallerContext getMarshallerContext(Task task) {
+        synchronized (ksession) {
+            if (taskService != null) {
+                return taskService.getMarshallerContext(task);
+            }
+            
+            return null;
+        }
     }
 
 }

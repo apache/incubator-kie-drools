@@ -75,16 +75,20 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         // TODO should we proxy/wrap the ksession so we capture dispose.destroy method calls?
         String location = getLocation();
         Integer knownSessionId = getPersistedSessionId(location, identifier);
+        InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
+        configureRuntimeOnTaskService(internalTaskService);
+        
         if (knownSessionId > 0) {
             try {
-                this.singleton = new SynchronizedRuntimeImpl(factory.findKieSessionById(knownSessionId), (InternalTaskService) taskServiceFactory.newTaskService());
+                this.singleton = new SynchronizedRuntimeImpl(factory.findKieSessionById(knownSessionId), internalTaskService);
             } catch (RuntimeException e) {
                 // in case session with known id was found
             }
         } 
         
         if (this.singleton == null) {
-            this.singleton = new SynchronizedRuntimeImpl(factory.newKieSession(), (InternalTaskService) taskServiceFactory.newTaskService());
+            
+            this.singleton = new SynchronizedRuntimeImpl(factory.newKieSession(), internalTaskService);            
             persistSessionId(location, identifier, singleton.getKieSession().getId());
         }
         ((RuntimeEngineImpl) singleton).setManager(this);
@@ -115,8 +119,12 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void close() {
+        if (singleton == null) {
+            return;
+        }
         super.close();
         // dispose singleton session only when manager is closing
+        removeRuntimeFromTaskService((InternalTaskService) this.singleton.getTaskService());
         if (this.singleton instanceof Disposable) {
             ((Disposable) this.singleton).dispose();
         }

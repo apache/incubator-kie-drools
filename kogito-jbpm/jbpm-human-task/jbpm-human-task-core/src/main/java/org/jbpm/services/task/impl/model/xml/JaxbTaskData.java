@@ -111,6 +111,10 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
 
     @XmlElement(name = "attachment")
     private List<JaxbAttachment> attachments;
+    
+    @XmlElement(name = "deployment-id")
+    @XmlSchemaType(name = "String")
+    private String deploymentId;
 
     public JaxbTaskData() {
         super(TaskData.class);
@@ -250,6 +254,11 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     @Override
     public long getParentId() {
         return parentId;
+    }
+
+    @Override
+    public String getDeploymentId() {
+        return deploymentId;
     }
 
 }

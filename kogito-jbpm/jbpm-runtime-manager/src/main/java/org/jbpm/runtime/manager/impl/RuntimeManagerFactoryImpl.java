@@ -100,6 +100,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
 
         RuntimeManager manager = new PerProcessInstanceRuntimeManager(environment, factory, taskServiceFactory, identifier);
         initTimerService(environment, manager);
+        ((AbstractRuntimeManager) manager).init();
         return manager;
     }
     

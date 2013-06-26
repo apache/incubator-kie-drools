@@ -43,24 +43,27 @@ public class SingleRuntimeManagerTest {
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "jbpm-runtime-manager.jar")
 
-                .addPackage("org.jbpm.task")
-                .addPackage("org.jbpm.task.wih") // work items org.jbpm.task.wih
-                .addPackage("org.jbpm.task.annotations")
-                .addPackage("org.jbpm.task.api")
-//                .addPackage("org.jbpm.task.impl")
-                .addPackage("org.jbpm.task.events")
-                .addPackage("org.jbpm.task.exception")
-//                .addPackage("org.jbpm.task.identity")
-                .addPackage("org.jbpm.task.factories")
-                .addPackage("org.jbpm.task.internals")
-                .addPackage("org.jbpm.task.lifecycle.listeners")
-                .addPackage("org.jbpm.task.query")
-                .addPackage("org.jbpm.task.util")
-//                .addPackage("org.jbpm.task.commands") // This should not be required here
-                .addPackage("org.jbpm.task.deadlines") // deadlines
-                .addPackage("org.jbpm.task.deadlines.notifications.impl")
-                .addPackage("org.jbpm.task.subtask")
+                .addPackage("org.jboss.seam.transaction") //seam-persistence
+                .addPackage("org.jbpm.shared.services.api")
                 .addPackage("org.jbpm.shared.services.impl")
+                .addPackage("org.jbpm.services.task")
+                .addPackage("org.jbpm.services.task.annotations")
+                .addPackage("org.jbpm.services.task.api")
+                .addPackage("org.jbpm.services.task.impl")
+                .addPackage("org.jbpm.services.task.events")
+                .addPackage("org.jbpm.services.task.exception")
+                .addPackage("org.jbpm.services.task.identity")
+                .addPackage("org.jbpm.services.task.factories")
+                .addPackage("org.jbpm.services.task.internals")
+                .addPackage("org.jbpm.services.task.internals.lifecycle")
+                .addPackage("org.jbpm.services.task.lifecycle.listeners")
+                .addPackage("org.jbpm.services.task.query")
+                .addPackage("org.jbpm.services.task.util")
+                .addPackage("org.jbpm.services.task.deadlines") // deadlines
+                .addPackage("org.jbpm.services.task.deadlines.notifications.impl")
+                .addPackage("org.jbpm.services.task.subtask")
+                .addPackage("org.jbpm.services.task.rule")
+                .addPackage("org.jbpm.services.task.rule.impl")
                 .addPackage("org.jbpm.runtime.manager")
                 .addPackage("org.jbpm.runtime.manager.impl")
                 .addPackage("org.jbpm.runtime.manager.impl.cdi")
@@ -74,9 +77,10 @@ public class SingleRuntimeManagerTest {
                 .addPackage("org.jbpm.runtime.manager.impl.tx") 
                 .addPackage("org.jbpm.runtime.manager.util") // test utilities
                 .addPackage("org.jbpm.services.task.wih")
+                .addPackage("org.jbpm.kie.services.impl.util")
                 .addAsResource("jndi.properties","jndi.properties")
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
-//                .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
+                .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
 
     }
@@ -128,8 +132,6 @@ public class SingleRuntimeManagerTest {
         testProcessStartOnManager(runtime);
         
         singletonManager.disposeRuntimeEngine(runtime);     
-        
-        singletonManager.close();
     }
     
     @Test

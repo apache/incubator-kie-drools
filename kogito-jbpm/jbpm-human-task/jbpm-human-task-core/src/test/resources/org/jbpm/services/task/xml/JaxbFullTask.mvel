@@ -14,6 +14,7 @@ with ( new Task() ) {
                    workItemId = 1603,
                    processInstanceId = 1623,
                    processId = "ToBeOrNotToBe",
+                   deploymentId = "org.jbpm:test:1.0",
                    processSessionId = 1922,
                    documentType = "First Folio",
                    documentAccessType = AccessType.Inline,

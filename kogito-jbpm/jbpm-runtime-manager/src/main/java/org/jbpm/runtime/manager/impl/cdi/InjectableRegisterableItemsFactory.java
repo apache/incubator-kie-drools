@@ -45,7 +45,6 @@ import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
 import org.jbpm.services.task.annotations.External;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
-import org.jbpm.services.task.wih.RuntimeFinder;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -99,8 +98,6 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     @Inject
     @WorkingMemory
     private Instance<EventListenerProducer<WorkingMemoryEventListener>> wmListenerProducer;
-    @Inject
-    private Instance<RuntimeFinder> finder;
     
     private AbstractAuditLogger auditlogger;
     
@@ -117,7 +114,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         RuntimeManager manager = ((RuntimeEngineImpl)runtime).getManager();
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("ksession", runtime.getKieSession());
-        parameters.put("taskService", runtime.getKieSession());
+        parameters.put("taskService", runtime.getTaskService());
         parameters.put("runtimeManager", manager);
         
         if (kieContainer != null) {
@@ -154,13 +151,6 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     protected WorkItemHandler getHTWorkItemHandler(RuntimeEngine runtime) {
         
         RuntimeManager manager = ((RuntimeEngineImpl)runtime).getManager();
-        try {
-            taskListener.setFinder(finder.get());
-        } catch (Exception e) {
-            // do nothing as runtime finder is considered optional
-            // used only when multiple managers are required
-            logger.warning("Exception when setting RuntimeFinder (optional bean) " + e.getMessage());
-        }
         taskListener.addMappedManger(manager.getIdentifier(), manager);
         
         LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler();

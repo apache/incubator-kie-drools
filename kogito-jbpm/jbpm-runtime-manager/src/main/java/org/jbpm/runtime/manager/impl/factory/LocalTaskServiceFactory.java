@@ -50,7 +50,7 @@ public class LocalTaskServiceFactory implements TaskServiceFactory {
             .entityManagerFactory(emf)
             .userGroupCallback(runtimeEnvironment.getUserGroupCallback())
             .getTaskService();
-                        
+                                  
             return internalTaskService;
         } else {
             return null;

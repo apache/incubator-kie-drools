@@ -20,16 +20,23 @@ import java.util.Date;
 import org.jboss.solder.core.Veto;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.utils.OnErrorAction;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
-import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Task;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.kie.internal.runtime.manager.Mapper;
+import org.kie.internal.runtime.manager.RegisterableItemsFactory;
+import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.api.UserGroupCallback;
 import org.kie.internal.task.api.model.ContentData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,7 +159,7 @@ public class NonManagedLocalHTWorkItemHandler extends AbstractHTWorkItemHandler 
         this.taskService = taskService;
     }
     
-    private static class FakeRuntimeManager implements RuntimeManager {
+    private static class FakeRuntimeManager implements InternalRuntimeManager {
 
         private final KieSession ksession;
         private final TaskService taskService;
@@ -191,6 +198,72 @@ public class NonManagedLocalHTWorkItemHandler extends AbstractHTWorkItemHandler 
         @Override
         public void close() {
             
+        }
+
+        @Override
+        public void validate(KieSession ksession, Context<?> context) throws IllegalStateException {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public RuntimeEnvironment getEnvironment() {            
+            return new RuntimeEnvironment() {
+                
+                @Override
+                public boolean usePersistence() {
+                    // TODO Auto-generated method stub
+                    return false;
+                }
+                
+                @Override
+                public UserGroupCallback getUserGroupCallback() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+                
+                @Override
+                public RegisterableItemsFactory getRegisterableItemsFactory() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+                
+                @Override
+                public Mapper getMapper() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+                
+                @Override
+                public KieBase getKieBase() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+                
+                @Override
+                public Environment getEnvironment() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+                
+                @Override
+                public KieSessionConfiguration getConfiguration() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+                
+                @Override
+                public ClassLoader getClassLoader() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+                
+                @Override
+                public void close() {
+                    // TODO Auto-generated method stub
+                    
+                }
+            };
         }
         
     }

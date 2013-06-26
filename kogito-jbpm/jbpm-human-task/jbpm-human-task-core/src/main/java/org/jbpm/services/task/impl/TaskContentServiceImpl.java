@@ -17,6 +17,7 @@ package org.jbpm.services.task.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -28,6 +29,8 @@ import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Task;
+import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.model.InternalTaskData;
 
@@ -40,6 +43,9 @@ public class TaskContentServiceImpl implements TaskContentService {
 
     @Inject
     private JbpmServicesPersistenceManager pm;
+
+    private ConcurrentHashMap<String, ContentMarshallerContext> marhsalContexts = new ConcurrentHashMap<String, ContentMarshallerContext>();
+    
 
     public TaskContentServiceImpl() {
     }
@@ -63,11 +69,12 @@ public class TaskContentServiceImpl implements TaskContentService {
             contentId = content.getId();
         } else {
             // I need to merge it if it already exist
-            Object unmarshalledObject = ContentMarshallerHelper.unmarshall(outputContent.getContent(), null);
+            ContentMarshallerContext context = getMarshallerContext(task);
+            Object unmarshalledObject = ContentMarshallerHelper.unmarshall(outputContent.getContent(), context.getEnvironment(), context.getClassloader());
             if(unmarshalledObject != null && unmarshalledObject instanceof Map){
                 ((Map<String, Object>)unmarshalledObject).putAll(params);
             }
-            ContentDataImpl outputContentData = ContentMarshallerHelper.marshal(unmarshalledObject, null);
+            ContentDataImpl outputContentData = ContentMarshallerHelper.marshal(unmarshalledObject, context.getEnvironment());
             outputContent.setContent(outputContentData.getContent());
             pm.persist(outputContent);
             contentId = outputContentId;
@@ -96,5 +103,23 @@ public class TaskContentServiceImpl implements TaskContentService {
 
     public ContentImpl getContentById(long contentId) {
         return pm.find(ContentImpl.class, contentId);
+    }
+    
+    @Override
+    public void addMarshallerContext(String ownerId, ContentMarshallerContext context) {
+        this.marhsalContexts.put(ownerId, context);
+    }
+
+    @Override
+    public void removeMarshallerContext(String ownerId) {
+        this.marhsalContexts.remove(ownerId);
+    }   
+
+    public ContentMarshallerContext getMarshallerContext(Task task) {
+        if (task.getTaskData().getDeploymentId() != null && this.marhsalContexts.containsKey(task.getTaskData().getDeploymentId())) {
+            return this.marhsalContexts.get(task.getTaskData().getDeploymentId());
+        }
+        
+        return new ContentMarshallerContext();
     }
 }

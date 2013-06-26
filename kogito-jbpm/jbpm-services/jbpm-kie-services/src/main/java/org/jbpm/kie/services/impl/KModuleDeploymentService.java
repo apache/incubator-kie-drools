@@ -126,7 +126,8 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 
         RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
                 .entityManagerFactory(emf)
-                .knowledgeBase(kbase);
+                .knowledgeBase(kbase)
+                .classLoader(kieContainer.getClassLoader());
         if (beanManager != null) {
             builder.registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger, kieContainer,
                     kmoduleUnit.getKsessionName()));

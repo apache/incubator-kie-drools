@@ -15,10 +15,11 @@
  */
 package org.jbpm.kie.services.impl.form;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -27,21 +28,22 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.drools.core.util.StringUtils;
+import org.jbpm.form.builder.services.model.InputData;
+import org.jbpm.form.builder.services.model.OutputData;
+import org.jbpm.kie.services.api.DeployedUnit;
+import org.jbpm.kie.services.api.DeploymentService;
 import org.jbpm.kie.services.api.FormProviderService;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
-import org.jbpm.form.builder.services.model.InputData;
-import org.jbpm.form.builder.services.model.OutputData;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
-
-import freemarker.template.DefaultObjectWrapper;
-import freemarker.template.Template;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +62,8 @@ public class FormProviderServiceImpl implements FormProviderService {
     private BPMN2DataService bpmn2Service;
     @Inject
     private RuntimeDataService dataService;
+    @Inject
+    private DeploymentService deploymentService;
     @Inject
     @Any
     private Instance<FormProvider> providersInjected;
@@ -81,8 +85,8 @@ public class FormProviderServiceImpl implements FormProviderService {
 
 
     @Override
-    public String getFormDisplayProcess(String processId) {
-        ProcessDesc processDesc = dataService.getProcessById(processId);
+    public String getFormDisplayProcess(String deploymentId, String processId) {
+        ProcessDesc processDesc = dataService.getProcessesByDeploymentIdProcessId(deploymentId, processId);
         Map<String, String> processData = bpmn2Service.getProcessData(processId);
 
         if (processData == null) {
@@ -92,6 +96,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         Map<String, Object> renderContext = new HashMap<String, Object>();
         renderContext.put("process", processDesc);
         renderContext.put("outputs", processData);
+        renderContext.put("marshallerContext", getMarshallerContext(deploymentId, processId));
 
         for (FormProvider provider : providers) {
             String template = provider.render(processDesc.getName(), processDesc, renderContext);
@@ -110,12 +115,14 @@ public class FormProviderServiceImpl implements FormProviderService {
         ProcessDesc processDesc = dataService.getProcessById(task.getTaskData().getProcessId());
         Map<String, Object> renderContext = new HashMap<String, Object>();
 
+        ContentMarshallerContext context = contentService.getMarshallerContext(task);
         // read task variables
         Object input = null;
         long inputContentId = task.getTaskData().getDocumentContentId();
         if (inputContentId != -1) {
             Content content = contentService.getContentById(inputContentId);
-            input = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+            
+            input = ContentMarshallerHelper.unmarshall(content.getContent(), context.getEnvironment());
         }
         if (input == null) {
             input = new HashMap<String, String>();
@@ -125,7 +132,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         long outputContentId = task.getTaskData().getOutputContentId();
         if (outputContentId != -1) {
             Content content = contentService.getContentById(outputContentId);
-            output = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+            output = ContentMarshallerHelper.unmarshall(content.getContent(), context.getEnvironment(), context.getClassloader());
         }
         if (output == null) {
             output = new HashMap<String, String>();
@@ -159,6 +166,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         // merge template with process variables        
         renderContext.put("task", task);
         renderContext.put("outputs", finalOutput);
+        renderContext.put("marshallerContext", getMarshallerContext(task));
 
         // add all inputs as direct entries
         if (input instanceof Map) {
@@ -202,5 +210,23 @@ public class FormProviderServiceImpl implements FormProviderService {
             }
         }
         return retval;
+    }
+    
+    protected ContentMarshallerContext getMarshallerContext(String deploymentId, String processId) {
+        DeployedUnit deployedUnit = deploymentService.getDeployedUnit(deploymentId);
+        if (deployedUnit == null) {
+            return new ContentMarshallerContext();
+        }
+        InternalRuntimeManager manager = (InternalRuntimeManager) deployedUnit.getRuntimeManager();
+        return new ContentMarshallerContext(manager.getEnvironment().getEnvironment(), manager.getEnvironment().getClassLoader());
+    }
+    
+    protected ContentMarshallerContext getMarshallerContext(Task task) {
+                
+        if (task == null) {
+            return new ContentMarshallerContext();
+        }
+        
+        return contentService.getMarshallerContext(task);
     }
 }

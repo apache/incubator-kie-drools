@@ -37,6 +37,7 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,18 +52,11 @@ import org.slf4j.LoggerFactory;
 public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  implements TaskLifeCycleEventListener {
 
     private RuntimeManager runtimeManager;
-    private Map<Integer, ClassLoader> classLoaders = new HashMap<Integer,ClassLoader>();
     private Map<String, RuntimeManager> mappedManagers = new ConcurrentHashMap<String, RuntimeManager>();
-    
-    private RuntimeFinder finder;
     
     private static final Logger logger = LoggerFactory.getLogger(ExternalTaskEventListener.class);
  
     public ExternalTaskEventListener() {
-    }
-    
-    public void addClassLoader(Integer sessionId, ClassLoader cl) {
-        this.classLoaders.put(sessionId, cl);
     }
 
     public RuntimeManager getRuntimeManager() {
@@ -77,7 +71,8 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
 
         long workItemId = task.getTaskData().getWorkItemId();
         long processInstanceId = task.getTaskData().getProcessInstanceId();
-        RuntimeEngine runtime = getManager(task).getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+        RuntimeManager manager = getManager(task);
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         KieSession session = runtime.getKieSession();
         
         if (task.getTaskData().getStatus() == Status.Completed) {
@@ -87,7 +82,8 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
             long contentId = task.getTaskData().getOutputContentId();
             if (contentId != -1) {
                 Content content = runtime.getTaskService().getContentById(contentId);
-                Object result = ContentMarshallerHelper.unmarshall(content.getContent(), session.getEnvironment(), classLoaders.get(session.getId()));
+                Object result = ContentMarshallerHelper.unmarshall(content.getContent(), session.getEnvironment(), 
+                        ((InternalRuntimeManager)manager).getEnvironment().getClassLoader());
                 results.put("Result", result);
                 if (result instanceof Map) {
                     Map<?, ?> map = (Map<?, ?>) result;
@@ -169,10 +165,8 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
             return runtimeManager;
         } else if (mappedManagers.size() == 1) {
             return mappedManagers.values().iterator().next();
-        }else {
-            // find it base on know values
-            String name = finder.findName(task.getTaskData().getProcessInstanceId());
-            return mappedManagers.get(name);
+        }else {            
+            return mappedManagers.get(task.getTaskData().getDeploymentId());
         }
     }
 
@@ -186,13 +180,5 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
     
     public void addMappedManger(String name, RuntimeManager manager) {
         this.mappedManagers.put(name, manager);
-    }
-
-    public RuntimeFinder getFinder() {
-        return finder;
-    }
-
-    public void setFinder(RuntimeFinder finder) {
-        this.finder = finder;
     }
 }

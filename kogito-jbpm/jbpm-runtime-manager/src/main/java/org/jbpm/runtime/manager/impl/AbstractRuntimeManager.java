@@ -35,6 +35,8 @@ import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.internal.task.api.ContentMarshallerContext;
+import org.kie.internal.task.api.InternalTaskService;
 
 /**
  * Common implementation that all <code>RuntimeManager</code> implementation should inherit from.
@@ -135,6 +137,20 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+    
+
+    protected void configureRuntimeOnTaskService(InternalTaskService internalTaskService) {
+        if (internalTaskService != null) {
+            internalTaskService.addMarshallerContext(getIdentifier(), 
+                new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
+        }
+    }
+    
+    protected void removeRuntimeFromTaskService(InternalTaskService internalTaskService) {
+        if (internalTaskService != null) {
+            internalTaskService.removeMarshallerContext(getIdentifier());
+        }
     }
 
 }
