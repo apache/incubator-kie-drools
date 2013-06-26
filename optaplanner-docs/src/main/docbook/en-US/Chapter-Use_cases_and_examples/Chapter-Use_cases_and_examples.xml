@@ -10,8 +10,8 @@
   <section xml:id="examplesOverview">
     <title>Examples overview</title>
 
-    <para>OptaPlanner has several examples. In this manual we explain OptaPlanner mainly using the n queens
-    example. So it's advisable to read at least the section about that example.</para>
+    <para>OptaPlanner has several examples. In this manual we explain OptaPlanner mainly using the n queens example. So
+    it's advisable to read at least the section about that example.</para>
 
     <para>The source code of all these examples is available in the distribution zip under
     <filename>examples/sources</filename> and also in git under
@@ -179,7 +179,7 @@
 
             <entry>&lt;= <literal>10^184948</literal></entry>
 
-            <entry>Realistic</entry>
+            <entry>Nearly realistic</entry>
           </row>
 
           <row>
@@ -615,8 +615,8 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
         </itemizedlist>
 
         <para>Drools Expert also has the normal miss Manners examples (which is much smaller) and employs a brute force
-        heuristic to solve it. OptaPlanner's implementation is far more scalable because it uses heuristics to find
-        the best solution and Drools Expert to calculate the score of each solution.</para>
+        heuristic to solve it. OptaPlanner's implementation is far more scalable because it uses heuristics to find the
+        best solution and Drools Expert to calculate the score of each solution.</para>
       </section>
 
       <section>
