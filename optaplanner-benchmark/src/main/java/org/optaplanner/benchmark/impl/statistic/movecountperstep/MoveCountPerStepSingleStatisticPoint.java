@@ -27,7 +27,7 @@ public class MoveCountPerStepSingleStatisticPoint {
         this.moveCountPerStepMeasurement = moveCountPerStepMeasurement;
     }
 
-    public MoveCountPerStepMeasurement getASMoveCountMeasurement() {
+    public MoveCountPerStepMeasurement getMoveCountPerStepMeasurement() {
         return moveCountPerStepMeasurement;
     }
 

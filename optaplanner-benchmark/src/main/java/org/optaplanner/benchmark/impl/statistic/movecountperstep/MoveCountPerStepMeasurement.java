@@ -18,6 +18,7 @@ package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 
 
 public class MoveCountPerStepMeasurement {
+
     private final long acceptedMoveCount;
     private final long selectedMoveCount;
 

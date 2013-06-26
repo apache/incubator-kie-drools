@@ -59,8 +59,11 @@ public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic {
         
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
             long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            pointList.add(new MoveCountPerStepSingleStatisticPoint(timeMillisSpend, new MoveCountPerStepMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())));
+            pointList.add(new MoveCountPerStepSingleStatisticPoint(timeMillisSpend,
+                    new MoveCountPerStepMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())
+            ));
         }
+
     }
 
 }

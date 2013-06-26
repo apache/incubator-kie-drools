@@ -39,13 +39,10 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
 
     protected File graphStatisticFile = null;
-    public final Logger logger = LoggerFactory.getLogger(MoveCountPerStepProblemStatistic.class);
 
     public MoveCountPerStepProblemStatistic(ProblemBenchmark problemBenchmark) {
         super(problemBenchmark, ProblemStatisticType.MOVE_COUNT_PER_STEP);
@@ -67,7 +64,7 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
     // Write methods
     // ************************************************************************
 
-    protected void writeCsvStatistic() {        
+    protected void writeCsvStatistic() {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             if (singleBenchmark.isSuccess()) {
@@ -75,11 +72,10 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
                         singleBenchmark.getSingleStatistic(problemStatisticType);
                 for (MoveCountPerStepSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
-                    MoveCountPerStepMeasurement asMovecountMeasurement  = point.getASMoveCountMeasurement();
+                    MoveCountPerStepMeasurement moveCountPerStepMeasurement = point.getMoveCountPerStepMeasurement();
                     csv.addPoint(singleBenchmark, timeMillisSpend,
-                            Long.toString(asMovecountMeasurement.getAcceptedMoveCount())
-                            + "/" + Long.toString(asMovecountMeasurement.getSelectedMoveCount()));
-                    
+                            Long.toString(moveCountPerStepMeasurement.getAcceptedMoveCount())
+                            + "/" + Long.toString(moveCountPerStepMeasurement.getSelectedMoveCount()));
                 }
             } else {
                 csv.addPoint(singleBenchmark, 0L, "Failed");
@@ -96,7 +92,6 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Accepted/selected moves per step");
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
-
         
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         DrawingSupplier drawingSupplier = new DefaultDrawingSupplier();
@@ -116,8 +111,8 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
                         singleBenchmark.getSingleStatistic(problemStatisticType);
                 for (MoveCountPerStepSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
-                    long acceptedMoveCount = point.getASMoveCountMeasurement().getAcceptedMoveCount();
-                    long selectedMoveCount = point.getASMoveCountMeasurement().getSelectedMoveCount();
+                    long acceptedMoveCount = point.getMoveCountPerStepMeasurement().getAcceptedMoveCount();
+                    long selectedMoveCount = point.getMoveCountPerStepMeasurement().getSelectedMoveCount();
 
                     accSeries.add(timeMillisSpend, acceptedMoveCount);
      
@@ -126,7 +121,7 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
                 }
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
-            seriesCollection.addSeries(accSeries);            
+            seriesCollection.addSeries(accSeries);
             seriesCollection.addSeries(selSeries);
         
             //dashed line for selected move count
@@ -135,11 +130,11 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
             //render both lines in the same color
             Paint linePaint = drawingSupplier.getNextPaint();
             renderer.setSeriesPaint(0, linePaint);            
-            renderer.setSeriesPaint(1, linePaint);                
+            renderer.setSeriesPaint(1, linePaint);
             
-            plot.setDataset(seriesIndex, seriesCollection);          
+            plot.setDataset(seriesIndex, seriesCollection);
             
-            plot.setRenderer(seriesIndex, renderer);            
+            plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;
         }
 

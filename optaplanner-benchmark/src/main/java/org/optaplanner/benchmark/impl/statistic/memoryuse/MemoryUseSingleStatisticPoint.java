@@ -33,4 +33,5 @@ public class MemoryUseSingleStatisticPoint {
     public MemoryUseMeasurement getMemoryUseMeasurement() {
         return memoryUseMeasurement;
     }
+
 }
