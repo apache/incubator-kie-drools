@@ -1348,7 +1348,8 @@ public class PackageBuilder
                 if ( duplicatedRule != null ) {
                     Resource resource = rule.getResource();
                     Resource duplicatedResource = duplicatedRule.getResource();
-                    if ( resource == null || duplicatedResource == null || duplicatedResource.getSourcePath().equals( resource.getSourcePath() ) ) {
+                    if ( resource == null || duplicatedResource == null || duplicatedResource.getSourcePath() == null ||
+                         duplicatedResource.getSourcePath().equals( resource.getSourcePath() ) ) {
                         this.results.add( new DuplicateRule( rule,
                                                              packageDescr,
                                                              this.configuration ) );
