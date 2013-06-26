@@ -1503,6 +1503,9 @@ public interface Standstill {
           <note>
             <para>Turning on <literal>trace</literal> logging, will slow down performance considerably: it's often 4
             times slower. However, it's invaluable during development to discover a bottleneck.</para>
+
+            <para>Even debug logging can slow down performance considerably for fast stepping algorithms (such as Late
+            Acceptance and Simulated Annealing), but not for slow stepping algorithms (such as Tabu Search).</para>
           </note>
         </listitem>
       </itemizedlist>
