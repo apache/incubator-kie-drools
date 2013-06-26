@@ -30,9 +30,9 @@ public enum ProblemStatisticType implements StatisticType {
     STEP_SCORE,
     CALCULATE_COUNT_PER_SECOND,
     BEST_SOLUTION_MUTATION,
+    ACCEPTED_SELECTED_MOVE_COUNT,
     @Deprecated IMPROVING_STEP_PERCENTAGE,
-    MEMORY_USE,
-    ACCEPTED_SELECTED_MOVE_COUNT;
+    MEMORY_USE;
 
     public ProblemStatistic create(ProblemBenchmark problemBenchmark) {
         switch (this) {
@@ -44,12 +44,12 @@ public enum ProblemStatisticType implements StatisticType {
                 return new CalculateCountProblemStatistic(problemBenchmark);
             case BEST_SOLUTION_MUTATION:
                 return new BestSolutionMutationProblemStatistic(problemBenchmark);
+            case ACCEPTED_SELECTED_MOVE_COUNT:
+                return new AcceptedSelectedMoveCountProblemStatistic(problemBenchmark);
             case IMPROVING_STEP_PERCENTAGE:
                 return new ImprovingStepPercentageProblemStatistic(problemBenchmark);
             case MEMORY_USE:
                 return new MemoryUseProblemStatistic(problemBenchmark);
-            case ACCEPTED_SELECTED_MOVE_COUNT:
-                return new AcceptedSelectedMoveCountProblemStatistic(problemBenchmark); 
             default:
                 throw new IllegalStateException("The problemStatisticType (" + this + ") is not implemented.");
         }
