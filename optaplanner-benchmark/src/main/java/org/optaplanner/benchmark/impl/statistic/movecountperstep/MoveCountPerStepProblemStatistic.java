@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.acceptedselectedmovecount;
+package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 
 import java.awt.BasicStroke;
 import java.awt.Paint;
@@ -42,17 +42,17 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AcceptedSelectedMoveCountProblemStatistic extends AbstractProblemStatistic {
+public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
 
     protected File graphStatisticFile = null;
-    public final Logger logger = LoggerFactory.getLogger(AcceptedSelectedMoveCountProblemStatistic.class);
+    public final Logger logger = LoggerFactory.getLogger(MoveCountPerStepProblemStatistic.class);
 
-    public AcceptedSelectedMoveCountProblemStatistic(ProblemBenchmark problemBenchmark) {
-        super(problemBenchmark, ProblemStatisticType.ACCEPTED_SELECTED_MOVE_COUNT);
+    public MoveCountPerStepProblemStatistic(ProblemBenchmark problemBenchmark) {
+        super(problemBenchmark, ProblemStatisticType.MOVE_COUNT_PER_STEP);
     }
 
     public SingleStatistic createSingleStatistic() {
-        return new AcceptedSelectedMoveCountSingleStatistic();        
+        return new MoveCountPerStepSingleStatistic();
     }
 
     /**
@@ -71,11 +71,11 @@ public class AcceptedSelectedMoveCountProblemStatistic extends AbstractProblemSt
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             if (singleBenchmark.isSuccess()) {
-                AcceptedSelectedMoveCountSingleStatistic singleStatistic = (AcceptedSelectedMoveCountSingleStatistic)
+                MoveCountPerStepSingleStatistic singleStatistic = (MoveCountPerStepSingleStatistic)
                         singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (AcceptedSelectedMoveCountSingleStatisticPoint point : singleStatistic.getPointList()) {
+                for (MoveCountPerStepSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
-                    AcceptedSelectedMoveCountMeasurement asMovecountMeasurement  = point.getASMoveCountMeasurement();
+                    MoveCountPerStepMeasurement asMovecountMeasurement  = point.getASMoveCountMeasurement();
                     csv.addPoint(singleBenchmark, timeMillisSpend,
                             Long.toString(asMovecountMeasurement.getAcceptedMoveCount())
                             + "/" + Long.toString(asMovecountMeasurement.getSelectedMoveCount()));
@@ -86,7 +86,7 @@ public class AcceptedSelectedMoveCountProblemStatistic extends AbstractProblemSt
             }
         }
         csvStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
-                problemBenchmark.getName() + "AcceptedSelectedMoveCountStatistic.csv");
+                problemBenchmark.getName() + "MoveCountPerStepStatistic.csv");
         csv.writeCsvStatisticFile();
     }
 
@@ -112,9 +112,9 @@ public class AcceptedSelectedMoveCountProblemStatistic extends AbstractProblemSt
             
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmark.isSuccess()) {
-                AcceptedSelectedMoveCountSingleStatistic singleStatistic = (AcceptedSelectedMoveCountSingleStatistic)
+                MoveCountPerStepSingleStatistic singleStatistic = (MoveCountPerStepSingleStatistic)
                         singleBenchmark.getSingleStatistic(problemStatisticType);
-                for (AcceptedSelectedMoveCountSingleStatisticPoint point : singleStatistic.getPointList()) {
+                for (MoveCountPerStepSingleStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     long acceptedMoveCount = point.getASMoveCountMeasurement().getAcceptedMoveCount();
                     long selectedMoveCount = point.getASMoveCountMeasurement().getSelectedMoveCount();
@@ -142,11 +142,10 @@ public class AcceptedSelectedMoveCountProblemStatistic extends AbstractProblemSt
             plot.setRenderer(seriesIndex, renderer);            
             seriesIndex++;
         }
-        
-        
-        JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " accepted/selected move count statistic",
+
+        JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " move count per step statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "AcceptedSelectedMoveCountStatistic");
+        graphStatisticFile = writeChartToImageFile(chart, problemBenchmark.getName() + "MoveCountPerStepStatistic");
     }
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.acceptedselectedmovecount;
+package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +26,13 @@ import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-public class AcceptedSelectedMoveCountSingleStatistic extends AbstractSingleStatistic {
+public class MoveCountPerStepSingleStatistic extends AbstractSingleStatistic {
 
-    private ASMoveCountSingleStatisticListener listener = new ASMoveCountSingleStatisticListener();
+    private MoveCountPerStepSingleStatisticListener listener = new MoveCountPerStepSingleStatisticListener();
 
-    private List<AcceptedSelectedMoveCountSingleStatisticPoint> pointList = new ArrayList<AcceptedSelectedMoveCountSingleStatisticPoint>();
+    private List<MoveCountPerStepSingleStatisticPoint> pointList = new ArrayList<MoveCountPerStepSingleStatisticPoint>();
 
-    public List<AcceptedSelectedMoveCountSingleStatisticPoint> getPointList() {
+    public List<MoveCountPerStepSingleStatisticPoint> getPointList() {
         return pointList;
     }
 
@@ -48,7 +48,7 @@ public class AcceptedSelectedMoveCountSingleStatistic extends AbstractSingleStat
         ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(listener);
     }
     
-    private class ASMoveCountSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
+    private class MoveCountPerStepSingleStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
@@ -59,7 +59,7 @@ public class AcceptedSelectedMoveCountSingleStatistic extends AbstractSingleStat
         
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
             long timeMillisSpend = stepScope.getPhaseScope().calculateSolverTimeMillisSpend();
-            pointList.add(new AcceptedSelectedMoveCountSingleStatisticPoint(timeMillisSpend, new AcceptedSelectedMoveCountMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())));                           
+            pointList.add(new MoveCountPerStepSingleStatisticPoint(timeMillisSpend, new MoveCountPerStepMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())));
         }
     }
 

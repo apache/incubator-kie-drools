@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.acceptedselectedmovecount;
+package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 
 
-public class AcceptedSelectedMoveCountMeasurement {
+public class MoveCountPerStepMeasurement {
     private final long acceptedMoveCount;
     private final long selectedMoveCount;
 
-    public AcceptedSelectedMoveCountMeasurement(long acceptedMoveCount, long selectedMoveCount) {
+    public MoveCountPerStepMeasurement(long acceptedMoveCount, long selectedMoveCount) {
         this.acceptedMoveCount = acceptedMoveCount;
         this.selectedMoveCount = selectedMoveCount;
     }

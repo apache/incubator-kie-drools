@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.acceptedselectedmovecount;
+package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 
-public class AcceptedSelectedMoveCountSingleStatisticPoint {
+public class MoveCountPerStepSingleStatisticPoint {
 
     private final long timeMillisSpend;
-    private final AcceptedSelectedMoveCountMeasurement aSMoveCountMeasurement;
+    private final MoveCountPerStepMeasurement moveCountPerStepMeasurement;
 
-    public AcceptedSelectedMoveCountSingleStatisticPoint(long timeMillisSpend, AcceptedSelectedMoveCountMeasurement aSMoveCountMeasurement) {
+    public MoveCountPerStepSingleStatisticPoint(long timeMillisSpend,
+            MoveCountPerStepMeasurement moveCountPerStepMeasurement) {
         this.timeMillisSpend = timeMillisSpend;
-        this.aSMoveCountMeasurement = aSMoveCountMeasurement;
+        this.moveCountPerStepMeasurement = moveCountPerStepMeasurement;
     }
 
-    public AcceptedSelectedMoveCountMeasurement getASMoveCountMeasurement() {
-        return aSMoveCountMeasurement;
+    public MoveCountPerStepMeasurement getASMoveCountMeasurement() {
+        return moveCountPerStepMeasurement;
     }
 
     public long getTimeMillisSpend() {
