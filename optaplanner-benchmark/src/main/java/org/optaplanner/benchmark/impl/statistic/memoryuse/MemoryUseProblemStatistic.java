@@ -113,6 +113,7 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
             seriesCollection.addSeries(usedSeries);
 //            seriesCollection.addSeries(maxSeries);
             plot.setDataset(seriesIndex, seriesCollection);
+
             if (singleBenchmark.getSolverBenchmark().isFavorite()) {
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));

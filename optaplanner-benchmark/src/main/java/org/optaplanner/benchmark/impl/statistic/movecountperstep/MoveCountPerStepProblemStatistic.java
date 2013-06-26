@@ -92,20 +92,17 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat(locale));
         NumberAxis yAxis = new NumberAxis("Accepted/selected moves per step");
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
-        
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         DrawingSupplier drawingSupplier = new DefaultDrawingSupplier();
         plot.setOrientation(PlotOrientation.VERTICAL);
         
         int seriesIndex = 0;
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-            XYSeries accSeries = new XYSeries(
+            XYSeries acceptedSeries = new XYSeries(
                     singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " accepted");
-            
-            XYSeries selSeries = new XYSeries(
+            XYSeries selectedSeries = new XYSeries(
                     singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix() + " selected");            
-            
-            XYItemRenderer renderer = new XYLineAndShapeRenderer();
+            XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
             if (singleBenchmark.isSuccess()) {
                 MoveCountPerStepSingleStatistic singleStatistic = (MoveCountPerStepSingleStatistic)
                         singleBenchmark.getSingleStatistic(problemStatisticType);
@@ -113,27 +110,30 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
                     long timeMillisSpend = point.getTimeMillisSpend();
                     long acceptedMoveCount = point.getMoveCountPerStepMeasurement().getAcceptedMoveCount();
                     long selectedMoveCount = point.getMoveCountPerStepMeasurement().getSelectedMoveCount();
-
-                    accSeries.add(timeMillisSpend, acceptedMoveCount);
-     
-                    selSeries.add(timeMillisSpend, selectedMoveCount);
-
+                    acceptedSeries.add(timeMillisSpend, acceptedMoveCount);
+                    selectedSeries.add(timeMillisSpend, selectedMoveCount);
                 }
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
-            seriesCollection.addSeries(accSeries);
-            seriesCollection.addSeries(selSeries);
-        
-            //dashed line for selected move count
-            renderer.setSeriesStroke(1, new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {2.0f, 6.0f}, 0.0f));
-                       
-            //render both lines in the same color
-            Paint linePaint = drawingSupplier.getNextPaint();
-            renderer.setSeriesPaint(0, linePaint);            
-            renderer.setSeriesPaint(1, linePaint);
-            
+            seriesCollection.addSeries(acceptedSeries);
+            seriesCollection.addSeries(selectedSeries);
             plot.setDataset(seriesIndex, seriesCollection);
-            
+
+            if (singleBenchmark.getSolverBenchmark().isFavorite()) {
+                // Make the favorite more obvious
+                renderer.setSeriesStroke(0, new BasicStroke(2.0f));
+                // Dashed line for selected move count
+                renderer.setSeriesStroke(1, new BasicStroke(
+                        2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {2.0f, 6.0f}, 0.0f));
+            } else {
+                // Dashed line for selected move count
+                renderer.setSeriesStroke(1, new BasicStroke(
+                        1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {2.0f, 6.0f}, 0.0f));
+            }
+            // Render both lines in the same color
+            Paint linePaint = drawingSupplier.getNextPaint();
+            renderer.setSeriesPaint(0, linePaint);
+            renderer.setSeriesPaint(1, linePaint);
             plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;
         }

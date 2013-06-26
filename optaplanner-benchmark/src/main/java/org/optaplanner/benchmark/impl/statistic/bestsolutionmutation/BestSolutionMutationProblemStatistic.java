@@ -110,6 +110,7 @@ public class BestSolutionMutationProblemStatistic extends AbstractProblemStatist
                 }
             }
             plot.setDataset(seriesIndex, new XYSeriesCollection(series));
+
             if (singleBenchmark.getSolverBenchmark().isFavorite()) {
                 // Make the favorite more obvious
                 renderer.setSeriesStroke(0, new BasicStroke(2.0f));
