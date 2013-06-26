@@ -526,6 +526,32 @@
       </section>
 
       <section>
+        <title>Move count per step statistic (graph and CSV)</title>
+
+        <para>To see how the selected and accepted move count per step evolves over time, add:</para>
+
+        <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;MOVE_COUNT_PER_STEP&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+        <figure>
+          <title>Move count per step statistic</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/moveCountPerStepStatistic.png" format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <warning>
+          <para>This statistic has been seen to slow down the solver noticeably due to GC stress, especially for fast
+          stepping algorithms (such as Simulated Annealing and Late Acceptance).</para>
+        </warning>
+      </section>
+
+      <section>
         <title>Memory use statistic (graph and CSV)</title>
 
         <para>To see how much memory is used, add:</para>
@@ -559,7 +585,7 @@
       be the best on every problem. It's recommended to use that favorite <literal>Solver</literal> in
       production.</para>
 
-      <para>However, there are different ways of ranking the solvers. You can configure how:</para>
+      <para>However, there are different ways of ranking the solvers. Configure it like this:</para>
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;
   ...
