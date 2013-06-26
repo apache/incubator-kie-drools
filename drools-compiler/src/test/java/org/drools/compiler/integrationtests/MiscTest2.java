@@ -43,6 +43,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.type.Modifies;
@@ -2153,4 +2154,20 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals(2, ksession.fireAllRules());
     }
+
+    @Test
+    public void testAddSameResourceTwice() {
+        // DROOLS-180
+        String str =
+                "rule R when\n" +
+                "  $s : String()\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        assertTrue(kbuilder.hasResults(ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR));
+    }
+
 }
