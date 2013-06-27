@@ -33,21 +33,25 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.scanner.MavenRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonatype.aether.artifact.Artifact;
 
 @ApplicationScoped
 @Kjar
 public class KModuleDeploymentService extends AbstractDeploymentService {
 
+    private static Logger logger = LoggerFactory.getLogger(KModuleDeploymentService.class);
+
     @Inject
     private BeanManager beanManager;
     @Inject
     private EntityManagerFactory emf;
     @Inject
-    private IdentityProvider identityProvider; 
+    private IdentityProvider identityProvider;
     @Inject
     private BPMN2DataService bpmn2Service;
-    
+
     @Override
     public void deploy(DeploymentUnit unit) {
         super.deploy(unit);
@@ -59,16 +63,16 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
         KieServices ks = KieServices.Factory.get();
         MavenRepository repository = getMavenRepository();
         Artifact artifact = repository.resolveArtifact(kmoduleUnit.getIdentifier());
-        
+
         ReleaseId releaseId = ks.newReleaseId(kmoduleUnit.getGroupId(), kmoduleUnit.getArtifactId(), kmoduleUnit.getVersion());
         KieContainer kieContainer = ks.newKieContainer(releaseId);
-        
+
         String kbaseName = kmoduleUnit.getKbaseName();
         if (StringUtils.isEmpty(kbaseName)) {
             kbaseName = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieBaseModel().getName();
-        } 
+        }
         InternalKieModule module = (InternalKieModule) ((KieContainerImpl)kieContainer).getKieModuleForKBase(kbaseName);
-        
+
         Map<String, String> formsData = new HashMap<String, String>();
         Collection<String> files = module.getFileNames();
         for (String fileName : files) {
@@ -81,9 +85,8 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     process.setDeploymentId(unit.getIdentifier());
                     process.setForms(formsData);
                     deployedUnit.addAssetLocation(process.getId(), process);
-                    
                 } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                    logger.warn("Unable to load content for file '" + fileName + "': ", e);
                 }
             } else if (fileName.matches(".+ftl$")) {
                 try {
@@ -96,32 +99,38 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     }
                     formsData.put(key, formContent);
                 } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                    logger.warn("Unable to load content for form '" + fileName + "': ", e);
+                }
+            } else if (fileName.matches(".+form$")) {
+                try {
+                    String formContent = new String(module.getBytes(fileName), "UTF-8");
+                    formsData.put(fileName, formContent);
+                } catch (UnsupportedEncodingException e) {
+                    logger.warn("Unable to load content for form '" + fileName + "': ", e);
                 }
             }
         }
-        
+
         KieBase kbase = null;
         if (StringUtils.isEmpty(kmoduleUnit.getKbaseName())) {
-            kbase = kieContainer.getKieBase();            
+            kbase = kieContainer.getKieBase();
         } else {
             kbase = kieContainer.getKieBase(kmoduleUnit.getKbaseName());
         }
-        
+
         AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance(emf);
         ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
         auditEventBuilder.setIdentityProvider(identityProvider);
         auditEventBuilder.setDeploymentUnitId(unit.getIdentifier());
         auditLogger.setBuilder(auditEventBuilder);
-        
+
         RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
                 .entityManagerFactory(emf)
                 .knowledgeBase(kbase);
         if (beanManager != null) {
-            builder.registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger, kieContainer, 
+            builder.registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger, kieContainer,
                     kmoduleUnit.getKsessionName()));
         }
-        
         commonDeploy(unit, deployedUnit, builder.get());
     }
 

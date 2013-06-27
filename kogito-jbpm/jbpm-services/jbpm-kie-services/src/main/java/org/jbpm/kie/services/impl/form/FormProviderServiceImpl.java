@@ -18,11 +18,7 @@ package org.jbpm.kie.services.impl.form;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -30,6 +26,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.api.FormProviderService;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
@@ -45,9 +42,13 @@ import org.kie.internal.task.api.TaskQueryService;
 
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class FormProviderServiceImpl implements FormProviderService {
+
+    private static Logger logger = LoggerFactory.getLogger(FormProviderServiceImpl.class);
 
     @Inject
     private TaskQueryService queryService;
@@ -58,12 +59,12 @@ public class FormProviderServiceImpl implements FormProviderService {
     @Inject
     private BPMN2DataService bpmn2Service;
     @Inject
-    private RuntimeDataService dataService;    
+    private RuntimeDataService dataService;
     @Inject
     @Any
     private Instance<FormProvider> providersInjected;
     private Set<FormProvider> providers;
-    
+
     @PostConstruct
     public void prepare() {
         providers = new TreeSet<FormProvider>(new Comparator<FormProvider>() {
@@ -77,30 +78,28 @@ public class FormProviderServiceImpl implements FormProviderService {
             providers.add(p);
         }
     }
-    
+
 
     @Override
     public String getFormDisplayProcess(String processId) {
         ProcessDesc processDesc = dataService.getProcessById(processId);
-        InputStream template = null;
-        
-        for (FormProvider provider : providers) {
-            template = provider.provideProcessForm(processDesc);
-            if (template != null) {
-                break;
-            }
-        }
-        
         Map<String, String> processData = bpmn2Service.getProcessData(processId);
+
         if (processData == null) {
             processData = new HashMap<String, String>();
         }
-        
+
         Map<String, Object> renderContext = new HashMap<String, Object>();
         renderContext.put("process", processDesc);
         renderContext.put("outputs", processData);
-        return render(processDesc.getName(), template, renderContext);
 
+        for (FormProvider provider : providers) {
+            String template = provider.render(processDesc.getName(), processDesc, renderContext);
+            if (!StringUtils.isEmpty(template)) return template;
+        }
+
+        logger.warn("Unable to find form to render for process '" + processDesc.getName() + "'");
+        return "";
     }
 
     @Override
@@ -110,8 +109,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         String name = task.getNames().get(0).getText();
         ProcessDesc processDesc = dataService.getProcessById(task.getTaskData().getProcessId());
         Map<String, Object> renderContext = new HashMap<String, Object>();
-        InputStream template = null;
-        
+
         // read task variables
         Object input = null;
         long inputContentId = task.getTaskData().getDocumentContentId();
@@ -132,7 +130,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         if (output == null) {
             output = new HashMap<String, String>();
         }
-        
+
         // prepare task variables for rendering
         String processId = task.getTaskData().getProcessId();
         Map<String, String> taskOutputMappings = null;
@@ -147,10 +145,10 @@ public class FormProviderServiceImpl implements FormProviderService {
 
         // I need to replace the value that comes from the 
         //process mappings with the value that can be stored in the output Content
-        Map<String, String> finalOutput = new HashMap<String, String>();
+        Map<String, Object> finalOutput = new HashMap<String, Object>();
         for (String key : taskOutputMappings.values()) {
-            
-            String value = ((Map<String, String>) output).get(key);
+
+            Object value = ((Map<String, Object>) output).get(key);
             if (value == null) {
                 value = "";
             }
@@ -159,7 +157,7 @@ public class FormProviderServiceImpl implements FormProviderService {
 
 
         // merge template with process variables        
-        renderContext.put("task", task);        
+        renderContext.put("task", task);
         renderContext.put("outputs", finalOutput);
 
         // add all inputs as direct entries
@@ -171,33 +169,15 @@ public class FormProviderServiceImpl implements FormProviderService {
         } else {
             renderContext.put("input", input);
         }
-        
+
         // find form
         for (FormProvider provider : providers) {
-            template = provider.provideTaskForm(task, processDesc);
-            if (template != null) {
-                break;
-            }
+            String template = provider.render(name, task, processDesc, renderContext);
+            if (!StringUtils.isEmpty(template)) return template;
         }
-        return render(name, template, renderContext);
-    }
 
-    public String render(String name, InputStream src, Map<String, Object> renderContext) {
-        String str = null;
-        try {
-            freemarker.template.Configuration cfg = new freemarker.template.Configuration();
-            cfg.setObjectWrapper(new DefaultObjectWrapper());
-            cfg.setTemplateUpdateDelay(0);
-            Template temp = new Template(name, new InputStreamReader(src), cfg);
-            //final ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            StringWriter out = new StringWriter();
-            temp.process(renderContext, out);
-            out.flush();
-            str = out.getBuffer().toString();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to process form template", e);
-        }
-        return str;
+        logger.warn("Unable to find form to render for task '" + name + "' on process '" + processDesc.getName() + "'");
+        return "";
     }
 
     protected Map<String, InputData> toInputDataMap(Map<String, String> inputs) {

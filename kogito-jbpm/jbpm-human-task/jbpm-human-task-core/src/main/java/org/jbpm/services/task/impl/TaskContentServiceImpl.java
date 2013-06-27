@@ -69,6 +69,7 @@ public class TaskContentServiceImpl implements TaskContentService {
             }
             ContentDataImpl outputContentData = ContentMarshallerHelper.marshal(unmarshalledObject, null);
             outputContent.setContent(outputContentData.getContent());
+            pm.persist(outputContent);
             contentId = outputContentId;
         }
         return contentId;
