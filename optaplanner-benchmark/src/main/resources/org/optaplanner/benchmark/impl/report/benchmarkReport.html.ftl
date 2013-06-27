@@ -38,6 +38,30 @@
         </#if>
     </#if>
 </#macro>
+<#macro addScoreLevelChartList chartFileList idPrefix>
+    <div class="tabbable tabs-right">
+        <ul class="nav nav-tabs">
+        <#assign scoreLevelIndex = 0>
+        <#list chartFileList as chartFile>
+            <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
+                <a href="#${idPrefix}_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
+            </li>
+            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+        </#list>
+        </ul>
+        <div class="tab-content">
+        <#assign scoreLevelIndex = 0>
+        <#list chartFileList as chartFile>
+            <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="${idPrefix}_chart_${scoreLevelIndex}">
+                <div class="benchmark-chart">
+                    <img src="summary/${chartFile.name}"/>
+                </div>
+            </div>
+            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+        </#list>
+        </div>
+    </div>
+</#macro>
 <body onload="prettyPrint()">
 
 <div class="container-fluid">
@@ -115,28 +139,7 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="summary_bestScore">
                                 <h3>Best score summary</h3>
-                                <div class="tabbable tabs-right">
-                                    <ul class="nav nav-tabs">
-                                        <#assign scoreLevelIndex = 0>
-                                        <#list benchmarkReport.bestScoreSummaryChartFileList as bestScoreSummaryChartFile>
-                                            <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                                <a href="#summary_bestScore_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
-                                            </li>
-                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                        </#list>
-                                    </ul>
-                                    <div class="tab-content">
-                                        <#assign scoreLevelIndex = 0>
-                                        <#list benchmarkReport.bestScoreSummaryChartFileList as bestScoreSummaryChartFile>
-                                            <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScore_chart_${scoreLevelIndex}">
-                                                <div class="benchmark-chart">
-                                                    <img src="summary/${bestScoreSummaryChartFile.name}"/>
-                                                </div>
-                                            </div>
-                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                        </#list>
-                                    </div>
-                                </div>
+                                <@addScoreLevelChartList chartFileList=benchmarkReport.bestScoreSummaryChartFileList idPrefix="summary_bestScore" />
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
@@ -171,53 +174,11 @@
                             </div>
                             <div class="tab-pane" id="summary_bestScoreScalability">
                                 <h3>Best score scalability summary</h3>
-                                <div class="tabbable tabs-right">
-                                    <ul class="nav nav-tabs">
-                                        <#assign scoreLevelIndex = 0>
-                                        <#list benchmarkReport.bestScoreScalabilitySummaryChartFileList as bestScoreScalabilitySummaryChartFile>
-                                            <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                                <a href="#summary_bestScoreScalability_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
-                                            </li>
-                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                        </#list>
-                                    </ul>
-                                    <div class="tab-content">
-                                        <#assign scoreLevelIndex = 0>
-                                        <#list benchmarkReport.bestScoreScalabilitySummaryChartFileList as bestScoreScalabilitySummaryChartFile>
-                                            <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScoreScalability_chart_${scoreLevelIndex}">
-                                                <div class="benchmark-chart">
-                                                    <img src="summary/${bestScoreScalabilitySummaryChartFile.name}"/>
-                                                </div>
-                                            </div>
-                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                        </#list>
-                                    </div>
-                                </div>
+                                <@addScoreLevelChartList chartFileList=benchmarkReport.bestScoreScalabilitySummaryChartFileList idPrefix="summary_bestScoreScalability" />
                             </div>
                             <div class="tab-pane" id="summary_winningScoreDifference">
                                 <h3>Winning score difference summary</h3>
-                                <div class="tabbable tabs-right">
-                                    <ul class="nav nav-tabs">
-                                    <#assign scoreLevelIndex = 0>
-                                    <#list benchmarkReport.winningScoreDifferenceSummaryChartFileList as winningScoreDifferenceSummaryChartFile>
-                                        <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                            <a href="#summary_winningScoreDifference_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
-                                        </li>
-                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                    </#list>
-                                    </ul>
-                                    <div class="tab-content">
-                                    <#assign scoreLevelIndex = 0>
-                                    <#list benchmarkReport.winningScoreDifferenceSummaryChartFileList as winningScoreDifferenceSummaryChartFile>
-                                        <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_winningScoreDifference_chart_${scoreLevelIndex}">
-                                            <div class="benchmark-chart">
-                                                <img src="summary/${winningScoreDifferenceSummaryChartFile.name}"/>
-                                            </div>
-                                        </div>
-                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                    </#list>
-                                    </div>
-                                </div>
+                                <@addScoreLevelChartList chartFileList=benchmarkReport.winningScoreDifferenceSummaryChartFileList idPrefix="summary_winningScoreDifference" />
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
@@ -248,28 +209,7 @@
                             </div>
                             <div class="tab-pane" id="summary_worstScoreDifferencePercentage">
                                 <h3>Worst score difference percentage summary (ROI)</h3>
-                                <div class="tabbable tabs-right">
-                                    <ul class="nav nav-tabs">
-                                    <#assign scoreLevelIndex = 0>
-                                    <#list benchmarkReport.worstScoreDifferencePercentageSummaryChartFileList as worstScoreDifferencePercentageSummaryChartFile>
-                                        <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                            <a href="#summary_worstScoreDifferencePercentage_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
-                                        </li>
-                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                    </#list>
-                                    </ul>
-                                    <div class="tab-content">
-                                    <#assign scoreLevelIndex = 0>
-                                    <#list benchmarkReport.worstScoreDifferencePercentageSummaryChartFileList as worstScoreDifferencePercentageSummaryChartFile>
-                                        <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_worstScoreDifferencePercentage_chart_${scoreLevelIndex}">
-                                            <div class="benchmark-chart">
-                                                <img src="summary/${worstScoreDifferencePercentageSummaryChartFile.name}"/>
-                                            </div>
-                                        </div>
-                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                    </#list>
-                                    </div>
-                                </div>
+                                <@addScoreLevelChartList chartFileList=benchmarkReport.worstScoreDifferencePercentageSummaryChartFileList idPrefix="summary_worstScoreDifferencePercentage" />
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
                                         <th>Solver</th>
@@ -424,28 +364,7 @@
                             </div>
                             <div class="tab-pane" id="summary_bestScorePerTimeSpend">
                                 <h3>Best score per time spend summary</h3>
-                                <div class="tabbable tabs-right">
-                                    <ul class="nav nav-tabs">
-                                        <#assign scoreLevelIndex = 0>
-                                        <#list benchmarkReport.bestScorePerTimeSpendSummaryChartFileList as bestScorePerTimeSpendSummaryChartFile>
-                                            <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                                <a href="#summary_bestScorePerTimeSpend_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
-                                            </li>
-                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                        </#list>
-                                    </ul>
-                                    <div class="tab-content">
-                                        <#assign scoreLevelIndex = 0>
-                                        <#list benchmarkReport.bestScorePerTimeSpendSummaryChartFileList as bestScorePerTimeSpendSummaryChartFile>
-                                            <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScorePerTimeSpend_chart_${scoreLevelIndex}">
-                                                <div class="benchmark-chart">
-                                                    <img src="summary/${bestScorePerTimeSpendSummaryChartFile.name}"/>
-                                                </div>
-                                            </div>
-                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                        </#list>
-                                    </div>
-                                </div>
+                                <@addScoreLevelChartList chartFileList=benchmarkReport.bestScorePerTimeSpendSummaryChartFileList idPrefix="summary_bestScorePerTimeSpend" />
                             </div>
                         </div>
                         <!-- HACK Duplication to show the navigation tabs in the same viewport as the tables -->
