@@ -1,0 +1,46 @@
+package org.drools.compiler.integrationtests
+
+import org.drools.compiler.integrationtests.NegativePatternsTest.TestEvent
+
+declare TestEvent
+	@role( event )
+	@expires( 22ms )
+end
+
+rule "SingleAbsence"
+	duration( 18ms )
+	when
+		not ( TestEvent ( ) from entry-point EventStream )
+	then
+		// consequence
+end
+
+rule "SingleConstrained"
+	duration( 18ms )
+	when
+		not ( TestEvent ( name == "EventA" ) from entry-point EventStream )
+	then
+		// consequence
+end
+
+rule "MultipleEvents"
+	duration( 18ms )
+	when
+		TestEvent ( name == "EventA" ) over window:time( 22ms ) from entry-point EventStream
+		not ( TestEvent ( name == "EventB" ) over window:time( 22ms )  from entry-point EventStream )
+	then
+		// consequence
+end
+
+rule "MultipleEntryPoints"
+	duration( 18ms )
+	when
+		not (
+			TestEvent( name == "EventA" ) from entry-point EventStream
+		)
+		not (
+			TestEvent( name == "EventB" ) from entry-point OtherStream
+		)
+	then
+		// consequence
+end
