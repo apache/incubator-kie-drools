@@ -85,7 +85,7 @@ public class BenchmarkReport {
     protected List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
     protected File timeSpendSummaryChartFile = null;
     protected File timeSpendScalabilitySummaryChartFile = null;
-    protected List<File> bestScorePerTimeSpendChartFileList = null;
+    protected List<File> bestScorePerTimeSpendSummaryChartFileList = null;
     protected File averageCalculateCountSummaryChartFile = null;
     protected Integer defaultShownScoreLevelIndex = null;
 
@@ -139,8 +139,8 @@ public class BenchmarkReport {
         return timeSpendScalabilitySummaryChartFile;
     }
 
-    public List<File> getBestScorePerTimeSpendChartFileList() {
-        return bestScorePerTimeSpendChartFileList;
+    public List<File> getBestScorePerTimeSpendSummaryChartFileList() {
+        return bestScorePerTimeSpendSummaryChartFileList;
     }
 
     public File getAverageCalculateCountSummaryChartFile() {
@@ -285,6 +285,7 @@ public class BenchmarkReport {
         int scoreLevelIndex = 0;
         for (List<XYSeries> seriesList : seriesListList) {
             XYPlot plot = createScalabilityPlot(seriesList,
+                    "Problem scale", NumberFormat.getInstance(locale),
                     "Score level " + scoreLevelIndex, NumberFormat.getInstance(locale));
             JFreeChart chart = new JFreeChart(
                     "Best score scalability level " + scoreLevelIndex + " summary (higher is better)",
@@ -393,6 +394,7 @@ public class BenchmarkReport {
             seriesList.add(series);
         }
         XYPlot plot = createScalabilityPlot(seriesList,
+                "Problem scale", NumberFormat.getInstance(locale),
                 "Time spend", new MillisecondsSpendNumberFormat(locale));
         JFreeChart chart = new JFreeChart("Time spend scalability summary (lower is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
@@ -401,90 +403,43 @@ public class BenchmarkReport {
 
     private void writeBestScorePerTimeSpendSummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
-        List<XYSeriesCollection> datasetList = new ArrayList<XYSeriesCollection>(CHARTED_SCORE_LEVEL_SIZE);
+        List<List<XYSeries>> seriesListList = new ArrayList<List<XYSeries>>(
+                CHARTED_SCORE_LEVEL_SIZE);
+        int solverBenchmarkIndex = 0;
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
-                String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                 if (singleBenchmark.isSuccess()) {
-                    double[] levelDoubles = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore());
-                    double[] averageDoubles = ScoreUtils.extractLevelDoubles(plannerBenchmark.getAverageScore());
-                    for (int i = 0; i < levelDoubles.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
-                        if (i >= datasetList.size()) {
-                            datasetList.add(new XYSeriesCollection());
+                    long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
+                    double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore());
+                    for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
+                        if (i >= seriesListList.size()) {
+                            seriesListList.add(new ArrayList<XYSeries>(
+                                    plannerBenchmark.getSolverBenchmarkList().size()));
                         }
-                        double relativeScore = (levelDoubles[i] == 0d) ? 0 : levelDoubles[i] / Math.abs(averageDoubles[i]);
-                        if (datasetList.get(i).getSeriesIndex(solverLabel) == -1) {
-                            XYSeries series = new XYSeries(solverLabel, false);
-                            series.add(singleBenchmark.getTimeMillisSpend(), relativeScore);
-                            datasetList.get(i).addSeries(series);
-                        } else {
-                            datasetList.get(i).getSeries(solverLabel).add(singleBenchmark.getTimeMillisSpend(), relativeScore);
+                        List<XYSeries> seriesList = seriesListList.get(i);
+                        if (solverBenchmarkIndex >= seriesList.size()) {
+                            seriesList.add(new XYSeries(solverLabel));
                         }
+                        seriesList.get(solverBenchmarkIndex).add((Long) timeMillisSpend, (Double) levelValues[i]);
                     }
                 }
             }
+            solverBenchmarkIndex++;
         }
-        bestScorePerTimeSpendChartFileList = new ArrayList<File>(datasetList.size());
+        bestScorePerTimeSpendSummaryChartFileList = new ArrayList<File>(seriesListList.size());
         int scoreLevelIndex = 0;
-        for (XYSeriesCollection dataset : datasetList) {
-            XYPlot plot = createBestScorePerTimePlot(dataset, "Time spent", "Best score (relative to average)", NumberFormat.getInstance(locale));
-            JFreeChart chart = new JFreeChart("Best score per time level " + scoreLevelIndex + " (lower is better)", plot);
-            addBestScorePerTimeLegend(chart);
-            bestScorePerTimeSpendChartFileList.add(writeChartToImageFile(chart, "bestScorePerTimeLevel" + scoreLevelIndex));
+        for (List<XYSeries> seriesList : seriesListList) {
+            XYPlot plot = createScalabilityPlot(seriesList,
+                    "Time spend", new MillisecondsSpendNumberFormat(locale),
+                    "Score level " + scoreLevelIndex, NumberFormat.getInstance(locale));
+            JFreeChart chart = new JFreeChart(
+                    "Best score per time spend level " + scoreLevelIndex + " summary (higher is better)",
+                    JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+            bestScorePerTimeSpendSummaryChartFileList.add(
+                    writeChartToImageFile(chart, "bestScorePerTimeSpendSummaryLevel" + scoreLevelIndex));
             scoreLevelIndex++;
         }
-    }
-
-    private void addBestScorePerTimeLegend(JFreeChart chart) {
-        LegendTitle legend = new LegendTitle(new LegendItemSource() {
-            @Override
-            public LegendItemCollection getLegendItems() {
-                LegendItemCollection coll = new LegendItemCollection();
-                int i = 1;
-                for (ProblemBenchmark pb : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
-                    coll.add(new LegendItem("(" + i++ +") " + pb.getName()));
-
-                }
-                return coll;
-            }
-        });
-        legend.setBorder(1, 1, 1, 1);
-        legend.setBackgroundPaint(Color.WHITE);
-        chart.addLegend(legend);
-    }
-
-    private XYPlot createBestScorePerTimePlot(XYSeriesCollection dataset, String xAxisLabel,
-            String yAxisLabel, NumberFormat numberFormat) {
-        NumberAxis xAxis = new NumberAxis(xAxisLabel);
-        xAxis.setNumberFormatOverride(numberFormat);
-        NumberAxis yAxis = new NumberAxis(yAxisLabel);
-        yAxis.setNumberFormatOverride(numberFormat);
-        double minimum = DatasetUtilities.findMinimumRangeValue(dataset).doubleValue();
-        if (minimum != 0d) {
-            yAxis.setUpperBound(0.02);
-            yAxis.setLowerBound(minimum - 0.2);
-        }
-        XYPlot plot = new XYPlot(dataset, xAxis, yAxis, createBestScorePerTimeRenderer());
-        plot.setOrientation(PlotOrientation.VERTICAL);
-        return plot;
-    }
-
-    private XYItemRenderer createBestScorePerTimeRenderer() {
-        XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer(false, true);
-        renderer.setAutoPopulateSeriesShape(false);
-        renderer.setBaseSeriesVisible(true);
-        renderer.setBaseItemLabelGenerator(new XYItemLabelGenerator() {
-            @Override
-            public String generateLabel(XYDataset xyd, int i, int i1) {
-                return String.valueOf(i1 + 1);
-            }
-        });
-        renderer.setBaseItemLabelsVisible(true);
-        ItemLabelPosition position = new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER);
-        renderer.setBaseNegativeItemLabelPosition(position);
-        renderer.setBasePositiveItemLabelPosition(position);
-        return renderer;
     }
 
     private void writeAverageCalculateCountPerSecondSummaryChart() {
@@ -502,6 +457,7 @@ public class BenchmarkReport {
             seriesList.add(series);
         }
         XYPlot plot = createScalabilityPlot(seriesList,
+                "Problem scale", NumberFormat.getInstance(locale),
                 "Average calculate count per second", NumberFormat.getInstance(locale));
         JFreeChart chart = new JFreeChart("Average calculate count summary (higher is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
@@ -509,12 +465,12 @@ public class BenchmarkReport {
     }
 
     private CategoryPlot createBarChartPlot(DefaultCategoryDataset dataset,
-            String yAxisLabel, NumberFormat numberFormat) {
+            String yAxisLabel, NumberFormat yAxisNumberFormat) {
         CategoryAxis xAxis = new CategoryAxis("Data");
         xAxis.setCategoryMargin(0.40);
         NumberAxis yAxis = new NumberAxis(yAxisLabel);
-        yAxis.setNumberFormatOverride(numberFormat);
-        BarRenderer renderer = createBarChartRenderer(numberFormat);
+        yAxis.setNumberFormatOverride(yAxisNumberFormat);
+        BarRenderer renderer = createBarChartRenderer(yAxisNumberFormat);
         CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
         plot.setOrientation(PlotOrientation.VERTICAL);
         return plot;
@@ -534,18 +490,20 @@ public class BenchmarkReport {
         return renderer;
     }
 
-    private XYPlot createScalabilityPlot(List<XYSeries> seriesList, String yAxisLabel, NumberFormat numberFormat) {
-        NumberAxis xAxis = new NumberAxis("Problem scale");
-        xAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
+    private XYPlot createScalabilityPlot(List<XYSeries> seriesList,
+            String xAxisLabel, NumberFormat xAxisNumberFormat,
+            String yAxisLabel, NumberFormat yAxisNumberFormat) {
+        NumberAxis xAxis = new NumberAxis(xAxisLabel);
+        xAxis.setNumberFormatOverride(xAxisNumberFormat);
         NumberAxis yAxis = new NumberAxis(yAxisLabel);
-        yAxis.setNumberFormatOverride(numberFormat);
+        yAxis.setNumberFormatOverride(yAxisNumberFormat);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         int seriesIndex = 0;
         for (XYSeries series : seriesList) {
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
             seriesCollection.addSeries(series);
             plot.setDataset(seriesIndex, seriesCollection);
-            XYItemRenderer renderer = createScalabilityPlotRenderer(numberFormat);
+            XYItemRenderer renderer = createScalabilityPlotRenderer(yAxisNumberFormat);
             plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;
         }

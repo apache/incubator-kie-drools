@@ -387,7 +387,7 @@
                                 <div class="tabbable tabs-right">
                                     <ul class="nav nav-tabs">
                                         <#assign scoreLevelIndex = 0>
-                                        <#list benchmarkReport.bestScorePerTimeSpendChartFileList as bestScorePerTimeSpendChartFile>
+                                        <#list benchmarkReport.bestScorePerTimeSpendSummaryChartFileList as bestScorePerTimeSpendSummaryChartFile>
                                             <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
                                                 <a href="#summary_bestScorePerTimeSpend_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
                                             </li>
@@ -396,10 +396,10 @@
                                     </ul>
                                     <div class="tab-content">
                                         <#assign scoreLevelIndex = 0>
-                                        <#list benchmarkReport.bestScorePerTimeSpendChartFileList as bestScorePerTimeSpendChartFile>
+                                        <#list benchmarkReport.bestScorePerTimeSpendSummaryChartFileList as bestScorePerTimeSpendSummaryChartFile>
                                             <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScorePerTimeSpend_chart_${scoreLevelIndex}">
                                                 <div class="benchmark-chart">
-                                                    <img src="summary/${bestScorePerTimeSpendChartFile.name}"/>
+                                                    <img src="summary/${bestScorePerTimeSpendSummaryChartFile.name}"/>
                                                 </div>
                                             </div>
                                             <#assign scoreLevelIndex = scoreLevelIndex + 1>
