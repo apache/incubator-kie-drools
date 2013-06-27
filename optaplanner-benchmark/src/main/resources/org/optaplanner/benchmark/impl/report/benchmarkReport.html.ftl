@@ -325,6 +325,9 @@
                     <h2>Performance summary</h2>
                     <div class="tabbable">
                         <ul class="nav nav-pills">
+                            <li class="active">
+                                <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
+                            </li>
                             <li>
                                 <a href="#summary_timeSpend" data-toggle="tab">Time spend</a>
                             </li>
@@ -334,11 +337,48 @@
                             <li>
                                 <a href="#summary_bestScorePerTimeSpend" data-toggle="tab">Best score per time spend</a>
                             </li>
-                            <li class="active">
-                                <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
-                            </li>
                         </ul>
                         <div class="tab-content">
+                            <div class="tab-pane active" id="summary_averageCalculateCount">
+                                <h3>Average calculate count summary</h3>
+                                <div class="benchmark-chart">
+                                    <img src="summary/${benchmarkReport.averageCalculateCountSummaryChartFile.name}"/>
+                                </div>
+                                <table class="benchmark-table table table-striped table-bordered">
+                                    <tr>
+                                        <th>Solver</th>
+                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <th>${problemBenchmark.name}</th>
+                                    </#list>
+                                        <th>Average</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="problemScale">Problem scale</th>
+                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <td class="problemScale">${problemBenchmark.problemScale!""}</td>
+                                    </#list>
+                                        <td class="problemScale">${benchmarkReport.plannerBenchmark.averageProblemScale!""}</td>
+                                    </tr>
+                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                    <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
+                                        <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
+                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                            <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
+                                                <td></td>
+                                            <#else>
+                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                                <#if !singleBenchmark.success>
+                                                    <td><span class="label label-important">Failed</span></td>
+                                                <#else>
+                                                    <td>${singleBenchmark.averageCalculateCountPerSecond}/s</td>
+                                                </#if>
+                                            </#if>
+                                        </#list>
+                                        <td>${solverBenchmark.averageAverageCalculateCountPerSecond!""}/s</td>
+                                    </tr>
+                                </#list>
+                                </table>
+                            </div>
                             <div class="tab-pane" id="summary_timeSpend">
                                 <h3>Time spend summary</h3>
                                 <div class="benchmark-chart">
@@ -407,49 +447,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane active" id="summary_averageCalculateCount">
-                                <h3>Average calculate count summary</h3>
-                                <div class="benchmark-chart">
-                                    <img src="summary/${benchmarkReport.averageCalculateCountSummaryChartFile.name}"/>
-                                </div>
-                                <table class="benchmark-table table table-striped table-bordered">
-                                    <tr>
-                                        <th>Solver</th>
-                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                        <th>${problemBenchmark.name}</th>
-                                    </#list>
-                                        <th>Average</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="problemScale">Problem scale</th>
-                                    <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                        <td class="problemScale">${problemBenchmark.problemScale!""}</td>
-                                    </#list>
-                                        <td class="problemScale">${benchmarkReport.plannerBenchmark.averageProblemScale!""}</td>
-                                    </tr>
-                                <#list benchmarkReport.plannerBenchmark.solverBenchmarkList as solverBenchmark>
-                                    <tr<#if solverBenchmark.favorite> class="favoriteSolverBenchmark"</#if>>
-                                        <th>${solverBenchmark.name}&nbsp;<@addSolverRankingBadge solverBenchmark=solverBenchmark/></th>
-                                        <#list benchmarkReport.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                                            <#if !solverBenchmark.findSingleBenchmark(problemBenchmark)??>
-                                                <td></td>
-                                            <#else>
-                                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                                                <#if !singleBenchmark.success>
-                                                    <td><span class="label label-important">Failed</span></td>
-                                                <#else>
-                                                    <td>${singleBenchmark.averageCalculateCountPerSecond}/s</td>
-                                                </#if>
-                                            </#if>
-                                        </#list>
-                                        <td>${solverBenchmark.averageAverageCalculateCountPerSecond!""}/s</td>
-                                    </tr>
-                                </#list>
-                                </table>
-                            </div>
                         </div>
                         <!-- HACK Duplication to show the navigation tabs in the same viewport as the tables -->
                         <ul class="nav nav-pills">
+                            <li class="active">
+                                <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
+                            </li>
                             <li>
                                 <a href="#summary_timeSpend" data-toggle="tab">Time spend</a>
                             </li>
@@ -458,9 +461,6 @@
                             </li>
                             <li>
                                 <a href="#summary_bestScorePerTimeSpend" data-toggle="tab">Best score per time spend</a>
-                            </li>
-                            <li class="active">
-                                <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
                             </li>
                         </ul>
                     </div>

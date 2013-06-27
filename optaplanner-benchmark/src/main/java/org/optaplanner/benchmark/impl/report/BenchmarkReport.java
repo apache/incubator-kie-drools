@@ -83,10 +83,10 @@ public class BenchmarkReport {
     protected List<File> bestScoreScalabilitySummaryChartFileList = null;
     protected List<File> winningScoreDifferenceSummaryChartFileList = null;
     protected List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
+    protected File averageCalculateCountSummaryChartFile = null;
     protected File timeSpendSummaryChartFile = null;
     protected File timeSpendScalabilitySummaryChartFile = null;
     protected List<File> bestScorePerTimeSpendSummaryChartFileList = null;
-    protected File averageCalculateCountSummaryChartFile = null;
     protected Integer defaultShownScoreLevelIndex = null;
 
     protected List<String> warningList = null;
@@ -131,6 +131,10 @@ public class BenchmarkReport {
         return worstScoreDifferencePercentageSummaryChartFileList;
     }
 
+    public File getAverageCalculateCountSummaryChartFile() {
+        return averageCalculateCountSummaryChartFile;
+    }
+
     public File getTimeSpendSummaryChartFile() {
         return timeSpendSummaryChartFile;
     }
@@ -141,10 +145,6 @@ public class BenchmarkReport {
 
     public List<File> getBestScorePerTimeSpendSummaryChartFileList() {
         return bestScorePerTimeSpendSummaryChartFileList;
-    }
-
-    public File getAverageCalculateCountSummaryChartFile() {
-        return averageCalculateCountSummaryChartFile;
     }
 
     public Integer getDefaultShownScoreLevelIndex() {
@@ -196,10 +196,10 @@ public class BenchmarkReport {
         writeBestScoreScalabilitySummaryChart();
         writeWinningScoreDifferenceSummaryChart();
         writeWorstScoreDifferencePercentageSummaryChart();
+        writeAverageCalculateCountPerSecondSummaryChart();
         writeTimeSpendSummaryChart();
         writeTimeSpendScalabilitySummaryChart();
         writeBestScorePerTimeSpendSummaryChart();
-        writeAverageCalculateCountPerSecondSummaryChart();
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
             if (problemBenchmark.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
@@ -361,6 +361,28 @@ public class BenchmarkReport {
         }
     }
 
+    private void writeAverageCalculateCountPerSecondSummaryChart() {
+        List<XYSeries> seriesList = new ArrayList<XYSeries>(plannerBenchmark.getSolverBenchmarkList().size());
+        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
+            String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
+            XYSeries series = new XYSeries(solverLabel);
+            for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                if (singleBenchmark.isSuccess()) {
+                    long problemScale = singleBenchmark.getProblemBenchmark().getProblemScale();
+                    long averageCalculateCountPerSecond = singleBenchmark.getAverageCalculateCountPerSecond();
+                    series.add((Long) problemScale, (Long) averageCalculateCountPerSecond);
+                }
+            }
+            seriesList.add(series);
+        }
+        XYPlot plot = createScalabilityPlot(seriesList,
+                "Problem scale", NumberFormat.getInstance(locale),
+                "Average calculate count per second", NumberFormat.getInstance(locale));
+        JFreeChart chart = new JFreeChart("Average calculate count summary (higher is better)",
+                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+        averageCalculateCountSummaryChartFile = writeChartToImageFile(chart, "averageCalculateCountSummary");
+    }
+
     private void writeTimeSpendSummaryChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
@@ -442,27 +464,9 @@ public class BenchmarkReport {
         }
     }
 
-    private void writeAverageCalculateCountPerSecondSummaryChart() {
-        List<XYSeries> seriesList = new ArrayList<XYSeries>(plannerBenchmark.getSolverBenchmarkList().size());
-        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
-            String solverLabel = solverBenchmark.getNameWithFavoriteSuffix();
-            XYSeries series = new XYSeries(solverLabel);
-            for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
-                if (singleBenchmark.isSuccess()) {
-                    long problemScale = singleBenchmark.getProblemBenchmark().getProblemScale();
-                    long averageCalculateCountPerSecond = singleBenchmark.getAverageCalculateCountPerSecond();
-                    series.add((Long) problemScale, (Long) averageCalculateCountPerSecond);
-                }
-            }
-            seriesList.add(series);
-        }
-        XYPlot plot = createScalabilityPlot(seriesList,
-                "Problem scale", NumberFormat.getInstance(locale),
-                "Average calculate count per second", NumberFormat.getInstance(locale));
-        JFreeChart chart = new JFreeChart("Average calculate count summary (higher is better)",
-                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        averageCalculateCountSummaryChartFile = writeChartToImageFile(chart, "averageCalculateCountSummary");
-    }
+    // ************************************************************************
+    // Chart helper methods
+    // ************************************************************************
 
     private CategoryPlot createBarChartPlot(DefaultCategoryDataset dataset,
             String yAxisLabel, NumberFormat yAxisNumberFormat) {
