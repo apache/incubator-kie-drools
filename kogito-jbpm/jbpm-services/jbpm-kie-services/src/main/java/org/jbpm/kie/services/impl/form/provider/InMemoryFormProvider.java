@@ -52,7 +52,7 @@ public class InMemoryFormProvider extends FreemakerFormProvider {
 
     @Override
     public int getPriority() {
-        return 2;
+        return 3;
     }
 
 }
