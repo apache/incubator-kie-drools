@@ -44,6 +44,8 @@ public interface TaskData extends Externalizable {
     long getProcessInstanceId();
     
     String getProcessId();
+    
+    String getDeploymentId();
 
 	int getProcessSessionId();
 

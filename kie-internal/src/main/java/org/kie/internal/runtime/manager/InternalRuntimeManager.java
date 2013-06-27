@@ -24,4 +24,5 @@ public interface InternalRuntimeManager extends RuntimeManager {
 
     void validate(KieSession ksession, Context<?> context) throws IllegalStateException;
     
+    RuntimeEnvironment getEnvironment();
 }
