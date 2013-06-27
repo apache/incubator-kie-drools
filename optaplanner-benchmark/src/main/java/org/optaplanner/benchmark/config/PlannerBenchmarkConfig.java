@@ -223,7 +223,7 @@ public class PlannerBenchmarkConfig {
             solverBenchmarkList.add(solverBenchmark);
         }
         plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
-        boolean benchmarkHistoryReportEnabled_ = benchmarkHistoryReportEnabled == null ? true
+        boolean benchmarkHistoryReportEnabled_ = benchmarkHistoryReportEnabled == null ? false // TODO enable by default
                 : benchmarkHistoryReportEnabled;
         plannerBenchmark.setBenchmarkHistoryReportEnabled(benchmarkHistoryReportEnabled_);
         return plannerBenchmark;
