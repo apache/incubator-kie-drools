@@ -80,12 +80,12 @@ public class BenchmarkReport {
     protected File htmlOverviewFile = null;
     protected File summaryDirectory = null;
     protected List<File> bestScoreSummaryChartFileList = null;
-    protected List<File> bestScorePerTimeChartFileList = null;
     protected List<File> bestScoreScalabilitySummaryChartFileList = null;
     protected List<File> winningScoreDifferenceSummaryChartFileList = null;
     protected List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
     protected File timeSpendSummaryChartFile = null;
     protected File timeSpendScalabilitySummaryChartFile = null;
+    protected List<File> bestScorePerTimeSpendChartFileList = null;
     protected File averageCalculateCountSummaryChartFile = null;
     protected Integer defaultShownScoreLevelIndex = null;
 
@@ -119,10 +119,6 @@ public class BenchmarkReport {
         return bestScoreSummaryChartFileList;
     }
 
-    public List<File> getBestScorePerTimeChartFileList() {
-		return bestScorePerTimeChartFileList;
-	}
-
     public List<File> getBestScoreScalabilitySummaryChartFileList() {
         return bestScoreScalabilitySummaryChartFileList;
     }
@@ -141,6 +137,10 @@ public class BenchmarkReport {
 
     public File getTimeSpendScalabilitySummaryChartFile() {
         return timeSpendScalabilitySummaryChartFile;
+    }
+
+    public List<File> getBestScorePerTimeSpendChartFileList() {
+        return bestScorePerTimeSpendChartFileList;
     }
 
     public File getAverageCalculateCountSummaryChartFile() {
@@ -198,7 +198,7 @@ public class BenchmarkReport {
         writeWorstScoreDifferencePercentageSummaryChart();
         writeTimeSpendSummaryChart();
         writeTimeSpendScalabilitySummaryChart();
-        writeBestScorePerTimeSummaryChart();
+        writeBestScorePerTimeSpendSummaryChart();
         writeAverageCalculateCountPerSecondSummaryChart();
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
             if (problemBenchmark.hasAnySuccess()) {
@@ -399,7 +399,7 @@ public class BenchmarkReport {
         timeSpendScalabilitySummaryChartFile = writeChartToImageFile(chart, "timeSpendScalabilitySummary");
     }
 
-    private void writeBestScorePerTimeSummaryChart() {
+    private void writeBestScorePerTimeSpendSummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
         List<XYSeriesCollection> datasetList = new ArrayList<XYSeriesCollection>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
@@ -425,13 +425,13 @@ public class BenchmarkReport {
                 }
             }
         }
-        bestScorePerTimeChartFileList = new ArrayList<File>(datasetList.size());
+        bestScorePerTimeSpendChartFileList = new ArrayList<File>(datasetList.size());
         int scoreLevelIndex = 0;
         for (XYSeriesCollection dataset : datasetList) {
             XYPlot plot = createBestScorePerTimePlot(dataset, "Time spent", "Best score (relative to average)", NumberFormat.getInstance(locale));
             JFreeChart chart = new JFreeChart("Best score per time level " + scoreLevelIndex + " (lower is better)", plot);
             addBestScorePerTimeLegend(chart);
-            bestScorePerTimeChartFileList.add(writeChartToImageFile(chart, "bestScorePerTimeLevel" + scoreLevelIndex));
+            bestScorePerTimeSpendChartFileList.add(writeChartToImageFile(chart, "bestScorePerTimeLevel" + scoreLevelIndex));
             scoreLevelIndex++;
         }
     }

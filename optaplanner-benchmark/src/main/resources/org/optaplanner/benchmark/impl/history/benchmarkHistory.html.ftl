@@ -137,7 +137,7 @@
                                 <a href="#summary_timeSpendScalability" data-toggle="tab">Time spend scalability</a>
                             </li>
                             <li>
-                                <a href="#summary_bestScorePerTime" data-toggle="tab">Best score per time</a>
+                                <a href="#summary_bestScorePerTimeSpend" data-toggle="tab">Best score per time spend</a>
                             </li>
                             <li class="active">
                                 <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
@@ -152,8 +152,8 @@
                                 <h3>Time spend scalability summary</h3>
                                 <p>TODO</p><#-- TODO -->
                             </div>
-                            <div class="tab-pane" id="summary_bestScorePerTime">
-                                <h3>Best score per time summary</h3>
+                            <div class="tab-pane" id="summary_bestScorePerTimeSpend">
+                                <h3>Best score per time spend summary</h3>
                                 <p>TODO</p><#-- TODO -->
                             </div>
                             <div class="tab-pane active" id="summary_averageCalculateCount">
@@ -207,7 +207,7 @@
                                 <a href="#summary_timeSpendScalability" data-toggle="tab">Time spend scalability</a>
                             </li>
                             <li>
-                                <a href="#summary_bestScorePerTime" data-toggle="tab">Best score per time</a>
+                                <a href="#summary_bestScorePerTimeSpend" data-toggle="tab">Best score per time spend</a>
                             </li>
                             <li class="active">
                                 <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>

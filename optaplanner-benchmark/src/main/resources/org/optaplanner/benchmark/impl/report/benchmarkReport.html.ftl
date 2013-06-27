@@ -332,7 +332,7 @@
                                 <a href="#summary_timeSpendScalability" data-toggle="tab">Time spend scalability</a>
                             </li>
                             <li>
-                                <a href="#summary_bestScorePerTime" data-toggle="tab">Best score per time</a>
+                                <a href="#summary_bestScorePerTimeSpend" data-toggle="tab">Best score per time spend</a>
                             </li>
                             <li class="active">
                                 <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
@@ -382,28 +382,28 @@
                                     <img src="summary/${benchmarkReport.timeSpendScalabilitySummaryChartFile.name}"/>
                                 </div>
                             </div>
-                            <div class="tab-pane" id="summary_bestScorePerTime">
-                                <h3>Best score per time</h3>
+                            <div class="tab-pane" id="summary_bestScorePerTimeSpend">
+                                <h3>Best score per time spend summary</h3>
                                 <div class="tabbable tabs-right">
                                     <ul class="nav nav-tabs">
-                                    <#assign scoreLevelIndex = 0>
-                                    <#list benchmarkReport.bestScorePerTimeChartFileList as bestScorePerTimeChartFile>
-                                        <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                            <a href="#summary_bestScorePerTime_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
-                                        </li>
-                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                    </#list>
+                                        <#assign scoreLevelIndex = 0>
+                                        <#list benchmarkReport.bestScorePerTimeSpendChartFileList as bestScorePerTimeSpendChartFile>
+                                            <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
+                                                <a href="#summary_bestScorePerTimeSpend_chart_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
+                                            </li>
+                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                        </#list>
                                     </ul>
                                     <div class="tab-content">
-                                    <#assign scoreLevelIndex = 0>
-                                    <#list benchmarkReport.bestScorePerTimeChartFileList as bestScorePerTimeChartFile>
-                                        <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScorePerTime_chart_${scoreLevelIndex}">
-                                            <div class="benchmark-chart">
-                                                <img src="summary/${bestScorePerTimeChartFile.name}"/>
+                                        <#assign scoreLevelIndex = 0>
+                                        <#list benchmarkReport.bestScorePerTimeSpendChartFileList as bestScorePerTimeSpendChartFile>
+                                            <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="summary_bestScorePerTimeSpend_chart_${scoreLevelIndex}">
+                                                <div class="benchmark-chart">
+                                                    <img src="summary/${bestScorePerTimeSpendChartFile.name}"/>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                    </#list>
+                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                        </#list>
                                     </div>
                                 </div>
                             </div>
@@ -457,7 +457,7 @@
                                 <a href="#summary_timeSpendScalability" data-toggle="tab">Time spend scalability</a>
                             </li>
                             <li>
-                                <a href="#summary_bestScorePerTime" data-toggle="tab">Best score per time</a>
+                                <a href="#summary_bestScorePerTimeSpend" data-toggle="tab">Best score per time spend</a>
                             </li>
                             <li class="active">
                                 <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
