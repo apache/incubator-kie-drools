@@ -39,6 +39,7 @@ import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.history.BenchmarkHistoryReport;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private SingleBenchmark firstFailureSingleBenchmark;
 
     private Long averageProblemScale = null;
+    private Score averageScore = null;
     private SolverBenchmark favoriteSolverBenchmark;
     private long benchmarkTimeMillisSpend;
 
@@ -170,6 +172,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     public Long getAverageProblemScale() {
         return averageProblemScale;
+    }
+
+    public Score getAverageScore() {
+        return averageScore;
     }
 
     public long getBenchmarkTimeMillisSpend() {
@@ -341,6 +347,16 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             }
         }
         averageProblemScale = problemScaleCount == 0 ? null : totalProblemScale / (long) problemScaleCount;
+        Score totalScore = null;
+        int solverBenchmarkCount = 0;
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            Score score = solverBenchmark.getAverageScore();
+            if (score != null) {
+                totalScore = (totalScore == null) ? score : totalScore.add(score);
+                solverBenchmarkCount++;
+            }
+        }
+        averageScore = totalScore.divide(solverBenchmarkCount);
     }
 
     private void determineSolverBenchmarkRanking() {
