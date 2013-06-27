@@ -139,6 +139,7 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="summary_bestScore">
                                 <h3>Best score summary</h3>
+                                <p>Useful for visualizing the best solver configuration.</p>
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.bestScoreSummaryChartFileList idPrefix="summary_bestScore" />
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
@@ -174,10 +175,12 @@
                             </div>
                             <div class="tab-pane" id="summary_bestScoreScalability">
                                 <h3>Best score scalability summary</h3>
+                                <p>Useful for visualizing the scalability of each solver configuration.</p>
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.bestScoreScalabilitySummaryChartFileList idPrefix="summary_bestScoreScalability" />
                             </div>
                             <div class="tab-pane" id="summary_winningScoreDifference">
                                 <h3>Winning score difference summary</h3>
+                                <p>Useful for zooming in on the results of the best score summary.</p>
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.winningScoreDifferenceSummaryChartFileList idPrefix="summary_winningScoreDifference" />
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
@@ -209,6 +212,7 @@
                             </div>
                             <div class="tab-pane" id="summary_worstScoreDifferencePercentage">
                                 <h3>Worst score difference percentage summary (ROI)</h3>
+                                <p>Useful for visualizing the return on investment (ROI) to decision makers.</p>
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.worstScoreDifferencePercentageSummaryChartFileList idPrefix="summary_worstScoreDifferencePercentage" />
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
@@ -281,6 +285,11 @@
                         <div class="tab-content">
                             <div class="tab-pane active" id="summary_averageCalculateCount">
                                 <h3>Average calculate count summary</h3>
+                                <p>
+                                    Useful for comparing different score calculators and/or score rule implementations
+                                    (presuming that the solver configurations do not differ otherwise).
+                                    Also useful to measure the scalability cost of an extra constraint.
+                                </p>
                                 <div class="benchmark-chart">
                                     <img src="summary/${benchmarkReport.averageCalculateCountSummaryChartFile.name}"/>
                                 </div>
@@ -321,6 +330,7 @@
                             </div>
                             <div class="tab-pane" id="summary_timeSpend">
                                 <h3>Time spend summary</h3>
+                                <p>Useful for visualizing the performance of construction heuristics (presuming that no other solver phases are configured).</p>
                                 <div class="benchmark-chart">
                                     <img src="summary/${benchmarkReport.timeSpendSummaryChartFile.name}"/>
                                 </div>
@@ -358,12 +368,14 @@
                             </div>
                             <div class="tab-pane" id="summary_timeSpendScalability">
                                 <h3>Time spend scalability summary</h3>
+                                <p>Useful for extrapolating the scalability of construction heuristics (presuming that no other solver phases are configured).</p>
                                 <div class="benchmark-chart">
                                     <img src="summary/${benchmarkReport.timeSpendScalabilitySummaryChartFile.name}"/>
                                 </div>
                             </div>
                             <div class="tab-pane" id="summary_bestScorePerTimeSpend">
                                 <h3>Best score per time spend summary</h3>
+                                <p>Useful for visualizing trade-off between the best score versus the time spend for construction heuristics (presuming that no other solver phases are configured).</p>
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.bestScorePerTimeSpendSummaryChartFileList idPrefix="summary_bestScorePerTimeSpend" />
                             </div>
                         </div>

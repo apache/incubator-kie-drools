@@ -310,6 +310,8 @@
 
         <para>Shows the best score per <literal>inputSolutionFile</literal> for each solver configuration.</para>
 
+        <para>Useful for visualizing the best solver configuration.</para>
+
         <figure>
           <title>Best score summary statistic</title>
 
@@ -322,9 +324,11 @@
       </section>
 
       <section>
-        <title>Best score scalability summary (graph and table)</title>
+        <title>Best score scalability summary (graph)</title>
 
         <para>Shows the best score per problem scale for each solver configuration.</para>
+
+        <para>Useful for visualizing the scalability of each solver configuration.</para>
       </section>
 
       <section>
@@ -333,6 +337,8 @@
         <para>Shows the winning score difference score per <literal>inputSolutionFile</literal> for each solver
         configuration. The winning score difference is the score difference with the score of the winning solver
         configuration for that particular <literal>inputSolutionFile</literal>.</para>
+
+        <para>Useful for zooming in on the results of the best score summary.</para>
       </section>
 
       <section>
@@ -341,20 +347,8 @@
         <para>Shows the return on investment (ROI) per <literal>inputSolutionFile</literal> for each solver
         configuration if you'd upgrade from the worst solver configuration for that particular
         <literal>inputSolutionFile</literal>.</para>
-      </section>
 
-      <section>
-        <title>Time spend summary (graph and table)</title>
-
-        <para>Shows the time spend per <literal>inputSolutionFile</literal> for each solver configuration. This is not
-        useful if it's benchmarking against a fixed time limit.</para>
-      </section>
-
-      <section>
-        <title>Time spend scalability summary (graph and table)</title>
-
-        <para>Shows the time spend per problem scale for each solver configuration. This is not useful if it's
-        benchmarking against a fixed time limit.</para>
+        <para>Useful for visualizing the return on investment (ROI) to decision makers.</para>
       </section>
 
       <section>
@@ -363,8 +357,39 @@
         <para>Shows the score calculation speed: the average calculation count per second per problem scale for each
         solver configuration.</para>
 
-        <para>This is very useful to compare the performance and scalability of different score calculator and/or score
-        rule implementations.</para>
+        <para>Useful for comparing different score calculators and/or score rule implementations (presuming that the
+        solver configurations do not differ otherwise). Also useful to measure the scalability cost of an extra
+        constraint.</para>
+      </section>
+
+      <section>
+        <title>Time spend summary (graph and table)</title>
+
+        <para>Shows the time spend per <literal>inputSolutionFile</literal> for each solver configuration. This is
+        pointless if it's benchmarking against a fixed time limit.</para>
+
+        <para>Useful for visualizing the performance of construction heuristics (presuming that no other solver phases
+        are configured).</para>
+      </section>
+
+      <section>
+        <title>Time spend scalability summary (graph)</title>
+
+        <para>Shows the time spend per problem scale for each solver configuration. This is pointless if it's
+        benchmarking against a fixed time limit.</para>
+
+        <para>Useful for extrapolating the scalability of construction heuristics (presuming that no other solver phases
+        are configured).</para>
+      </section>
+
+      <section>
+        <title>Best score per time spend summary (graph)</title>
+
+        <para>Shows the best score per time spend for each solver configuration. This is pointless if it's benchmarking
+        against a fixed time limit.</para>
+
+        <para>Useful for visualizing trade-off between the best score versus the time spend for construction heuristics
+        (presuming that no other solver phases are configured).</para>
       </section>
     </section>
 
