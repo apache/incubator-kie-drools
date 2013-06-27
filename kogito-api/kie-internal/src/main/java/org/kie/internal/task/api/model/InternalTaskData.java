@@ -74,6 +74,8 @@ public interface InternalTaskData extends TaskData {
     
 	void setProcessId(String processId);
 	
+	void setDeploymentId(String deploymentId);
+	
 	void setProcessSessionId(int processSessionId);
 
 	/**

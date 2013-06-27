@@ -36,5 +36,7 @@ public interface RuntimeEnvironment {
     
     UserGroupCallback getUserGroupCallback();
     
+    ClassLoader getClassLoader();
+    
     void close();
 }

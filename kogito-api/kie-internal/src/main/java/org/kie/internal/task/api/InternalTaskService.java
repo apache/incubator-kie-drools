@@ -203,4 +203,10 @@ public interface InternalTaskService extends TaskService, CommandExecutor {
     Comment getCommentById(long commentId);
     
     Map<String, Object> getTaskContent(long taskId);
+    
+    void addMarshallerContext(String ownerId, ContentMarshallerContext context);
+    
+    void removeMarshallerContext(String ownerId);
+    
+    ContentMarshallerContext getMarshallerContext(Task task);
 }

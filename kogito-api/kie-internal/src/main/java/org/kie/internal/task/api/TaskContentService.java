@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Task;
 
 /**
  * The Task Content Service is intended to handle
@@ -43,4 +44,10 @@ public interface TaskContentService {
     List<Content> getAllContentByTaskId(long taskId);
 
     Content getContentById(long contentId);
+    
+    void addMarshallerContext(String ownerId, ContentMarshallerContext context);
+    
+    void removeMarshallerContext(String ownerId);
+    
+    ContentMarshallerContext getMarshallerContext(Task task);
 }
