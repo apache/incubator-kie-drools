@@ -29,6 +29,7 @@ import org.drools.compiler.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.rule.Package;
 import org.drools.core.util.ClassUtils;
@@ -200,6 +201,19 @@ public class PackageBuilderConfiguration
         this.chainedProperties = new ChainedProperties( "packagebuilder.conf",
                                                         getClassLoader(),
                                                         true );
+
+        if (chainedProperties.getProperty("drools.dialect.java", null) == null) {
+            // if it couldn't find a conf for java dialect using the project class loader
+            // it means it could not load the conf file at all (very likely it is running in
+            // an osgi environement) so try with the class loader of this class
+            this.chainedProperties = new ChainedProperties( "packagebuilder.conf",
+                                                            getClass().getClassLoader(),
+                                                            true );
+
+            if (this.classLoader instanceof ProjectClassLoader) {
+                ((ProjectClassLoader) classLoader).setDroolsClassLoader(getClass().getClassLoader());
+            }
+        }
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );

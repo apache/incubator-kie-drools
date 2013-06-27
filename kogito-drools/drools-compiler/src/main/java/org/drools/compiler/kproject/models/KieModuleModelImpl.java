@@ -144,6 +144,7 @@ public class KieModuleModelImpl implements KieModuleModel {
             xStream.alias("listener", ListenerModelImpl.class);
             xStream.alias("qualifier", QualifierModelImpl.class);
             xStream.alias("workItemHandler", WorkItemHandlerModelImpl.class);
+            xStream.setClassLoader(KieModuleModelImpl.class.getClassLoader());
         }
 
         public String toXML(KieModuleModel kieProject) {
