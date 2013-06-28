@@ -82,8 +82,11 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
             long contentId = task.getTaskData().getOutputContentId();
             if (contentId != -1) {
                 Content content = runtime.getTaskService().getContentById(contentId);
-                Object result = ContentMarshallerHelper.unmarshall(content.getContent(), session.getEnvironment(), 
-                        ((InternalRuntimeManager)manager).getEnvironment().getClassLoader());
+                ClassLoader cl = null;
+                if (manager instanceof InternalRuntimeManager) {
+                    cl = ((InternalRuntimeManager)manager).getEnvironment().getClassLoader();
+                }
+                Object result = ContentMarshallerHelper.unmarshall(content.getContent(), session.getEnvironment(), cl);
                 results.put("Result", result);
                 if (result instanceof Map) {
                     Map<?, ?> map = (Map<?, ?>) result;

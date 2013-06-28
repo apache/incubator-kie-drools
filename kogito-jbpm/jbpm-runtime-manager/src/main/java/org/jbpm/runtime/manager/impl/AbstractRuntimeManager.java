@@ -107,6 +107,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     
     protected void attachManager(RuntimeEngine runtime) {
         runtime.getKieSession().getEnvironment().set("RuntimeManager", this);
+        runtime.getKieSession().getEnvironment().set("deploymentId", this.getIdentifier());
     }
 
     @Override
