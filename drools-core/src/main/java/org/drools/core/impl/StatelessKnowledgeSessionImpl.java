@@ -18,6 +18,7 @@ package org.drools.core.impl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -41,28 +42,29 @@ import org.drools.core.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.kie.internal.agent.KnowledgeAgent;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.agent.KnowledgeAgent;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.api.runtime.rule.AgendaFilter;
 
 public class StatelessKnowledgeSessionImpl
-    implements
-    StatelessKnowledgeSession, StatelessKieSession {
+        implements
+        StatelessKnowledgeSession,
+        StatelessKieSession {
 
     private InternalRuleBase                                                  ruleBase;
     private KnowledgeAgent                                                    kagent;
-    private AgendaFilter                                                      agendaFilter;
     private MapGlobalResolver                                                 sessionGlobals            = new MapGlobalResolver();
+    private Map<String, Channel>                                              channels                  = new HashMap<String, Channel>();
 
     /** The event mapping */
     public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners;
@@ -74,9 +76,9 @@ public class StatelessKnowledgeSessionImpl
     public ProcessEventSupport                                                processEventSupport       = new ProcessEventSupport();
     private boolean                                                           initialized;
 
-    private KieSessionConfiguration                                     conf;
+    private KieSessionConfiguration                                           conf;
     private Environment                                                       environment;
-    
+
     public StatelessKnowledgeSessionImpl() {
     }
 
@@ -96,7 +98,7 @@ public class StatelessKnowledgeSessionImpl
         }
         return this.ruleBase;
     }
-    
+
     public KnowledgeAgent getKnowledgeAgent() {
         return this.kagent;
     }
@@ -119,34 +121,38 @@ public class StatelessKnowledgeSessionImpl
                                                                                       new KnowledgeBaseImpl( this.ruleBase ) );
 
             ((Globals) wm.getGlobalResolver()).setDelegate( this.sessionGlobals );
-            if (!initialized) {
-            	// copy over the default generated listeners that are used for internal stuff once
-            	for (org.drools.core.event.AgendaEventListener listener: wm.getAgendaEventSupport().getEventListeners()) {
-            		this.agendaEventSupport.addEventListener(listener);
-            	}
-                for (org.drools.core.event.WorkingMemoryEventListener listener: wm.getWorkingMemoryEventSupport().getEventListeners()) {
-                	this.workingMemoryEventSupport.addEventListener(listener);
+            if ( !initialized ) {
+                // copy over the default generated listeners that are used for internal stuff once
+                for ( org.drools.core.event.AgendaEventListener listener : wm.getAgendaEventSupport().getEventListeners() ) {
+                    this.agendaEventSupport.addEventListener( listener );
+                }
+                for ( org.drools.core.event.WorkingMemoryEventListener listener : wm.getWorkingMemoryEventSupport().getEventListeners() ) {
+                    this.workingMemoryEventSupport.addEventListener( listener );
                 }
                 InternalProcessRuntime processRuntime = wm.getProcessRuntime();
-                if (processRuntime != null) {
-                	for (ProcessEventListener listener: processRuntime.getProcessEventListeners()) {
-                		this.processEventSupport.addEventListener(listener);
-                	}
+                if ( processRuntime != null ) {
+                    for ( ProcessEventListener listener : processRuntime.getProcessEventListeners() ) {
+                        this.processEventSupport.addEventListener( listener );
+                    }
                 }
                 initialized = true;
             }
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
             InternalProcessRuntime processRuntime = wm.getProcessRuntime();
-            if (processRuntime != null) {
+            if ( processRuntime != null ) {
                 processRuntime.setProcessEventSupport( this.processEventSupport );
             }
+            
+            for( Map.Entry<String, Channel> entry : this.channels.entrySet() ) {
+                wm.registerChannel( entry.getKey(), entry.getValue() );
+            }
 
-            final InternalFactHandle handle =  wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
-                                                                                        wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
-                                                                                                                                                   InitialFactImpl.getInstance() ),
-                                                                                        wm,
-                                                                                        wm);
+            final InternalFactHandle handle = wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
+                                                                                       wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
+                                                                                                                                                  InitialFactImpl.getInstance() ),
+                                                                                       wm,
+                                                                                       wm );
 
             wm.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
                                                                             false,
@@ -216,7 +222,7 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public void addEventListener(ProcessEventListener listener) {
-        this.processEventSupport.addEventListener(listener);
+        this.processEventSupport.addEventListener( listener );
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
@@ -224,7 +230,7 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-        this.processEventSupport.removeEventListener(listener);
+        this.processEventSupport.removeEventListener( listener );
     }
 
     public void setGlobal(String identifier,
@@ -236,16 +242,32 @@ public class StatelessKnowledgeSessionImpl
     public Globals getGlobals() {
         return this.sessionGlobals;
     }
+    
+    @Override
+    public void registerChannel(String name,
+                                Channel channel) {
+        this.channels.put( name, channel );
+    }
+    
+    @Override
+    public void unregisterChannel(String name) {
+        this.channels.remove( name );
+    }
+    
+    @Override
+    public Map<String, Channel> getChannels() {
+        return Collections.unmodifiableMap( this.channels );
+    }
 
     public <T> T execute(Command<T> command) {
         StatefulKnowledgeSession ksession = newWorkingMemory();
 
         FixedKnowledgeCommandContext context = new FixedKnowledgeCommandContext( new ContextImpl( "ksession",
-                                                                                        null ),
-                                                                       null,
-                                                                       null,
-                                                                       ksession,
-                                                                       null );
+                                                                                                  null ),
+                                                                                 null,
+                                                                                 null,
+                                                                                 ksession,
+                                                                                 null );
 
         try {
             ((StatefulKnowledgeSessionImpl) ksession).session.startBatchExecution( new ExecutionResultImpl() );
@@ -264,9 +286,9 @@ public class StatelessKnowledgeSessionImpl
                 }
             }
             if ( autoFireAllRules ) {
-                ksession.fireAllRules( );
+                ksession.fireAllRules();
             }
-            if ( command instanceof BatchExecutionCommandImpl) {
+            if ( command instanceof BatchExecutionCommandImpl ) {
                 ExecutionResults result = ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
                 return (T) result;
             } else {
@@ -282,7 +304,7 @@ public class StatelessKnowledgeSessionImpl
         StatefulKnowledgeSession ksession = newWorkingMemory();
         try {
             ksession.insert( object );
-            ksession.fireAllRules( );
+            ksession.fireAllRules();
         } finally {
             ksession.dispose();
         }
@@ -294,12 +316,12 @@ public class StatelessKnowledgeSessionImpl
             for ( Object object : objects ) {
                 ksession.insert( object );
             }
-            ksession.fireAllRules( );
+            ksession.fireAllRules();
         } finally {
             ksession.dispose();
         }
     }
-    
+
     public Environment getEnvironment() {
         return environment;
     }
