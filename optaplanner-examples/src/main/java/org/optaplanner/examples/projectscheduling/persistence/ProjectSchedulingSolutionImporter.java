@@ -21,11 +21,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.impl.solution.Solution;
@@ -184,6 +188,7 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                 readPrecedenceRelations();
                 readRequestDurations();
                 readResourceAvailabilities();
+                detectPointlessSuccessor();
                 return null; // Hack so the code can reuse read methods from TxtInputBuilder
             }
 
@@ -376,6 +381,29 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                     }
                 }
                 readRegexConstantLine("\\*+");
+            }
+
+            private void detectPointlessSuccessor() {
+                for (Job baseJob : project.getJobList()) {
+                    Set<Job> baseSuccessorJobSet = new HashSet<Job>(baseJob.getSuccessorJobList());
+                    Set<Job> checkedSuccessorSet = new HashSet<Job>(project.getJobList().size());
+                    Queue<Job> uncheckedSuccessorQueue = new ArrayDeque<Job>(project.getJobList().size());
+                    for (Job baseSuccessorJob : baseJob.getSuccessorJobList()) {
+                        uncheckedSuccessorQueue.addAll(baseSuccessorJob.getSuccessorJobList());
+                    }
+                    while (!uncheckedSuccessorQueue.isEmpty()) {
+                        Job uncheckedJob = uncheckedSuccessorQueue.remove();
+                        if (checkedSuccessorSet.contains(uncheckedJob)) {
+                            continue;
+                        }
+                        if (baseSuccessorJobSet.contains(uncheckedJob)) {
+                            throw new IllegalStateException("The baseJob (" + baseJob
+                                    + ") has a direct successor (" + uncheckedJob
+                                    + ") that is also an indirect successor. That's pointless.");
+                        }
+                        uncheckedSuccessorQueue.addAll(uncheckedJob.getSuccessorJobList());
+                    }
+                }
             }
 
         }
