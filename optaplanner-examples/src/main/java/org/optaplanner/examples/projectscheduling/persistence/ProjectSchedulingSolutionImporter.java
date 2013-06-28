@@ -84,6 +84,7 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
             for (Map.Entry<Project, File> entry : projectFileMap.entrySet()) {
                 readProjectFile(entry.getKey(), entry.getValue());
             }
+            removePointlessExecutionModes();
             createAllocationList();
 //            BigInteger possibleSolutionSize = BigInteger.valueOf(projectsSchedule.getBedList().size()).pow(
 //                    projectsSchedule.getAdmissionPartList().size());
@@ -409,6 +410,11 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                 }
             }
 
+        }
+
+        private void removePointlessExecutionModes() {
+            // TODO iterate through projectsSchedule.getJobList(), find pointless ExecutionModes
+            // and delete them both from the job and from projectsSchedule.getExecutionModeList()
         }
 
         private void createAllocationList() {
