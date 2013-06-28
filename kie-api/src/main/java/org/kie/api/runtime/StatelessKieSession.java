@@ -1,5 +1,7 @@
 package org.kie.api.runtime;
 
+import java.util.Map;
+
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.runtime.process.StatelessProcessSession;
 import org.kie.api.runtime.rule.StatelessRuleSession;
@@ -103,4 +105,30 @@ public interface StatelessKieSession
      */
     void setGlobal(String identifer,
                    Object value);
+    
+
+    /**
+     * Registers a channel with the given name
+     * 
+     * @param name the name of the channel
+     * @param channel the channel instance. It has to be thread safe.
+     */
+    void registerChannel(String name,
+                         Channel channel);
+
+    /**
+     * Unregisters the channel with the given name
+     * 
+     * @param name
+     */
+    void unregisterChannel(String name);
+
+    /**
+     * Returns a map with all registered channels.
+     * 
+     * @return
+     */
+    Map< String, Channel> getChannels();
+    
+    
 }
