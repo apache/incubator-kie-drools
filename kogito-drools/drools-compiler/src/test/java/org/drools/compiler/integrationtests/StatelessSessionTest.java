@@ -34,7 +34,10 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.StatelessKieSession;
+import org.mockito.Mockito;
 
 public class StatelessSessionTest extends CommonTestMethodBase {
     final List list = new ArrayList();
@@ -420,6 +423,38 @@ public class StatelessSessionTest extends CommonTestMethodBase {
                     result.getGlobal( "cheesery" ) );
         
         assertSame( this.globalResolver, result.getGlobalResolver() );
+    }
+    
+    @Test
+    public void testChannels() throws Exception {
+        String str = "";
+        str += "package org.kie \n";
+        str += "import org.drools.compiler.Cheese \n";
+        str += "rule rule1 \n";
+        str += "  when \n";
+        str += "    $c : Cheese() \n";
+        str += " \n";
+        str += "  then \n";
+        str += "    channels[\"x\"].send( $c ); \n";
+        str += "end\n";
+        
+        Cheese stilton = new Cheese( "stilton", 5 );
+        Channel channel = Mockito.mock( Channel.class );
+        
+        StatelessKieSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
+        ksession.registerChannel( "x", channel );
+        
+        assertEquals( 1, ksession.getChannels().size() );
+        assertEquals( channel, ksession.getChannels().get( "x" ) );
+        
+        ksession.execute( stilton );
+        
+        Mockito.verify( channel ).send( stilton );
+        
+        ksession.unregisterChannel( "x" );
+        
+        assertEquals( 0, ksession.getChannels().size() );
+        assertNull( ksession.getChannels().get( "x" ) );
     }
 
     private StatelessSession getSession() throws Exception {
