@@ -125,7 +125,7 @@ public class Allocation extends AbstractPersistable {
         // TODO IMPROVE ME
         if (delayRange == null) {
             delayRange = new ArrayList<Integer>(20);
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 100; i++) {
                 delayRange.add(i);
             }
         }

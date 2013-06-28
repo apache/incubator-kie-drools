@@ -41,4 +41,6 @@ public abstract class Resource extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    public abstract boolean isRenewable();
+
 }
