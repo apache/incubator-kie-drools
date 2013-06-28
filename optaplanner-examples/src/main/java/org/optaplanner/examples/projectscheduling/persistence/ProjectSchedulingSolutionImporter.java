@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.projectscheduling.domain.Allocation;
 import org.optaplanner.examples.projectscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectscheduling.domain.JobType;
 import org.optaplanner.examples.projectscheduling.domain.ResourceRequirement;
@@ -82,6 +84,7 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
             for (Map.Entry<Project, File> entry : projectFileMap.entrySet()) {
                 readProjectFile(entry.getKey(), entry.getValue());
             }
+            createAllocationList();
 //            BigInteger possibleSolutionSize = BigInteger.valueOf(projectsSchedule.getBedList().size()).pow(
 //                    projectsSchedule.getAdmissionPartList().size());
 //            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
@@ -406,6 +409,30 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                 }
             }
 
+        }
+
+        private void createAllocationList() {
+            List<Job> jobList = projectsSchedule.getJobList();
+            List<Allocation> allocationList = new ArrayList<Allocation>(jobList.size());
+            Map<Job, Allocation> jobToAllocationMap = new HashMap<Job, Allocation>(jobList.size());
+            for (Job job : jobList) {
+                Allocation allocation = new Allocation();
+                allocation.setId(job.getId());
+                allocation.setJob(job);
+                allocation.setPredecessorAllocationList(new ArrayList<Allocation>(job.getSuccessorJobList().size()));
+                allocation.setSuccessorAllocationList(new ArrayList<Allocation>(job.getSuccessorJobList().size()));
+                allocationList.add(allocation);
+                jobToAllocationMap.put(job, allocation);
+            }
+            for (Allocation allocation : allocationList) {
+                Job job = allocation.getJob();
+                for (Job successorJob : job.getSuccessorJobList()) {
+                    Allocation successorAllocation = jobToAllocationMap.get(successorJob);
+                    allocation.getSuccessorAllocationList().add(successorAllocation);
+                    successorAllocation.getPredecessorAllocationList().add(allocation);
+                }
+            }
+            projectsSchedule.setAllocationList(allocationList);
         }
 
     }

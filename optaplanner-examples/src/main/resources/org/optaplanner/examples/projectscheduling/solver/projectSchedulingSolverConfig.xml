@@ -28,14 +28,14 @@
         <valueSelector>
           <variableName>executionMode</variableName>
         </valueSelector>
-        <fixedProbabilityWeight>1.0</fixedProbabilityWeight>
+        <!--<fixedProbabilityWeight>1.0</fixedProbabilityWeight>-->
       </changeMoveSelector>
-      <!--<changeMoveSelector>-->
-        <!--<valueSelector>-->
-          <!--<variableName>startDate</variableName>-->
-        <!--</valueSelector>-->
+      <changeMoveSelector>
+        <valueSelector>
+          <variableName>delay</variableName>
+        </valueSelector>
         <!--<fixedProbabilityWeight>16.0</fixedProbabilityWeight>-->
-      <!--</changeMoveSelector>-->
+      </changeMoveSelector>
     </unionMoveSelector>
     <acceptor>
       <entityTabuRatio>0.2</entityTabuRatio>

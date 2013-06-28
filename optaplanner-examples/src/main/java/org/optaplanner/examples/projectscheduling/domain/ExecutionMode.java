@@ -25,7 +25,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class ExecutionMode extends AbstractPersistable {
 
     private Job job;
-    private int duration;
+    private int duration; // In days
 
     private List<ResourceRequirement> resourceRequirementList;
 
