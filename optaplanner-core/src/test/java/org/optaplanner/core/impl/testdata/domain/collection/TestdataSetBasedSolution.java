@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.setbased;
+package org.optaplanner.core.impl.testdata.domain.collection;
 
 import java.util.Collection;
 import java.util.Set;

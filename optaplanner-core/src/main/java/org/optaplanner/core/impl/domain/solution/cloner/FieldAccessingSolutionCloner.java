@@ -20,6 +20,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -161,6 +164,9 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             if (isFieldAnEntityPropertyOnSolution(field)) {
                 return true;
             }
+            if (isFieldAnEntityOrSolution(field)) {
+                return true;
+            }
             if (isValueAnEntityOrSolution(originalValue)) {
                 return true;
             }
@@ -185,13 +191,39 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             return false;
         }
 
+        protected boolean isFieldAnEntityOrSolution(Field field) {
+            Class<?> type = field.getType();
+            if (isClassEntityOrSolution(type)) {
+                return true;
+            }
+            if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
+                // Check the generic type arguments of the field.
+                // Yes, it is possible for fields and methods, but not instances!
+                Type genericType = field.getGenericType();
+                if (genericType instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) genericType;
+                    for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
+                        if (actualTypeArgument instanceof Class
+                                && isClassEntityOrSolution((Class) actualTypeArgument)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
         protected boolean isValueAnEntityOrSolution(Object originalValue) {
             Class valueClass = originalValue.getClass();
-            if (solutionDescriptor.hasEntityDescriptor(valueClass)
-                    || valueClass == ((Class) solutionDescriptor.getSolutionClass())) {
+            if (isClassEntityOrSolution(valueClass)) {
                 return true;
             }
             return false;
+        }
+
+        private boolean isClassEntityOrSolution(Class<?> type) {
+            return solutionDescriptor.hasEntityDescriptor(type)
+                    || solutionDescriptor.getSolutionClass().isAssignableFrom(type);
         }
 
         protected void processQueue() {
