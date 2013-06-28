@@ -38,8 +38,10 @@ public class ProjectsSchedule extends AbstractPersistable implements Solution<Be
 
     private List<GlobalResource> globalResourceList;
     private List<Project> projectList;
-    private List<Job> jobList;
     private List<LocalResource> localResourceList;
+    private List<Job> jobList;
+    private List<ExecutionMode> executionModeList;
+    private List<ResourceRequirement> resourceRequirementList;
 
     private List<Allocation> allocationList;
 
@@ -62,6 +64,14 @@ public class ProjectsSchedule extends AbstractPersistable implements Solution<Be
         this.projectList = projectList;
     }
 
+    public List<LocalResource> getLocalResourceList() {
+        return localResourceList;
+    }
+
+    public void setLocalResourceList(List<LocalResource> localResourceList) {
+        this.localResourceList = localResourceList;
+    }
+
     public List<Job> getJobList() {
         return jobList;
     }
@@ -70,12 +80,20 @@ public class ProjectsSchedule extends AbstractPersistable implements Solution<Be
         this.jobList = jobList;
     }
 
-    public List<LocalResource> getLocalResourceList() {
-        return localResourceList;
+    public List<ExecutionMode> getExecutionModeList() {
+        return executionModeList;
     }
 
-    public void setLocalResourceList(List<LocalResource> localResourceList) {
-        this.localResourceList = localResourceList;
+    public void setExecutionModeList(List<ExecutionMode> executionModeList) {
+        this.executionModeList = executionModeList;
+    }
+
+    public List<ResourceRequirement> getResourceRequirementList() {
+        return resourceRequirementList;
+    }
+
+    public void setResourceRequirementList(List<ResourceRequirement> resourceRequirementList) {
+        this.resourceRequirementList = resourceRequirementList;
     }
 
     @PlanningEntityCollectionProperty
@@ -103,8 +121,10 @@ public class ProjectsSchedule extends AbstractPersistable implements Solution<Be
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(globalResourceList);
         facts.addAll(projectList);
-        facts.addAll(jobList);
         facts.addAll(localResourceList);
+        facts.addAll(jobList);
+        facts.addAll(executionModeList);
+        facts.addAll(resourceRequirementList);
         // Do not add the planning entity's (allocationList) because that will be done automatically
         return facts;
     }

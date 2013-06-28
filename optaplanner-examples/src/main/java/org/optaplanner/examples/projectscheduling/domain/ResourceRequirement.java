@@ -16,43 +16,40 @@
 
 package org.optaplanner.examples.projectscheduling.domain;
 
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.projectscheduling.domain.resource.Resource;
 
-@XStreamAlias("PsJob")
-public class Job extends AbstractPersistable {
+@XStreamAlias("PsResourceRequirement")
+public class ResourceRequirement extends AbstractPersistable {
 
-    private JobType jobType;
-    private List<ExecutionMode> executionModeList;
+    private ExecutionMode executionMode;
+    private Resource resource;
+    private int requirement;
 
-    private List<Job> successorJobList;
-
-    public JobType getJobType() {
-        return jobType;
+    public ExecutionMode getExecutionMode() {
+        return executionMode;
     }
 
-    public void setJobType(JobType jobType) {
-        this.jobType = jobType;
+    public void setExecutionMode(ExecutionMode executionMode) {
+        this.executionMode = executionMode;
     }
 
-    public List<ExecutionMode> getExecutionModeList() {
-        return executionModeList;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setExecutionModeList(List<ExecutionMode> executionModeList) {
-        this.executionModeList = executionModeList;
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
-    public List<Job> getSuccessorJobList() {
-        return successorJobList;
+    public int getRequirement() {
+        return requirement;
     }
 
-    public void setSuccessorJobList(List<Job> successorJobList) {
-        this.successorJobList = successorJobList;
+    public void setRequirement(int requirement) {
+        this.requirement = requirement;
     }
-
     // ************************************************************************
     // Complex methods
     // ************************************************************************

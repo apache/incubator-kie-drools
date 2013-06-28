@@ -27,7 +27,6 @@ public class Project extends AbstractPersistable {
 
     private int releaseDate;
     private int criticalPathDuration;
-    private int horizon;
 
     private List<LocalResource> localResourceList;
     private List<Job> jobList;
@@ -47,14 +46,6 @@ public class Project extends AbstractPersistable {
 
     public void setCriticalPathDuration(int criticalPathDuration) {
         this.criticalPathDuration = criticalPathDuration;
-    }
-
-    public int getHorizon() {
-        return horizon;
-    }
-
-    public void setHorizon(int horizon) {
-        this.horizon = horizon;
     }
 
     public List<LocalResource> getLocalResourceList() {
