@@ -463,6 +463,11 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                     successorAllocation.getPredecessorAllocationList().add(allocation);
                 }
             }
+            for (Allocation sourceAllocation : projectToSourceAllocationMap.values()) {
+                for (Allocation allocation : sourceAllocation.getSuccessorAllocationList()) {
+                    allocation.setPredecessorsDoneDate(sourceAllocation.getEndDate());
+                }
+            }
             projectsSchedule.setAllocationList(allocationList);
         }
 
