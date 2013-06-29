@@ -7,9 +7,8 @@ import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.projectscheduling.domain.Allocation;
-import org.optaplanner.examples.projectscheduling.domain.JobType;
 
-public class StartDateUpdatingVariableListener implements PlanningVariableListener<Allocation> {
+public class PredecessorsDoneDateUpdatingVariableListener implements PlanningVariableListener<Allocation> {
 
     public void beforeEntityAdded(ScoreDirector scoreDirector, Allocation allocation) {
         // Do nothing
@@ -37,10 +36,10 @@ public class StartDateUpdatingVariableListener implements PlanningVariableListen
 
     protected void updateAllocation(ScoreDirector scoreDirector, Allocation sourceAllocation) {
         Queue<Allocation> uncheckedSuccessorQueue = new ArrayDeque<Allocation>();
-        uncheckedSuccessorQueue.add(sourceAllocation);
+        uncheckedSuccessorQueue.addAll(sourceAllocation.getSuccessorAllocationList());
         while (!uncheckedSuccessorQueue.isEmpty()) {
             Allocation allocation = uncheckedSuccessorQueue.remove();
-            boolean updated = updateStartDate(scoreDirector, allocation);
+            boolean updated = updatePredecessorsDoneDate(scoreDirector, allocation);
             if (updated) {
                 uncheckedSuccessorQueue.addAll(allocation.getSuccessorAllocationList());
             }
@@ -52,31 +51,23 @@ public class StartDateUpdatingVariableListener implements PlanningVariableListen
      * @param allocation never null
      * @return true if the startDate changed
      */
-    protected boolean updateStartDate(ScoreDirector scoreDirector, Allocation allocation) {
-        // For the source the startDate must be 0.
-        Integer startDate = 0;
+    protected boolean updatePredecessorsDoneDate(ScoreDirector scoreDirector, Allocation allocation) {
+        // For the source the doneDate must be 0.
+        Integer doneDate = 0;
         for (Allocation predecessorAllocation : allocation.getPredecessorAllocationList()) {
             Integer endDate = predecessorAllocation.getEndDate();
             if (endDate == null) {
-                startDate = null;
+                doneDate = null;
                 break;
             }
-            startDate = Math.max(startDate, endDate);
+            doneDate = Math.max(doneDate, endDate);
         }
-        if (startDate != null) {
-            Integer delay = allocation.getDelay();
-            if (delay == null) {
-                startDate = null;
-            } else {
-                startDate += delay;
-            }
-        }
-        if (ObjectUtils.equals(startDate, allocation.getStartDate())) {
+        if (ObjectUtils.equals(doneDate, allocation.getPredecessorsDoneDate())) {
             return false;
         }
-        scoreDirector.beforeVariableChanged(allocation, "startDate");
-        allocation.setStartDate(startDate);
-        scoreDirector.afterVariableChanged(allocation, "startDate");
+        scoreDirector.beforeVariableChanged(allocation, "predecessorsDoneDate");
+        allocation.setPredecessorsDoneDate(doneDate);
+        scoreDirector.afterVariableChanged(allocation, "predecessorsDoneDate");
         return true;
     }
 

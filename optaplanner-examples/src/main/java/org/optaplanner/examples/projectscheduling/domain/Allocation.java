@@ -20,17 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.api.domain.value.ValueRangeType;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
-import org.optaplanner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
-import org.optaplanner.examples.cloudbalancing.domain.solver.CloudProcessDifficultyComparator;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.projectscheduling.domain.solver.StartDateUpdatingVariableListener;
+import org.optaplanner.examples.projectscheduling.domain.solver.PredecessorsDoneDateUpdatingVariableListener;
 
 @PlanningEntity()
 @XStreamAlias("PsAllocation")
@@ -46,7 +41,7 @@ public class Allocation extends AbstractPersistable {
     private Integer delay; // In days
 
     // Shadow variables
-    private Integer startDate;
+    private Integer predecessorsDoneDate;
 
     public Job getJob() {
         return job;
@@ -72,7 +67,7 @@ public class Allocation extends AbstractPersistable {
         this.successorAllocationList = successorAllocationList;
     }
 
-    @PlanningVariable(variableListenerClasses = {StartDateUpdatingVariableListener.class})
+    @PlanningVariable(variableListenerClasses = {PredecessorsDoneDateUpdatingVariableListener.class})
     @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "executionModeRange")
     public ExecutionMode getExecutionMode() {
         return executionMode;
@@ -82,7 +77,7 @@ public class Allocation extends AbstractPersistable {
         this.executionMode = executionMode;
     }
 
-    @PlanningVariable(variableListenerClasses = {StartDateUpdatingVariableListener.class})
+    @PlanningVariable(variableListenerClasses = {PredecessorsDoneDateUpdatingVariableListener.class})
     @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "delayRange")
     public Integer getDelay() {
         return delay;
@@ -92,23 +87,31 @@ public class Allocation extends AbstractPersistable {
         this.delay = delay;
     }
 
-    public Integer getStartDate() {
-        return startDate;
+    public Integer getPredecessorsDoneDate() {
+        return predecessorsDoneDate;
     }
 
-    public void setStartDate(Integer startDate) {
-        this.startDate = startDate;
+    public void setPredecessorsDoneDate(Integer predecessorsDoneDate) {
+        this.predecessorsDoneDate = predecessorsDoneDate;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    public Integer getEndDate() {
-        if (executionMode == null || startDate == null) {
+
+    public Integer getStartDate() {
+        if (predecessorsDoneDate == null || delay == null) {
             return null;
         }
-        return startDate + executionMode.getDuration();
+        return predecessorsDoneDate + delay;
+    }
+
+    public Integer getEndDate() {
+        if (predecessorsDoneDate == null || delay == null || executionMode == null) {
+            return null;
+        }
+        return predecessorsDoneDate + delay + executionMode.getDuration();
     }
 
     // ************************************************************************
@@ -120,17 +123,15 @@ public class Allocation extends AbstractPersistable {
     }
 
     private List<Integer> delayRange; // TODO remove this HACK
-
     public List<Integer> getDelayRange() {
         // TODO IMPROVE ME
         if (delayRange == null) {
-            delayRange = new ArrayList<Integer>(20);
-            for (int i = 0; i < 100; i++) {
+            delayRange = new ArrayList<Integer>(50);
+            for (int i = 0; i < 50; i++) {
                 delayRange.add(i);
             }
         }
         return delayRange;
     }
-
 
 }
