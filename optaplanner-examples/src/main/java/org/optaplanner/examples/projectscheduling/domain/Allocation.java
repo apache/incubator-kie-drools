@@ -25,9 +25,10 @@ import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.api.domain.value.ValueRangeType;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.projectscheduling.domain.solver.NotSourceOrSinkAllocationFilter;
 import org.optaplanner.examples.projectscheduling.domain.solver.PredecessorsDoneDateUpdatingVariableListener;
 
-@PlanningEntity()
+@PlanningEntity(movableEntitySelectionFilter = NotSourceOrSinkAllocationFilter.class)
 @XStreamAlias("PsAllocation")
 public class Allocation extends AbstractPersistable {
 
