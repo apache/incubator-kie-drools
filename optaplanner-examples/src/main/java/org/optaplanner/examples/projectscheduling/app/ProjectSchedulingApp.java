@@ -21,9 +21,11 @@ import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
 import org.optaplanner.examples.cloudbalancing.swingui.CloudBalancingPanel;
 import org.optaplanner.examples.common.app.CommonApp;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.projectscheduling.persistence.ProjectSchedulingDao;
+import org.optaplanner.examples.projectscheduling.persistence.ProjectSchedulingSolutionImporter;
 import org.optaplanner.examples.projectscheduling.swingui.ProjectSchedulingPanel;
 
 public class ProjectSchedulingApp extends CommonApp {
@@ -51,6 +53,11 @@ public class ProjectSchedulingApp extends CommonApp {
     @Override
     protected SolutionDao createSolutionDao() {
         return new ProjectSchedulingDao();
+    }
+
+    @Override
+    protected AbstractSolutionImporter createSolutionImporter() {
+        return new ProjectSchedulingSolutionImporter();
     }
 
 }
