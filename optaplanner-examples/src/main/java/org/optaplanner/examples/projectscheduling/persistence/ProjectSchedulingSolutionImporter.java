@@ -271,6 +271,7 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                 for (int i = 0; i < jobListSize; i++) {
                     Job job = new Job();
                     job.setId(jobId);
+                    job.setProject(project);
                     if (i == 0) {
                         job.setJobType(JobType.SOURCE);
                     } else if (i == jobListSize - 1) {
@@ -427,6 +428,24 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                 allocation.setJob(job);
                 allocation.setPredecessorAllocationList(new ArrayList<Allocation>(job.getSuccessorJobList().size()));
                 allocation.setSuccessorAllocationList(new ArrayList<Allocation>(job.getSuccessorJobList().size()));
+                if (job.getJobType() == JobType.SOURCE) {
+                    allocation.setPredecessorsDoneDate(job.getProject().getReleaseDate());
+                    allocation.setDelay(0);
+                    if (job.getExecutionModeList().size() != 1) {
+                        throw new IllegalArgumentException("The job (" + job
+                                + ")'s executionModeList (" + job.getExecutionModeList()
+                                + ") is expected to be a singleton.");
+                    }
+                    allocation.setExecutionMode(job.getExecutionModeList().get(0));
+                } else if (job.getJobType() == JobType.SINK) {
+                    allocation.setDelay(0);
+                    if (job.getExecutionModeList().size() != 1) {
+                        throw new IllegalArgumentException("The job (" + job
+                                + ")'s executionModeList (" + job.getExecutionModeList()
+                                + ") is expected to be a singleton.");
+                    }
+                    allocation.setExecutionMode(job.getExecutionModeList().get(0));
+                }
                 allocationList.add(allocation);
                 jobToAllocationMap.put(job, allocation);
             }

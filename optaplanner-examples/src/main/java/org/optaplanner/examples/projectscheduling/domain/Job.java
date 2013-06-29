@@ -24,10 +24,19 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("PsJob")
 public class Job extends AbstractPersistable {
 
+    private Project project;
     private JobType jobType;
     private List<ExecutionMode> executionModeList;
 
     private List<Job> successorJobList;
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
 
     public JobType getJobType() {
         return jobType;
