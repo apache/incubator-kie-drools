@@ -7,6 +7,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.projectscheduling.domain.Allocation;
+import org.optaplanner.examples.projectscheduling.domain.JobType;
 
 public class StartDateUpdatingVariableListener implements PlanningVariableListener<Allocation> {
 
@@ -52,7 +53,8 @@ public class StartDateUpdatingVariableListener implements PlanningVariableListen
      * @return true if the startDate changed
      */
     protected boolean updateStartDate(ScoreDirector scoreDirector, Allocation allocation) {
-        Integer startDate = Integer.MIN_VALUE;
+        // For the source the startDate must be 0.
+        Integer startDate = 0;
         for (Allocation predecessorAllocation : allocation.getPredecessorAllocationList()) {
             Integer endDate = predecessorAllocation.getEndDate();
             if (endDate == null) {
