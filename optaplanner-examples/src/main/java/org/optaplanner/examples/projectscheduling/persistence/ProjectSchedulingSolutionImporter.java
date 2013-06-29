@@ -422,6 +422,8 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
             List<Job> jobList = projectsSchedule.getJobList();
             List<Allocation> allocationList = new ArrayList<Allocation>(jobList.size());
             Map<Job, Allocation> jobToAllocationMap = new HashMap<Job, Allocation>(jobList.size());
+            Map<Project, Allocation> projectToSourceAllocationMap = new HashMap<Project, Allocation>(projectListSize);
+            Map<Project, Allocation> projectToSinkAllocationMap = new HashMap<Project, Allocation>(projectListSize);
             for (Job job : jobList) {
                 Allocation allocation = new Allocation();
                 allocation.setId(job.getId());
@@ -437,6 +439,7 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                                 + ") is expected to be a singleton.");
                     }
                     allocation.setExecutionMode(job.getExecutionModeList().get(0));
+                    projectToSourceAllocationMap.put(job.getProject(), allocation);
                 } else if (job.getJobType() == JobType.SINK) {
                     allocation.setDelay(0);
                     if (job.getExecutionModeList().size() != 1) {
@@ -445,12 +448,15 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                                 + ") is expected to be a singleton.");
                     }
                     allocation.setExecutionMode(job.getExecutionModeList().get(0));
+                    projectToSinkAllocationMap.put(job.getProject(), allocation);
                 }
                 allocationList.add(allocation);
                 jobToAllocationMap.put(job, allocation);
             }
             for (Allocation allocation : allocationList) {
                 Job job = allocation.getJob();
+                allocation.setSourceAllocation(projectToSourceAllocationMap.get(job.getProject()));
+                allocation.setSinkAllocation(projectToSinkAllocationMap.get(job.getProject()));
                 for (Job successorJob : job.getSuccessorJobList()) {
                     Allocation successorAllocation = jobToAllocationMap.get(successorJob);
                     allocation.getSuccessorAllocationList().add(successorAllocation);

@@ -33,6 +33,8 @@ public class Allocation extends AbstractPersistable {
 
     private Job job;
 
+    private Allocation sourceAllocation;
+    private Allocation sinkAllocation;
     private List<Allocation> predecessorAllocationList;
     private List<Allocation> successorAllocationList;
 
@@ -49,6 +51,22 @@ public class Allocation extends AbstractPersistable {
 
     public void setJob(Job job) {
         this.job = job;
+    }
+
+    public Allocation getSourceAllocation() {
+        return sourceAllocation;
+    }
+
+    public void setSourceAllocation(Allocation sourceAllocation) {
+        this.sourceAllocation = sourceAllocation;
+    }
+
+    public Allocation getSinkAllocation() {
+        return sinkAllocation;
+    }
+
+    public void setSinkAllocation(Allocation sinkAllocation) {
+        this.sinkAllocation = sinkAllocation;
     }
 
     public List<Allocation> getPredecessorAllocationList() {
