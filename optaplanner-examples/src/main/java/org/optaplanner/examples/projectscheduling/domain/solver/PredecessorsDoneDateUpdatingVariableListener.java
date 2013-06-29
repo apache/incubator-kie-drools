@@ -34,9 +34,9 @@ public class PredecessorsDoneDateUpdatingVariableListener implements PlanningVar
         // Do nothing
     }
 
-    protected void updateAllocation(ScoreDirector scoreDirector, Allocation sourceAllocation) {
+    protected void updateAllocation(ScoreDirector scoreDirector, Allocation originalAllocation) {
         Queue<Allocation> uncheckedSuccessorQueue = new ArrayDeque<Allocation>();
-        uncheckedSuccessorQueue.addAll(sourceAllocation.getSuccessorAllocationList());
+        uncheckedSuccessorQueue.addAll(originalAllocation.getSuccessorAllocationList());
         while (!uncheckedSuccessorQueue.isEmpty()) {
             Allocation allocation = uncheckedSuccessorQueue.remove();
             boolean updated = updatePredecessorsDoneDate(scoreDirector, allocation);
