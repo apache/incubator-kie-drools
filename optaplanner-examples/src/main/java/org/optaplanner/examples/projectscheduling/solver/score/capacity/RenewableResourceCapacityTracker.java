@@ -42,6 +42,7 @@ public class RenewableResourceCapacityTracker extends ResourceCapacityTracker {
                 if (used > capacityEveryDay) {
                     hardScore -= (used - capacityEveryDay);
                 }
+                usedPerDay.put(i, used);
             }
         }
     }
@@ -64,6 +65,7 @@ public class RenewableResourceCapacityTracker extends ResourceCapacityTracker {
                 if (used > capacityEveryDay) {
                     hardScore -= (used - capacityEveryDay);
                 }
+                usedPerDay.put(i, used);
             }
         }
     }
