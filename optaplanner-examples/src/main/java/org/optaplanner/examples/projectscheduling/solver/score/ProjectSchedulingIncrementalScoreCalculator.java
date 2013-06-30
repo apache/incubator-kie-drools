@@ -122,7 +122,7 @@ public class ProjectSchedulingIncrementalScoreCalculator extends AbstractIncreme
         mediumScore = -getTotalProjectDelay(allocation);
         // track capacity
         ExecutionMode executionMode = allocation.getExecutionMode();
-        if (executionMode != null && allocation.getJob().getJobType() ==JobType.STANDARD) {
+        if (executionMode != null && allocation.getJob().getJobType() == JobType.STANDARD) {
             for (ResourceRequirement resourceRequirement : executionMode.getResourceRequirementList()) {
                 ResourceCapacityTracker tracker = resourceCapacityTrackerMap.get(
                         resourceRequirement.getResource());
