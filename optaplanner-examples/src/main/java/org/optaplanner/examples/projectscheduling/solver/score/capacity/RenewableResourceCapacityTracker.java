@@ -9,7 +9,7 @@ import org.optaplanner.examples.projectscheduling.domain.resource.Resource;
 
 public class RenewableResourceCapacityTracker extends ResourceCapacityTracker {
 
-    protected int capacity;
+    protected int capacityEveryDay;
 
     protected Map<Integer, Integer> usedPerDay;
     protected int hardScore;
@@ -19,7 +19,7 @@ public class RenewableResourceCapacityTracker extends ResourceCapacityTracker {
         if (!resource.isRenewable()) {
             throw new IllegalArgumentException("The resource (" + resource + ") is expected to be renewable.");
         }
-        capacity = resource.getCapacity();
+        capacityEveryDay = resource.getCapacity();
         usedPerDay = new HashMap<Integer, Integer>();
         hardScore = 0;
     }
@@ -35,12 +35,12 @@ public class RenewableResourceCapacityTracker extends ResourceCapacityTracker {
                 if (used == null) {
                     used = 0;
                 }
-                if (used > capacity) {
-                    hardScore += (used - capacity);
+                if (used > capacityEveryDay) {
+                    hardScore += (used - capacityEveryDay);
                 }
                 used += requirement;
-                if (used > capacity) {
-                    hardScore -= (used - capacity);
+                if (used > capacityEveryDay) {
+                    hardScore -= (used - capacityEveryDay);
                 }
             }
         }
@@ -57,12 +57,12 @@ public class RenewableResourceCapacityTracker extends ResourceCapacityTracker {
                 if (used == null) {
                     used = 0;
                 }
-                if (used > capacity) {
-                    hardScore += (used - capacity);
+                if (used > capacityEveryDay) {
+                    hardScore += (used - capacityEveryDay);
                 }
                 used -= requirement;
-                if (used > capacity) {
-                    hardScore -= (used - capacity);
+                if (used > capacityEveryDay) {
+                    hardScore -= (used - capacityEveryDay);
                 }
             }
         }
