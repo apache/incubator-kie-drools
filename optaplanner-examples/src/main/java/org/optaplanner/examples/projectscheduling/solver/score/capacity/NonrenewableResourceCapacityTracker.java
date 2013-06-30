@@ -11,6 +11,9 @@ public class NonrenewableResourceCapacityTracker extends ResourceCapacityTracker
 
     public NonrenewableResourceCapacityTracker(Resource resource) {
         super(resource);
+        if (resource.isRenewable()) {
+            throw new IllegalArgumentException("The resource (" + resource + ") is expected to be nonrenewable.");
+        }
         capacity = resource.getCapacity();
         used = 0;
     }
