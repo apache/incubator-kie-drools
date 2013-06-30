@@ -347,7 +347,7 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                         List<ResourceRequirement> resourceRequirementList = new ArrayList<ResourceRequirement>(
                                 resourceSize);
                         for (int k = 0; k < resourceSize; k++) {
-                            int requirement = Integer.parseInt(tokens[first ? 3 : 0] + k);
+                            int requirement = Integer.parseInt(tokens[(first ? 3 : 2) + k]);
                             if (requirement != 0) {
                                 ResourceRequirement resourceRequirement = new ResourceRequirement();
                                 resourceRequirement.setId(resourceRequirementId);
