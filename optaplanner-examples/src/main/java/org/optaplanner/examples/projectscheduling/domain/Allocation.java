@@ -118,7 +118,6 @@ public class Allocation extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
-
     public Integer getStartDate() {
         if (predecessorsDoneDate == null || delay == null) {
             return null;
@@ -131,6 +130,14 @@ public class Allocation extends AbstractPersistable {
             return null;
         }
         return predecessorsDoneDate + delay + executionMode.getDuration();
+    }
+
+    public Project getProject() {
+        return job.getProject();
+    }
+
+    public String getLabel() {
+        return "Job " + job.getId();
     }
 
     // ************************************************************************

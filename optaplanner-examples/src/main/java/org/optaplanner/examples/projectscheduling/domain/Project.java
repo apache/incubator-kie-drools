@@ -68,4 +68,8 @@ public class Project extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    public String getLabel() {
+        return "Project " + id;
+    }
+
 }
