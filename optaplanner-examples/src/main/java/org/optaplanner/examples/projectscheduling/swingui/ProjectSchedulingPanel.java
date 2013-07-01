@@ -96,16 +96,16 @@ public class ProjectSchedulingPanel extends SolutionPanel {
                 maximumEndDate = Math.max(maximumEndDate, endDate);
             }
         }
-        JFreeChart chart = ChartFactory.createScatterPlot("Project scheduling", "Job", "Day (start and end date)",
-                seriesCollection, PlotOrientation.HORIZONTAL, true, false, false);
-        XYPlot plot = (XYPlot) chart.getPlot();
-        ValueAxis domainAxis = plot.getDomainAxis();
+        NumberAxis domainAxis = new NumberAxis("Job");
+        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         domainAxis.setRange(-0.5, projectsSchedule.getAllocationList().size() - 0.5);
         domainAxis.setInverted(true);
-        ValueAxis rangeAxis = plot.getRangeAxis();
+        NumberAxis rangeAxis = new NumberAxis("Day (start and end date)");
         rangeAxis.setRange(-0.5, maximumEndDate + 0.5);
-        plot.setRenderer(renderer);
-        return chart;
+        XYPlot plot = new XYPlot(seriesCollection, domainAxis, rangeAxis, renderer);
+        plot.setOrientation(PlotOrientation.HORIZONTAL);
+        return new JFreeChart("Project scheduling", JFreeChart.DEFAULT_TITLE_FONT,
+                plot, true);
     }
 
 }
