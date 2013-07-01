@@ -16,19 +16,33 @@
 
 package org.optaplanner.examples.projectscheduling.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.SymbolAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.chart.renderer.xy.YIntervalRenderer;
 import org.jfree.data.gantt.Task;
 import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
+import org.jfree.data.gantt.XYTaskDataset;
 import org.jfree.data.time.SimpleTimePeriod;
+import org.jfree.data.xy.YIntervalSeries;
+import org.jfree.data.xy.YIntervalSeriesCollection;
 import org.joda.time.LocalDate;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
@@ -39,11 +53,8 @@ import org.optaplanner.examples.projectscheduling.domain.ProjectsSchedule;
 
 public class ProjectSchedulingPanel extends SolutionPanel {
 
-    public static final LocalDate SCHEDULE_START_DATE = new LocalDate(2014, 1, 1);
-
-    private TangoColorFactory tangoColorFactory;
-
     public ProjectSchedulingPanel() {
+        setLayout(new BorderLayout());
     }
 
     @Override
@@ -57,37 +68,45 @@ public class ProjectSchedulingPanel extends SolutionPanel {
 
     public void resetPanel(Solution solution) {
         removeAll();
-        tangoColorFactory = new TangoColorFactory();
         ProjectsSchedule projectsSchedule = (ProjectsSchedule) solution;
         ChartPanel chartPanel = new ChartPanel(createChart(projectsSchedule));
-        chartPanel.setPreferredSize(new Dimension(1024, 768));
-        add(chartPanel);
+        add(chartPanel, BorderLayout.CENTER);
     }
 
     private JFreeChart createChart(ProjectsSchedule projectsSchedule) {
-        TaskSeriesCollection seriesCollection = new TaskSeriesCollection();
-        Map<Project, TaskSeries> taskSeriesMap = new LinkedHashMap<Project, TaskSeries>(
+        YIntervalSeriesCollection seriesCollection = new YIntervalSeriesCollection();
+        Map<Project, YIntervalSeries> projectSeriesMap = new LinkedHashMap<Project, YIntervalSeries>(
                 projectsSchedule.getProjectList().size());
+        int maximumEndDate = 0;
         for (Project project : projectsSchedule.getProjectList()) {
-            TaskSeries taskSeries = new TaskSeries(project.getLabel());
-            seriesCollection.add(taskSeries);
-            taskSeriesMap.put(project, taskSeries);
+            YIntervalSeries projectSeries = new YIntervalSeries(project.getLabel());
+            projectSeriesMap.put(project, projectSeries);
         }
         for (Allocation allocation : projectsSchedule.getAllocationList()) {
             Integer startDate = allocation.getStartDate();
             Integer endDate = allocation.getEndDate();
             if (startDate != null && endDate != null) {
-                Task task = new Task(allocation.getLabel(), toJdkDate(startDate), toJdkDate(endDate));
-                taskSeriesMap.get(allocation.getProject()).add(task);
+                YIntervalSeries projectSeries = projectSeriesMap.get(allocation.getProject());
+                projectSeries.add(allocation.getId(), (startDate + endDate) / 2.0,
+                        startDate, endDate);
+                maximumEndDate = Math.max(maximumEndDate, endDate);
             }
         }
-        JFreeChart chart = ChartFactory.createGanttChart("Project scheduling", "Job", "Allocation",
-                seriesCollection, true, false, false);
-        return chart;
-    }
+        for (YIntervalSeries projectSeries : projectSeriesMap.values()) {
 
-    private Date toJdkDate(Integer date) {
-        return SCHEDULE_START_DATE.plusDays(date).toDateMidnight().toDate();
+            seriesCollection.addSeries(projectSeries);
+        }
+        JFreeChart chart = ChartFactory.createScatterPlot("Project scheduling", "Job", "Day (start and end date)",
+                seriesCollection, PlotOrientation.HORIZONTAL, true, false, false);
+        XYPlot plot = (XYPlot) chart.getPlot();
+        ValueAxis domainAxis = plot.getDomainAxis();
+        domainAxis.setRange(-0.5, projectsSchedule.getAllocationList().size() - 0.5);
+        domainAxis.setInverted(true);
+        ValueAxis rangeAxis = plot.getRangeAxis();
+        rangeAxis.setRange(-0.5, maximumEndDate + 0.5);
+        plot.setRenderer(new YIntervalRenderer());
+
+        return chart;
     }
 
 }
