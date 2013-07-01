@@ -100,7 +100,7 @@ public class ProjectSchedulingPanel extends SolutionPanel {
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         domainAxis.setRange(-0.5, projectsSchedule.getAllocationList().size() - 0.5);
         domainAxis.setInverted(true);
-        NumberAxis rangeAxis = new NumberAxis("Day (start and end date)");
+        NumberAxis rangeAxis = new NumberAxis("Day (start to end date)");
         rangeAxis.setRange(-0.5, maximumEndDate + 0.5);
         XYPlot plot = new XYPlot(seriesCollection, domainAxis, rangeAxis, renderer);
         plot.setOrientation(PlotOrientation.HORIZONTAL);
