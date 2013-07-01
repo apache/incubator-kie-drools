@@ -61,6 +61,7 @@ import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
+import org.kie.api.io.Resource;
 import org.mvel2.ErrorDetail;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -611,6 +612,14 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean accept(Process process, Resource resource) {
+        if (RuleFlowProcess.RULEFLOW_TYPE.equals(process.getType())) {
+            return true;
+        }
+        return false;
     }
 
 }

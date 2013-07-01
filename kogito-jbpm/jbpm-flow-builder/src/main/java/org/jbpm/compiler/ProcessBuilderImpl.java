@@ -19,23 +19,24 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
-import org.drools.core.RuntimeDroolsException;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.*;
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ParserError;
 import org.drools.compiler.compiler.ProcessLoadError;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.core.RuntimeDroolsException;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
@@ -52,8 +53,7 @@ import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.core.validation.ProcessValidator;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
+import org.jbpm.process.core.validation.ProcessValidatorRegistry;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
@@ -83,13 +83,10 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
 
     private PackageBuilder                packageBuilder;
     private final List<DroolsError>       errors                         = new ArrayList<DroolsError>();
-    private Map<String, ProcessValidator> processValidators              = new HashMap<String, ProcessValidator>();
 
     public ProcessBuilderImpl(PackageBuilder packageBuilder) {
         this.packageBuilder = packageBuilder;
         configurePackageBuilder(packageBuilder);
-        this.processValidators.put( RuleFlowProcess.RULEFLOW_TYPE,
-                                    RuleFlowProcessValidator.getInstance() );
     }
     
     public void configurePackageBuilder(PackageBuilder packageBuilder) {
@@ -108,7 +105,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
 //            ((org.jbpm.process.core.Process) process).setResource( resource );
 //        }
         boolean hasErrors = false;
-        ProcessValidator validator = processValidators.get(((Process)process).getType());
+        ProcessValidator validator = ProcessValidatorRegistry.getInstance().getValidator(process, resource);
         if (validator == null) {
             System.out.println("Could not find validator for process " + ((Process)process).getType() + ".");
             System.out.println("Continuing without validation of the process " + process.getName() + "[" + process.getId() + "]");

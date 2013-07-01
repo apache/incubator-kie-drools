@@ -17,6 +17,7 @@
 package org.jbpm.process.core.validation;
 
 import org.kie.api.definition.process.Process;
+import org.kie.api.io.Resource;
 
 /**
  * A validator for validating a RuleFlow process. 
@@ -26,5 +27,7 @@ import org.kie.api.definition.process.Process;
 public interface ProcessValidator {
 
     ProcessValidationError[] validateProcess(Process process);
+    
+    boolean accept(Process process, Resource resource);
 
 }
