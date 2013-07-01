@@ -47,59 +47,74 @@ import java.util.HashSet;
 public class AddRemoveRule {
 
 
-     public static void addRule(TerminalNode tn, InternalWorkingMemory[] wms) {
-         LeftTupleSource splitStartLeftTupleSource = getNetworkSplitPoint(tn);
+    public static void addRule(TerminalNode tn, InternalWorkingMemory[] wms) {
+        LeftTupleSource splitStartLeftTupleSource = getNetworkSplitPoint(tn);
 
-         for ( InternalWorkingMemory wm : wms ) {
+        for ( InternalWorkingMemory wm : wms ) {
 
-             if ( splitStartLeftTupleSource.getAssociations().size() > 1 ) {
-                 List<PathMemory> pathMems = new ArrayList<PathMemory>();
+            if ( splitStartLeftTupleSource.getAssociations().size() > 1 ) {
+                List<PathMemory> pathMems = new ArrayList<PathMemory>();
 
-                 collectRtnPathMemories(splitStartLeftTupleSource, wm, pathMems, tn); // get all PathMemories, except current
+                collectRtnPathMemories(splitStartLeftTupleSource, wm, pathMems, tn); // get all PathMemories, except current
 
-                 List<SegmentMemory[]> previousSmems = reInitPathMemories(wm, pathMems, null);
-                 PathMemory newPmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) tn);
+                PathMemory newPmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) tn);
 
-                 int s = getSegmentPos(splitStartLeftTupleSource, null);
+                int s = getSegmentPos(splitStartLeftTupleSource, null);
 
-                 LeftTupleSink[] sinks = splitStartLeftTupleSource.getSinkPropagator().getSinks();
-                 if ( sinks.length == 2 || ( sinks.length == 3 && NodeTypeEnums.isBetaNode(sinks[2])) && ((BetaNode)sinks[2]).isRightInputIsRiaNode() ) {
-                     // can only be two if the adding node caused the split to be created
-                     int p = 0;
-                     SegmentMemory splitSmem = null;
-                     for ( PathMemory pmem : pathMems) {
-                         SegmentMemory[] smems = previousSmems.get(p);
+                LeftTupleSink[] sinks = splitStartLeftTupleSource.getSinkPropagator().getSinks();
+                if ( sinks.length == 2 || ( sinks.length == 3 && NodeTypeEnums.isBetaNode(sinks[2])) && ((BetaNode)sinks[2]).isRightInputIsRiaNode() ) {
+                    List<SegmentMemory[]> previousSmems = reInitPathMemories(wm, pathMems, null);
 
-                         for (int i = 0; i < smems.length; i++ ) {
-                             SegmentMemory sm = smems[i];
-                             if ( sm == null ) {
-                                 continue; // SegmentMemory is not yet initialized
-                             }
+                    // can only be two if the adding node caused the split to be created
+                    int p = 0;
+                    SegmentMemory splitSmem = null;
+                    for ( PathMemory pmem : pathMems) {
+                        SegmentMemory[] smems = previousSmems.get(p);
 
-                             if ( i < s ) {
-                                 correctSegmentBeforeSplitOnAdd(wm, newPmem, p, pmem, sm);
-                             } else if ( i == s ) {
-                                 splitSmem = correctSegmentOnSplitOnAdd(splitStartLeftTupleSource, wm, newPmem, p, splitSmem, pmem, sm);
-                             } else if (i > s) {
-                                 correctSegmentAfterSplitOnAdd(wm, pmem, i, sm);
-                             }
-                         }
-                         p++;
-                     }
-                 } else {
-                     SegmentMemory sm = previousSmems.get(0)[s];
-                     initNewSegment(splitStartLeftTupleSource, wm, sm);
-                 }
-             }
+                        for (int i = 0; i < smems.length; i++ ) {
+                            SegmentMemory sm = smems[i];
+                            if ( sm == null ) {
+                                continue; // SegmentMemory is not yet initialized
+                            }
 
-             if (NodeTypeEnums.LeftInputAdapterNode == splitStartLeftTupleSource.getType() && splitStartLeftTupleSource.getAssociations().size() == 1) {
-                 // rule added with no sharing
-                 insertLiaFacts(splitStartLeftTupleSource, wm);
-             }
+                            if ( i < s ) {
+                                correctSegmentBeforeSplitOnAdd(wm, newPmem, p, pmem, sm);
+                            } else if ( i == s ) {
+                                splitSmem = correctSegmentOnSplitOnAdd(splitStartLeftTupleSource, wm, newPmem, p, splitSmem, pmem, sm);
+                            } else if (i > s) {
+                                correctSegmentAfterSplitOnAdd(wm, pmem, i, sm);
+                            }
+                        }
+                        p++;
+                    }
+                } else {
+                    // splitStartLeftTupleSource is the tip of the segment. everythign from splitStartLeftTupleSource
+                    // and above s the same for all segments. So we can get 0, 5, or 10. This will then create a new
+                    // child, and add it to to the end of the parent SegmentMemory list.
 
-             insertFacts( splitStartLeftTupleSource.getSinkPropagator().getLastLeftTupleSink(), wm);
-         }
-     }
+                    PathMemory pmem = pathMems.get(0);
+                    SegmentMemory[] smems = pmem.getSegmentMemories();
+
+                    SegmentMemory splitSmem = null;
+                    for (int i = 0; i < smems.length; i++ ) {
+                        SegmentMemory sm = smems[i];
+                        if ( sm == null ) {
+                            continue; // SegmentMemory is not yet initialized
+                        }
+
+                        correctSegmentBeforeSplitOnAdd(wm, newPmem, 0, pmem, sm);
+                    }
+                }
+            }
+
+            if (NodeTypeEnums.LeftInputAdapterNode == splitStartLeftTupleSource.getType() && splitStartLeftTupleSource.getAssociations().size() == 1) {
+                // rule added with no sharing
+                insertLiaFacts(splitStartLeftTupleSource, wm);
+            }
+
+            insertFacts( splitStartLeftTupleSource.getSinkPropagator().getLastLeftTupleSink(), wm);
+        }
+    }
 
      public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms) {
          LeftTupleSource splitStartNode = getNetworkSplitPoint(tn);
@@ -892,17 +907,10 @@ public class AddRemoveRule {
      private static void mergeBitMasks(SegmentMemory sm1, SegmentMemory sm2) {
          LinkedList<Memory> smNodeMemories2 =  sm2.getNodeMemories();
 
-         long mask = sm2.getAllLinkedMaskTest();
-         for ( int i = 0; i < smNodeMemories2.size(); i++ ) {
-             mask = mask << 1;
-         }
+         long mask = sm2.getAllLinkedMaskTest() << smNodeMemories2.size();
          sm1.setAllLinkedMaskTest( mask & sm1.getAllLinkedMaskTest() );
 
-
-         mask = sm2.getLinkedNodeMask();
-         for ( int i = 0; i < smNodeMemories2.size(); i++ ) {
-             mask = mask << 1;
-         }
+         mask = sm2.getAllLinkedMaskTest() << smNodeMemories2.size();
          sm1.setLinkedNodeMask(mask & sm1.getLinkedNodeMask());
      }
 

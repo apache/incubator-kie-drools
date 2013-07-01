@@ -217,7 +217,6 @@ public class ExistsNode extends BetaNode {
         if ( isUnlinkingEnabled() ) {
             rightTuple.setPropagationContext( pctx );
             doDeleteRightTuple( rightTuple,
-                                this,
                                 workingMemory,
                                 memory );
             return;
