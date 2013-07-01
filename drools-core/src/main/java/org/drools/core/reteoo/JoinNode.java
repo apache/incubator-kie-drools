@@ -172,7 +172,6 @@ public class JoinNode extends BetaNode {
         if ( isUnlinkingEnabled() ) {
             rightTuple.setPropagationContext( pctx );
             doDeleteRightTuple( rightTuple,
-                                this,
                                 wm,
                                 memory );
             return;

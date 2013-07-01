@@ -358,14 +358,13 @@ public abstract class BetaNode extends LeftTupleSource
                                            final InternalWorkingMemory workingMemory );
 
 
-    public static void doDeleteRightTuple(final RightTuple rightTuple,
-                                          final BetaNode bnode,
-                                          final InternalWorkingMemory wm,
-                                          final BetaMemory memory) {
+    public void doDeleteRightTuple(final RightTuple rightTuple,
+                                   final InternalWorkingMemory wm,
+                                   final BetaMemory memory) {
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
 
         boolean stagedDeleteWasEmpty = false;
-        if ( bnode.isStreamMode() ) {
+        if ( isStreamMode() ) {
             stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
             memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, rightTuple.getPropagationContext(), memory ));
             log.trace( "JoinNode delete queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PropagationContextImpl.intEnumToString( rightTuple.getPropagationContext() ), rightTuple );
@@ -654,7 +653,7 @@ public abstract class BetaNode extends LeftTupleSource
             rightTuple.setPropagationContext( context );
             if ( isUnlinkingEnabled() ) {
                 BetaMemory bm  = getBetaMemory( (BetaNode) rightTuple.getRightTupleSink(), wm );
-                doDeleteRightTuple( rightTuple, ( BetaNode ) rightTuple.getRightTupleSink(), wm, bm );
+                (( BetaNode ) rightTuple.getRightTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
             }  else {
                 rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
                                                                   context,

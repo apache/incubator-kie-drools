@@ -81,7 +81,7 @@ public class ModifyPreviousTuples {
                 if ( unlinkingEnabled) {
                     BetaMemory bm = BetaNode.getBetaMemory( node, wm );
                     current.setPropagationContext( pctx );
-                    BetaNode.doDeleteRightTuple( current, node, wm, bm );
+                    node.doDeleteRightTuple( current, wm, bm );
                 } else {
                     node.retractRightTuple( current,
                                             pctx,

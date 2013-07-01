@@ -325,7 +325,7 @@ public class AccumulateNode extends BetaNode {
         
         if ( isUnlinkingEnabled() ) {
             rightTuple.setPropagationContext( pctx );
-            doDeleteRightTuple( rightTuple, this, workingMemory, bm );
+            doDeleteRightTuple( rightTuple, workingMemory, bm );
             return;
         } 
 

@@ -305,7 +305,7 @@ public class EntryPointNode extends ObjectSource
                     if ( unlinkingEnabled) {
                         rightTuple.setPropagationContext( pctx );
                         BetaMemory bm = BetaNode.getBetaMemory( ( BetaNode ) rightTuple.getRightTupleSink(), wm );
-                        BetaNode.doDeleteRightTuple( rightTuple, ( BetaNode ) rightTuple.getRightTupleSink(), wm, bm );
+                        (( BetaNode ) rightTuple.getRightTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
                     } else {
                         (( BetaNode ) rightTuple.getRightTupleSink()).retractRightTuple( rightTuple,
                                                                                          pctx,
