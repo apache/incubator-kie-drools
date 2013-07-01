@@ -66,14 +66,24 @@ import org.jbpm.workflow.instance.node.ThrowLinkNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.definition.process.Node;
+import org.kie.api.runtime.Environment;
 
 public class NodeInstanceFactoryRegistry {
 	
-    public static final NodeInstanceFactoryRegistry INSTANCE = new NodeInstanceFactoryRegistry();
+    private static final NodeInstanceFactoryRegistry INSTANCE = new NodeInstanceFactoryRegistry();
 
     private Map<Class< ? extends Node>, NodeInstanceFactory> registry;
+    
+    public static NodeInstanceFactoryRegistry getInstance(Environment environment) {
+        // allow custom NodeInstanceFactoryRegistry to be given as part of the environment - e.g simulation
+        if (environment != null && environment.get("NodeInstanceFactoryRegistry") != null) {
+            return (NodeInstanceFactoryRegistry) environment.get("NodeInstanceFactoryRegistry");
+        }
+        
+        return INSTANCE;
+    }
 
-    private NodeInstanceFactoryRegistry() {
+    protected NodeInstanceFactoryRegistry() {
         this.registry = new HashMap<Class< ? extends Node>, NodeInstanceFactory>();
 
         // hard wired nodes:

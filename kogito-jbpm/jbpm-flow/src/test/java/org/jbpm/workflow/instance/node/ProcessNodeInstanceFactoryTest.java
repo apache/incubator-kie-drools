@@ -27,11 +27,11 @@ public class ProcessNodeInstanceFactoryTest extends TestCase {
     
     public void testDefaultEntries() throws Exception {
         Node node = new ActionNode();
-        assertEquals( CreateNewNodeFactory.class, NodeInstanceFactoryRegistry.INSTANCE.getProcessNodeInstanceFactory( node ).getClass() );       
+        assertEquals( CreateNewNodeFactory.class, NodeInstanceFactoryRegistry.getInstance(null).getProcessNodeInstanceFactory( node ).getClass() );       
     }
     
     public void testDiscoveredEntry() {
-    	NodeInstanceFactoryRegistry.INSTANCE.register(MockNode.class, new MockNodeInstanceFactory(  new MockNodeInstance(  new MockNode() ) ));
-        assertEquals( MockNodeInstanceFactory.class, NodeInstanceFactoryRegistry.INSTANCE.getProcessNodeInstanceFactory( new MockNode() ).getClass() );
+    	NodeInstanceFactoryRegistry.getInstance(null).register(MockNode.class, new MockNodeInstanceFactory(  new MockNodeInstance(  new MockNode() ) ));
+        assertEquals( MockNodeInstanceFactory.class, NodeInstanceFactoryRegistry.getInstance(null).getProcessNodeInstanceFactory( new MockNode() ).getClass() );
     }
 }

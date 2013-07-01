@@ -238,7 +238,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
             return nodeInstance;
         }
         
-        NodeInstanceFactory conf = NodeInstanceFactoryRegistry.INSTANCE.getProcessNodeInstanceFactory(node);
+        NodeInstanceFactory conf = NodeInstanceFactoryRegistry.getInstance(getProcessInstance().getKnowledgeRuntime().getEnvironment()).getProcessNodeInstanceFactory(node);
         if (conf == null) {
             throw new IllegalArgumentException("Illegal node type: " + node.getClass());
         }

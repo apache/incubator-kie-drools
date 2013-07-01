@@ -19,10 +19,7 @@ package org.jbpm.workflow.instance.node;
 
 import junit.framework.TestCase;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.core.Node;
@@ -30,6 +27,9 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class EndNodeInstanceTest extends TestCase {
 	
@@ -39,7 +39,7 @@ public class EndNodeInstanceTest extends TestCase {
         
         MockNode mockNode = new MockNode();        
         MockNodeInstanceFactory factory = new MockNodeInstanceFactory( new MockNodeInstance( mockNode ) );
-        NodeInstanceFactoryRegistry.INSTANCE.register(  mockNode.getClass(), factory );
+        NodeInstanceFactoryRegistry.getInstance(ksession.getEnvironment()).register(  mockNode.getClass(), factory );
         
         WorkflowProcessImpl process = new WorkflowProcessImpl(); 
         

@@ -178,7 +178,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public NodeInstance getNodeInstance(final Node node) {
-		NodeInstanceFactory conf = NodeInstanceFactoryRegistry.INSTANCE.getProcessNodeInstanceFactory(node);
+		NodeInstanceFactory conf = NodeInstanceFactoryRegistry.getInstance(getKnowledgeRuntime().getEnvironment()).getProcessNodeInstanceFactory(node);
 		if (conf == null) {
 			throw new IllegalArgumentException("Illegal node type: "
 					+ node.getClass());
