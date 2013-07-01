@@ -57,7 +57,7 @@ public class DynamicRulesChangesTest {
         return kbase.newStatefulKnowledgeSession();
     }
 
-    @Test(timeout=10000) @Ignore("beta4 phreak")
+    @Test//(timeout=10000) @Ignore("beta4 phreak")
     public void testConcurrentRuleAdditions() throws Exception {
         parallelExecute(RulesExecutor.getSolvers());
     }
@@ -302,8 +302,6 @@ public class DynamicRulesChangesTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         KieSession ksession = kbase.newKieSession();
 
-        dumpRete(kbase);
-
         final List<String> events = new ArrayList<String>();
 
         ksession.setGlobal("events", events);
@@ -324,7 +322,6 @@ public class DynamicRulesChangesTest {
         // phase 3
         ksession.delete(fireFact1);
         ksession.fireAllRules();
-        System.out.println(events);
         assertEquals(5, events.size());
     }
 

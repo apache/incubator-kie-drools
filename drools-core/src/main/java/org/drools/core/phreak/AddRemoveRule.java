@@ -88,22 +88,9 @@ public class AddRemoveRule {
                         p++;
                     }
                 } else {
-                    // splitStartLeftTupleSource is the tip of the segment. everythign from splitStartLeftTupleSource
-                    // and above s the same for all segments. So we can get 0, 5, or 10. This will then create a new
-                    // child, and add it to to the end of the parent SegmentMemory list.
-
-                    PathMemory pmem = pathMems.get(0);
-                    SegmentMemory[] smems = pmem.getSegmentMemories();
-
-                    SegmentMemory splitSmem = null;
-                    for (int i = 0; i < smems.length; i++ ) {
-                        SegmentMemory sm = smems[i];
-                        if ( sm == null ) {
-                            continue; // SegmentMemory is not yet initialized
-                        }
-
-                        correctSegmentBeforeSplitOnAdd(wm, newPmem, 0, pmem, sm);
-                    }
+                    SegmentMemory sm = pathMems.get(0).getSegmentMemories()[s];
+                    initNewSegment(splitStartLeftTupleSource, wm, sm);
+                    correctSegmentBeforeSplitOnAdd(wm, newPmem, 0, pathMems.get(0), sm);
                 }
             }
 
