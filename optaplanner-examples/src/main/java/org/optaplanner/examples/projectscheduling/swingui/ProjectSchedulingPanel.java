@@ -16,8 +16,10 @@
 
 package org.optaplanner.examples.projectscheduling.swingui;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -62,10 +64,6 @@ public class ProjectSchedulingPanel extends SolutionPanel {
         return true;
     }
 
-    private ProjectsSchedule getProjectsSchedule() {
-        return (ProjectsSchedule) solutionBusiness.getSolution();
-    }
-
     public void resetPanel(Solution solution) {
         removeAll();
         ProjectsSchedule projectsSchedule = (ProjectsSchedule) solution;
@@ -77,10 +75,16 @@ public class ProjectSchedulingPanel extends SolutionPanel {
         YIntervalSeriesCollection seriesCollection = new YIntervalSeriesCollection();
         Map<Project, YIntervalSeries> projectSeriesMap = new LinkedHashMap<Project, YIntervalSeries>(
                 projectsSchedule.getProjectList().size());
+        YIntervalRenderer renderer = new YIntervalRenderer();
         int maximumEndDate = 0;
+        int seriesIndex = 0;
         for (Project project : projectsSchedule.getProjectList()) {
             YIntervalSeries projectSeries = new YIntervalSeries(project.getLabel());
+            seriesCollection.addSeries(projectSeries);
             projectSeriesMap.put(project, projectSeries);
+            renderer.setSeriesShape(seriesIndex, new Rectangle());
+            renderer.setSeriesStroke(seriesIndex, new BasicStroke(3.0f));
+            seriesIndex++;
         }
         for (Allocation allocation : projectsSchedule.getAllocationList()) {
             Integer startDate = allocation.getStartDate();
@@ -92,10 +96,6 @@ public class ProjectSchedulingPanel extends SolutionPanel {
                 maximumEndDate = Math.max(maximumEndDate, endDate);
             }
         }
-        for (YIntervalSeries projectSeries : projectSeriesMap.values()) {
-
-            seriesCollection.addSeries(projectSeries);
-        }
         JFreeChart chart = ChartFactory.createScatterPlot("Project scheduling", "Job", "Day (start and end date)",
                 seriesCollection, PlotOrientation.HORIZONTAL, true, false, false);
         XYPlot plot = (XYPlot) chart.getPlot();
@@ -104,8 +104,7 @@ public class ProjectSchedulingPanel extends SolutionPanel {
         domainAxis.setInverted(true);
         ValueAxis rangeAxis = plot.getRangeAxis();
         rangeAxis.setRange(-0.5, maximumEndDate + 0.5);
-        plot.setRenderer(new YIntervalRenderer());
-
+        plot.setRenderer(renderer);
         return chart;
     }
 
