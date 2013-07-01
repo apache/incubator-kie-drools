@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.score.director;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -308,7 +309,10 @@ public class ScoreDirectorFactoryConfig {
                 kieFileSystem.write(path, kieResources.newInputStreamResource(scoreDrlIn, "UTF-8"));
                 // TODO use getResource() and newClassPathResource() instead
                 // URL scoreDrlURL = getClass().getResource(scoreDrl);
-                // if (scoreDrlURL == null) ...
+                // if (scoreDrlURL == null) {
+                //     throw new IllegalArgumentException("The scoreDrl (" + scoreDrl
+                //             + ") does not exist as a classpath resource.");
+                // }
                 // kieFileSystem.write(kieResources.newClassPathResource(scoreDrl, "UTF-8"));
             }
             KieBuilder kieBuilder = kieServices.newKieBuilder(kieFileSystem);
