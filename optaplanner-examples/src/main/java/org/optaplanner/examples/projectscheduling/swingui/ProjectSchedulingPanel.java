@@ -45,7 +45,6 @@ import org.jfree.data.gantt.XYTaskDataset;
 import org.jfree.data.time.SimpleTimePeriod;
 import org.jfree.data.xy.YIntervalSeries;
 import org.jfree.data.xy.YIntervalSeriesCollection;
-import org.joda.time.LocalDate;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
