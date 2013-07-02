@@ -36,9 +36,9 @@ import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.Project;
 import org.optaplanner.examples.projectjobscheduling.domain.ProjectsSchedule;
 
-public class ProjectSchedulingPanel extends SolutionPanel {
+public class ProjectJobSchedulingPanel extends SolutionPanel {
 
-    public ProjectSchedulingPanel() {
+    public ProjectJobSchedulingPanel() {
         setLayout(new BorderLayout());
     }
 
@@ -87,7 +87,7 @@ public class ProjectSchedulingPanel extends SolutionPanel {
         rangeAxis.setRange(-0.5, maximumEndDate + 0.5);
         XYPlot plot = new XYPlot(seriesCollection, domainAxis, rangeAxis, renderer);
         plot.setOrientation(PlotOrientation.HORIZONTAL);
-        return new JFreeChart("Project scheduling", JFreeChart.DEFAULT_TITLE_FONT,
+        return new JFreeChart("Project Job Scheduling", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
     }
 

@@ -8,7 +8,7 @@
     <scoreDefinitionType>BENDABLE</scoreDefinitionType>
     <bendableHardLevelCount>1</bendableHardLevelCount>
     <bendableSoftLevelCount>2</bendableSoftLevelCount>
-    <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.solver.score.ProjectSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.solver.score.ProjectJobSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
   </scoreDirectorFactory>
   <termination>
     <maximumSecondsSpend>290</maximumSecondsSpend>

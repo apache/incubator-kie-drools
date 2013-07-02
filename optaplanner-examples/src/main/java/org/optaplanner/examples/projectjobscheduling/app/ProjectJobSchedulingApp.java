@@ -22,18 +22,18 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.projectjobscheduling.persistence.ProjectSchedulingDao;
-import org.optaplanner.examples.projectjobscheduling.persistence.ProjectSchedulingSolutionImporter;
-import org.optaplanner.examples.projectjobscheduling.swingui.ProjectSchedulingPanel;
+import org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingDao;
+import org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingSolutionImporter;
+import org.optaplanner.examples.projectjobscheduling.swingui.ProjectJobSchedulingPanel;
 
-public class ProjectSchedulingApp extends CommonApp {
+public class ProjectJobSchedulingApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
-            = "/org/optaplanner/examples/projectjobscheduling/solver/projectSchedulingSolverConfig.xml";
+            = "/org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingSolverConfig.xml";
 
     public static void main(String[] args) {
         fixateLookAndFeel();
-        new ProjectSchedulingApp().init();
+        new ProjectJobSchedulingApp().init();
     }
 
     @Override
@@ -45,17 +45,17 @@ public class ProjectSchedulingApp extends CommonApp {
 
     @Override
     protected SolutionPanel createSolutionPanel() {
-        return new ProjectSchedulingPanel();
+        return new ProjectJobSchedulingPanel();
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new ProjectSchedulingDao();
+        return new ProjectJobSchedulingDao();
     }
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new ProjectSchedulingSolutionImporter();
+        return new ProjectJobSchedulingSolutionImporter();
     }
 
 }

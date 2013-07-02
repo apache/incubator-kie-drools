@@ -46,21 +46,21 @@ import org.optaplanner.examples.projectjobscheduling.domain.ProjectsSchedule;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.LocalResource;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 
-public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImporter {
+public class ProjectJobSchedulingSolutionImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
-        new ProjectSchedulingSolutionImporter().convertAll();
+        new ProjectJobSchedulingSolutionImporter().convertAll();
     }
 
-    public ProjectSchedulingSolutionImporter() {
-        super(new ProjectSchedulingDao());
+    public ProjectJobSchedulingSolutionImporter() {
+        super(new ProjectJobSchedulingDao());
     }
 
     public TxtInputBuilder createTxtInputBuilder() {
-        return new ProjectSchedulingInputBuilder();
+        return new ProjectJobSchedulingInputBuilder();
     }
 
-    public class ProjectSchedulingInputBuilder extends TxtInputBuilder {
+    public class ProjectJobSchedulingInputBuilder extends TxtInputBuilder {
 
         private ProjectsSchedule projectsSchedule;
 

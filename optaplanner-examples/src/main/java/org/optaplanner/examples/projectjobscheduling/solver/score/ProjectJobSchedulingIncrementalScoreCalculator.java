@@ -20,7 +20,7 @@ import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.Nonre
 import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.RenewableResourceCapacityTracker;
 import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.ResourceCapacityTracker;
 
-public class ProjectSchedulingIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<ProjectsSchedule> {
+public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<ProjectsSchedule> {
 
     private Map<Resource, ResourceCapacityTracker> resourceCapacityTrackerMap;
     private Map<Project, Integer> projectDelayMap;
