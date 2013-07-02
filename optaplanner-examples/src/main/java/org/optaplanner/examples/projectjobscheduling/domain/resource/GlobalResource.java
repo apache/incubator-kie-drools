@@ -18,7 +18,7 @@ package org.optaplanner.examples.projectjobscheduling.domain.resource;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("PsGlobalResource")
+@XStreamAlias("PjsGlobalResource")
 public class GlobalResource extends Resource {
 
     // ************************************************************************

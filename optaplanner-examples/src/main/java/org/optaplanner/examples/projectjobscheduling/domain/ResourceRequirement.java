@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 
-@XStreamAlias("PsResourceRequirement")
+@XStreamAlias("PjsResourceRequirement")
 public class ResourceRequirement extends AbstractPersistable {
 
     private ExecutionMode executionMode;

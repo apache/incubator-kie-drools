@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("PsResource")
+@XStreamAlias("PjsResource")
 @XStreamInclude({
         GlobalResource.class,
         LocalResource.class

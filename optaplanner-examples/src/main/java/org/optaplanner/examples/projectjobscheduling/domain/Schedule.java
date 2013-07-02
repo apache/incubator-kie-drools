@@ -31,8 +31,8 @@ import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 import org.optaplanner.persistence.xstream.XStreamBendableScoreConverter;
 
 @PlanningSolution
-@XStreamAlias("PsProjectsSchedule")
-public class ProjectsSchedule extends AbstractPersistable implements Solution<BendableScore> {
+@XStreamAlias("PjsSchedule")
+public class Schedule extends AbstractPersistable implements Solution<BendableScore> {
 
     private List<Project> projectList;
     private List<Job> jobList;

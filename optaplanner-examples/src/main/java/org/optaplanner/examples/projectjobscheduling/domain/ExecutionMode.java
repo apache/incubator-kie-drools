@@ -21,7 +21,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("PsExecutionMode")
+@XStreamAlias("PjsExecutionMode")
 public class ExecutionMode extends AbstractPersistable {
 
     private Job job;

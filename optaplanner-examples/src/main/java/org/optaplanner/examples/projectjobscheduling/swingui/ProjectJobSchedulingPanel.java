@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.Project;
-import org.optaplanner.examples.projectjobscheduling.domain.ProjectsSchedule;
+import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
 public class ProjectJobSchedulingPanel extends SolutionPanel {
 
@@ -49,19 +49,19 @@ public class ProjectJobSchedulingPanel extends SolutionPanel {
 
     public void resetPanel(Solution solution) {
         removeAll();
-        ProjectsSchedule projectsSchedule = (ProjectsSchedule) solution;
-        ChartPanel chartPanel = new ChartPanel(createChart(projectsSchedule));
+        Schedule schedule = (Schedule) solution;
+        ChartPanel chartPanel = new ChartPanel(createChart(schedule));
         add(chartPanel, BorderLayout.CENTER);
     }
 
-    private JFreeChart createChart(ProjectsSchedule projectsSchedule) {
+    private JFreeChart createChart(Schedule schedule) {
         YIntervalSeriesCollection seriesCollection = new YIntervalSeriesCollection();
         Map<Project, YIntervalSeries> projectSeriesMap = new LinkedHashMap<Project, YIntervalSeries>(
-                projectsSchedule.getProjectList().size());
+                schedule.getProjectList().size());
         YIntervalRenderer renderer = new YIntervalRenderer();
         int maximumEndDate = 0;
         int seriesIndex = 0;
-        for (Project project : projectsSchedule.getProjectList()) {
+        for (Project project : schedule.getProjectList()) {
             YIntervalSeries projectSeries = new YIntervalSeries(project.getLabel());
             seriesCollection.addSeries(projectSeries);
             projectSeriesMap.put(project, projectSeries);
@@ -69,7 +69,7 @@ public class ProjectJobSchedulingPanel extends SolutionPanel {
             renderer.setSeriesStroke(seriesIndex, new BasicStroke(3.0f));
             seriesIndex++;
         }
-        for (Allocation allocation : projectsSchedule.getAllocationList()) {
+        for (Allocation allocation : schedule.getAllocationList()) {
             Integer startDate = allocation.getStartDate();
             Integer endDate = allocation.getEndDate();
             if (startDate != null && endDate != null) {
@@ -81,7 +81,7 @@ public class ProjectJobSchedulingPanel extends SolutionPanel {
         }
         NumberAxis domainAxis = new NumberAxis("Job");
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        domainAxis.setRange(-0.5, projectsSchedule.getAllocationList().size() - 0.5);
+        domainAxis.setRange(-0.5, schedule.getAllocationList().size() - 0.5);
         domainAxis.setInverted(true);
         NumberAxis rangeAxis = new NumberAxis("Day (start to end date)");
         rangeAxis.setRange(-0.5, maximumEndDate + 0.5);

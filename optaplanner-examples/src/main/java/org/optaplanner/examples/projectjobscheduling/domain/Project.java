@@ -22,7 +22,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.LocalResource;
 
-@XStreamAlias("PsProject")
+@XStreamAlias("PjsProject")
 public class Project extends AbstractPersistable {
 
     private int releaseDate;

@@ -17,12 +17,12 @@
 package org.optaplanner.examples.projectjobscheduling.persistence;
 
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
-import org.optaplanner.examples.projectjobscheduling.domain.ProjectsSchedule;
+import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
 public class ProjectJobSchedulingDao extends XStreamSolutionDao {
 
     public ProjectJobSchedulingDao() {
-        super("projectjobscheduling", ProjectsSchedule.class);
+        super("projectjobscheduling", Schedule.class);
     }
 
 }

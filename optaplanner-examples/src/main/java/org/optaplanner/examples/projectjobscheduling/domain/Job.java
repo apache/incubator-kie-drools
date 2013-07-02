@@ -21,7 +21,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("PsJob")
+@XStreamAlias("PjsJob")
 public class Job extends AbstractPersistable {
 
     private Project project;

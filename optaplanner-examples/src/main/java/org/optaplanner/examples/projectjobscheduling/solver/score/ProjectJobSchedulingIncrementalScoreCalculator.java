@@ -13,14 +13,14 @@ import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
 import org.optaplanner.examples.projectjobscheduling.domain.JobType;
 import org.optaplanner.examples.projectjobscheduling.domain.Project;
-import org.optaplanner.examples.projectjobscheduling.domain.ProjectsSchedule;
+import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.NonrenewableResourceCapacityTracker;
 import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.RenewableResourceCapacityTracker;
 import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.ResourceCapacityTracker;
 
-public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<ProjectsSchedule> {
+public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<Schedule> {
 
     private Map<Resource, ResourceCapacityTracker> resourceCapacityTrackerMap;
     private Map<Project, Integer> projectDelayMap;
@@ -33,8 +33,8 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
     private int minimalReleaseDate;
     private int maximalEndDate;
 
-    public void resetWorkingSolution(ProjectsSchedule projectsSchedule) {
-        List<Resource> resourceList = projectsSchedule.getResourceList();
+    public void resetWorkingSolution(Schedule schedule) {
+        List<Resource> resourceList = schedule.getResourceList();
         resourceCapacityTrackerMap = new HashMap<Resource, ResourceCapacityTracker>(resourceList.size());
         for (Resource resource : resourceList) {
             resourceCapacityTrackerMap.put(resource, resource.isRenewable()
@@ -47,12 +47,12 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
         totalProjectDelay = 0;
         minimalReleaseDate = Integer.MAX_VALUE;
         maximalEndDate = 0;
-        for (Project p: projectsSchedule.getProjectList()) {
+        for (Project p: schedule.getProjectList()) {
             minimalReleaseDate = Math.min(p.getReleaseDate(), minimalReleaseDate); 
         }
         projectDelayMap = new HashMap<Project, Integer>();
         allocationsPerProjectMap = new HashMap<Project, Set<Allocation>>();
-        for (Allocation allocation : projectsSchedule.getAllocationList()) {
+        for (Allocation allocation : schedule.getAllocationList()) {
             insert(allocation);
         }
     }

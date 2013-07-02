@@ -29,7 +29,7 @@ import org.optaplanner.examples.projectjobscheduling.domain.solver.NotSourceOrSi
 import org.optaplanner.examples.projectjobscheduling.domain.solver.PredecessorsDoneDateUpdatingVariableListener;
 
 @PlanningEntity(movableEntitySelectionFilter = NotSourceOrSinkAllocationFilter.class)
-@XStreamAlias("PsAllocation")
+@XStreamAlias("PjsAllocation")
 public class Allocation extends AbstractPersistable {
 
     private Job job;
