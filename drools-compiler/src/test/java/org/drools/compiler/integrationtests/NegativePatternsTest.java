@@ -18,6 +18,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.SessionEntryPoint;
 
 import static org.junit.Assert.assertEquals;
+import org.junit.Ignore;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
@@ -72,6 +73,7 @@ public class NegativePatternsTest {
     }
 
     @Test
+    @Ignore
     public void testSingleEvent() throws InterruptedException {
         SessionEntryPoint entryPoint = ksession.getEntryPoint("EventStream");
 
@@ -106,6 +108,7 @@ public class NegativePatternsTest {
     }
 
     @Test
+    @Ignore
     public void testConstrainedAbsence() throws InterruptedException {
         SessionEntryPoint entryPoint = ksession.getEntryPoint("EventStream");
 
@@ -135,6 +138,7 @@ public class NegativePatternsTest {
     }
 
     @Test
+    @Ignore
     public void testMultipleEvents() throws InterruptedException {
         SessionEntryPoint entryPoint = ksession.getEntryPoint("EventStream");
 
@@ -169,6 +173,7 @@ public class NegativePatternsTest {
     }
 
     @Test
+    @Ignore
     public void testMultipleEntryPoints() throws InterruptedException {
         SessionEntryPoint entryPoint = ksession.getEntryPoint("EventStream");
 
