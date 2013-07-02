@@ -28,6 +28,7 @@
               javax.enterprise.*;resolution:=optional,
               javax.inject.*;resolution:=optional,
               org.drools.compiler.builder.impl,
+              org.drools.core.command.impl,
               org.drools.core.concurrent,
               org.drools.core.impl,
               org.drools.core.io.impl,
