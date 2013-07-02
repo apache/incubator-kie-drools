@@ -66,10 +66,10 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
 
         private int projectListSize;
         private int resourceListSize;
+        private int globalResourceListSize;
 
         private long projectId = 0L;
-        private long globalResourceId = 0L;
-        private long localResourceId = 0L;
+        private long resourceId = 0L;
         private long jobId = 0L;
         private long executionModeId = 0L;
         private long resourceRequirementId = 0L;
@@ -86,21 +86,14 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
             }
             removePointlessExecutionModes();
             createAllocationList();
-//            BigInteger possibleSolutionSize = BigInteger.valueOf(projectsSchedule.getBedList().size()).pow(
-//                    projectsSchedule.getAdmissionPartList().size());
-//            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-//            logger.info("PatientAdmissionSchedule {} has {} specialisms, {} equipments, {} departments, {} rooms, "
-//                    + "{} beds, {} nights, {} patients and {} admissions with a search space of {}.",
-//                    getInputId(),
-//                    projectsSchedule.getSpecialismList().size(),
-//                    projectsSchedule.getEquipmentList().size(),
-//                    projectsSchedule.getDepartmentList().size(),
-//                    projectsSchedule.getRoomList().size(),
-//                    projectsSchedule.getBedList().size(),
-//                    projectsSchedule.getNightList().size(),
-//                    projectsSchedule.getPatientList().size(),
-//                    projectsSchedule.getAdmissionPartList().size(),
-//                    flooredPossibleSolutionSize);
+            logger.info("ProjectsSchedule {} has {} projects, {} jobs, {} execution modes, {} resources"
+                    + " and {} resource requirements.",
+                    getInputId(),
+                    projectsSchedule.getProjectList().size(),
+                    projectsSchedule.getJobList().size(),
+                    projectsSchedule.getExecutionModeList().size(),
+                    projectsSchedule.getResourceList().size(),
+                    projectsSchedule.getResourceRequirementList().size());
             return projectsSchedule;
         }
 
@@ -129,20 +122,19 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
         private void readResourceList() throws IOException {
             resourceListSize = readIntegerValue();
             String[] tokens = splitBySpacesOrTabs(readStringValue(), resourceListSize);
-            List<GlobalResource> globalResourceList = new ArrayList<GlobalResource>(resourceListSize);
+            List<Resource> resourceList = new ArrayList<Resource>(resourceListSize * projectListSize * 10);
             for (int i = 0; i < resourceListSize; i++) {
                 int capacity = Integer.parseInt(tokens[i]);
                 if (capacity != -1) {
                     GlobalResource resource = new GlobalResource();
-                    resource.setId(globalResourceId);
+                    resource.setId(resourceId);
                     resource.setCapacity(capacity);
-                    globalResourceList.add(resource);
-                    globalResourceId++;
+                    resourceList.add(resource);
+                    resourceId++;
                 }
             }
-            projectsSchedule.setGlobalResourceList(globalResourceList);
-            projectsSchedule.setLocalResourceList(new ArrayList<LocalResource>(
-                    (resourceListSize - globalResourceList.size()) * projectListSize));
+            globalResourceListSize = resourceList.size();
+            projectsSchedule.setResourceList(resourceList);
             projectsSchedule.setResourceRequirementList(new ArrayList<ResourceRequirement>(
                     projectListSize * 10 * 5 * resourceListSize));
         }
@@ -171,17 +163,14 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
         public class ProjectFileInputBuilder extends TxtInputBuilder {
 
             private ProjectsSchedule projectsSchedule;
-            private List<GlobalResource> globalResourceList;
             private Project project;
 
             private int jobListSize;
-            private int globalResourceListSize;
             private int renewableLocalResourceSize;
             private int nonrenewableLocalResourceSize;
 
             public ProjectFileInputBuilder(ProjectsSchedule projectsSchedule, Project project) {
                 this.projectsSchedule = projectsSchedule;
-                globalResourceList = projectsSchedule.getGlobalResourceList();
                 this.project = project;
             }
 
@@ -212,7 +201,6 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
 
             private void readResourceList() throws IOException {
                 readConstantLine("RESOURCES");
-                globalResourceListSize = globalResourceList.size();
                 int renewableResourceSize = readIntegerValue("- renewable                 :", "R");
                 if (renewableResourceSize < globalResourceListSize) {
                     throw new IllegalArgumentException("The renewableResourceSize (" + renewableResourceSize
@@ -229,22 +217,22 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                         globalResourceListSize + renewableLocalResourceSize + nonrenewableLocalResourceSize);
                 for (int i = 0; i < renewableLocalResourceSize; i++) {
                     LocalResource localResource = new LocalResource();
-                    localResource.setId(localResourceId);
+                    localResource.setId(resourceId);
                     localResource.setProject(project);
                     localResource.setRenewable(true);
-                    localResourceId++;
+                    resourceId++;
                     localResourceList.add(localResource);
                 }
                 for (int i = 0; i < nonrenewableLocalResourceSize; i++) {
                     LocalResource localResource = new LocalResource();
-                    localResource.setId(localResourceId);
+                    localResource.setId(resourceId);
                     localResource.setProject(project);
                     localResource.setRenewable(false);
-                    localResourceId++;
+                    resourceId++;
                     localResourceList.add(localResource);
                 }
                 project.setLocalResourceList(localResourceList);
-                projectsSchedule.getLocalResourceList().addAll(localResourceList);
+                projectsSchedule.getResourceList().addAll(localResourceList);
                 readRegexConstantLine("\\*+");
             }
 
@@ -354,7 +342,7 @@ public class ProjectSchedulingSolutionImporter extends AbstractTxtSolutionImport
                                 resourceRequirement.setExecutionMode(executionMode);
                                 Resource resource;
                                 if (k < globalResourceListSize) {
-                                    resource = projectsSchedule.getGlobalResourceList().get(k);
+                                    resource = projectsSchedule.getResourceList().get(k);
                                 } else {
                                     resource = project.getLocalResourceList().get(k - globalResourceListSize);
                                 }

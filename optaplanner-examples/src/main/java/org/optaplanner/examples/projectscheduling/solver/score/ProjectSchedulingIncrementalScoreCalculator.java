@@ -36,16 +36,9 @@ public class ProjectSchedulingIncrementalScoreCalculator extends AbstractIncreme
     private int maximalEndDate;
 
     public void resetWorkingSolution(ProjectsSchedule projectsSchedule) {
-        List<GlobalResource> globalResourceList = projectsSchedule.getGlobalResourceList();
-        List<LocalResource> localResourceList = projectsSchedule.getLocalResourceList();
-        resourceCapacityTrackerMap = new HashMap<Resource, ResourceCapacityTracker>(
-                globalResourceList.size() + localResourceList.size());
-        for (Resource resource : globalResourceList) {
-            resourceCapacityTrackerMap.put(resource, resource.isRenewable()
-                    ? new RenewableResourceCapacityTracker(resource)
-                    : new NonrenewableResourceCapacityTracker(resource));
-        }
-        for (Resource resource : localResourceList) {
+        List<Resource> resourceList = projectsSchedule.getResourceList();
+        resourceCapacityTrackerMap = new HashMap<Resource, ResourceCapacityTracker>(resourceList.size());
+        for (Resource resource : resourceList) {
             resourceCapacityTrackerMap.put(resource, resource.isRenewable()
                     ? new RenewableResourceCapacityTracker(resource)
                     : new NonrenewableResourceCapacityTracker(resource));

@@ -36,11 +36,10 @@ import org.optaplanner.persistence.xstream.XStreamBendableScoreConverter;
 @XStreamAlias("PsProjectsSchedule")
 public class ProjectsSchedule extends AbstractPersistable implements Solution<BendableScore> {
 
-    private List<GlobalResource> globalResourceList;
     private List<Project> projectList;
-    private List<LocalResource> localResourceList;
     private List<Job> jobList;
     private List<ExecutionMode> executionModeList;
+    private List<Resource> resourceList;
     private List<ResourceRequirement> resourceRequirementList;
 
     private List<Allocation> allocationList;
@@ -48,28 +47,12 @@ public class ProjectsSchedule extends AbstractPersistable implements Solution<Be
     @XStreamConverter(value = XStreamBendableScoreConverter.class, ints = {1, 2})
     private BendableScore score;
 
-    public List<GlobalResource> getGlobalResourceList() {
-        return globalResourceList;
-    }
-
-    public void setGlobalResourceList(List<GlobalResource> globalResourceList) {
-        this.globalResourceList = globalResourceList;
-    }
-
     public List<Project> getProjectList() {
         return projectList;
     }
 
     public void setProjectList(List<Project> projectList) {
         this.projectList = projectList;
-    }
-
-    public List<LocalResource> getLocalResourceList() {
-        return localResourceList;
-    }
-
-    public void setLocalResourceList(List<LocalResource> localResourceList) {
-        this.localResourceList = localResourceList;
     }
 
     public List<Job> getJobList() {
@@ -86,6 +69,14 @@ public class ProjectsSchedule extends AbstractPersistable implements Solution<Be
 
     public void setExecutionModeList(List<ExecutionMode> executionModeList) {
         this.executionModeList = executionModeList;
+    }
+
+    public List<Resource> getResourceList() {
+        return resourceList;
+    }
+
+    public void setResourceList(List<Resource> resourceList) {
+        this.resourceList = resourceList;
     }
 
     public List<ResourceRequirement> getResourceRequirementList() {
@@ -119,11 +110,10 @@ public class ProjectsSchedule extends AbstractPersistable implements Solution<Be
 
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
-        facts.addAll(globalResourceList);
         facts.addAll(projectList);
-        facts.addAll(localResourceList);
         facts.addAll(jobList);
         facts.addAll(executionModeList);
+        facts.addAll(resourceList);
         facts.addAll(resourceRequirementList);
         // Do not add the planning entity's (allocationList) because that will be done automatically
         return facts;
