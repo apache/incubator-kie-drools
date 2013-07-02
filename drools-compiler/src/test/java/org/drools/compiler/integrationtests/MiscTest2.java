@@ -2170,4 +2170,39 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertTrue(kbuilder.hasResults(ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR));
     }
 
+    @Test
+    public void testTwoTimers() {
+        // BZ-980385
+        String str =
+                "import java.util.Date\n" +
+                "import java.util.List\n" +
+                "\n" +
+                "global List dates\n" +
+                "\n" +
+                "rule \"intervalRule\"\n" +
+                "  timer(int: 200ms 100ms)\n" +
+                "when\n" +
+                "  String(this == \"intervalRule\")\n" +
+                "then\n" +
+                "  Date date = new Date();\n" +
+                "  dates.add(date);\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "// this rule stops timer\n" +
+                "rule \"stopIntervalRule\"\n" +
+                "  timer(int: 320ms)\n" +
+                "when\n" +
+                "  $s : String(this == \"intervalRule\")\n" +
+                "then\n" +
+                "  retract($s);\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        assertEquals(0, ks.newKieBuilder( kfs ).buildAll().getResults().getMessages().size());
+
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+    }
 }

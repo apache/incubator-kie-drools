@@ -149,11 +149,12 @@ public class TimerNode extends LeftTupleSource
 
     public int hashCode() {
         int hash = this.leftInput.hashCode() ^ this.timer.hashCode();
-        for (int i = 0; i < calendarNames.length; i++) {
-            hash = hash ^ calendarNames[i].hashCode();
+        if (calendarNames != null) {
+            for (int i = 0; i < calendarNames.length; i++) {
+                hash = hash ^ calendarNames[i].hashCode();
+            }
         }
         return hash;
-
     }
 
     public boolean equals(final Object object) {
@@ -167,13 +168,15 @@ public class TimerNode extends LeftTupleSource
 
         final TimerNode other = (TimerNode) object;
 
-        if (other.getCalendarNames().length != calendarNames.length) {
-            return false;
-        }
-
-        for (int i = 0; i < calendarNames.length; i++) {
-            if (!other.getCalendarNames()[i].equals(calendarNames[i])) {
+        if (calendarNames != null) {
+            if (other.getCalendarNames() == null || other.getCalendarNames().length != calendarNames.length) {
                 return false;
+            }
+
+            for (int i = 0; i < calendarNames.length; i++) {
+                if (!other.getCalendarNames()[i].equals(calendarNames[i])) {
+                    return false;
+                }
             }
         }
 
