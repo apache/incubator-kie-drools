@@ -38,6 +38,8 @@ import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
 public class ProjectJobSchedulingPanel extends SolutionPanel {
 
+    public static final String LOGO_PATH = "/org/optaplanner/examples/projectjobscheduling/swingui/projectJobSchedulingLogo.png";
+
     public ProjectJobSchedulingPanel() {
         setLayout(new BorderLayout());
     }

@@ -49,6 +49,8 @@ import org.optaplanner.examples.nqueens.swingui.NQueensPanel;
 import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
 import org.optaplanner.examples.nurserostering.swingui.NurseRosteringPanel;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
+import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
+import org.optaplanner.examples.projectjobscheduling.swingui.ProjectJobSchedulingPanel;
 import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.tsp.swingui.TspPanel;
@@ -110,7 +112,7 @@ public class OptaPlannerExamplesApp extends JFrame {
     }
 
     private JPanel createBasicExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(5, 1, 5, 5));
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Basic examples");
         titledBorder.setTitleColor(TangoColorFactory.CHAMELEON_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
@@ -153,7 +155,7 @@ public class OptaPlannerExamplesApp extends JFrame {
     }
 
     private JPanel createRealExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(5, 1, 5, 5));
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Real examples");
         titledBorder.setTitleColor(TangoColorFactory.BUTTER_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
@@ -182,6 +184,15 @@ public class OptaPlannerExamplesApp extends JFrame {
                 new VehicleRoutingApp().init(OptaPlannerExamplesApp.this, false);
             }
         }));
+        panel.add(createExampleButton("Project job scheduling",
+                "Official competition name:" +
+                        " multi-mode resource-constrained multi-project scheduling problem (MRCMPSP)\n" +
+                        "Schedule all jobs in time and execution mode to minimize project delays.",
+                ProjectJobSchedulingPanel.LOGO_PATH, new Runnable() {
+            public void run() {
+                new ProjectJobSchedulingApp().init(OptaPlannerExamplesApp.this, false);
+            }
+        }));
         panel.add(createExampleButton("Hospital bed planning",
                 "Official competition name: PAS - Patient admission scheduling\n" +
                         "Assign patients to beds.",
@@ -194,7 +205,7 @@ public class OptaPlannerExamplesApp extends JFrame {
     }
 
     private JPanel createDifficultExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(5, 1, 5, 5));
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Difficult examples");
         titledBorder.setTitleColor(TangoColorFactory.SCARLET_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
