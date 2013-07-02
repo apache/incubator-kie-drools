@@ -30,7 +30,7 @@ public class KieModuleKieProject extends AbstractKieProject {
 
     private final InternalKieModule              kieModule;
 
-    private ProjectClassLoader                   cl;
+    private final ProjectClassLoader             cl;
 
     public KieModuleKieProject(InternalKieModule kieModule) {
         this.kieModule = kieModule;
@@ -43,16 +43,16 @@ public class KieModuleKieProject extends AbstractKieProject {
             kieModules.addAll( kieModule.getDependencies().values() );
             kieModules.add( kieModule );
             indexParts( kieModules, kJarFromKBaseName );
-            initClassLoader();
+            initClassLoader(cl);
         }
     }
 
-    private void initClassLoader() {
+    private void initClassLoader(ProjectClassLoader projectCL) {
         for (Map.Entry<String, byte[]> entry : getClassesMap().entrySet()) {
             if (entry.getValue() != null) {
                 String resourceName = entry.getKey();
                 String className = convertResourceToClassName(resourceName);
-                cl.storeClass(className, resourceName, entry.getValue());
+                projectCL.storeClass(className, resourceName, entry.getValue());
             }
         }
     }
@@ -74,9 +74,13 @@ public class KieModuleKieProject extends AbstractKieProject {
         return this.kJarFromKBaseName.get(kBaseName);
     }
 
-    @Override
     public ClassLoader getClassLoader() {
         return this.cl;
     }
 
+    public ClassLoader getClonedClassLoader() {
+        ProjectClassLoader clonedCL = createProjectClassLoader(cl.getParent());
+        initClassLoader(clonedCL);
+        return clonedCL;
+    }
 }

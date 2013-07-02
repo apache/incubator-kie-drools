@@ -156,7 +156,7 @@ public abstract class AbstractKieModule
                                                    ResultsImpl messages) {
         AbstractKieModule kModule = (AbstractKieModule) kieProject.getKieModuleForKBase( kBaseModel.getName() );
 
-        PackageBuilderConfiguration pconf = new PackageBuilderConfiguration( kieProject.getClassLoader() );
+        PackageBuilderConfiguration pconf = new PackageBuilderConfiguration( kieProject.getClonedClassLoader() );
         pconf.setCompilationCache( kModule.getCompilationCache( kBaseModel.getName() ) );
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pconf);

@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 public class DefaultKieSessionFromFileExampleTest {
 
     @Test
-    @Ignore
     public void testGo() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
