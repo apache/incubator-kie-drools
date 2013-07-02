@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <solutionClass>org.optaplanner.examples.projectjobscheduling.domain.ProjectsSchedule</solutionClass>
+  <planningEntityClass>org.optaplanner.examples.projectjobscheduling.domain.Allocation</planningEntityClass>
+
+  <scoreDirectorFactory>
+    <scoreDefinitionType>BENDABLE</scoreDefinitionType>
+    <bendableHardLevelCount>1</bendableHardLevelCount>
+    <bendableSoftLevelCount>2</bendableSoftLevelCount>
+    <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.solver.score.ProjectSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+  </scoreDirectorFactory>
+  <termination>
+    <maximumSecondsSpend>290</maximumSecondsSpend>
+  </termination>
+
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+  </constructionHeuristic>
+  <localSearch>
+    <unionMoveSelector>
+      <!--<moveIteratorFactory>-->
+        <!--<moveIteratorFactoryClass>org.optaplanner.examples.projectjobschedulinging.solver.move.chainshift.ChainShiftMoveIteratorFactory</moveIteratorFactoryClass>-->
+        <!--<fixedProbabilityWeight>2.0</fixedProbabilityWeight>-->
+      <!--</moveIteratorFactory>-->
+      <!-- Moves that assign various valid values to the entities -->
+      <changeMoveSelector>
+        <valueSelector>
+          <variableName>executionMode</variableName>
+        </valueSelector>
+        <!--<fixedProbabilityWeight>1.0</fixedProbabilityWeight>-->
+      </changeMoveSelector>
+      <changeMoveSelector>
+        <valueSelector>
+          <variableName>delay</variableName>
+        </valueSelector>
+        <!--<fixedProbabilityWeight>16.0</fixedProbabilityWeight>-->
+      </changeMoveSelector>
+    </unionMoveSelector>
+    <acceptor>
+      <entityTabuRatio>0.2</entityTabuRatio>
+      <fadingEntityTabuRatio>0.7</fadingEntityTabuRatio>
+      <lateAcceptanceSize>12000</lateAcceptanceSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>4</acceptedCountLimit>
+    </forager>
+  </localSearch>
+</solver>
