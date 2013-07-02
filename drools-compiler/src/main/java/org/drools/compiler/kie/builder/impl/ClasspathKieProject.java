@@ -332,8 +332,11 @@ public class ClasspathKieProject extends AbstractKieProject {
         return this.kJarFromKBaseName.get( kBaseName );
     }
 
-    @Override
     public ClassLoader getClassLoader() {
         return this.cl;
+    }
+
+    public ClassLoader getClonedClassLoader() {
+        return createProjectClassLoader(cl.getParent());
     }
 }

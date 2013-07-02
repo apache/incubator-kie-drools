@@ -24,5 +24,7 @@ public interface KieProject {
     
     ClassLoader getClassLoader();
 
+    ClassLoader getClonedClassLoader();
+
     ResultsImpl verify();
 }

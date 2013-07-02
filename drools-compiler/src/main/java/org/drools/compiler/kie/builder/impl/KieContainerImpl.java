@@ -110,7 +110,7 @@ public class KieContainerImpl
 
     private KieBase createKieBase(String kBaseName, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
         KieBaseModelImpl kBaseModel = (KieBaseModelImpl) kProject.getKieBaseModel(kBaseName);
-        ClassLoader cl = kieProject.getClassLoader(); // the most clone the CL, as each builder and rbase populates it
+        ClassLoader cl = kieProject.getClassLoader();
 
         InternalKieModule kModule = kieProject.getKieModuleForKBase( kBaseModel.getName() );
 
