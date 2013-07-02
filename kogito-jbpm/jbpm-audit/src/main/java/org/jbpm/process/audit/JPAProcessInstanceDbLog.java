@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * for the specific service command. 
  * </p>
  * While ProcessInstanceLog entities do not contain LOB's (which sometimes
- * necessitate the use of tx's even in <i>read</i> situations, we use
+ * necessitate the use of tx's even in <i>read</i> situations), we use
  * transactions here none-the-less, just to be safe. Obviously, if 
  * there is already a running transaction present, we don't do anything
  * to it. 
@@ -75,10 +75,6 @@ public class JPAProcessInstanceDbLog {
 
     public static void setEnvironment(Environment newEnv) { 
         env = newEnv;
-    }
-    
-    public void og() { 
-        
     }
     
     @SuppressWarnings("unchecked")

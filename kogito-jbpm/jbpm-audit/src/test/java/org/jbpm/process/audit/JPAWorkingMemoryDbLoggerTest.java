@@ -376,7 +376,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         assertNotNull(processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow", processInstance.getProcessId());
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getStatus());
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getStatus().intValue());
         List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {

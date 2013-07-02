@@ -43,22 +43,24 @@ public class NodeInstanceLog implements Serializable, AuditEvent {
     @GeneratedValue(strategy = GenerationType.AUTO, generator="nodeInstanceLogIdSeq")
 	private long id;
     
-    private int type;
     private long processInstanceId;
     private String processId;
-    private String nodeInstanceId;
-    private String nodeId;
-    private String nodeName;
+    
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "log_date")
     private Date date;
     
+    private int type;
+    private String nodeInstanceId;
+    private String nodeId;
+    private String nodeName;
     private String nodeType;
     private Long workItemId;    
     private String connection;
+    
     private String externalId;
     
-    NodeInstanceLog() {
+    public NodeInstanceLog() {
     }
     
 	public NodeInstanceLog(int type, long processInstanceId, String processId,

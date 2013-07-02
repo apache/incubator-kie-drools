@@ -13,7 +13,7 @@ import org.jbpm.services.task.impl.model.xml.adapter.UserXmlAdapter;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.User;
 
-@XmlRootElement(name="attachment")
+@XmlRootElement(name="comment")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxbComment extends AbstractJaxbTaskObject<Comment> implements Comment {
 

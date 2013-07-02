@@ -21,7 +21,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskData;
 import org.kie.api.task.model.User;
 
-@XmlRootElement(name = "people-assignments")
+@XmlRootElement(name = "task-data")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlSeeAlso({ JaxbComment.class, JaxbAttachment.class })
 public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements TaskData {

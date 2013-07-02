@@ -42,16 +42,19 @@ public class VariableInstanceLog implements Serializable, AuditEvent {
     
     private long processInstanceId;
     private String processId;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "log_date")
+    private Date date;
+    
     private String variableInstanceId;
     private String variableId;
     private String value;
     private String oldValue;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "log_date")
-    private Date date;
+    
     private String externalId;
     
-    VariableInstanceLog() {
+    public VariableInstanceLog() {
     }
     
 	public VariableInstanceLog(long processInstanceId, String processId,

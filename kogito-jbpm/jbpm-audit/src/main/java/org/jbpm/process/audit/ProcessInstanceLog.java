@@ -42,6 +42,7 @@ public class ProcessInstanceLog implements Serializable, AuditEvent {
 	
     private long processInstanceId;
     private String processId;
+    
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_date")
     private Date start;
@@ -58,9 +59,10 @@ public class ProcessInstanceLog implements Serializable, AuditEvent {
     private Long duration;
     @Column(name="user_identity")
     private String identity;    
-    private String externalId;
     private String processVersion;
     private String processName;
+    
+    private String externalId;
     
     public ProcessInstanceLog() {
     }
@@ -215,7 +217,7 @@ public class ProcessInstanceLog implements Serializable, AuditEvent {
 		return true;
 	}
 
-	public int getStatus() {
+	public Integer getStatus() {
         return status;
     }
 
@@ -223,7 +225,7 @@ public class ProcessInstanceLog implements Serializable, AuditEvent {
         this.status = status;
     }
 
-	public long getParentProcessInstanceId() {
+	public Long getParentProcessInstanceId() {
         return parentProcessInstanceId;
     }
 
