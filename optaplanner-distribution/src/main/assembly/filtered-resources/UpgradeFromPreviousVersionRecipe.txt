@@ -3413,3 +3413,7 @@ Before in *.java:
 After in *.java:
     ... = solverConfig.getPlanningEntityClassList()
     solverConfig.setPlanningEntityClassList(...)
+
+
+From 6.0.0.Beta4 to 6.0.0.Beta5
+-------------------------------
