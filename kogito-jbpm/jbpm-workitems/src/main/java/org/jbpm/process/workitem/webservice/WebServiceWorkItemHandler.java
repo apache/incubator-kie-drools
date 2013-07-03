@@ -56,11 +56,6 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
         ONEWAY;
     }
     
-    public WebServiceWorkItemHandler() {
-        this.dcf = JaxWsDynamicClientFactory.newInstance();
-        this.classLoader = this.getClass().getClassLoader();
-    }
-    
     public WebServiceWorkItemHandler(KieSession ksession) {
         this.dcf = JaxWsDynamicClientFactory.newInstance();
         this.ksession = ksession;
