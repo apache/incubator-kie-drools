@@ -31,17 +31,19 @@ import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonatype.aether.artifact.Artifact;
 
 @ApplicationScoped
 @Kjar
 public class KModuleDeploymentService extends AbstractDeploymentService {
 
     private static Logger logger = LoggerFactory.getLogger(KModuleDeploymentService.class);
+    
+    private static final String DEFAULT_KBASE_NAME = "defaultKieBase";
 
     @Inject
     private BeanManager beanManager;
@@ -62,16 +64,24 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
         DeployedUnitImpl deployedUnit = new DeployedUnitImpl(unit);
         KieServices ks = KieServices.Factory.get();
         MavenRepository repository = getMavenRepository();
-        Artifact artifact = repository.resolveArtifact(kmoduleUnit.getIdentifier());
+        repository.resolveArtifact(kmoduleUnit.getIdentifier());
 
         ReleaseId releaseId = ks.newReleaseId(kmoduleUnit.getGroupId(), kmoduleUnit.getArtifactId(), kmoduleUnit.getVersion());
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         String kbaseName = kmoduleUnit.getKbaseName();
         if (StringUtils.isEmpty(kbaseName)) {
-            kbaseName = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieBaseModel().getName();
+            KieBaseModel defaultKBaseModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieBaseModel();
+            if (defaultKBaseModel != null) {
+                kbaseName = defaultKBaseModel.getName();
+            } else {
+                kbaseName = DEFAULT_KBASE_NAME;
+            }
         }
         InternalKieModule module = (InternalKieModule) ((KieContainerImpl)kieContainer).getKieModuleForKBase(kbaseName);
+        if (module == null) {
+            throw new IllegalStateException("Cannot find kbase with name " + kbaseName);
+        }
 
         Map<String, String> formsData = new HashMap<String, String>();
         Collection<String> files = module.getFileNames();
@@ -111,12 +121,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             }
         }
 
-        KieBase kbase = null;
-        if (StringUtils.isEmpty(kmoduleUnit.getKbaseName())) {
-            kbase = kieContainer.getKieBase();
-        } else {
-            kbase = kieContainer.getKieBase(kmoduleUnit.getKbaseName());
-        }
+        KieBase kbase = kieContainer.getKieBase(kbaseName);        
 
         AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance(emf);
         ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();

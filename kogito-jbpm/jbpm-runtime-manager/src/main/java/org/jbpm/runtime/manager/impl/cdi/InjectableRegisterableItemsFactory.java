@@ -81,7 +81,9 @@ import org.kie.internal.runtime.manager.RegisterableItemsFactory;
  */
 public class InjectableRegisterableItemsFactory extends DefaultRegisterableItemsFactory {
 
+    private static final String DEFAULT_KIE_SESSION = "defaultKieSession";
     private static Logger logger = Logger.getLogger(InjectableRegisterableItemsFactory.class.getName());
+    
     @Inject
     @External
     private ExternalTaskEventListener taskListener; 
@@ -121,6 +123,9 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
             KieSessionModel ksessionModel = null;
             if(StringUtils.isEmpty(ksessionName)) {
                 ksessionModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieSession();
+                if (ksessionModel == null) {
+                    ksessionModel = ((KieContainerImpl)kieContainer).getKieSessionModel(DEFAULT_KIE_SESSION);
+                }
             } else {            
                 ksessionModel = ((KieContainerImpl)kieContainer).getKieSessionModel(ksessionName);
             }
