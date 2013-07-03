@@ -26,7 +26,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.FactException;
 import org.drools.core.FactHandle;
@@ -83,6 +85,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     public Set<EntryPointNode> addedEntryNodeCache;
     public Set<EntryPointNode> removedEntryNodeCache;
+
+    private transient Map<Integer, SegmentMemory.Prototype> segmentProtos = new ConcurrentHashMap<Integer, SegmentMemory.Prototype>();
 
     // ------------------------------------------------------------
     // Constructors
@@ -477,5 +481,27 @@ public class ReteooRuleBase extends AbstractRuleBase {
                 }
             }
         }
+    }
+
+    public void registerSegmentPrototype(LeftTupleSource tupleSource, SegmentMemory smem) {
+        segmentProtos.put(tupleSource.getId(), smem.asPrototype());
+    }
+
+    public void invalidateSegmentPrototype(LeftTupleSource tupleSource) {
+        segmentProtos.remove(tupleSource.getId());
+        LeftTupleSinkPropagator sinkProp = tupleSource.getSinkPropagator();
+        for (LeftTupleSinkNode sink = (LeftTupleSinkNode) sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode()) {
+            if (sink instanceof LeftTupleSource) {
+                invalidateSegmentPrototype((LeftTupleSource)sink);
+            }
+        }
+    }
+
+    public SegmentMemory getSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource tupleSource) {
+        SegmentMemory.Prototype proto = segmentProtos.get(tupleSource.getId());
+        if (proto == null) {
+            return null;
+        }
+        return proto.newSegmentMemory(wm);
     }
 }

@@ -1,7 +1,6 @@
 package org.drools.compiler.integrationtests;
 
 import static junit.framework.Assert.assertEquals;
-import static org.drools.core.reteoo.ReteDumper.dumpRete;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.RuleBase;
 import org.drools.core.StatefulSession;
 import org.drools.compiler.compiler.PackageBuilder;
@@ -24,7 +22,6 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
@@ -33,7 +30,6 @@ import org.kie.api.command.Command;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -243,87 +239,6 @@ public class DynamicRulesChangesTest {
                 "    events.add( \"Everything is ok\" );\n" +
                 "end");
     }};
-
-    private static final String DRL =
-            "import " +  DynamicRulesChangesTest.class.getCanonicalName() + "\n " +
-            "global java.util.List events\n" +
-            "rule \"Raise the alarm when we have one or more fires\"\n" +
-            "when\n" +
-            "    exists DynamicRulesChangesTest.Fire()\n" +
-            "then\n" +
-            "    insert( new DynamicRulesChangesTest.Alarm() );\n" +
-            "    events.add( \"Raise the alarm\" );\n" +
-            "end" +
-            "\n" +
-            "rule \"When there is a fire turn on the sprinkler\"\n" +
-            "when\n" +
-            "    $fire: DynamicRulesChangesTest.Fire($room : room)\n" +
-            "    $sprinkler : DynamicRulesChangesTest.Sprinkler( room == $room, on == false )\n" +
-            "then\n" +
-            "    modify( $sprinkler ) { setOn( true ) };\n" +
-            "    events.add( \"Turn on the sprinkler for room \" + $room.getName() );\n" +
-            "end" +
-            "\n" +
-            "rule \"When the fire is gone turn off the sprinkler\"\n" +
-            "when\n" +
-            "    $room : DynamicRulesChangesTest.Room( )\n" +
-            "    $sprinkler : DynamicRulesChangesTest.Sprinkler( room == $room, on == true )\n" +
-            "    not DynamicRulesChangesTest.Fire( room == $room )\n" +
-            "then\n" +
-            "    modify( $sprinkler ) { setOn( false ) };\n" +
-            "    events.add( \"Turn off the sprinkler for room \" + $room.getName() );\n" +
-            "end" +
-            "\n" +
-            "rule \"Cancel the alarm when all the fires have gone\"\n" +
-            "when\n" +
-            "    not DynamicRulesChangesTest.Fire()\n" +
-            "    $alarm : DynamicRulesChangesTest.Alarm()\n" +
-            "then\n" +
-            "    retract( $alarm );\n" +
-            "    events.add( \"Cancel the alarm\" );\n" +
-            "end" +
-            "\n" +
-            "rule \"Status output when things are ok\"\n" +
-            "when\n" +
-            "    not DynamicRulesChangesTest.Fire()\n" +
-            "    not DynamicRulesChangesTest.Alarm()\n" +
-            "    not DynamicRulesChangesTest.Sprinkler( on == true )\n" +
-            "then\n" +
-            "    events.add( \"Everything is ok\" );\n" +
-            "end";
-
-    @Test
-    public void testStaticRules() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(DRL.getBytes()),
-                      ResourceType.DRL );
-
-        kbase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        KieSession ksession = kbase.newKieSession();
-
-        final List<String> events = new ArrayList<String>();
-
-        ksession.setGlobal("events", events);
-
-        // phase 1
-        Room room1 = new Room("Room 1");
-        ksession.insert(room1);
-        FactHandle fireFact1 = ksession.insert(new Fire(room1));
-        ksession.fireAllRules();
-        assertEquals(1, events.size());
-
-        // phase 2
-        Sprinkler sprinkler1 = new Sprinkler(room1);
-        ksession.insert(sprinkler1);
-        ksession.fireAllRules();
-        assertEquals(2, events.size());
-
-        // phase 3
-        ksession.delete(fireFact1);
-        ksession.fireAllRules();
-        assertEquals(5, events.size());
-    }
 
     // Model
 

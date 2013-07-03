@@ -6,6 +6,7 @@ import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.phreak.TupleEntry;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+
+import static org.drools.core.phreak.SegmentUtilities.getQuerySegmentMemory;
 
 public class SegmentMemory extends LinkedList<SegmentMemory>
         implements
@@ -35,6 +38,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          SegmentMemory      next;
     private          Queue<TupleEntry>  queue;
 
+    public SegmentMemory(NetworkNode rootNode) {
+        this(rootNode, null);
+    }
+
     public SegmentMemory(NetworkNode rootNode, Queue<TupleEntry> queue) {
         this.rootNode = rootNode;
         this.pathMemories = new ArrayList<PathMemory>(1);
@@ -47,7 +54,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return queue;
     }
 
-    public void setTupleQueue(Queue queue) {
+    public void setTupleQueue(Queue<TupleEntry> queue) {
         this.queue = queue;
     }
 
@@ -257,4 +264,171 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return true;
     }
 
+    public Prototype asPrototype() {
+        return new Prototype(this);
+    }
+
+    public List<NetworkNode> getNodesInSegment() {
+        List<NetworkNode> nodes = new java.util.LinkedList<NetworkNode>();
+        NetworkNode currentNode = tipNode;
+        while (currentNode != rootNode) {
+            nodes.add(0, currentNode);
+            currentNode = ((LeftTupleSinkNode)currentNode).getLeftTupleSource();
+        }
+        nodes.add(0, currentNode);
+        return nodes;
+    }
+
+    public static class Prototype {
+        private NetworkNode                 rootNode;
+        private NetworkNode                 tipNode;
+        private long                        linkedNodeMask;
+        private long                        allLinkedMaskTest;
+        private long                        segmentPosMaskBit;
+        private int                         pos;
+        private List<MemoryPrototype>       memories = new ArrayList<MemoryPrototype>();
+        private boolean                     hasQueue;
+        private boolean                     hasSyncStagedLeftTuple;
+
+        private Prototype(SegmentMemory smem) {
+            this.rootNode = smem.rootNode;
+            this.tipNode = smem.tipNode;
+            this.linkedNodeMask = smem.linkedNodeMask;
+            this.allLinkedMaskTest = smem.allLinkedMaskTest;
+            this.segmentPosMaskBit = smem.segmentPosMaskBit;
+            this.pos = smem.pos;
+            for (Memory mem = smem.nodeMemories.getFirst(); mem != null; mem = mem.getNext()) {
+                memories.add(MemoryPrototype.get(mem));
+            }
+            hasQueue = smem.queue != null;
+            hasSyncStagedLeftTuple = smem.getStagedLeftTuples() instanceof SynchronizedLeftTupleSets;
+        }
+
+        public SegmentMemory newSegmentMemory(InternalWorkingMemory wm) {
+            SegmentMemory smem = new SegmentMemory(rootNode);
+            smem.tipNode = tipNode;
+            smem.linkedNodeMask = linkedNodeMask;
+            smem.allLinkedMaskTest = allLinkedMaskTest;
+            smem.segmentPosMaskBit = segmentPosMaskBit;
+            smem.pos = pos;
+            int i = 0;
+            for (NetworkNode node : smem.getNodesInSegment()) {
+                Memory mem = wm.getNodeMemory((MemoryFactory) node);
+                mem.setSegmentMemory(smem);
+                smem.getNodeMemories().add(mem);
+                MemoryPrototype proto = memories.get(i++);
+                if (proto != null) {
+                    proto.populateMemory(wm, mem);
+                }
+            }
+            if (hasQueue && tipNode instanceof RuleTerminalNode) {
+                PathMemory pmem = (PathMemory)wm.getNodeMemory((MemoryFactory) tipNode);
+                smem.queue = pmem.getQueue();
+            }
+            if (hasSyncStagedLeftTuple) {
+                smem.setStagedTuples( new SynchronizedLeftTupleSets() );
+            }
+            return smem;
+        }
+    }
+
+    public abstract static class MemoryPrototype {
+        public static MemoryPrototype get(Memory memory) {
+            if (memory instanceof BetaMemory) {
+                return new BetaMemoryPrototype((BetaMemory)memory);
+            }
+            if (memory instanceof LeftInputAdapterNode.LiaNodeMemory) {
+                return new LiaMemoryPrototype((LeftInputAdapterNode.LiaNodeMemory)memory);
+            }
+            if (memory instanceof QueryElementNode.QueryElementNodeMemory) {
+                return new QueryMemoryPrototype((QueryElementNode.QueryElementNodeMemory)memory);
+            }
+            if (memory instanceof AccumulateNode.AccumulateMemory) {
+                return new AccumulateMemoryPrototype((AccumulateNode.AccumulateMemory)memory);
+            }
+            return null;
+        }
+
+        public abstract void populateMemory(InternalWorkingMemory wm, Memory memory);
+    }
+
+    public static class BetaMemoryPrototype extends MemoryPrototype {
+
+        private final long nodePosMaskBit;
+        private RightInputAdapterNode riaNode;
+
+        private BetaMemoryPrototype(BetaMemory betaMemory) {
+            this.nodePosMaskBit = betaMemory.getNodePosMaskBit();
+            if (betaMemory.getRiaRuleMemory() != null) {
+                riaNode = betaMemory.getRiaRuleMemory().getRightInputAdapterNode();
+            }
+        }
+
+        @Override
+        public void populateMemory(InternalWorkingMemory wm, Memory memory) {
+            BetaMemory betaMemory = (BetaMemory)memory;
+            betaMemory.setNodePosMaskBit(nodePosMaskBit);
+            if (riaNode != null) {
+                RightInputAdapterNode.RiaNodeMemory riaMem = (RightInputAdapterNode.RiaNodeMemory)wm.getNodeMemory(riaNode);
+                betaMemory.setRiaRuleMemory(riaMem.getRiaPathMemory());
+            }
+        }
+    }
+
+    public static class LiaMemoryPrototype extends MemoryPrototype {
+
+        private final long nodePosMaskBit;
+
+        private LiaMemoryPrototype(LeftInputAdapterNode.LiaNodeMemory liaMemory) {
+            this.nodePosMaskBit = liaMemory.getNodePosMaskBit();
+        }
+
+        @Override
+        public void populateMemory(InternalWorkingMemory wm, Memory liaMemory) {
+            ((LeftInputAdapterNode.LiaNodeMemory)liaMemory).setNodePosMaskBit(nodePosMaskBit);
+        }
+    }
+
+    public static class QueryMemoryPrototype extends MemoryPrototype {
+
+        private final QueryElementNode queryNode;
+
+        private QueryMemoryPrototype(QueryElementNode.QueryElementNodeMemory queryMemory) {
+            this.queryNode = queryMemory.getNode();
+        }
+
+        @Override
+        public void populateMemory(InternalWorkingMemory wm, Memory queryMemory) {
+            SegmentMemory querySmem = getQuerySegmentMemory(wm, (LeftTupleSource)queryMemory.getSegmentMemory().getRootNode(), queryNode);
+            ((QueryElementNode.QueryElementNodeMemory)queryMemory).setQuerySegmentMemory(querySmem);
+        }
+    }
+
+    public static class AccumulateMemoryPrototype extends MemoryPrototype {
+
+        private final BetaMemoryPrototype betaProto;
+
+        private AccumulateMemoryPrototype(AccumulateNode.AccumulateMemory accMemory) {
+            betaProto = new BetaMemoryPrototype(accMemory.getBetaMemory());
+        }
+
+        @Override
+        public void populateMemory(InternalWorkingMemory wm, Memory accMemory) {
+            betaProto.populateMemory(wm, ((AccumulateNode.AccumulateMemory)accMemory).getBetaMemory());
+        }
+    }
+
+    public static class FromMemoryPrototype extends MemoryPrototype {
+
+        private final BetaMemoryPrototype betaProto;
+
+        private FromMemoryPrototype(FromNode.FromMemory fromMemory) {
+            betaProto = new BetaMemoryPrototype(fromMemory.getBetaMemory());
+        }
+
+        @Override
+        public void populateMemory(InternalWorkingMemory wm, Memory fromMemory) {
+            betaProto.populateMemory(wm, ((FromNode.FromMemory) fromMemory).getBetaMemory());
+        }
+    }
 }

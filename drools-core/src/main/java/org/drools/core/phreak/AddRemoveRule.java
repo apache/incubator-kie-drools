@@ -26,7 +26,8 @@ import org.drools.core.reteoo.LeftTupleSource;
  import org.drools.core.reteoo.ObjectTypeNode;
  import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
  import org.drools.core.reteoo.PathMemory;
- import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.RightInputAdapterNode;
  import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
  import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleMemory;
@@ -49,6 +50,10 @@ public class AddRemoveRule {
 
     public static void addRule(TerminalNode tn, InternalWorkingMemory[] wms) {
         LeftTupleSource splitStartLeftTupleSource = getNetworkSplitPoint(tn);
+
+        if (wms.length > 0) {
+            ((ReteooRuleBase)wms[0].getRuleBase()).invalidateSegmentPrototype(splitStartLeftTupleSource);
+        }
 
         for ( InternalWorkingMemory wm : wms ) {
 
@@ -105,6 +110,10 @@ public class AddRemoveRule {
 
      public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms) {
          LeftTupleSource splitStartNode = getNetworkSplitPoint(tn);
+
+         if (wms.length > 0) {
+             ((ReteooRuleBase)wms[0].getRuleBase()).invalidateSegmentPrototype(splitStartNode);
+         }
 
          for ( InternalWorkingMemory wm : wms ) {
 
