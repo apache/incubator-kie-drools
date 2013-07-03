@@ -75,8 +75,8 @@ public class PlanningVariableDescriptor {
         // Keep in sync with ShadowVariableDescriptor.processPropertyAnnotations()
         processMappedBy(planningVariableAnnotation);
         processNullable(planningVariableAnnotation);
-        processStrength(planningVariableAnnotation);
         processChained(planningVariableAnnotation);
+        processStrength(planningVariableAnnotation);
         processVariableListeners(planningVariableAnnotation);
         processValueRangeAnnotation(planningVariableAnnotation);
     }
@@ -112,6 +112,25 @@ public class PlanningVariableDescriptor {
         }
     }
 
+    private void processChained(PlanningVariable planningVariableAnnotation) {
+        chained = planningVariableAnnotation.chained();
+        if (chained && !variablePropertyAccessor.getPropertyType().isAssignableFrom(
+                entityDescriptor.getPlanningEntityClass())) {
+            throw new IllegalArgumentException("The planningEntityClass ("
+                    + entityDescriptor.getPlanningEntityClass()
+                    + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
+                    + ") with chained (" + chained + ") and propertyType (" + variablePropertyAccessor.getPropertyType()
+                    + ") which is not a superclass/interface of or the same as the planningEntityClass ("
+                    + entityDescriptor.getPlanningEntityClass() + ").");
+        }
+        if (chained && nullable) {
+            throw new IllegalArgumentException("The planningEntityClass ("
+                    + entityDescriptor.getPlanningEntityClass()
+                    + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
+                    + ") with chained (" + chained + "), which is not compatible with nullable (" + nullable + ").");
+        }
+    }
+
     private void processStrength(PlanningVariable planningVariableAnnotation) {
         Class<? extends Comparator> strengthComparatorClass = planningVariableAnnotation.strengthComparatorClass();
         if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class) {
@@ -139,25 +158,6 @@ public class PlanningVariableDescriptor {
             SelectionSorterWeightFactory strengthWeightFactory = ConfigUtils.newInstance(this,
                     "strengthWeightFactoryClass", strengthWeightFactoryClass);
             valueSorter.setStrengthWeightFactory(strengthWeightFactory);
-        }
-    }
-
-    private void processChained(PlanningVariable planningVariableAnnotation) {
-        chained = planningVariableAnnotation.chained();
-        if (chained && !variablePropertyAccessor.getPropertyType().isAssignableFrom(
-                entityDescriptor.getPlanningEntityClass())) {
-            throw new IllegalArgumentException("The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
-                    + ") with chained (" + chained + ") and propertyType (" + variablePropertyAccessor.getPropertyType()
-                    + ") which is not a superclass/interface of or the same as the planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass() + ").");
-        }
-        if (chained && nullable) {
-            throw new IllegalArgumentException("The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
-                    + ") with chained (" + chained + "), which is not compatible with nullable (" + nullable + ").");
         }
     }
 
