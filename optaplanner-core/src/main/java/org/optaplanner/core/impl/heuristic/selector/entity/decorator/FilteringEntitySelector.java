@@ -29,9 +29,6 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-/**
- * TODO This class isn't used because {@link EntitySelector}'s are upgraded to {@link SelectionCacheType#STEP}.
- */
 public class FilteringEntitySelector extends AbstractEntitySelector {
 
     protected final EntitySelector childEntitySelector;
