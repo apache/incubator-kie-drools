@@ -28,13 +28,13 @@ import org.optaplanner.core.impl.solution.Solution;
 public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {
 
     protected final List<PlanningValueRangeDescriptor> valueRangeDescriptorList;
-    protected boolean entityDepentent;
+    protected boolean entityDependent;
 
     public CompositePlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor,
             List<PlanningValueRangeDescriptor> valueRangeDescriptorList) {
         super(variableDescriptor);
         this.valueRangeDescriptorList = valueRangeDescriptorList;
-        entityDepentent = false;
+        entityDependent = false;
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
             if (valueRangeDescriptor instanceof UndefinedPlanningValueRangeDescriptor) {
                 throw new IllegalArgumentException("The planningEntityClass ("
@@ -43,7 +43,7 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
                         + ") with multiple " + ValueRange.class.getSimpleName() + " annotations,"
                         + " including one of type (" + ValueRangeType.UNDEFINED + ").");
             } else if (valueRangeDescriptor instanceof FromEntityPropertyPlanningValueRangeDescriptor) {
-                entityDepentent = true;
+                entityDependent = true;
             } else if (!(valueRangeDescriptor instanceof FromSolutionPropertyPlanningValueRangeDescriptor)) {
                 throw new IllegalStateException("The valueRangeDescriptorClass ("
                         + valueRangeDescriptor.getClass() + ") is not implemented.");
@@ -52,7 +52,7 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
     }
 
     public boolean isEntityDependent() {
-        return entityDepentent;
+        return entityDependent;
     }
 
     public Collection<?> extractAllValuesWithFiltering(Solution solution) {
