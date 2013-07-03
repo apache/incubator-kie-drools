@@ -38,7 +38,7 @@
         <exclude>org.jbpm:jbpm-workitems</exclude>
         <exclude>org.jbpm:jbpm-kie-services</exclude>
         <exclude>org.jbpm:jbpm-executor</exclude>
-        <exclude>org.jbpm:form-services</exclude>
+        <exclude>org.jbpm:jbpm-form-services</exclude>
         <exclude>org.jbpm:jbpm-human-task-core</exclude>
         <exclude>org.jbpm:jbpm-human-task-workitems</exclude>
         <exclude>org.jbpm:jbpm-shared-services</exclude>
