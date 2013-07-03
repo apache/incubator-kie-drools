@@ -7,16 +7,18 @@ public class DefaultChecklistItem implements ChecklistItem {
 	private String name;
 	private Status status;
 	private Long taskId;
+	private String type;
 	private String actors;
 	private long priority;
 	private String processId;
 	private Long processInstanceId;
 	private String orderingNb;
 	
-	public DefaultChecklistItem(String name, Status status, Long taskId, String actors, long priority, String processId, Long processInstanceId, String orderingNb) {
+	public DefaultChecklistItem(String name, Status status, Long taskId, String type, String actors, long priority, String processId, Long processInstanceId, String orderingNb) {
 		this.name = name;
 		this.status = status;
 		this.taskId = taskId;
+		this.type = type;
 		this.actors = actors;
 		this.priority = priority;
 		this.processId = processId;
@@ -36,6 +38,11 @@ public class DefaultChecklistItem implements ChecklistItem {
 	@Override
 	public Long getTaskId() {
 		return taskId;
+	}
+
+	@Override
+	public String getType() {
+		return type;
 	}
 
 	@Override

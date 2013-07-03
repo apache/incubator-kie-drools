@@ -1,6 +1,7 @@
 package org.jbpm.examples.checklist.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -49,10 +50,12 @@ public class DefaultChecklistManager implements ChecklistManager {
 		return contexts;
 	}
 
-	public long createContext(String name) {
+	public long createContext(String name, String userId) {
 		RuntimeEngine runtime = getRuntime();
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("startUser", userId);
 		ProcessInstance processInstance = runtime.getKieSession().startProcess(
-			name == null ? "org.jbpm.examples.checklist.AdHocProcess" : name, null);
+			name == null ? "org.jbpm.examples.checklist.AdHocProcess" : name, params);
 		manager.disposeRuntimeEngine(runtime);
 		ChecklistContext context = new DefaultChecklistContext();
 		contexts.add(context);
@@ -81,8 +84,10 @@ public class DefaultChecklistManager implements ChecklistManager {
 		ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
 		Map<String, ChecklistItem> orderingIds = new HashMap<String, ChecklistItem>();
 		if (processInstance != null) {
-			List<ChecklistItem> result = ChecklistItemFactory.getPendingChecklistItems((WorkflowProcess)
-				ksession.getKieBase().getProcess(processInstance.getProcessId()));
+			WorkflowProcess process = (WorkflowProcess)
+				ksession.getKieBase().getProcess(processInstance.getProcessId());
+			Collection<ChecklistItem> result = ChecklistItemFactory.getPendingChecklistItems(process);
+			result.addAll(ChecklistItemFactory.getLoggedChecklistItems(processInstance.getId(), process));
 			for (ChecklistItem item: result) {
 				if (item.getOrderingNb() != null && item.getOrderingNb().trim().length() > 0) { 
 					orderingIds.put(item.getOrderingNb(), item);
@@ -233,6 +238,12 @@ public class DefaultChecklistManager implements ChecklistManager {
 		RuntimeEngine runtime = getRuntime();
 		runtime.getTaskService().start(taskId, userId);
 		runtime.getTaskService().fail(taskId, userId, null);
+		manager.disposeRuntimeEngine(runtime);
+	}
+
+	public void selectOptionalTask(String taskName, long processInstanceId) {
+		RuntimeEngine runtime = getRuntime();
+		runtime.getKieSession().signalEvent(taskName, null, processInstanceId);
 		manager.disposeRuntimeEngine(runtime);
 	}
 

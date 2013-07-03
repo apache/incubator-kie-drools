@@ -8,7 +8,7 @@ public interface ChecklistManager {
 	
 	List<ChecklistContext> getContexts();
 	
-	long createContext(String name);
+	long createContext(String name, String actorId);
 	
 	List<ChecklistItem> getTasks(long processInstanceId, List<ChecklistContextConstraint> contexts);
 	
@@ -29,5 +29,7 @@ public interface ChecklistManager {
 	void completeTask(String userId, long taskId);
 	
 	void abortTask(String userId, long taskId);
+	
+	void selectOptionalTask(String taskName, long processInstanceId);
 	
 }

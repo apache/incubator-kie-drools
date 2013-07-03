@@ -29,11 +29,13 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -47,6 +49,7 @@ import org.jbpm.examples.checklist.ChecklistContextConstraint;
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistItem.Status;
 import org.jbpm.examples.checklist.ChecklistManager;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.test.JBPMHelper;
 import org.kie.api.io.ResourceType;
@@ -63,9 +66,17 @@ public class ChecklistUI extends JFrame {
     private static final long serialVersionUID = 510l;
     
     private static ImageIcon[] ICONS = { 
-    	new ImageIcon(ChecklistUI.class.getResource("/checklist/check32.png")),
-    	new ImageIcon(ChecklistUI.class.getResource("/checklist/inprogress32.png")),
-    	new ImageIcon(ChecklistUI.class.getResource("/checklist/abort32.png"))
+    	new ImageIcon(ChecklistUI.class.getResource("/checklist/status/check32.png")),
+    	new ImageIcon(ChecklistUI.class.getResource("/checklist/status/inprogress32.png")),
+    	new ImageIcon(ChecklistUI.class.getResource("/checklist/status/abort32.png")),
+    	new ImageIcon(ChecklistUI.class.getResource("/checklist/status/optional32.png"))
+    };
+    
+    private static ImageIcon[] TYPE_ICONS = { 
+    	new ImageIcon(ChecklistUI.class.getResource("/checklist/type/UserTask.png")),
+    	new ImageIcon(ChecklistUI.class.getResource("/checklist/type/ScriptTask.png")),
+    	new ImageIcon(ChecklistUI.class.getResource("/checklist/type/CallActivity.png")),
+    	new ImageIcon(ChecklistUI.class.getResource("/checklist/type/ServiceTask.png"))
     };
     
     private ChecklistManager checklistManager;
@@ -77,7 +88,7 @@ public class ChecklistUI extends JFrame {
     private boolean ctrl = false;
     
     public ChecklistUI() {
-        setSize(new Dimension(400, 300));
+        setSize(new Dimension(450, 350));
         setTitle("Checklist");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         initializeComponent();
@@ -90,6 +101,10 @@ public class ChecklistUI extends JFrame {
     				List<String> result = new ArrayList<String>();
     				if ("actor4".equals(userId)) {
     					result.add("group1");
+    				} else if ("krisv".equals(userId)) {
+    					result.add("employee");
+    				} else if ("john".equals(userId)) {
+    					result.add("manager");
     				}
     				return result;
     			}
@@ -101,8 +116,11 @@ public class ChecklistUI extends JFrame {
     			}
     		})
             .addAsset(ResourceFactory.newClassPathResource("checklist/SampleChecklistProcess.bpmn"), ResourceType.BPMN2)
+            .addAsset(ResourceFactory.newClassPathResource("checklist/AdHocProcess.bpmn"), ResourceType.BPMN2)
+            .addAsset(ResourceFactory.newClassPathResource("checklist/travel.bpmn"), ResourceType.BPMN2)
             .get();
 		checklistManager = new DefaultChecklistManager(environment);
+		JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
     }
     
     private void initializeComponent() {
@@ -111,7 +129,7 @@ public class ChecklistUI extends JFrame {
         getRootPane().setLayout(new BorderLayout());
         getRootPane().add(panel, BorderLayout.CENTER);
         
-        JButton createButton = new JButton("Create");
+        JButton createButton = new JButton("New...");
         createButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent event) {
                 create();
@@ -122,7 +140,7 @@ public class ChecklistUI extends JFrame {
         c.anchor = GridBagConstraints.WEST;
         panel.add(createButton, c);
         
-        contexts = new JComboBox();
+        contexts = new JComboBox(new DefaultComboBoxModel());
         contexts.setPreferredSize(new Dimension(80, 24));
         contexts.setSize(new Dimension(80, 24));
         c = new GridBagConstraints();
@@ -131,6 +149,11 @@ public class ChecklistUI extends JFrame {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(contexts, c);
+        contexts.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				refresh();
+			}
+		});
         
         JButton refreshButton = new JButton("Refresh");
         refreshButton.addActionListener(new ActionListener() {
@@ -142,8 +165,8 @@ public class ChecklistUI extends JFrame {
         c.insets = new Insets(5, 5, 5, 5);
         panel.add(refreshButton, c);
         
-        itemTable = new JTable(1, 5);
-        itemTable.setRowHeight(30);
+        itemTable = new JTable(1, 6);
+        itemTable.setRowHeight(35);
         itemTable.setShowHorizontalLines(false);
         itemTable.setShowVerticalLines(false);
         itemTable.addKeyListener(new KeyListener() {
@@ -161,7 +184,7 @@ public class ChecklistUI extends JFrame {
         itemTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				int index = e.getFirstIndex();
-				if (index >= 0) {
+				if (index >= 0 && index < items.size()) {
 					ChecklistItem item = items.get(index);
 					if (item.getStatus() == Status.Created) {
 						String actorId = getActorId();
@@ -190,6 +213,14 @@ public class ChecklistUI extends JFrame {
 							}
 							refresh();
 						}
+					} else if (item.getStatus() == Status.Optional) {
+						try {
+							checklistManager.selectOptionalTask(item.getName(), Long.valueOf((String) contexts.getSelectedItem()));
+						} catch (Throwable t) {
+							// Do nothing
+							t.printStackTrace();
+						}
+						refresh();
 					}
 				}
 			}
@@ -217,7 +248,7 @@ public class ChecklistUI extends JFrame {
         c.anchor = GridBagConstraints.WEST;
         panel.add(nameLabel, c);
         
-        userNameTextField = new JTextField("actor1");
+        userNameTextField = new JTextField("krisv");
         userNameTextField.setPreferredSize(new Dimension(80, 20));
         userNameTextField.setSize(new Dimension(80, 20));
         c = new GridBagConstraints();
@@ -255,7 +286,7 @@ public class ChecklistUI extends JFrame {
     	} else {
     		items = new ArrayList<ChecklistItem>();
     	}
-    	DefaultTableModel tableModel = new DefaultTableModel(items.size(), 4);
+    	DefaultTableModel tableModel = new DefaultTableModel(items.size(), 5);
     	for (int i = 0; i < items.size(); i++) {
     		ChecklistItem item = items.get(i);
 			String orderingNb = item.getOrderingNb();
@@ -267,7 +298,8 @@ public class ChecklistUI extends JFrame {
     		tableModel.setValueAt(item.getStatus(), i, 0);
     		tableModel.setValueAt("(" + orderingNb + ")", i, 1);
     		tableModel.setValueAt(item.getName(), i, 2);
-    		tableModel.setValueAt(item.getActors(), i, 3);
+    		tableModel.setValueAt(item.getType(), i, 3);
+    		tableModel.setValueAt(item.getActors(), i, 4);
 //    		tableModel.setValueAt(item.getPriority(), i, 4);
     	}
     	itemTable.setModel(tableModel);
@@ -284,6 +316,8 @@ public class ChecklistUI extends JFrame {
                 		case InProgress: label.setIcon(ICONS[1]); break;
                 		case Created: label.setIcon(ICONS[1]); break;
                 		case Reserved: label.setIcon(ICONS[1]); break;
+                		case Ready: label.setIcon(ICONS[1]); break;
+                		case Optional: label.setIcon(ICONS[3]); break;
                 		case Pending: break;
                 		default: break;                			
                 	}
@@ -291,14 +325,56 @@ public class ChecklistUI extends JFrame {
                 return label;
             }
         });
-        itemTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+        itemTable.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = 6L;
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+				super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                JLabel label = new JLabel();
+            	label.setHorizontalAlignment(JLabel.CENTER);
+                if (value != null) {
+                	String s = (String) value;
+                	if ("HumanTaskNode".equals(s)) {
+                		label.setIcon(TYPE_ICONS[0]);
+                	} else if ("ActionNode".equals(s)) {
+                		label.setIcon(TYPE_ICONS[1]);
+                	} else if ("SubProcessNode".equals(s)) {
+                		label.setIcon(TYPE_ICONS[2]);
+                	} else if ("WorkItemNode".equals(s)) {
+                		label.setIcon(TYPE_ICONS[3]);
+                	}
+                }
+                return label;
+            }
+        });
+        itemTable.getColumnModel().getColumn(0).setPreferredWidth(32);
+        itemTable.getColumnModel().getColumn(0).setMaxWidth(32);
         itemTable.getColumnModel().getColumn(1).setPreferredWidth(40);
         itemTable.getColumnModel().getColumn(2).setPreferredWidth(230);
-        itemTable.getColumnModel().getColumn(3).setPreferredWidth(120);
+        itemTable.getColumnModel().getColumn(3).setPreferredWidth(32);
+        itemTable.getColumnModel().getColumn(3).setMaxWidth(32);
+        itemTable.getColumnModel().getColumn(4).setPreferredWidth(120);
     }
     
     private void create() {
-    	long processInstanceId = checklistManager.createContext("org.jbpm.examples.checklist.sample1");
+    	String s = (String) JOptionPane.showInputDialog(
+            this, "Select Checklist Template:", "Select Template",
+            JOptionPane.PLAIN_MESSAGE, null,
+            new Object[] {
+        		"None",
+        		"Business Trip",
+        		"Sample1"
+            },
+            "None");
+    	if (s == null) {
+    		return;
+    	}
+    	String processId = null;
+    	if ("Sample1".equals(s)) {
+    		processId = "org.jbpm.examples.checklist.sample1";
+    	} else if ("Business Trip".equals(s)) {
+    		processId = "org.jbpm.examples.checklist.travel";
+    	}
+    	long processInstanceId = checklistManager.createContext(processId, getActorId());
     	String contextName = processInstanceId + "";
     	contexts.addItem(contextName);
     	contexts.setSelectedItem(contextName);
@@ -328,7 +404,11 @@ public class ChecklistUI extends JFrame {
 	    		if (item != null) {
 	    			orderingNb = item.getOrderingNb() + "+";
 	    		} else {
-	    			orderingNb = items.get(items.size() - 1).getOrderingNb() + "+";
+	    			if (items.size() == 0) {
+	    				orderingNb = "1+";
+	    			} else {
+	    				orderingNb = items.get(items.size() - 1).getOrderingNb() + "+";
+	    			}
 	    		}
 	    		String[] actors = null;
 	    		String actorIds = dialog.getActors();

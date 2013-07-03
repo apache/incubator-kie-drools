@@ -39,7 +39,7 @@ public class ChecklistExample {
 	            .get();
 			ChecklistManager checklistManager = new DefaultChecklistManager(environment);
 	
-			long c1 = checklistManager.createContext("org.jbpm.examples.checklist.sample1");
+			long c1 = checklistManager.createContext("org.jbpm.examples.checklist.sample1", "actor1");
 			List<ChecklistItem> items = checklistManager.getTasks(c1, null);
 			printChecklistItems(items, c1);
 			

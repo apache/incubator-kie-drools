@@ -1,12 +1,19 @@
 package org.jbpm.examples.checklist.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.process.core.Work;
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistItem.Status;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.StartNode;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -22,6 +29,7 @@ public final class ChecklistItemFactory {
 			getText(task.getNames()), 
 			getStatus(task.getTaskData().getStatus()),
 			task.getId(),
+			"HumanTaskNode",
 			getActors(task),
 			task.getPriority(),
 			task.getTaskData().getProcessId(),
@@ -44,7 +52,7 @@ public final class ChecklistItemFactory {
 	private static Status getStatus(org.kie.api.task.model.Status status) {
 		switch (status) {
 			case Completed: return Status.Completed;
-			case Ready:
+			case Ready: 
 			case Created: return Status.Created;
 			case Error:
 			case Exited:
@@ -73,7 +81,7 @@ public final class ChecklistItemFactory {
 		}
 	}
 	
-	public static List<ChecklistItem> getPendingChecklistItems(WorkflowProcess process) {
+	public static Collection<ChecklistItem> getPendingChecklistItems(WorkflowProcess process) {
 		List<ChecklistItem> result = new ArrayList<ChecklistItem>();
 		getPendingChecklistItems(process, result, process.getId());
 		return result;
@@ -114,23 +122,91 @@ public final class ChecklistItemFactory {
 						actors = actorId + "," + groupId;
 					}
 				}
+				Status status = Status.Pending;
+				if (((HumanTaskNode) node).getDefaultIncomingConnections().size() == 0) {
+					status = Status.Optional;
+				}
 				result.add(
-					createPendingChecklistItem(
-						(String) workItem.getParameter("TaskName"), 
+					createChecklistItem(
+						(String) workItem.getParameter("TaskName"),
+						"HumanTaskNode",
 						actors,
 						(String) workItem.getParameter("Comment"),
-						priority, processId));
+						priority, processId, status));
 			} else if (node instanceof NodeContainer) {
 				getPendingChecklistItems((NodeContainer) node, result, processId);
+			} else {
+				String docs = (String) node.getMetaData().get("Documentation");
+				if (docs != null) {
+					int position = docs.indexOf("OrderingNb=");
+					if (position >= 0) {
+						int end = docs.indexOf(";", position + 1);
+						String orderingNumber = docs.substring(position + 11, end);
+						Status status = Status.Pending;
+						if (((NodeImpl) node).getDefaultIncomingConnections().size() == 0 && !(node instanceof StartNode)) {
+							status = Status.Optional;
+						}
+						result.add(
+							createChecklistItem(
+								node.getName(), 
+								node.getClass().getSimpleName(),
+								"",
+								orderingNumber,
+								0, 
+								processId, 
+								status));
+					}
+				}
 			}
 		}
 	}
 	
-	private static ChecklistItem createPendingChecklistItem(String name, String actors, String orderingNb, long priority, String processId) {
+	public static Collection<ChecklistItem> getLoggedChecklistItems(long processInstanceId, WorkflowProcess process) {
+		Map<String, ChecklistItem> result = new HashMap<String, ChecklistItem>();
+		Map<String, String> relevantNodes = new HashMap<String, String>();
+		getRelevantNodes(process, relevantNodes);
+		for (NodeInstanceLog log: JPAProcessInstanceDbLog.findNodeInstances(processInstanceId)) {
+			String orderingNb = relevantNodes.get(log.getNodeId());
+			if (orderingNb != null) {
+				if (log.getType() == NodeInstanceLog.TYPE_EXIT) {
+					result.put(orderingNb, createChecklistItem(log.getNodeName(), log.getNodeType(), "", orderingNb, 0, log.getProcessId(), Status.Completed));
+				} else {
+					if (result.get(orderingNb) == null) {
+						result.put(orderingNb, createChecklistItem(log.getNodeName(), log.getNodeType(), "", orderingNb, 0, log.getProcessId(), Status.InProgress));
+					}
+				}
+			}
+		}
+		return result.values();
+	}
+	
+	private static void getRelevantNodes(NodeContainer container, Map<String, String> result) {
+		for (Node node: container.getNodes()) {
+			if (node instanceof NodeContainer) {
+				getRelevantNodes((NodeContainer) node, result);
+			}
+			String docs = (String) node.getMetaData().get("Documentation");
+			if (docs != null) {
+				int position = docs.indexOf("OrderingNb=");
+				if (position >= 0) {
+					int end = docs.indexOf(";", position + 1);
+					String orderingNumber = docs.substring(position + 11, end);
+					String nodeId = (String)node.getMetaData().get("UniqueId");
+					if (nodeId == null) {
+						nodeId = ((NodeImpl) node).getUniqueId();
+					}
+					result.put(nodeId, orderingNumber); 
+				}
+			}
+		}
+	}
+	
+	private static ChecklistItem createChecklistItem(String name, String type, String actors, String orderingNb, long priority, String processId, Status status) {
 		return new DefaultChecklistItem(
 			name == null ? "" : name, 
-			Status.Pending,
+			status,
 			null,
+			type,
 			actors == null ? "" : actors,
 			priority,
 			processId,

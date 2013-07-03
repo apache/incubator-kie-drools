@@ -8,6 +8,8 @@ public interface ChecklistItem {
 	
 	Long getTaskId();
 	
+	String getType();
+	
 	String getActors();
 	
 	long getPriority();
@@ -20,7 +22,9 @@ public interface ChecklistItem {
 	
 	public enum Status {
 		Pending,
+		Optional,
 		Created,
+		Ready,
 		Reserved,
 		InProgress,
 		Completed,
