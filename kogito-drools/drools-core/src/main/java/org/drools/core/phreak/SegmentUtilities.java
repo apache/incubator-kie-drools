@@ -3,6 +3,7 @@ package org.drools.core.phreak;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -30,6 +31,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.SegmentMemory;
@@ -69,9 +71,10 @@ public class SegmentUtilities {
     public static synchronized  SegmentMemory createSegmentMemory(LeftTupleSource tupleSource,
                                                                   final InternalWorkingMemory wm) {
         SegmentMemory smem = wm.getNodeMemory((MemoryFactory) tupleSource).getSegmentMemory();
-        if (  smem != null ) {
+        if ( smem != null ) {
             return smem; // this can happen when multiple threads are trying to initialize the segment
         }
+
         boolean initRtn = false;
         if (tupleSource.getType() == NodeTypeEnums.LeftInputAdapterNode) {
             initRtn = true;
@@ -85,12 +88,22 @@ public class SegmentUtilities {
 
         LeftTupleSource segmentRoot = tupleSource;
 
+        smem = ((ReteooRuleBase)wm.getRuleBase()).getSegmentFromPrototype(wm, segmentRoot);
+        if ( smem != null ) {
+            // there is a prototype for this segment memory
+            for (NetworkNode node : smem.getNodesInSegment()) {
+                wm.getNodeMemory((MemoryFactory) node).setSegmentMemory(smem);
+            }
+            updateRiaAndTerminalMemory(segmentRoot, segmentRoot, smem, wm);
+            return smem;
+        }
+
         List<PathMemory> pmems = new ArrayList<PathMemory>();
         if (initRtn ) {
             initialiseRtnMemory(segmentRoot, wm, pmems);
         }
 
-        smem = new SegmentMemory(segmentRoot, null);
+        smem = new SegmentMemory(segmentRoot);
 
         // Iterate all nodes on the same segment, assigning their position as a bit mask value
         // allLinkedTestMask is the resulting mask used to test if all nodes are linked in
@@ -141,12 +154,10 @@ public class SegmentUtilities {
                     // rtn or rian
                     // While not technically in a segment, we want to be able to iterate easily from the last node memory to the ria/rtn memory
                     // we don't use createNodeMemory, as these may already have been created by, but not added, by the method updateRiaAndTerminalMemory
-                    Memory memory = null;
+                    Memory memory = wm.getNodeMemory((MemoryFactory) sink);
                     if (sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
-                        memory =  wm.getNodeMemory((MemoryFactory) sink);
                         smem.getNodeMemories().add(((RiaNodeMemory)memory).getRiaPathMemory());
                     } else if (NodeTypeEnums.isTerminalNode(sink)) {
-                        memory = wm.getNodeMemory((MemoryFactory) sink);
                         smem.getNodeMemories().add((PathMemory)memory);
                     }
                     memory.setSegmentMemory(smem);
@@ -183,21 +194,29 @@ public class SegmentUtilities {
         }
 
         updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, wm);
+
+        ((ReteooRuleBase)wm.getRuleBase()).registerSegmentPrototype(segmentRoot, smem);
+
         return smem;
     }
 
     private static void processQueryNode(QueryElementNode tupleSource, InternalWorkingMemory wm, LeftTupleSource segmentRoot, SegmentMemory smem) {
         // Initialize the QueryElementNode and have it's memory reference the actual query SegmentMemory
         QueryElementNode queryNode = (QueryElementNode) tupleSource;
+        SegmentMemory querySmem = getQuerySegmentMemory(wm, segmentRoot, queryNode);
+        QueryElementNodeMemory queryNodeMem = (QueryElementNodeMemory) smem.createNodeMemory(queryNode, wm);
+        queryNodeMem.setQuerySegmentMemory(querySmem);
+        queryNodeMem.setSegmentMemory(smem);
+    }
+
+    public static SegmentMemory getQuerySegmentMemory(InternalWorkingMemory wm, LeftTupleSource segmentRoot, QueryElementNode queryNode) {
         LeftInputAdapterNode liaNode = getQueryLiaNode(queryNode.getQueryElement().getQueryName(), getQueryOtn(segmentRoot));
         LiaNodeMemory liam = (LiaNodeMemory) wm.getNodeMemory((MemoryFactory) liaNode);
         SegmentMemory querySmem = liam.getSegmentMemory();
         if (querySmem == null) {
             querySmem = createSegmentMemory(liaNode, wm);
         }
-        QueryElementNodeMemory queryNodeMem = (QueryElementNodeMemory) smem.createNodeMemory(queryNode, wm);
-        queryNodeMem.setQuerySegmentMemory(querySmem);
-        queryNodeMem.setSegmentMemory(smem);
+        return querySmem;
     }
 
     private static void processFromNode(FromNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {
@@ -306,7 +325,7 @@ public class SegmentUtilities {
         } else {
             // RTNS and RiaNode's have their own segment, if they are the child of a split.
             if (memory.getSegmentMemory() == null) {
-                SegmentMemory childSmem = new SegmentMemory(sink, null); // rtns or riatns don't need a queue
+                SegmentMemory childSmem = new SegmentMemory(sink); // rtns or riatns don't need a queue
                 if ( sink.getLeftTupleSource().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
                     // If LiaNode is in it's own segment, then the segment first after that must use SynchronizedLeftTupleSets
                     childSmem.setStagedTuples( new SynchronizedLeftTupleSets() );
