@@ -924,7 +924,7 @@ F-n72-k4  has 1 depots,  4 vehicles and  71 customers with a search space of 10^
 
         <para>Schedule all jobs in time and execution mode to minimize project delays. Each job is part of a project. A
         job can be executed in different ways: each way is an execution mode that implies a different duration but also
-        different resource usages. This is a form of <emphasis>job shop scheduling</emphasis>.</para>
+        different resource usages. This is a form of flexible <emphasis>job shop scheduling</emphasis>.</para>
 
         <para>Hard constraints:</para>
 
