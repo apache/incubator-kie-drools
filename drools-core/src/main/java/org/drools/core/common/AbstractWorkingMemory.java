@@ -56,7 +56,12 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
-import org.drools.core.event.*;
+import org.drools.core.event.AgendaEventListener;
+import org.drools.core.event.AgendaEventSupport;
+import org.drools.core.event.RuleBaseEventListener;
+import org.drools.core.event.RuleEventListenerSupport;
+import org.drools.core.event.WorkingMemoryEventListener;
+import org.drools.core.event.WorkingMemoryEventSupport;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
@@ -69,6 +74,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.SegmentUtilities;
+import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftInputAdapterNode;
@@ -85,8 +91,10 @@ import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.*;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Package;
+import org.drools.core.rule.Rule;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
@@ -105,28 +113,29 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.type.DateFormats;
 import org.drools.core.type.DateFormatsImpl;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
-import org.kie.api.runtime.ObjectFilter;
-import org.kie.api.runtime.rule.LiveQuery;
-import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.internal.event.rule.RuleEventListener;
-import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.internal.process.CorrelationAwareProcessRuntime;
-import org.kie.internal.process.CorrelationKey;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
+import org.kie.internal.event.rule.RuleEventListener;
+import org.kie.internal.marshalling.MarshallerFactory;
+import org.kie.internal.process.CorrelationAwareProcessRuntime;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
@@ -529,8 +538,19 @@ public class AbstractWorkingMemory
         if ( lsmem == null ) {
             lsmem = SegmentUtilities.createSegmentMemory(lts, this);
         }
-        LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
 
+        if( this.ruleBase.getConfiguration().getEventProcessingMode().equals(EventProcessingOption.STREAM) ) {
+            lmem.linkNode(this);
+            List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
+            PathMemory pmm = pmems!=null && !pmems.isEmpty() ? pmems.get(0) : null;
+            if( pmm != null ) {
+                RuleAgendaItem item = pmm.getRuleAgendaItem();
+                item.getRuleExecutor().reEvaluateNetwork( this, new org.drools.core.util.LinkedList<StackEntry>(), false);
+            }
+        }
+        
+        LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
+        
         List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
         for ( int i = 0, length = pmems.size(); i < length; i++ ) {
             PathMemory rm = pmems.get( i );
@@ -538,6 +558,7 @@ public class AbstractWorkingMemory
             evaluator.getRuleExecutor().setDirty(true);
             evaluator.getRuleExecutor().evaluateNetworkAndFire(this, null, 0, -1);
         }
+
         return tnodes;
     }
 
