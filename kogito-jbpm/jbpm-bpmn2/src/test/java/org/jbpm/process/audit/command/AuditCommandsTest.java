@@ -1,0 +1,129 @@
+package org.jbpm.process.audit.command;
+
+import java.util.List;
+
+import org.drools.core.impl.EnvironmentFactory;
+import org.jbpm.bpmn2.JbpmBpmn2TestCase;
+import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.audit.VariableInstanceLog;
+import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.command.Command;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
+
+public class AuditCommandsTest extends JbpmBpmn2TestCase {
+
+    public AuditCommandsTest() { 
+        super(true);
+    }
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        setUpDataSource();
+        
+        // clear logs
+        Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+        JPAProcessInstanceDbLog.setEnvironment(env);
+        JPAProcessInstanceDbLog.clear();
+        
+        // reset JPAProcessInstanceDbLog
+        JPAProcessInstanceDbLog.setEnvironment(null);
+    }
+
+    @Test
+    public void testFindProcessInstanceCommands() throws Exception {
+        String processId = "IntermediateCatchEvent";
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignal.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess(processId);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+
+        Command<?> cmd = new FindProcessInstancesCommand();
+        Object result = ksession.execute(cmd);
+        assertNotNull( "Command result is empty!", result );
+        assertTrue( result instanceof List );
+        List<ProcessInstanceLog> logList = (List<ProcessInstanceLog>) result;
+        assertEquals( "Log list size is incorrect.", 1, logList.size() );
+        ProcessInstanceLog log = logList.get(0);
+        assertEquals(log.getProcessInstanceId(), processInstance.getId());
+        assertEquals(log.getProcessId(), processInstance.getProcessId());
+        
+        cmd = new FindActiveProcessInstancesCommand(processId);
+        result = ksession.execute(cmd);
+        assertNotNull( "Command result is empty!", result );
+        assertTrue( result instanceof List );
+        logList = (List<ProcessInstanceLog>) result;
+        assertEquals( "Log list size is incorrect.", 1, logList.size() );
+        log = logList.get(0);
+        assertEquals("Process instance id", log.getProcessInstanceId(), processInstance.getId());
+        assertEquals("Process id", log.getProcessId(), processInstance.getProcessId());
+        assertEquals("Status", log.getStatus().intValue(), ProcessInstance.STATE_ACTIVE );
+        
+        cmd = new FindProcessInstanceCommand(processInstance.getId());
+        result = ksession.execute(cmd);
+        assertNotNull( "Command result is empty!", result );
+        assertTrue( result instanceof ProcessInstanceLog );
+        log = (ProcessInstanceLog) result;
+        assertEquals(log.getProcessInstanceId(), processInstance.getId());
+        assertEquals(log.getProcessId(), processInstance.getProcessId());
+        
+        cmd = new ClearHistoryLogsCommand();
+        result = ksession.execute(cmd);
+        assertEquals( "There should be no more logs", 0, JPAProcessInstanceDbLog.findProcessInstances().size() );
+        
+        // now signal process instance
+        ksession = restoreSession(ksession, true);
+        ksession.signalEvent("MyMessage", "SomeValue", processInstance.getId());
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+    
+    @Test
+    public void testVarAndNodeInstanceCommands() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-SubProcessUserTask.bpmn2");
+        KieSession ksession = createKnowledgeSession(kbase);
+        
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        
+        ProcessInstance processInstance = ksession.startProcess("SubProcess");
+        assertProcessInstanceActive(processInstance);
+
+        Command<?> cmd = new FindNodeInstancesCommand(processInstance.getId());
+        Object result = ksession.execute(cmd);
+        assertNotNull( "Command result is empty!", result );
+        assertTrue( result instanceof List );
+        List<NodeInstanceLog> nodeLogList = (List<NodeInstanceLog>) result;
+        assertEquals( "Log list size is incorrect.", 8, nodeLogList.size() );
+    
+        cmd = new FindNodeInstancesCommand(processInstance.getId(), "UserTask_1");
+        result = ksession.execute(cmd);
+        assertNotNull( "Command result is empty!", result );
+        assertTrue( result instanceof List );
+        nodeLogList = (List<NodeInstanceLog>) result;
+        assertEquals( "Log list size is incorrect.", 1, nodeLogList.size() );
+    
+        cmd = new FindVariableInstancesCommand(processInstance.getId(), "2:x");
+        result = ksession.execute(cmd);
+        assertNotNull( "Command result is empty!", result );
+        assertTrue( result instanceof List );
+        List<VariableInstanceLog> varLogList = (List<VariableInstanceLog>) result;
+        assertEquals( "Log list size is incorrect.", 1, varLogList.size() );
+        
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
+
+}

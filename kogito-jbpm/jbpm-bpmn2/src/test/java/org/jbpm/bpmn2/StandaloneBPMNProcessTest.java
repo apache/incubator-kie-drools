@@ -540,7 +540,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore
+    @Ignore("Process does not complete.")
     public void testAdHocSubProcess() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-AdHocSubProcess.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -554,17 +554,19 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession = restoreSession(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.fireAllRules();
-        System.out.println("Signaling Hello2");
+        
         ksession.signalEvent("Hello2", null, processInstance.getId());
         workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         ksession = restoreSession(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
     @Test
-    @Ignore
+    @Ignore("Process does not complete.")
     public void testAdHocSubProcessAutoComplete() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-AdHocSubProcessAutoComplete.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -573,16 +575,18 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("AdHocSubProcess");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNull(workItem);
         ksession = restoreSession(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.fireAllRules();
         workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
+        assertNotNull("WorkItem should not be null.", workItem);
         ksession = restoreSession(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 

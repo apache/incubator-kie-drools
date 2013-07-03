@@ -119,7 +119,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
     private WorkingMemoryInMemoryLogger logger;
     private Logger testLogger = null;
 
-    private static EntityManagerFactory emf;
+    protected static EntityManagerFactory emf;
     private static PoolingDataSource ds;
 
     private RequirePersistence testReqPersistence;
@@ -807,7 +807,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
     }
     
     protected void assertProcessInstanceCompleted(long processInstanceId, KieSession ksession) {
-        assertNull(ksession.getProcessInstance(processInstanceId));
+        assertNull("Process instance has not completed.", ksession.getProcessInstance(processInstanceId));
     }
 
     protected void assertProcessInstanceAborted(long processInstanceId, KieSession ksession) {
