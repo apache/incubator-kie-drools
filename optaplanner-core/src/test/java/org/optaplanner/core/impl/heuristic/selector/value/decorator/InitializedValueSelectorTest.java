@@ -1,0 +1,117 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.core.impl.heuristic.selector.value.decorator;
+
+import java.util.Iterator;
+
+import org.junit.Test;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
+import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
+import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+
+public class InitializedValueSelectorTest {
+
+    @Test
+    public void originalSelection() {
+        PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1");
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2");
+        ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
+                a0, a1, a2);
+
+        InitializedValueSelector valueSelector = new InitializedValueSelector(variableDescriptor, childValueSelector);
+        verify(childValueSelector, times(1)).isNeverEnding();
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        valueSelector.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        valueSelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        valueSelector.stepStarted(stepScopeA1);
+        runAsserts(valueSelector, a1, "a0");
+        a1.setChainedObject(a0);
+        valueSelector.stepEnded(stepScopeA1);
+
+        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
+        valueSelector.stepStarted(stepScopeA2);
+        runAsserts(valueSelector, a2, "a0", "a1");
+        a2.setChainedObject(a1);
+        valueSelector.stepEnded(stepScopeA2);
+
+        valueSelector.phaseEnded(phaseScopeA);
+
+        AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
+        valueSelector.phaseStarted(phaseScopeB);
+
+        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
+        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
+        valueSelector.stepStarted(stepScopeB1);
+        runAsserts(valueSelector, a1, "a0", "a1", "a2");
+        valueSelector.stepEnded(stepScopeB1);
+
+        AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
+        when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
+        valueSelector.stepStarted(stepScopeB2);
+        runAsserts(valueSelector, a2, "a0", "a1", "a2");
+        valueSelector.stepEnded(stepScopeB2);
+
+        valueSelector.phaseEnded(phaseScopeB);
+
+        valueSelector.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(childValueSelector, 1, 2, 4);
+        verify(childValueSelector, times(4)).iterator(any());
+    }
+
+    private void runAsserts(ValueSelector valueSelector, TestdataChainedEntity entity, String... valueCodes) {
+        Iterator<Object> iterator = valueSelector.iterator(entity);
+        assertNotNull(iterator);
+        for (String valueCode : valueCodes) {
+            assertTrue(iterator.hasNext());
+            assertCode(valueCode, iterator.next());
+        }
+        assertFalse(iterator.hasNext());
+        assertEquals(false, valueSelector.isContinuous());
+        assertEquals(false, valueSelector.isNeverEnding());
+    }
+
+}
