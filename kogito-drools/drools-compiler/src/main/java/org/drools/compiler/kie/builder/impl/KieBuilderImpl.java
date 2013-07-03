@@ -62,7 +62,7 @@ public class KieBuilderImpl
         implements
         InternalKieBuilder {
 
-    static final String           RESOURCES_ROOT = "src" + File.separator + "main" + File.separator + "resources" + File.separator;
+    static final String           RESOURCES_ROOT = "src/main/resources/";
 
     private ResultsImpl           results;
     private final ResourceReader  srcMfs;
@@ -251,7 +251,7 @@ public class KieBuilderImpl
 
     public static String getCompilationCachePath(ReleaseId releaseId,
                                                  String kbaseName) {
-        return ((ReleaseIdImpl) releaseId).getCompilationCachePathPrefix() + kbaseName.replace( '.', File.separatorChar ) + File.separator + "kbase.cache";
+        return ((ReleaseIdImpl) releaseId).getCompilationCachePathPrefix() + kbaseName.replace( '.', '/' ) + "/kbase.cache";
     }
 
     private void writeTypeMetaInfosToTrg(Map<String, TypeDeclaration> typeDeclarations) {
@@ -292,6 +292,7 @@ public class KieBuilderImpl
 
     private void addKBaseFilesToTrg(KieBaseModel kieBase) {
         for ( String fileName : srcMfs.getFileNames() ) {
+            fileName = fileName.replace(File.separatorChar, '/');
             if ( fileName.startsWith( RESOURCES_ROOT ) && isFileInKieBase( kieBase, fileName ) ) {
                 copySourceToTarget( fileName );
             }
@@ -332,12 +333,12 @@ public class KieBuilderImpl
     private static boolean isFileInKieBase(KieBaseModel kieBase,
                                            String fileName) {
         if ( kieBase.getPackages().isEmpty() ) {
-            String pathName = kieBase.getName().replace( '.', File.separatorChar );
-            return fileName.startsWith( RESOURCES_ROOT + pathName + File.separator ) || fileName.startsWith( pathName + File.separator );
+            String pathName = kieBase.getName().replace( '.', '/' );
+            return fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.startsWith( pathName + "/" );
         } else {
-            int lastSep = fileName.lastIndexOf( File.separator );
+            int lastSep = fileName.lastIndexOf( "/" );
             String pkgNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : fileName;
-            pkgNameForFile = pkgNameForFile.replace( File.separatorChar, '.' );
+            pkgNameForFile = pkgNameForFile.replace( '/', '.' );
             for ( String pkgName : kieBase.getPackages() ) {
                 boolean isNegative = pkgName.startsWith( "!" );
                 if ( isNegative ) {
@@ -528,7 +529,7 @@ public class KieBuilderImpl
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.endsWith( ".java" ) && !classFiles.contains( fileName.substring( 0,
                                                                                            fileName.length() - ".java".length() ) ) ) {
-                javaFiles.add( fileName );
+                javaFiles.add( fileName.replace(File.separatorChar, '/') );
             }
         }
         if ( javaFiles.isEmpty() ) {
@@ -537,7 +538,7 @@ public class KieBuilderImpl
 
         String[] sourceFiles = javaFiles.toArray( new String[javaFiles.size()] );
 
-        EclipseJavaCompiler compiler = createCompiler( "src" + File.separator + "main" + File.separator + "java" + File.separator );
+        EclipseJavaCompiler compiler = createCompiler( "src/main/java/" );
         CompilationResult res = compiler.compile( sourceFiles,
                                                   srcMfs,
                                                   trgMfs );
@@ -555,7 +556,7 @@ public class KieBuilderImpl
         while ( zipEntries.hasMoreElements() ) {
             ZipEntry zipEntry = zipEntries.nextElement();
             String fileName = zipEntry.getName();
-            if ( fileName.endsWith( "pom.properties" ) && fileName.startsWith( "META-INF" + File.separator + "maven" + File.separator ) ) {
+            if ( fileName.endsWith( "pom.properties" ) && fileName.startsWith( "META-INF/maven/" ) ) {
                 return fileName;
             }
         }
@@ -564,7 +565,7 @@ public class KieBuilderImpl
 
     public static File findPomProperties(java.io.File root) {
         File mavenRoot = new File( root,
-                                   "META-INF" + File.separator + "maven" );
+                                   "META-INF/maven" );
         return recurseToPomProperties( mavenRoot );
     }
 

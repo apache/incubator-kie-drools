@@ -22,9 +22,14 @@ public class DefaultKieSessionFromFSExampleTest {
         ps.close();
 
         String actual = new String(baos.toByteArray());
+        if (File.separatorChar == '\\') {
+            actual = actual.replaceAll("\r\n", "\n");
+        }
+
         String expected = "" +
                           "Dave: Hello, HAL. Do you read me, HAL?\n" +
                           "HAL: Dave. I read you.\n";
+
         assertEquals(expected, actual);
     }
 
