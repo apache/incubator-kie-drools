@@ -1,0 +1,24 @@
+package org.drools.compiler.integrationtests
+
+import org.drools.compiler.integrationtests.CepFireUntilHaltTimerTest.MetadataEvent;
+import java.util.List;
+
+global List countResult;
+
+declare MetadataEvent
+	@role( event )
+	@timestamp( metadataTimestamp )
+    @duration( metadataDuration )
+	@expires (24h)
+end
+
+rule "Number of metadata events in the last 10 seconds"
+timer (int: 1s 10s)
+//timer (int: 0s 10s) - this works
+when
+    String( this == "events_inserted" )
+    $count: Number() from accumulate( $event: MetadataEvent() over window:time(10s),  count( $event ) )
+then
+    System.out.println("Events count: " + $count);
+    countResult.add($count);
+end
