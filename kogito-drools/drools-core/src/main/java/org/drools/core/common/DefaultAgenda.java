@@ -295,7 +295,9 @@ public class DefaultAgenda
             return;
         }
 
-        log.trace("Added {} to eager evaluation list.", item.getRule().getName() );
+        if ( log.isTraceEnabled() ) {
+            log.trace("Added {} to eager evaluation list.", item.getRule().getName() );
+        }
         eager.add( item );
     }
 
@@ -305,7 +307,9 @@ public class DefaultAgenda
             return;
         }
 
-        log.trace("Removed {} from eager evaluation list.", item.getRule().getName() );
+        if ( log.isTraceEnabled() ) {
+            log.trace("Removed {} from eager evaluation list.", item.getRule().getName() );
+        }
         eager.remove(item);
     }
 
@@ -1524,7 +1528,7 @@ public class DefaultAgenda
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
         unstageActivations();
         this.halt.set( false );
-        if ( log.isDebugEnabled()  ) {
+        if ( log.isTraceEnabled() ) {
             log.trace("Starting fireUntilHalt");
         }
         while ( continueFiring( -1 ) ) {
@@ -1548,7 +1552,7 @@ public class DefaultAgenda
                 this.workingMemory.executeQueuedActions();
             }
         }
-        if ( log.isDebugEnabled()  ) {
+        if ( log.isTraceEnabled() ) {
             log.trace("Ending fireUntilHalt");
         }
         fireUntilHalt = false;
