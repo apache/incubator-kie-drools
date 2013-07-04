@@ -20,6 +20,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
@@ -39,14 +43,23 @@ public class CepFireUntilHaltTimerTest {
         Resource drlFile = ks.getResources().newClassPathResource(
                 "cep-fire-until-halt-timer.drl", CepFireUntilHaltTimerTest.class);
 
+        KieModuleModel module = ks.newKieModuleModel();
+        
+        KieBaseModel defaultBase = module.newKieBaseModel("defaultKBase")
+                .setDefault(true)
+                .addPackage("*")
+                .setEventProcessingMode(EventProcessingOption.STREAM);
+        defaultBase.newKieSessionModel("defaultKSession")
+                .setDefault(true)
+                .setClockType(ClockTypeOption.get("pseudo"));
+        
         KieFileSystem kfs = ks.newKieFileSystem()
                 .write("src/main/resources/r1.drl", drlFile);
+        kfs.writeKModuleXML(module.toXML());
         ks.newKieBuilder(kfs).buildAll();
 
-        KieSessionConfiguration sessionConf = ks.newKieSessionConfiguration();
-        sessionConf.setProperty(ClockTypeOption.PROPERTY_NAME, "pseudo");
         ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId())
-                .newKieSession(sessionConf);
+                .newKieSession();
 
         result = new ArrayList<Long>();
         ksession.setGlobal("countResult", result);
