@@ -111,6 +111,7 @@ public class CepFireUntilHaltTimerTest {
             // wait for the engine to finish and throw exception if any was thrown 
             // in engine's thread
             fireUntilHaltResult.get(60, TimeUnit.SECONDS);
+            thread.shutdown();
         }
     }
 
