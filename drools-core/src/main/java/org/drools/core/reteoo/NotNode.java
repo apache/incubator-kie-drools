@@ -229,7 +229,9 @@ public class NotNode extends BetaNode {
         if ( isStreamMode() ) {
             stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
             memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, rightTuple.getPropagationContext(), memory ));
-            log.trace( "JoinNode delete queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PropagationContextImpl.intEnumToString(rightTuple.getPropagationContext()), rightTuple );
+            if ( log.isTraceEnabled() ) {
+                log.trace( "JoinNode delete queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PropagationContextImpl.intEnumToString(rightTuple.getPropagationContext()), rightTuple );
+            }
         } else {
             stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
         }

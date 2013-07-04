@@ -131,7 +131,9 @@ public class PhreakTimerNode {
                 for ( LeftTuple leftTuple = deletes.getFirst(); leftTuple != null; ) {
                     LeftTuple next = (LeftTuple) leftTuple.getNext();
                     srcLeftTuples.addDelete( leftTuple );
-                    log.trace( "Timer Add Postponed Delete {}", leftTuple );
+                    if ( log.isTraceEnabled() ) {
+                        log.trace( "Timer Add Postponed Delete {}", leftTuple );
+                    }
                     leftTuple.clear();
                     leftTuple = next;
                 }
@@ -156,7 +158,9 @@ public class PhreakTimerNode {
                         doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple );
                         tm.getDeleteLeftTuples().add( leftTuple );
                         pmem.doLinkRule( wm ); // make sure it's dirty, so it'll evaluate again
-                        log.trace( "Timer Postponed Delete {}", leftTuple );
+                        if ( log.isTraceEnabled() ) {
+                            log.trace( "Timer Postponed Delete {}", leftTuple );
+                        }
                     }
                 }
 
@@ -176,7 +180,9 @@ public class PhreakTimerNode {
 
                         childLeftTuple.setPropagationContext( leftTuple.getPropagationContext() );
                         trgLeftTuples.addDelete( childLeftTuple );
-                        log.trace( "Timer Delete {}", leftTuple );
+                        if ( log.isTraceEnabled() ) {
+                            log.trace( "Timer Delete {}", leftTuple );
+                        }
                     }
                 }
 
@@ -253,7 +259,9 @@ public class PhreakTimerNode {
         DefaultJobHandle jobHandle;
         if ( trigger.hasNextFireTime().getTime() <= timestamp ) {
             // first execution is straight away, so void Scheduling
-            log.trace( "Timer Fire Now {}", leftTuple );
+            if ( log.isTraceEnabled() ) {
+                log.trace( "Timer Fire Now {}", leftTuple );
+            }
             doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple );
 
             trigger.nextFireTime();
@@ -272,7 +280,9 @@ public class PhreakTimerNode {
             jobHandle = (DefaultJobHandle) timerService.scheduleJob( job, jobCtx, trigger );
             leftTuple.setObject( jobHandle );
 
-            log.trace( "Timer Scheduled {}", leftTuple );
+            if ( log.isTraceEnabled() ) {
+                log.trace( "Timer Scheduled {}", leftTuple );
+            }
         }
     }
 
@@ -307,7 +317,9 @@ public class PhreakTimerNode {
         if ( childLeftTuple == null ) {
             childLeftTuple = sink.createLeftTuple( leftTuple, sink, leftTuple.getPropagationContext(), true );
             trgLeftTuples.addInsert( childLeftTuple );
-            log.trace( "Timer Insert {}", childLeftTuple );
+            if ( log.isTraceEnabled() ) {
+                log.trace( "Timer Insert {}", childLeftTuple );
+            }
         } else {
             switch ( childLeftTuple.getStagedType() ) {
             // handle clash with already staged entries
@@ -319,8 +331,9 @@ public class PhreakTimerNode {
                     break;
             }
             trgLeftTuples.addUpdate( childLeftTuple );
-            log.trace( "Timer Update {}", childLeftTuple );
-
+            if ( log.isTraceEnabled() ) {
+                log.trace( "Timer Update {}", childLeftTuple );
+            }
         }
     }
 
@@ -337,7 +350,9 @@ public class PhreakTimerNode {
             LeftTupleList leftTuples = timerJobCtx.getTimerNodeMemory().getInsertOrUpdateLeftTuples();
             LeftTuple lt = timerJobCtx.getLeftTuple();
 
-            log.trace( "Timer Executor {} {}", timerJobCtx.getTrigger(), lt );
+            if ( log.isTraceEnabled() ) {
+                log.trace( "Timer Executor {} {}", timerJobCtx.getTrigger(), lt );
+            }
 
             synchronized ( leftTuples ) {
                 if ( lt.getMemory() == null ) {
