@@ -361,9 +361,17 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
                         if (interfaceName == null) {
                             interfaceName = "";
                         }
+                        String interfaceRef = (String) work.getParameter("interfaceImplementationRef");
+                        if (interfaceRef == null) {
+                            interfaceRef = "";
+                        }
                         String operationName = (String) work.getParameter("Operation");
                         if (operationName == null) {
                             operationName = "";
+                        }
+                        String operationRef = (String) work.getParameter("operationImplementationRef");
+                        if (operationRef == null) {
+                            operationRef = "";
                         }
                         String parameterType = (String) work.getParameter("ParameterType");
                         if (parameterType == null) {
@@ -375,8 +383,8 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
                         			"" : "structureRef=\"" + parameterType + "\" ")
                         			+ "/>" + EOL +
                             "  <message id=\"" + getUniqueNodeId(node) + "_InMessage\" itemRef=\"" + getUniqueNodeId(node) + "_InMessageType\" />" + EOL +
-                            "  <interface id=\"" + getUniqueNodeId(node) + "_ServiceInterface\" name=\"" + interfaceName + "\">" + EOL +
-                            "    <operation id=\"" + getUniqueNodeId(node) + "_ServiceOperation\" name=\"" + operationName + "\">" + EOL + 
+                            "  <interface id=\"" + getUniqueNodeId(node) + "_ServiceInterface\" name=\"" + interfaceName + "\" implementationRef=\""+ interfaceRef+"\" >" + EOL +
+                            "    <operation id=\"" + getUniqueNodeId(node) + "_ServiceOperation\" name=\"" + operationName + "\" implementationRef=\""+ operationRef+"\" >" + EOL + 
                             "      <inMessageRef>" + getUniqueNodeId(node) + "_InMessage</inMessageRef>" + EOL +
                             "    </operation>" + EOL +
                             "  </interface>" + EOL + EOL);
