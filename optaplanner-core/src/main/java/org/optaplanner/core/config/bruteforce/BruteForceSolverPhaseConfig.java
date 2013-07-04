@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.bruteforce;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.impl.bruteforce.BruteForceEntityWalker;
@@ -36,11 +37,13 @@ public class BruteForceSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public BruteForceSolverPhase buildSolverPhase(int phaseIndex, EnvironmentMode environmentMode,
-            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
+    public BruteForceSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
+            Termination solverTermination) {
+        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultBruteForceSolverPhase bruteForceSolverPhase = new DefaultBruteForceSolverPhase();
-        configureSolverPhase(bruteForceSolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
-        bruteForceSolverPhase.setBruteForceEntityWalker(new BruteForceEntityWalker(solutionDescriptor));
+        configureSolverPhase(bruteForceSolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
+        bruteForceSolverPhase.setBruteForceEntityWalker(
+                new BruteForceEntityWalker(phaseConfigPolicy.getSolutionDescriptor()));
         return bruteForceSolverPhase;
     }
 

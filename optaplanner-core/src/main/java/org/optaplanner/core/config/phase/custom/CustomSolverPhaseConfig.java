@@ -22,6 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -63,10 +64,11 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public CustomSolverPhase buildSolverPhase(int phaseIndex, EnvironmentMode environmentMode,
-            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
+    public CustomSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
+            Termination solverTermination) {
+        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultCustomSolverPhase customSolverPhase = new DefaultCustomSolverPhase();
-        configureSolverPhase(customSolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
+        configureSolverPhase(customSolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
         if (CollectionUtils.isEmpty(customSolverPhaseCommandClassList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <customSolverPhaseCommandClass> in the <customSolverPhase> configuration.");

@@ -22,6 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -86,12 +87,14 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public LocalSearchSolverPhase buildSolverPhase(int phaseIndex, EnvironmentMode environmentMode,
-            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
+    public LocalSearchSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
+            Termination solverTermination) {
+        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultLocalSearchSolverPhase localSearchSolverPhase = new DefaultLocalSearchSolverPhase();
-        configureSolverPhase(localSearchSolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
-        localSearchSolverPhase.setDecider(buildDecider(environmentMode, solutionDescriptor, scoreDefinition,
+        configureSolverPhase(localSearchSolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
+        localSearchSolverPhase.setDecider(buildDecider(phaseConfigPolicy,
                 localSearchSolverPhase.getTermination()));
+        EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             localSearchSolverPhase.setAssertStepScoreFromScratch(true);
         }
@@ -101,18 +104,17 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         return localSearchSolverPhase;
     }
 
-    private Decider buildDecider(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            ScoreDefinition scoreDefinition, Termination phaseTermination) {
+    private Decider buildDecider(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
         DefaultDecider decider = new DefaultDecider();
         decider.setTermination(phaseTermination);
-        MoveSelector moveSelector = buildMoveSelector(environmentMode, solutionDescriptor);
+        MoveSelector moveSelector = buildMoveSelector(configPolicy);
         decider.setMoveSelector(moveSelector);
         AcceptorConfig acceptorConfig_ = acceptorConfig == null ? new AcceptorConfig()
                 : acceptorConfig;
-        decider.setAcceptor(acceptorConfig_.buildAcceptor(environmentMode, scoreDefinition));
+        decider.setAcceptor(acceptorConfig_.buildAcceptor(configPolicy));
         ForagerConfig foragerConfig_ = foragerConfig == null ? new ForagerConfig()
                 : foragerConfig;
-        Forager forager = foragerConfig_.buildForager(scoreDefinition);
+        Forager forager = foragerConfig_.buildForager(configPolicy);
         decider.setForager(forager);
         if (moveSelector.isNeverEnding() && !forager.supportsNeverEndingMoveSelector()) {
             throw new IllegalStateException("The moveSelector (" + moveSelector
@@ -121,6 +123,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
                     + ") does not support it."
                     + " Configure the <forager> with <acceptedCountLimit>.");
         }
+        EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             decider.setAssertMoveScoreFromScratch(true);
         }
@@ -130,7 +133,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         return decider;
     }
 
-    private MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor) {
+    private MoveSelector buildMoveSelector(HeuristicConfigPolicy configPolicy) {
         MoveSelector moveSelector;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
         SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
@@ -139,11 +142,11 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
             unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(
                     new ChangeMoveSelectorConfig(), new SwapMoveSelectorConfig()));
-            moveSelector = unionMoveSelectorConfig.buildMoveSelector(environmentMode, solutionDescriptor,
+            moveSelector = unionMoveSelectorConfig.buildMoveSelector(configPolicy,
                     defaultCacheType, defaultSelectionOrder);
         } else if (moveSelectorConfigList.size() == 1) {
             moveSelector = moveSelectorConfigList.get(0).buildMoveSelector(
-                    environmentMode, solutionDescriptor, defaultCacheType, defaultSelectionOrder);
+                    configPolicy, defaultCacheType, defaultSelectionOrder);
         } else {
             // TODO moveSelectorConfigList is only a List because of XStream limitations.
             throw new IllegalArgumentException("The moveSelectorConfigList (" + moveSelectorConfigList

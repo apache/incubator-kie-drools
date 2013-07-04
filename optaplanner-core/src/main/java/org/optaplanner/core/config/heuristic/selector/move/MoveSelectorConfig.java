@@ -23,7 +23,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.apache.commons.collections.CollectionUtils;
-import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
@@ -36,7 +36,6 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelec
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
@@ -156,15 +155,14 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
 
     /**
      *
-     * @param environmentMode never null
-     * @param solutionDescriptor never null
+     * @param configPolicy never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
      * @param inheritedSelectionOrder never null
      * @return never null
      */
-    public MoveSelector buildMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+    public MoveSelector buildMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
@@ -173,7 +171,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         validateSorting(resolvedSelectionOrder);
         validateProbability(resolvedSelectionOrder);
 
-        MoveSelector moveSelector = buildBaseMoveSelector(environmentMode, solutionDescriptor,
+        MoveSelector moveSelector = buildBaseMoveSelector(configPolicy,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
                 determineBaseRandomSelection(resolvedCacheType, resolvedSelectionOrder));
 
@@ -210,8 +208,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
 
     /**
      *
-     * @param environmentMode never null
-     * @param solutionDescriptor never null
+     * @param configPolicy never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
@@ -220,7 +217,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
      * @return never null
      */
     protected abstract MoveSelector buildBaseMoveSelector(
-            EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+            HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection);
 
     private boolean hasFiltering() {

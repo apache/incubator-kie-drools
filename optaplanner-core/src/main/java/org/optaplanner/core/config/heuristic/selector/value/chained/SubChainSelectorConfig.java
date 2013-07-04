@@ -18,13 +18,12 @@ package org.optaplanner.core.config.heuristic.selector.value.chained;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
@@ -81,8 +80,7 @@ public class SubChainSelectorConfig extends SelectorConfig {
 
     /**
      *
-     * @param environmentMode never null
-     * @param solutionDescriptor never null
+     * @param configPolicy never null
      * @param entityDescriptor never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
@@ -90,8 +88,8 @@ public class SubChainSelectorConfig extends SelectorConfig {
      * @param inheritedSelectionOrder never null
      * @return never null
      */
-    public SubChainSelector buildSubChainSelector(EnvironmentMode environmentMode,
-            SolutionDescriptor solutionDescriptor, PlanningEntityDescriptor entityDescriptor,
+    public SubChainSelector buildSubChainSelector(HeuristicConfigPolicy configPolicy,
+            PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The subChainSelectorConfig (" + this
@@ -102,8 +100,8 @@ public class SubChainSelectorConfig extends SelectorConfig {
         ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
                 : valueSelectorConfig;
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
-        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(environmentMode,
-                solutionDescriptor, entityDescriptor,
+        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
+                entityDescriptor,
                 minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The minimumCacheType (" + this

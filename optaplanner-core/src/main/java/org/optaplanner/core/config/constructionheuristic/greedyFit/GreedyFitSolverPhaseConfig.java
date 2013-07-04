@@ -23,6 +23,7 @@ import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -74,12 +75,16 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public GreedyFitSolverPhase buildSolverPhase(int phaseIndex, EnvironmentMode environmentMode,
-            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
+    public GreedyFitSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
+            Termination solverTermination) {
+        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
-        configureSolverPhase(greedySolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
-        greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
-        greedySolverPhase.setGreedyDecider(buildGreedyDecider(solutionDescriptor, environmentMode));
+        configureSolverPhase(greedySolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
+        greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(
+                phaseConfigPolicy.getSolutionDescriptor()));
+        greedySolverPhase.setGreedyDecider(buildGreedyDecider(phaseConfigPolicy.getSolutionDescriptor(),
+                phaseConfigPolicy.getEnvironmentMode()));
+        EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             greedySolverPhase.setAssertStepScoreFromScratch(true);
         }

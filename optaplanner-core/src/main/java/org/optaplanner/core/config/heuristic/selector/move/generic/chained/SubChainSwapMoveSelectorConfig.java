@@ -17,13 +17,12 @@
 package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainSwapMoveSelector;
@@ -76,18 +75,19 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig {
     // Builder methods
     // ************************************************************************
 
-    public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(solutionDescriptor, planningEntityClass);
+        PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(
+                configPolicy.getSolutionDescriptor(), planningEntityClass);
         SubChainSelectorConfig subChainSelectorConfig_ = subChainSelectorConfig == null ? new SubChainSelectorConfig()
                 : subChainSelectorConfig;
-        SubChainSelector leftSubChainSelector = subChainSelectorConfig_.buildSubChainSelector(environmentMode,
-                solutionDescriptor, entityDescriptor,
+        SubChainSelector leftSubChainSelector = subChainSelectorConfig_.buildSubChainSelector(configPolicy,
+                entityDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         SubChainSelectorConfig rightSubChainSelectorConfig = secondarySubChainSelectorConfig == null
                 ? subChainSelectorConfig_ : secondarySubChainSelectorConfig;
-        SubChainSelector rightSubChainSelector = rightSubChainSelectorConfig.buildSubChainSelector(environmentMode,
-                solutionDescriptor, entityDescriptor,
+        SubChainSelector rightSubChainSelector = rightSubChainSelectorConfig.buildSubChainSelector(configPolicy,
+                entityDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         return new SubChainSwapMoveSelector(leftSubChainSelector, rightSubChainSelector, randomSelection,
                 selectReversingMoveToo == null ? true : selectReversingMoveToo);

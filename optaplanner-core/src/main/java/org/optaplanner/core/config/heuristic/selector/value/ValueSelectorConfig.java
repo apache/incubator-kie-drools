@@ -18,12 +18,11 @@ package org.optaplanner.core.config.heuristic.selector.value;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
@@ -88,8 +87,7 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     /**
      *
-     * @param environmentMode never null
-     * @param solutionDescriptor never null
+     * @param configPolicy never null
      * @param entityDescriptor never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
@@ -97,8 +95,8 @@ public class ValueSelectorConfig extends SelectorConfig {
      * @param inheritedSelectionOrder never null
      * @return never null
      */
-    public ValueSelector buildValueSelector(EnvironmentMode environmentMode,
-            SolutionDescriptor solutionDescriptor, PlanningEntityDescriptor entityDescriptor,
+    public ValueSelector buildValueSelector(HeuristicConfigPolicy configPolicy,
+            PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         PlanningVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
@@ -110,7 +108,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         validateProbability(resolvedSelectionOrder);
 
         // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
-        ValueSelector valueSelector = buildBaseValueSelector(environmentMode, variableDescriptor,
+        ValueSelector valueSelector = buildBaseValueSelector(configPolicy, variableDescriptor,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
                 determineBaseRandomSelection(variableDescriptor, resolvedCacheType, resolvedSelectionOrder));
 
@@ -146,7 +144,7 @@ public class ValueSelectorConfig extends SelectorConfig {
     }
 
     private ValueSelector buildBaseValueSelector(
-            EnvironmentMode environmentMode, PlanningVariableDescriptor variableDescriptor,
+            HeuristicConfigPolicy configPolicy, PlanningVariableDescriptor variableDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         if (variableDescriptor.getValueRangeDescriptor().isEntityDependent()) {
             FromEntityPropertyPlanningValueRangeDescriptor valueRangeDescriptor

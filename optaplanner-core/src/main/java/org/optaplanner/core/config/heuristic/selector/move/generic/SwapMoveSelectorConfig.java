@@ -21,12 +21,11 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -73,17 +72,17 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
     // Builder methods
     // ************************************************************************
 
-    public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
                 : entitySelectorConfig;
         EntitySelector leftEntitySelector = entitySelectorConfig_.buildEntitySelector(
-                environmentMode, solutionDescriptor,
+                configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         EntitySelectorConfig rightEntitySelectorConfig = secondaryEntitySelectorConfig == null
                 ? entitySelectorConfig_ : secondaryEntitySelectorConfig;
         EntitySelector rightEntitySelector = rightEntitySelectorConfig.buildEntitySelector(
-                environmentMode, solutionDescriptor,
+                configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         Collection<PlanningVariableDescriptor> variableDescriptors = deduceVariableDescriptors(
                 leftEntitySelector.getEntityDescriptor(), variableNameIncludeList);

@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.constructionheuristic.placer.value;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.constructionheuristic.placer.PlacerConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -57,16 +58,17 @@ public class ValuePlacerConfig extends PlacerConfig {
     // Builder methods
     // ************************************************************************
 
-    public ValuePlacer buildValuePlacer(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+    public ValuePlacer buildValuePlacer(HeuristicConfigPolicy configPolicy,
             Termination phaseTermination, PlanningEntityDescriptor entityDescriptor) {
         ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
                 : valueSelectorConfig;
-        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(environmentMode,
-                solutionDescriptor, entityDescriptor,
+        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
+                entityDescriptor,
                 selectedCountLimit == null ? SelectionCacheType.STEP : SelectionCacheType.JUST_IN_TIME,
                 selectedCountLimit == null ? SelectionOrder.ORIGINAL : SelectionOrder.RANDOM);
         ValuePlacer valuePlacer = new ValuePlacer(phaseTermination, valueSelector,
                 selectedCountLimit == null ? Integer.MAX_VALUE : selectedCountLimit);
+        EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             valuePlacer.setAssertMoveScoreFromScratch(true);
         }

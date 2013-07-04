@@ -17,10 +17,9 @@
 package org.optaplanner.core.config.heuristic.selector.move.factory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
@@ -48,7 +47,7 @@ public class MoveListFactoryConfig extends MoveSelectorConfig {
         return true;
     }
 
-    public MoveSelector buildBaseMoveSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+    public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         MoveListFactory moveListFactory = ConfigUtils.newInstance(this,
                 "moveListFactoryClass", moveListFactoryClass);

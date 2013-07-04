@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.config.heuristic.selector.entity;
 
+import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
@@ -28,16 +29,15 @@ import org.junit.Test;
 
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
-public class EntitySelectorConfigTest {
+public class EntitySelectorConfigTest extends AbstractSelectorConfigTest {
 
     @Test
     public void phaseOriginal() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
         assertNotInstanceOf(ShufflingEntitySelector.class, entitySelector);
@@ -46,12 +46,11 @@ public class EntitySelectorConfigTest {
 
     @Test
     public void stepOriginal() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.STEP);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
         assertNotInstanceOf(ShufflingEntitySelector.class, entitySelector);
@@ -60,12 +59,11 @@ public class EntitySelectorConfigTest {
 
     @Test
     public void justInTimeOriginal() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
         // cacheType gets upgraded to STEP
@@ -74,12 +72,11 @@ public class EntitySelectorConfigTest {
 
     @Test
     public void phaseRandom() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
         assertNotInstanceOf(ShufflingEntitySelector.class, entitySelector);
@@ -88,12 +85,11 @@ public class EntitySelectorConfigTest {
 
     @Test
     public void stepRandom() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.STEP);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
         assertNotInstanceOf(ShufflingEntitySelector.class, entitySelector);
@@ -102,12 +98,11 @@ public class EntitySelectorConfigTest {
 
     @Test
     public void justInTimeRandom() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionEntitySelector.class, entitySelector);
         // cacheType gets upgraded to STEP
@@ -116,12 +111,11 @@ public class EntitySelectorConfigTest {
 
     @Test
     public void phaseShuffled() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(ShufflingEntitySelector.class, entitySelector);
         assertInstanceOf(FromSolutionEntitySelector.class,
@@ -131,12 +125,11 @@ public class EntitySelectorConfigTest {
 
     @Test
     public void stepShuffled() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.STEP);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(ShufflingEntitySelector.class, entitySelector);
         assertInstanceOf(FromSolutionEntitySelector.class,
@@ -146,12 +139,11 @@ public class EntitySelectorConfigTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void justInTimeShuffled() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         EntitySelector entitySelector = entitySelectorConfig.buildEntitySelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
     }
 

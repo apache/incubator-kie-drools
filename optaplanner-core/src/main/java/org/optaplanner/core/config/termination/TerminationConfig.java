@@ -22,6 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.AbstractCompositeTermination;
@@ -135,15 +136,15 @@ public class TerminationConfig implements Cloneable {
     // Builder methods
     // ************************************************************************
 
-    public Termination buildTermination(ScoreDefinition scoreDefinition, Termination chainedTermination) {
-        Termination termination = buildTermination(scoreDefinition);
+    public Termination buildTermination(HeuristicConfigPolicy configPolicy, Termination chainedTermination) {
+        Termination termination = buildTermination(configPolicy);
         if (termination == null) {
             return chainedTermination;
         }
         return new OrCompositeTermination(chainedTermination, termination);
     }
 
-    public Termination buildTermination(ScoreDefinition scoreDefinition) {
+    public Termination buildTermination(HeuristicConfigPolicy configPolicy) {
         List<Termination> terminationList = new ArrayList<Termination>();
         if (terminationClass != null) {
             Termination termination  = ConfigUtils.newInstance(this, "terminationClass", terminationClass);
@@ -157,7 +158,7 @@ public class TerminationConfig implements Cloneable {
         }
         if (scoreAttained != null) {
             ScoreAttainedTermination termination = new ScoreAttainedTermination();
-            termination.setScoreAttained(scoreDefinition.parseScore(scoreAttained));
+            termination.setScoreAttained(configPolicy.getScoreDefinition().parseScore(scoreAttained));
             terminationList.add(termination);
         }
         if (maximumStepCount != null) {
@@ -172,7 +173,7 @@ public class TerminationConfig implements Cloneable {
         }
         if (!CollectionUtils.isEmpty(terminationConfigList)) {
             for (TerminationConfig terminationConfig : terminationConfigList) {
-                Termination termination = terminationConfig.buildTermination(scoreDefinition);
+                Termination termination = terminationConfig.buildTermination(configPolicy);
                 if (termination != null) {
                     terminationList.add(termination);
                 }

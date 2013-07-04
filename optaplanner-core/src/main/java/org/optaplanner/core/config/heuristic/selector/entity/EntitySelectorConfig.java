@@ -23,12 +23,11 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
-import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
@@ -141,17 +140,17 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     /**
      *
-     * @param environmentMode never null
-     * @param solutionDescriptor never null
+     * @param configPolicy never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
      * @param inheritedSelectionOrder never null
      * @return never null
      */
-    public EntitySelector buildEntitySelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+    public EntitySelector buildEntitySelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(solutionDescriptor, entityClass);
+        PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(
+                configPolicy.getSolutionDescriptor(), entityClass);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
 
@@ -160,7 +159,7 @@ public class EntitySelectorConfig extends SelectorConfig {
         validateProbability(resolvedSelectionOrder);
 
         // baseEntitySelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
-        EntitySelector entitySelector = buildBaseEntitySelector(environmentMode, entityDescriptor,
+        EntitySelector entitySelector = buildBaseEntitySelector(configPolicy, entityDescriptor,
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
                 determineBaseRandomSelection(entityDescriptor, resolvedCacheType, resolvedSelectionOrder));
 
@@ -196,7 +195,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     }
 
     private EntitySelector buildBaseEntitySelector(
-            EnvironmentMode environmentMode, PlanningEntityDescriptor entityDescriptor,
+            HeuristicConfigPolicy configPolicy, PlanningEntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         // FromSolutionEntitySelector caches by design, so it uses the minimumCacheType
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) < 0) {

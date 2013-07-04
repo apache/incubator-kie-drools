@@ -23,6 +23,7 @@ import java.util.Set;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.termination.TerminationConfig;
@@ -145,9 +146,11 @@ public class SolverConfig {
                 environmentMode, solutionDescriptor);
         solver.setScoreDirectorFactory(scoreDirectorFactory);
         ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
+        HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(
+                environmentMode, solutionDescriptor, scoreDefinition);
         TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
                 : terminationConfig;
-        Termination termination = terminationConfig_.buildTermination(scoreDefinition, basicPlumbingTermination);
+        Termination termination = terminationConfig_.buildTermination(configPolicy, basicPlumbingTermination);
         solver.setTermination(termination);
         BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller(environmentMode);
         solver.setBestSolutionRecaller(bestSolutionRecaller);
@@ -158,8 +161,7 @@ public class SolverConfig {
         List<SolverPhase> solverPhaseList = new ArrayList<SolverPhase>(solverPhaseConfigList.size());
         int phaseIndex = 0;
         for (SolverPhaseConfig solverPhaseConfig : solverPhaseConfigList) {
-            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(phaseIndex, environmentMode,
-                    solutionDescriptor, scoreDefinition, termination);
+            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(phaseIndex, configPolicy, termination);
             ((AbstractSolverPhase) solverPhase).setBestSolutionRecaller(bestSolutionRecaller);
             solverPhaseList.add(solverPhase);
             phaseIndex++;

@@ -19,11 +19,10 @@ package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 import java.util.Collection;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -61,16 +60,14 @@ public class PillarSelectorConfig extends SelectorConfig {
     // ************************************************************************
 
     /**
-     *
-     * @param environmentMode never null
-     * @param solutionDescriptor never null
+     * @param configPolicy never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
      * @param inheritedSelectionOrder never null
      * @return never null
      */
-    public PillarSelector buildPillarSelector(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+    public PillarSelector buildPillarSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The pillarSelectorConfig (" + this
@@ -81,7 +78,7 @@ public class PillarSelectorConfig extends SelectorConfig {
         // EntitySelector uses SelectionOrder.ORIGINAL because a SameValuePillarSelector STEP caches the values
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
                 : entitySelectorConfig;
-        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(environmentMode, solutionDescriptor,
+        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
                 minimumCacheType, SelectionOrder.ORIGINAL);
         Collection<PlanningVariableDescriptor> variableDescriptors = entitySelector.getEntityDescriptor()
                 .getVariableDescriptors();

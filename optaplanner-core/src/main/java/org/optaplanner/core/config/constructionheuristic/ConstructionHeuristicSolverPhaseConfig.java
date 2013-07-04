@@ -24,6 +24,7 @@ import java.util.Set;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.constructionheuristic.placer.entity.EntityPlacerConfig;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
@@ -91,14 +92,18 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     // ************************************************************************
 
 
-    public ConstructionHeuristicSolverPhase buildSolverPhase(int phaseIndex, EnvironmentMode environmentMode,
-            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
+    public ConstructionHeuristicSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
+            Termination solverTermination) {
+        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         if (constructionHeuristicType != null) {
             // TODO delete this legacy piece for GreedyFitSolverPhase
             DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
-            configureSolverPhase(greedySolverPhase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
-            greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
-            greedySolverPhase.setGreedyDecider(buildGreedyDecider(solutionDescriptor, environmentMode));
+            configureSolverPhase(greedySolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
+            greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(
+                    solverConfigPolicy.getSolutionDescriptor()));
+            greedySolverPhase.setGreedyDecider(buildGreedyDecider(
+                    solverConfigPolicy.getSolutionDescriptor(), solverConfigPolicy.getEnvironmentMode()));
+            EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
             if (environmentMode.isNonIntrusiveFullAsserted()) {
                 greedySolverPhase.setAssertStepScoreFromScratch(true);
             }
@@ -114,12 +119,12 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
 
 
             DefaultConstructionHeuristicSolverPhase phase = new DefaultConstructionHeuristicSolverPhase();
-            configureSolverPhase(phase, phaseIndex, environmentMode, scoreDefinition, solverTermination);
+            configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, solverTermination);
 
             EntityPlacer entityPlacer;
             if (entityPlacerConfigList.size() == 1) {
                 entityPlacer = entityPlacerConfigList.get(0).buildEntityPlacer(
-                        environmentMode, solutionDescriptor, phase.getTermination());
+                        phaseConfigPolicy, phase.getTermination());
             } else {
                 // TODO entityPlacerConfigList is only a List because of XStream limitations.
                 throw new IllegalArgumentException("The entityPlacerConfigList (" + entityPlacerConfigList
@@ -127,6 +132,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                         + " elements to initialize multiple entity classes.");
             }
             phase.setEntityPlacer(entityPlacer);
+            EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
             if (environmentMode.isNonIntrusiveFullAsserted()) {
                 phase.setAssertStepScoreFromScratch(true);
             }

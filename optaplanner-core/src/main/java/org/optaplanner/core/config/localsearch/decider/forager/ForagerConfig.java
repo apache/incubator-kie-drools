@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.localsearch.decider.forager;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedForager;
@@ -71,7 +72,7 @@ public class ForagerConfig {
     // Builder methods
     // ************************************************************************
 
-    public Forager buildForager(ScoreDefinition scoreDefinition) {
+    public Forager buildForager(HeuristicConfigPolicy configPolicy) {
         if (foragerClass != null) {
             return ConfigUtils.newInstance(this, "foragerClass", foragerClass);
         }

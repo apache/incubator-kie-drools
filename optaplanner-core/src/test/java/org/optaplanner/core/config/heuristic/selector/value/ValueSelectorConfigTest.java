@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.value;
 
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
+import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
@@ -31,17 +33,18 @@ import org.junit.Test;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.assertEquals;
 
-public class ValueSelectorConfigTest {
+public class ValueSelectorConfigTest extends AbstractSelectorConfigTest {
 
     @Test
     public void phaseOriginal() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
+        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
+        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+                .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
+                configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
@@ -50,13 +53,14 @@ public class ValueSelectorConfigTest {
 
     @Test
     public void stepOriginal() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
+        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
+        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+                .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
+                configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
@@ -66,13 +70,14 @@ public class ValueSelectorConfigTest {
 
     @Test
     public void justInTimeOriginal() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
+        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
+        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+                .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
+                configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         // cacheType gets upgraded to STEP
@@ -81,13 +86,14 @@ public class ValueSelectorConfigTest {
 
     @Test
     public void phaseRandom() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
+        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
+        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+                .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
+                configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
@@ -96,13 +102,14 @@ public class ValueSelectorConfigTest {
 
     @Test
     public void stepRandom() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
+        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
+        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+                .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
+                configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         assertNotInstanceOf(ShufflingValueSelector.class, valueSelector);
@@ -112,13 +119,14 @@ public class ValueSelectorConfigTest {
 
     @Test
     public void justInTimeRandom() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
+        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
+        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+                .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
+                configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(FromSolutionPropertyValueSelector.class, valueSelector);
         // cacheType gets upgraded to STEP
@@ -127,13 +135,14 @@ public class ValueSelectorConfigTest {
 
     @Test
     public void phaseShuffled() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
+        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
+        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+                .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
+                configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(ShufflingValueSelector.class, valueSelector);
         assertInstanceOf(FromSolutionPropertyValueSelector.class,
@@ -143,13 +152,14 @@ public class ValueSelectorConfigTest {
 
     @Test
     public void stepShuffled() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
+        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
+        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+                .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
+                configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(ShufflingValueSelector.class, valueSelector);
         assertInstanceOf(FromSolutionPropertyValueSelector.class,
@@ -159,13 +169,14 @@ public class ValueSelectorConfigTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void justInTimeShuffled() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptor(TestdataEntity.class);
+        HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
+        PlanningEntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
+                .getEntityDescriptor(TestdataEntity.class);
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         ValueSelector valueSelector = valueSelectorConfig.buildValueSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor, entityDescriptor,
+                configPolicy, entityDescriptor,
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
     }
 

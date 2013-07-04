@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.constructionheuristic.placer.value.ValuePlacerConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -62,20 +63,19 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
     // Builder methods
     // ************************************************************************
 
-    public QueuedEntityPlacer buildEntityPlacer(EnvironmentMode environmentMode,
-            SolutionDescriptor solutionDescriptor, Termination phaseTermination) {
+    public QueuedEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
         // TODO filter out initialized entities
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
                 : entitySelectorConfig;
-        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(environmentMode,
-                solutionDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL); // TODO fix selection order
+        EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
+                SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL); // TODO fix selection order
         List<ValuePlacerConfig> valuePlacerConfigList_
                 = valuePlacerConfigList == null ? Arrays.asList(new ValuePlacerConfig())
                 : valuePlacerConfigList;
         List<ValuePlacer> valuePlacerList = new ArrayList<ValuePlacer>(valuePlacerConfigList_.size());
         for (ValuePlacerConfig valuePlacerConfig : valuePlacerConfigList_) {
-            valuePlacerList.add(valuePlacerConfig.buildValuePlacer(environmentMode,
-                    solutionDescriptor, phaseTermination, entitySelector.getEntityDescriptor()));
+            valuePlacerList.add(valuePlacerConfig.buildValuePlacer(configPolicy,
+                    phaseTermination, entitySelector.getEntityDescriptor()));
         }
         return new QueuedEntityPlacer(entitySelector, valuePlacerList);
     }

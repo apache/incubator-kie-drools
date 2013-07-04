@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.move;
 
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
+import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
@@ -31,16 +33,15 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertSame;
 import static org.junit.Assert.assertEquals;
 
-public class MoveSelectorConfigTest {
+public class MoveSelectorConfigTest extends AbstractSelectorConfigTest {
 
     @Test
     public void phaseOriginal() {
-        SolutionDescriptor solutionDescriptor = SelectorTestUtils.mockSolutionDescriptor();
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
         MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
             @Override
             protected MoveSelector buildBaseMoveSelector(
-                    EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+                    HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertEquals(SelectionCacheType.PHASE, minimumCacheType);
                 assertEquals(false, randomSelection);
@@ -50,7 +51,7 @@ public class MoveSelectorConfigTest {
         moveSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(CachingMoveSelector.class, moveSelector);
         assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
@@ -60,12 +61,11 @@ public class MoveSelectorConfigTest {
 
     @Test
     public void stepOriginal() {
-        SolutionDescriptor solutionDescriptor = SelectorTestUtils.mockSolutionDescriptor();
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
         MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
             @Override
             protected MoveSelector buildBaseMoveSelector(
-                    EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+                    HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertEquals(SelectionCacheType.STEP, minimumCacheType);
                 assertEquals(false, randomSelection);
@@ -75,7 +75,7 @@ public class MoveSelectorConfigTest {
         moveSelectorConfig.setCacheType(SelectionCacheType.STEP);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(CachingMoveSelector.class, moveSelector);
         assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
@@ -85,12 +85,11 @@ public class MoveSelectorConfigTest {
 
     @Test
     public void justInTimeOriginal() {
-        SolutionDescriptor solutionDescriptor = SelectorTestUtils.mockSolutionDescriptor();
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
         MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
             @Override
             protected MoveSelector buildBaseMoveSelector(
-                    EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+                    HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertEquals(SelectionCacheType.JUST_IN_TIME, minimumCacheType);
                 assertEquals(false, randomSelection);
@@ -100,7 +99,7 @@ public class MoveSelectorConfigTest {
         moveSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertSame(baseMoveSelector, moveSelector);
         assertEquals(SelectionCacheType.JUST_IN_TIME, moveSelector.getCacheType());
@@ -108,12 +107,11 @@ public class MoveSelectorConfigTest {
 
     @Test
     public void phaseRandom() {
-        SolutionDescriptor solutionDescriptor = SelectorTestUtils.mockSolutionDescriptor();
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
         MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
             @Override
             protected MoveSelector buildBaseMoveSelector(
-                    EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+                    HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertEquals(SelectionCacheType.PHASE, minimumCacheType);
                 assertEquals(false, randomSelection);
@@ -123,7 +121,7 @@ public class MoveSelectorConfigTest {
         moveSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(CachingMoveSelector.class, moveSelector);
         assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
@@ -133,12 +131,11 @@ public class MoveSelectorConfigTest {
 
     @Test
     public void stepRandom() {
-        SolutionDescriptor solutionDescriptor = SelectorTestUtils.mockSolutionDescriptor();
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
         MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
             @Override
             protected MoveSelector buildBaseMoveSelector(
-                    EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+                    HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertEquals(SelectionCacheType.STEP, minimumCacheType);
                 assertEquals(false, randomSelection);
@@ -148,7 +145,7 @@ public class MoveSelectorConfigTest {
         moveSelectorConfig.setCacheType(SelectionCacheType.STEP);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(CachingMoveSelector.class, moveSelector);
         assertNotInstanceOf(ShufflingMoveSelector.class, moveSelector);
@@ -158,12 +155,11 @@ public class MoveSelectorConfigTest {
 
     @Test
     public void justInTimeRandom() {
-        SolutionDescriptor solutionDescriptor = SelectorTestUtils.mockSolutionDescriptor();
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
         MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
             @Override
             protected MoveSelector buildBaseMoveSelector(
-                    EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+                    HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertEquals(SelectionCacheType.JUST_IN_TIME, minimumCacheType);
                 assertEquals(true, randomSelection);
@@ -173,7 +169,7 @@ public class MoveSelectorConfigTest {
         moveSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertSame(baseMoveSelector, moveSelector);
         assertEquals(SelectionCacheType.JUST_IN_TIME, moveSelector.getCacheType());
@@ -181,12 +177,11 @@ public class MoveSelectorConfigTest {
 
     @Test
     public void phaseShuffled() {
-        SolutionDescriptor solutionDescriptor = SelectorTestUtils.mockSolutionDescriptor();
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
         MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
             @Override
             protected MoveSelector buildBaseMoveSelector(
-                    EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+                    HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertEquals(SelectionCacheType.PHASE, minimumCacheType);
                 assertEquals(false, randomSelection);
@@ -196,7 +191,7 @@ public class MoveSelectorConfigTest {
         moveSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(ShufflingMoveSelector.class, moveSelector);
         assertEquals(SelectionCacheType.PHASE, moveSelector.getCacheType());
@@ -205,12 +200,11 @@ public class MoveSelectorConfigTest {
 
     @Test
     public void stepShuffled() {
-        SolutionDescriptor solutionDescriptor = SelectorTestUtils.mockSolutionDescriptor();
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
         MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
             @Override
             protected MoveSelector buildBaseMoveSelector(
-                    EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+                    HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 assertEquals(SelectionCacheType.STEP, minimumCacheType);
                 assertEquals(false, randomSelection);
@@ -220,7 +214,7 @@ public class MoveSelectorConfigTest {
         moveSelectorConfig.setCacheType(SelectionCacheType.STEP);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertInstanceOf(ShufflingMoveSelector.class, moveSelector);
         assertEquals(SelectionCacheType.STEP, moveSelector.getCacheType());
@@ -229,12 +223,11 @@ public class MoveSelectorConfigTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void justInTimeShuffled() {
-        SolutionDescriptor solutionDescriptor = SelectorTestUtils.mockSolutionDescriptor();
         final MoveSelector baseMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class);
         MoveSelectorConfig moveSelectorConfig = new MoveSelectorConfig() {
             @Override
             protected MoveSelector buildBaseMoveSelector(
-                    EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+                    HeuristicConfigPolicy configPolicy,
                     SelectionCacheType minimumCacheType, boolean randomSelection) {
                 return baseMoveSelector;
             }
@@ -242,7 +235,7 @@ public class MoveSelectorConfigTest {
         moveSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         moveSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
-                EnvironmentMode.REPRODUCIBLE, solutionDescriptor,
+                buildHeuristicConfigPolicy(),
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
     }
 

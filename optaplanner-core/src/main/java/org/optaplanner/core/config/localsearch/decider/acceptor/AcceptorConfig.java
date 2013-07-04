@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
@@ -245,7 +246,8 @@ public class AcceptorConfig {
     // Builder methods
     // ************************************************************************
 
-    public Acceptor buildAcceptor(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
+    public Acceptor buildAcceptor(HeuristicConfigPolicy configPolicy) {
+        EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         List<Acceptor> acceptorList = new ArrayList<Acceptor>();
         if (acceptorClassList != null) {
             for (Class<? extends Acceptor> acceptorClass : acceptorClassList) {
@@ -363,7 +365,8 @@ public class AcceptorConfig {
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SIMULATED_ANNEALING))
                 || simulatedAnnealingStartingTemperature != null) {
             SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
-            acceptor.setStartingTemperature(scoreDefinition.parseScore(simulatedAnnealingStartingTemperature));
+            acceptor.setStartingTemperature(configPolicy.getScoreDefinition()
+                    .parseScore(simulatedAnnealingStartingTemperature));
             acceptorList.add(acceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.GREAT_DELUGE))

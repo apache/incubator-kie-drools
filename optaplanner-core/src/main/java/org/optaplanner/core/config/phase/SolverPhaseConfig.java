@@ -18,6 +18,7 @@ package org.optaplanner.core.config.phase;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.bruteforce.BruteForceSolverPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
@@ -58,15 +59,14 @@ public abstract class SolverPhaseConfig {
     // ************************************************************************
 
     public abstract SolverPhase buildSolverPhase(int phaseIndex,
-            EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
-            ScoreDefinition scoreDefinition, Termination solverTermination);
+            HeuristicConfigPolicy solverConfigPolicy, Termination solverTermination);
 
     protected void configureSolverPhase(AbstractSolverPhase solverPhase, int phaseIndex,
-            EnvironmentMode environmentMode, ScoreDefinition scoreDefinition, Termination solverTermination) {
+            HeuristicConfigPolicy configPolicy, Termination solverTermination) {
         solverPhase.setPhaseIndex(phaseIndex);
         TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
                 : terminationConfig;
-        solverPhase.setTermination(terminationConfig_.buildTermination(scoreDefinition,
+        solverPhase.setTermination(terminationConfig_.buildTermination(configPolicy,
                 new PhaseToSolverTerminationBridge(solverTermination)));
     }
 
