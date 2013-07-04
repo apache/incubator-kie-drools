@@ -28,7 +28,7 @@ import org.kie.api.conf.SingleValueKieBaseOption;
  * drools.phreakEnabled = &lt;true|false&gt;
  * </pre>
  * 
- * <b>DEFAULT = false.</b>
+ * <b>DEFAULT = true.</b>
  * 
  * <p>
  * Left & Right unlinking is a RETE optimization that leads to improvements in
