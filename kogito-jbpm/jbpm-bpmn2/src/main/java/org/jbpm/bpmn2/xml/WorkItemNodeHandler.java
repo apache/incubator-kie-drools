@@ -46,8 +46,12 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
 		} 
         if ("Service Task".equals(type)) {
             writeNode("serviceTask", workItemNode, xmlDump, metaDataType);
+            String impl = "Other";
+            if (workItemNode.getWork().getParameter("implementation") != null) {
+                impl = (String) workItemNode.getWork().getParameter("implementation");
+            }
             xmlDump.append("operationRef=\"" + 
-                XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_ServiceOperation\" implementation=\"Other\" >" + EOL);
+                XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_ServiceOperation\" implementation=\""+impl+"\" >" + EOL);
     		writeScripts(workItemNode, xmlDump);
     		xmlDump.append(
                 "      <ioSpecification>" + EOL +

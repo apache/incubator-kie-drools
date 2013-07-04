@@ -44,6 +44,7 @@ import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.junit.After;
@@ -67,6 +68,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -841,7 +843,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ksession.signalEvent("Task3", null, processInstance.getId());
         assertProcessInstanceFinished(processInstance, ksession);
     }
-
+    
     @Test
     public void testServiceTask() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ServiceProcess.bpmn2");
@@ -854,6 +856,31 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 .startProcess("ServiceProcess", params);
         assertProcessInstanceFinished(processInstance, ksession);
         assertEquals("Hello john!", processInstance.getVariable("s"));
+    }
+    
+    @Test
+    public void testServiceTaskNoInterfaceName() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ServiceTask-web-service.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+                new SystemOutWorkItemHandler() {
+
+                    @Override
+                    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+                        assertEquals("SimpleService", workItem.getParameter("Interface"));
+                        assertEquals("hello", workItem.getParameter("Operation"));
+                        assertEquals("java.lang.String", workItem.getParameter("ParameterType"));
+                        assertEquals("##WebService", workItem.getParameter("implementation"));
+                        assertEquals("hello", workItem.getParameter("operationImplementationRef"));
+                        assertEquals("SimpleService", workItem.getParameter("interfaceImplementationRef"));
+                        super.executeWorkItem(workItem, manager);
+                    }
+            
+        });
+        Map<String, Object> params = new HashMap<String, Object>();
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession
+                .startProcess("org.jboss.qa.jbpm.CallWS", params);
+        assertProcessInstanceFinished(processInstance, ksession);
     }
 
     @Test

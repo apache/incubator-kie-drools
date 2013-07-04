@@ -61,10 +61,16 @@ public class ServiceTaskHandler extends TaskHandler {
         if (operation == null) {
             throw new IllegalArgumentException("Could not find operation " + operationRef);
         }
-        workItemNode.getWork().setParameter("Interface", operation.getInterface().getName());
-        workItemNode.getWork().setParameter("Operation", operation.getName());
-        workItemNode.getWork().setParameter("ParameterType", operation.getMessage().getType());
-        
+        // avoid overriding parameters set by data input associations
+        if (workItemNode.getWork().getParameter("Interface") == null) {
+            workItemNode.getWork().setParameter("Interface", operation.getInterface().getName());
+        }
+        if (workItemNode.getWork().getParameter("Operation") == null) {
+            workItemNode.getWork().setParameter("Operation", operation.getName());
+        }
+        if (workItemNode.getWork().getParameter("ParameterType") == null) {
+            workItemNode.getWork().setParameter("ParameterType", operation.getMessage().getType());
+        }
         // parameters to support web service invocation 
         if (implementation != null) {
             workItemNode.getWork().setParameter("interfaceImplementationRef", operation.getInterface().getImplementationRef());
