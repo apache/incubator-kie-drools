@@ -36,9 +36,9 @@ public class KieBaseModelImpl
 
     private List<String>                 packages;
 
-    private EqualityBehaviorOption equalsBehavior = EqualityBehaviorOption.IDENTITY;
+    private EqualityBehaviorOption       equalsBehavior = EqualityBehaviorOption.IDENTITY;
 
-    private EventProcessingOption        eventProcessingMode = EventProcessingOption.STREAM;
+    private EventProcessingOption        eventProcessingMode = EventProcessingOption.CLOUD;
 
     private Map<String, KieSessionModel> kSessions = new HashMap<String, KieSessionModel>();
 
