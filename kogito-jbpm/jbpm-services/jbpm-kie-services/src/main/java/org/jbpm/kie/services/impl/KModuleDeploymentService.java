@@ -1,19 +1,5 @@
 package org.jbpm.kie.services.impl;
 
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.persistence.EntityManagerFactory;
-
 import org.apache.commons.codec.binary.Base64;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
@@ -36,6 +22,19 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+import javax.persistence.EntityManagerFactory;
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 @ApplicationScoped
 @Kjar
@@ -114,7 +113,13 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             } else if (fileName.matches(".+form$")) {
                 try {
                     String formContent = new String(module.getBytes(fileName), "UTF-8");
-                    formsData.put(fileName, formContent);
+                    Pattern regex = Pattern.compile("(.{0}|.*/)([^/]*?)\\.form");
+                    Matcher m = regex.matcher(fileName);
+                    String key = fileName;
+                    while (m.find()) {
+                        key = m.group(2);
+                    }
+                    formsData.put(key+".form", formContent);
                 } catch (UnsupportedEncodingException e) {
                     logger.warn("Unable to load content for form '" + fileName + "': ", e);
                 }

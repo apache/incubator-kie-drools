@@ -119,7 +119,7 @@ public class FormProviderServiceImpl implements FormProviderService {
             input = ContentMarshallerHelper.unmarshall(content.getContent(), marshallerContext.getEnvironment(), marshallerContext.getClassloader());
         }
         if (input == null) {
-            input = new HashMap<String, String>();
+            input = new HashMap<String, Object>();
         }
 
         Object output = null;
@@ -129,7 +129,7 @@ public class FormProviderServiceImpl implements FormProviderService {
             output = ContentMarshallerHelper.unmarshall(content.getContent(), marshallerContext.getEnvironment(), marshallerContext.getClassloader());
         }
         if (output == null) {
-            output = new HashMap<String, String>();
+            output = new HashMap<String, Object>();
         }
 
         // prepare task variables for rendering
