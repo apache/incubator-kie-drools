@@ -460,7 +460,7 @@
 64  has  64 queens with a search space of 10^115.
 256 has 256 queens with a search space of 10^616.</programlisting>
 
-        <para>The OptaPlanner implementation of the N queens example has not been optimized because it functions as a
+        <para>The implementation of the N queens example has not been optimized because it functions as a
         beginner example. Nevertheless, it can easily handle 64 queens. With a few changes it has been shown to easily
         handle 5000 queens and more.</para>
       </section>

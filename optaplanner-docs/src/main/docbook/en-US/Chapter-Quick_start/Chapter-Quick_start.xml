@@ -101,7 +101,7 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
 
         <listitem>
           <para><literal>Process</literal>: represents a process with a demand. Needs to be assigned to a
-          <literal>Computer</literal> by OptaPlanner.</para>
+          <literal>Computer</literal> by Planner.</para>
         </listitem>
 
         <listitem>

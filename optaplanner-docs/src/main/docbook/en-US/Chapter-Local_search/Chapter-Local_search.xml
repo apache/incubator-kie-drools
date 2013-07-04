@@ -252,7 +252,7 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
       </itemizedlist>
 
       <para>Of course OptaPlanner implements better local searches, such as <emphasis>tabu search</emphasis> and
-      <emphasis>simulated annealing</emphasis> which can avoid these problems. We recommend to never use a hill climber,
+      <emphasis>simulated annealing</emphasis> which can avoid these problems. We recommend to never use hill climbing,
       unless you're absolutely sure there are no local optima in your planning problem.</para>
     </section>
   </section>

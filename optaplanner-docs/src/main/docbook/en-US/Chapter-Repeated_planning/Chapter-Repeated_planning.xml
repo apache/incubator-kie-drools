@@ -35,7 +35,7 @@
     <para>Waiting to start planning - to lower the risk of planning facts changing - usually isn't a good way to deal
     with that. More CPU time means a better planning solution. An incomplete plan is better than no plan.</para>
 
-    <para>Luckily, the OptaPlanner algorithms support planning a solution that's already (partially) planned, known
+    <para>Luckily, the optimization algorithms support planning a solution that's already (partially) planned, known
     as repeated planning.</para>
   </section>
 
