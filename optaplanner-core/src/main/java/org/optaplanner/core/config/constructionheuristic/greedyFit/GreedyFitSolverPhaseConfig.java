@@ -78,6 +78,7 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
     public GreedyFitSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
+        phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
         DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
         configureSolverPhase(greedySolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
         greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(

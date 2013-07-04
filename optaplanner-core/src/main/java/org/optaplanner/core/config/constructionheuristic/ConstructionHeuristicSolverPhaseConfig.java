@@ -95,6 +95,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     public ConstructionHeuristicSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
+        phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
         if (constructionHeuristicType != null) {
             // TODO delete this legacy piece for GreedyFitSolverPhase
             DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();

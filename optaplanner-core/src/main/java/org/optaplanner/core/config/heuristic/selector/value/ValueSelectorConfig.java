@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValu
 import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.InitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 
@@ -113,6 +114,8 @@ public class ValueSelectorConfig extends SelectorConfig {
                 determineBaseRandomSelection(variableDescriptor, resolvedCacheType, resolvedSelectionOrder));
 
 //        valueSelector = applyFiltering(variableDescriptor, resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyInitializedChainedValueFilter(configPolicy, variableDescriptor,
+                resolvedCacheType, resolvedSelectionOrder, valueSelector);
 //        valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
@@ -170,6 +173,17 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     private boolean hasFiltering() {
         return false; // NOT yet implemented
+    }
+
+    protected ValueSelector applyInitializedChainedValueFilter(HeuristicConfigPolicy configPolicy,
+            PlanningVariableDescriptor variableDescriptor,
+            SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            ValueSelector valueSelector) {
+        if (configPolicy.isInitializedChainedValueFilterEnabled()
+                    && variableDescriptor.isChained()) {
+            valueSelector = new InitializedValueSelector(variableDescriptor, valueSelector);
+        }
+        return valueSelector;
     }
 
     private void validateProbability(SelectionOrder resolvedSelectionOrder) {

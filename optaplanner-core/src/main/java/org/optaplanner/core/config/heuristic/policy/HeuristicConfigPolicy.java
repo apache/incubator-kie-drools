@@ -10,6 +10,8 @@ public class HeuristicConfigPolicy {
     private final SolutionDescriptor solutionDescriptor;
     private final ScoreDefinition scoreDefinition;
 
+    private boolean initializedChainedValueFilterEnabled = false;
+
     public HeuristicConfigPolicy(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             ScoreDefinition scoreDefinition) {
         this.environmentMode = environmentMode;
@@ -27,6 +29,14 @@ public class HeuristicConfigPolicy {
 
     public ScoreDefinition getScoreDefinition() {
         return scoreDefinition;
+    }
+
+    public boolean isInitializedChainedValueFilterEnabled() {
+        return initializedChainedValueFilterEnabled;
+    }
+
+    public void setInitializedChainedValueFilterEnabled(boolean initializedChainedValueFilterEnabled) {
+        this.initializedChainedValueFilterEnabled = initializedChainedValueFilterEnabled;
     }
 
     // ************************************************************************
