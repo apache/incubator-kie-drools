@@ -142,6 +142,7 @@
             <Import-Package>
               !org.jbpm.shared.services,
               org.jboss.solder.core;resolution:=optional,
+              bitronix.tm;resolution:=optional,
               *
             </Import-Package>
             <Private-Package></Private-Package>
