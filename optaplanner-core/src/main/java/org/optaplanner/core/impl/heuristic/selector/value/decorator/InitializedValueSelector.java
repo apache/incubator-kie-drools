@@ -30,8 +30,8 @@ public class InitializedValueSelector extends AbstractValueSelector {
     protected final ValueSelector childValueSelector;
     protected final boolean bailOutEnabled;
 
-    public InitializedValueSelector(PlanningVariableDescriptor variableDescriptor, ValueSelector childValueSelector) {
-        this.variableDescriptor = variableDescriptor;
+    public InitializedValueSelector(ValueSelector childValueSelector) {
+        this.variableDescriptor = childValueSelector.getVariableDescriptor();
         this.childValueSelector = childValueSelector;
         bailOutEnabled = childValueSelector.isNeverEnding();
         solverPhaseLifecycleSupport.addEventListener(childValueSelector);

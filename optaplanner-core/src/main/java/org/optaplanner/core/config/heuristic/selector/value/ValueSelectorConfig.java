@@ -181,7 +181,7 @@ public class ValueSelectorConfig extends SelectorConfig {
             ValueSelector valueSelector) {
         if (configPolicy.isInitializedChainedValueFilterEnabled()
                     && variableDescriptor.isChained()) {
-            valueSelector = new InitializedValueSelector(variableDescriptor, valueSelector);
+            valueSelector = new InitializedValueSelector(valueSelector);
         }
         return valueSelector;
     }

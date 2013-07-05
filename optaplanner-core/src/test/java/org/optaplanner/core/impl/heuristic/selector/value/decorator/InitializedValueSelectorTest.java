@@ -52,7 +52,7 @@ public class InitializedValueSelectorTest {
         ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
                 a0, a1, a2);
 
-        InitializedValueSelector valueSelector = new InitializedValueSelector(variableDescriptor, childValueSelector);
+        InitializedValueSelector valueSelector = new InitializedValueSelector(childValueSelector);
         verify(childValueSelector, times(1)).isNeverEnding();
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
