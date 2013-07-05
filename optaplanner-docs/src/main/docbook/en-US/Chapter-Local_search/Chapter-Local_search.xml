@@ -74,6 +74,8 @@
         </imageobject>
       </mediaobject>
 
+      <para>Scientific paper: <emphasis>Tabu Search - Part 1 and Part 2</emphasis> by Fred Glover (1989 - 1990)</para>
+
       <para>See Tabu Search acceptor below.</para>
     </section>
   </section>
@@ -115,6 +117,10 @@
           <imagedata fileref="images/Chapter-Local_search/lateAcceptance.png"/>
         </imageobject>
       </mediaobject>
+
+      <para>Scientific paper: <link
+      xlink:href="www.cs.stir.ac.uk/research/publications/techreps/pdf/TR192.pdf"><emphasis>The Late Acceptance
+      Hill-Climbing Heuristic</emphasis> by Edmund K. Burke, Yuri Bykov (2012)</link></para>
 
       <para>See Late Acceptance acceptor below.</para>
     </section>
