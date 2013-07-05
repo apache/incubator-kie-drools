@@ -40,7 +40,8 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindow
 public class VehicleRoutingSchedulePainter {
 
     private static final int TEXT_SIZE = 12;
-    private static final int TEXT_SPACING_SIZE = 4;
+
+    private static final int TIME_WINDOW_WIDTH = 40;
 
     private static final String IMAGE_PATH_PREFIX = "/org/optaplanner/examples/vehiclerouting/swingui/";
 
@@ -81,6 +82,8 @@ public class VehicleRoutingSchedulePainter {
             translator.addCoordinates(location.getLatitude(), location.getLongitude());
         }
 
+        int maximumTimeWindowTime = determineMaximumTimeWindowTime(schedule);
+
         double width = size.getWidth();
         double height = size.getHeight();
         translator.prepareFor(width, height);
@@ -93,18 +96,25 @@ public class VehicleRoutingSchedulePainter {
             int y = translator.translateLatitudeToY(location.getLatitude());
             g.setColor(TangoColorFactory.ALUMINIUM_4);
             g.fillRect(x - 1, y - 1, 3, 3);
-            g.drawString(Integer.toString(customer.getDemand()), x + 3, y - (TEXT_SIZE/2) - TEXT_SPACING_SIZE);
+            g.drawString(Integer.toString(customer.getDemand()), x + 3, y - TEXT_SIZE/2);
             if (customer instanceof VrpTimeWindowedCustomer) {
                 VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
-                g.drawString(timeWindowedCustomer.getTimeWindowLabel(), x + 3, y + (TEXT_SIZE/2));
+                g.drawLine(x - (TIME_WINDOW_WIDTH / 2), y + 8, x + (TIME_WINDOW_WIDTH / 2), y + 8);
+                int readyTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedCustomer.getReadyTime());
+                g.drawLine(readyTimeX, y + 8, readyTimeX, y + 4);
+                int dueTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedCustomer.getDueTime());
+                g.drawLine(dueTimeX, y + 8, dueTimeX, y + 4);
                 if (timeWindowedCustomer.getArrivalTime() != null) {
                     if (timeWindowedCustomer.isArrivalAfterDueTime()) {
                         g.setColor(TangoColorFactory.SCARLET_2);
                     } else if (timeWindowedCustomer.isArrivalBeforeReadyTime()) {
                         g.setColor(TangoColorFactory.ORANGE_2);
+                    } else {
+                        g.setColor(TangoColorFactory.ALUMINIUM_6);
                     }
-                    g.drawString(Integer.toString(timeWindowedCustomer.getArrivalTime()),
-                            x + 3, y + (TEXT_SIZE/2) + TEXT_SPACING_SIZE + TEXT_SIZE);
+                    int arrivalTimeX = calculateTimeWindowX(maximumTimeWindowTime, x,
+                            timeWindowedCustomer.getArrivalTime());
+                    g.drawLine(arrivalTimeX, y + 8, arrivalTimeX, y + 3);
                 }
             }
         }
@@ -117,7 +127,11 @@ public class VehicleRoutingSchedulePainter {
                     x - depotImageIcon.getIconWidth() / 2, y - 2 - depotImageIcon.getIconHeight(), imageObserver);
             if (depot instanceof VrpTimeWindowedDepot) {
                 VrpTimeWindowedDepot timeWindowedDepot = (VrpTimeWindowedDepot) depot;
-                g.drawString(timeWindowedDepot.getTimeWindowLabel(), x + 3, y - 3 + TEXT_SIZE + TEXT_SPACING_SIZE);
+                g.drawLine(x - (TIME_WINDOW_WIDTH / 2), y + 8, x + (TIME_WINDOW_WIDTH / 2), y + 8);
+                int readyTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedDepot.getReadyTime());
+                g.drawLine(readyTimeX, y + 8, readyTimeX, y + 4);
+                int dueTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedDepot.getDueTime());
+                g.drawLine(dueTimeX, y + 8, dueTimeX, y + 4);
             }
         }
         int colorIndex = 0;
@@ -210,6 +224,32 @@ public class VehicleRoutingSchedulePainter {
             g.drawString(totalDistanceString,
                     (int) width - g.getFontMetrics().stringWidth(totalDistanceString) - 10, (int) height - 10);
         }
+    }
+
+    private int determineMaximumTimeWindowTime(VrpSchedule schedule) {
+        int maximumTimeWindowTime = 0;
+        for (VrpDepot depot : schedule.getDepotList()) {
+            if (depot instanceof VrpTimeWindowedDepot) {
+                int timeWindowTime = ((VrpTimeWindowedDepot) depot).getDueTime();
+                if (timeWindowTime > maximumTimeWindowTime) {
+                    maximumTimeWindowTime = timeWindowTime;
+                }
+            }
+        }
+        for (VrpCustomer customer : schedule.getCustomerList()) {
+            if (customer instanceof VrpTimeWindowedCustomer) {
+                int timeWindowTime = ((VrpTimeWindowedCustomer) customer).getDueTime();
+                if (timeWindowTime > maximumTimeWindowTime) {
+                    maximumTimeWindowTime = timeWindowTime;
+                }
+            }
+        }
+        return maximumTimeWindowTime;
+    }
+
+    private int calculateTimeWindowX(int maximumTimeWindowTime, int x, int timeWindowTime) {
+        return x - (TIME_WINDOW_WIDTH / 2)
+                + (timeWindowTime * TIME_WINDOW_WIDTH / maximumTimeWindowTime);
     }
 
     public Graphics createCanvas(double width, double height) {
