@@ -53,6 +53,10 @@ public class ValuePlacer extends AbstractPlacer {
 
     public ConstructionHeuristicMoveScope nominateMove(ConstructionHeuristicStepScope stepScope) {
         Object entity = stepScope.getEntity();
+        // If variable should be reinitialized, that happened sooner
+        if (variableDescriptor.isInitialized(entity)) {
+            return null;
+        }
         // TODO extract to PlacerForager
         Score maxScore = null;
         ConstructionHeuristicMoveScope nominatedMoveScope = null;
