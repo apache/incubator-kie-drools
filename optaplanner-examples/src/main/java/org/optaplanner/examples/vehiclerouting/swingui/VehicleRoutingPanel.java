@@ -29,6 +29,8 @@ import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
 
 /**
  * TODO this code is highly unoptimized
@@ -104,17 +106,26 @@ public class VehicleRoutingPanel extends SolutionPanel {
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
-                VrpSchedule solution = (VrpSchedule) scoreDirector.getWorkingSolution();
+                VrpSchedule schedule = (VrpSchedule) scoreDirector.getWorkingSolution();
                 scoreDirector.beforeProblemFactAdded(newLocation);
-                solution.getLocationList().add(newLocation);
+                schedule.getLocationList().add(newLocation);
                 scoreDirector.afterProblemFactAdded(newLocation);
-                VrpCustomer newCustomer = new VrpCustomer();
+                VrpCustomer newCustomer;
+                if (schedule instanceof VrpTimeWindowedSchedule) {
+                    VrpTimeWindowedCustomer newTimeWindowedCustomer = new VrpTimeWindowedCustomer();
+                    newTimeWindowedCustomer.setReadyTime(10);
+                    newTimeWindowedCustomer.setDueTime(100);
+                    newTimeWindowedCustomer.setServiceDuration(10);
+                    newCustomer = newTimeWindowedCustomer;
+                } else {
+                    newCustomer = new VrpCustomer();
+                }
                 newCustomer.setId(newLocation.getId());
                 newCustomer.setLocation(newLocation);
                 // Demand must not be 0
                 newCustomer.setDemand(demandRandom.nextInt(10) + 1);
                 scoreDirector.beforeEntityAdded(newCustomer);
-                solution.getCustomerList().add(newCustomer);
+                schedule.getCustomerList().add(newCustomer);
                 scoreDirector.afterEntityAdded(newCustomer);
             }
         });
