@@ -258,6 +258,10 @@ public class PlanningVariableDescriptor {
         return nullable;
     }
 
+    public SelectionFilter getReinitializeVariableEntityFilter() {
+        return reinitializeVariableEntityFilter;
+    }
+
     public PlanningValueRangeDescriptor getValueRangeDescriptor() {
         return valueRangeDescriptor;
     }

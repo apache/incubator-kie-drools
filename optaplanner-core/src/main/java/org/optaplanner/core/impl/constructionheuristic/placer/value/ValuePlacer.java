@@ -7,6 +7,7 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -20,6 +21,7 @@ public class ValuePlacer extends AbstractPlacer {
     protected final Termination termination;
     protected final ValueSelector valueSelector;
     protected final PlanningVariableDescriptor variableDescriptor;
+    protected final SelectionFilter reinitializeVariableEntityFilter;
     protected final int selectedCountLimit;
 
     protected boolean assertMoveScoreFromScratch = false;
@@ -29,6 +31,7 @@ public class ValuePlacer extends AbstractPlacer {
         this.termination = termination;
         this.valueSelector = valueSelector;
         variableDescriptor = valueSelector.getVariableDescriptor();
+        reinitializeVariableEntityFilter = variableDescriptor.getReinitializeVariableEntityFilter();
         this.selectedCountLimit = selectedCountLimit;
         solverPhaseLifecycleSupport.addEventListener(valueSelector);
         // TODO don't use Integer.MAX_VALUE as a magical value
@@ -53,8 +56,7 @@ public class ValuePlacer extends AbstractPlacer {
 
     public ConstructionHeuristicMoveScope nominateMove(ConstructionHeuristicStepScope stepScope) {
         Object entity = stepScope.getEntity();
-        // If variable should be reinitialized, that happened sooner
-        if (variableDescriptor.isInitialized(entity)) {
+        if (!reinitializeVariableEntityFilter.accept(stepScope.getScoreDirector(), entity)) {
             return null;
         }
         // TODO extract to PlacerForager
