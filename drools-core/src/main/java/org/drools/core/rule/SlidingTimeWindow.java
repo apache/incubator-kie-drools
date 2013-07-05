@@ -188,8 +188,8 @@ public class SlidingTimeWindow
         TimerService clock = workingMemory.getTimerService();
         long currentTime = clock.getCurrentTime();
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
-        EventFactHandle handle = queue.queue.peek();
         synchronized (queue.queue) {
+            EventFactHandle handle = queue.queue.peek();
             while ( handle != null && isExpired( currentTime,
                                                  handle ) ) {
                 queue.expiringHandle = handle;
@@ -207,16 +207,16 @@ public class SlidingTimeWindow
                 queue.expiringHandle = null;
                 handle = queue.queue.peek();
             }
+            // update next expiration time 
+            updateNextExpiration( handle,
+                                  pctx,
+                                  workingMemory,
+                                  memory,
+                                  this,
+                                  queue,
+                                  nodeId );
         }
 
-        // update next expiration time 
-        updateNextExpiration( handle,
-                              pctx,
-                              workingMemory,
-                              memory,
-                              this,
-                              queue,
-                              nodeId );
     }
 
     private boolean isExpired(final long currentTime,
