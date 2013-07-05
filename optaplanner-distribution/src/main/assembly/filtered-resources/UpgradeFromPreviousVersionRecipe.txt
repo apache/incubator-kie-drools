@@ -3129,6 +3129,7 @@ In the new way, every fire event of a score rule adds a unique ConstraintMatch
 IMPORTANT: The class ConstraintOccurrence will be removed in 6.1.0.Final, so switch to ConstraintMatch now.
 The only reason why ConstraintOccurrence has not been removed already,
 is to make the migration easier: so you can easily verify that after migration to ConstraintMatch, it gives the exact same scores, but faster.
+NOTE: The examples still include their old drl variant too until 6.0.0.Beta4, if you want to use it for comparison.
 
 [MINOR] If you use ConstraintOccurrence outside of Planner itself, in the gui or your middleware,
 for example, to show the user the constraint matches, switch to using ConstraintMatch and ConstraintMatchTotal instead.
