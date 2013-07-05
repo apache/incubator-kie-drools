@@ -43,7 +43,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 public class InitializedValueSelectorTest {
 
     @Test
-    public void originalSelection() {
+    public void originalSelectionChained() {
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("chainedObject");
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
@@ -52,7 +52,7 @@ public class InitializedValueSelectorTest {
         ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
                 a0, a1, a2);
 
-        InitializedValueSelector valueSelector = new InitializedValueSelector(childValueSelector);
+        ValueSelector valueSelector = new InitializedValueSelector(childValueSelector);
         verify(childValueSelector, times(1)).isNeverEnding();
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

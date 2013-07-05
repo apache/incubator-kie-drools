@@ -24,6 +24,10 @@ import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 
+/**
+ * Filters out every value that is planning entity for which the planning variable
+ * (for which this {@link ValueSelector} applies to) and that is uninitialized too.
+ */
 public class InitializedValueSelector extends AbstractValueSelector {
 
     protected final PlanningVariableDescriptor variableDescriptor;
@@ -40,16 +44,6 @@ public class InitializedValueSelector extends AbstractValueSelector {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
-        super.phaseStarted(phaseScope);
-    }
-
-    @Override
-    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
-        super.phaseEnded(phaseScope);
-    }
 
     public PlanningVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();

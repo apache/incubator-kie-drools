@@ -53,9 +53,6 @@ public class ValuePlacer extends AbstractPlacer {
 
     public ConstructionHeuristicMoveScope nominateMove(ConstructionHeuristicStepScope stepScope) {
         Object entity = stepScope.getEntity();
-        if (variableDescriptor.isInitialized(entity)) {
-            return null;
-        }
         // TODO extract to PlacerForager
         Score maxScore = null;
         ConstructionHeuristicMoveScope nominatedMoveScope = null;
