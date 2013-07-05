@@ -63,7 +63,6 @@ public class ValuePlacer extends AbstractPlacer {
         int moveIndex = 0;
         for (Iterator it = valueSelector.iterator(entity); it.hasNext(); ) {
             Object value =  it.next();
-            // TODO check terminator
             ConstructionHeuristicMoveScope moveScope = new ConstructionHeuristicMoveScope(stepScope);
             moveScope.setMoveIndex(moveIndex);
             Move move;
