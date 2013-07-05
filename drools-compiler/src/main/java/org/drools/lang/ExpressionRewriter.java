@@ -28,6 +28,7 @@ public interface ExpressionRewriter {
     public StringBuilder dump( StringBuilder sbuilder,
                                BaseDescr base,
                                ConstraintConnectiveDescr parent,
+                               int parentIndex,
                                int parentPriority,
                                boolean isInsideRelCons,
                                MVELDumper.MVELDumperContext context );

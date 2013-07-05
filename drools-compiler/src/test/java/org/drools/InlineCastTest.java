@@ -1,6 +1,7 @@
 package org.drools;
 
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class InlineCastTest extends CommonTestMethodBase {
@@ -222,5 +223,88 @@ public class InlineCastTest extends CommonTestMethodBase {
 
         assertEquals(1, ksession.fireAllRules());
         ksession.dispose();
+    }
+
+    @Test
+    public void testInlineCastWithNestedAcccesAndNullSafeDereferencing() throws Exception {
+        String str = "import org.drools.*;\n" +
+                     "rule R1 when\n" +
+                     " Person( name == \"mark\", address#LongAddress.country!.length == 2 )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person mark1 = new Person("mark");
+        mark1.setAddress(new LongAddress("uk"));
+        ksession.insert(mark1);
+
+        Person mark2 = new Person("mark");
+        ksession.insert(mark2);
+
+        Person mark3 = new Person("mark");
+        mark3.setAddress(new LongAddress( null ) );
+        ksession.insert(mark3);
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    public void testInlineCastWithNestedAcccesAndNullSafeDereferencing2() throws Exception {
+        String str = "import org.drools.*;\n" +
+                     "rule R1 when\n" +
+                     " Person( " +
+                     "          name == \"mark\", " +
+                     "          name == \"john\" || address#LongAddress.country!.length == 2 )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person mark1 = new Person("mark");
+        mark1.setAddress(new LongAddress("uk"));
+        ksession.insert(mark1);
+
+        Person mark2 = new Person("mark");
+        ksession.insert(mark2);
+
+        Person mark3 = new Person("mark");
+        mark3.setAddress(new LongAddress( null ) );
+        ksession.insert(mark3);
+
+        assertEquals(1, ksession.fireAllRules());
+        ksession.dispose();
+    }
+
+    @Test
+    @Ignore
+    public void testVeryOddExpression() {
+        String drl = "package org.drools; \n" +
+                     "" +
+                     "declare Klass\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare AsClass extends Klass\n" +
+                     "  x : Person\n" +
+                     "  y : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare Bean\n" +
+                     "  field : String\n" +
+                     "  field2 : Klass\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Test\n" +
+                     "when\n" +
+                     "    Bean( field == null || field2#AsClass.( x == null || x!.name!.length == 2 || y == \"aaa\" ) )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
     }
 }

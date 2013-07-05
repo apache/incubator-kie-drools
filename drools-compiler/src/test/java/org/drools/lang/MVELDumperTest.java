@@ -297,7 +297,7 @@ public class MVELDumperTest {
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
         ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr(  );
             ccd.addDescr( atomicExpr );
-        String[] instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, null);
+        String[] instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null);
         assertEquals( 2, ccd.getDescrs().size() );
         assertEquals( expectedInstanceof, ccd.getDescrs().get( 0 ).toString() );
         assertEquals(expectedcasted, atomicExpr.getRewrittenExpression());
@@ -308,7 +308,7 @@ public class MVELDumperTest {
         expectedcasted = "((Class2)((Class1)field1).field2).field3";
         atomicExpr = new AtomicExprDescr(expr);
         ccd = new ConstraintConnectiveDescr(  );
-        instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, null);
+        instanceofAndCastedExpr = dumper.processImplicitConstraints(expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null);
         assertEquals( expectedInstanceof1, ccd.getDescrs().get( 0 ).toString() );
         assertEquals( expectedInstanceof2, ccd.getDescrs().get( 1 ).toString() );
         assertEquals(expectedcasted, instanceofAndCastedExpr[1]);
@@ -322,7 +322,7 @@ public class MVELDumperTest {
         String expectedExpr = "field1.field2";
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
         ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr(  );
-        String[] nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, null );
+        String[] nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
         assertEquals( expectedNullCheck, ccd.getDescrs().get( 0 ).toString() );
         assertEquals(expectedExpr, nullCheckAndExpr[1]);
         assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
@@ -333,7 +333,7 @@ public class MVELDumperTest {
         expectedExpr = "field1.field2.field3";
         atomicExpr = new AtomicExprDescr(expr);
         ccd = new ConstraintConnectiveDescr(  );
-        nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, null );
+        nullCheckAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
         assertEquals( expectedNullCheck1, ccd.getDescrs().get( 0 ).toString() );
         assertEquals( expectedNullCheck2, ccd.getDescrs().get( 1 ).toString() );
         assertEquals(expectedExpr, nullCheckAndExpr[1]);
@@ -347,7 +347,7 @@ public class MVELDumperTest {
         String expectedExpr = "((Class)field1).field2";
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
         ConstraintConnectiveDescr ccd = new ConstraintConnectiveDescr(  );
-        String[] constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, null );
+        String[] constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
         assertEquals( expectedConstraints, ccd.getDescrs().get( 0 ).toString() );
         assertEquals(expectedExpr, constraintsAndExpr[1]);
         assertEquals(expectedExpr, atomicExpr.getRewrittenExpression());
@@ -358,7 +358,7 @@ public class MVELDumperTest {
         expectedExpr = "((Class)field1.field2).field3";
         atomicExpr = new AtomicExprDescr(expr);
         ccd = new ConstraintConnectiveDescr(  );
-        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, null );
+        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
         assertEquals( expectedConstraints1, ccd.getDescrs().get( 0 ).toString() );
         assertEquals( expectedConstraints2, ccd.getDescrs().get( 1 ).toString() );
         assertEquals(expectedExpr, constraintsAndExpr[1]);
@@ -370,7 +370,7 @@ public class MVELDumperTest {
         expectedExpr = "((Class)field1).field2.field3";
         atomicExpr = new AtomicExprDescr(expr);
         ccd = new ConstraintConnectiveDescr(  );
-        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, null );
+        constraintsAndExpr = dumper.processImplicitConstraints( expr, atomicExpr, ccd, ccd.getDescrs().indexOf( atomicExpr ), null );
         assertEquals( expectedConstraints1, ccd.getDescrs().get( 0 ).toString() );
         assertEquals( expectedConstraints2, ccd.getDescrs().get( 1 ).toString() );
         assertEquals(expectedExpr, constraintsAndExpr[1]);
@@ -385,4 +385,5 @@ public class MVELDumperTest {
 
         return result;
     }
+
 }
