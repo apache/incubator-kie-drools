@@ -96,14 +96,15 @@ public class VehicleRoutingSchedulePainter {
             int y = translator.translateLatitudeToY(location.getLatitude());
             g.setColor(TangoColorFactory.ALUMINIUM_4);
             g.fillRect(x - 1, y - 1, 3, 3);
-            g.drawString(Integer.toString(customer.getDemand()), x + 3, y - TEXT_SIZE/2);
+            String demandString = Integer.toString(customer.getDemand());
+            g.drawString(demandString, x - (g.getFontMetrics().stringWidth(demandString) / 2), y - TEXT_SIZE/2);
             if (customer instanceof VrpTimeWindowedCustomer) {
                 VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
                 g.drawLine(x - (TIME_WINDOW_WIDTH / 2), y + 8, x + (TIME_WINDOW_WIDTH / 2), y + 8);
                 int readyTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedCustomer.getReadyTime());
-                g.drawLine(readyTimeX, y + 8, readyTimeX, y + 4);
+                g.drawLine(readyTimeX, y + 7, readyTimeX, y + 5);
                 int dueTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedCustomer.getDueTime());
-                g.drawLine(dueTimeX, y + 8, dueTimeX, y + 4);
+                g.drawLine(dueTimeX, y + 7, dueTimeX, y + 5);
                 if (timeWindowedCustomer.getArrivalTime() != null) {
                     if (timeWindowedCustomer.isArrivalAfterDueTime()) {
                         g.setColor(TangoColorFactory.SCARLET_2);
@@ -114,7 +115,7 @@ public class VehicleRoutingSchedulePainter {
                     }
                     int arrivalTimeX = calculateTimeWindowX(maximumTimeWindowTime, x,
                             timeWindowedCustomer.getArrivalTime());
-                    g.drawLine(arrivalTimeX, y + 8, arrivalTimeX, y + 3);
+                    g.drawLine(arrivalTimeX, y + 7, arrivalTimeX, y + 3);
                 }
             }
         }
@@ -129,9 +130,9 @@ public class VehicleRoutingSchedulePainter {
                 VrpTimeWindowedDepot timeWindowedDepot = (VrpTimeWindowedDepot) depot;
                 g.drawLine(x - (TIME_WINDOW_WIDTH / 2), y + 8, x + (TIME_WINDOW_WIDTH / 2), y + 8);
                 int readyTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedDepot.getReadyTime());
-                g.drawLine(readyTimeX, y + 8, readyTimeX, y + 4);
+                g.drawLine(readyTimeX, y + 7, readyTimeX, y + 5);
                 int dueTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedDepot.getDueTime());
-                g.drawLine(dueTimeX, y + 8, dueTimeX, y + 4);
+                g.drawLine(dueTimeX, y + 7, dueTimeX, y + 5);
             }
         }
         int colorIndex = 0;
