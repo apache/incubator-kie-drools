@@ -23,12 +23,10 @@ import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBaseConfiguration;
-import org.drools.builder.CompositeKnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.DefaultFactHandle;
-import org.drools.compiler.CompositeKnowledgeBuilderImpl;
 import org.drools.conflict.SalienceConflictResolver;
 import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
@@ -38,6 +36,7 @@ import org.drools.definition.type.PropertyReactive;
 import org.drools.event.knowledgebase.DefaultKnowledgeBaseEventListener;
 import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
 import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.DebugAgendaEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
@@ -46,14 +45,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.impl.AgendaImpl;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.mvel2.integration.impl.MapVariableResolverFactory;
-import org.mvel2.optimizers.OptimizerFactory;
-import org.mvel2.templates.SimpleTemplateRegistry;
-import org.mvel2.templates.TemplateCompiler;
-import org.mvel2.templates.TemplateRegistry;
-import org.mvel2.templates.TemplateRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,13 +58,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -1665,6 +1653,157 @@ public class MiscTest2 extends CommonTestMethodBase {
         knowledgeSession.fireAllRules();
 
         assertEquals( Arrays.asList( 1, 2 ), list );
+    }
+
+
+
+
+    public static interface TradeBooking {
+        public TradeHeader getTrade();
+    }
+
+    public static interface TradeHeader {
+        public void setAction( String s );
+        public String getAction();
+    }
+
+    public static class TradeHeaderImpl implements TradeHeader {
+        private String action;
+
+        public String getAction() {
+            return action;
+        }
+
+        public void setAction( String action ) {
+            this.action = action;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+
+            TradeHeaderImpl that = (TradeHeaderImpl) o;
+
+            if ( action != null ? !action.equals( that.action ) : that.action != null ) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return action != null ? action.hashCode() : 0;
+        }
+    }
+
+    public static class TradeBookingImpl implements TradeBooking {
+        private TradeHeader header;
+
+        public TradeBookingImpl( TradeHeader h ) {
+            this.header = h;
+        }
+
+        public TradeHeader getTrade() {
+            return header;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+
+            TradeBookingImpl that = (TradeBookingImpl) o;
+
+            if ( header != null ? !header.equals( that.header ) : that.header != null ) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return header != null ? header.hashCode() : 0;
+        }
+    }
+
+
+
+    @Test
+    public void testLockOnActive() {
+        String drl = "" +
+                     "package org.drools.test; \n" +
+                     "import org.drools.integrationtests.MiscTest2.TradeBooking;\n" +
+                     "import org.drools.integrationtests.MiscTest2.TradeHeader;\n" +
+                     "rule \"Rule1\" \n" +
+                     "salience 1 \n" +
+                     "when\n" +
+                     "  $booking: TradeBooking()\n" +
+                     "  $trade: TradeHeader() from $booking.getTrade()\n" +
+                     "  not String()\n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule1\" ); \n" +
+                     "  $trade.setAction(\"New\");\n" +
+                     "  modify($booking) {}\n" +
+                     "  insert (\"run\");\n" +
+                     "end;\n" +
+                     "\n" +
+                     "rule \"Rule2\"\n" +
+                     "lock-on-active true\n" +
+                     "when\n" +
+                     "  $booking: TradeBooking( )\n" +
+                     "  $trade: Object( ) from $booking.getTrade()\n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule2\" ); \n" +
+                     "end";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+
+        ks.fireAllRules();
+
+        TradeBooking tb = new TradeBookingImpl( new TradeHeaderImpl() );
+
+        ks.insert( tb );
+        ks.fireAllRules();
+    }
+
+
+    @Test
+    public void testLockOnActiveWithModify() {
+        String drl = "" +
+                     "package org.drools.test; \n" +
+                     "import org.drools.Person; \n" +
+                     "" +
+                     "rule \"Rule1\" \n" +
+                     "salience 1 \n" +
+                     "lock-on-active true\n" +
+                     "no-loop \n" +
+                     "when\n" +
+                     "  $p: Person()\n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule1\" ); \n" +
+                     "  modify( $p ) { setAge( 44 ); }\n" +
+                     "end;\n" +
+                     "\n" +
+                     "rule \"Rule2\"\n" +
+                     "lock-on-active true\n" +
+                     "when\n" +
+                     "  $p: Person() \n" +
+                     "  String() from $p.getName() \n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule2\" + $p ); " +
+                     "  modify ( $p ) { setName( \"john\" ); } \n" +
+                     "end";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ks.addEventListener( new DebugAgendaEventListener(  ) );
+
+        ks.fireAllRules();
+
+        Person p = new Person( "mark", 76 );
+        ks.insert( p );
+        ks.fireAllRules();
+
+        assertEquals( 44, p.getAge() );
+        assertEquals( "john", p.getName() );
     }
 
 
