@@ -23,6 +23,7 @@ import org.drools.FactHandle;
 import org.drools.Foo;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.Person;
 import org.drools.Pet;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -1503,6 +1504,68 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( java.util.Arrays.asList( 0, 0 ), list );
     }
 
+
+
+
+
+
+
+    @Test
+    public void testFactStealing() throws Exception {
+        String drl = "package org.drools.test; \n" +
+                     "import org.drools.Person; \n " +
+                     "global java.util.List list; \n" +
+                     "\n" +
+                     "\n" +
+                     "rule Sleep \n " +
+                     "salience 1000 \n" +
+                     "when then \n" +
+                     "  System.out.println( Thread.currentThread().getName() + \"Zlip\" ); \n" +
+                     "  Thread.sleep( 100 ); \n" +
+                     "end \n" +
+                     "" +
+                     "rule FireAtWill\n" +
+                     "when  \n" +
+                     "  $p : Person( $n : name ) \n" +
+                     "then \n" +
+                     "  System.out.println( Thread.currentThread().getName() + \" Ill continue later \" ); \n" +
+                     "  Thread.sleep( 100 ); \n" +
+                     "  System.out.println( Thread.currentThread().getName() + \" Hello >> \" + $n );\n" +
+                     "  list.add( $n ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule ImDone\n" +
+                     "timer( expr:0 )\n" +
+                     "when\n" +
+                     "  $p : Person()\n" +
+                     "then\n" +
+                     "  System.out.println( Thread.currentThread().getName() + \"Take out \" + $p ); \n" +
+                     "  retract( $p );\n" +
+                     "  System.out.println( Thread.currentThread().getName() + \"Taken out \" + $p ); \n" +
+                     "  if ( list.isEmpty() ) { list.add( $p.getName() ); } \n" +
+                     "end\n" +
+                     "\n"
+                ;
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( knowledgeBuilder.hasErrors() ) {
+            fail( knowledgeBuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.insert( new Person( "mark", 67 ) );
+        knowledgeSession.fireAllRules();
+
+        Thread.sleep( 500 );
+        assertEquals( 1, list.size() );
+        assertTrue( list.contains( "mark" ) );
+    }
 
 
 }
