@@ -16,8 +16,6 @@
 
 package org.drools.rule.builder;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.RecognitionException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.ValueType;
@@ -43,7 +41,6 @@ import org.drools.factmodel.FieldDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
-import org.drools.lang.DRLLexer;
 import org.drools.lang.MVELDumper;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AtomicExprDescr;
@@ -103,6 +100,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 
 import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
+import static org.drools.core.util.StringUtils.isIdentifier;
 
 /**
  * A builder for patterns
@@ -581,8 +579,7 @@ public class PatternBuilder
             }
 
             String expr = descr.getExpression();
-            boolean isSimpleIdentifier = !expr.equals("true") && !expr.equals("false") &&
-                                         !expr.equals("null") && expr.matches("[a-zA-Z_\\$][a-zA-Z_\\$0-9]*");
+            boolean isSimpleIdentifier = isIdentifier(expr);
 
             if ( isSimpleIdentifier ) {
                 // create a binding
@@ -1276,9 +1273,17 @@ public class PatternBuilder
         Declaration declaration = null;
         int dotPos = expr.indexOf('.');
         if (dotPos < 0) {
+            if (!isIdentifier(expr)) {
+                return null;
+            }
             declaration = context.getDeclarationResolver().getDeclaration( context.getRule(), expr );
-            if ( declaration == null && "this".equals( expr ) ) {
-                declaration = createDeclarationObject( context, "this", pattern );
+            if ( declaration == null) {
+                if ( "this".equals( expr ) ) {
+                    declaration = createDeclarationObject( context, "this", pattern );
+                } else {
+                    declaration = new Declaration("this", pattern);
+                    context.getPkg().getClassFieldAccessorStore().getReader( ((ClassObjectType) pattern.getObjectType()).getClassName(), expr, declaration );
+                }
             }
         } else {
             String part1 = expr.substring(0, dotPos).trim();
