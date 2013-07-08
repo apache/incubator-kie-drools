@@ -403,15 +403,9 @@ public class PackageBuilderConfiguration
 
     /** Use this to override the classLoader that will be used for the rules. */
     private void setClassLoader(final ClassLoader... classLoaders) {
-        if (classLoaders == null || classLoaders.length == 0) {
-            this.classLoader = createProjectClassLoader();
-        } else if (classLoaders.length == 1) {
-            this.classLoader = createProjectClassLoader(classLoaders[0]);
-        } else {
-            this.classLoader = ClassLoaderUtil.getClassLoader( classLoaders,
-                                                               getClass(),
-                                                               isClassLoaderCacheEnabled() );
-        }
+        this.classLoader = ProjectClassLoader.getClassLoader( classLoaders,
+                                                              getClass(),
+                                                              isClassLoaderCacheEnabled() );
     }
 
     public void addSemanticModule(SemanticModule module) {

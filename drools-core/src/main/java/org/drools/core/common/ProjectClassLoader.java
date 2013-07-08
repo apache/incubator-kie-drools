@@ -1,5 +1,8 @@
 package org.drools.core.common;
 
+import org.kie.internal.utils.ClassLoaderUtil;
+import org.kie.internal.utils.CompositeClassLoader;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
@@ -36,6 +39,18 @@ public class ProjectClassLoader extends ClassLoader {
             parent = ProjectClassLoader.class.getClassLoader();
         }
         return new ProjectClassLoader(parent);
+    }
+
+    public static ClassLoader getClassLoader(final ClassLoader[] classLoaders,
+                                             final Class< ? > cls,
+                                             final boolean enableCache) {
+        if (classLoaders == null || classLoaders.length == 0) {
+            return createProjectClassLoader();
+        } else if (classLoaders.length == 1) {
+            return createProjectClassLoader(classLoaders[0]);
+        } else {
+            return ClassLoaderUtil.getClassLoader(classLoaders, cls, enableCache);
+        }
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent) {
