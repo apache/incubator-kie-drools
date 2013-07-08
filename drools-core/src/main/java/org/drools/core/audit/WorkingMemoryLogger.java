@@ -470,7 +470,13 @@ public abstract class WorkingMemoryLogger
         if (node == null) {
             return "";
         }
-        String nodeId = "" + node.getId();
+        Object uniqueIdObj = node.getMetaData().get("UniqueId");
+        String nodeId;
+        if( uniqueIdObj == null ) { 
+            nodeId = "" + node.getId();
+        } else { 
+            nodeId = (String) uniqueIdObj;
+        }
         NodeContainer nodeContainer = node.getNodeContainer();
         while (nodeContainer != null) {
             if (nodeContainer instanceof Node) {
