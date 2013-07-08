@@ -16,9 +16,9 @@
 
 package org.jbpm.ruleflow.core;
 
-import org.kie.api.definition.process.Node;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.ruleflow.core.factory.CompositeNodeFactory;
+import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
 import org.jbpm.ruleflow.core.factory.EventNodeFactory;
 import org.jbpm.ruleflow.core.factory.FaultNodeFactory;
@@ -34,6 +34,7 @@ import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
+import org.kie.api.definition.process.Node;
 
 public abstract class RuleFlowNodeContainerFactory {
 
@@ -101,6 +102,10 @@ public abstract class RuleFlowNodeContainerFactory {
 
     public ForEachNodeFactory forEachNode(long id) {
         return new ForEachNodeFactory(this, nodeContainer, id);
+    }
+    
+    public DynamicNodeFactory dynamicNode(long id) {
+        return new DynamicNodeFactory(this, nodeContainer, id);
     }
     
     public WorkItemNodeFactory workItemNode(long id) {
