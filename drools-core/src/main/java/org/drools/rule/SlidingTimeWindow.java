@@ -184,7 +184,7 @@ public class SlidingTimeWindow
                                                                                               null,
                                                                                               null,
                                                                                               handle );
-                    WindowTupleList list = (WindowTupleList) memory.events.get( handle );
+                    WindowTupleList list = (WindowTupleList) memory.events.remove( handle );
                     for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
                         tuple.getRightTupleSink().retractRightTuple( tuple,
                                                                      propagationContext,
