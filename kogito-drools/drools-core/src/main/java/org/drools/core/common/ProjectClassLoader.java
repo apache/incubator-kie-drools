@@ -30,6 +30,22 @@ public class ProjectClassLoader extends ClassLoader {
         super(parent);
     }
 
+    public static ClassLoader getClassLoader(final ClassLoader[] classLoaders,
+                                             final Class< ? > cls,
+                                             final boolean enableCache) {
+        if (classLoaders == null || classLoaders.length == 0) {
+            return cls == null ? createProjectClassLoader() : createProjectClassLoader(cls.getClassLoader());
+        } else if (classLoaders.length == 1) {
+            ProjectClassLoader classLoader = createProjectClassLoader(classLoaders[0]);
+            if (cls != null) {
+                classLoader.setDroolsClassLoader(cls.getClassLoader());
+            }
+            return classLoader;
+        } else {
+            return ClassLoaderUtil.getClassLoader(classLoaders, cls, enableCache);
+        }
+    }
+
     public static ProjectClassLoader createProjectClassLoader() {
         ClassLoader parent = Thread.currentThread().getContextClassLoader();
         if (parent == null) {
@@ -39,18 +55,6 @@ public class ProjectClassLoader extends ClassLoader {
             parent = ProjectClassLoader.class.getClassLoader();
         }
         return new ProjectClassLoader(parent);
-    }
-
-    public static ClassLoader getClassLoader(final ClassLoader[] classLoaders,
-                                             final Class< ? > cls,
-                                             final boolean enableCache) {
-        if (classLoaders == null || classLoaders.length == 0) {
-            return createProjectClassLoader();
-        } else if (classLoaders.length == 1) {
-            return createProjectClassLoader(classLoaders[0]);
-        } else {
-            return ClassLoaderUtil.getClassLoader(classLoaders, cls, enableCache);
-        }
     }
 
     public static ProjectClassLoader createProjectClassLoader(ClassLoader parent) {
