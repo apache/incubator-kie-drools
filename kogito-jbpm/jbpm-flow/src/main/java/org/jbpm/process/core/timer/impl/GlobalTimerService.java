@@ -37,6 +37,7 @@ import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
+import org.jbpm.process.core.timer.NamedJobContext;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -94,6 +95,10 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
 
     @Override
     public boolean removeJob(JobHandle jobHandle) {
+        if (jobHandle == null) {
+            return false;
+        }
+        
         int sessionId = ((GlobalJobHandle) jobHandle).getSessionId();
         List<GlobalJobHandle> handles = timerJobsPerSession.get(sessionId);
         if (handles == null) {
@@ -192,6 +197,10 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
     public void setTimerServiceId(String timerServiceId) {
         this.timerServiceId = timerServiceId;
     }
+    
+    public JobHandle buildJobHandleForContext(NamedJobContext ctx) {
+        return this.schedulerService.buildJobHandleForContext(ctx);
+    }
 
 
     public static class GlobalJobHandle extends DefaultJobHandle
@@ -217,7 +226,11 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
             if (ctx instanceof SelfRemovalJobContext) {
                 ctx = ((SelfRemovalJobContext) ctx).getJobContext();
             }
-            return ((ProcessJobContext)ctx).getSessionId();
+            if (ctx instanceof ProcessJobContext) {
+                return ((ProcessJobContext)ctx).getSessionId();
+            }
+            
+            return -1;
         }
 
     }

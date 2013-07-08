@@ -131,7 +131,7 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
             GlobalSchedulerService schedulerService = ((SchedulerProvider) environment).getSchedulerService();  
             if (schedulerService != null) {
                 TimerService globalTs = new GlobalTimerService(manager, schedulerService);
-                String timerServiceId = manager.getIdentifier() + "-timerServiceId";
+                String timerServiceId = manager.getIdentifier()  + TimerServiceRegistry.TIMER_SERVICE_SUFFIX;
                 // and register it in the registry under 'default' key
                 TimerServiceRegistry.getInstance().registerTimerService(timerServiceId, globalTs);
                 ((SimpleRuntimeEnvironment)environment).addToConfiguration("drools.timerService", 

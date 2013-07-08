@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 
+import org.drools.persistence.TransactionSynchronization;
 import org.jboss.seam.transaction.Transactional;
 import org.jboss.weld.context.ContextNotActiveException;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
@@ -69,7 +70,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     @Inject
     private EntityManagerFactory emf;
 
-    private EntityManager noScopeEm;
+    private static ThreadLocal<LocalEntityMangerHolder> noScopeEmLocal = new ThreadLocal<LocalEntityMangerHolder>();
     
     private boolean sharedEntityManager = false;
 
@@ -285,10 +286,12 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         if(ttxm != null){
             boolean txOwner = ttxm.begin(getEm());
             this.ttxm.attachPersistenceContext(getEm());
+            registerTxSync();
             return txOwner;
         }
         return false;
     }
+
 
     public void endTransaction(boolean txOwner) { 
         if( ttxm != null){
@@ -355,7 +358,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         }
         
         this.em = null;
-        this.noScopeEm = null;
+        noScopeEmLocal.set(null);
         this.ttxm = null;
     }
 
@@ -364,10 +367,21 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
             this.em.toString();  
             return this.em;
         } catch (ContextNotActiveException e) {
-            if (this.noScopeEm == null) {
-                this.noScopeEm = this.emf.createEntityManager();
+            /*
+             * Special handling in case there is no context (RequestScoped in most cases) available
+             * so we create new EntityManager to be used for the life time of current transaction.
+             * It will be reset by the transaction synchronization on transaction completion.
+             * This is usually used with background tasks triggered by timers so no RequestScope
+             */
+            LocalEntityMangerHolder noScopeEntityManager = noScopeEmLocal.get();
+            logger.debug("No ctx available trying to use no scoped entity manager " + noScopeEntityManager);
+            if (noScopeEntityManager == null) {                
+                noScopeEntityManager = new LocalEntityMangerHolder(emf.createEntityManager());
+                logger.debug("local (no scoped) entity manager was not set, creating new entity manager " + noScopeEntityManager);
+                noScopeEmLocal.set(noScopeEntityManager);
+         
             }
-            return this.noScopeEm;
+            return noScopeEntityManager.getEntityManager();
         }
 
     }
@@ -490,7 +504,50 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         return parameters;
     }
 
-    
+    private void registerTxSync() {
+        LocalEntityMangerHolder holder = noScopeEmLocal.get();
+        if (holder != null && !holder.isRegistered()) {
+            logger.debug("Registering transaction sync for local (no scoped) entity manager");
+            ttxm.registerTXSynchronization(new TransactionSynchronization() {
+                
+                @Override
+                public void beforeCompletion() {                        
+                }
+                
+                @Override
+                public void afterCompletion(int status) {
+                    logger.debug("Cleaning local (no scoped) entity manager on tx completion");
+                    noScopeEmLocal.set(null);
+                }
+            });
+            holder.setRegistered(true);
+        }
+    }    
 
-   
+    private class LocalEntityMangerHolder {
+        private boolean registered;
+        private EntityManager entityManager;
+
+        public LocalEntityMangerHolder(EntityManager em) {
+            this.entityManager = em;
+        }
+
+        public boolean isRegistered() {
+            return registered;
+        }
+
+        public void setRegistered(boolean registered) {
+            this.registered = registered;
+        }
+
+        public EntityManager getEntityManager() {
+            return entityManager;
+        }
+
+        @Override
+        public String toString() {
+            return "LocalEntityMangerHolder [registered=" + registered
+                    + ", entityManager=" + entityManager + "]";
+        }
+    }
 }

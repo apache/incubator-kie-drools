@@ -16,6 +16,7 @@
 package org.jbpm.process.core.timer;
 
 import org.drools.core.time.InternalSchedulerService;
+import org.drools.core.time.JobHandle;
 import org.drools.core.time.SchedulerService;
 import org.drools.core.time.TimerService;
 
@@ -37,4 +38,6 @@ public interface GlobalSchedulerService extends SchedulerService, InternalSchedu
      * Allows to shutdown the scheduler service
      */
     void shutdown();
+    
+    JobHandle buildJobHandleForContext(NamedJobContext ctx);
 }

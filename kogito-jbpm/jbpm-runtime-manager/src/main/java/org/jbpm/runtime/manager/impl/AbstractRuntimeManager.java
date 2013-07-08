@@ -114,7 +114,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     public void close() {
         environment.close();
         activeManagers.remove(identifier);
-        TimerService timerService = TimerServiceRegistry.getInstance().remove(getIdentifier()+"-timerServiceId");
+        TimerService timerService = TimerServiceRegistry.getInstance().remove(getIdentifier() + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
         if (timerService != null) {
             timerService.shutdown();
             GlobalSchedulerService schedulerService = ((SchedulerProvider) environment).getSchedulerService();  

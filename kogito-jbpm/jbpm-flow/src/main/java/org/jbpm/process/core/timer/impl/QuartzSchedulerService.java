@@ -31,6 +31,7 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
+import org.jbpm.process.core.timer.NamedJobContext;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.GlobalJobHandle;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
@@ -77,6 +78,8 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
             if (processCtx instanceof StartProcessJobContext) {
                 jobname = "StartProcess-"+((StartProcessJobContext) processCtx).getProcessId()+ "-" + processCtx.getTimer().getId();
             }
+        } else if (ctx instanceof NamedJobContext) {
+            jobname = ((NamedJobContext) ctx).getJobName();
         } else {
             jobname = "Timer-"+ctx.getClass().getSimpleName()+ "-" + id;
         
@@ -326,5 +329,10 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
             return ((Callable<Void>)delegate).call();
         }
         
+    }
+
+    @Override
+    public JobHandle buildJobHandleForContext(NamedJobContext ctx) {
+        return new GlobalQuartzJobHandle(-1, ctx.getJobName(), "jbpm");
     }
 }

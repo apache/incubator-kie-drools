@@ -17,6 +17,8 @@ package org.jbpm.shared.services.api;
 
 import javax.persistence.EntityManager;
 
+import org.drools.persistence.TransactionSynchronization;
+
 public interface JbpmServicesTransactionManager {
     
     public boolean begin(EntityManager em);
@@ -38,4 +40,6 @@ public interface JbpmServicesTransactionManager {
     public void attachPersistenceContext(EntityManager em);
     
     public void dispose();
+    
+    public void registerTXSynchronization(TransactionSynchronization txSync);
 }

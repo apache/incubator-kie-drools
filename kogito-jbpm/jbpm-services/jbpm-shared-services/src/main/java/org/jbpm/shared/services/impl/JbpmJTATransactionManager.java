@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.UserTransaction;
 
 import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.slf4j.Logger;
@@ -99,5 +100,11 @@ public class JbpmJTATransactionManager implements JbpmServicesTransactionManager
         	logger.warn("No user transaction found under known names");
         	return null;
         }
+    }
+
+    @Override
+    public void registerTXSynchronization(TransactionSynchronization txSync) {
+        
+        tm.registerTransactionSynchronization(txSync);
     }
 }

@@ -36,7 +36,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.drools.core.time.Job;
+import org.drools.core.time.JobContext;
+import org.drools.core.time.JobHandle;
+import org.drools.core.time.TimerService;
+import org.drools.core.time.Trigger;
+import org.drools.core.time.impl.IntervalTrigger;
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.process.core.timer.NamedJobContext;
+import org.jbpm.process.core.timer.TimerServiceRegistry;
+import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.services.task.impl.model.ContentImpl;
 import org.jbpm.services.task.impl.model.DeadlineImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
@@ -46,12 +55,15 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskData;
 import org.kie.commons.services.cdi.Startup;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.TaskDeadlinesService;
+import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.model.Deadline;
+import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.Escalation;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTaskData;
@@ -70,14 +82,18 @@ import org.kie.internal.task.api.model.Reassignment;
 @Startup
 public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
-    private ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(3);
+    // use single ThreadPoolExecutor for all instances of task services within same JVM
+    private static ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(3);
     private Map<Long, List<ScheduledFuture<ScheduledTaskDeadline>>> startScheduledTaskDeadlines = new ConcurrentHashMap<Long, List<ScheduledFuture<ScheduledTaskDeadline>>>();
     private Map<Long, List<ScheduledFuture<ScheduledTaskDeadline>>> endScheduledTaskDeadlines = new ConcurrentHashMap<Long, List<ScheduledFuture<ScheduledTaskDeadline>>>();
+    private Map<String, JobHandle> jobHandles = new ConcurrentHashMap<String, JobHandle>();
 
     @Inject 
     private JbpmServicesPersistenceManager pm;
     @Inject
     private TaskContentService taskContentService;
+    @Inject
+    private TaskQueryService taskQueryService;
     @Inject
     private Event<NotificationEvent> notificationEvents;
     
@@ -175,7 +191,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     if (!escalation.getReassignments().isEmpty()) {
                         // get first and ignore the rest.
                         Reassignment reassignment = escalation.getReassignments().get(0);
-
+                        logger.log(Level.INFO, "Reassigning to " + reassignment.getPotentialOwners());
                         ((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
                         List potentialOwners = new ArrayList(reassignment.getPotentialOwners());
                         ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
@@ -190,51 +206,124 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     }
                 }
             }
+            
         }
-
+        
         deadline.setEscalated(true);
     }
 
     public void schedule(long taskId, long deadlineId, long delay, DeadlineType type) {
-        ScheduledFuture<ScheduledTaskDeadline> scheduled = scheduler.schedule(new ScheduledTaskDeadline(taskId, deadlineId, type), delay, TimeUnit.MILLISECONDS);
-        
-        List<ScheduledFuture<ScheduledTaskDeadline>> knownFutures = null;
-        if (type == DeadlineType.START) {
-            knownFutures = this.startScheduledTaskDeadlines.get(taskId);
-        } else if (type == DeadlineType.END) {
-            knownFutures = this.endScheduledTaskDeadlines.get(taskId);
+        TaskImpl task = (TaskImpl) pm.find(TaskImpl.class, taskId);
+        String deploymentId = task.getTaskData().getDeploymentId();
+
+        TimerService timerService = TimerServiceRegistry.getInstance().get(deploymentId + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
+        if (timerService != null && timerService instanceof GlobalTimerService) {
+            TaskDeadlineJob deadlineJob = new TaskDeadlineJob(taskId, deadlineId, type);
+            Trigger trigger = new IntervalTrigger( timerService.getCurrentTime(),
+                    null,
+                    null,
+                    -1,
+                    delay,
+                    0,
+                    null,
+                    null ) ;
+            JobHandle handle = timerService.scheduleJob(deadlineJob, new TaskDeadlineJobContext(deadlineJob.getId()), trigger);
+            logger.log(Level.FINE, "scheduling timer job for deadline " + deadlineJob.getId() + " and task " + taskId + " using timer service " + timerService);
+            jobHandles.put(deadlineJob.getId(), handle);
+
+        } else {
+            ScheduledFuture<ScheduledTaskDeadline> scheduled = scheduler.schedule(new ScheduledTaskDeadline(taskId, deadlineId, type), delay, TimeUnit.MILLISECONDS);
+            
+            List<ScheduledFuture<ScheduledTaskDeadline>> knownFutures = null;
+            if (type == DeadlineType.START) {
+                knownFutures = this.startScheduledTaskDeadlines.get(taskId);
+            } else if (type == DeadlineType.END) {
+                knownFutures = this.endScheduledTaskDeadlines.get(taskId);
+            }
+            if (knownFutures == null) {
+                knownFutures = new CopyOnWriteArrayList<ScheduledFuture<ScheduledTaskDeadline>>();
+            }
+
+            knownFutures.add(scheduled);
+                        
+            if (type == DeadlineType.START) {
+                this.startScheduledTaskDeadlines.put(taskId, knownFutures);
+            } else if (type == DeadlineType.END) {
+                this.endScheduledTaskDeadlines.put(taskId, knownFutures);
+            }
         }
-        if (knownFutures == null) {
-            knownFutures = new CopyOnWriteArrayList<ScheduledFuture<ScheduledTaskDeadline>>();
-        }
-        knownFutures.add(scheduled);
-        if (type == DeadlineType.START) {
-            this.startScheduledTaskDeadlines.put(taskId, knownFutures);
-        } else if (type == DeadlineType.END) {
-            this.endScheduledTaskDeadlines.put(taskId, knownFutures);
-        }
+
     }
 
     public void unschedule(long taskId, DeadlineType type) {
-        List<ScheduledFuture<ScheduledTaskDeadline>> knownFutures = null;
-        if (type == DeadlineType.START) {
-            knownFutures = this.startScheduledTaskDeadlines.get(taskId);
-        } else if (type == DeadlineType.END) {
-            knownFutures = this.endScheduledTaskDeadlines.get(taskId);
-        }
-        if (knownFutures == null) {
-            return;
-        }
-        Iterator<ScheduledFuture<ScheduledTaskDeadline>> it = knownFutures.iterator();
-        while (it.hasNext()) {
-            ScheduledFuture<ScheduledTaskDeadline> scheduled = it.next();
-            try {
-                if (!scheduled.isDone() && !scheduled.isCancelled()) {
-                    scheduled.cancel(true);
-                }
+        TaskImpl task = (TaskImpl) pm.find(TaskImpl.class, taskId);
+        String deploymentId = task.getTaskData().getDeploymentId();
+        
+        Deadlines deadlines = ((TaskImpl)task).getDeadlines();
 
-            } catch (Exception e) {
-                logger.log(Level.SEVERE," XXX :Error while cancelling scheduled deadline task for Task with id " + taskId + " -> " + e);
+        TimerService timerService = TimerServiceRegistry.getInstance().get(deploymentId + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
+        if (timerService != null && timerService instanceof GlobalTimerService) {
+ 
+            if (type == DeadlineType.START) {
+                List<Deadline> startDeadlines = deadlines.getStartDeadlines();
+                List<DeadlineSummaryImpl> resultList = (List<DeadlineSummaryImpl>)pm.queryInTransaction("UnescalatedStartDeadlines");
+                for (DeadlineSummaryImpl summary : resultList) {
+                    TaskDeadlineJob deadlineJob = new TaskDeadlineJob(summary.getTaskId(), summary.getDeadlineId(), DeadlineType.START);
+                    logger.log(Level.FINE, "unscheduling timer job for start deadline " + deadlineJob.getId() + " and task " + taskId + " using timer service " + timerService);
+                    JobHandle jobHandle = jobHandles.remove(deadlineJob.getId()); 
+                    if (jobHandle == null) {        
+                        jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId()));
+                    }
+                    timerService.removeJob(jobHandle);
+                    // mark the deadlines so they won't be rescheduled again
+                    for (Deadline deadline : startDeadlines) {
+                        if (deadline.getId() == summary.getDeadlineId()) {
+                            deadline.setEscalated(true);
+                        }
+                    }
+                }
+            } else if (type == DeadlineType.END) {
+                List<Deadline> endDeadlines = deadlines.getStartDeadlines();
+                List<DeadlineSummaryImpl> resultList = (List<DeadlineSummaryImpl>)pm.queryInTransaction("UnescalatedEndDeadlines");
+                for (DeadlineSummaryImpl summary : resultList) {
+                    
+                    TaskDeadlineJob deadlineJob = new TaskDeadlineJob(summary.getTaskId(), summary.getDeadlineId(), DeadlineType.END);
+                    logger.log(Level.FINE, "scheduling timer job for end deadline " + deadlineJob.getId() + " and task " + taskId + " using timer service " + timerService);
+                    JobHandle jobHandle = jobHandles.remove(deadlineJob.getId()); 
+                    if (jobHandle == null) {        
+                        jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId()));
+                    }
+                    timerService.removeJob(jobHandle);
+                    // mark the deadlines so they won't be rescheduled again
+                    for (Deadline deadline : endDeadlines) {
+                        if (deadline.getId() == summary.getDeadlineId()) {
+                            deadline.setEscalated(true);
+                        }
+                    }
+                }
+            }
+            
+        } else {
+            List<ScheduledFuture<ScheduledTaskDeadline>> knownFutures = null;
+            if (type == DeadlineType.START) {
+                knownFutures = this.startScheduledTaskDeadlines.get(taskId);
+            } else if (type == DeadlineType.END) {
+                knownFutures = this.endScheduledTaskDeadlines.get(taskId);
+            }
+            if (knownFutures == null) {
+                return;
+            }
+            Iterator<ScheduledFuture<ScheduledTaskDeadline>> it = knownFutures.iterator();
+            while (it.hasNext()) {
+                ScheduledFuture<ScheduledTaskDeadline> scheduled = it.next();
+                try {
+                    if (!scheduled.isDone() && !scheduled.isCancelled()) {
+                        scheduled.cancel(true);
+                    }
+    
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE," XXX :Error while cancelling scheduled deadline task for Task with id " + taskId + " -> " + e);
+                }
             }
         }
     }
@@ -311,6 +400,72 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             }
             return true;
         }
+    }
+    
+    private class TaskDeadlineJob implements Job, Serializable {
+
+        private static final long serialVersionUID = -2453658968872574615L;
+        private long taskId;
+        private long deadlineId;
+        private DeadlineType type;
+
+        public TaskDeadlineJob(long taskId, long deadlineId, DeadlineType type) {
+            this.taskId = taskId;
+            this.deadlineId = deadlineId;
+            this.type = type;
+        }
+
+        public long getTaskId() {
+            return taskId;
+        }
+
+        public long getDeadlineId() {
+            return deadlineId;
+        }
+        
+        public DeadlineType getType() {
+            return this.type;
+        }
+        @Override
+        public void execute(JobContext ctx) {
+            
+            executeEscalatedDeadline(taskId, deadlineId, type);
+            
+        }
+        
+        public String getId() {
+            return taskId +"_"+deadlineId+"_"+type;
+        }
+        
+    }
+    
+    private class TaskDeadlineJobContext implements NamedJobContext {
+        private JobHandle jobHandle;
+        private String jobName;
+        
+        public TaskDeadlineJobContext(String jobName) {
+            this.jobName = jobName;
+        }
+        
+        @Override
+        public void setJobHandle(JobHandle jobHandle) {
+            this.jobHandle = jobHandle;
+        }
+
+        @Override
+        public JobHandle getJobHandle() {
+            return jobHandle;
+        }
+
+        @Override
+        public String getJobName() {
+            return jobName;
+        }
+        
+    }
+
+    public void setTaskQueryService(TaskQueryService taskQueryService) {
+        this.taskQueryService = taskQueryService;
     }
 
 }

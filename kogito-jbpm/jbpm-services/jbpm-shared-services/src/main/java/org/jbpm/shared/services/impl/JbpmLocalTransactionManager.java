@@ -18,6 +18,7 @@ package org.jbpm.shared.services.impl;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionSynchronization;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +91,12 @@ public class JbpmLocalTransactionManager implements JbpmServicesTransactionManag
 
     public void dispose() {
         // no-op
+    }
+
+    @Override
+    public void registerTXSynchronization(TransactionSynchronization txSync) {
+        // no-op
+        
     }
 
 }

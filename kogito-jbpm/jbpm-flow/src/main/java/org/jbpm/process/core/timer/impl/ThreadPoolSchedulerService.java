@@ -34,6 +34,7 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
+import org.jbpm.process.core.timer.NamedJobContext;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.GlobalJobHandle;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 import org.jbpm.process.instance.timer.TimerManager.StartProcessJobContext;
@@ -108,23 +109,29 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
 
     @Override
     public boolean removeJob(JobHandle jobHandle) {
-        
+        if (jobHandle == null) {
+            return false;
+        }
         jobHandle.setCancel( true );
         JobContext jobContext = ((GlobalJDKJobHandle) jobHandle).getTimerJobInstance().getJobContext();
-        ProcessJobContext processCtx = null;
-        if (jobContext instanceof SelfRemovalJobContext) {
-            processCtx = (ProcessJobContext) ((SelfRemovalJobContext) jobContext).getJobContext();
-        } else {
-            processCtx = (ProcessJobContext) jobContext;
+        try {
+            ProcessJobContext processCtx = null;
+            if (jobContext instanceof SelfRemovalJobContext) {
+                processCtx = (ProcessJobContext) ((SelfRemovalJobContext) jobContext).getJobContext();
+            } else {
+                processCtx = (ProcessJobContext) jobContext;
+            }
+            
+            String jobname = processCtx.getSessionId() + "-" + processCtx.getProcessInstanceId() + "-" + processCtx.getTimer().getId();
+            if (processCtx instanceof StartProcessJobContext) {
+                jobname = "StartProcess-"+((StartProcessJobContext) processCtx).getProcessId()+ "-" + processCtx.getTimer().getId();
+            }
+            activeTimer.remove(jobname);
+            ((AcceptsTimerJobFactoryManager) globalTimerService).getTimerJobFactoryManager().
+            removeTimerJobInstance( ((GlobalJDKJobHandle) jobHandle).getTimerJobInstance() );
+        } catch (ClassCastException e) {
+            // do nothing in case ProcessJobContext was not given
         }
-        
-        String jobname = processCtx.getSessionId() + "-" + processCtx.getProcessInstanceId() + "-" + processCtx.getTimer().getId();
-        if (processCtx instanceof StartProcessJobContext) {
-            jobname = "StartProcess-"+((StartProcessJobContext) processCtx).getProcessId()+ "-" + processCtx.getTimer().getId();
-        }
-        activeTimer.remove(jobname);
-        ((AcceptsTimerJobFactoryManager) globalTimerService).getTimerJobFactoryManager().
-        removeTimerJobInstance( ((GlobalJDKJobHandle) jobHandle).getTimerJobInstance() );
         boolean removed =  this.scheduler.remove( (Runnable) ((GlobalJDKJobHandle) jobHandle).getFuture() );
         return removed;       
     }
@@ -173,6 +180,12 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
             this.future = future;
         }    
     
+    }
+
+    @Override
+    public JobHandle buildJobHandleForContext(NamedJobContext ctx) {
+        // this is in memory scheduler and the building of context is required for permanent ScueduleService only
+        return null;
     }
 
 

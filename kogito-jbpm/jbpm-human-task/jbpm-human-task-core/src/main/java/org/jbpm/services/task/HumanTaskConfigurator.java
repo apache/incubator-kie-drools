@@ -179,7 +179,8 @@ public class HumanTaskConfigurator {
                     
             // Task Decorators - Sub Tasks
             SubTaskDecorator subTaskDecorator = createSubTaskDecorator(pm, userGroupTaskInstanceServiceDecorator, queryService);
-            
+            ((TaskDeadlinesServiceImpl)deadlinesService).setTaskContentService(contentService);
+            ((TaskDeadlinesServiceImpl)deadlinesService).setTaskQueryService(queryService);
             // Task Decorators - Deadlines
             DeadlinesDecorator deadlinesDecorator = createDeadlinesDecorator(pm, queryService, deadlinesService, subTaskDecorator);
             
@@ -221,6 +222,8 @@ public class HumanTaskConfigurator {
     }
     
     protected void configureTaskDeadlinesService(JbpmServicesPersistenceManager pm){
+        ((TaskDeadlinesServiceImpl)deadlinesService).setTaskContentService(contentService);
+        ((TaskDeadlinesServiceImpl)deadlinesService).setTaskQueryService(queryService);
         ((TaskDeadlinesServiceImpl)deadlinesService).setPm(pm);
         ((TaskDeadlinesServiceImpl)deadlinesService).setLogger(logger);
         ((TaskDeadlinesServiceImpl)deadlinesService).setNotificationEvents(((TaskServiceEntryPointImpl)service).getTaskNotificationEventListeners());

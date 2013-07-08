@@ -361,7 +361,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             
         }
 
-        TimerService timerService = TimerServiceRegistry.getInstance().get(manager.getIdentifier()+"-timerServiceId");
+        TimerService timerService = TimerServiceRegistry.getInstance().get(manager.getIdentifier()+TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
         Collection<TimerJobInstance> timerInstances = timerService.getTimerJobInstances(ksessionId);
         assertNotNull(timerInstances);
         assertEquals(0, timerInstances.size());
@@ -417,7 +417,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         assertEquals(1, activeNodes.size());
         assertTrue(activeNodes.iterator().next() instanceof HumanTaskNodeInstance);
 
-        TimerService timerService = TimerServiceRegistry.getInstance().get(manager.getIdentifier()+"-timerServiceId");
+        TimerService timerService = TimerServiceRegistry.getInstance().get(manager.getIdentifier()+TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
         Collection<TimerJobInstance> timerInstances = timerService.getTimerJobInstances(ksessionId);
         assertNotNull(timerInstances);
         assertEquals(0, timerInstances.size());
@@ -466,7 +466,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             
         }
 
-        TimerService timerService = TimerServiceRegistry.getInstance().get(manager.getIdentifier()+"-timerServiceId");
+        TimerService timerService = TimerServiceRegistry.getInstance().get(manager.getIdentifier()+TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
         Collection<TimerJobInstance> timerInstances = timerService.getTimerJobInstances(ksessionId);
         assertNotNull(timerInstances);
         assertEquals(0, timerInstances.size());
@@ -474,6 +474,76 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         if (runtime != null) {
             manager.disposeRuntimeEngine(runtime);
         }
+    }
+    
+    @Test
+    public void testHumanTaskDeadlineWithGlobalTimerService() throws Exception {
+        
+
+        
+        environment = RuntimeEnvironmentBuilder.getDefault()
+                .addAsset(ResourceFactory.newClassPathResource("HumanTaskWithDeadlines.bpmn"), ResourceType.BPMN2)
+                .schedulerService(globalScheduler)
+                .get();
+
+
+        manager = getManager(environment);
+
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+        
+        
+        ProcessInstance processInstance = ksession.startProcess("htdeadlinetest");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        
+        List<TaskSummary> krisTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("krisv", "en-UK");
+        assertEquals(1, krisTasks.size());
+        List<TaskSummary> johnTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(0, johnTasks.size());
+        List<TaskSummary> maryTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("mary", "en-UK");
+        assertEquals(0, maryTasks.size());
+        
+        // now wait for 2 seconds for first reassignment
+        Thread.sleep(3000);
+        
+        krisTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("krisv", "en-UK");
+        assertEquals(0, krisTasks.size());
+        johnTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(1, johnTasks.size());
+        maryTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("mary", "en-UK");
+        assertEquals(0, maryTasks.size());
+        
+        runtime.getTaskService().start(johnTasks.get(0).getId(), "john");
+        
+        // now wait for 2 more seconds for second reassignment
+        Thread.sleep(2000);
+        krisTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("krisv", "en-UK");
+        assertEquals(0, krisTasks.size());
+        johnTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(1, johnTasks.size());
+        maryTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("mary", "en-UK");
+        assertEquals(0, maryTasks.size());
+        
+        // now wait for 1 seconds to make sure that reassignment did not happen any more since task was already started
+        Thread.sleep(3000);
+        
+        krisTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("krisv", "en-UK");
+        assertEquals(0, krisTasks.size());
+        johnTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(0, johnTasks.size());
+        maryTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("mary", "en-UK");
+        assertEquals(1, maryTasks.size());
+        runtime.getTaskService().start(maryTasks.get(0).getId(), "mary");
+        runtime.getTaskService().complete(maryTasks.get(0).getId(), "mary", null);
+        
+        // now wait for 2 seconds to make sure that reassignment did not happen any more since task was completed
+//        Thread.sleep(2000);
+        
+        processInstance = ksession.getProcessInstance(processInstance.getId());        
+        assertNull(processInstance);
+
+        manager.disposeRuntimeEngine(runtime);
+        
     }
     
     
