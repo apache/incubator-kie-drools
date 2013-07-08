@@ -20,8 +20,12 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProcessContext implements org.kie.api.runtime.process.ProcessContext {
+    
+    private static Logger logger = LoggerFactory.getLogger(ProcessContext.class);
     
     private KieRuntime kruntime;
     private ProcessInstance processInstance;
@@ -75,6 +79,10 @@ public class ProcessContext implements org.kie.api.runtime.process.ProcessContex
     
     public KieRuntime getKnowledgeRuntime() {
     	return kruntime;
+    }
+    
+    public Logger getLogger() { 
+        return logger;
     }
     
 }
