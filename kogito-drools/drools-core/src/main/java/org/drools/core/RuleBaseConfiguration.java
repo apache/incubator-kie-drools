@@ -28,6 +28,7 @@ import java.util.Properties;
 
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
@@ -890,15 +891,9 @@ public class RuleBaseConfiguration
     }
 
     public void setClassLoader(ClassLoader... classLoaders) {
-        if (classLoaders == null || classLoaders.length == 0) {
-            this.classLoader = createProjectClassLoader();
-        } else if (classLoaders.length == 1) {
-            this.classLoader = createProjectClassLoader(classLoaders[0]);
-        } else {
-            this.classLoader = ClassLoaderUtil.getClassLoader( classLoaders,
-                                                               getClass(),
-                                                               isClassLoaderCacheEnabled() );
-        }
+        this.classLoader = ProjectClassLoader.getClassLoader( classLoaders,
+                                                              getClass(),
+                                                              isClassLoaderCacheEnabled());
     }
 
     public ReteooComponentFactory getComponentFactory() {

@@ -17,6 +17,7 @@
 package org.drools.core;
 
 import org.drools.core.command.CommandService;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.process.instance.WorkItemManagerFactory;
@@ -47,6 +48,8 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 
 /**
  * SessionConfiguration
@@ -88,7 +91,7 @@ public class SessionConfiguration
     private WorkItemManagerFactory         workItemManagerFactory;
     private CommandService                 commandService;
 
-    private transient CompositeClassLoader classLoader;
+    private transient ClassLoader          classLoader;
     
     private transient TimerJobFactoryManager timerJobFactoryManager;
     private TimerJobFactoryType              timerJobFactoryType;
@@ -126,28 +129,23 @@ public class SessionConfiguration
      * @param properties
      */
     public SessionConfiguration(Properties properties) {
-        init( properties,
-              null );
+        init( properties, null );
     }
 
     /**
      * Creates a new session configuration with default configuration options.
      */
     public SessionConfiguration() {
-        init(null,
-                null);
+        init(null, null);
     }
 
     public SessionConfiguration(ClassLoader... classLoader) {
-        init(null,
-                classLoader);
+        init(null, classLoader);
     }
 
     private void init(Properties properties,
-                      ClassLoader... classLoader) {
-        this.classLoader = ClassLoaderUtil.getClassLoader( classLoader,
-                                                           getClass(),
-                                                           false );
+                      ClassLoader... classLoaders) {
+        this.classLoader = ProjectClassLoader.getClassLoader(classLoaders, getClass(), false);
 
         this.immutable = false;
         this.chainedProperties = new ChainedProperties( "session.conf",
@@ -500,14 +498,6 @@ public class SessionConfiguration
         } else if ( option instanceof QueryListenerOption ) {
             this.queryListener = (QueryListenerOption) option;
         }
-    }
-
-    public ClassLoader getClassLoader() {
-        return this.classLoader.clone();
-    }
-
-    public void setClassLoader(CompositeClassLoader classLoader) {
-        this.classLoader = classLoader;
     }
 
     public QueryListenerOption getQueryListenerOption() {
