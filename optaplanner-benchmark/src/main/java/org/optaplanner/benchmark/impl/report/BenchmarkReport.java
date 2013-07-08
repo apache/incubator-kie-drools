@@ -448,7 +448,7 @@ public class BenchmarkReport {
                     "Time spend", new MillisecondsSpendNumberFormat(locale),
                     "Score level " + scoreLevelIndex, NumberFormat.getInstance(locale));
             JFreeChart chart = new JFreeChart(
-                    "Best score per time spend level " + scoreLevelIndex + " summary (higher is better)",
+                    "Best score per time spend level " + scoreLevelIndex + " summary (higher left is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             bestScorePerTimeSpendSummaryChartFileList.add(
                     writeChartToImageFile(chart, "bestScorePerTimeSpendSummaryLevel" + scoreLevelIndex));
