@@ -3472,4 +3472,60 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( list.contains( 0.421 ) );
     }
 
+    @Test
+    public void testUnTraitedBeanTriples() {
+        unTraitedBean( TraitFactory.VirtualPropertyMode.TRIPLES );
+    }
+
+    @Test
+    public void testUnTraitedBeanMap() {
+        unTraitedBean( TraitFactory.VirtualPropertyMode.MAP );
+    }
+
+
+    public void unTraitedBean( TraitFactory.VirtualPropertyMode mode ) {
+        String source = "package t.x \n" +
+                        "import java.util.*; \n" +
+                        "import org.drools.core.factmodel.traits.Thing \n" +
+                        "import org.drools.core.factmodel.traits.Traitable \n" +
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "\n" +
+                        "" +
+                        "declare trait Foo end\n" +
+                        "" +
+                        "declare Bar\n" +
+                        " @Traitable\n" +
+                        "end\n" +
+                        "declare Bar2\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        " Bar o = new Bar();\n" +
+                        " insert(o);\n" +
+                        " Bar2 o2 = new Bar2();\n" +
+                        " insert(o2);\n" +
+                        "end\n" +
+                        "" +
+                        "rule Check when\n" +
+                        " $x : Bar( this not isA Foo ) \n" +
+                        "then \n" +
+                        " System.out.println( $x ); \n" +
+                        "end\n" +
+                        "rule Check2 when\n" +
+                        " $x : Bar2( this not isA Foo ) \n" +
+                        "then \n" +
+                        " System.out.println( $x ); \n" +
+                        "end\n" +
+                        "";
+
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( mode, ks.getKieBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+    }
 }

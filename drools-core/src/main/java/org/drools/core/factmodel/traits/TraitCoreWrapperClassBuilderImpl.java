@@ -32,6 +32,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -162,7 +163,14 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitVarInsn( ALOAD, 0 );
                 mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
                 Label l0 = new Label();
-                mv.visitJumpInsn( IFNONNULL, l0 );
+                mv.visitJumpInsn( IFNULL, l0 );
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
+                mv.visitFieldInsn( GETSTATIC, Type.getInternalName( Collections.class ), "EMPTY_MAP", Type.getDescriptor( Map.class ) );
+                Label l1 = new Label();
+                mv.visitJumpInsn( IF_ACMPNE, l1 );
+                mv.visitLabel( l0 );
+
                 mv.visitVarInsn( ALOAD, 0 );
                 mv.visitTypeInsn( NEW, Type.getInternalName( TraitTypeMap.class ) );
                 mv.visitInsn( DUP );
@@ -171,7 +179,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( HashMap.class ), "<init>", "()V" );
                 mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitTypeMap.class ), "<init>", "(" + Type.getDescriptor( Map.class ) + ")V" );
                 mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
-                mv.visitLabel( l0 );
+                mv.visitLabel( l1 );
                 mv.visitVarInsn( ALOAD, 0 );
                 mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
                 mv.visitInsn( ARETURN );
