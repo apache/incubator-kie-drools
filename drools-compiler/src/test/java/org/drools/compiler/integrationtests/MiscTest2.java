@@ -21,7 +21,9 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.ClassObjectFilter;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.conflict.SalienceConflictResolver;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.FileManager;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -2166,7 +2168,7 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
         assertTrue(kbuilder.hasResults(ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR));
     }
 
@@ -2232,5 +2234,41 @@ public class MiscTest2 extends CommonTestMethodBase {
         kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         System.err.println( kb.getErrors().toString() );
         assertTrue( kb.hasErrors() );
+    }
+
+    @Test
+    public void testLegacySalienceResolver() {
+        // DROOLS-159
+        String drl = "package org.drools.test; \n" +
+                     "" +
+                     "global java.util.List list; \n " +
+                     "" +
+                     "rule X salience 10 \n" +
+                     "then\n" +
+                     " list.add( 1 ); \n" +
+                     "end\n" +
+                     "" +
+                     "rule Y salience 5 \n" +
+                     "then\n" +
+                     " list.add( 2 ); \n" +
+                     "end\n" +
+                     "";
+
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        assertFalse( kb.hasErrors() );
+
+        KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        ((RuleBaseConfiguration) kbconf).setConflictResolver( SalienceConflictResolver.getInstance() );
+
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( kbconf );
+        knowledgeBase.addKnowledgePackages( kb.getKnowledgePackages() );
+        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1, 2 ), list );
     }
 }
