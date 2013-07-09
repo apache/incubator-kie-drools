@@ -17,14 +17,14 @@ package org.jbpm.process.audit.command;
 
 import java.util.List;
 
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.kie.internal.command.Context;
 
 public class FindActiveProcessInstancesCommand extends AbstractHistoryLogCommand<List<ProcessInstanceLog>> {
 
-	/** generated serial version UID */
-    private static final long serialVersionUID = 9066179664390664420L;
+    /** generated serial version UID */
+    private static final long serialVersionUID = 3096240261041200350L;
 
     private String processId = null;
     
@@ -37,10 +37,10 @@ public class FindActiveProcessInstancesCommand extends AbstractHistoryLogCommand
 	
     public List<ProcessInstanceLog> execute(Context cntxt) {
         setLogEnvironment(cntxt);
-        return JPAProcessInstanceDbLog.findActiveProcessInstances(processId);
+        return this.auditLogService.findActiveProcessInstances(processId);
     }
     
     public String toString() {
-        return "JPAProcessInstanceDbLog.findActiveProcessInstances("+ processId + ")";
+        return JPAAuditLogService.class.getSimpleName() + ".findActiveProcessInstances("+ processId + ")";
     }
 }

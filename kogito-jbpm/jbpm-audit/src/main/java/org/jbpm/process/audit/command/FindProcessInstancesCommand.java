@@ -17,14 +17,14 @@ package org.jbpm.process.audit.command;
 
 import java.util.List;
 
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.kie.internal.command.Context;
 
 public class FindProcessInstancesCommand extends AbstractHistoryLogCommand<List<ProcessInstanceLog>> {
 
-	/** generated serial version UID */
-    private static final long serialVersionUID = 9066179664390664420L;
+    /** generated serial version UID */
+    private static final long serialVersionUID = 8153962391271874232L;
 
     private final String processId;
     
@@ -42,17 +42,17 @@ public class FindProcessInstancesCommand extends AbstractHistoryLogCommand<List<
     public List<ProcessInstanceLog> execute(Context cntxt) {
         setLogEnvironment(cntxt);
         if( processId == null || processId.isEmpty() ) {
-            return JPAProcessInstanceDbLog.findProcessInstances();
+            return this.auditLogService.findProcessInstances();
         } else { 
-            return JPAProcessInstanceDbLog.findProcessInstances(processId);
+            return this.auditLogService.findProcessInstances(processId);
         }
     }
     
     public String toString() {
         if( processId == null || processId.isEmpty() ) {
-            return "JPAProcessInstanceDbLog.findProcessInstances()";
+            return JPAAuditLogService.class.getSimpleName() + ".findProcessInstances()";
         } else { 
-            return "JPAProcessInstanceDbLog.findProcessInstances("+ processId + ")";
+            return JPAAuditLogService.class.getSimpleName() + ".findProcessInstances("+ processId + ")";
         }
     }
 }

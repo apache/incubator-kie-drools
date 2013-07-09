@@ -15,14 +15,14 @@
  */
 package org.jbpm.process.audit.command;
 
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.kie.internal.command.Context;
 
 public class FindProcessInstanceCommand extends AbstractHistoryLogCommand<ProcessInstanceLog> {
 
-	/** generated serial version UID */
-    private static final long serialVersionUID = 9066179664390664420L;
+    /** generated serial version UID */
+    private static final long serialVersionUID = -7548733507155126870L;
 
     private final long processInstanceId;
     
@@ -32,10 +32,10 @@ public class FindProcessInstanceCommand extends AbstractHistoryLogCommand<Proces
 	
     public ProcessInstanceLog execute(Context cntxt) {
         setLogEnvironment(cntxt);
-        return JPAProcessInstanceDbLog.findProcessInstance(processInstanceId);
+        return this.auditLogService.findProcessInstance(processInstanceId);
     }
     
     public String toString() {
-        return "JPAProcessInstanceDbLog.findProcessInstance("+ processInstanceId + ")";
+        return JPAAuditLogService.class.getSimpleName() + ".findProcessInstance("+ processInstanceId + ")";
     }
 }

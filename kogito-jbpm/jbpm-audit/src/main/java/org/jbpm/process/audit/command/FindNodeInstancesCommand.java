@@ -17,15 +17,14 @@ package org.jbpm.process.audit.command;
 
 import java.util.List;
 
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;
-import org.jbpm.process.audit.ProcessInstanceLog;
 import org.kie.internal.command.Context;
 
 public class FindNodeInstancesCommand extends AbstractHistoryLogCommand<List<NodeInstanceLog>> {
 
-	/** generated serial version UID */
-    private static final long serialVersionUID = 9066179664390664420L;
+    /** generated serial version UID */
+    private static final long serialVersionUID = 5374910016873481604L;
 
     private final long processInstanceId;
     private final String nodeId;
@@ -46,15 +45,15 @@ public class FindNodeInstancesCommand extends AbstractHistoryLogCommand<List<Nod
     public List<NodeInstanceLog> execute(Context cntxt) {
         setLogEnvironment(cntxt);
         if( nodeId == null || nodeId.isEmpty() ) { 
-            return JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+            return this.auditLogService.findNodeInstances(processInstanceId);
         } else { 
-            return JPAProcessInstanceDbLog.findNodeInstances(processInstanceId, nodeId);
+            return this.auditLogService.findNodeInstances(processInstanceId, nodeId);
         }
     }
     
     public String toString() {
         if( nodeId == null || nodeId.isEmpty() ) { 
-            return "JPAProcessInstanceDbLog.findNodeInstances("+ processInstanceId + ")";
+            return JPAAuditLogService.class.getSimpleName() + ".findNodeInstances("+ processInstanceId + ")";
         } else { 
             return "JPAProcessInstanceDbLog.findNodeInstances("+ processInstanceId + ", " + nodeId + ")";
         }

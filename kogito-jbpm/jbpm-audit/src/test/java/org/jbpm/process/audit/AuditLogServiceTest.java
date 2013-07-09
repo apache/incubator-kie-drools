@@ -62,10 +62,10 @@ import org.slf4j.LoggerFactory;
  * <li>JPAProcessInstanceDbLog</li>
  * </ul>
  */
-public class JPAWorkingMemoryDbLoggerTest {
+public class AuditLogServiceTest {
 
     private HashMap<String, Object> context;
-    private Logger logger = LoggerFactory.getLogger(JPAWorkingMemoryDbLoggerTest.class);
+    private Logger logger = LoggerFactory.getLogger(AuditLogServiceTest.class);
 
     @Before
     public void setUp() throws Exception {
@@ -91,18 +91,18 @@ public class JPAWorkingMemoryDbLoggerTest {
         AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
         assertNotNull(dblogger);
         assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
-        JPAProcessInstanceDbLog.setEnvironment(env);
+        AuditLogService auditLogService = new JPAAuditLogService(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
         // record the initial count to compare to later
-        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        List<ProcessInstanceLog> processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         int initialProcessInstanceSize = processInstances.size();
         
         // start process instance
         long processInstanceId = session.startProcess("com.sample.ruleflow").getId();
         
         logger.debug("Checking process instances for process 'com.sample.ruleflow'");
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
         logger.debug(processInstance.toString() 
@@ -111,7 +111,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow", processInstance.getProcessId());
-        List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+        List<NodeInstanceLog> nodeInstances = auditLogService.findNodeInstances(processInstanceId);
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {
             logger.debug(nodeInstance.toString());
@@ -119,8 +119,8 @@ public class JPAWorkingMemoryDbLoggerTest {
             assertEquals("com.sample.ruleflow", processInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
-        JPAProcessInstanceDbLog.clear();
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        auditLogService.clear();
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         assertTrue(processInstances.isEmpty());
     }
     
@@ -138,12 +138,12 @@ public class JPAWorkingMemoryDbLoggerTest {
         AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
         assertNotNull(dblogger);
         assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
-        JPAProcessInstanceDbLog.setEnvironment(env);
+        AuditLogService auditLogServiceBean = new JPAAuditLogService(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
         // record the initial count to compare to later
         List<ProcessInstanceLog> processInstances =
-            JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+            auditLogServiceBean.findProcessInstances("com.sample.ruleflow");
         int initialProcessInstanceSize = processInstances.size();
         
         // start process instance
@@ -151,19 +151,19 @@ public class JPAWorkingMemoryDbLoggerTest {
         session.startProcess("com.sample.ruleflow");
         
         logger.debug("Checking process instances for process 'com.sample.ruleflow'");
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        processInstances = auditLogServiceBean.findProcessInstances("com.sample.ruleflow");
         assertEquals(initialProcessInstanceSize + 2, processInstances.size());
         for (ProcessInstanceLog processInstance: processInstances) {
             logger.debug(processInstance.toString()
             + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
-            List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstance.getProcessInstanceId());
+            List<NodeInstanceLog> nodeInstances = auditLogServiceBean.findNodeInstances(processInstance.getProcessInstanceId());
             for (NodeInstanceLog nodeInstance: nodeInstances) {
                 logger.debug(nodeInstance.toString()
               + " -> " + nodeInstance.getDate());
             }
             assertEquals(6, nodeInstances.size());
         }
-        JPAProcessInstanceDbLog.clear();
+        auditLogServiceBean.clear();
     }
     
     @Test
@@ -180,18 +180,18 @@ public class JPAWorkingMemoryDbLoggerTest {
         AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
         assertNotNull(dblogger);
         assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
-        JPAProcessInstanceDbLog.setEnvironment(env);
+        AuditLogService auditLogService = new JPAAuditLogService(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
         // record the initial count to compare to later
-        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        List<ProcessInstanceLog> processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         int initialProcessInstanceSize = processInstances.size();
         
         // start process instance
         long processInstanceId = session.startProcess("com.sample.ruleflow2").getId();
         
         logger.debug("Checking process instances for process 'com.sample.ruleflow2'");
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow2");
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow2");
         assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
         logger.debug(processInstance.toString() 
@@ -200,7 +200,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow2", processInstance.getProcessId());
-        List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+        List<NodeInstanceLog> nodeInstances = auditLogService.findNodeInstances(processInstanceId);
         for (NodeInstanceLog nodeInstance: nodeInstances) {
             logger.debug(nodeInstance.toString()
             + " -> " + nodeInstance.getDate());
@@ -209,7 +209,7 @@ public class JPAWorkingMemoryDbLoggerTest {
             assertNotNull(nodeInstance.getDate());
         }
         assertEquals(14, nodeInstances.size());
-        JPAProcessInstanceDbLog.clear();
+        auditLogService.clear();
     }
     
     @Test
@@ -226,7 +226,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
         assertNotNull(dblogger);
         assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
-        JPAProcessInstanceDbLog.setEnvironment(env);
+        AuditLogService auditLogService = new JPAAuditLogService(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
             public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
                 Map<String, Object> results = new HashMap<String, Object>();
@@ -238,7 +238,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         });
         
         // record the initial count to compare to later
-        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        List<ProcessInstanceLog> processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         int initialProcessInstanceSize = processInstances.size();
         
         // start process instance
@@ -251,7 +251,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         long processInstanceId = session.startProcess("com.sample.ruleflow3", params).getId();
         
         logger.debug("Checking process instances for process 'com.sample.ruleflow3'");
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow3");
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow3");
         assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
         logger.debug(processInstance.toString() + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
@@ -259,7 +259,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
-        List<VariableInstanceLog> variableInstances = JPAProcessInstanceDbLog.findVariableInstances(processInstanceId);
+        List<VariableInstanceLog> variableInstances = auditLogService.findVariableInstances(processInstanceId);
         assertEquals(6, variableInstances.size());
         for (VariableInstanceLog variableInstance: variableInstances) {
             logger.debug(variableInstance.toString());
@@ -267,8 +267,8 @@ public class JPAWorkingMemoryDbLoggerTest {
             assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
             assertNotNull(variableInstance.getDate());
         }
-        JPAProcessInstanceDbLog.clear();
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow3");
+        auditLogService.clear();
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow3");
         assertTrue(processInstances.isEmpty());
     }
     
@@ -286,7 +286,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
         assertNotNull(dblogger);
         assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
-        JPAProcessInstanceDbLog.setEnvironment(env);
+        AuditLogService auditLogService = new JPAAuditLogService(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
             public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
                 Map<String, Object> results = new HashMap<String, Object>();
@@ -298,7 +298,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         });
         
         // record the initial count to compare to later
-        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow3");
+        List<ProcessInstanceLog> processInstances = auditLogService.findProcessInstances("com.sample.ruleflow3");
         int initialProcessInstanceSize = processInstances.size();
         
         // start process instance
@@ -315,7 +315,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         long processInstanceId = session.startProcess("com.sample.ruleflow3", params).getId();
         
         logger.debug("Checking process instances for process 'com.sample.ruleflow3'");
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow3");
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow3");
         int expected = initialProcessInstanceSize + 1; 
         assertEquals("[Expected " + expected + " ProcessInstanceLog instances, not " + processInstances.size() + "]",  
                 expected, processInstances.size());
@@ -326,7 +326,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
-        List<VariableInstanceLog> variableInstances = JPAProcessInstanceDbLog.findVariableInstances(processInstanceId);
+        List<VariableInstanceLog> variableInstances = auditLogService.findVariableInstances(processInstanceId);
         assertEquals(6, variableInstances.size());
         for (VariableInstanceLog variableInstance: variableInstances) {
             logger.debug(variableInstance.toString());
@@ -334,8 +334,8 @@ public class JPAWorkingMemoryDbLoggerTest {
             assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
             assertNotNull(variableInstance.getDate());
         }
-        JPAProcessInstanceDbLog.clear();
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow3");
+        auditLogService.clear();
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow3");
         assertTrue(processInstances.isEmpty());
     }
     
@@ -355,18 +355,18 @@ public class JPAWorkingMemoryDbLoggerTest {
         AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
         assertNotNull(dblogger);
         assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
-        JPAProcessInstanceDbLog.setEnvironment(env);
+        AuditLogService auditLogService = new JPAAuditLogService(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
         // record the initial count to compare to later
-        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        List<ProcessInstanceLog> processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         int initialProcessInstanceSize = processInstances.size();
         
         // start process instance
         long processInstanceId = session.startProcess("com.sample.ruleflow").getId();
         
         logger.debug("Checking process instances for process 'com.sample.ruleflow'");
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
         logger.debug(processInstance.toString() 
@@ -376,7 +376,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow", processInstance.getProcessId());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getStatus().intValue());
-        List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+        List<NodeInstanceLog> nodeInstances = auditLogService.findNodeInstances(processInstanceId);
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {
             logger.debug(nodeInstance.toString());
@@ -384,8 +384,8 @@ public class JPAWorkingMemoryDbLoggerTest {
             assertEquals("com.sample.ruleflow", processInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
-        JPAProcessInstanceDbLog.clear();
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        auditLogService.clear();
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         assertTrue(processInstances.isEmpty());
     }
     
@@ -405,18 +405,18 @@ public class JPAWorkingMemoryDbLoggerTest {
         assertNotNull(dblogger);
         assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
         session.addEventListener(dblogger);
-        JPAProcessInstanceDbLog.setEnvironment(env);
+        AuditLogService auditLogService = new JPAAuditLogService(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
         // record the initial count to compare to later
-        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        List<ProcessInstanceLog> processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         int initialProcessInstanceSize = processInstances.size();
         
         // start process instance
         long processInstanceId = session.startProcess("com.sample.ruleflow").getId();
         
         logger.debug("Checking process instances for process 'com.sample.ruleflow'");
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
         logger.debug(processInstance.toString() 
@@ -425,7 +425,7 @@ public class JPAWorkingMemoryDbLoggerTest {
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow", processInstance.getProcessId());
-        List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+        List<NodeInstanceLog> nodeInstances = auditLogService.findNodeInstances(processInstanceId);
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {
             logger.debug(nodeInstance.toString());
@@ -433,8 +433,8 @@ public class JPAWorkingMemoryDbLoggerTest {
             assertEquals("com.sample.ruleflow", processInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
-        JPAProcessInstanceDbLog.clear();
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        auditLogService.clear();
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         assertTrue(processInstances.isEmpty());
     }
     

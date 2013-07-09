@@ -15,26 +15,27 @@
  */
 package org.jbpm.process.audit.command;
 
-import java.util.List;
-
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
-import org.jbpm.process.audit.ProcessInstanceLog;
+import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
 
 public abstract class AbstractHistoryLogCommand<T> implements GenericCommand<T> {
 
+    protected AuditLogService auditLogService;
+    
     public AbstractHistoryLogCommand() {
 	}
     
     protected void setLogEnvironment(Context cntxt) { 
-        if( ! (cntxt instanceof FixedKnowledgeCommandContext) ) { 
+        if( ! (cntxt instanceof KnowledgeCommandContext) ) { 
             throw new UnsupportedOperationException("This command must be executed by a " + KieSession.class.getSimpleName() + " instance!");
         }
-        FixedKnowledgeCommandContext realContext = (FixedKnowledgeCommandContext) cntxt;
-        JPAProcessInstanceDbLog.setEnvironment(realContext.getKieSession().getEnvironment());
+        KnowledgeCommandContext realContext = (FixedKnowledgeCommandContext) cntxt;
+        this.auditLogService = new JPAAuditLogService(realContext.getKieSession().getEnvironment());
     }
     
 }

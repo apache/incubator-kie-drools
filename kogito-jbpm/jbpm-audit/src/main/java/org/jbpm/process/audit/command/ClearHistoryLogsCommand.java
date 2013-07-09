@@ -15,7 +15,7 @@
  */
 package org.jbpm.process.audit.command;
 
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.kie.internal.command.Context;
 
 public class ClearHistoryLogsCommand extends AbstractHistoryLogCommand<Void> {
@@ -28,11 +28,11 @@ public class ClearHistoryLogsCommand extends AbstractHistoryLogCommand<Void> {
 	
     public Void execute(Context cntxt) {
         setLogEnvironment(cntxt);
-        JPAProcessInstanceDbLog.clear();
+        this.auditLogService.clear();
         return null;
     }
     
     public String toString() {
-        return "JPAProcessInstanceDbLog.clear()";
+        return JPAAuditLogService.class.getSimpleName() + ".clear()";
     }
 }
