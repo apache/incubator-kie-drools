@@ -3255,6 +3255,35 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
         if (prefix.length() == 0) {
             return expr;
         }
+        StringBuilder sb = new StringBuilder();
+        toOrExpression( sb, prefix, expr );
+        return sb.toString();
+    }
+
+    private void toOrExpression( StringBuilder sb, String prefix, String expr ) {
+        int start = 0;
+        int end = expr.indexOf( "||" );
+        do {
+            if ( start > 0 ) { sb.append( " || " ); }
+            toAndExpression( sb, prefix, end > 0 ? expr.substring( start, end ) : expr.substring( start ) );
+            start = end + 2;
+            end = expr.indexOf( "||", start );
+        } while ( start > 1 );
+    }
+
+    private void toAndExpression( StringBuilder sb, String prefix, String expr ) {
+        int start = 0;
+        int end = expr.indexOf( "&&" );
+        do {
+            if ( start > 0 ) { sb.append( " && " ); }
+            sb.append( toExpression( prefix, end > 0 ? expr.substring( start, end ) : expr.substring( start ) ) );
+            start = end + 2;
+            end = expr.indexOf( "&&", start );
+        } while ( start > 1 );
+    }
+
+    private String toExpression( String prefix, String expr ) {
+        expr = expr.trim();
         int colonPos = expr.indexOf(":");
         return colonPos < 0 ? prefix + expr : expr.substring(0, colonPos+1) + " " + prefix + expr.substring(colonPos+1).trim();
     }
