@@ -2205,4 +2205,32 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
     }
+
+    @Test
+    public void testUnsupportedPolymorphicDeclaration() {
+        // DROOLS-162
+        String drl = "package org.drools.test; \n" +
+                     "" +
+                     "declare Foo end \n" +
+                     "declare Bar end \n" +
+                     "" + "" +
+                     "rule X when\n" +
+                     " $x : Foo() " +
+                     " or " +
+                     " $x : Bar() \n" +
+                     "then\n" +
+                     " System.out.println( $x ); \n" +
+                     "end\n" +
+                     "" +
+                     "rule Init\n" +
+                     "when\n" +
+                     "then\n" +
+                     " insert( new Foo() ); \n" +
+                     " insert( new Bar() ); \n" +
+                     "end";
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        System.err.println( kb.getErrors().toString() );
+        assertTrue( kb.hasErrors() );
+    }
 }
