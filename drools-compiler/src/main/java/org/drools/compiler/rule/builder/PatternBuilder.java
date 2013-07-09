@@ -240,7 +240,8 @@ public class PatternBuilder
         Pattern pattern;
 
         boolean duplicateBindings = context.getDeclarationResolver().isDuplicated( context.getRule(),
-                                                                                   patternDescr.getIdentifier() );
+                                                                                   patternDescr.getIdentifier(),
+                                                                                   ((ClassObjectType) objectType).getClassName() );
 
         if ( !StringUtils.isEmpty( patternDescr.getIdentifier() ) && !duplicateBindings ) {
 
@@ -1063,7 +1064,8 @@ public class PatternBuilder
                                     final BindingDescr fieldBindingDescr ) {
 
         if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
-                                                            fieldBindingDescr.getVariable() ) ) {
+                                                            fieldBindingDescr.getVariable(),
+                                                            null ) ) {
             processDuplicateBindings( fieldBindingDescr.isUnification(),
                                       patternDescr,
                                       pattern,
