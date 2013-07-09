@@ -26,10 +26,6 @@ import java.util.Map;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.spi.ProcessContext;
-import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.Node;
-import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -48,6 +44,12 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.Node;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.process.NodeInstanceContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of a RuleFlow node instance.
@@ -57,6 +59,7 @@ import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.NodeInstance, Serializable {
 
 	private static final long serialVersionUID = 510l;
+	private static Logger logger = LoggerFactory.getLogger(NodeInstanceImpl.class);
 	
 	private long id;
     private long nodeId;
@@ -433,8 +436,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     		}
     	}
     	if (variableScope == null) {
-    		System.err.println("Could not find variable " + variableName);
-    		System.err.println("Using process-level scope");
+    		logger.error("Could not find variable " + variableName);
+    		logger.error("Using process-level scope");
     		variableScope = (VariableScopeInstance) ((ProcessInstance) 
     			getProcessInstance()).getContextInstance(VariableScope.VARIABLE_SCOPE);
     	}

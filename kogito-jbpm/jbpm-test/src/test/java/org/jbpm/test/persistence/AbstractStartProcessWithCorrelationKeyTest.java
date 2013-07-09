@@ -28,8 +28,12 @@ import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUnitTestCase {
+    
+    private static final Logger logger = LoggerFactory.getLogger(AbstractStartProcessWithCorrelationKeyTest.class);
     
     private CorrelationKeyFactory factory;
     public AbstractStartProcessWithCorrelationKeyTest(boolean persistence) {
@@ -52,7 +56,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let john execute Task 1
         List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         TaskSummary task = list.get(0);
-        System.out.println("John is executing task " + task.getName());
+        logger.info("John is executing task {}", task.getName());
         taskService.start(task.getId(), "john");
         taskService.complete(task.getId(), "john", null);
 
@@ -65,7 +69,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let mary execute Task 2
         list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
         task = list.get(0);
-        System.out.println("Mary is executing task " + task.getName());
+        logger.info("Mary is executing task {}", task.getName());
         taskService.start(task.getId(), "mary");
         taskService.complete(task.getId(), "mary", null);
 
@@ -86,7 +90,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let john execute Task 1
         List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         TaskSummary task = list.get(0);
-        System.out.println("John is executing task " + task.getName());
+        logger.info("John is executing task {}", task.getName());
         taskService.start(task.getId(), "john");
         taskService.complete(task.getId(), "john", null);
 
@@ -99,7 +103,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let mary execute Task 2
         list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
         task = list.get(0);
-        System.out.println("Mary is executing task " + task.getName());
+        logger.info("Mary is executing task {}", task.getName());
         taskService.start(task.getId(), "mary");
         taskService.complete(task.getId(), "mary", null);
 
@@ -128,7 +132,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let john execute Task 1
         List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         TaskSummary task = list.get(0);
-        System.out.println("John is executing task " + task.getName());
+        logger.info("John is executing task {}", task.getName());
         taskService.start(task.getId(), "john");
         taskService.complete(task.getId(), "john", null);
 
@@ -141,7 +145,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let mary execute Task 2
         list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
         task = list.get(0);
-        System.out.println("Mary is executing task " + task.getName());
+        logger.info("Mary is executing task {}" + task.getName());
         taskService.start(task.getId(), "mary");
         taskService.complete(task.getId(), "mary", null);
 
@@ -163,7 +167,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let john execute Task 1
         List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         TaskSummary task = list.get(0);
-        System.out.println("John is executing task " + task.getName());
+        logger.info("John is executing task {}", task.getName());
         taskService.start(task.getId(), "john");
         taskService.complete(task.getId(), "john", null);
 
@@ -176,7 +180,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let mary execute Task 2
         list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
         task = list.get(0);
-        System.out.println("Mary is executing task " + task.getName());
+        logger.info("Mary is executing task {}", task.getName());
         taskService.start(task.getId(), "mary");
         taskService.complete(task.getId(), "mary", null);
 
@@ -192,7 +196,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let john execute Task 1
         list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         task = list.get(0);
-        System.out.println("John is executing task " + task.getName());
+        logger.info("John is executing task {}", task.getName());
         taskService.start(task.getId(), "john");
         taskService.complete(task.getId(), "john", null);
 
@@ -205,7 +209,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let mary execute Task 2
         list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
         task = list.get(0);
-        System.out.println("Mary is executing task " + task.getName());
+        logger.info("Mary is executing task {}", task.getName());
         taskService.start(task.getId(), "mary");
         taskService.complete(task.getId(), "mary", null);
 
@@ -226,7 +230,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let john execute Task 1
         List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         TaskSummary task = list.get(0);
-        System.out.println("John is executing task " + task.getName());
+        logger.info("John is executing task {}", task.getName());
         taskService.start(task.getId(), "john");
         taskService.complete(task.getId(), "john", null);
 
@@ -239,7 +243,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let mary execute Task 2
         list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
         task = list.get(0);
-        System.out.println("Mary is executing task " + task.getName());
+        logger.info("Mary is executing task {}", task.getName());
         taskService.start(task.getId(), "mary");
         taskService.complete(task.getId(), "mary", null);
 
@@ -260,7 +264,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let john execute Task 1
         List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         TaskSummary task = list.get(0);
-        System.out.println("John is executing task " + task.getName());
+        logger.info("John is executing task {}", task.getName());
         taskService.start(task.getId(), "john");
         taskService.complete(task.getId(), "john", null);
 
@@ -277,7 +281,7 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
         // let mary execute Task 2
         list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
         task = list.get(0);
-        System.out.println("Mary is executing task " + task.getName());
+        logger.info("Mary is executing task {}", task.getName());
         taskService.start(task.getId(), "mary");
         taskService.complete(task.getId(), "mary", null);
 

@@ -15,12 +15,13 @@ import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
 import org.jbpm.marshalling.util.*;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DebugJbpmUnmarshallingTest {
+public class DebugJbpmUnmarshallingTest extends AbstractBaseTest {
 
     private static Logger logger = LoggerFactory.getLogger(DebugJbpmUnmarshallingTest.class);
     
@@ -48,7 +49,7 @@ public class DebugJbpmUnmarshallingTest {
            fail( e.getClass().getSimpleName() + " thrown: " + e.getMessage());
        }
        
-       System.out.println(": \"" + result + "\"");
+       logger.info(": \"" + result + "\"");
     }
 
     @Test
@@ -201,7 +202,7 @@ public class DebugJbpmUnmarshallingTest {
                     elemMsg.append("  " + ste[i].getClassName() + ":");
                     elemMsg.append(ste[i].getMethodName() + " [");
                     elemMsg.append(ste[i].getLineNumber() + "]");
-                    System.out.println(elemMsg);
+                    logger.info(elemMsg.toString());
                 }
             }
         }

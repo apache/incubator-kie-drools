@@ -17,24 +17,29 @@
 package org.jbpm.workflow.instance.node;
 
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
-import junit.framework.TestCase;
+import java.util.List;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
+import org.junit.Test;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-public class StartNodeInstanceTest extends TestCase {
+public class StartNodeInstanceTest extends AbstractBaseTest {
     
+    @Test
     public void testStartNode() {
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

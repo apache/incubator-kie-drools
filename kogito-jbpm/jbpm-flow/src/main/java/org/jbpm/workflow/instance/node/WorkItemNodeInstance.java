@@ -54,6 +54,8 @@ import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.mvel2.MVEL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Runtime counterpart of a work item node.
@@ -63,6 +65,7 @@ import org.mvel2.MVEL;
 public class WorkItemNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
     
     private static final long serialVersionUID = 510l;
+    private static Logger logger = LoggerFactory.getLogger(WorkItemNodeInstance.class);
     // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
@@ -158,9 +161,9 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                     try {
                         parameterValue = MVEL.eval(association.getSources().get(0), new NodeInstanceResolverFactory(this));
                     } catch (Throwable t) {
-                        System.err.println("Could not find variable scope for variable " + association.getSources().get(0));
-                        System.err.println("when trying to execute Work Item " + work.getName());
-                        System.err.println("Continuing without setting parameter.");
+                        logger.error("Could not find variable scope for variable " + association.getSources().get(0));
+                        logger.error("when trying to execute Work Item " + work.getName());
+                        logger.error("Continuing without setting parameter.");
                     }
                 }
                 if (parameterValue != null) {
@@ -193,9 +196,9 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                                 String variableValueString = variableValue == null ? "" : variableValue.toString();
                                 replacements.put(paramName, variableValueString);
                             } catch (Throwable t) {
-                                System.err.println("Could not find variable scope for variable " + paramName);
-                                System.err.println("when trying to replace variable in string for Work Item " + work.getName());
-                                System.err.println("Continuing without setting parameter.");
+                                logger.error("Could not find variable scope for variable " + paramName);
+                                logger.error("when trying to replace variable in string for Work Item " + work.getName());
+                                logger.error("Continuing without setting parameter.");
                             }
                         }
                     }
@@ -247,9 +250,9 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         }
                         variableScopeInstance.setVariable(association.getTarget(), value);
                     } else {
-                        System.out.println("Could not find variable scope for variable " + association.getTarget());
-                        System.out.println("when trying to complete Work Item " + workItem.getName());
-                        System.out.println("Continuing without setting variable.");
+                        logger.warn("Could not find variable scope for variable " + association.getTarget());
+                        logger.warn("when trying to complete Work Item " + workItem.getName());
+                        logger.warn("Continuing without setting variable.");
                     }
 
                 } else {

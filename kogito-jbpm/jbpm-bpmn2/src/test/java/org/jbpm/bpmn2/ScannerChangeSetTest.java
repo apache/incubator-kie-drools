@@ -1,7 +1,5 @@
 package org.jbpm.bpmn2;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -11,6 +9,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 
 import org.drools.core.util.FileManager;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -21,7 +20,7 @@ import org.kie.internal.agent.KnowledgeAgentFactory;
 import org.kie.internal.io.ResourceChangeScannerConfiguration;
 import org.kie.internal.io.ResourceFactory;
 
-public class ScannerChangeSetTest {
+public class ScannerChangeSetTest extends AbstractBaseTest {
 
     public static final String TMP_DIR = "target/classes/";
     

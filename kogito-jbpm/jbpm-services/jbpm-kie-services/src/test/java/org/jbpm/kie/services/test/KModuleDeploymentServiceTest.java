@@ -31,6 +31,7 @@ import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,9 +53,13 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.scanner.MavenRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(Arquillian.class)
-public class KModuleDeploymentServiceTest {
+public class KModuleDeploymentServiceTest extends AbstractBaseTest {
+    
+    private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentServiceTest.class);
     
     @Deployment()
     public static Archive<?> createDeployment() {
@@ -349,8 +354,7 @@ public class KModuleDeploymentServiceTest {
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         if (!kieBuilder.buildAll().getResults().getMessages().isEmpty()) {
             for (Message message : kieBuilder.buildAll().getResults().getMessages()) {
-                System.out.println("Error Message: (" + message.getPath()
-                        + ") " + message.getText());
+                logger.error("Error Message: ({}) {}", message.getPath(), message.getText());
             }
             throw new RuntimeException(
                     "There are errors builing the package, please check your knowledge assets!");

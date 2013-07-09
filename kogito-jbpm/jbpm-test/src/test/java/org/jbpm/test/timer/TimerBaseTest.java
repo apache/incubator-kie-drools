@@ -9,6 +9,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
+import org.jbpm.test.AbstractBaseTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.kie.api.event.process.ProcessEventListener;
@@ -17,7 +18,7 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public abstract class TimerBaseTest {
+public abstract class TimerBaseTest extends AbstractBaseTest {
     private static PoolingDataSource pds;
     
     private static PoolingDataSource setupPoolingDataSource() {

@@ -11,23 +11,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.persistence.util.LoggingPrintStream;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-public class ParameterMappingTest {
+public class ParameterMappingTest extends AbstractBaseTest {
     
     private HashMap<String, Object> context;
     
@@ -36,11 +36,6 @@ public class ParameterMappingTest {
     private StatefulKnowledgeSession ksession;
     private ProcessListener listener;
 
-    // Want to see the System.out output? Set the debug level for console in log4j.xml to DEBUG.
-    static { 
-        System.setOut(new LoggingPrintStream(System.out));
-    }
-    
     @Before
     public void before() {
         context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);

@@ -1,5 +1,8 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -8,26 +11,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
-
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.ClockType;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.StatefulSession;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.drools.core.time.SessionPseudoClock;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProcessTimerTest extends TestCase {
+public class ProcessTimerTest extends AbstractBaseTest {
+    
+    private static Logger logger = LoggerFactory.getLogger(ProcessTimerTest.class);
 
+    @Test
 	public void testSimpleProcess() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -72,7 +80,7 @@ public class ProcessTimerTest extends TestCase {
 		builder.addRuleFlow(source);
 		if (!builder.getErrors().isEmpty()) {
 			for (DroolsError error: builder.getErrors().getErrors()) {
-				System.err.println(error);
+			    logger.error(error.toString());
 			}
 			fail("Could not build process");
 		}
@@ -110,6 +118,7 @@ public class ProcessTimerTest extends TestCase {
         session.dispose();
 	}
 	
+    @Test
 	public void testVariableSimpleProcess() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -162,7 +171,7 @@ public class ProcessTimerTest extends TestCase {
 		builder.addRuleFlow(source);
 		if (!builder.getErrors().isEmpty()) {
 			for (DroolsError error: builder.getErrors().getErrors()) {
-				System.err.println(error);
+			    logger.error(error.toString());
 			}
 			fail("Could not build process");
 		}
@@ -203,6 +212,7 @@ public class ProcessTimerTest extends TestCase {
         session.dispose();
 	}
 	
+    @Test
 	public void testIncorrectTimerNode() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -230,10 +240,11 @@ public class ProcessTimerTest extends TestCase {
 		builder.addRuleFlow(source);
 		assertEquals(2, builder.getErrors().size());
 		for (DroolsError error: builder.getErrors().getErrors()) {
-			System.err.println(error);
+		    logger.error(error.toString());
 		}
 	}
 
+    @Test
 	public void testOnEntryTimerExecuted() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -293,6 +304,7 @@ public class ProcessTimerTest extends TestCase {
         session.dispose();
 	}
 
+    @Test
 	public void testOnEntryTimerVariableExecuted() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -365,6 +377,7 @@ public class ProcessTimerTest extends TestCase {
         session.dispose();
 	}
 
+    @Test
 	public void testOnEntryTimerWorkItemExecuted() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -426,6 +439,7 @@ public class ProcessTimerTest extends TestCase {
         session.dispose();
 	}
 
+    @Test
 	public void testIncorrectOnEntryTimer() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -464,10 +478,11 @@ public class ProcessTimerTest extends TestCase {
 		
 		assertEquals(2, builder.getErrors().size());
 		for (DroolsError error: builder.getErrors().getErrors()) {
-			System.err.println(error);
+		    logger.error(error.toString());
 		}
 	}
 
+    @Test
 	public void testOnEntryTimerExecutedMultipleTimes() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -528,6 +543,7 @@ public class ProcessTimerTest extends TestCase {
         session.dispose();
 	}
 	
+    @Test
 	public void testMultipleTimers() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -600,6 +616,7 @@ public class ProcessTimerTest extends TestCase {
         session.dispose();
 	}
 	
+    @Test
 	public void testOnEntryTimerCancelled() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(

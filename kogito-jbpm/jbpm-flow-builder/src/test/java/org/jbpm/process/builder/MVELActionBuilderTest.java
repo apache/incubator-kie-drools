@@ -1,33 +1,35 @@
 package org.jbpm.process.builder;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
+import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.lang.descr.ActionDescr;
+import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Package;
-import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.builder.dialect.mvel.MVELActionBuilder;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.MVELAction;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.junit.Test;
 
-public class MVELActionBuilderTest extends TestCase {
+public class MVELActionBuilderTest extends AbstractBaseTest {
 
-
+    @Test
     public void testSimpleAction() throws Exception {
         final Package pkg = new Package( "pkg1" );
 

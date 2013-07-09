@@ -42,10 +42,11 @@ import org.jbpm.form.builder.services.model.menu.FormEffectDescription;
 import org.jbpm.form.builder.services.model.menu.MenuItemDescription;
 import org.jbpm.form.builder.services.model.menu.MenuOptionDescription;
 import org.jbpm.form.builder.services.model.menu.ValidationDescription;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class MenuServiceBaseTest {
+public abstract class MenuServiceBaseTest extends AbstractBaseTest {
 
     @Before
     public void setUp() throws Exception {

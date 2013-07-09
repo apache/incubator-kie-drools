@@ -1,7 +1,5 @@
 package org.jbpm.test.persistence.timer;
 
-import static org.jbpm.test.JBPMHelper.loadStatefulKnowledgeSession;
-import static org.jbpm.test.JBPMHelper.newStatefulKnowledgeSession;
 import static org.jbpm.test.JBPMHelper.processStateName;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
@@ -9,19 +7,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
-import javax.transaction.SystemException;
 
 import org.drools.core.process.instance.WorkItemHandler;
-import org.jbpm.test.JBPMHelper;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class TimerPersistenceTest extends JbpmJUnitTestCase {
 
     // General setup
-    private static Logger testLogger = LoggerFactory.getLogger(TimerPersistenceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TimerPersistenceTest.class);
 
     // Test processses
     private final static String DELAY_TIMER_FILE = "delayTimerEventProcess.bpmn";
@@ -126,9 +120,9 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
     
         // The timer fires..
         int sleep = 2000;
-        testLogger.debug("Sleeping " + sleep / 1000 + " seconds.");
+        logger.debug("Sleeping " + sleep / 1000 + " seconds.");
         Thread.sleep(sleep);
-        testLogger.debug("Awake!");
+        logger.debug("Awake!");
     
         assertTrue("The timer has not fired!", timerHasFired());
         assertTrue("The did not fire at the right time!", System.currentTimeMillis() > timerFiredTime());
@@ -208,7 +202,7 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
         try {
             ksession.getWorkItemManager().completeWorkItem(workItemId, results);
         } catch (Exception e) {
-            testLogger.warn("Work item could not be completed!");
+            logger.warn("Work item could not be completed!");
             e.printStackTrace();
             fail(e.getClass().getSimpleName() + " thrown when completing work item: " + e.getMessage());
         }
@@ -218,9 +212,9 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
         // wait 3 seconds to see if the boss is notified
         if (processState == ProcessInstance.STATE_ACTIVE) {
             int sleep = 2000;
-            testLogger.debug("Sleeping " + sleep / 1000 + " seconds.");
+            logger.debug("Sleeping " + sleep / 1000 + " seconds.");
             Thread.sleep(sleep);
-            testLogger.debug("Awake!");
+            logger.debug("Awake!");
         }
         
         long afterSleepTime = System.currentTimeMillis();
@@ -266,12 +260,12 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
         public void executeWorkItem(org.kie.api.runtime.process.WorkItem workItem, org.kie.api.runtime.process.WorkItemManager manager) {
             this.workItem = workItem;
             this.workItemManager = manager;
-            System.out.println("Work completed!");
+            logger.debug("Work completed!");
         }
 
         public void abortWorkItem(org.kie.api.runtime.process.WorkItem workItem, org.kie.api.runtime.process.WorkItemManager manager) {
             this.workItemManager.abortWorkItem(workItem.getId());
-            System.out.println("Work aborted.");
+            logger.debug("Work aborted.");
         }
 
     }

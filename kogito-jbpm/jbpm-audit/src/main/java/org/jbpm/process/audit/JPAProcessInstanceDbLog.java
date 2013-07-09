@@ -18,21 +18,7 @@ package org.jbpm.process.audit;
 
 import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
-import javax.transaction.NotSupportedException;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
-
-import org.drools.persistence.TransactionManager;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class has been deprecated because it only uses static methods, 
@@ -43,7 +29,6 @@ import org.slf4j.LoggerFactory;
 @Deprecated
 public class JPAProcessInstanceDbLog {
 
-    private static Logger logger = LoggerFactory.getLogger(JPAProcessInstanceDbLog.class);
     
     private static AuditLogService staticAuditLogService = new JPAAuditLogService(null);
     

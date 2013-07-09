@@ -1,35 +1,36 @@
 package org.jbpm.process.builder;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.ReturnValueDescr;
+import org.drools.compiler.rule.builder.PackageBuildContext;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Package;
-import org.drools.compiler.rule.builder.PackageBuildContext;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.jbpm.process.builder.dialect.mvel.MVELReturnValueEvaluatorBuilder;
 import org.jbpm.process.instance.impl.MVELReturnValueEvaluator;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.node.SplitInstance;
+import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-public class MVELReturnValueConstraintEvaluatorBuilderTest extends TestCase {
+public class MVELReturnValueConstraintEvaluatorBuilderTest extends AbstractBaseTest {
 
-    public void setUp() {
-    }
-
+    @Test
     public void testSimpleReturnValueConstraintEvaluator() throws Exception {
         final Package pkg = new Package( "pkg1" );
 

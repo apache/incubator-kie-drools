@@ -29,9 +29,12 @@ import org.kie.internal.task.api.model.Escalation;
 import org.kie.internal.task.api.model.Language;
 import org.kie.internal.task.api.model.Notification;
 import org.kie.internal.task.api.model.Reassignment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class HumanTaskHandlerHelper {
+    private static final Logger logger = LoggerFactory.getLogger(HumanTaskHandlerHelper.class);
 	
 	private static final String COMPONENT_SEPARATOR = "\\^";
 	private static final String ELEMENT_SEPARATOR = "@";
@@ -111,7 +114,7 @@ public class HumanTaskHandlerHelper {
 	                deadlines.add(taskDeadline);
 	            }
 	        } else {
-	            System.out.println("Incorrect syntax of deadline property");
+	            logger.warn("Incorrect syntax of deadline property {}", deadlineInfo);
 	        }
         }
         return deadlines;

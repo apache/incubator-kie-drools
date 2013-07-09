@@ -35,11 +35,15 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.task.api.InternalTaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import bitronix.tm.TransactionManagerServices;
 
 public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
 
+    private static final Logger logger = LoggerFactory.getLogger(SerializedTimerRollbackTest.class);
+    
     public SerializedTimerRollbackTest() {
         super(true);
         setPersistence(true);
@@ -57,7 +61,7 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
             em.close();
             ut.commit();
         } catch (Exception e) {
-            System.out.println(" >>> Something went wrong deleting the Session Info");
+            logger.error("Something went wrong deleting the Session Info", e);
         }
 
     }
@@ -69,7 +73,7 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
             TransactionManager tm = TransactionManagerServices.getTransactionManager();
 
             KieSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
-            System.out.println("Created knowledge session");
+            logger.debug("Created knowledge session");
 
             TaskService taskService = getTaskService();
             Map<String, User> users = new HashMap<String, User>();
@@ -80,13 +84,13 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
 
 
 
-            System.out.println("Attached human task work item handler");
+            logger.debug("Attached human task work item handler");
             List<Long> committedProcessInstanceIds = new ArrayList<Long>();
             for (int i = 0; i < 10; i++) {
                 tm.begin();
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("test", "john");
-                System.out.println("Creating process instance: " + i);
+                logger.debug("Creating process instance: {}", i);
                 ProcessInstance pi = sesion.startProcess("PROCESS_1", params);
                 if (i % 2 == 0) {
                     committedProcessInstanceIds.add(pi.getId());
@@ -135,10 +139,10 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
         try {
     
             KieSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
-            System.out.println("Created knowledge session");
+            logger.debug("Created knowledge session");
              
             TaskService taskService = getTaskService();
-            System.out.println("Task service created");
+            logger.debug("Task service created");
             Map<String, User> users = new HashMap<String, User>();
             users.put("Administrator", new UserImpl("Administrator"));
             users.put("john", new UserImpl("john"));
@@ -146,13 +150,13 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
             ((InternalTaskService) taskService).addUsersAndGroups(users, groups);
 
 
-            System.out.println("Attached human task work item handler");
+            logger.debug("Attached human task work item handler");
             List<Long> committedProcessInstanceIds = new ArrayList<Long>();
             for (int i = 0; i < 10; i++) {
                 if (i % 2 == 0) {
                     Map<String, Object> params = new HashMap<String, Object>();
                     params.put("test", "john");
-                    System.out.println("Creating process instance: " + i);
+                    logger.debug("Creating process instance: {}", i);
                     ProcessInstance pi = sesion.startProcess("PROCESS_1", params);
 
                     committedProcessInstanceIds.add(pi.getId());
@@ -162,10 +166,10 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
                         Map<String, Object> params = new HashMap<String, Object>();
                         // set test variable to null so engine will rollback 
                         params.put("test", null);
-                        System.out.println("Creating process instance: " + i);
+                        logger.debug("Creating process instance: {}", i);
                         ProcessInstance pi = sesion.startProcess("PROCESS_1", params);
                     } catch (Exception e) {
-                        System.out.println("Process rolled back");
+                        logger.debug("Process rolled back");
                     }
                 }
             }

@@ -43,9 +43,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.task.model.Content;
 import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.ContentData;
@@ -53,6 +51,8 @@ import org.kie.internal.task.api.model.InternalContent;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
@@ -62,7 +62,8 @@ import org.subethamail.wiser.WiserMessage;
  *
  */
 public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
-
+    private static final Logger logger = LoggerFactory.getLogger(EmailDeadlinesBaseTest.class);
+    
     private Wiser wiser;
     
     @Before
@@ -139,7 +140,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
             time += 50;
         }
         for (WiserMessage msg : getWiser().getMessages()) {
-            System.out.println(msg.getEnvelopeReceiver());
+            logger.info(msg.getEnvelopeReceiver());
         }
         // 1 email with two recipients should now exist
         assertEquals(2, getWiser().getMessages().size());

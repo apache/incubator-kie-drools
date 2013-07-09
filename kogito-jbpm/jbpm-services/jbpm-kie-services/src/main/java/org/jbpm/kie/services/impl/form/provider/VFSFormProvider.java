@@ -3,21 +3,22 @@ package org.jbpm.kie.services.impl.form.provider;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jbpm.kie.services.impl.form.FormProviderServiceImpl;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.kie.api.task.model.Task;
 import org.kie.commons.java.nio.file.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class VFSFormProvider extends FreemakerFormProvider {
+    
+    private static final Logger logger = LoggerFactory.getLogger(VFSFormProvider.class);
 
     @Inject
     private FileService fileService;
@@ -38,7 +39,7 @@ public class VFSFormProvider extends FreemakerFormProvider {
                 availableForms = fileService.loadFilesByType(formsPath, "ftl");
             }
         } catch (FileException ex) {
-            Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("File exception", ex);
         }
         Path selectedForm = null;
         if(availableForms != null){
@@ -67,7 +68,7 @@ public class VFSFormProvider extends FreemakerFormProvider {
 
             }
         } catch (FileException ex) {
-            Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("File exception", ex);
         }
 
         if (template == null) return null;
@@ -90,7 +91,7 @@ public class VFSFormProvider extends FreemakerFormProvider {
                 }
             }
         } catch (FileException ex) {
-            Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("File exception", ex);
         }
         Path selectedForm = null;
         if(availableForms != null){
@@ -120,7 +121,7 @@ public class VFSFormProvider extends FreemakerFormProvider {
                 template = new ByteArrayInputStream(fileService.loadFile(selectedForm));
             }
         } catch (FileException ex) {
-            Logger.getLogger(FormProviderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("File exception", ex);
         }
 
         if (template == null) return null;

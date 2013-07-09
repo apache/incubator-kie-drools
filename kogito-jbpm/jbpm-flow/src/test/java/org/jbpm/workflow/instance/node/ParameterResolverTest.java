@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 
-public class ParameterResolverTest {
+public class ParameterResolverTest extends AbstractBaseTest {
 
     
     @Test

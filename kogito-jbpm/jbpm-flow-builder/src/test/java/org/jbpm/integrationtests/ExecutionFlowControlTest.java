@@ -1,10 +1,14 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -13,8 +17,9 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.process.ProcessInstance;
 
-public class ExecutionFlowControlTest extends TestCase {
+public class ExecutionFlowControlTest  extends AbstractBaseTest {
 
+    @Test
     public void testRuleFlowUpgrade() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         // Set the system property so that automatic conversion can happen

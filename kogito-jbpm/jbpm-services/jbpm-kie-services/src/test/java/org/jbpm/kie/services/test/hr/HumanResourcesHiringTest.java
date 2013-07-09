@@ -36,6 +36,7 @@ import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -55,6 +56,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.InternalTaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -63,7 +66,9 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
  * @author salaboy
  */
 @RunWith(Arquillian.class)
-public class HumanResourcesHiringTest {
+public class HumanResourcesHiringTest extends AbstractBaseTest {
+    
+    private static final Logger logger = LoggerFactory.getLogger(HumanResourcesHiringTest.class);
 
     @Deployment()
     public static Archive<?> createDeployment() {
@@ -281,7 +286,7 @@ public class HumanResourcesHiringTest {
 
         
         int removeAllTasks = ((InternalTaskService) taskService).removeAllTasks();
-        System.out.println(">>> Removed Tasks > " + removeAllTasks);
+        logger.debug(">>> Removed Tasks > " + removeAllTasks);
 
     }
 }

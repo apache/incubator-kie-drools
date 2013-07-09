@@ -8,13 +8,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.core.util.ConfFileUtils;
 import org.drools.core.process.core.ParameterDefinition;
 import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.core.impl.ParameterDefinitionImpl;
+import org.drools.core.util.ConfFileUtils;
 import org.mvel2.MVEL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WorkItemRepository {
+    
+    private static Logger logger = LoggerFactory.getLogger(WorkItemRepository.class);
 
 	public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path) {
 		Map<String, WorkDefinitionImpl> workDefinitions = new HashMap<String, WorkDefinitionImpl>();
@@ -100,8 +104,7 @@ public class WorkItemRepository {
 			}
 			return result;
 		} catch (Throwable t) {
-			System.err.println("Error occured while loading work definitions " + path);
-			t.printStackTrace();
+		    logger.error("Error occured while loading work definitions " + path, t);
 			throw new RuntimeException("Could not parse work definitions " + path + ": " + t.getMessage());
 		}
 	}

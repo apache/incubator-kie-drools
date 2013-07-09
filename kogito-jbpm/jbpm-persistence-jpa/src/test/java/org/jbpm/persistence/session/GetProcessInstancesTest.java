@@ -15,24 +15,25 @@ import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
 import org.jbpm.persistence.processinstance.JPAProcessInstanceManager;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Environment;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.api.runtime.Environment;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
  * This test looks at the behavior of the  {@link JPAProcessInstanceManager} 
  * with regards to created (but not started) process instances 
  * and whether the process instances are available or not after creation.
  */
-public class GetProcessInstancesTest {
+public class GetProcessInstancesTest extends AbstractBaseTest {
     
     private HashMap<String, Object> context;
     

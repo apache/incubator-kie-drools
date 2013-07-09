@@ -17,9 +17,10 @@
 package org.jbpm.process;
 
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 
-public class ProcessFactoryTest {
+public class ProcessFactoryTest extends AbstractBaseTest  {
 	
 	@Test
 	public void testProcessFactory() {

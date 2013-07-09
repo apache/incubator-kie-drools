@@ -16,6 +16,8 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.Map;
+
 import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
@@ -30,16 +32,18 @@ import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.kie.internal.command.Context;
 import org.kie.api.definition.process.Process;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.WorkItem;
-
-import java.util.Map;
+import org.kie.internal.command.Context;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DynamicUtils {
+    
+    private static Logger logger = LoggerFactory.getLogger(DynamicUtils.class);
 	
 	public static void addDynamicWorkItem(
 			final DynamicNodeInstance dynamicContext, KieRuntime ksession,
@@ -157,8 +161,8 @@ public class DynamicUtils {
 	private static void executeSubProcess(StatefulKnowledgeSessionImpl ksession, String processId, Map<String, Object> parameters, ProcessInstance processInstance, SubProcessNodeInstance subProcessNodeInstance) {
 		Process process = ksession.getKieBase().getProcess(processId);
         if (process == null) {
-        	System.err.println("Could not find process " + processId);
-        	System.err.println("Aborting process");
+            logger.error("Could not find process " + processId);
+            logger.error("Aborting process");
         	processInstance.setState(ProcessInstance.STATE_ABORTED);
         } else {
         	ProcessEventSupport eventSupport = ((InternalProcessRuntime)

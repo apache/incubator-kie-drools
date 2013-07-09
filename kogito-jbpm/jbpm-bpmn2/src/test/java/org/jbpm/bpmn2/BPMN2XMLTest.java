@@ -85,12 +85,12 @@ public class BPMN2XMLTest extends XMLTestCase {
                         && diff.getId() == DifferenceConstants.CHILD_NODELIST_SEQUENCE_ID ) { 
                         return RETURN_IGNORE_DIFFERENCE_NODES_IDENTICAL;
                     }
-                    System.out.println( "! " + diff.getTestNodeDetail().getNode().getNodeName());
+                    logger.info( "! {}", diff.getTestNodeDetail().getNode().getNodeName());
                     return RETURN_ACCEPT_DIFFERENCE;
                 }
                 
                 public void skippedComparison(Node one, Node two) { 
-                   System.out.println(one.getLocalName() + " : " + two.getLocalName()) ;
+                    logger.info("{} : {}", one.getLocalName(), two.getLocalName()) ;
                 }
             });
 

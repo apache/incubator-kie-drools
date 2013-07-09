@@ -9,28 +9,26 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.List;
-
-
-import org.jbpm.executor.entities.RequestInfo;
-import org.jbpm.executor.entities.STATUS;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import org.jbpm.executor.api.CommandContext;
-import org.jbpm.executor.api.Executor;
+
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.executor.annotations.Cancelled;
 import org.jbpm.executor.annotations.Pending;
+import org.jbpm.executor.api.CommandContext;
+import org.jbpm.executor.api.Executor;
 import org.jbpm.executor.api.ExecutorQueryService;
+import org.jbpm.executor.entities.RequestInfo;
+import org.jbpm.executor.entities.STATUS;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -39,8 +37,8 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 @Transactional
 public class ExecutorImpl implements Executor {
 
-    @Inject
-    private Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(ExecutorImpl.class);
+
     @Inject
     private JbpmServicesPersistenceManager pm;
     @Inject
@@ -57,10 +55,6 @@ public class ExecutorImpl implements Executor {
     private ScheduledExecutorService scheduler;
 
     public ExecutorImpl() {
-    }
-
-    public void setLogger(Logger logger) {
-        this.logger = logger;
     }
 
     public void setPm(JbpmServicesPersistenceManager pm) {
@@ -107,9 +101,9 @@ public class ExecutorImpl implements Executor {
 
     public void init() {
 
-        logger.log(Level.INFO, " >>> Starting Executor Component ...\n" + " \t - Thread Pool Size: {0}" + "\n"
-                + " \t - Interval: {1}" + " Seconds\n" + " \t - Retries per Request: {2}\n",
-                new Object[]{threadPoolSize, interval, retries});
+        logger.info("Starting Executor Component ...\n" + " \t - Thread Pool Size: {}" + "\n"
+                + " \t - Interval: {}" + " Seconds\n" + " \t - Retries per Request: {}\n",
+                threadPoolSize, interval, retries);
 
         scheduler = Executors.newScheduledThreadPool(threadPoolSize);
         handle = scheduler.scheduleAtFixedRate(runnableTask, 2, interval, TimeUnit.SECONDS);
@@ -155,12 +149,12 @@ public class ExecutorImpl implements Executor {
 
         requestEvents.select(new AnnotationLiteral<Pending>(){}).fire(requestInfo);
         
-        logger.log(Level.INFO, " >>> Scheduling request for Command: {0} - requestId: {1} with {2} retries", new Object[]{commandId, requestInfo.getId(), requestInfo.getRetries()});
+        logger.info("Scheduling request for Command: {} - requestId: {} with {} retries", commandId, requestInfo.getId(), requestInfo.getRetries());
         return requestInfo.getId();
     }
 
     public void cancelRequest(Long requestId) {
-        logger.log(Level.INFO, " >>> Before - Cancelling Request with Id: {0}", requestId);
+        logger.info("Before - Cancelling Request with Id: {}", requestId);
 
         List<?> result = queryService.getPendingRequestById(requestId);
         if (result.isEmpty()) {
@@ -173,7 +167,7 @@ public class ExecutorImpl implements Executor {
 
         requestEvents.select(new AnnotationLiteral<Cancelled>(){}).fire(r);
         
-        logger.log(Level.INFO, " >>> After - Cancelling Request with Id: {0}", requestId);
+        logger.info("After - Cancelling Request with Id: {}", requestId);
     }
 
     public void destroy() {

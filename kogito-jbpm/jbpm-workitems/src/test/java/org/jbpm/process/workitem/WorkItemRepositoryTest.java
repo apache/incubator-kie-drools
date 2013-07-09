@@ -1,14 +1,18 @@
 package org.jbpm.process.workitem;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class WorkItemRepositoryTest extends TestCase {
+public class WorkItemRepositoryTest extends AbstractBaseTest {
 	
-	public void testEmpty() {
-	}
 	
+	@Test
+	@Ignore
 	public void FIXMEtestWorkItemRepository() {
 		String path = "/NotBackedUp/development/projects/jbpm-workitems-repository";
 		Collection<WorkDefinitionImpl> workDefinitions = WorkItemRepository.getWorkDefinitions(path).values();

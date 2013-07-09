@@ -35,16 +35,11 @@ import javax.persistence.EntityManagerFactory;
 import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -52,6 +47,12 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +63,7 @@ import org.slf4j.LoggerFactory;
  * <li>JPAProcessInstanceDbLog</li>
  * </ul>
  */
-public class AuditLogServiceTest {
+public class AuditLogServiceTest extends AbstractBaseTest {
 
     private HashMap<String, Object> context;
     private Logger logger = LoggerFactory.getLogger(AuditLogServiceTest.class);

@@ -18,8 +18,6 @@ package org.jbpm.process.workitem.jabber;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.drools.core.process.instance.WorkItemHandler;
 import org.jivesoftware.smack.Chat;
@@ -31,6 +29,8 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -39,6 +39,9 @@ import org.kie.api.runtime.process.WorkItemManager;
  * @author salaboy
  */
 public class JabberWorkItemHandler implements WorkItemHandler {
+    
+    private static final Logger logger = LoggerFactory.getLogger(JabberWorkItemHandler.class);
+    
     private String user;
     private String password;
     private String server;
@@ -82,24 +85,22 @@ public class JabberWorkItemHandler implements WorkItemHandler {
            }
 
            connection.connect();
-           System.out.println("Connected to " + connection.getHost());
+           logger.info("Connected to {}", connection.getHost());
 
-        } catch (XMPPException ex) {
-            Logger.getLogger(JabberWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Failed to connect to " + connection.getHost());
+        } catch (XMPPException ex) {            
+            logger.error("Failed to connect to {} {}", connection.getHost(), ex);
             System.exit(1);
 
         }
 
         try{
             connection.login(user, password);
-            System.out.println("Logged in as " + connection.getUser());
+            logger.info("Logged in as {}", connection.getUser());
             Presence presence = new Presence(Presence.Type.available);
             connection.sendPacket(presence);
 
         } catch (XMPPException ex){
-            Logger.getLogger(JabberWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Failed to log in as " + connection.getUser());
+            logger.error("Failed to log in as {} {}" + connection.getUser(), ex);
             System.exit(1);
 
         }
@@ -114,9 +115,9 @@ public class JabberWorkItemHandler implements WorkItemHandler {
                 Message msg = new Message(toUser, Message.Type.chat);
                 msg.setBody(text);
                 chat.sendMessage(msg);
-                System.out.println("Message Sended");
+                logger.info("Message Sent");
             } catch (XMPPException e) {
-                System.out.println("Failed to send message");
+                logger.error("Failed to send message", e);
                 // handle this how?
             }
         }

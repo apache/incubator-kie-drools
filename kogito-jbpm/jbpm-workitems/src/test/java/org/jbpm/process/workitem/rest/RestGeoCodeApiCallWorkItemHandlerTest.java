@@ -16,21 +16,23 @@
 
 package org.jbpm.process.workitem.rest;
 
+import static org.junit.Assert.assertEquals;
+
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.DefaultWorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class RestGeoCodeApiCallWorkItemHandlerTest extends TestCase {
+public class RestGeoCodeApiCallWorkItemHandlerTest extends AbstractBaseTest {
 
-    public void testEmpty() {
-    }
-    
+    @Test
+    @Ignore
     public void FIXMEtestYahooGeoCode() throws Exception {
         RestGeoCodeApiCallWorkItemHandler handler = new RestGeoCodeApiCallWorkItemHandler();
         Map<String, Object> queryParams = new HashMap<String, Object>();

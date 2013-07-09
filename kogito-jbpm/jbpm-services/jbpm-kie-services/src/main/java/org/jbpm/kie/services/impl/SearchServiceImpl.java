@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -40,6 +39,8 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.jbpm.kie.services.impl.model.NodeInstanceDesc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -47,6 +48,8 @@ import org.jbpm.kie.services.impl.model.NodeInstanceDesc;
  * @author salaboy
  */
 public class SearchServiceImpl {
+    
+    private static final Logger logger = LoggerFactory.getLogger(SearchServiceImpl.class);
 
     private IndexWriter iw = null;
     private IndexSearcher is = null;
@@ -56,7 +59,7 @@ public class SearchServiceImpl {
             SimpleAnalyzer analyzer = new SimpleAnalyzer(Version.LUCENE_40);
             iw = new IndexWriter(FSDirectory.open(new File("index/")), new IndexWriterConfig(Version.LUCENE_40, analyzer));
         } catch (IOException ex) {
-            Logger.getLogger(SearchServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error while initializing", ex);
         }
 
     }

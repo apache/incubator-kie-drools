@@ -12,8 +12,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -74,6 +72,8 @@ import org.kie.internal.task.api.model.Operation;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -83,6 +83,8 @@ import org.mvel2.ParserContext;
 @ApplicationScoped
 @Transactional
 public class MVELLifeCycleManager implements LifeCycleManager {
+    
+    private static final Logger logger = LoggerFactory.getLogger(MVELLifeCycleManager.class);
     
     @Inject 
     private JbpmServicesPersistenceManager pm;
@@ -98,19 +100,12 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     @Internal
     private TaskLifeCycleEventListener eventListener;
     private Map<Operation, List<OperationCommand>> operations;
-    
-    @Inject
-    private Logger logger;
 
     public MVELLifeCycleManager() {
     }
 
     public void setPm(JbpmServicesPersistenceManager pm) {
         this.pm = pm;
-    }
-
-    public void setLogger(Logger logger) {
-        this.logger = logger;
     }
     
     public void setTaskEvents(Event<Task> taskEvents) {
@@ -151,7 +146,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
                         commands(command, task, user, targetEntity);
                     } else {
-                        logger.log(Level.FINEST, "No match on status for task " + task.getId() + ": status " + task.getTaskData().getStatus() + " != " + status);
+                        logger.debug("No match on status for task {} :status {}  != {}", task.getId(), task.getTaskData().getStatus(), status);
                     }
                 }
             }
@@ -169,7 +164,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
                         commands(command, task, user, targetEntity);
                     } else {
-                        logger.log(Level.FINEST, "No match on previous status for task " + task.getId() + ": status " + task.getTaskData().getStatus() + " != " + status);
+                        logger.debug("No match on previous status for task {} :status {}  != {}", task.getId(), task.getTaskData().getStatus(), status);
                     }
                 }
             }

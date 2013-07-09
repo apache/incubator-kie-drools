@@ -1,18 +1,22 @@
 package org.jbpm.process.builder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.Collection;
 
-import junit.framework.TestCase;
-
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
+import org.kie.api.definition.process.Process;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.definition.process.Process;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
 
-public class KnowledgeBuilderTest extends TestCase {
+public class KnowledgeBuilderTest extends AbstractBaseTest {
 	
+    @Test
 	public void testKnowledgeProviderWithProcesses() {
 		KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		

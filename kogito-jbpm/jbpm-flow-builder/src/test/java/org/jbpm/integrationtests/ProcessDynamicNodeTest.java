@@ -1,8 +1,13 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -14,21 +19,30 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProcessDynamicNodeTest extends TestCase {
+public class ProcessDynamicNodeTest extends AbstractBaseTest {
     
+    private static Logger logger = LoggerFactory.getLogger(ProcessDynamicNodeTest.class);
+    
+    @Test
+    @Ignore
     public void TODOtestDynamicActions() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -83,7 +97,7 @@ public class ProcessDynamicNodeTest extends TestCase {
         builder.addRuleFlow(source);
         Package pkg = builder.getPackage();
         for (DroolsError error: builder.getErrors().getErrors()) {
-        	System.err.println(error);
+            logger.error(error.toString());
         }
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
@@ -96,6 +110,8 @@ public class ProcessDynamicNodeTest extends TestCase {
         assertEquals(4, list.size());
     }
 
+    @Test
+    @Ignore
     public void TODOtestDynamicAsyncActions() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -149,7 +165,7 @@ public class ProcessDynamicNodeTest extends TestCase {
         builder.addRuleFlow(source);
         Package pkg = builder.getPackage();
         for (DroolsError error: builder.getErrors().getErrors()) {
-        	System.err.println(error);
+            logger.error(error.toString());
         }
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
@@ -169,6 +185,7 @@ public class ProcessDynamicNodeTest extends TestCase {
         assertEquals(3, list.size());
     }
     
+    @Test
     public void testAddDynamicWorkItem() {
     	Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -222,6 +239,7 @@ public class ProcessDynamicNodeTest extends TestCase {
 		logger.close();
     }
 
+    @Test
     public void testAddDynamicSubProcess() {
     	Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

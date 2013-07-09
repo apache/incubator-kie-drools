@@ -18,6 +18,12 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.subethamail</groupId>
+          <artifactId>subethasmtp-wiser</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -39,6 +45,12 @@
     <dependency>
       <groupId>org.kie.commons</groupId>
       <artifactId>kie-commons-io</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>log4j</artifactId>
+          <groupId>log4j</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -51,6 +63,10 @@
       <artifactId>javax.inject</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>    
 
     <!--test-->
     <dependency>
@@ -87,6 +103,11 @@
     <dependency>
       <groupId>org.codehaus.btm</groupId>
       <artifactId>btm</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
 

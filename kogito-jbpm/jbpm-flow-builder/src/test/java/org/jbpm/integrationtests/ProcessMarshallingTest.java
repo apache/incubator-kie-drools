@@ -1,9 +1,15 @@
 package org.jbpm.integrationtests;
 
 import static org.jbpm.integrationtests.SerializationHelper.getSerialisedStatefulSession;
+import static org.junit.Assert.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -19,19 +25,28 @@ import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.Marshaller;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.marshalling.Marshaller;
 import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.api.runtime.process.*;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProcessMarshallingTest extends TestCase {
+public class ProcessMarshallingTest extends AbstractBaseTest {
+    
+    private static Logger logger = LoggerFactory.getLogger(ProcessMarshallingTest.class);
 
+    @Test
     @SuppressWarnings("unchecked")
 	public void test1() throws Exception {
         String rule = "package org.test;\n";
@@ -92,6 +107,7 @@ public class ProcessMarshallingTest extends TestCase {
         assertEquals(0, ksession.getProcessInstances().size());
     }
     
+    @Test
     public void test2() throws Exception {
         String process = 
     		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -164,6 +180,7 @@ public class ProcessMarshallingTest extends TestCase {
         assertEquals(0, session.getProcessInstances().size());
     }
     
+    @Test
     public void test3() throws Exception {
         String process1 = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -357,6 +374,7 @@ public class ProcessMarshallingTest extends TestCase {
         assertEquals(0, session.getProcessInstances().size());
     }
     
+    @Test
     public void test4() throws Exception {
         String process = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -471,6 +489,7 @@ public class ProcessMarshallingTest extends TestCase {
         assertEquals(0, session.getProcessInstances().size());
     }
     
+    @Test
     public void test5() throws Exception {
         String process = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -528,6 +547,7 @@ public class ProcessMarshallingTest extends TestCase {
         session2.halt();
     }
     
+    @Test
     public void test6() throws Exception {
         String process = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -597,7 +617,7 @@ public class ProcessMarshallingTest extends TestCase {
     private static class TestListWorkItemHandler implements WorkItemHandler {
     	private List<WorkItem> workItems = new ArrayList<WorkItem>();
     	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-    		System.out.println("Executing workItem " + workItem.getParameter("TaskName"));
+    	    logger.info("Executing workItem " + workItem.getParameter("TaskName"));
 			workItems.add(workItem);
 		}
 		public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -611,6 +631,7 @@ public class ProcessMarshallingTest extends TestCase {
 		}
     }
     
+    @Test
     public void testVariablePersistenceMarshallingStrategies() throws Exception {
         String process = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

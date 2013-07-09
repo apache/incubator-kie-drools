@@ -1,5 +1,7 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -13,9 +15,12 @@ import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
 
-public class ProcessRuleFlowGroupTest extends TestCase {
+public class ProcessRuleFlowGroupTest extends AbstractBaseTest {
     
+    @Test
     public void testRuleSetProcessContext() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(

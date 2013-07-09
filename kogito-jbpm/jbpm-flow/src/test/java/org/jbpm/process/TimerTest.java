@@ -16,7 +16,7 @@
 
 package org.jbpm.process;
 
-import junit.framework.Assert;
+import static org.junit.Assert.*;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
@@ -25,14 +25,18 @@ import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TimerTest extends Assert {
+public class TimerTest extends AbstractBaseTest  {
 
+    private static Logger logger = LoggerFactory.getLogger(TimerTest.class);
 	private int counter = 0;
 	   
     static {
@@ -54,7 +58,7 @@ public class TimerTest extends Assert {
 			public void signalEvent(String type, Object event) {
         		if ("timerTriggered".equals(type)) {
         			TimerInstance timer = (TimerInstance) event;
-            		System.out.println("Timer " + timer.getId() + " triggered");
+        			logger.info("Timer " + timer.getId() + " triggered");
             		counter++;
         		}
         	}

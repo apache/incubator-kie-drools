@@ -1,5 +1,8 @@
 package org.jbpm.process.audit.xml;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
@@ -18,10 +21,10 @@ import javax.xml.bind.Unmarshaller;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
-import org.junit.Assert;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 
-public class JaxbHistoryLogTest extends Assert {
+public class JaxbHistoryLogTest extends AbstractBaseTest {
 
     private static Random random = new Random();
     

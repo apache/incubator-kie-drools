@@ -5,7 +5,8 @@ import java.util.List;
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
@@ -26,6 +27,7 @@ public class AuditCommandsTest extends JbpmBpmn2TestCase {
         super(true);
     }
 
+    private static AuditLogService logService;
     @BeforeClass
     public static void setup() throws Exception {
         setUpDataSource();
@@ -33,12 +35,12 @@ public class AuditCommandsTest extends JbpmBpmn2TestCase {
         // clear logs
         Environment env = EnvironmentFactory.newEnvironment();
         env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-        JPAProcessInstanceDbLog.setEnvironment(env);
-        JPAProcessInstanceDbLog.clear();
-        
-        // reset JPAProcessInstanceDbLog
-        JPAProcessInstanceDbLog.setEnvironment(null);
+        logService = new JPAAuditLogService(env);
+        logService.clear();
+
     }
+    
+    
 
     @Test
     public void testFindProcessInstanceCommands() throws Exception {
@@ -80,7 +82,7 @@ public class AuditCommandsTest extends JbpmBpmn2TestCase {
         
         cmd = new ClearHistoryLogsCommand();
         result = ksession.execute(cmd);
-        assertEquals( "There should be no more logs", 0, JPAProcessInstanceDbLog.findProcessInstances().size() );
+        assertEquals( "There should be no more logs", 0, logService.findProcessInstances().size() );
         
         // now signal process instance
         ksession = restoreSession(ksession, true);

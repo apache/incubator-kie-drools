@@ -20,8 +20,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FileTransformer {
 
+    private static final Logger logger = LoggerFactory.getLogger(FileTransformer.class);
+    
 	// All transform methods must be static and must contain the @Transformer annotation
 	@Transformer
 	public static String fileToString(File file) {
@@ -34,7 +39,7 @@ public class FileTransformer {
 			}
 			return fileString;
 		} catch (Exception e) {
-			System.err.println("Failed to read file " + file.getName());
+			logger.error("Failed to read file {}", file.getName());
 		}
 		return null;
 	}
@@ -45,7 +50,7 @@ public class FileTransformer {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			return reader;
 		} catch (Exception e) {
-			System.err.println("Failed to read file " + file.getName());
+		    logger.error("Failed to read file {}", file.getName());
 		}
 		return null;
 	}

@@ -23,6 +23,8 @@ import org.drools.core.audit.event.LogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
@@ -68,7 +70,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
  * it a unique name.
  *
  */
-public abstract class JbpmJUnitTestCase extends Assert {
+public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
 
     protected final static String EOL = System.getProperty("line.separator");
     private boolean setupDataSource = false;
@@ -83,6 +85,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
     
     private RuntimeManager manager;
     private RuntimeEnvironment environment;
+    private AuditLogService logService;
 
 //    @Rule
 //    public KnowledgeSessionCleanup ksessionCleanupRule = new KnowledgeSessionCleanup();	
@@ -254,7 +257,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
         KieSession result = runtime.getKieSession();
         if (sessionPersistence) {
             
-            JPAProcessInstanceDbLog.setEnvironment(result.getEnvironment());                
+            logService = new JPAAuditLogService(environment.getEnvironment());               
             
         } else {
             
@@ -345,7 +348,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
             names.add(nodeName);
         }
         if (sessionPersistence) {
-            List<NodeInstanceLog> logs = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+            List<NodeInstanceLog> logs = logService.findNodeInstances(processInstanceId);
             if (logs != null) {
                 for (NodeInstanceLog l : logs) {
                     String nodeName = l.getNodeName();
@@ -375,7 +378,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 
     protected void clearHistory() {
         if (sessionPersistence) {
-            JPAProcessInstanceDbLog.clear();
+            logService.clear();
         } else {
             logger.clear();
         }

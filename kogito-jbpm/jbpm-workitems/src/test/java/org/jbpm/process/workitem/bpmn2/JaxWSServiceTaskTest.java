@@ -19,21 +19,27 @@ import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class JaxWSServiceTaskTest {
+public class JaxWSServiceTaskTest extends AbstractBaseTest {
+    
+    private static final Logger logger = LoggerFactory.getLogger(JaxWSServiceTaskTest.class);
+    
     private Endpoint endpoint;
     private SimpleService service;
 
@@ -74,7 +80,7 @@ public class JaxWSServiceTaskTest {
         params.put("mode", "async");
         
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("WebServiceTask", params);
-        System.out.println("Service invoked async...waiting to get reponse back");
+        logger.info("Service invoked async...waiting to get reponse back");
         Thread.sleep(5000);
         String variable = (String) processInstance.getVariable("s");
         assertEquals("Hello john", variable);
@@ -92,7 +98,7 @@ public class JaxWSServiceTaskTest {
         params.put("mode", "oneway");
         
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("WebServiceTask", params);
-        System.out.println("Execution finished");
+        logger.info("Execution finished");
         String variable = (String) processInstance.getVariable("s");
         assertNull(variable);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());

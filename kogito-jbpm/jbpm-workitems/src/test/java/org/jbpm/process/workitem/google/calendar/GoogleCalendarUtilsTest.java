@@ -1,25 +1,31 @@
 package org.jbpm.process.workitem.google.calendar;
 
-import junit.framework.TestCase;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class GoogleCalendarUtilsTest extends TestCase {
-	
+public class GoogleCalendarUtilsTest extends AbstractBaseTest {
+    private static final Logger logger = LoggerFactory.getLogger(GoogleCalendarUtilsTest.class);
+    
 	private static final String USERNAME = "drools.demo@gmail.com";
 	private static final String PASSWORD = "pa$$word";
 	
-	public void testEmpty() {
-	}
-
+	@Test
+	@Ignore
 	public void testCalendar() throws Exception {
 //		List<String> calendars =
 //			GoogleCalendarUtils.getCalendars(USERNAME, PASSWORD);
 //		for (String calendar: calendars) {
-//			System.out.println(calendar);
+//			logger.info("{}", calendar);
 //		}
 //		assertEquals(1, calendars.size());
 //		assertEquals("drools.demo@gmail.com", calendars.get(0));
 	}
 	
+	@Test
+	@Ignore
 	public void TODOtestCreateCalendarEntry() throws Exception {
 //		GoogleCalendarUtils.insertEntry(
 //			USERNAME, PASSWORD, 
@@ -27,11 +33,11 @@ public class GoogleCalendarUtilsTest extends TestCase {
 //			"Showing the new features of Drools",
 //			DateTime.now().toString(),
 //			DateTime.now().toString());
-//		System.out.println(DateTime.now().toString());
+//		logger.info("{}", DateTime.now().toString());
 //		List<CalendarEventEntry> entries = 
 //			GoogleCalendarUtils.getEntries(USERNAME, PASSWORD, "Drools");
 //		for (CalendarEventEntry entry: entries) {
-//			System.out.println(entry.getTitle().getPlainText());
+//			logger.info("{}", entry.getTitle().getPlainText());
 //		}
 //		assertEquals(1, entries.size());
 //		entries.get(0).delete();

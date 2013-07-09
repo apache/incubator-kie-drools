@@ -7,16 +7,18 @@ package org.jbpm.services.task.impl.factories;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.utils.MVELUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class TaskFactory {
+    
+    private static final Logger logger = LoggerFactory.getLogger(TaskFactory.class);
  
     public static TaskImpl evalTask(Reader reader, Map<String, Object> vars) {
         TaskImpl task = null;
@@ -25,7 +27,7 @@ public class TaskFactory {
            
 
         } catch (IOException ex) {
-            Logger.getLogger(TaskFactory.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error while evaluating task", ex);
         }
         return task;
     }

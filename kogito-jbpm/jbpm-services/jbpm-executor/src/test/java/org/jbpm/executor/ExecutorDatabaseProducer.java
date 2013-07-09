@@ -4,30 +4,32 @@
  */
 package org.jbpm.executor;
 
+import static org.kie.commons.io.FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
-import static org.kie.commons.io.FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE;
+
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 @ApplicationScoped
 public class ExecutorDatabaseProducer {
-
+    private static final Logger logger = LoggerFactory.getLogger(ExecutorDatabaseProducer.class);
     
     private IOService ioService = new IOServiceNio2WrapperImpl();
     private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";
@@ -62,12 +64,6 @@ public class ExecutorDatabaseProducer {
 
         }
     }
-   
-    @Produces
-    public Logger createLogger(InjectionPoint injectionPoint) {
-        return Logger.getLogger(injectionPoint.getMember()
-                .getDeclaringClass().getName());
-    }
     
     @Produces
     @Named("ioStrategy")
@@ -84,7 +80,7 @@ public class ExecutorDatabaseProducer {
             env.put( "origin", ORIGIN_URL );
             ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
         } catch ( Exception e ) {
-            System.out.println( ">>>>>>>>>>>>>>>>>>> E " + e.getMessage() );
+            logger.error("Error while preparing file system ", e);
         }
         return ioService;
     }

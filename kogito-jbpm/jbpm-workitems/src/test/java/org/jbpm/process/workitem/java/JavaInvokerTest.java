@@ -17,6 +17,8 @@ import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -26,8 +28,9 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-public class JavaInvokerTest extends TestCase {
+public class JavaInvokerTest extends AbstractBaseTest {
 
+    @Test
 	public void testStaticMethod1() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = createSession(kbase);
@@ -39,6 +42,7 @@ public class JavaInvokerTest extends TestCase {
 		ksession.startProcess("com.sample.bpmn.java", params);
 	}
 
+    @Test
 	public void testStaticMethod2() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = createSession(kbase);
@@ -53,6 +57,7 @@ public class JavaInvokerTest extends TestCase {
 		ksession.startProcess("com.sample.bpmn.java", params);
 	}
 
+    @Test
 	public void testMyFirstMethod1() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = createSession(kbase);
@@ -72,6 +77,7 @@ public class JavaInvokerTest extends TestCase {
 		ksession.startProcess("com.sample.bpmn.java", params);
 	}
 
+    @Test
 	public void testMyFirstMethod2() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = createSession(kbase);
@@ -91,6 +97,7 @@ public class JavaInvokerTest extends TestCase {
 		ksession.startProcess("com.sample.bpmn.java", params);
 	}
 
+    @Test
 	public void testMyFirstMethod3() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = createSession(kbase);
@@ -107,6 +114,7 @@ public class JavaInvokerTest extends TestCase {
 		ksession.startProcess("com.sample.bpmn.java", params);
 	}
 
+    @Test
 	public void testMySecondMethod() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = createSession(kbase);
@@ -124,6 +132,7 @@ public class JavaInvokerTest extends TestCase {
 		ksession.startProcess("com.sample.bpmn.java.list", params);
 	}
 
+    @Test
 	public void failingtestHello() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = createSession(kbase);

@@ -15,8 +15,6 @@
  */
 package org.jbpm.executor;
 
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.jbpm.executor.events.listeners.DefaultExecutorEventListener;
@@ -36,14 +34,10 @@ public class NoCDIWithFactorySimpleExecutorTest extends BasicExecutorBaseTest{
     @Before
     public void setUp() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
-        
-        Logger logger = LogManager.getLogManager().getLogger("");
-        
         ExecutorServiceFactory.setEmf(emf);
         executorService = ExecutorServiceFactory.newExecutorService();
         
         DefaultExecutorEventListener eventListener = new DefaultExecutorEventListener();
-        eventListener.setLogger(logger);
         
         executorService.registerExecutorEventListener(eventListener);
 

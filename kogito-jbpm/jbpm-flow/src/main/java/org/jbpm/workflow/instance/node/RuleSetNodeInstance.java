@@ -24,11 +24,6 @@ import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.process.core.datatype.DataType;
-import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.EventListener;
-import org.kie.api.runtime.process.NodeInstance;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -36,8 +31,15 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.kie.api.runtime.process.EventListener;
+import org.kie.api.runtime.process.NodeInstance;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.mvel2.MVEL;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Runtime counterpart of a ruleset node.
@@ -47,6 +49,7 @@ import org.mvel2.integration.impl.MapVariableResolverFactory;
 public class RuleSetNodeInstance extends StateBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 510l;
+    private static Logger logger = LoggerFactory.getLogger(RuleSetNodeInstance.class);
     
     private Map<String, FactHandle> factHandles = new HashMap<String, FactHandle>();
     private String ruleFlowGroup;
@@ -154,7 +157,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                         }
                         variableScopeInstance.setVariable(association.getTarget(), value);
                     } else {
-                        System.out.println("Could not find variable scope for variable " + association.getTarget());
+                        logger.warn("Could not find variable scope for variable " + association.getTarget());
                     }
 
                 }               
@@ -201,7 +204,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                             return variableValue;
                         }
                     } catch (Throwable t) {
-                        System.err.println("Could not find variable scope for variable " + paramName);
+                        logger.error("Could not find variable scope for variable " + paramName);
                     }
                 }
             }

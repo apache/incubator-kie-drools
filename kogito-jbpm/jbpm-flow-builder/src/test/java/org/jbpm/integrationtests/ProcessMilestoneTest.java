@@ -1,5 +1,7 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -7,20 +9,27 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
-import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProcessMilestoneTest extends TestCase {
+public class ProcessMilestoneTest extends AbstractBaseTest {
     
+    private static Logger logger = LoggerFactory.getLogger(ProcessMilestoneTest.class);
+    
+    @Test
     public void testMilestone() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -66,6 +75,7 @@ public class ProcessMilestoneTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    @Test
     public void testMilestoneWithProcessInstanceConstraint() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -105,7 +115,7 @@ public class ProcessMilestoneTest extends TestCase {
         builder.addRuleFlow(source);
         Package pkg = builder.getPackage();
         for (DroolsError error: builder.getErrors().getErrors()) {
-        	System.err.println(error);
+        	logger.error(error.toString());
         }
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );

@@ -17,6 +17,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,7 +38,7 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 @RunWith(Arquillian.class)
-public class SingleRuntimeManagerTest {
+public class SingleRuntimeManagerTest extends AbstractBaseTest {
     
     @Deployment()
     public static Archive<?> createDeployment() {

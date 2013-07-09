@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -14,9 +15,7 @@ import org.kie.api.builder.Results;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
-import static junit.framework.Assert.*;
-
-public class IncrementalCompilationTest {
+public class IncrementalCompilationTest extends AbstractBaseTest {
 
     @Test
     public void testIncrementalProcessCompilation() throws Exception {

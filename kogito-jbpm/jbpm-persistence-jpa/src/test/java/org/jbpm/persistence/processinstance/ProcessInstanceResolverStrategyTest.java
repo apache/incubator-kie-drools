@@ -21,25 +21,26 @@ import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
 import org.jbpm.persistence.processinstance.objects.NonSerializableClass;
 import org.jbpm.persistence.util.PersistenceUtil;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProcessInstanceResolverStrategyTest {
+public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
 
     private static Logger logger = LoggerFactory.getLogger(ProcessInstanceResolverStrategyTest.class);
     

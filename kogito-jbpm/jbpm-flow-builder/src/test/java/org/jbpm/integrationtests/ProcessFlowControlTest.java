@@ -1,11 +1,15 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilder.PackageMergeException;
 import org.drools.core.FactHandle;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
@@ -13,16 +17,22 @@ import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.DefaultAgenda;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilder.PackageMergeException;
 import org.drools.core.event.ActivationCancelledEvent;
 import org.drools.core.event.AgendaEventListener;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.rule.Package;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.Match;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProcessFlowControlTest extends TestCase {
+public class ProcessFlowControlTest extends AbstractBaseTest {
+    
+    private static Logger logger = LoggerFactory.getLogger(ProcessFlowControlTest.class);
+    
     protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
@@ -35,11 +45,12 @@ public class ProcessFlowControlTest extends TestCase {
                                             config );
     }
 
+    @Test
     public void testRuleFlowConstraintDialects() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ConstraintDialects.rfm" ) ) );
 
-        System.err.print( builder.getErrors() );
+        logger.error( builder.getErrors().toString() );
 
         assertEquals( 0,
                       builder.getErrors().getErrors().length );
@@ -121,6 +132,7 @@ public class ProcessFlowControlTest extends TestCase {
         }
     }
 
+    @Test
     public void testRuleFlow() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
@@ -155,6 +167,7 @@ public class ProcessFlowControlTest extends TestCase {
                       processInstance.getState() );
     }
 
+    @Test
     public void testRuleFlowUpgrade() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         // Set the system property so that automatic conversion can happen
@@ -196,6 +209,7 @@ public class ProcessFlowControlTest extends TestCase {
                             "false" );
     }
 
+    @Test
     public void testRuleFlowClear() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ruleflowClear.drl" ) ) );
@@ -252,6 +266,7 @@ public class ProcessFlowControlTest extends TestCase {
                       activations.size() );
     }
 
+    @Test
     public void testRuleFlowInPackage() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
@@ -288,6 +303,7 @@ public class ProcessFlowControlTest extends TestCase {
 
     }
 
+    @Test
     public void testLoadingRuleFlowInPackage1() throws Exception {
         // adding ruleflow before adding package
         final PackageBuilder builder = new PackageBuilder();
@@ -296,6 +312,7 @@ public class ProcessFlowControlTest extends TestCase {
         builder.getPackage();
     }
 
+    @Test
     public void testLoadingRuleFlowInPackage2() throws Exception {
         // only adding ruleflow
         final PackageBuilder builder = new PackageBuilder();
@@ -303,6 +320,7 @@ public class ProcessFlowControlTest extends TestCase {
         builder.getPackage();
     }
 
+    @Test
     public void testLoadingRuleFlowInPackage3() throws Exception {
         // only adding ruleflow without any generated rules
         final PackageBuilder builder = new PackageBuilder();
@@ -310,6 +328,8 @@ public class ProcessFlowControlTest extends TestCase {
         builder.getPackage();
     }
 
+    @Test
+    @Ignore
     public void FIXME_testLoadingRuleFlowInPackage4() throws Exception {
         // adding ruleflows of different package
         final PackageBuilder builder = new PackageBuilder();
@@ -322,6 +342,8 @@ public class ProcessFlowControlTest extends TestCase {
         }
     }
 
+    @Test
+    @Ignore
     public void FIXME_testLoadingRuleFlowInPackage5() throws Exception {
         // adding ruleflow of different package than rules
         final PackageBuilder builder = new PackageBuilder();
@@ -334,6 +356,8 @@ public class ProcessFlowControlTest extends TestCase {
         }
     }
 
+    @Test
+    @Ignore
     public void FIXME_testLoadingRuleFlowInPackage6() throws Exception {
         // adding rules of different package than ruleflow
         final PackageBuilder builder = new PackageBuilder();
@@ -346,6 +370,7 @@ public class ProcessFlowControlTest extends TestCase {
         }
     }
 
+    @Test
     public void testRuleFlowActionDialects() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ActionDialects.rfm" ) ) );
@@ -369,6 +394,7 @@ public class ProcessFlowControlTest extends TestCase {
                       list.get( 1 ) );
     }
 
+    @Test
     public void testLoadingRuleFlowInPackage7() throws Exception {
         // loading a ruleflow with errors
         final PackageBuilder builder = new PackageBuilder();

@@ -16,6 +16,14 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -39,23 +47,19 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.event.rule.MatchCreatedEvent;
-import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.internal.runtime.KnowledgeRuntime;
 import org.mvel2.MVEL;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl implements EventBasedNodeInstanceInterface, EventListener {
 	
 	private static final long serialVersionUID = 510l;
     protected static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{([\\S&&[^\\}]]+)\\}", Pattern.DOTALL);
+    
+    private static Logger logger = LoggerFactory.getLogger(StateBasedNodeInstance.class);
 
 	private List<Long> timerInstances;
 
@@ -214,9 +218,9 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 	                	String variableValueString = variableValue == null ? "" : variableValue.toString();
 	                	replacements.put(paramName, variableValueString);
                 	} catch (Throwable t) {
-	                    System.err.println("Could not find variable scope for variable " + paramName);
-	                    System.err.println("when trying to replace variable in processId for sub process " + getNodeName());
-	                    System.err.println("Continuing without setting process id.");
+                	    logger.error("Could not find variable scope for variable " + paramName);
+                	    logger.error("when trying to replace variable in processId for sub process " + getNodeName());
+                	    logger.error("Continuing without setting process id.");
                 	}
                 }
         	}

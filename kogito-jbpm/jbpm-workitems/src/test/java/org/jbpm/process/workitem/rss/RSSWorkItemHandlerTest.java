@@ -18,19 +18,20 @@ package org.jbpm.process.workitem.rss;
 
 
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.drools.core.process.instance.impl.DefaultWorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.kie.api.runtime.process.WorkItemManager;
 
 // @author: salaboy
-public class RSSWorkItemHandlerTest extends TestCase {
+public class RSSWorkItemHandlerTest extends AbstractBaseTest {
   
-	public void testEmpty() {
-		
-	}
-  
+    @Test
+    @Ignore
     public void FIXMEtestReadRSSFeed() throws Exception {
         RSSWorkItemHandler handler = new RSSWorkItemHandler();
         WorkItemImpl workItem = new WorkItemImpl();

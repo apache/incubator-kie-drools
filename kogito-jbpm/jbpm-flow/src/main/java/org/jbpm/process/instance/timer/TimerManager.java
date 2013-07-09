@@ -202,7 +202,6 @@ public class TimerManager {
 
     public void dispose() {
 //        for ( TimerInstance timer : timers.values() ) {
-//            System.out.println( timer );
 //            timerService.removeJob( timer.getJobHandle() );
 //        }
         if (timerService instanceof RegisteredTimerServiceDelegate) {

@@ -3,7 +3,12 @@ package org.jbpm.process.workitem.java;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MyJavaClass {
+    
+    private static final Logger logger = LoggerFactory.getLogger(MyJavaClass.class);
 	
 	public MyJavaClass() {
 	}
@@ -37,7 +42,7 @@ public class MyJavaClass {
 	}
 	
 	public void writeHello(String name) {
-		System.out.println("Hello " + name);
+		logger.info("Hello {}", name);
 	}
 
 }

@@ -36,6 +36,8 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -44,6 +46,8 @@ import org.kie.internal.definition.KnowledgePackage;
  */
 @ApplicationScoped
 public class BPMN2DataServiceImpl implements BPMN2DataService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(BPMN2DataServiceImpl.class);
 
     @Inject
     private BPMN2DataServiceSemanticModule module;
@@ -189,9 +193,9 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
         kbuilder.add(new ByteArrayResource(bpmn2Content.getBytes()), ResourceType.BPMN2);
         if (kbuilder.hasErrors()) {
             for(KnowledgeBuilderError error: kbuilder.getErrors()){
-                System.out.println("Error: "+error.getMessage());
+                logger.error("Error: {}", error.getMessage());
             }
-            System.out.println(">> Process Cannot be Parsed! \n"+bpmn2Content);
+            logger.debug("Process Cannot be Parsed! \n {} \n", bpmn2Content);
             return null;
         }
         

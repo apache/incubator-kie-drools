@@ -9,12 +9,14 @@ import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.Properties;
 
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -33,7 +35,7 @@ import org.kie.internal.task.api.UserGroupCallback;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public class SingletonRuntimeManagerTest {
+public class SingletonRuntimeManagerTest extends AbstractBaseTest {
     
     private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;  
@@ -343,23 +345,25 @@ public class SingletonRuntimeManagerTest {
         ksession.getWorkItemManager().completeWorkItem(1, null);
         manager.disposeRuntimeEngine(runtime);
         
-        JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
+        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
         
-        List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findActiveProcessInstances("ParentProcess");
+        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
-        logs = JPAProcessInstanceDbLog.findActiveProcessInstances("SubProcess");
+        logs = logService.findActiveProcessInstances("SubProcess");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
-        logs = JPAProcessInstanceDbLog.findProcessInstances("ParentProcess");
+        logs = logService.findProcessInstances("ParentProcess");
         assertNotNull(logs);
         assertEquals(1, logs.size());
         
-        logs = JPAProcessInstanceDbLog.findProcessInstances("SubProcess");
+        logs = logService.findProcessInstances("SubProcess");
         assertNotNull(logs);
         assertEquals(1, logs.size());
+        
+        logService.dispose();
     }
     
     @Test
@@ -396,15 +400,17 @@ public class SingletonRuntimeManagerTest {
         
         // close manager which will close session maintained by the manager
         manager.close();
-        JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
-        List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findActiveProcessInstances("BPMN2-BusinessRuleTask");
+        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
+        
+        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
-        logs = JPAProcessInstanceDbLog.findProcessInstances("BPMN2-BusinessRuleTask");
+        logs = logService.findProcessInstances("BPMN2-BusinessRuleTask");
         assertNotNull(logs);
         assertEquals(1, logs.size());
         
+        logService.dispose();
     }
     
     @Test
@@ -439,15 +445,17 @@ public class SingletonRuntimeManagerTest {
         
         // close manager which will close session maintained by the manager
         manager.close();
-        JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
-        List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findActiveProcessInstances("BPMN2-BusinessRuleTask");
+        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
+        
+        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("BPMN2-BusinessRuleTask");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
-        logs = JPAProcessInstanceDbLog.findProcessInstances("BPMN2-BusinessRuleTask");
+        logs = logService.findProcessInstances("BPMN2-BusinessRuleTask");
         assertNotNull(logs);
         assertEquals(1, logs.size());
         
+        logService.dispose();
     }
     
     @Test

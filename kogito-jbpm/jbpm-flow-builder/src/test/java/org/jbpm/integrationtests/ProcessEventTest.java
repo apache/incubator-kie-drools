@@ -1,5 +1,7 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -14,10 +16,13 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
 import org.kie.api.runtime.process.ProcessInstance;
 
-public class ProcessEventTest extends TestCase {
+public class ProcessEventTest extends AbstractBaseTest {
     
+    @Test
     public void testInternalNodeSignalEvent() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -71,6 +76,7 @@ public class ProcessEventTest extends TestCase {
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
+    @Test
     public void testProcessInstanceSignalEvent() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -124,6 +130,7 @@ public class ProcessEventTest extends TestCase {
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
+    @Test
     public void testExternalEventCorrelation() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -180,6 +187,7 @@ public class ProcessEventTest extends TestCase {
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
 
+    @Test
     public void testInternalEventCorrelation() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -233,6 +241,7 @@ public class ProcessEventTest extends TestCase {
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
     }
     
+    @Test
     public void testInternalNodeSignalCompositeEvent() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -298,6 +307,7 @@ public class ProcessEventTest extends TestCase {
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
+    @Test
     public void testProcessInstanceSignalCompositeEvent() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -363,6 +373,7 @@ public class ProcessEventTest extends TestCase {
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
+    @Test
     public void testExternalCompositeEventCorrelation() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -428,6 +439,7 @@ public class ProcessEventTest extends TestCase {
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
     }
     
+    @Test
     public void testInternalCompositeEventCorrelation() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(

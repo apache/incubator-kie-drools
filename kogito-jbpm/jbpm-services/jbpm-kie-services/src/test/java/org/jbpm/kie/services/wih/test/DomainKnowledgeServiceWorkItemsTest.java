@@ -35,6 +35,7 @@ import org.jbpm.kie.services.api.Vfs;
 import org.jbpm.kie.services.impl.VFSDeploymentUnit;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,7 +47,7 @@ import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
 
-public abstract class DomainKnowledgeServiceWorkItemsTest {
+public abstract class DomainKnowledgeServiceWorkItemsTest extends AbstractBaseTest {
 
     @Inject
     private FileService fs;

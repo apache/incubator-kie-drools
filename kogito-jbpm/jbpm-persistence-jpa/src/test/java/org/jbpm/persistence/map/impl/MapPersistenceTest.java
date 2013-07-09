@@ -1,20 +1,21 @@
 package org.jbpm.persistence.map.impl;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.instance.WorkItemHandler;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemManager;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-public abstract class MapPersistenceTest {
+public abstract class MapPersistenceTest extends AbstractBaseTest {
 
     @Test
     public void startProcessInPersistentEnvironment() {

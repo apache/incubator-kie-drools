@@ -5,11 +5,14 @@ import java.util.Map;
 
 import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
 public abstract class AbstractLogOrThrowWorkItemHandler implements WorkItemHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(AbstractLogOrThrowWorkItemHandler.class);
     protected boolean logThrownException = true;
 
     public void setLogThrownException(boolean logException) {
@@ -31,9 +34,8 @@ public abstract class AbstractLogOrThrowWorkItemHandler implements WorkItemHandl
             } else { 
                 message = this.getClass().getSimpleName() + " failed while trying to complete the task.";
             }
-            System.err.println(message);
+            logger.error(message, cause);
             
-            cause.printStackTrace(System.err);
         } else {
             WorkItemHandlerRuntimeException wihRe = new WorkItemHandlerRuntimeException(cause);
             for( String key : handlerInfoMap.keySet() ) { 

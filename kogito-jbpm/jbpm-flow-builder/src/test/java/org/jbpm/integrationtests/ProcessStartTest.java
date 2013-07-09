@@ -1,5 +1,7 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -7,18 +9,25 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.integrationtests.test.Person;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProcessStartTest extends TestCase {
+public class ProcessStartTest extends AbstractBaseTest {
     
+    private static Logger logger = LoggerFactory.getLogger(ProcessStartTest.class);
+    
+    @Test
 	public void testStartConstraintTrigger() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -71,7 +80,7 @@ public class ProcessStartTest extends TestCase {
 		builder.addRuleFlow(source);
 		if (!builder.getErrors().isEmpty()) {
 			for (DroolsError error: builder.getErrors().getErrors()) {
-				System.err.println(error);
+			    logger.error(error.toString());
 			}
 			fail("Could not build process");
 		}
@@ -94,6 +103,7 @@ public class ProcessStartTest extends TestCase {
         assertEquals("SomeString", myList.get(1));
 	}
 	
+    @Test
 	public void testStartEventTrigger() throws Exception {
 		PackageBuilder builder = new PackageBuilder();
 		Reader source = new StringReader(
@@ -145,7 +155,7 @@ public class ProcessStartTest extends TestCase {
 		builder.addRuleFlow(source);
 		if (!builder.getErrors().isEmpty()) {
 			for (DroolsError error: builder.getErrors().getErrors()) {
-				System.err.println(error);
+			    logger.error(error.toString());
 			}
 			fail("Could not build process");
 		}

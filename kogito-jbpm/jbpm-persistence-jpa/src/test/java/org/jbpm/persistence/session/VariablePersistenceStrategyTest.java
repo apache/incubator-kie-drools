@@ -32,10 +32,10 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
-import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.process.core.impl.WorkImpl;
+import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.jbpm.persistence.session.objects.MyEntity;
 import org.jbpm.persistence.session.objects.MyEntityMethods;
 import org.jbpm.persistence.session.objects.MyEntityOnlyFields;
@@ -48,6 +48,7 @@ import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -59,32 +60,32 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderError;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class VariablePersistenceStrategyTest {
+public class VariablePersistenceStrategyTest extends AbstractBaseTest {
 
     private static Logger logger = LoggerFactory.getLogger( VariablePersistenceStrategyTest.class );
     
     private HashMap<String, Object> context;
     private EntityManagerFactory emf;
-
+    
     @Before
     public void setUp() throws Exception {
         context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);

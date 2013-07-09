@@ -15,24 +15,31 @@
  */
 package org.jbpm.compiler;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.rule.Package;
+import org.drools.core.util.DroolsStreamUtils;
 import org.jbpm.process.core.Context;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
+import org.junit.Test;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 
-public class PackageBuilderTest extends TestCase {
+public class PackageBuilderTest extends AbstractBaseTest {
 
+    @Test
     public void testRuleFlow() throws Exception {
         PackageBuilder builder = new PackageBuilder();
 
@@ -68,6 +75,7 @@ public class PackageBuilderTest extends TestCase {
         assertTrue( p instanceof WorkflowProcessImpl );
     }
 
+    @Test
     public void testRuleFlowUpgrade() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         // Set the system property so that automatic conversion can happen
@@ -109,6 +117,7 @@ public class PackageBuilderTest extends TestCase {
                             "false" );
     }
 
+    @Test
     public void testPackageRuleFlows() throws Exception {
         Package pkg = new Package( "boo" );
         Process rf = new MockRuleFlow( "1" );

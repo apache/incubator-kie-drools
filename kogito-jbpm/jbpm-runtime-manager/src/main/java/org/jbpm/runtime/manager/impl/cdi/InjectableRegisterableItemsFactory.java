@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
@@ -54,6 +53,8 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of <code>RegisterableItemsFactory</code> dedicated to CDI environments that allows to get 
@@ -82,7 +83,7 @@ import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 public class InjectableRegisterableItemsFactory extends DefaultRegisterableItemsFactory {
 
     private static final String DEFAULT_KIE_SESSION = "defaultKieSession";
-    private static Logger logger = Logger.getLogger(InjectableRegisterableItemsFactory.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(InjectableRegisterableItemsFactory.class);
     
     @Inject
     @External
@@ -147,7 +148,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
             }
         } catch (Exception e) {
             // do nothing as work item handler is considered optional
-            logger.warning("Exception while evalutating work item handler prodcuers " + e.getMessage());
+            logger.warn("Exception while evalutating work item handler prodcuers {}", e.getMessage());
         }
         
         return handler;
@@ -177,7 +178,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
                 defaultListeners.addAll(producer.getEventListeners(((RuntimeEngineImpl)runtime).getManager().getIdentifier(), getParametersMap(runtime)));
             }
         } catch (Exception e) {
-            logger.warning("Exception while evaluating ProcessEventListener producers" + e.getMessage());
+            logger.warn("Exception while evaluating ProcessEventListener producers {}", e.getMessage());
         }
         return defaultListeners;
     }
@@ -190,7 +191,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
                 defaultListeners.addAll(producer.getEventListeners(((RuntimeEngineImpl)runtime).getManager().getIdentifier(), getParametersMap(runtime)));
             }
         } catch (Exception e) {
-            logger.warning("Exception while evaluating WorkingMemoryEventListener producers" + e.getMessage());
+            logger.warn("Exception while evaluating WorkingMemoryEventListener producers {}", e.getMessage());
         }
         
         return defaultListeners;
@@ -205,7 +206,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
                 defaultListeners.addAll(producer.getEventListeners(((RuntimeEngineImpl)runtime).getManager().getIdentifier(), getParametersMap(runtime)));
             }
         } catch (Exception e) {
-            logger.warning("Exception while evaluating WorkingMemoryEventListener producers" + e.getMessage());
+            logger.warn("Exception while evaluating WorkingMemoryEventListener producers {}", e.getMessage());
         }
         
         return defaultListeners;

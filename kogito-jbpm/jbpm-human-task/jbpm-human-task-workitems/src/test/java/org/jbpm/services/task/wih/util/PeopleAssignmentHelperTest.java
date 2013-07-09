@@ -15,10 +15,10 @@
  */
 package org.jbpm.services.task.wih.util;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.impl.WorkItemImpl;
@@ -26,15 +26,14 @@ import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.TaskDataImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 
-/**
- * @author Eric Spiegelberg
- */
-public class PeopleAssignmentHelperTest extends TestCase {
+
+public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 	
 	private PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper();
 	

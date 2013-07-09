@@ -211,7 +211,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
-                System.out.println(event.getProcessInstance().getId());
+                logger.info("{}", event.getProcessInstance().getId());
                 list.add(event.getProcessInstance().getId());
             }
         });

@@ -1,5 +1,7 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -7,17 +9,24 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderErrors;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
 import org.drools.core.rule.Package;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProcessExceptionHandlerTest extends TestCase {
+public class ProcessExceptionHandlerTest extends AbstractBaseTest {
     
+    private static Logger logger = LoggerFactory.getLogger(ProcessExceptionHandlerTest.class);
+    
+    @Test
     public void testFaultWithoutHandler() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -45,7 +54,7 @@ public class ProcessExceptionHandlerTest extends TestCase {
         PackageBuilderErrors errors = builder.getErrors();
         if (errors != null && !errors.isEmpty()) {
 	        for (DroolsError error: errors.getErrors()) {
-	        	System.err.println(error);
+	            logger.error(error.toString());
 	        }
 	        fail("Package could not be compiled");
         }
@@ -57,6 +66,7 @@ public class ProcessExceptionHandlerTest extends TestCase {
         assertEquals(ProcessInstance.STATE_ABORTED, processInstance.getState());
     }
     
+    @Test
     public void testProcessExceptionHandlerAction() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -110,6 +120,7 @@ public class ProcessExceptionHandlerTest extends TestCase {
         assertEquals("SomeValue", list.get(0));
     }
     
+    @Test
     public void testProcessExceptionHandlerTriggerNode() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -150,6 +161,7 @@ public class ProcessExceptionHandlerTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    @Test
     public void testCompositeNodeExceptionHandlerTriggerNode() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -227,6 +239,7 @@ public class ProcessExceptionHandlerTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    @Test
     public void testNestedExceptionHandler() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(

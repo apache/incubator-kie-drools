@@ -28,8 +28,12 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.ruleflow.core.validation.RuleFlowProcessValidator;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
+    
+    private static Logger logger = LoggerFactory.getLogger(RuleFlowProcessFactory.class);
 
     public static RuleFlowProcessFactory createProcess(String id) {
         return new RuleFlowProcessFactory(id);
@@ -119,7 +123,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     public RuleFlowProcessFactory validate() {
         ProcessValidationError[] errors = RuleFlowProcessValidator.getInstance().validateProcess(getRuleFlowProcess());
         for (ProcessValidationError error : errors) {
-            System.err.println(error);
+            logger.error(error.toString());
         }
         if (errors.length > 0) {
             throw new RuntimeException("Process could not be validated !");

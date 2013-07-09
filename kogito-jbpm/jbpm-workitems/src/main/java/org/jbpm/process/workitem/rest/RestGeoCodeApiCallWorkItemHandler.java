@@ -26,8 +26,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,6 +34,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.drools.core.process.instance.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -44,6 +44,8 @@ import org.xml.sax.SAXException;
 /*@author: salaboy*/
 public class RestGeoCodeApiCallWorkItemHandler implements WorkItemHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(RestGeoCodeApiCallWorkItemHandler.class);
+    
     private List<ResultGeoCodeApi> results;
     private int httpResponseCode;
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -67,7 +69,7 @@ public class RestGeoCodeApiCallWorkItemHandler implements WorkItemHandler {
             URL getUrl = new URL(URL);
             connection = (HttpURLConnection) getUrl.openConnection();
             connection.setRequestMethod("GET");
-            System.out.println("Content-Type: " + connection.getContentType());
+            logger.info("Content-Type: {}", connection.getContentType());
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
@@ -82,13 +84,13 @@ public class RestGeoCodeApiCallWorkItemHandler implements WorkItemHandler {
             
             this.results = parseResults(response);
             
-            System.out.println("" + response);
+            logger.info("{}" + response);
             connection.disconnect();
 
         } catch (MalformedURLException ex) {
-            Logger.getLogger(RestGeoCodeApiCallWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error durring processing", ex);
         } catch (IOException ex) {
-            Logger.getLogger(RestGeoCodeApiCallWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error durring processing", ex);
         }
 
 
@@ -158,11 +160,11 @@ public class RestGeoCodeApiCallWorkItemHandler implements WorkItemHandler {
             }
 
         } catch (SAXException ex) {
-            Logger.getLogger(RestGeoCodeApiCallWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error durring processing", ex);
         } catch (IOException ex) {
-            Logger.getLogger(RestGeoCodeApiCallWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error durring processing", ex);
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(RestGeoCodeApiCallWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error durring processing", ex);
         }
 
         return results;

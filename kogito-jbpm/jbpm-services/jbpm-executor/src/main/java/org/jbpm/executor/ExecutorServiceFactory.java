@@ -16,8 +16,6 @@
 package org.jbpm.executor;
 
 
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -33,12 +31,16 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author salaboy
  */
 public class ExecutorServiceFactory {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ExecutorServiceFactory.class);
     
     private static ExecutorServiceEntryPoint service = new ExecutorServiceEntryPointImpl();
     
@@ -54,7 +56,6 @@ public class ExecutorServiceFactory {
         
     private static ExecutorRequestAdminService adminService = new ExecutorRequestAdminServiceImpl();
     
-    private static Logger logger = LogManager.getLogManager().getLogger("");
     
     public static ExecutorServiceEntryPoint newExecutorService(){
         configure();
@@ -102,11 +103,9 @@ public class ExecutorServiceFactory {
         ExecutorRunnable runnable = new ExecutorRunnable();
         runnable.setPm(pm);
         runnable.setQueryService(queryService);
-        runnable.setLogger(logger);
         ((ExecutorImpl)executor).setPm(pm);
         ((ExecutorImpl)executor).setExecutorRunnable(runnable);
         ((ExecutorImpl)executor).setQueryService(queryService);
-        ((ExecutorImpl)executor).setLogger(logger);
         ((ExecutorImpl)executor).setRequestEvents(service.getExecutorEventListeners());
     }
      

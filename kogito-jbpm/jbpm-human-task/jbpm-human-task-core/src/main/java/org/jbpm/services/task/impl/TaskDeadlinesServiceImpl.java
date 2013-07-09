@@ -28,8 +28,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -55,7 +53,6 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.kie.api.task.model.Status;
-import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskData;
 import org.kie.commons.services.cdi.Startup;
 import org.kie.internal.task.api.ContentMarshallerContext;
@@ -71,6 +68,8 @@ import org.kie.internal.task.api.model.Notification;
 import org.kie.internal.task.api.model.NotificationEvent;
 import org.kie.internal.task.api.model.NotificationType;
 import org.kie.internal.task.api.model.Reassignment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -81,6 +80,8 @@ import org.kie.internal.task.api.model.Reassignment;
 @ApplicationScoped
 @Startup
 public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(TaskDeadlinesServiceImpl.class);
 
     // use single ThreadPoolExecutor for all instances of task services within same JVM
     private static ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(3);
@@ -95,9 +96,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     @Inject
     private TaskQueryService taskQueryService;
     @Inject
-    private Event<NotificationEvent> notificationEvents;
-    
-    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Event<NotificationEvent> notificationEvents;   
 
     
     public TaskDeadlinesServiceImpl() {
@@ -109,11 +108,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
     public void setNotificationEvents(Event<NotificationEvent> notificationEvents) {
         this.notificationEvents = notificationEvents;
-    }
-
-    public void setLogger(Logger logger) {
-        this.logger = logger;
-    }    
+    } 
 
     public void setTaskContentService(TaskContentService taskContentService) {
         this.taskContentService = taskContentService;
@@ -191,7 +186,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     if (!escalation.getReassignments().isEmpty()) {
                         // get first and ignore the rest.
                         Reassignment reassignment = escalation.getReassignments().get(0);
-                        logger.log(Level.INFO, "Reassigning to " + reassignment.getPotentialOwners());
+                        logger.debug("Reassigning to {}", reassignment.getPotentialOwners());
                         ((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
                         List potentialOwners = new ArrayList(reassignment.getPotentialOwners());
                         ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
@@ -200,7 +195,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     }
                     for (Notification notification : escalation.getNotifications()) {
                         if (notification.getNotificationType() == NotificationType.Email) {
-                            logger.log(Level.INFO, " ### Sending an Email");
+                            logger.debug("Sending an Email");
                             notificationEvents.fire(new NotificationEvent(notification, task, variables));
                         }
                     }
@@ -228,7 +223,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     null,
                     null ) ;
             JobHandle handle = timerService.scheduleJob(deadlineJob, new TaskDeadlineJobContext(deadlineJob.getId()), trigger);
-            logger.log(Level.FINE, "scheduling timer job for deadline " + deadlineJob.getId() + " and task " + taskId + " using timer service " + timerService);
+            logger.debug( "scheduling timer job for deadline {} and task {}  using timer service {}", deadlineJob.getId(), taskId, timerService);
             jobHandles.put(deadlineJob.getId(), handle);
 
         } else {
@@ -269,7 +264,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                 List<DeadlineSummaryImpl> resultList = (List<DeadlineSummaryImpl>)pm.queryInTransaction("UnescalatedStartDeadlines");
                 for (DeadlineSummaryImpl summary : resultList) {
                     TaskDeadlineJob deadlineJob = new TaskDeadlineJob(summary.getTaskId(), summary.getDeadlineId(), DeadlineType.START);
-                    logger.log(Level.FINE, "unscheduling timer job for start deadline " + deadlineJob.getId() + " and task " + taskId + " using timer service " + timerService);
+                    logger.debug("unscheduling timer job for deadline {} and task {}  using timer service {}", deadlineJob.getId(), taskId, timerService);
                     JobHandle jobHandle = jobHandles.remove(deadlineJob.getId()); 
                     if (jobHandle == null) {        
                         jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId()));
@@ -288,7 +283,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                 for (DeadlineSummaryImpl summary : resultList) {
                     
                     TaskDeadlineJob deadlineJob = new TaskDeadlineJob(summary.getTaskId(), summary.getDeadlineId(), DeadlineType.END);
-                    logger.log(Level.FINE, "scheduling timer job for end deadline " + deadlineJob.getId() + " and task " + taskId + " using timer service " + timerService);
+                    logger.debug("unscheduling timer job for deadline {} and task {}  using timer service {}", deadlineJob.getId(), taskId, timerService);
                     JobHandle jobHandle = jobHandles.remove(deadlineJob.getId()); 
                     if (jobHandle == null) {        
                         jobHandle = ((GlobalTimerService) timerService).buildJobHandleForContext(new TaskDeadlineJobContext(deadlineJob.getId()));
@@ -322,7 +317,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                     }
     
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE," XXX :Error while cancelling scheduled deadline task for Task with id " + taskId + " -> " + e);
+                    logger.error("Error while cancelling scheduled deadline task for Task with id {} -> {}", taskId, e);
                 }
             }
         }

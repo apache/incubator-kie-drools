@@ -27,6 +27,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +38,7 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
 @RunWith(Arquillian.class)
-public class DeploymentServiceTest {
+public class DeploymentServiceTest extends AbstractBaseTest {
     
     @Deployment()
     public static Archive<?> createDeployment() {

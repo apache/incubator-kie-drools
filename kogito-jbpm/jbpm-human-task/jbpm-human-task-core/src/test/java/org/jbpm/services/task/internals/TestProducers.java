@@ -4,12 +4,9 @@
  */
 package org.jbpm.services.task.internals;
 
-import java.util.logging.Logger;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
@@ -26,9 +23,9 @@ import org.kie.internal.task.api.UserGroupCallback;
  *
  */
 public class TestProducers {
-
     
     private EntityManagerFactory emf;
+    private final IOService ioService = new IOServiceNio2WrapperImpl();
     
 
     @Inject
@@ -71,13 +68,7 @@ public class TestProducers {
         }
     }
 
-    private final IOService ioService = new IOServiceNio2WrapperImpl();
     
-    @Produces
-    public Logger createLogger(InjectionPoint injectionPoint) {
-        return Logger.getLogger(injectionPoint.getMember()
-                .getDeclaringClass().getName());
-    }
     
     @Produces
     @Named("ioStrategy")

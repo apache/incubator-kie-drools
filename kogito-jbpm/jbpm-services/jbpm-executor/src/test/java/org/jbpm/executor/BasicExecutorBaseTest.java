@@ -4,26 +4,33 @@
  */
 package org.jbpm.executor;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
+
 import javax.inject.Inject;
+
 import org.jbpm.executor.api.CommandContext;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author salaboy
  */
 public abstract class BasicExecutorBaseTest {
+    
+    private static final Logger logger = LoggerFactory.getLogger(BasicExecutorBaseTest.class);
 
     @Inject
     protected ExecutorServiceEntryPoint executorService;
@@ -99,15 +106,15 @@ public abstract class BasicExecutorBaseTest {
         commandContext.setData("callbacks", "org.jbpm.executor.SimpleIncrementCallback");
         commandContext.setData("retries", 0);
         executorService.scheduleRequest("org.jbpm.executor.ThrowExceptionCommand", commandContext);
-        System.out.println(System.currentTimeMillis() + "  >>> Sleeping for 10 secs");
+        logger.info("{} Sleeping for 10 secs", System.currentTimeMillis());
         Thread.sleep(10000);
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
         assertEquals(1, inErrorRequests.size());
-        System.out.println("Error: " + inErrorRequests.get(0));
+        logger.info("Error: {}", inErrorRequests.get(0));
 
         List<ErrorInfo> errors = executorService.getAllErrors();
-        System.out.println(" >>> Errors: " + errors);
+        logger.info("Errors: {}", errors);
         assertEquals(1, errors.size());
 
 
@@ -128,7 +135,7 @@ public abstract class BasicExecutorBaseTest {
         assertEquals(1, inErrorRequests.size());
 
         List<ErrorInfo> errors = executorService.getAllErrors();
-        System.out.println(" >>> Errors: " + errors);
+        logger.info("Errors: {}", errors);
         // Three retries means 4 executions in total 1(regular) + 3(retries)
         assertEquals(4, errors.size());
 

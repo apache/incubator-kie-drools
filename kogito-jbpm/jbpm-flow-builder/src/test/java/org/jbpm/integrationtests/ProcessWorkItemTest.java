@@ -1,13 +1,24 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.*;
-
-import junit.framework.TestCase;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Person;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -15,11 +26,10 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.process.*;
 
-public class ProcessWorkItemTest extends TestCase {
+public class ProcessWorkItemTest extends AbstractBaseTest {
     
+    @Test
     public void testWorkItem() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
@@ -133,6 +143,7 @@ public class ProcessWorkItemTest extends TestCase {
         assertEquals(15, processInstance.getVariable("Number"));
     }
     
+    @Test
     public void testWorkItemImmediateCompletion() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(

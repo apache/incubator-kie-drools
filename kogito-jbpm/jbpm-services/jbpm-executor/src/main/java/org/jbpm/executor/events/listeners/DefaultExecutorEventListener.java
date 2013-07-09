@@ -4,57 +4,45 @@
  */
 package org.jbpm.executor.events.listeners;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+
 import org.jbpm.executor.annotations.Cancelled;
-import org.jbpm.executor.annotations.OnError;
 import org.jbpm.executor.annotations.Pending;
 import org.jbpm.executor.annotations.Running;
-import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
-
-
-/**
- *
- */
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class DefaultExecutorEventListener extends JbpmServicesEventListener<RequestInfo> implements ExecutorEventListener{
-    @Inject 
-    private Logger logger;
+
+    private static final Logger logger = LoggerFactory.getLogger(DefaultExecutorEventListener.class);
     
     public DefaultExecutorEventListener() {
         
     }
 
-    public void setLogger(Logger logger) {
-        this.logger = logger;
-    }
-
-
     public void onRequestPending(@Observes(notifyObserver= Reception.ALWAYS) @Pending RequestInfo r) {
-        logger.log(Level.INFO, " New Pending Request {0}", r.getId());
+        logger.info("New Pending Request {}", r.getId());
     }
 
     public void onRequestRunning(@Observes(notifyObserver= Reception.ALWAYS) @Running RequestInfo r) {
-        logger.log(Level.INFO, " Request Running{0}", r.getId());
+        logger.info(" Request Running {}", r.getId());
     }
 
     public void onRequestCancelled(@Observes(notifyObserver= Reception.ALWAYS) @Cancelled RequestInfo r) {
-        logger.log(Level.INFO, " The Request {0} has being Cancelled", r.getId());
+        logger.info("The Request {} has being Cancelled", r.getId());
     }
 //
 //    public void onRequestOnError(@Observes(notifyObserver= Reception.ALWAYS) @OnError RequestInfo r) {
-//        logger.log(Level.INFO, " The Request {0} reported an Error", r.getId());
+//        logger.info("The Request {} reported an Error", r.getId());
 //    }
 //
 //    public void onError(@Observes(notifyObserver= Reception.ALWAYS) @OnError ErrorInfo e) {
-//        logger.log(Level.INFO, " The Request {0} reported an Error with id {1}", new Object[]{e.getRequestInfo().getId(), e.getId()});
+//        logger.info("The Request {} reported an Error with id {}", e.getRequestInfo().getId(), e.getId());
 //    }
 
    

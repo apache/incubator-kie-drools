@@ -1,32 +1,35 @@
 package org.jbpm.process.builder;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.WorkingMemory;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
-import org.drools.core.rule.Package;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.rule.Package;
 import org.drools.core.spi.ProcessContext;
 import org.jbpm.process.builder.dialect.ProcessDialect;
 import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 import org.jbpm.process.instance.impl.Action;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.junit.Test;
 
-public class JavaActionBuilderTest extends TestCase {
+public class JavaActionBuilderTest extends AbstractBaseTest {
 
+    @Test
     public void testSimpleAction() throws Exception {
         final Package pkg = new Package( "pkg1" );
 

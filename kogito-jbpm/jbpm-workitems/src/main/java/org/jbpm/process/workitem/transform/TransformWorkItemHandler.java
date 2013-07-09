@@ -23,9 +23,13 @@ import java.util.Map;
 import org.drools.core.process.instance.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TransformWorkItemHandler implements WorkItemHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(TransformWorkItemHandler.class);
+    
 	private static String INPUT_KEY = "InputObject";
 	private static String OUTPUT_TYPE_KEY = "OutputType";
 	private static String VARIABLE_OUTPUT_NAME = "OutputObject";
@@ -47,7 +51,7 @@ public class TransformWorkItemHandler implements WorkItemHandler {
 				result.put(VARIABLE_OUTPUT_NAME, out);
 				itemMgr.completeWorkItem(inputItem.getId(), result);
 			} else {
-				System.err.println("Failed to find a transform ");
+			    logger.error("Failed to find a transform ");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

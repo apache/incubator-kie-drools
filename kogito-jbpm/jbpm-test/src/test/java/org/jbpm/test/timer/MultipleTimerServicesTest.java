@@ -1,9 +1,5 @@
 package org.jbpm.test.timer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +22,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This test is dedicated to quartz scheduler service as it is controlled
@@ -34,6 +32,8 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
  *
  */
 public class MultipleTimerServicesTest extends TimerBaseTest {
+    
+    private static final Logger logger = LoggerFactory.getLogger(MultipleTimerServicesTest.class);
 
     private RuntimeEnvironment environmentM1;
     private RuntimeEnvironment environmentM2;
@@ -101,7 +101,7 @@ public class MultipleTimerServicesTest extends TimerBaseTest {
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 if (event.getNodeInstance().getNodeName().equals("timer")) {
-                    System.out.println("On manager 1");
+                    logger.debug("On manager 1");
                     timerExporations.add(event.getProcessInstance().getId());
                 }
             }
@@ -114,7 +114,7 @@ public class MultipleTimerServicesTest extends TimerBaseTest {
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 if (event.getNodeInstance().getNodeName().equals("timer")) {
-                    System.out.println("On manager 2");
+                    logger.debug("On manager 2");
                     timerExporations2.add(event.getProcessInstance().getId());
                 }
             }

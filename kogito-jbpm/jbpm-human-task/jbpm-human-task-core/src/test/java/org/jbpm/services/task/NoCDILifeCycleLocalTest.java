@@ -15,7 +15,6 @@
  */
 package org.jbpm.services.task;
 
-import java.util.logging.LogManager;
 
 import javax.enterprise.event.Event;
 import javax.persistence.EntityManager;
@@ -55,6 +54,8 @@ import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.UserGroupCallback;
 import org.kie.internal.task.api.model.NotificationEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -63,7 +64,7 @@ import org.kie.internal.task.api.model.NotificationEvent;
 
 public class NoCDILifeCycleLocalTest extends LifeCycleBaseTest {
 
-   
+    private static final Logger logger = LoggerFactory.getLogger(NoCDILifeCycleLocalTest.class);
     @Override
     @Before
     public void setUp() {
@@ -71,9 +72,6 @@ public class NoCDILifeCycleLocalTest extends LifeCycleBaseTest {
         
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.services.task");
         EntityManager em = emf.createEntityManager();
-        
-        
-        logger = LogManager.getLogManager().getLogger("");
         
         JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
         ((JbpmServicesPersistenceManagerImpl)pm).setEm(em);
@@ -125,7 +123,6 @@ public class NoCDILifeCycleLocalTest extends LifeCycleBaseTest {
         ((MVELLifeCycleManager)mvelLifeCycleManager).setTaskQueryService(userGroupTaskQueryServiceDecorator);
         ((MVELLifeCycleManager)mvelLifeCycleManager).setTaskContentService(contentService);
         ((MVELLifeCycleManager)mvelLifeCycleManager).setTaskEvents(taskEvents);
-        ((MVELLifeCycleManager)mvelLifeCycleManager).setLogger(logger);
         ((MVELLifeCycleManager)mvelLifeCycleManager).initMVELOperations();
         
         
@@ -138,7 +135,6 @@ public class NoCDILifeCycleLocalTest extends LifeCycleBaseTest {
         
         TaskDeadlinesService deadlinesService = new TaskDeadlinesServiceImpl();
         ((TaskDeadlinesServiceImpl)deadlinesService).setPm(pm);
-        ((TaskDeadlinesServiceImpl)deadlinesService).setLogger(logger);
         ((TaskDeadlinesServiceImpl)deadlinesService).setNotificationEvents(notificationEvents);
         ((TaskDeadlinesServiceImpl)deadlinesService).init();
         

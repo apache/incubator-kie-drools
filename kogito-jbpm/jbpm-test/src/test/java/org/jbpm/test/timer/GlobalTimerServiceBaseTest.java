@@ -1,10 +1,5 @@
 package org.jbpm.test.timer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -50,9 +45,13 @@ import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.UserGroupCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
+    
+    private static final Logger logger = LoggerFactory.getLogger(GlobalTimerServiceBaseTest.class);
     
     protected GlobalSchedulerService globalScheduler;
     protected RuntimeManager manager;
@@ -226,7 +225,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         params.put("x", "1s###1s");
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        System.out.println("Disposed after start");
+        logger.debug("Disposed after start");
         // dispose session to force session to be reloaded on timer expiration
         manager.disposeRuntimeEngine(runtime);
         // now wait for 1 second for first timer to trigger

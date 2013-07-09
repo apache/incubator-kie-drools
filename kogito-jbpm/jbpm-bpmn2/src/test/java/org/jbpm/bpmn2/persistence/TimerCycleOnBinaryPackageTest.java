@@ -27,12 +27,15 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
 
+    private static final Logger logger = LoggerFactory.getLogger(TimerCycleOnBinaryPackageTest.class);
     private StatefulKnowledgeSession ksession;
 
     public TimerCycleOnBinaryPackageTest() {
@@ -81,7 +84,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         Thread.sleep(5000);
 
         assertEquals(2, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
-        System.out.println("dispose");
+        logger.info("dispose");
         ksession.dispose();
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
@@ -131,7 +134,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         Thread.sleep(5000);
 
         assertEquals(2, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
-        System.out.println("dispose");
+        logger.info("dispose");
         ksession.dispose();
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
@@ -175,7 +178,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         Thread.sleep(5000);
 
         assertEquals(2, list.size());
-        System.out.println("dispose");
+        logger.info("dispose");
         ksession.dispose();
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
@@ -216,7 +219,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         Thread.sleep(5000);
 
         assertEquals(2, list.size());
-        System.out.println("dispose");
+        logger.info("dispose");
         ksession.dispose();
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,

@@ -1,7 +1,5 @@
 package org.jbpm.kie.services.impl;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.BeanManager;
@@ -24,10 +22,14 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.io.ResourceType;
 import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.io.ResourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 @Vfs
 public class VFSDeploymentService extends AbstractDeploymentService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(VFSDeploymentService.class);
 
     @Inject
     private BeanManager beanManager;
@@ -80,7 +82,7 @@ public class VFSDeploymentService extends AbstractDeploymentService {
             Path processFolder = fs.getPath(vfsUnit.getRepository() + vfsUnit.getRepositoryFolder());
             loadProcessFiles = fs.loadFilesByType(processFolder, ".+bpmn[2]?$");
         } catch (FileException ex) {
-            Logger.getLogger(VFSDeploymentService.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error while loading process files", ex);
         }
         for (Path p : loadProcessFiles) {
             String processString = "";
@@ -93,7 +95,7 @@ public class VFSDeploymentService extends AbstractDeploymentService {
                 deployedUnit.addAssetLocation(process.getId(), process);
                 
             } catch (Exception ex) {
-                Logger.getLogger(VFSDeploymentService.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error("Error while reading process files", ex);
             }
         }
     }
@@ -105,7 +107,7 @@ public class VFSDeploymentService extends AbstractDeploymentService {
             Path rulesFolder = fs.getPath(vfsUnit.getRepository() + vfsUnit.getRepositoryFolder());
             loadRuleFiles = fs.loadFilesByType(rulesFolder, ".+drl");
         } catch (FileException ex) {
-            Logger.getLogger(VFSDeploymentService.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error while loading rule files", ex);
         }
         for (Path p : loadRuleFiles) {
             String ruleString = "";
@@ -114,7 +116,7 @@ public class VFSDeploymentService extends AbstractDeploymentService {
                 builder.addAsset(ResourceFactory.newByteArrayResource(ruleString.getBytes()), ResourceType.DRL);                
                 
             } catch (Exception ex) {
-                Logger.getLogger(VFSDeploymentService.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error("Error while reading rule files", ex);
             }
         }
     }

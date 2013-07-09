@@ -15,36 +15,46 @@
  */
 package org.jbpm.marshalling.util;
 
-import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.jbpm.marshalling.util.CompareViaReflectionUtil.compareInstances;
 import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
-import static org.jbpm.marshalling.util.MarshallingTestUtil.*;
-import static org.jbpm.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
+import static org.jbpm.marshalling.util.MarshallingTestUtil.unmarshallObject;
+import static org.jbpm.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.api.conf.EventProcessingOption;
 import org.drools.core.impl.EnvironmentFactory;
-
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
-import org.junit.*;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TestMarshallingUtilsTest {
+public class TestMarshallingUtilsTest extends AbstractBaseTest {
 
     private static Logger logger = LoggerFactory.getLogger(TestMarshallingUtilsTest.class);
     

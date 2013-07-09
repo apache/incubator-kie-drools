@@ -10,6 +10,7 @@ import java.util.Collections;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.services.task.impl.model.LanguageImpl;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.EmailNotification;
@@ -17,7 +18,7 @@ import org.kie.internal.task.api.model.EmailNotificationHeader;
 import org.kie.internal.task.api.model.Notification;
 import org.kie.internal.task.api.model.Reassignment;
 
-public class HumanTaskHandlerHelperTest {
+public class HumanTaskHandlerHelperTest extends AbstractBaseTest {
 
 	@Test
 	public void testSetDeadlinesNotStartedReassign() {

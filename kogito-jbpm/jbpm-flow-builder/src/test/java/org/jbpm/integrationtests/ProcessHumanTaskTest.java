@@ -1,11 +1,14 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
@@ -14,10 +17,13 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
 import org.kie.api.runtime.process.WorkItem;
 
-public class ProcessHumanTaskTest extends TestCase {
+public class ProcessHumanTaskTest extends AbstractBaseTest {
     
+    @Test
     public void testHumanTask() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -75,6 +81,7 @@ public class ProcessHumanTaskTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    @Test
     public void testSwimlane() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -162,6 +169,7 @@ public class ProcessHumanTaskTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
+    @Test
     public void testHumanTaskCancel() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -219,6 +227,7 @@ public class ProcessHumanTaskTest extends TestCase {
         assertTrue(handler.isAborted());
     }
     
+    @Test
     public void testHumanTaskCancel2() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(

@@ -1,5 +1,7 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -10,15 +12,19 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -26,12 +32,15 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProcessSplitTest extends TestCase {
+public class ProcessSplitTest extends AbstractBaseTest {
     
+    private static Logger logger = LoggerFactory.getLogger(ProcessSplitTest.class);
+    
+    @Test
     public void testSplitWithProcessInstanceConstraint() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -117,6 +126,7 @@ public class ProcessSplitTest extends TestCase {
         assertEquals(2, list.size());
     }
 
+    @Test
     public void testSplitWithProcessInstanceConstraint2() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         Reader source = new StringReader(
@@ -169,7 +179,7 @@ public class ProcessSplitTest extends TestCase {
             "</process>");
         kbuilder.add( ResourceFactory.newReaderResource( source ), ResourceType.DRF );
         for (KnowledgeBuilderError error: kbuilder.getErrors()) {
-        	System.out.println(error);
+            logger.error(error.toString());
         }
         
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
@@ -206,6 +216,7 @@ public class ProcessSplitTest extends TestCase {
         assertEquals(2, list.size());
     }
 
+    @Test
     public void testSplitWithMVELContextConstraint() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -272,6 +283,7 @@ public class ProcessSplitTest extends TestCase {
         assertEquals(1, list.size());
     }
     
+    @Test
     public void testSplitWithJavaContextConstraint() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -338,6 +350,7 @@ public class ProcessSplitTest extends TestCase {
         assertEquals(1, list.size());
     }
     
+    @Test
     public void testSplitWithMVELkContextConstraint() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -404,6 +417,7 @@ public class ProcessSplitTest extends TestCase {
         assertEquals(1, list.size());
     }
     
+    @Test
     public void testSplitWithJavakContextConstraint() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -470,6 +484,7 @@ public class ProcessSplitTest extends TestCase {
         assertEquals(1, list.size());
     }
     
+    @Test
     public void testSplitWithMVELVariableConstraint() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -536,6 +551,7 @@ public class ProcessSplitTest extends TestCase {
         assertEquals(1, list.size());
     }
     
+    @Test
     public void testSplitWithJavaVariableConstraint() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -602,6 +618,7 @@ public class ProcessSplitTest extends TestCase {
         assertEquals(1, list.size());
     }
 
+    @Test
     public void testSplitWithMVELGlobalConstraint() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -668,6 +685,7 @@ public class ProcessSplitTest extends TestCase {
         assertEquals(1, list.size());
     }
     
+    @Test
     public void testSplitWithJavaGlobalConstraint() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(

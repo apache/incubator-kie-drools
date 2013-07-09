@@ -27,9 +27,13 @@ import org.junit.After;
 import org.junit.runner.RunWith;
 import org.kie.api.task.TaskService;
 import org.kie.internal.task.api.InternalTaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(Arquillian.class)
 public class CDISupportProcessTest extends SupportProcessBaseTest {
+    
+    private static final Logger logger = LoggerFactory.getLogger(CDISupportProcessTest.class);
 
     @Deployment()
     public static Archive<?> createDeployment() {
@@ -98,8 +102,8 @@ public class CDISupportProcessTest extends SupportProcessBaseTest {
     public void tearDown() throws Exception {
         int removedTasks = ((InternalTaskService) taskService).removeAllTasks();
         int removedLogs = adminDataService.removeAllData();
-        System.out.println(" --> Removed Tasks = "+removedTasks + " - ");
-        System.out.println(" --> Removed Logs = "+removedLogs + " - ");
+        logger.debug(" --> Removed Tasks = {}", removedTasks);
+        logger.debug(" --> Removed Logs = {}", removedLogs);
        
     }
 }

@@ -21,10 +21,16 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.api.runtime.process.*;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServiceTaskHandler implements WorkItemHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(ServiceTaskHandler.class);
+    
     private boolean logThrownException = true;
     
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -68,8 +74,7 @@ public class ServiceTaskHandler implements WorkItemHandler {
     private void handleException(Throwable cause, String service, String operation, String paramType, Object param) { 
         if( this.logThrownException ) {
             String message = this.getClass().getSimpleName() + " failed when calling " + service + "." + operation;
-            System.err.println(message);
-            cause.printStackTrace(System.err);
+            logger.error(message, cause);
         } else { 
             WorkItemHandlerRuntimeException wihRe;
             if( cause instanceof InvocationTargetException ) { 

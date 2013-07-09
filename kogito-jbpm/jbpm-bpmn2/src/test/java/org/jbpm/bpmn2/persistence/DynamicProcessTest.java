@@ -14,7 +14,6 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.internal.command.Context;
 import org.kie.api.KieBase;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.event.process.ProcessCompletedEvent;
@@ -23,15 +22,20 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.io.Resource;
+import org.kie.internal.command.Context;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a sample file to launch a process.
  */
 public class DynamicProcessTest extends JbpmBpmn2TestCase {
 
+    private static final Logger logger = LoggerFactory.getLogger(DynamicProcessTest.class);
+    
     @BeforeClass
     public static void setup() throws Exception {
         if (PERSISTENCE) {
@@ -67,16 +71,16 @@ public class DynamicProcessTest extends JbpmBpmn2TestCase {
 			public void beforeVariableChanged(ProcessVariableChangedEvent arg0) {
 			}
 			public void beforeProcessStarted(ProcessStartedEvent arg0) {
-				System.out.println(arg0);
+				logger.info("{}", arg0);
 			}
 			public void beforeProcessCompleted(ProcessCompletedEvent arg0) {
-				System.out.println(arg0);
+			    logger.info("{}", arg0);
 			}
 			public void beforeNodeTriggered(ProcessNodeTriggeredEvent arg0) {
-				System.out.println(arg0);
+			    logger.info("{}", arg0);
 			}
 			public void beforeNodeLeft(ProcessNodeLeftEvent arg0) {
-				System.out.println(arg0);
+			    logger.info("{}", arg0);
 			}
 			public void afterVariableChanged(ProcessVariableChangedEvent arg0) {
 			}

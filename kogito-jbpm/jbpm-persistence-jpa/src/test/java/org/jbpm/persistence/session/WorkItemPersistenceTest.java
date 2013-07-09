@@ -24,7 +24,6 @@ import javax.persistence.EntityManagerFactory;
 import org.drools.core.WorkItemHandlerNotFoundException;
 import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.core.process.core.ParameterDefinition;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.impl.type.IntegerDataType;
@@ -33,12 +32,14 @@ import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.process.core.impl.ParameterDefinitionImpl;
 import org.drools.core.process.core.impl.WorkImpl;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
+import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.jbpm.persistence.session.objects.Person;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.EndNode;
@@ -49,19 +50,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WorkItemPersistenceTest {
+public class WorkItemPersistenceTest extends AbstractBaseTest {
 
     private static Logger logger = LoggerFactory.getLogger(WorkItemPersistenceTest.class);
     

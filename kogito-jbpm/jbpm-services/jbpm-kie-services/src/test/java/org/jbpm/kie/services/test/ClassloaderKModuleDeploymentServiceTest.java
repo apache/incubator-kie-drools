@@ -4,11 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,7 +15,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -33,33 +30,24 @@ import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.scanner.MavenRepository;
 
 @RunWith(Arquillian.class)
-public class ClassloaderKModuleDeploymentServiceTest {
+public class ClassloaderKModuleDeploymentServiceTest extends AbstractBaseTest {
     
     @Deployment()
     public static Archive<?> createDeployment() {

@@ -1,20 +1,29 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
-import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilder;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ProcessMultiThreadTest extends TestCase {
+public class ProcessMultiThreadTest extends AbstractBaseTest {
+    
+    private static Logger logger = LoggerFactory.getLogger(ProcessMultiThreadTest.class);
 
+    @Test
     public void testMultiThreadProcessInstanceSignalling() {
         final int THREAD_COUNT = 2;
         try {
@@ -25,7 +34,7 @@ public class ProcessMultiThreadTest extends TestCase {
             builder.addProcessFromXml(new InputStreamReader( getClass().getResourceAsStream( "test_ProcessMultithreadEvent.rf" ) ) );
             if (builder.getErrors().getErrors().length > 0) {
             	for (DroolsError error: builder.getErrors().getErrors()) {
-            		System.err.println(error);
+            	    logger.error(error.toString());
             	}
             	fail("Could not parse process");
             }
@@ -80,8 +89,7 @@ public class ProcessMultiThreadTest extends TestCase {
 	        	processInstance.signalEvent(type, null);
 	        } catch ( Exception e ) {
 	            this.status = Status.FAIL;
-	            System.out.println( Thread.currentThread().getName() + " failed: " + e.getMessage() );
-	            e.printStackTrace();
+	            logger.warn( Thread.currentThread().getName() + " failed: " + e.getMessage(), e);
 	        }
 	    }
 	

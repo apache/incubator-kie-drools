@@ -34,10 +34,13 @@ import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.mvel2.MVEL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TimerNodeInstance extends StateBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 510l;
+    private static Logger logger = LoggerFactory.getLogger(TimerNodeInstance.class);
     
     private long timerId;
     private TimerInstance timerInstance;
@@ -111,9 +114,9 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
                         String variableValueString = variableValue == null ? "" : variableValue.toString();
                         replacements.put(paramName, variableValueString);
                     } catch (Throwable t) {
-                        System.err.println("Could not find variable scope for variable " + paramName);
-                        System.err.println("when trying to replace variable in processId for sub process " + getNodeName());
-                        System.err.println("Continuing without setting process id.");
+                        logger.error("Could not find variable scope for variable " + paramName);
+                        logger.error("when trying to replace variable in processId for sub process " + getNodeName());
+                        logger.error("Continuing without setting process id.");
                     }
                 }
             }

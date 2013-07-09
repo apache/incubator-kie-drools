@@ -10,12 +10,16 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * This is a sample file to test a process.
  */
 public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ProcessHumanTaskTest.class);
 	
 	public ProcessHumanTaskTest() {
 		super(true);
@@ -34,7 +38,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
 		// let john execute Task 1
 		List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
 		TaskSummary task = list.get(0);
-		System.out.println("John is executing task " + task.getName());
+		logger.info("John is executing task {}", task.getName());
 		taskService.start(task.getId(), "john");
 		taskService.complete(task.getId(), "john", null);
 
@@ -43,7 +47,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
 		// let mary execute Task 2
 		list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
 		task = list.get(0);
-		System.out.println("Mary is executing task " + task.getName());
+		logger.info("Mary is executing task {}", task.getName());
 		taskService.start(task.getId(), "mary");
 		taskService.complete(task.getId(), "mary", null);
 
@@ -66,7 +70,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
         List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         TaskSummary task = list.get(0);
         assertEquals("mary", task.getCreatedBy().getId());
-        System.out.println("John is executing task " + task.getName());
+        logger.info("John is executing task {}", task.getName());
         taskService.start(task.getId(), "john");
         taskService.complete(task.getId(), "john", null);
 
@@ -76,7 +80,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
         list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
         task = list.get(0);
         assertEquals("krisv", task.getCreatedBy().getId());
-        System.out.println("Mary is executing task " + task.getName());
+        logger.info("Mary is executing task {}", task.getName());
         taskService.start(task.getId(), "mary");
         taskService.complete(task.getId(), "mary", null);
 

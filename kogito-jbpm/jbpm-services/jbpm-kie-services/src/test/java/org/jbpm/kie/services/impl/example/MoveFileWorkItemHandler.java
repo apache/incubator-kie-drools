@@ -20,16 +20,22 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import org.jbpm.shared.services.api.FileService;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class MoveFileWorkItemHandler implements WorkItemHandler {
+    
+    private static final Logger logger = LoggerFactory.getLogger(MoveFileWorkItemHandler.class);
 
     public final static String WIP_INPUT_RELEASE = "in_release_path";
     public final static String WIP_INPUT_SOURCE = "in_source_dir";
@@ -53,11 +59,11 @@ public class MoveFileWorkItemHandler implements WorkItemHandler {
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         // Debug only
-        System.out.println("############ Work Item Parameters");
+        logger.debug("############ Work Item Parameters");
         for (String k : workItem.getParameters().keySet()) {
-            System.out.println("Key = " + k + " - value = " + workItem.getParameter(k));
+            logger.debug("Key = {} - value {}", k, workItem.getParameter(k));
         }
-        System.out.println("#################################");
+        logger.debug("#################################");
         
         Map<String, String> errors = new LinkedHashMap<String, String>();
 
@@ -141,9 +147,9 @@ public class MoveFileWorkItemHandler implements WorkItemHandler {
         //Complete work item
         Map<String, Object> results = new HashMap<String, Object>();
         results.put(WIP_OUTPUT_ERRORS, errorsString.toString());
-        System.out.println("############ Work Item Outputs");
-        System.out.println(" ERRORS: "+errorsString.toString());
-        System.out.println("#################################");
+        logger.debug("############ Work Item Outputs");
+        logger.debug(" ERRORS: {}", errorsString.toString());
+        logger.debug("#################################");
         manager.completeWorkItem(workItem.getId(), results);
 
     }

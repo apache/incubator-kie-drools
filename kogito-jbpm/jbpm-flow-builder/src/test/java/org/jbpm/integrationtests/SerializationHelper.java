@@ -1,27 +1,32 @@
 package org.jbpm.integrationtests;
 
-import org.drools.core.RuleBase;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.StatefulSession;
-import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.reteoo.ReteooStatefulSession;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.marshalling.Marshaller;
-import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
+import org.drools.core.RuleBase;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.StatefulSession;
+import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.reteoo.ReteooStatefulSession;
+import org.drools.core.util.DroolsStreamUtils;
+import org.kie.api.marshalling.Marshaller;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.internal.marshalling.MarshallerFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Marshalling helper class to perform serialize/de-serialize a given object
  */
 public class SerializationHelper {
+    
+    private static Logger logger = LoggerFactory.getLogger(SerializationHelper.class);
+    
     public static <T> T serializeObject(T obj) throws IOException,
                                               ClassNotFoundException {
         return serializeObject( obj,
@@ -167,13 +172,13 @@ public class SerializationHelper {
     public static boolean areByteArraysEqual(byte[] b1,
                                              byte[] b2) {
         if ( b1.length != b2.length ) {
-            System.out.println( "Different length: b1=" + b1.length + " b2=" + b2.length );
+            logger.info( "Different length: b1=" + b1.length + " b2=" + b2.length );
             return false;
         }
 
         for ( int i = 0, length = b1.length; i < length; i++ ) {
             if ( b1[i] != b2[i] ) {
-                System.out.println( "Difference at " + i + ": [" + b1[i] + "] != [" + b2[i] + "]" );
+                logger.info( "Difference at " + i + ": [" + b1[i] + "] != [" + b2[i] + "]" );
                 return false;
             }
         }

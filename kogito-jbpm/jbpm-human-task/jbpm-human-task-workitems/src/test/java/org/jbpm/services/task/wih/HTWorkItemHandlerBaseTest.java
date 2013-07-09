@@ -33,12 +33,12 @@ import javax.inject.Inject;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
 import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.test.MyObject;
 import org.jbpm.services.task.test.TestStatefulKnowledgeSession;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.services.task.utils.OnErrorAction;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -50,7 +50,7 @@ import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.InternalTaskData;
 
 
-public abstract class HTWorkItemHandlerBaseTest {
+public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
 
     private static final int DEFAULT_WAIT_TIME = 5000;
     private static final int MANAGER_COMPLETION_WAIT_TIME = DEFAULT_WAIT_TIME;

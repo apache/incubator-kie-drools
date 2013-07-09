@@ -17,7 +17,7 @@ import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.apache.log4j.xml.DOMConfigurator;
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.SessionConfiguration;
@@ -25,14 +25,13 @@ import org.drools.core.TimerJobFactoryType;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
-import org.drools.persistence.SingleSessionCommandService;
-import org.drools.persistence.jpa.JpaJDKTimerService;
-import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.impl.WorkImpl;
 import org.drools.core.rule.Package;
+import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.jpa.JpaJDKTimerService;
+import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.jbpm.compiler.ProcessBuilderImpl;
 import org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory;
 import org.jbpm.persistence.processinstance.JPASignalManagerFactory;
@@ -40,6 +39,7 @@ import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
@@ -52,23 +52,23 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.junit.After;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.definition.KnowledgePackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SingleSessionCommandServiceTest {
+public class SingleSessionCommandServiceTest extends AbstractBaseTest {
+    
+    private static Logger logger = LoggerFactory.getLogger(SingleSessionCommandServiceTest.class);
 
 	private HashMap<String, Object> context;
 	private Environment env;
-    
-    static {
-		DOMConfigurator.configure(SingleSessionCommandServiceTest.class.getResource("/log4j.xml"));
-    }
     
     public void setUp() {
         String testMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
@@ -115,7 +115,7 @@ public class SingleSessionCommandServiceTest {
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.info( "Started process instance " + processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
@@ -230,7 +230,7 @@ public class SingleSessionCommandServiceTest {
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.info( "Started process instance " + processInstance.getId() );
         ut.commit();
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
@@ -429,7 +429,7 @@ public class SingleSessionCommandServiceTest {
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance) service.execute( startProcessCommand );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.info( "Started process instance " + processInstance.getId() );
         long processInstanceId = processInstance.getId();
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
@@ -616,7 +616,7 @@ public class SingleSessionCommandServiceTest {
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.info( "Started process instance " + processInstance.getId() );
         
         
         Thread.sleep( 500 );
@@ -721,7 +721,7 @@ public class SingleSessionCommandServiceTest {
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.info( "Started process instance " + processInstance.getId() );
 
         Thread.sleep( 2000 );
 

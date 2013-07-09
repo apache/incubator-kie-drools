@@ -16,20 +16,24 @@
 
 package org.jbpm.workflow.instance.node;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.jbpm.workflow.instance.impl.factory.CreateNewNodeFactory;
+import org.junit.Test;
 
-public class ProcessNodeInstanceFactoryTest extends TestCase {
+public class ProcessNodeInstanceFactoryTest extends AbstractBaseTest {
     
+    @Test
     public void testDefaultEntries() throws Exception {
         Node node = new ActionNode();
         assertEquals( CreateNewNodeFactory.class, NodeInstanceFactoryRegistry.getInstance(null).getProcessNodeInstanceFactory( node ).getClass() );       
     }
     
+    @Test
     public void testDiscoveredEntry() {
     	NodeInstanceFactoryRegistry.getInstance(null).register(MockNode.class, new MockNodeInstanceFactory(  new MockNodeInstance(  new MockNode() ) ));
         assertEquals( MockNodeInstanceFactory.class, NodeInstanceFactoryRegistry.getInstance(null).getProcessNodeInstanceFactory( new MockNode() ).getClass() );

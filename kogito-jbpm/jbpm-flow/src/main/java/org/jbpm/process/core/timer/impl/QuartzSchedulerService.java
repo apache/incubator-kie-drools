@@ -46,6 +46,8 @@ import org.quartz.SchedulerMetaData;
 import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.jdbcjobstore.JobStoreCMT;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Quartz based <code>GlobalSchedulerService</code> that is configured according
@@ -55,6 +57,8 @@ import org.quartz.impl.jdbcjobstore.JobStoreCMT;
  *
  */
 public class QuartzSchedulerService implements GlobalSchedulerService {
+    
+    private static Logger logger = LoggerFactory.getLogger(QuartzSchedulerService.class);
 
     private AtomicLong idCounter = new AtomicLong();
     private TimerService globalTimerService;
@@ -264,7 +268,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
                 failedCount++;
                 quartzContext.getJobDetail().getJobDataMap().put("failedCount", failedCount);
                 if (failedCount > 5) {
-                    System.err.println("Timer execution failed 5 times in a roll, unscheduling (" + quartzContext.getJobDetail().getFullName()+")");
+                    logger.error("Timer execution failed 5 times in a roll, unscheduling (" + quartzContext.getJobDetail().getFullName()+")");
                     reschedule = false;
                 }
                 throw new JobExecutionException("Exception when executing scheduled job", e, reschedule);

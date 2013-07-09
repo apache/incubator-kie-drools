@@ -1,8 +1,5 @@
 package org.jbpm.services.task;
 
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -42,9 +39,7 @@ public class HumanTaskConfigurator {
 
     private TaskService service;
     
-    private EntityManagerFactory emf;
-    
-    private Logger logger = LogManager.getLogManager().getLogger("");
+    private EntityManagerFactory emf;   
     
     private JbpmServicesTransactionManager jbpmTransactionManager = new JbpmLocalTransactionManager();
     
@@ -225,7 +220,6 @@ public class HumanTaskConfigurator {
         ((TaskDeadlinesServiceImpl)deadlinesService).setTaskContentService(contentService);
         ((TaskDeadlinesServiceImpl)deadlinesService).setTaskQueryService(queryService);
         ((TaskDeadlinesServiceImpl)deadlinesService).setPm(pm);
-        ((TaskDeadlinesServiceImpl)deadlinesService).setLogger(logger);
         ((TaskDeadlinesServiceImpl)deadlinesService).setNotificationEvents(((TaskServiceEntryPointImpl)service).getTaskNotificationEventListeners());
         ((TaskDeadlinesServiceImpl)deadlinesService).init();
     }
@@ -244,7 +238,6 @@ public class HumanTaskConfigurator {
         ((MVELLifeCycleManager)lifeCycleManager).setTaskQueryService(queryService);
         ((MVELLifeCycleManager)lifeCycleManager).setTaskContentService(contentService);
         ((MVELLifeCycleManager)lifeCycleManager).setTaskEvents(((TaskServiceEntryPointImpl)service).getTaskLifecycleEventListeners());
-        ((MVELLifeCycleManager)lifeCycleManager).setLogger(logger);
         ((MVELLifeCycleManager)lifeCycleManager).initMVELOperations();
         
         

@@ -10,9 +10,10 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.time.SessionPseudoClock;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 
-public class BusinessCalendarImplTest {
+public class BusinessCalendarImplTest extends AbstractBaseTest {
 
     @Test
     public void testCalculateHours() {

@@ -17,35 +17,54 @@
 package org.jbpm.bpmn2;
 
 import java.io.ByteArrayInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.jbpm.bpmn2.handler.*;
-import org.jbpm.bpmn2.objects.*;
+import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
+import org.jbpm.bpmn2.handler.SendTaskHandler;
+import org.jbpm.bpmn2.handler.ServiceTaskHandler;
+import org.jbpm.bpmn2.handler.SignallingTaskHandlerDecorator;
+import org.jbpm.bpmn2.objects.ExceptionService;
+import org.jbpm.bpmn2.objects.Person;
+import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
-import org.junit.*;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 @RunWith(Parameterized.class)
 public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
 
+    private static final Logger logger = LoggerFactory.getLogger(StandaloneBPMNProcessTest.class);
+    
     @Parameters
     public static Collection<Object[]> persistence() {
         Object[][] data = new Object[][] { { false }, { true } };
@@ -452,7 +471,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"), ResourceType.BPMN2);
         if (!kbuilder.getErrors().isEmpty()) {
             for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-                System.err.println(error);
+                logger.error("{}", error);
             }
             throw new IllegalArgumentException("Errors while parsing knowledge base");
         }

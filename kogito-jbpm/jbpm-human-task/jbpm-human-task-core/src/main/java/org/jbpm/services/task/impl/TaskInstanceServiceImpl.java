@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -48,6 +47,8 @@ import org.kie.internal.task.api.model.FaultData;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.Operation;
 import org.kie.internal.task.api.model.SubTasksStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -55,7 +56,8 @@ import org.kie.internal.task.api.model.SubTasksStrategy;
 @Transactional
 @ApplicationScoped
 public class TaskInstanceServiceImpl implements TaskInstanceService {
-
+    
+    private static final Logger logger = LoggerFactory.getLogger(TaskInstanceServiceImpl.class);
     
     @Inject
     private TaskQueryService taskQueryService;
@@ -64,8 +66,6 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     private LifeCycleManager lifeCycleManager;
     @Inject
     private JbpmServicesPersistenceManager pm;
-    @Inject
-    private Logger logger;
     @Inject
     private Event<Task> taskEvents;
 

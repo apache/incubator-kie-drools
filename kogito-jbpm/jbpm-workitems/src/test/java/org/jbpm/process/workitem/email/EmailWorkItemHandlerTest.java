@@ -29,6 +29,7 @@ import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.drools.core.process.instance.impl.DefaultWorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +39,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
-public class EmailWorkItemHandlerTest {
+public class EmailWorkItemHandlerTest extends AbstractBaseTest {
     private Wiser wiser;    
     
     private String emailHost;

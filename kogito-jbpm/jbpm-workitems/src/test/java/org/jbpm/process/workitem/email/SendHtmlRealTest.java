@@ -3,9 +3,12 @@ package org.jbpm.process.workitem.email;
 import java.util.Random;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This test tests whether or not it's possible to use the SendHtml functionality to send mail that will be <i>relayed</i>. 
@@ -21,8 +24,9 @@ import org.junit.Test;
  * Fill in the fromAddress, fromPassword and toAddress (and if neccessary, modify the user and smtpServerFrom fields) and run this
  * test. If no exceptions are thrown -- and you receive an e-mail, then you're good!
  */
-public class SendHtmlRealTest {
+public class SendHtmlRealTest extends AbstractBaseTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(SendHtmlRealTest.class);
     private Random random = new Random();
     int uniqueTestNum = -1;
 
@@ -44,7 +48,7 @@ public class SendHtmlRealTest {
     @Ignore
     public void sendEmailViaAnotherDomain() throws Exception { 
         String testMethodName = Thread.currentThread().getStackTrace()[1].getMethodName(); 
-        System.out.println( testMethodName + ": " + uniqueTestNum);
+        logger.info( testMethodName + ": " + uniqueTestNum);
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "To", toAddress );

@@ -15,12 +15,11 @@
  */
 package org.jbpm.executor;
 
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 import javax.enterprise.event.Event;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 import org.jbpm.executor.api.Executor;
 import org.jbpm.executor.api.ExecutorQueryService;
 import org.jbpm.executor.api.ExecutorRequestAdminService;
@@ -55,16 +54,13 @@ public class NoCDISimpleExecutorTest extends BasicExecutorBaseTest{
         
         JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
         ((JbpmServicesPersistenceManagerImpl)pm).setEm(em);
-        ((JbpmServicesPersistenceManagerImpl)pm).setTransactionManager(new JbpmLocalTransactionManager());
-        
-        Logger logger = LogManager.getLogManager().getLogger("");
+        ((JbpmServicesPersistenceManagerImpl)pm).setTransactionManager(new JbpmLocalTransactionManager());        
         
         executorService = new ExecutorServiceEntryPointImpl();
         
         Event<RequestInfo> requestEvents = new JbpmServicesEventImpl<RequestInfo>();
         
         DefaultExecutorEventListener eventListener = new DefaultExecutorEventListener();
-        eventListener.setLogger(logger);
         
         ((JbpmServicesEventImpl)requestEvents).addListener(eventListener);
         
@@ -78,11 +74,9 @@ public class NoCDISimpleExecutorTest extends BasicExecutorBaseTest{
         ExecutorRunnable runnable = new ExecutorRunnable();
         runnable.setPm(pm);
         runnable.setQueryService(queryService);
-        runnable.setLogger(logger);
         ((ExecutorImpl)executor).setPm(pm);
         ((ExecutorImpl)executor).setExecutorRunnable(runnable);
         ((ExecutorImpl)executor).setQueryService(queryService);
-        ((ExecutorImpl)executor).setLogger(logger);
         ((ExecutorImpl)executor).setRequestEvents(requestEvents);
         
         ((ExecutorServiceEntryPointImpl)executorService).setExecutor(executor);

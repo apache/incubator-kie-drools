@@ -5,9 +5,14 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class TestUtil {
+    
+    private static final Logger logger = LoggerFactory.getLogger(TestUtil.class);
 
     public static PoolingDataSource setupPoolingDataSource() {
         PoolingDataSource pds = new PoolingDataSource();
@@ -36,7 +41,7 @@ public class TestUtil {
                 }
             });
             for (String file : jbpmSerFiles) {
-                System.out.println(tempDir + file);
+                logger.debug("Temp dir to be removed {} file {}",tempDir, file);
                 new File(tempDir, file).delete();
             }
         }

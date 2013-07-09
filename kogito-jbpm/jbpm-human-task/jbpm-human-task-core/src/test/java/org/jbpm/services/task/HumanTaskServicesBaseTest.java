@@ -24,8 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -35,10 +33,12 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.kie.internal.task.api.InternalTaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class HumanTaskServicesBaseTest {
 
-    protected static Logger logger;
+    private static final Logger logger = LoggerFactory.getLogger(HumanTaskServicesBaseTest.class);
     protected static boolean usersLoaded = false;
     @Inject
     protected InternalTaskService taskService;
@@ -52,7 +52,7 @@ public abstract class HumanTaskServicesBaseTest {
                 taskService.addUser(new UserImpl("Administrator"));
                 usersLoaded = true;
             } catch (Exception ex) {
-                java.util.logging.Logger.getLogger(LifeCycleBaseTest.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error("Error during initialization of test", ex);
             }
         }
 
@@ -61,6 +61,7 @@ public abstract class HumanTaskServicesBaseTest {
     @After
     public void tearDown() {
         int removeAllTasks = taskService.removeAllTasks();
+        logger.debug("Number of tasks removed {}", removeAllTasks);
     }
     
     @AfterClass
@@ -142,7 +143,7 @@ public abstract class HumanTaskServicesBaseTest {
     }
 
     protected void printTestName() {
-        System.out.println("Running " + this.getClass().getSimpleName() + "." + Thread.currentThread().getStackTrace()[2].getMethodName());
+        logger.info("Running {}.{} ", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[2].getMethodName());
     }
     
     /**

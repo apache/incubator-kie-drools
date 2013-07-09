@@ -57,10 +57,14 @@ import org.kie.internal.task.api.model.EmailNotificationHeader;
 import org.kie.internal.task.api.model.Language;
 import org.kie.internal.task.api.model.NotificationEvent;
 import org.mvel2.templates.TemplateRuntime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 @Startup
 public class EmailNotificationListener implements NotificationListener {
+    
+    private static final Logger logger = LoggerFactory.getLogger(EmailNotificationListener.class);
 
     @Inject
     private UserInfo userInfoInstance;
@@ -89,7 +93,7 @@ public class EmailNotificationListener implements NotificationListener {
         UserInfo userInfo = getUserInfo();
         Session mailSession = getSession();
         if (userInfo == null || mailSession == null) {
-            System.err.println("Cannot proceed with notifications as not all requirements are meet - mail session or userinfo is not available.");
+            logger.error("Cannot proceed with notifications as not all requirements are meet - mail session or userinfo is not available.");
             return;
         }
         
@@ -219,6 +223,7 @@ public class EmailNotificationListener implements NotificationListener {
         }
     }
     
+    @SuppressWarnings("unchecked")
     protected List<String> getAttachements(Object attachementsFromVariables) { 
         if (attachementsFromVariables instanceof List) {
             return (List<String>) attachementsFromVariables;

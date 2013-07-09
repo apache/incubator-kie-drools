@@ -31,34 +31,41 @@ import org.hornetq.jms.server.embedded.EmbeddedJMS;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jms.PoolingConnectionFactory;
 
-public class AsyncAuditLogProducerTest {
+public class AsyncAuditLogProducerTest extends AbstractBaseTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(AsyncAuditLogProducerTest.class);
+    
     private HashMap<String, Object> context;
     private ConnectionFactory factory;
     private Queue queue;
     
-    private EmbeddedJMS jmsServer;
+    private EmbeddedJMS jmsServer;    
     
     @Before
     public void setup() throws Exception {
@@ -215,10 +222,10 @@ public class AsyncAuditLogProducerTest {
         receiver.receiveAndProcess(queue, ((EntityManagerFactory)env.get(EnvironmentName.ENTITY_MANAGER_FACTORY)));
      
         // validate if everything is stored in db
-        JPAProcessInstanceDbLog.setEnvironment(env);
-        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        AuditLogService logService = new JPAAuditLogService(env);
+        List<ProcessInstanceLog> processInstances = logService.findProcessInstances("com.sample.ruleflow");
         assertEquals(1, processInstances.size());
-        List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstance.getId());
+        List<NodeInstanceLog> nodeInstances = logService.findNodeInstances(processInstance.getId());
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {
 
@@ -226,8 +233,9 @@ public class AsyncAuditLogProducerTest {
             assertEquals("com.sample.ruleflow", nodeInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
-        JPAProcessInstanceDbLog.clear();
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        logService.clear();
+        processInstances = logService.findProcessInstances("com.sample.ruleflow");
+        logService.dispose();
         assertTrue(processInstances.isEmpty());
     }
     
@@ -252,10 +260,10 @@ public class AsyncAuditLogProducerTest {
         receiver.receiveAndProcess(queue, ((EntityManagerFactory)env.get(EnvironmentName.ENTITY_MANAGER_FACTORY)));
      
         // validate if everything is stored in db
-        JPAProcessInstanceDbLog.setEnvironment(env);
-        List<ProcessInstanceLog> processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        AuditLogService logService = new JPAAuditLogService(env);
+        List<ProcessInstanceLog> processInstances = logService.findProcessInstances("com.sample.ruleflow");
         assertEquals(1, processInstances.size());
-        List<NodeInstanceLog> nodeInstances = JPAProcessInstanceDbLog.findNodeInstances(processInstance.getId());
+        List<NodeInstanceLog> nodeInstances = logService.findNodeInstances(processInstance.getId());
         assertEquals(6, nodeInstances.size());
         for (NodeInstanceLog nodeInstance: nodeInstances) {
 
@@ -263,8 +271,9 @@ public class AsyncAuditLogProducerTest {
             assertEquals("com.sample.ruleflow", nodeInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
         }
-        JPAProcessInstanceDbLog.clear();
-        processInstances = JPAProcessInstanceDbLog.findProcessInstances("com.sample.ruleflow");
+        logService.clear();
+        processInstances = logService.findProcessInstances("com.sample.ruleflow");
+        logService.dispose();
         assertTrue(processInstances.isEmpty());
     }
     
@@ -292,7 +301,7 @@ public class AsyncAuditLogProducerTest {
     private void startHornetQServer() throws Exception {
         jmsServer = new EmbeddedJMS();
         jmsServer.start();
-        System.out.println("Started Embedded JMS Server");
+        logger.info("Started Embedded JMS Server");
 
         BitronixHornetQXAConnectionFactory.connectionFactory = (XAConnectionFactory) jmsServer.lookup("ConnectionFactory");
 

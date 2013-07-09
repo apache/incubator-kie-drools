@@ -17,22 +17,25 @@
 package org.jbpm.workflow.instance.node;
 
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceFactoryRegistry;
+import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-public class EndNodeInstanceTest extends TestCase {
+public class EndNodeInstanceTest extends AbstractBaseTest {
 	
+    @Test
     public void testEndNode() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        

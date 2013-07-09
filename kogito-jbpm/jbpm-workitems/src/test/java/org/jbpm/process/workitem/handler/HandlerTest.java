@@ -15,6 +15,8 @@ import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -27,8 +29,9 @@ import org.kie.api.runtime.KieSessionConfiguration;
 /**
  * This is a sample file to launch a process.
  */
-public class HandlerTest extends TestCase {
+public class HandlerTest extends AbstractBaseTest {
 
+    @Test
 	public void testHandler() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = createSession(kbase);

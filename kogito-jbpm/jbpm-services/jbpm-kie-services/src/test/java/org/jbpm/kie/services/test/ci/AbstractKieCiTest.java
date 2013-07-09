@@ -1,5 +1,6 @@
 package org.jbpm.kie.services.test.ci;
 
+import org.jbpm.test.util.AbstractBaseTest;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.KieBuilder;
@@ -16,7 +17,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertTrue;
 
-public class AbstractKieCiTest {
+public class AbstractKieCiTest extends AbstractBaseTest {
 
     protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, String processName, String process ) throws IOException {
         KieFileSystem kfs = createKieFileSystemWithKProject(ks);

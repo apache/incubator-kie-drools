@@ -15,8 +15,6 @@
  */
 package org.jbpm.kie.services.test.support;
 
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,9 +22,9 @@ import javax.persistence.Persistence;
 
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.KnowledgeAdminDataServiceImpl;
-import org.jbpm.kie.services.impl.VfsMVELWorkItemHandlerProducer;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
 import org.jbpm.kie.services.impl.VFSDeploymentService;
+import org.jbpm.kie.services.impl.VfsMVELWorkItemHandlerProducer;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl;
 import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceSemanticModule;
@@ -50,12 +48,16 @@ import org.kie.api.task.TaskService;
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
 import org.kie.internal.task.api.InternalTaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
 public class NoCDISupportProcessTest extends SupportProcessBaseTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(NoCDISupportProcessTest.class);
+    
     private TaskService taskService;
     private FileService fs;
     private PoolingDataSource ds;
@@ -81,7 +83,6 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.domain");
         EntityManager em = emf.createEntityManager();
         
-        Logger logger = LogManager.getLogManager().getLogger("");
         JbpmServicesTransactionManager jbpmJTATransactionManager = new JbpmJTATransactionManager();
         JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
         ((JbpmServicesPersistenceManagerImpl)pm).setEm(em);
@@ -151,8 +152,8 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
     public void tearDown() throws Exception {
         int removedTasks = ((InternalTaskService) taskService).removeAllTasks();
         int removedLogs = adminDataService.removeAllData();
-        System.out.println(" --> Removed Tasks = "+removedTasks + " - ");
-        System.out.println(" --> Removed Logs = "+removedLogs + " - ");
+        logger.debug(" --> Removed Tasks = {}", removedTasks);
+        logger.debug(" --> Removed Logs = {}", removedLogs);
        
     }
 }

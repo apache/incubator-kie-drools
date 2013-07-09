@@ -18,12 +18,16 @@ package org.jbpm.kie.services.impl.example;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author esteban
  */
 public class NotificationWorkItemHandler implements WorkItemHandler{
+    
+    private static final Logger logger = LoggerFactory.getLogger(NotificationWorkItemHandler.class);
 
     public final static String WIP_INPUT_RELEASE = "in_release_name";
     public final static String WIP_INPUT_REPORT = "in_test_report";
@@ -60,7 +64,7 @@ public class NotificationWorkItemHandler implements WorkItemHandler{
         email.append("Subject: ").append(releaseName).append(" Released!\n");
         email.append("Body: \n").append(report).append("\n");
         
-        System.out.println("\n\n"+email.toString()+"\n\n");
+        logger.debug("{}",email.toString());
         
         manager.completeWorkItem(workItem.getId(), null);
     }

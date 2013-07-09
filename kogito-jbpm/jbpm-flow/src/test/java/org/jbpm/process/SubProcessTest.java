@@ -27,6 +27,7 @@ import org.drools.core.process.core.Work;
 import org.drools.core.process.core.impl.WorkImpl;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -38,15 +39,19 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SubProcessTest {
+public class SubProcessTest extends AbstractBaseTest  {
+    
+    private static Logger logger = LoggerFactory.getLogger(SubProcessTest.class);
 
 	private boolean executed = false;
 	private WorkItem workItem;
@@ -105,7 +110,7 @@ public class SubProcessTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-            	System.out.println("Executed action");
+                logger.info("Executed action");
             	executed = true;
             }
         });
@@ -191,7 +196,7 @@ public class SubProcessTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.getWorkItemManager().registerWorkItemHandler("MyWork", new WorkItemHandler() {
 			public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-				System.out.println("Executing work item");
+			    logger.info("Executing work item");
 				SubProcessTest.this.workItem = workItem;
 			}
 			public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {

@@ -1,18 +1,21 @@
 package org.jbpm.test;
 
-import org.jbpm.test.JBPMHelper;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a sample file to launch a process.
  */
 public class ProcessMain {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProcessMain.class);
+    
 	public static final void main(String[] args) throws Exception {
 		startUp();
 		// load up the knowledge base
@@ -20,7 +23,7 @@ public class ProcessMain {
 		StatefulKnowledgeSession ksession = JBPMHelper.newStatefulKnowledgeSession(kbase);
 		// start a new process instance
 		ksession.startProcess("com.sample.bpmn.hello");
-		System.out.println("Process started ...");
+		logger.info("Process started ...");
 	}
 
 	private static KnowledgeBase readKnowledgeBase() throws Exception {

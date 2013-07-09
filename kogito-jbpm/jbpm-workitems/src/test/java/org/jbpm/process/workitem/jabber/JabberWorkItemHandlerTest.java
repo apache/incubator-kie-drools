@@ -18,19 +18,17 @@ package org.jbpm.process.workitem.jabber;
 
 
 
-import junit.framework.TestCase;
-
 import org.drools.core.process.instance.impl.DefaultWorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.kie.api.runtime.process.WorkItemManager;
 
-// @Author: salaboy@gmail.com
-public class JabberWorkItemHandlerTest extends TestCase {
+public class JabberWorkItemHandlerTest extends AbstractBaseTest {
     
-	public void testEmpty() {
-		
-	}
-	
+    @Test
+    @Ignore
     public void TODOtestSendJabberMessage() throws Exception {
         JabberWorkItemHandler handler = new JabberWorkItemHandler();
         WorkItemImpl workItem = new WorkItemImpl();

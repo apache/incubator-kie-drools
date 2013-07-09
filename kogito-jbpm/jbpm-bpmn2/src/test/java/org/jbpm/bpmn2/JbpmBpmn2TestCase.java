@@ -51,6 +51,8 @@ import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
@@ -58,7 +60,9 @@ import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.Before;
@@ -103,7 +107,8 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 /**
  * Base test case for the jbpm-bpmn2 module.
  */
-public abstract class JbpmBpmn2TestCase extends Assert {
+public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
+    private static final Logger log = LoggerFactory.getLogger(JbpmBpmn2TestCase.class);
 
     public static String[] txStateName = { "ACTIVE", "MARKED_ROLLBACK",
             "PREPARED", "COMMITTED", "ROLLEDBACK", "UNKNOWN", "NO_TRANSACTION",
@@ -117,7 +122,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
     private static H2Server server = new H2Server();
 
     private WorkingMemoryInMemoryLogger logger;
-    private Logger testLogger = null;
+    private AuditLogService logService;
 
     protected static EntityManagerFactory emf;
     private static PoolingDataSource ds;
@@ -126,7 +131,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
     @Rule
     public TestRule watcher = new TestWatcher() {
         protected void starting(Description description) {
-            System.out.println(" >>> " + description.getMethodName() + " <<< ");
+            log.info(" >>> {} <<<", description.getMethodName());
 
             try {
                 String method = description.getMethodName();
@@ -140,14 +145,10 @@ public abstract class JbpmBpmn2TestCase extends Assert {
             } catch (Exception ex) {
                 // ignore
             }
-
-            if (testLogger == null) {
-                testLogger = LoggerFactory.getLogger(getClass());
-            }
         };
 
         protected void finished(Description description) {
-            System.out.println("");
+            log.info("Finsihed {}", description);
         };
     };
 
@@ -211,13 +212,17 @@ public abstract class JbpmBpmn2TestCase extends Assert {
     public void checkTest() {
         if (testReqPersistence != null
                 && testReqPersistence.value() != sessionPersistence) {
-            System.out.println("skipped - test is run only "
-                    + (testReqPersistence.value() ? "with" : "without")
-                    + " persistence");
-            System.out.println(testReqPersistence.comment());
+            log.info("skipped - test is run only {} persistence"
+                    , (testReqPersistence.value() ? "with" : "without"));
+            log.info(testReqPersistence.comment());
             Assume.assumeTrue(false);
         }
     }
+    @After
+    public void clear() {
+        clearHistory();
+    }
+
 
     @AfterClass
     public static void tearDownClass() throws Exception {
@@ -414,7 +419,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
             result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase,
                     conf, env);
             AuditLoggerFactory.newInstance(Type.JPA, result, null);
-            JPAProcessInstanceDbLog.setEnvironment(result.getEnvironment());
+            logService = new JPAAuditLogService(env);
         } else {
             if (env == null) {
                 env = EnvironmentFactory.newEnvironment();
@@ -547,7 +552,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
             String node) {
         int counter = 0;
         if (sessionPersistence) {
-            List<NodeInstanceLog> logs = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+            List<NodeInstanceLog> logs = logService.findNodeInstances(processInstanceId);
             if (logs != null) {
                 for (NodeInstanceLog l : logs) {
                     String nodeName = l.getNodeName();
@@ -574,7 +579,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
     public int getNumberOfProcessInstances(String processId) {
         int counter = 0;
         if (sessionPersistence) {
-            List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findProcessInstances(processId);
+            List<ProcessInstanceLog> logs = logService.findProcessInstances(processId);
             if (logs != null) {
                 return logs.size();
             }
@@ -593,7 +598,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
     
     protected boolean assertProcessInstanceState(int state, ProcessInstance processInstance) {
         if (sessionPersistence) {
-            ProcessInstanceLog log = JPAProcessInstanceDbLog.findProcessInstance(processInstance.getId());
+            ProcessInstanceLog log = logService.findProcessInstance(processInstance.getId());
             if (log != null) {
                 return log.getStatus() == state;
             }
@@ -611,7 +616,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
             names.add(nodeName);
         }
         if (sessionPersistence) {
-            List<NodeInstanceLog> logs = JPAProcessInstanceDbLog
+            List<NodeInstanceLog> logs = logService
                     .findNodeInstances(processInstanceId);
             if (logs != null) {
                 for (NodeInstanceLog l : logs) {
@@ -640,7 +645,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
     protected void clearHistory() {
         if (sessionPersistence) {
             try {
-                JPAProcessInstanceDbLog.clear();
+                logService.clear();
             } catch(Exception e) {
                 
             }
@@ -679,7 +684,7 @@ public abstract class JbpmBpmn2TestCase extends Assert {
         boolean result = false;
         String actualValue = null;
         if (sessionPersistence) {
-            List<VariableInstanceLog> log = JPAProcessInstanceDbLog.findVariableInstances(processInstance.getId(), varName);
+            List<VariableInstanceLog> log = logService.findVariableInstances(processInstance.getId(), varName);
             if (log != null && !log.isEmpty()) {
                 actualValue = log.get(log.size()-1).getValue();
                 

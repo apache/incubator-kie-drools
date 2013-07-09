@@ -4,17 +4,18 @@
  */
 package org.jbpm.services.task.wih.internals;
 
+import static org.kie.commons.io.FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
@@ -23,28 +24,23 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
-import static org.kie.commons.io.FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE;
+
 import org.kie.commons.io.IOService;
 import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class TaskEnvironmentProducer {
 
+    private static final Logger logger = LoggerFactory.getLogger(TaskEnvironmentProducer.class);
   
     private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";
 
-    private IOService ioService = new IOServiceNio2WrapperImpl();
-    
-    
+    private IOService ioService = new IOServiceNio2WrapperImpl();    
     private EntityManagerFactory emf;
-    @Produces
-    public Logger createLogger(InjectionPoint injectionPoint) {
-        return Logger.getLogger(injectionPoint.getMember()
-                .getDeclaringClass().getName());
-    }
-    
 
     
     @PersistenceUnit(unitName = "org.jbpm.services.task")
@@ -96,7 +92,7 @@ public class TaskEnvironmentProducer {
             env.put( "origin", ORIGIN_URL );
             ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
         } catch ( Exception e ) {
-            System.out.println( ">>>>>>>>>>>>>>>>>>> E " + e.getMessage() );
+            logger.error("Error during file system preparation", e);
         }
         return ioService;
     }

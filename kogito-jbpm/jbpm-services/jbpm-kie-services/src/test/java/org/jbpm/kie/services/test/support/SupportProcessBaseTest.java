@@ -32,6 +32,7 @@ import org.jbpm.kie.services.api.Vfs;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.VFSDeploymentUnit;
 import org.jbpm.shared.services.api.FileException;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -43,7 +44,7 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.InternalTaskService;
 
 
-public abstract class SupportProcessBaseTest {
+public abstract class SupportProcessBaseTest extends AbstractBaseTest {
 
     @Inject
     @Vfs

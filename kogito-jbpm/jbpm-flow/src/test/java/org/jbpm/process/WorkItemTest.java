@@ -21,6 +21,7 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.test.Person;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.node.EndNode;
@@ -28,12 +29,12 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.ProcessInstance;
 
-public class WorkItemTest {
+public class WorkItemTest extends AbstractBaseTest {
 
 	@Test
     public void testReachNonRegisteredWorkItemHandler() {

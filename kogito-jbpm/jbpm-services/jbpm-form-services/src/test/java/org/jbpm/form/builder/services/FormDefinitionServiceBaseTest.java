@@ -159,7 +159,6 @@
 //        
 //        FormRepresentation form1 = MockFormHelper.createMockForm("form1", "oneParam");
 //        String formUrl = service.saveForm(form1);
-//        System.out.println("Form Url = "+formUrl);
 //        
 //        String deleteUrl = baseUrl + fileSeparator + formUrl + ".formdef";
 //        assertTrue(new File(deleteUrl).exists());

@@ -1,5 +1,7 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -15,12 +17,15 @@ import org.drools.core.WorkingMemory;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
-public class ProcessForEachTest extends TestCase {
+public class ProcessForEachTest extends AbstractBaseTest {
     
+    @Test
     public void testForEach() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -84,6 +89,7 @@ public class ProcessForEachTest extends TestCase {
         assertEquals(3, myList.size());
     }
     
+    @Test
     public void testForEachLargeList() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -139,7 +145,6 @@ public class ProcessForEachTest extends TestCase {
         workingMemory.getWorkItemManager().registerWorkItemHandler("Log", new WorkItemHandler() {
 			public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
 				String message = (String) workItem.getParameter("Message");
-//				System.out.println(message);
 				myList.add(message);
 				manager.completeWorkItem(workItem.getId(), null);
 			}
@@ -158,6 +163,7 @@ public class ProcessForEachTest extends TestCase {
         assertEquals(10000, myList.size());
     }
     
+    @Test
     public void testForEachEmptyList() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -217,6 +223,7 @@ public class ProcessForEachTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    @Test
     public void testForEachNullList() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -273,6 +280,7 @@ public class ProcessForEachTest extends TestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    @Test
     public void testForEachCancel() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -362,6 +370,7 @@ public class ProcessForEachTest extends TestCase {
         assertEquals(0, workingMemory.getProcessInstances().size());
     }
     
+    @Test
     public void testForEachCancelIndependent() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(
@@ -451,6 +460,7 @@ public class ProcessForEachTest extends TestCase {
         assertEquals(3, workingMemory.getProcessInstances().size());
     }
     
+    @Test
     public void testForEachWithEventNode() {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader(

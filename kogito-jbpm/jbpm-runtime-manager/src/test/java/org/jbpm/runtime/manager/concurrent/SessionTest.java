@@ -16,12 +16,14 @@ import javax.transaction.UserTransaction;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.hibernate.StaleObjectStateException;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.junit.After;
 import org.junit.Before;
@@ -40,10 +42,13 @@ import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.UserGroupCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public class SessionTest {
+public class SessionTest extends AbstractBaseTest {
+    private static final Logger logger = LoggerFactory.getLogger(SessionTest.class);
     
     private long maxWaitTime = 60*1000; // max wait to complete operation is set to 60 seconds to avoid build hangs
 	
@@ -100,7 +105,7 @@ public class SessionTest {
 			System.gc();
 			Thread.sleep(100);
 			System.gc();
-			System.out.println(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
+			logger.info("Used memory {}", Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory());
 		}
 	}
 	
@@ -131,17 +136,18 @@ public class SessionTest {
 		}
 		Thread.sleep(1000);
 	      //make sure all process instance were completed
-        JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
+		AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());        
         //active
-        List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findActiveProcessInstances("com.sample.bpmn.hello");
+        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
         // completed
-        logs = JPAProcessInstanceDbLog.findProcessInstances("com.sample.bpmn.hello");
+        logs = logService.findProcessInstances("com.sample.bpmn.hello");
         assertNotNull(logs);
         assertEquals(nbThreadsProcess*nbInvocations, logs.size());
-		System.out.println("Done");
+        logger.info("Done");
+        logService.dispose();
 	}
 	
 	@Test
@@ -170,17 +176,19 @@ public class SessionTest {
              }
 		}
 		//make sure all process instance were completed
-		JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
+		AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
+        
 		//active
-		List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findActiveProcessInstances("com.sample.bpmn.hello");
+		List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
 		assertNotNull(logs);
 		assertEquals(0, logs.size());
 		
 		// completed
-		logs = JPAProcessInstanceDbLog.findProcessInstances("com.sample.bpmn.hello");
+		logs = logService.findProcessInstances("com.sample.bpmn.hello");
         assertNotNull(logs);
         assertEquals(nbThreadsProcess*nbInvocations, logs.size());
-		System.out.println("Done");
+        logger.info("Done");
+        logService.dispose();
 	}
 	
     @Test
@@ -209,17 +217,19 @@ public class SessionTest {
             }
         }
         //make sure all process instance were completed
-        JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
+        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
+        
         //active
-        List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findActiveProcessInstances("com.sample.bpmn.hello");
+        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("com.sample.bpmn.hello");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
         // completed
-        logs = JPAProcessInstanceDbLog.findProcessInstances("com.sample.bpmn.hello");
+        logs = logService.findProcessInstances("com.sample.bpmn.hello");
         assertNotNull(logs);
         assertEquals(nbThreadsProcess*nbInvocations, logs.size());        
-        System.out.println("Done");
+        logger.info("Done");
+        logService.dispose();
     }
     
     @Test
@@ -235,7 +245,7 @@ public class SessionTest {
         ut.begin();
         
         ProcessInstance processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
-        System.out.println("Started process instance " + processInstance.getId());
+        logger.info("Started process instance {}", processInstance.getId());
         long workItemId = ((HumanTaskNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next()).getWorkItemId();
         long taskId = runtime.getTaskService().getTaskByWorkItemId(workItemId).getId();
         runtime.getTaskService().claim(taskId, "mary");
@@ -269,7 +279,7 @@ public class SessionTest {
         workItemId = ((HumanTaskNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next()).getWorkItemId();
         taskId = runtime.getTaskService().getTaskByWorkItemId(workItemId).getId();
         runtime.getTaskService().claim(taskId, "mary");
-        System.out.println("Started process instance " + processInstance.getId());
+        logger.info("Started process instance {}", processInstance.getId());
         ut.commit();
 
         assertNotNull(runtime.getKieSession().getProcessInstance(processInstance.getId()));
@@ -303,12 +313,12 @@ public class SessionTest {
 		UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
 		ut.begin();		
 		ProcessInstance processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
-		System.out.println("Started process instance " + processInstance.getId());
+		logger.info("Started process instance {}", processInstance.getId());
 		long workItemId = ((HumanTaskNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next()).getWorkItemId();
 		long taskId = runtime.getTaskService().getTaskByWorkItemId(workItemId).getId();
 		runtime.getTaskService().claim(taskId, "mary");
 		ut.rollback();
-		System.out.println("Rolled back");
+		logger.info("Rolled back");
 		// TODO: whenever transaction fails, do we need to dispose? can we?
 		// sessionManager.dispose();
 
@@ -326,7 +336,7 @@ public class SessionTest {
 		workItemId = ((HumanTaskNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next()).getWorkItemId();
 		taskId = runtime.getTaskService().getTaskByWorkItemId(workItemId).getId();
 		runtime.getTaskService().claim(taskId, "mary");
-		System.out.println("Started process instance " + processInstance.getId());
+		logger.info("Started process instance {}", processInstance.getId());
 		ut.commit();
 
 		assertNotNull(runtime.getKieSession().getProcessInstance(processInstance.getId()));
@@ -485,12 +495,12 @@ public class SessionTest {
 		synchronized((SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) runtime.getKieSession()).getCommandService()) {
 			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
 			ut.begin();
-			System.out.println("Starting process on ksession " + runtime.getKieSession().getId());
+			logger.info("Starting process on ksession {}", runtime.getKieSession().getId());
 			ProcessInstance processInstance = runtime.getKieSession().startProcess("com.sample.bpmn.hello", null);
-			System.out.println("Started process instance " + processInstance.getId() + " on ksession " + runtime.getKieSession().getId());
+			logger.info("Started process instance {} on ksession {}", processInstance.getId(), runtime.getKieSession().getId());
 			long workItemId = ((HumanTaskNodeInstance) ((WorkflowProcessInstance) processInstance).getNodeInstances().iterator().next()).getWorkItemId();
 			taskId = runtime.getTaskService().getTaskByWorkItemId(workItemId).getId();
-			System.out.println("Created task " + taskId);
+			logger.info("Created task {}", taskId);
 			runtime.getTaskService().claim(taskId, "mary");
 			ut.commit();
 		}
@@ -500,7 +510,8 @@ public class SessionTest {
 	
 	public class StartProcessRunnable implements Runnable {
 		private RuntimeManager manager;
-		private int counter;
+		@SuppressWarnings("unused")
+        private int counter;
 		public StartProcessRunnable(RuntimeManager manager, int counter) {
 			this.manager = manager;
 			this.counter = counter;
@@ -509,11 +520,11 @@ public class SessionTest {
 			try {
 				for (int i=0; i<nbInvocations; i++) {
 				    RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
-//					System.out.println("Thread " + counter + " doing call " + i);
+//					logger.info("Thread {} doing call {}", counter, i);
 					testStartProcess(runtime);
 					manager.disposeRuntimeEngine(runtime);
 				}
-//				System.out.println("Process thread " + counter + " completed");
+//				logger.info("Process thread {} completed", counter);
 				completedStart++;
 			} catch (Throwable t) {
 				t.printStackTrace();
@@ -528,21 +539,21 @@ public class SessionTest {
 		List<TaskSummary> tasks = null;
 		tasks = runtime.getTaskService().getTasksOwnedByStatus("mary", statusses, "en-UK");
 		if (tasks.isEmpty()) {
-			System.out.println("Task thread found no tasks");
+		    logger.info("Task thread found no tasks");
 			Thread.sleep(1000);
 		} else {
 			long taskId = tasks.get(0).getId();
-			System.out.println("Completing task " + taskId);
+			logger.info("Completing task {}", taskId);
 			boolean success = false;
 			try {
 			    runtime.getTaskService().start(taskId, "mary");
 				success = true;
 			} catch (PermissionDeniedException e) {
 				// TODO can we avoid these by doing it all in one transaction?
-				System.out.println("Task thread was too late for starting task " + taskId);
+			    logger.info("Task thread was too late for starting task {}", taskId);
 			} catch (RuntimeException e) {
 				if (e.getCause() instanceof OptimisticLockException || e.getCause() instanceof StaleObjectStateException) {
-					System.out.println("Task thread got in conflict when starting task " + taskId);
+				    logger.info("Task thread got in conflict when starting task {}", taskId);
 				} else {
 					throw e;
 				}
@@ -550,11 +561,11 @@ public class SessionTest {
 			if (success) {
 			    try {
     			    runtime.getTaskService().complete(taskId, "mary", null);
-    				System.out.println("Completed task " + taskId);
+    			    logger.info("Completed task {}", taskId);
     				result = true;
 			    } catch (RuntimeException e) {
 	                if (e.getCause() instanceof OptimisticLockException || e.getCause() instanceof StaleObjectStateException) {
-	                    System.out.println("Task thread got in conflict when completing task " + taskId);
+	                    logger.info("Task thread got in conflict when completing task {}", taskId);
 	                } else {
 	                    throw e;
 	                }
@@ -573,28 +584,28 @@ public class SessionTest {
         List<TaskSummary> tasks = null;
         tasks = runtime.getTaskService().getTasksByStatusByProcessInstanceId(piId, statusses, "en-UK");
         if (tasks.isEmpty()) {
-            System.out.println("Task thread found no tasks");
+            logger.info("Task thread found no tasks");
             Thread.sleep(1000);
         } else {
             long taskId = tasks.get(0).getId();
-            System.out.println("Completing task " + taskId);
+            logger.info("Completing task {}", taskId);
             boolean success = false;
             try {
                 runtime.getTaskService().start(taskId, "mary");
                 success = true;
             } catch (PermissionDeniedException e) {
                 // TODO can we avoid these by doing it all in one transaction?
-                System.out.println("Task thread was too late for starting task " + taskId);
+                logger.info("Task thread was too late for starting task {}", taskId);
             } catch (RuntimeException e) {
                 if (e.getCause() instanceof OptimisticLockException || e.getCause() instanceof StaleObjectStateException) {
-                    System.out.println("Task thread got in conflict when starting task " + taskId);
+                    logger.info("Task thread got in conflict when starting task {}", taskId);
                 } else {
                     throw e;
                 }
             }
             if (success) {
                 runtime.getTaskService().complete(taskId, "mary", null);
-                System.out.println("Completed task " + taskId);
+                logger.info("Completed task {}", taskId);
                 result = true;
    
             }
@@ -605,7 +616,8 @@ public class SessionTest {
 
 	public class CompleteTaskRunnable implements Runnable {
 		private RuntimeManager manager;
-		private int counter;
+		@SuppressWarnings("unused")
+        private int counter;
 		public CompleteTaskRunnable(RuntimeManager manager, int counter) {
 			this.manager = manager;
 			this.counter = counter;
@@ -622,7 +634,7 @@ public class SessionTest {
 					}
 				}
 				completedTask++;
-//				System.out.println("Task thread " + counter + " completed");
+//				logger.info("Task thread {} completed", counter);
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
@@ -631,6 +643,7 @@ public class SessionTest {
 	
     public class StartProcessPerProcessInstanceRunnable implements Runnable {
         private RuntimeManager manager;
+        @SuppressWarnings("unused")
         private int counter;
         public StartProcessPerProcessInstanceRunnable(RuntimeManager manager, int counter) {
             this.manager = manager;
@@ -640,11 +653,11 @@ public class SessionTest {
             try {
                 for (int i=0; i<nbInvocations; i++) {
                     RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
-//                  System.out.println("Thread " + counter + " doing call " + i);
+//                  logger.info("Thread {} doing call {}", counter, i);
                     testStartProcess(runtime);
                     manager.disposeRuntimeEngine(runtime);
                 }
-//              System.out.println("Process thread " + counter + " completed");
+//              logger.info("Process thread {} completed", counter);
                 completedStart++;
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -665,7 +678,7 @@ public class SessionTest {
                 while (i < nbInvocations) {
 
                     long processInstanceId = (nbInvocations *counter)+1 + i;
-//                    System.out.println("pi id " + processInstanceId + " counter " + counter);
+//                    logger.info("pi id {} counter {}", processInstanceId, counter);
                     RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
                     boolean success = false;
                     
@@ -677,7 +690,7 @@ public class SessionTest {
                     }
                 }
                 completedTask++;
-//	              System.out.println("Task thread " + counter + " completed");
+//	              logger.info("Task thread {} completed", counter);
             } catch (Throwable t) {
                 t.printStackTrace();
             }

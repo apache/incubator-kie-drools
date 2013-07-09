@@ -120,26 +120,25 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                System.out.println("After node left "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("After node left {}", event.getNodeInstance().getNodeName());
             }
 
             @Override
             public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-                System.out.println("After node triggered "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("After node triggered {}"
+                        , event.getNodeInstance().getNodeName());
             }
 
             @Override
             public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-                System.out.println("Before node left "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("Before node left {}"
+                        , event.getNodeInstance().getNodeName());
             }
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-                System.out.println("Before node triggered "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("Before node triggered {}"
+                        , event.getNodeInstance().getNodeName());
             }
 
         });
@@ -161,26 +160,26 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                System.out.println("After node left "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("After node left {}"
+                        , event.getNodeInstance().getNodeName());
             }
 
             @Override
             public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-                System.out.println("After node triggered "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("After node triggered {}"
+                        , event.getNodeInstance().getNodeName());
             }
 
             @Override
             public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-                System.out.println("Before node left "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("Before node left {}"
+                        , event.getNodeInstance().getNodeName());
             }
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-                System.out.println("Before node triggered "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("Before node triggered {}"
+                        , event.getNodeInstance().getNodeName());
             }
 
         });
@@ -1024,26 +1023,26 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                System.out.println("After node left "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("After node left {}"
+                        , event.getNodeInstance().getNodeName());
             }
 
             @Override
             public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-                System.out.println("After node triggered "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("After node triggered {}"
+                        , event.getNodeInstance().getNodeName());
             }
 
             @Override
             public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-                System.out.println("Before node left "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("Before node left {}"
+                        , event.getNodeInstance().getNodeName());
             }
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-                System.out.println("Before node triggered "
-                        + event.getNodeInstance().getNodeName());
+                logger.info("Before node triggered {}"
+                        , event.getNodeInstance().getNodeName());
             }
 
         });
@@ -1268,7 +1267,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         Thread.sleep(1000);
         assertProcessInstanceActive(processInstance);
-        System.out.println("dispose");
+        logger.info("dispose");
         ksession.dispose();
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,

@@ -29,6 +29,7 @@ import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.test.Person;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -41,13 +42,17 @@ import org.jbpm.workflow.core.node.Join;
 import org.jbpm.workflow.core.node.MilestoneNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.junit.Test;
+import org.kie.api.runtime.process.ProcessContext;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.ProcessContext;
-import org.kie.api.runtime.process.ProcessInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class EventTest {
+public class EventTest extends AbstractBaseTest  {
+    
+    private static Logger logger = LoggerFactory.getLogger(EventTest.class);
     
 	@Test
     public void testEvent1() {
@@ -93,7 +98,7 @@ public class EventTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-            	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -194,7 +199,7 @@ public class EventTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-            	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -266,7 +271,7 @@ public class EventTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-            	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -291,7 +296,7 @@ public class EventTest {
         action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-            	System.out.println("Detected other event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected other event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -382,7 +387,7 @@ public class EventTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-                System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -407,7 +412,7 @@ public class EventTest {
         action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-                System.out.println("Detected other event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected other event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -621,7 +626,7 @@ public class EventTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-            	System.out.println("Detected event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected event for person " + ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });

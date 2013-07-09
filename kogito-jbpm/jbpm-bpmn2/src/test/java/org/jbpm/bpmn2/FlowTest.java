@@ -524,7 +524,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {   
-                System.out.println(event.getNodeInstance().getNodeName());
+                logger.info(event.getNodeInstance().getNodeName());
                 Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
                 if (value == null) {
                     value = new Integer(0);
@@ -803,7 +803,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {                 
-                System.out.println(event.getNodeInstance().getNodeName() + " " + ((NodeInstanceImpl) event.getNodeInstance()).getLevel());
+                logger.info("{} {}", event.getNodeInstance().getNodeName(), ((NodeInstanceImpl) event.getNodeInstance()).getLevel());
                 Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
                 if (value == null) {
                     value = new Integer(0);
@@ -865,7 +865,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
             @Override
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {                 
-                System.out.println(event.getNodeInstance().getNodeName() + " " + ((NodeInstanceImpl) event.getNodeInstance()).getLevel());
+                logger.info("{} {}", event.getNodeInstance().getNodeName(), ((NodeInstanceImpl) event.getNodeInstance()).getLevel());
                 Integer value = nodeInstanceExecutionCounter.get(event.getNodeInstance().getNodeName());
                 if (value == null) {
                     value = new Integer(0);

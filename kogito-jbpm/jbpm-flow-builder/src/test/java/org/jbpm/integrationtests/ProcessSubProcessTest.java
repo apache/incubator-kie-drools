@@ -1,24 +1,27 @@
 package org.jbpm.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
+import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Test;
 import org.kie.api.runtime.process.ProcessInstance;
 
-public class ProcessSubProcessTest extends TestCase {
+public class ProcessSubProcessTest extends AbstractBaseTest {
 
+    @Test
     public void testSubProcess() throws Exception {
         RuleBase ruleBase = readRule(true);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -32,6 +35,7 @@ public class ProcessSubProcessTest extends TestCase {
         assertEquals(0, workingMemory.getProcessInstances().size());
     }
 
+    @Test
     public void testSubProcessCancel() throws Exception {
         RuleBase ruleBase = readRule(true);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -43,6 +47,7 @@ public class ProcessSubProcessTest extends TestCase {
         assertEquals(1, workingMemory.getProcessInstances().size());
     }
 
+    @Test
     public void testIndependentSubProcessCancel() throws Exception {
         RuleBase ruleBase = readRule(false);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -54,6 +59,7 @@ public class ProcessSubProcessTest extends TestCase {
         assertEquals(0, workingMemory.getProcessInstances().size());
     }
 
+    @Test
     public void testVariableMapping() throws Exception {
         RuleBase ruleBase = readRule(false);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -176,6 +182,7 @@ public class ProcessSubProcessTest extends TestCase {
 		return ruleBase;
 	}
 	
+	@Test
     public void testDynamicSubProcess() throws Exception {
         RuleBase ruleBase = readDynamicSubProcess();
         WorkingMemory workingMemory = ruleBase.newStatefulSession();

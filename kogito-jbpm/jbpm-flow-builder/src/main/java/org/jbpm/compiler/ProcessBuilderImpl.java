@@ -74,6 +74,8 @@ import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A ProcessBuilder can be used to build processes based on XML files
@@ -81,6 +83,8 @@ import org.kie.api.io.Resource;
  */
 public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessBuilder {
 
+    private static Logger logger = LoggerFactory.getLogger(ProcessBuilderImpl.class);
+    
     private PackageBuilder                packageBuilder;
     private final List<DroolsError>       errors                         = new ArrayList<DroolsError>();
 
@@ -107,8 +111,8 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         boolean hasErrors = false;
         ProcessValidator validator = ProcessValidatorRegistry.getInstance().getValidator(process, resource);
         if (validator == null) {
-            System.out.println("Could not find validator for process " + ((Process)process).getType() + ".");
-            System.out.println("Continuing without validation of the process " + process.getName() + "[" + process.getId() + "]");
+            logger.warn("Could not find validator for process " + ((Process)process).getType() + ".");
+            logger.warn("Continuing without validation of the process " + process.getName() + "[" + process.getId() + "]");
         } else {
             ProcessValidationError[] errors = validator.validateProcess( (WorkflowProcess) process );
             if ( errors.length != 0 ) {
@@ -124,15 +128,14 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         if ( !hasErrors ) {
             // generate and add rule for process
             String rules = generateRules( process );
-//            System.out.println(rules);
             try {
                 packageBuilder.addPackageFromDrl( new StringReader( rules ), resource );
             } catch ( IOException e ) {
                 // should never occur
-                e.printStackTrace( System.err );
+                logger.error("IOException during addPackageFromDRL", e);
             } catch ( DroolsParserException e ) {
                 // should never occur
-                e.printStackTrace( System.err );
+                logger.error("DroolsParserException during addPackageFromDRL", e);
             }
             
             PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry(process.getPackageName());
@@ -193,8 +196,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     	}
     }
     
-    @SuppressWarnings("unchecked")
-	public void buildNodes(WorkflowProcess process, ProcessBuildContext context) {
+    public void buildNodes(WorkflowProcess process, ProcessBuildContext context) {
         processNodes(process.getNodes(), process, context.getProcessDescr(), context);
         if ( !context.getErrors().isEmpty() ) {
             this.errors.addAll( context.getErrors() );

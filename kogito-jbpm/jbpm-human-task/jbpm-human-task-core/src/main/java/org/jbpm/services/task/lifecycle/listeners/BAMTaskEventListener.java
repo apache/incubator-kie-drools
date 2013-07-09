@@ -35,10 +35,14 @@ import org.jbpm.services.task.events.AfterTaskStoppedEvent;
 import org.jbpm.services.task.impl.model.BAMTaskSummaryImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.task.model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 @Transactional
 public class BAMTaskEventListener implements TaskLifeCycleEventListener {
+    
+    private static final Logger logger = LoggerFactory.getLogger(BAMTaskEventListener.class);
 
     @Inject
     private JbpmServicesPersistenceManager pm;
@@ -125,8 +129,7 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
           taskSummaryById.setDuration(completedDate.getTime() - taskSummaryById.getStartDate().getTime());
           pm.merge(taskSummaryById);
         }else{
-          // Log
-          System.out.print("EEEE: Something went wrong with the Task BAM Listener");
+          logger.warn("Something went wrong with the Task BAM Listener");
         }
     }
 

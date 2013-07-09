@@ -17,6 +17,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +25,7 @@ import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.api.runtime.EnvironmentName;
 
-public class CorrelationPersistenceTest {
+public class CorrelationPersistenceTest extends AbstractBaseTest {
     
     private HashMap<String, Object> context;
     

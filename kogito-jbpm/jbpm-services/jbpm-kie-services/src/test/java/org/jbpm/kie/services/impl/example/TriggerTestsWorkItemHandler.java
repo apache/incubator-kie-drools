@@ -18,21 +18,25 @@ package org.jbpm.kie.services.impl.example;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.inject.Inject;
+
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
-import org.kie.commons.java.nio.file.Path;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.commons.java.nio.file.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author esteban
  */
 public class TriggerTestsWorkItemHandler implements WorkItemHandler {
+    
+    private static final Logger logger = LoggerFactory.getLogger(TriggerTestsWorkItemHandler.class);
 
     public final static String WIP_INPUT_RELEASE = "in_release_path";
     public final static String WIP_INPUT_TEST = "in_test_dir";
@@ -128,11 +132,11 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler {
               public void run() {
                 try {
                     for (int i = 0; i < 11; i++) {
-                        System.out.println(">>> Running Tests ... ");
+                        logger.debug(">>> Running Tests ... ");
                         Thread.sleep(1000);
                     }
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(TriggerTestsWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.warn("Interupped exception caught", ex);
                 }
 
                 manager.completeWorkItem(workItem.getId(), results);
@@ -140,7 +144,7 @@ public class TriggerTestsWorkItemHandler implements WorkItemHandler {
             }).start();
 
         } else {
-            System.out.println(">>> Running Tests ... ");
+            logger.debug(">>> Running Tests ... ");
 
 
             manager.completeWorkItem(workItem.getId(), results);

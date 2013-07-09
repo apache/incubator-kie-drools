@@ -19,6 +19,8 @@ import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.TaskAdminService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -27,6 +29,8 @@ import org.kie.internal.task.api.TaskAdminService;
 @ApplicationScoped
 public class TaskAdminServiceImpl implements TaskAdminService {
 
+    private static final Logger logger = LoggerFactory.getLogger(TaskAdminServiceImpl.class);
+    
     @Inject
     private JbpmServicesPersistenceManager pm;
 
@@ -114,7 +118,7 @@ public class TaskAdminServiceImpl implements TaskAdminService {
                 }
                 removedTasks++;
             } else {
-                System.out.println(" The Task cannot be removed if it wasn't archived first !!");
+                logger.warn(" The Task cannot be removed if it wasn't archived first !!");
             }
         }
 

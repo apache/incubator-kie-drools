@@ -31,6 +31,7 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.test.Person;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
@@ -40,12 +41,16 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.junit.Test;
+import org.kie.api.runtime.process.ProcessContext;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.process.ProcessContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ForEachTest {
+public class ForEachTest extends AbstractBaseTest {
+    
+    private static Logger logger = LoggerFactory.getLogger(ForEachTest.class);
     
 	@Test
     public void testForEach() {
@@ -94,7 +99,7 @@ public class ForEachTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-            	System.out.println("Executed action for child " + ((Person) context.getVariable("child")).getName());
+                logger.info("Executed action for child " + ((Person) context.getVariable("child")).getName());
                 myList.add("Executed action");
             }
         });

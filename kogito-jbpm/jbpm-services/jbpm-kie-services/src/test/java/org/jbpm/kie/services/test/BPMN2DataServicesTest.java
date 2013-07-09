@@ -38,6 +38,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.services.task.impl.model.TaskDefImpl;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,7 @@ import org.junit.runner.RunWith;
  * @author salaboy
  */
 @RunWith(Arquillian.class)
-public class BPMN2DataServicesTest {
+public class BPMN2DataServicesTest extends AbstractBaseTest {
 
     @Deployment()
     public static Archive<?> createDeployment() {

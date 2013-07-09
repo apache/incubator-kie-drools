@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -42,7 +43,7 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 @RunWith(Arquillian.class)
-public class MultipleRuntimeManagerTest {
+public class MultipleRuntimeManagerTest extends AbstractBaseTest {
     
     @Deployment()
     public static Archive<?> createDeployment() {

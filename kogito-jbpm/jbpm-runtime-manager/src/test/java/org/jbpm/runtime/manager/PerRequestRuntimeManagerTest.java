@@ -12,11 +12,13 @@ import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +36,7 @@ import org.kie.internal.task.api.UserGroupCallback;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public class PerRequestRuntimeManagerTest {
+public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
 
     private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;  
@@ -203,22 +205,24 @@ public class PerRequestRuntimeManagerTest {
         manager.disposeRuntimeEngine(runtime);
         manager.close();
         
-        JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
-        
-        List<ProcessInstanceLog> logs = JPAProcessInstanceDbLog.findActiveProcessInstances("ParentProcess");
+        AuditLogService logService = new JPAAuditLogService(environment.getEnvironment());
+                
+        List<ProcessInstanceLog> logs = logService.findActiveProcessInstances("ParentProcess");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
-        logs = JPAProcessInstanceDbLog.findActiveProcessInstances("SubProcess");
+        logs = logService.findActiveProcessInstances("SubProcess");
         assertNotNull(logs);
         assertEquals(0, logs.size());
         
-        logs = JPAProcessInstanceDbLog.findProcessInstances("ParentProcess");
+        logs = logService.findProcessInstances("ParentProcess");
         assertNotNull(logs);
         assertEquals(1, logs.size());
         
-        logs = JPAProcessInstanceDbLog.findProcessInstances("SubProcess");
+        logs = logService.findProcessInstances("SubProcess");
         assertNotNull(logs);
         assertEquals(1, logs.size());
+        
+        logService.dispose();
     }
 }

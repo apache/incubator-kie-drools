@@ -16,8 +16,6 @@
 package org.jbpm.form.builder.services.impl;
 
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -28,6 +26,8 @@ import org.jbpm.form.builder.services.model.FormItemRepresentation;
 import org.jbpm.form.builder.services.model.FormRepresentation;
 import org.jbpm.form.builder.services.model.Settings;
 import org.jbpm.form.builder.services.model.forms.FormEncodingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -35,6 +35,8 @@ import org.jbpm.form.builder.services.model.forms.FormEncodingException;
  */
 @ApplicationScoped
 public class FormBuilderServiceImpl implements FormBuilderService{
+    
+    private static final Logger logger = LoggerFactory.getLogger(FormBuilderServiceImpl.class);
 
     public void getMenuItems() throws FormBuilderServiceException {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -51,7 +53,7 @@ public class FormBuilderServiceImpl implements FormBuilderService{
         	formRep.setDataMap(form);
             encode = saveForm(formRep);
         } catch (FormEncodingException ex) {
-            Logger.getLogger(FormBuilderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error while saving from (gwt)", ex);
         }
         return encode;
     }
@@ -62,7 +64,7 @@ public class FormBuilderServiceImpl implements FormBuilderService{
         try {
             encode = FormEncodingServerFactory.getEncoder().encode(form);
         } catch (FormEncodingException ex) {
-            Logger.getLogger(FormBuilderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error while saving form", ex);
         }
         return encode;
     }
@@ -152,7 +154,7 @@ public class FormBuilderServiceImpl implements FormBuilderService{
     	try {
     		return FormEncodingServerFactory.getDecoder().decode(json);
         } catch (FormEncodingException ex) {
-            Logger.getLogger(FormBuilderServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("Error while loading form", ex);
         }
         return null;
     }
