@@ -287,6 +287,41 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             }
         }
 
+        resourcesByType = this.resourcesByType.remove(ResourceType.GDRL);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
+                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.drlToPackageDescr(resourceDescr.resource));
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
+                }
+            }
+        }
+
+        resourcesByType = this.resourcesByType.remove(ResourceType.RDRL);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
+                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.drlToPackageDescr(resourceDescr.resource));
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
+                }
+            }
+        }
+
+
         resourcesByType = this.resourcesByType.remove(ResourceType.DESCR);
         if (resourcesByType != null) {
             for (ResourceDescr resourceDescr : resourcesByType) {
@@ -305,6 +340,23 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
 
         resourcesByType = this.resourcesByType.remove(ResourceType.DSLR);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
+                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.dslrToPackageDescr(resourceDescr.resource));
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
+                }
+            }
+        }
+
+        resourcesByType = this.resourcesByType.remove(ResourceType.RDSLR);
         if (resourcesByType != null) {
             for (ResourceDescr resourceDescr : resourcesByType) {
                 try {
@@ -354,6 +406,24 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
                 }
             }
         }
+
+        resourcesByType = this.resourcesByType.remove(ResourceType.SCARD);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
+                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.decisionTableToPackageDescr(resourceDescr.resource, resourceDescr.configuration));
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
+                }
+            }
+        }
+
         return packages.values();
     }
 

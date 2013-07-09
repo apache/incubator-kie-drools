@@ -6,6 +6,7 @@ import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.core.builder.conf.impl.ScoreCardConfigurationImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.DecisionTableConfiguration;
@@ -15,6 +16,7 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactoryService;
 
 import com.sun.tools.xjc.Options;
+import org.kie.internal.builder.ScoreCardConfiguration;
 
 public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFactoryService {
     
@@ -29,7 +31,11 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
     public DecisionTableConfiguration newDecisionTableConfiguration() {
         return new DecisionTableConfigurationImpl();
     }
-    
+
+    public ScoreCardConfiguration newScoreCardConfiguration() {
+        return new ScoreCardConfigurationImpl();
+    }
+
     public KnowledgeBuilder newKnowledgeBuilder() {
         return new KnowledgeBuilderImpl( new PackageBuilder() );
     }
