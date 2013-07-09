@@ -59,6 +59,14 @@ public interface KnowledgeBuilderFactoryService  extends Service {
     public DecisionTableConfiguration newDecisionTableConfiguration();
 
     /**
+     * Score Cards need to take a configuration of Worksheet name.
+     *
+     * @return
+     *     The ScoreCardConfiguration
+     */
+    public ScoreCardConfiguration newScoreCardConfiguration();
+
+    /**
      * Instantiate and return a new KnowledgeBuilder using the default KnowledgeBuilderConfiguration
      * 
      * @return
