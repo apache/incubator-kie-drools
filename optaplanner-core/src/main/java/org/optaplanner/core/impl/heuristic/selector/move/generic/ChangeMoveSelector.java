@@ -89,10 +89,10 @@ public class ChangeMoveSelector extends GenericMoveSelector {
             entityIterator = entitySelector.iterator();
             if (!entityIterator.hasNext()) {
                 upcomingSelection = null;
+                upcomingSelected = true;
             } else {
                 upcomingEntity = entityIterator.next();
                 valueIterator = valueSelector.iterator(upcomingEntity);
-                createUpcomingSelection();
             }
         }
 
@@ -123,8 +123,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
             entityIterator = entitySelector.iterator();
             if (!entityIterator.hasNext()) {
                 upcomingSelection = null;
-            } else {
-                createUpcomingSelection();
+                upcomingSelected = true;
             }
         }
 

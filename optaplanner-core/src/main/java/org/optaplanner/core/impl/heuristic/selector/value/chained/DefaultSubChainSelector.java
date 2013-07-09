@@ -206,7 +206,6 @@ public class DefaultSubChainSelector extends AbstractSelector
             toIndex = 1;
             anchorTrailingChain = Collections.emptyList();
             nextListIteratorIndex = 0;
-            createUpcomingSelection();
         }
 
         @Override
@@ -268,8 +267,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         private RandomSubChainIterator() {
             if (anchorTrailingChainList.isEmpty()) {
                 upcomingSelection = null;
-            } else {
-                createUpcomingSelection();
+                upcomingSelected = true;
             }
         }
 

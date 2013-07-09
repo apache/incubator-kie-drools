@@ -48,7 +48,6 @@ public abstract class AbstractOriginalSwapIterator<S, SubS> extends UpcomingSele
         leftEqualsRight = (leftSubSelector == rightSubSelector);
         leftSubSelectionIterator = leftSubSelector.listIterator();
         rightSubSelectionIterator = IteratorUtils.emptyListIterator();
-        createUpcomingSelection();
     }
 
     @Override

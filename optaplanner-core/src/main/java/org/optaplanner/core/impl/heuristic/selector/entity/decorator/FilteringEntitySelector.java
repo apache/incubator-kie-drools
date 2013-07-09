@@ -86,7 +86,6 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
 
         public JustInTimeFilteringEntityIterator(Iterator<Object> childEntityIterator) {
             this.childEntityIterator = childEntityIterator;
-            createUpcomingSelection();
         }
 
         @Override

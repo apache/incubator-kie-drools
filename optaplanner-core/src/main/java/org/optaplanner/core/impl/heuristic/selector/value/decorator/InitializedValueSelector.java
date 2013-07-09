@@ -74,7 +74,6 @@ public class InitializedValueSelector extends AbstractValueSelector {
         public JustInTimeInitializedValueIterator(Object entity, Iterator<Object> childValueIterator) {
             this.entity = entity;
             this.childValueIterator = childValueIterator;
-            createUpcomingSelection();
         }
 
         @Override

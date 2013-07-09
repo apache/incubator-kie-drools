@@ -100,9 +100,9 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             // valueIterator.hasNext() returns true if there is a next for any entity parameter
             if (!subChainIterator.hasNext() || !valueIterator.hasNext()) {
                 upcomingSelection = null;
+                upcomingSelected = true;
             } else {
                 upcomingSubChain = subChainIterator.next();
-                createUpcomingSelection();
             }
         }
 
@@ -141,8 +141,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             // valueIterator.hasNext() returns true if there is a next for any subChain parameter
             if (!subChainIterator.hasNext() || !valueIterator.hasNext()) {
                 upcomingSelection = null;
-            } else {
-                createUpcomingSelection();
+                upcomingSelected = true;
             }
         }
 

@@ -80,7 +80,6 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
 
         public JustInTimeFilteringMoveIterator(Iterator<Move> childMoveIterator) {
             this.childMoveIterator = childMoveIterator;
-            createUpcomingSelection();
         }
 
         @Override

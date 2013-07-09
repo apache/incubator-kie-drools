@@ -88,7 +88,6 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
                 }
                 subSelections.add(null);
             }
-            createUpcomingSelection();
         }
 
         @Override

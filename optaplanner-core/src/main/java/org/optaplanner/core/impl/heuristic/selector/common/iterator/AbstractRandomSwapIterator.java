@@ -34,8 +34,7 @@ public abstract class AbstractRandomSwapIterator<S, SubS> extends UpcomingSelect
         rightSubSelectionIterator = this.rightSubSelector.iterator();
         if (!leftSubSelectionIterator.hasNext() || !rightSubSelectionIterator.hasNext()) {
             upcomingSelection = null;
-        } else {
-            createUpcomingSelection();
+            upcomingSelected = true;
         }
     }
 
