@@ -594,14 +594,16 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         public void execute(InternalWorkingMemory workingMemory) {
             final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
-            accctx.setAction( null );
-            node.evaluateResultConstraints( source,
-                                            leftTuple,
-                                            context,
-                                            workingMemory,
-                                            memory,
-                                            accctx,
-                                            useLeftMemory );
+            synchronized ( node ) {
+                accctx.setAction( null );
+                node.evaluateResultConstraints( source,
+                                                leftTuple,
+                                                context,
+                                                workingMemory,
+                                                memory,
+                                                accctx,
+                                                useLeftMemory );
+            }
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {

@@ -699,13 +699,14 @@ public abstract class BetaNode extends LeftTupleSource
                                        RightTupleSink sink,
                                        PropagationContext context) {
         if ( !this.concurrentRightTupleMemory ) {
-            if ( context.getActiveWindowTupleList() == null ) {
+            WindowTupleList list = context.getActiveWindowTupleList();
+            if ( list == null ) {
                 return new RightTuple( handle,
                                        sink );
             } else {
                 return new WindowTuple( handle,
                                         sink,
-                                        context.getActiveWindowTupleList() );
+                                        list );
             }
         } else {
             return new ConcurrentRightTuple( handle,

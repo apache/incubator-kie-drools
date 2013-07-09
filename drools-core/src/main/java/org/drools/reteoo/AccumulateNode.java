@@ -242,7 +242,7 @@ public class AccumulateNode extends BetaNode {
      *  1. Select all matching tuples from left memory
      *  2. For each matching tuple, call a modify tuple
      */
-    public void assertObject( final InternalFactHandle factHandle,
+    public synchronized void assertObject( final InternalFactHandle factHandle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory ) {
 
@@ -451,7 +451,7 @@ public class AccumulateNode extends BetaNode {
         } // else evaluation is already scheduled, so do nothing
     }
 
-    public void modifyRightTuple( RightTuple rightTuple,
+    public synchronized void modifyRightTuple( RightTuple rightTuple,
                                   PropagationContext context,
                                   InternalWorkingMemory workingMemory ) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
@@ -972,7 +972,7 @@ public class AccumulateNode extends BetaNode {
                               workingMemory );
     }
 
-    private void removePreviousMatchesForRightTuple( final RightTuple rightTuple,
+    private synchronized void removePreviousMatchesForRightTuple( final RightTuple rightTuple,
                                                      final PropagationContext context,
                                                      final InternalWorkingMemory workingMemory,
                                                      final AccumulateMemory memory,

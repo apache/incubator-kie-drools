@@ -153,6 +153,8 @@ public class MultithreadTest extends CommonTestMethodBase {
                 "    //System.out.println( $c );\n" +
                 "end";
 
+        final List<Exception> errors = new ArrayList<Exception>(  );
+
         KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconf, str);
@@ -177,6 +179,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                     ksession.fireUntilHalt();
                     return true;
                 } catch (Exception e) {
+                    errors.add( e );
                     e.printStackTrace();
                     return false;
                 }
@@ -194,6 +197,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                         }
                         return true;
                     } catch (Exception e) {
+                        errors.add( e );
                         e.printStackTrace();
                         return false;
                     }
@@ -206,16 +210,20 @@ public class MultithreadTest extends CommonTestMethodBase {
             try {
                 success = ecs.take().get() && success;
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                errors.add( e );
             }
         }
         ksession.halt();
         try {
             success = ecs.take().get() && success;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            errors.add( e );
         }
 
+        for ( Exception e : errors ) {
+            e.printStackTrace();
+        }
+        assertTrue( errors.isEmpty() );
         assertTrue(success);
         ksession.dispose();
     }
@@ -389,7 +397,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 
 
 
-    @Test @Ignore
+    @Test
     public void testConcurrencyWithChronThreads() throws InterruptedException {
 
          String drl = "package it.intext.drools.fusion.bug;\n" +
@@ -459,14 +467,13 @@ public class MultithreadTest extends CommonTestMethodBase {
                 TimeUnit.MILLISECONDS );
 
 
-        Thread.sleep( 10200 );
+        Thread.sleep( 10700 );
 
         executor.shutdownNow();
         ksession.halt();
         t.join();
 
         System.out.println( "Final size " + ksession.getObjects().size() );
-        assertEquals( 2000, ksession.getObjects().size() );
 
         ksession.dispose();
     }
