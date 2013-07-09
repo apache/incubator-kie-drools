@@ -4,9 +4,13 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Mailbox;
 import org.drools.compiler.Mailbox.FolderType;
 import org.drools.compiler.Message;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 /**
@@ -168,5 +172,22 @@ public class ExpressionConstraintsTest extends CommonTestMethodBase {
         ksession.insert(new Mailbox("john@mail"));
         rules = ksession.fireAllRules();
         Assert.assertEquals( 2, rules );
+    }
+
+    @Test
+    public void testDeeplyNestedCompactExpressions() {
+        String drl = "package org.drools\n" +
+                     "rule R1\n" +
+                     " when\n" +
+                     " Person( age > 10 && ( < 20 || > 30 ) )\n" +
+                     // nested () are not supported with compact constraints.
+                     // workaround : use field names explicitly:
+                     //" Person( age > 10 && ( age < 20 || age > 30 ) )\n" +
+                     " then\n" +
+                     "end\n";
+
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        assertTrue( knowledgeBuilder.hasErrors() );
     }
 }

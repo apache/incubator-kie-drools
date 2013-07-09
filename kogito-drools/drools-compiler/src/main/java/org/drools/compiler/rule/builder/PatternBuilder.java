@@ -629,8 +629,30 @@ public class PatternBuilder
                           Pattern pattern,
                           ConstraintConnectiveDescr descr,
                           MVELDumper.MVELDumperContext mvelCtx ) {
-        for ( BaseDescr d : descr.getDescrs() ) {
-            buildCcdDescr(context, patternDescr, pattern, d, mvelCtx);
+        List<BaseDescr> initialDescrs = new ArrayList<BaseDescr>( descr.getDescrs() );
+        for ( BaseDescr d : initialDescrs ) {
+            buildCcdDescr(context, patternDescr, pattern, d, descr, mvelCtx);
+        }
+
+        if ( descr.getDescrs().size() > initialDescrs.size() ) {
+            // The initial build process may have generated other constraint descrs.
+            // This happens when null-safe references or inline-casts are used
+            // These additional constraints must be built, and added as
+            List<BaseDescr> additionalDescrs = new ArrayList<BaseDescr>( descr.getDescrs() );
+            additionalDescrs.removeAll( initialDescrs );
+
+            if ( ! additionalDescrs.isEmpty() ) {
+                List<Constraint> constraints = new ArrayList<Constraint>( pattern.getConstraints() );
+                for ( Constraint c : constraints ) {
+                    pattern.removeConstraint( c );
+                }
+                for ( BaseDescr d : additionalDescrs ) {
+                    buildCcdDescr(context, patternDescr, pattern, d, descr, mvelCtx);
+                }
+                for ( Constraint c : constraints ) {
+                    pattern.addConstraint( c );
+                }
+            }
         }
     }
 
@@ -638,11 +660,12 @@ public class PatternBuilder
                                  PatternDescr patternDescr,
                                  Pattern pattern,
                                  BaseDescr d,
+                                 ConstraintConnectiveDescr ccd,
                                  MVELDumper.MVELDumperContext mvelCtx) {
         d.copyLocation( patternDescr );
 
         mvelCtx.clear();
-        String expr = context.getCompilerFactory().getExpressionProcessor().dump( d, mvelCtx );
+        String expr = context.getCompilerFactory().getExpressionProcessor().dump( d, ccd, mvelCtx );
         Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
         Map<String, Class<?>> localTypes = mvelCtx.getLocalTypes();
 
