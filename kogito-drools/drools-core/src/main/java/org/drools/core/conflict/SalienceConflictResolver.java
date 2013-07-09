@@ -73,9 +73,9 @@ public class SalienceConflictResolver extends AbstractConflictResolver {
         final int s1 = lhs.getSalience();
         final int s2 = rhs.getSalience();
 
-        if ( s1 > s2 ) {
+        if ( s1 < s2 ) {
             return -1;
-        } else if ( s1 < s2 ) {
+        } else if ( s1 > s2 ) {
             return 1;
         } else {
             return 0;
