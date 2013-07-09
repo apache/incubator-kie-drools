@@ -239,6 +239,8 @@ public class KieBaseModelImpl
             public boolean apply(java.io.File file) {
                 String fileName = file.getName();
                 return fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) ||
+                       fileName.endsWith( ResourceType.GDRL.getDefaultExtension() ) ||
+                       fileName.endsWith( ResourceType.RDRL.getDefaultExtension() ) ||
                        fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() );
             }
         } );
@@ -246,7 +248,11 @@ public class KieBaseModelImpl
 
     private static boolean filterFileInKBase(String rootPath,
                                              String fileName) {
-        return fileName.startsWith( rootPath ) && (fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) || fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() ));
+        return fileName.startsWith( rootPath ) &&
+                (fileName.endsWith( ResourceType.DRL.getDefaultExtension() ) ||
+                        fileName.endsWith( ResourceType.GDRL.getDefaultExtension() ) ||
+                        fileName.endsWith( ResourceType.RDRL.getDefaultExtension() ) ||
+                        fileName.endsWith( ResourceType.BPMN2.getDefaultExtension() ));
     }
 
     public static class KBaseConverter extends AbstractXStreamConverter {

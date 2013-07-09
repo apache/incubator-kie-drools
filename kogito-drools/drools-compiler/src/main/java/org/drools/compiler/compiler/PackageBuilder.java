@@ -136,6 +136,7 @@ import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.ScoreCardConfiguration;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.process.Process;
@@ -478,6 +479,30 @@ public class PackageBuilder
         return parser.hasErrors() ? null : pkg;
     }
 
+    public void addPackageFromScoreCard(Resource resource,
+                                        ResourceConfiguration configuration) throws DroolsParserException,
+            IOException {
+        this.resource = resource;
+        addPackage( scoreCardToPackageDescr( resource, configuration ) );
+        this.resource = null;
+    }
+
+    PackageDescr scoreCardToPackageDescr(Resource resource,
+                                         ResourceConfiguration configuration) throws DroolsParserException,
+            IOException {
+        ScoreCardConfiguration scardConfiguration = (ScoreCardConfiguration) configuration;
+        String string = ScoreCardFactory.loadFromInputStream( resource.getInputStream(), scardConfiguration );
+
+        DrlParser parser = new DrlParser( this.configuration.getLanguageLevel() );
+        PackageDescr pkg = parser.parse( resource, new StringReader( string ) );
+        this.results.addAll( parser.getErrors() );
+        if ( pkg == null ) {
+            this.results.add( new ParserError( resource, "Parser returned a null Package", 0, 0 ) );
+        }
+        return parser.hasErrors() ? null : pkg;
+    }
+
+
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
                                                     IOException {
         this.resource = resource;
@@ -686,9 +711,15 @@ public class PackageBuilder
             ((InternalResource) resource).setResourceType( type );
             if ( ResourceType.DRL.equals( type ) ) {
                 addPackageFromDrl( resource );
+            } else if ( ResourceType.GDRL.equals( type ) ) {
+                addPackageFromDrl( resource );
+            } else if ( ResourceType.RDRL.equals( type ) ) {
+                addPackageFromDrl( resource );
             } else if ( ResourceType.DESCR.equals( type ) ) {
                 addPackageFromDrl( resource );
             } else if ( ResourceType.DSLR.equals( type ) ) {
+                addPackageFromDslr( resource );
+            } else if ( ResourceType.RDSLR.equals( type ) ) {
                 addPackageFromDslr( resource );
             } else if ( ResourceType.DSL.equals( type ) ) {
                 addDsl( resource );
@@ -709,6 +740,8 @@ public class PackageBuilder
                 addPackageFromXSD( resource, (JaxbConfigurationImpl) configuration );
             } else if ( ResourceType.PMML.equals( type ) ) {
                 addPackageFromPMML( resource, type, configuration );
+            } else if ( ResourceType.SCARD.equals( type ) ) {
+                addPackageFromScoreCard( resource, configuration );
             } else {
                 addPackageForExternalType( resource, type, configuration );
             }
