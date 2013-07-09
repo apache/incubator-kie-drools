@@ -109,6 +109,28 @@ public class KnowledgeBuilderFactory {
         return getKnowledgeBuilderServiceFactory().newDecisionTableConfiguration();
     }
 
+    /**
+     * ResourceConfiguration for score cards. It allows for the worksheet name to be specified.
+     *
+     * <p>
+     * Simple example showing how to build a KnowledgeBase from an XLS resource.
+     * <p>
+     *
+     * <pre>
+     * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+     * ScoreCardConfiguration scconf = KnowledgeBuilderFactory.newScoreCardConfiguration();
+     * scconf.setWorksheetName( "Tables_2" );
+     * kbuilder.add( ResourceFactory.newUrlResource( "file://IntegrationExampleTest.xls" ),
+     *               ResourceType.SCARD,
+     *               scconf );
+     * assertFalse( kbuilder.hasErrors() );
+     * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+     * </pre>
+     */
+    public static ScoreCardConfiguration newScoreCardConfiguration() {
+        return getKnowledgeBuilderServiceFactory().newScoreCardConfiguration();
+    }
+
     public static JaxbConfiguration newJaxbConfiguration(Options xjcOpts,
                                                          String systemId) {
         return getKnowledgeBuilderServiceFactory().newJaxbConfiguration(xjcOpts,

@@ -72,6 +72,18 @@ public class ResourceType
                                                                              "src/main/resources",
                                                                              "drl" );
 
+    /** Drools Rule Language - Workaround for double-dot file extensions for 6.0 */
+    public static final ResourceType GDRL        = addResourceTypeToRegistry( "GDRL",
+                                                                              "Drools Rule Language",
+                                                                              "src/main/resources",
+                                                                              "gdrl" );
+
+    /** Drools Rule Language - Workaround for double-dot file extensions for 6.0 */
+    public static final ResourceType RDRL        = addResourceTypeToRegistry( "RDRL",
+                                                                              "Drools Rule Language",
+                                                                              "src/main/resources",
+                                                                              "rdrl" );
+
     /** Drools XML Rule Language */
     public static final ResourceType XDRL       = addResourceTypeToRegistry( "XDRL",
                                                                              "Drools XML Rule Language",
@@ -89,6 +101,12 @@ public class ResourceType
                                                                              "Drools DSL Rule",
                                                                              "src/main/resources",
                                                                              "dslr" );
+
+    /** Drools DSL Rule - Workaround for double-dot file extensions for 6.0 */
+    public static final ResourceType RDSLR       = addResourceTypeToRegistry( "RDSLR",
+                                                                              "Drools DSL Rule",
+                                                                              "src/main/resources",
+                                                                              "rdslr" );
 
     /** Drools Rule Flow Language */
     public static final ResourceType DRF        = addResourceTypeToRegistry( "DRF",
@@ -156,6 +174,12 @@ public class ResourceType
                                                                              "src/main/resources",
                                                                              "properties" );
 
+    /** Score Card - Workaround for double-dot file extensions for 6.0 */
+    public static final ResourceType SCARD     = addResourceTypeToRegistry( "SCARD",
+                                                                            "Score Crd",
+                                                                            "src/main/resources",
+                                                                            "sxls" );
+
     public static ResourceType getResourceType(final String resourceType) {
         ResourceType resource = CACHE.get( resourceType );
         if ( resource == null ) {
@@ -191,7 +215,7 @@ public class ResourceType
     public String getDefaultPath() {
         return defaultPath;
     }
-    
+
     public String getDefaultExtension() {
         return defaultExtension;
     }
