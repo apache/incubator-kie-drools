@@ -130,7 +130,7 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
     }
 
     public Iterator<Object> endingIterator() {
-        return childEntitySelector.endingIterator();
+        return new JustInTimeFilteringEntityIterator(childEntitySelector.endingIterator());
     }
 
     private boolean accept(ScoreDirector scoreDirector, Object entity) {
