@@ -32,7 +32,7 @@
       <!--</swapMoveSelector>-->
       <subChainChangeMoveSelector>
         <subChainSelector>
-          <maximumSubChainSize>40</maximumSubChainSize>
+          <maximumSubChainSize>20</maximumSubChainSize>
         </subChainSelector>
         <selectReversingMoveToo>true</selectReversingMoveToo>
       </subChainChangeMoveSelector>
