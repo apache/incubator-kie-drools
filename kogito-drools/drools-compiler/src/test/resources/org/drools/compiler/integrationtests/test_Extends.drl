@@ -3,20 +3,20 @@
 
 
 declare Person
-    age  : int     = 99          @position(2)
-    name : String  = "john doe"  @key    @position(1)
+    age  : int     = 99          @position(1)
+    name : String  = "john doe"  @key    @position(0)
 end
 
 
 declare Student extends Person
-    school : String @key   @position(3)
+    school : String @key   @position(2)
     age    : int    = 18
 end
 
 
 declare LongTermStudent extends Student
-    years : int @key @position(5)
-    course : String @position(4)
+    years : int @key @position(4)
+    course : String @position(3)
 end
 
 

@@ -130,6 +130,7 @@ import org.drools.core.util.HierarchySorter;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.core.xml.XmlChangeSetReader;
+import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Role;
 import org.kie.internal.ChangeSet;
 import org.kie.internal.builder.DecisionTableConfiguration;
@@ -1707,11 +1708,12 @@ public class PackageBuilder
         for ( Field fld : fields ) {
             Position pos = fld.getAnnotation( Position.class );
             if ( pos != null ) {
-                FieldDefinition fldDef = new FieldDefinition( fld.getName(),
-                                                              fld.getType().getName() );
+                FieldDefinition fldDef = clsDef.getField(fld.getName());
+                if (fldDef == null) {
+                    fldDef = new FieldDefinition( fld.getName(), fld.getType().getName() );
+                }
                 fldDef.setIndex( pos.value() );
-                orderedFields.set( pos.value(),
-                                   fldDef );
+                orderedFields.set( pos.value(), fldDef );
             }
         }
         for ( FieldDefinition fld : orderedFields ) {
@@ -2593,6 +2595,12 @@ public class PackageBuilder
             if ( TypeDeclaration.Role.ID.equals( annotation ) ) {
                 return Role.class;
             }
+            if ( "key".equals( annotation ) ) {
+                return Key.class;
+            }
+            if ( "position".equals( annotation ) ) {
+                return Position.class;
+            }
             return null;
         }
     }
@@ -3082,7 +3090,8 @@ public class PackageBuilder
                                                                                 "  - undefined property in @annotation " +
                                                                                 annotationName + ": " + nsme.getMessage() + ";" ) );
                         }
-                    } else {
+                    }
+                    if (annotation == null || annotation == Key.class || annotation == Position.class) {
                         fieldDef.addMetaData( annotationName, field.getAnnotation( annotationName ).getSingleValue() );
                     }
                 }

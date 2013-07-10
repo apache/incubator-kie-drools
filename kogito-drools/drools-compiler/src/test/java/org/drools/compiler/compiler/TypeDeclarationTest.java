@@ -474,9 +474,11 @@ public class TypeDeclarationTest {
 
         FactField field = bean.getField( "name" );
         assertNotNull( field );
-        assertEquals( 1, field.getFieldAnnotations().size() );
+        assertEquals( 2, field.getFieldAnnotations().size() );
         Annotation fnn = field.getFieldAnnotations().get( 0 );
-
+        if (!ann.getName().equals("org.drools.compiler.compiler.TypeDeclarationTest$FieldAnnotation")) {
+            ann = bean.getClassAnnotations().get( 1 );
+        }
         assertEquals( "org.drools.compiler.compiler.TypeDeclarationTest$FieldAnnotation", fnn.getName() );
         assertEquals( "fld", fnn.getPropertyValue( "prop" ) );
         assertEquals( String.class, fnn.getPropertyType( "prop" ) );
