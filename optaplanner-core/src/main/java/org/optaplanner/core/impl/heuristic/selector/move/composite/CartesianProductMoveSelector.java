@@ -121,21 +121,26 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
     public class RandomCartesianProductMoveIterator implements Iterator<Move> {
 
         private List<Iterator<Move>> moveIteratorList;
-        private boolean empty;
+        private Boolean empty;
 
         public RandomCartesianProductMoveIterator() {
             moveIteratorList = new ArrayList<Iterator<Move>>(childMoveSelectorList.size());
-            empty = false;
+            empty = null;
             for (MoveSelector moveSelector : childMoveSelectorList) {
-                Iterator<Move> moveIterator = moveSelector.iterator();
-                if (!moveIterator.hasNext()) {
-                    empty = true;
-                }
-                moveIteratorList.add(moveIterator);
+                moveIteratorList.add(moveSelector.iterator());
             }
         }
 
         public boolean hasNext() {
+            if (empty == null) {
+                empty = false;
+                for (Iterator<Move> moveIterator : moveIteratorList) {
+                    if (!moveIterator.hasNext()) {
+                        empty = true;
+                        break;
+                    }
+                }
+            }
             return !empty;
         }
 
