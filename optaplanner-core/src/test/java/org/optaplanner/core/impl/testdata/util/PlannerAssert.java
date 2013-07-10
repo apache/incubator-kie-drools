@@ -147,6 +147,18 @@ public class PlannerAssert extends Assert {
         assertEquals(size, moveSelector.getSize());
     }
 
+    public static void assertEmptyNeverEndingMoveSelector(MoveSelector moveSelector) {
+        assertEmptyNeverEndingMoveSelector(moveSelector, 0L);
+    }
+
+    public static void assertEmptyNeverEndingMoveSelector(MoveSelector moveSelector, long size) {
+        Iterator<Move> iterator = moveSelector.iterator();
+        assertFalse(iterator.hasNext());
+        assertEquals(false, moveSelector.isContinuous());
+        assertEquals(true, moveSelector.isNeverEnding());
+        assertEquals(size, moveSelector.getSize());
+    }
+
     private PlannerAssert() {
     }
 
