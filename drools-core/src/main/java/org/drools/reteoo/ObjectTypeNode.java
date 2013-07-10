@@ -372,12 +372,12 @@ public class ObjectTypeNode extends ObjectSource
         if ( compiledNetwork != null ) {
             compiledNetwork.modifyObject( factHandle,
                                           modifyPreviousTuples,
-                                          context.adaptModificationMaskForObjectType(objectType, workingMemory),
+                                          context.getModificationMask() > 0 ? context.adaptModificationMaskForObjectType(objectType, workingMemory) : context,
                                           workingMemory );
         } else {
             this.sink.propagateModifyObject( factHandle,
                                              modifyPreviousTuples,
-                                             context.adaptModificationMaskForObjectType(objectType, workingMemory),
+                                             context.getModificationMask() > 0 ? context.adaptModificationMaskForObjectType(objectType, workingMemory) : context,
                                              workingMemory );
 
         }

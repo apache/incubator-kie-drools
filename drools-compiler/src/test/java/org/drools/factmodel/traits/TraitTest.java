@@ -3269,6 +3269,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "   modify ( $p ) { \n" +
                 "       setHeight( 184.0 ); \n" +
                 "   }" +
+                "   System.out.println( $p ); " +
                 "end \n";
 
         StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString( source ).newStatefulKnowledgeSession();
@@ -3884,6 +3885,181 @@ public class TraitTest extends CommonTestMethodBase {
         assertFalse( iter.hasNext() );
 
         assertEquals( 1, res.size() );
+
+    }
+
+
+
+
+
+    @Test
+    public void testCoreUpdate4(  ) {
+        String source = "package t.x \n" +
+                        "import java.util.*; \n" +
+                        "import org.drools.factmodel.traits.Thing \n" +
+                        "import org.drools.factmodel.traits.Traitable \n" +
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "\n" +
+                        "" +
+                        "declare trait A " +
+                        "   age : int \n" +
+                        "end\n" +
+                        "" +
+                        "declare Kore\n" +
+                        "   @Traitable\n" +
+                        "   age : int\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init \n" +
+                        "when\n" +
+                        "then\n" +
+                        "   Kore k = new Kore( 44 );\n" +
+                        "   insert( k ); \n" +
+                        "end\n" +
+                        "" +
+                        "" +
+                        "rule Don \n" +
+                        "no-loop \n" +
+                        "when\n" +
+                        "   $x : Kore() \n" +
+                        "then \n" +
+                        "   System.out.println( \"Donning\" ); \n" +
+                        "   don( $x, A.class ); \n" +
+                        "end\n" +
+                        "rule React \n" +
+                        "salience 1" +
+                        "when\n" +
+                        "   $x : Kore( this isA A.class ) \n" +
+                        "then \n" +
+                        "   System.out.println( \"XXXXXXXXXXXXXXXXXXXXXX \" + $x ); \n" +
+                        "   list.add( $x ); \n" +
+                        "end\n" +
+                        "";
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+
+        for ( Object o : ks.getObjects() ) {
+            System.err.println( o );
+        }
+        assertEquals( 1, list.size() );
+    }
+
+
+    @Test
+    public void testMapCore2(  ) {
+        String source = "package openehr.test;\n" +
+                        "\n" +
+                        "import java.util.*;\n" +
+                        "global List list;\n " +
+                        "\n" +
+                        "declare org.drools.factmodel.MapCore " +
+                        "end\n" +
+                        "\n" +
+                        "global List list; \n" +
+                        "\n" +
+                        "declare trait PersonMap\n" +
+                        "@propertyReactive  \n" +
+                        "   name : String  \n" +
+                        "   age  : int  \n" +
+                        "   height : Double  \n" +
+                        "end\n" +
+                        "\n" +
+                        "declare trait StudentMap\n" +
+                        "@propertyReactive\n" +
+                        "   ID : String\n" +
+                        "   GPA : Double = 3.0\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule Don  \n" +
+                        "when  \n" +
+                        "  $m : Map( this[ \"age\"] == 18 )\n" +
+                        "then  \n" +
+                        "   don( $m, PersonMap.class );\n" +
+                        "   System.out.println( \"done: PersonMap\" );\n" +
+                        "\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule Log  \n" +
+                        "when  \n" +
+                        "   $p : PersonMap( name == \"john\", age > 10 )\n" +
+                        "then  \n" +
+                        "   modify ( $p ) {  \n" +
+                        "       setHeight( 184.0 );  \n" +
+                        "   }\n" +
+                        "   System.out.println(\"Log: \" +  $p );\n" +
+                        "end\n" +
+                        "" +
+                        "" +
+                        "rule Don2\n" +
+                        "salience -1\n" +
+                        "when\n" +
+                        "   $m : Map( this[ \"age\"] == 18 ) " +
+                        "then\n" +
+                        "   don( $m, StudentMap.class );\n" +
+                        "   System.out.println( \"done2: StudentMap\" );\n" +
+                        "end\n" +
+                        "" +
+                        "" +
+                        "rule Log2\n" +
+                        "salience -2\n" +
+                        "no-loop\n" +
+                        "when\n" +
+                        "   $p : StudentMap( $h : fields[ \"height\" ], GPA >= 3.0 ) " +
+                        "then\n" +
+                        "   modify ( $p ) {\n" +
+                        "       setGPA( 4.0 ),\n" +
+                        "       setID( \"100\" );\n" +
+                        "   }\n" +
+                        "   System.out.println(\"Log2: \" + $p );\n" +
+                        "end\n" +
+                        "" +
+                        "" +
+                        "\n" +
+                        "rule Shed1\n" +
+                        "salience -5// it seams that the order of shed must be the same as applying don\n" +
+                        "when\n" +
+                        "    $m : PersonMap()\n" +
+                        "then\n" +
+                        "   shed( $m, PersonMap.class );\n" +
+                        "   System.out.println( \"shed: PersonMap\" );\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule Shed2\n" +
+                        "salience -9\n" +
+                        "when\n" +
+                        "    $m : StudentMap()\n" +
+                        "then\n" +
+                        "   shed( $m, StudentMap.class );\n" +
+                        "   System.out.println( \"shed: StudentMap\" );\n" +
+                        "end\n" +
+                        "\n" +
+                        "\n";
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        Map<String,Object> map = new HashMap<String, Object>(  );
+        map.put( "name", "john" );
+        map.put( "age", 18 );
+        ks.insert( map );
+
+        ks.fireAllRules();
+
+
+        for ( Object o : ks.getObjects() ) {
+            System.err.println( o );
+        }
+
+        assertEquals( "100", map.get( "ID" ) );
+        assertEquals( 184.0, map.get( "height" ) );
+        assertEquals( 4.0, map.get( "GPA" ) );
 
     }
 

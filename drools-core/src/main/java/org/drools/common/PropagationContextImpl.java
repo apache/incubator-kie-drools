@@ -25,6 +25,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.WindowTupleList;
 import org.drools.rule.*;
+import org.drools.rule.Package;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
@@ -434,7 +435,12 @@ public class PropagationContextImpl
     }
 
     private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType, String pkgName) {
-        return workingMemory.getRuleBase().getPackage(pkgName).getTypeDeclaration(classType).getSettableProperties();
+        if ( pkgName.equals( "java.lang" ) || pkgName.equals( "java.util" ) ) {
+            return Collections.EMPTY_LIST;
+        }
+        Package pkg = workingMemory.getRuleBase().getPackage( pkgName );
+        TypeDeclaration tdecl =  pkg != null ? pkg.getTypeDeclaration( classType ) : null;
+        return tdecl != null ? tdecl.getSettableProperties() : Collections.EMPTY_LIST;
     }
 
     public WindowTupleList getActiveWindowTupleList() {

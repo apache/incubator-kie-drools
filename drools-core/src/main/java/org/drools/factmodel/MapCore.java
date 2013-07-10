@@ -28,12 +28,12 @@ import java.io.Serializable;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Traitable
-public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializable {
+public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializable, Map<String,Object> {
 
     private String id;
 
@@ -120,6 +120,54 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
         return map != null ? map.getCurrentTypeCode() : null;
     }
 
+    public int size() {
+        return _getDynamicProperties().size();
+    }
+
+    public boolean isEmpty() {
+        return _getDynamicProperties().isEmpty();
+    }
+
+    public boolean containsKey( Object key ) {
+        return _getDynamicProperties().containsKey( key );
+    }
+
+    public boolean containsValue( Object value ) {
+        return _getDynamicProperties().containsValue( value );
+    }
+
+    public Object get( Object key ) {
+        return _getDynamicProperties().get( key );
+    }
+
+    public Object put( String key, Object value ) {
+        return _getDynamicProperties().put( key, value );
+    }
+
+    public Object remove( Object key ) {
+        return _getDynamicProperties().remove( key );
+    }
+
+    public void putAll( Map m ) {
+        _getDynamicProperties().putAll( m );
+    }
+
+    public void clear() {
+        _getDynamicProperties().clear();
+    }
+
+    public Set keySet() {
+        return _getDynamicProperties().keySet();
+    }
+
+    public Collection values() {
+        return _getDynamicProperties().values();
+    }
+
+    public Set<Entry<String,Object>> entrySet() {
+        return _getDynamicProperties().entrySet();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -171,6 +219,13 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
         mapCoreType.setTypeClassDef( mcClassDef );
 
         return mapCoreType;
+    }
+
+    @Override
+    public String toString() {
+        return "MapCore{" +
+               "__$$dynamic_properties_map$$=" + __$$dynamic_properties_map$$ +
+               '}';
     }
 }
 
