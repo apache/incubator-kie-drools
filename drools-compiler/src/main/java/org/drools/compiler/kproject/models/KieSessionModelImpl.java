@@ -32,10 +32,19 @@ public class KieSessionModelImpl
     private final List<WorkItemHandlerModel> wihs = new ArrayList<WorkItemHandlerModel>();
     private List<Command<?>> batchCommandsList = new ArrayList<Command<?>>();
     private KieSessionConfiguration sessionConfiguration;
+    private Object jpaConfiguration;
 
     private boolean                      isDefault = false;
 
     private KieSessionModelImpl() { }
+
+    public Object getJpaConfiguration() {
+        return jpaConfiguration;
+    }
+
+    public void setJpaConfiguration(Object jpaConfiguration) {
+        this.jpaConfiguration = jpaConfiguration;
+    }
 
     public KieSessionModelImpl(KieBaseModelImpl kBase, String name) {
         this.kBase = kBase;
