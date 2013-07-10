@@ -21,12 +21,12 @@ import java.util.NoSuchElementException;
 
 public abstract class UpcomingSelectionIterator<S> implements Iterator<S>  {
 
-    protected boolean upcomingSelected = false;
     protected S upcomingSelection;
+    protected boolean upcomingSelected = false;
 
     public boolean hasNext() {
         if (!upcomingSelected) {
-            createUpcomingSelection();
+            upcomingSelection = createUpcomingSelection();
             upcomingSelected = true;
         }
         return upcomingSelection != null;
@@ -39,7 +39,7 @@ public abstract class UpcomingSelectionIterator<S> implements Iterator<S>  {
         if (upcomingSelected) {
             upcomingSelected = false;
         } else {
-            createUpcomingSelection();
+            upcomingSelection = createUpcomingSelection();
             upcomingSelected = true;
         }
         return upcomingSelection;
@@ -49,6 +49,6 @@ public abstract class UpcomingSelectionIterator<S> implements Iterator<S>  {
         throw new UnsupportedOperationException("The optional operation remove() is not supported.");
     }
 
-    protected abstract void createUpcomingSelection();
+    protected abstract S createUpcomingSelection();
 
 }

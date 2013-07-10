@@ -51,32 +51,29 @@ public abstract class AbstractOriginalSwapIterator<S, SubS> extends UpcomingSele
     }
 
     @Override
-    protected void createUpcomingSelection() {
+    protected S createUpcomingSelection() {
         if (!rightSubSelectionIterator.hasNext()) {
             if (!leftSubSelectionIterator.hasNext()) {
-                upcomingSelection = null;
-                return;
+                return null;
             }
             leftSubSelection = leftSubSelectionIterator.next();
 
             if (!leftEqualsRight) {
                 rightSubSelectionIterator = rightSubSelector.listIterator();
                 if (!rightSubSelectionIterator.hasNext()) {
-                    upcomingSelection = null;
-                    return;
+                    return null;
                 }
             } else {
                 // Select A-B, A-C, B-C. Do not select B-A, C-A, C-B. Do not select A-A, B-B, C-C.
                 if (!leftSubSelectionIterator.hasNext()) {
-                    upcomingSelection = null;
-                    return;
+                    return null;
                 }
                 rightSubSelectionIterator = rightSubSelector.listIterator(leftSubSelectionIterator.nextIndex());
                 // rightEntityIterator's first hasNext() always returns true because of the nextIndex()
             }
         }
         SubS rightSubSelection = rightSubSelectionIterator.next();
-        upcomingSelection = newSwapSelection(leftSubSelection, rightSubSelection);
+        return newSwapSelection(leftSubSelection, rightSubSelection);
     }
 
     protected abstract S newSwapSelection(SubS leftSubSelection, SubS rightSubSelection);

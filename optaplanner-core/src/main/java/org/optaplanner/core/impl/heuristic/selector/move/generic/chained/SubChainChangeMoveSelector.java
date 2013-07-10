@@ -106,26 +106,27 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             }
         }
 
-        protected void createUpcomingSelection() {
+        protected Move createUpcomingSelection() {
             if (selectReversingMoveToo && nextReversingSelection != null) {
-                upcomingSelection = nextReversingSelection;
+                Move upcomingSelection = nextReversingSelection;
                 nextReversingSelection = null;
-                return;
+                return upcomingSelection;
             }
             while (!valueIterator.hasNext()) {
                 if (!subChainIterator.hasNext()) {
-                    upcomingSelection = null;
-                    return;
+                    return null;
                 }
                 upcomingSubChain = subChainIterator.next();
                 valueIterator = valueSelector.iterator();
             }
             Object toValue = valueIterator.next();
-            upcomingSelection = new SubChainChangeMove(upcomingSubChain, valueSelector.getVariableDescriptor(), toValue);
+            Move upcomingSelection = new SubChainChangeMove(
+                    upcomingSubChain, valueSelector.getVariableDescriptor(), toValue);
             if (selectReversingMoveToo) {
                 nextReversingSelection = new SubChainReversingChangeMove(
                         upcomingSubChain, valueSelector.getVariableDescriptor(), toValue);
             }
+            return upcomingSelection;
         }
 
     }
@@ -145,7 +146,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             }
         }
 
-        protected void createUpcomingSelection() {
+        protected Move createUpcomingSelection() {
             // Ideally, this code should have read:
             //     SubChain subChain = subChainIterator.next();
             //     Object toValue = valueIterator.next(subChain);
@@ -166,8 +167,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
                         subChainIteratorCreationCount++;
                         if (subChainIteratorCreationCount >= 2) {
                             // All subChain-value combinations have been tried (some even more than once)
-                            upcomingSelection = null;
-                            return;
+                            return null;
                         }
                     }
                     subChain = subChainIterator.next();
@@ -175,7 +175,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             }
             Object toValue = valueIterator.next();
             boolean reversing = selectReversingMoveToo ? workingRandom.nextBoolean() : false;
-            upcomingSelection = reversing
+            return reversing
                     ? new SubChainReversingChangeMove(subChain, valueSelector.getVariableDescriptor(), toValue)
                     : new SubChainChangeMove(subChain, valueSelector.getVariableDescriptor(), toValue);
         }

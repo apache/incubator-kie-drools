@@ -83,7 +83,7 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
         }
 
         @Override
-        protected void createUpcomingSelection() {
+        protected Move createUpcomingSelection() {
             Move next;
             long attemptsBeforeBailOut = bailOutEnabled ? determineBailOutSize() : 0L;
             do {
@@ -103,7 +103,7 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
                 }
                 next = childMoveIterator.next();
             } while (!accept(scoreDirector, next));
-            upcomingSelection = next;
+            return next;
         }
 
     }

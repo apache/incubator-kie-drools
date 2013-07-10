@@ -77,7 +77,7 @@ public class InitializedValueSelector extends AbstractValueSelector {
         }
 
         @Override
-        protected void createUpcomingSelection() {
+        protected Object createUpcomingSelection() {
             Object next;
             long attemptsBeforeBailOut = bailOutEnabled ? determineBailOutSize(entity) : 0L;
             do {
@@ -97,7 +97,7 @@ public class InitializedValueSelector extends AbstractValueSelector {
                 }
                 next = childValueIterator.next();
             } while (!accept(next));
-            upcomingSelection = next;
+            return next;
         }
 
     }

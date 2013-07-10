@@ -209,7 +209,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         }
 
         @Override
-        protected void createUpcomingSelection() {
+        protected SubChain createUpcomingSelection() {
             toIndex++;
             if (toIndex - fromIndex > maximumSubChainSize || toIndex > anchorTrailingChain.size()) {
                 fromIndex++;
@@ -217,15 +217,14 @@ public class DefaultSubChainSelector extends AbstractSelector
                 // minimumSubChainSize <= maximumSubChainSize so (toIndex - fromIndex > maximumSubChainSize) is true
                 while (toIndex > anchorTrailingChain.size()) {
                     if (!anchorTrailingChainIterator.hasNext()) {
-                        upcomingSelection = null;
-                        return;
+                        return null;
                     }
                     anchorTrailingChain = anchorTrailingChainIterator.next().getEntityList();
                     fromIndex = 0;
                     toIndex = fromIndex + minimumSubChainSize;
                 }
             }
-            upcomingSelection = new SubChain(anchorTrailingChain.subList(fromIndex, toIndex));
+            return new SubChain(anchorTrailingChain.subList(fromIndex, toIndex));
         }
 
         @Override
@@ -272,7 +271,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         }
 
         @Override
-        protected void createUpcomingSelection() {
+        protected SubChain createUpcomingSelection() {
             SubChain anchorTrailingChain = selectAnchorTrailingChain();
             // Every SubChain must have same probability. A random fromIndex and random toIndex would not be fair.
             long selectionSize = calculateSubChainSelectionSize(anchorTrailingChain);
@@ -289,7 +288,7 @@ public class DefaultSubChainSelector extends AbstractSelector
                     throw new IllegalStateException("Impossible if calculateSubChainSelectionSize() works correctly.");
                 }
             }
-            upcomingSelection = anchorTrailingChain.subChain((int) fromIndex, (int) (fromIndex + subChainSize));
+            return anchorTrailingChain.subChain((int) fromIndex, (int) (fromIndex + subChainSize));
         }
 
         private SubChain selectAnchorTrailingChain() {

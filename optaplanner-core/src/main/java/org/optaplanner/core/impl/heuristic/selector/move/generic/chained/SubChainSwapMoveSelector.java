@@ -76,20 +76,20 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
                 private Move nextReversingSelection = null;
 
                 @Override
-                protected void createUpcomingSelection() {
+                protected Move createUpcomingSelection() {
                     if (selectReversingMoveToo && nextReversingSelection != null) {
-                        upcomingSelection = nextReversingSelection;
+                        Move upcomingSelection = nextReversingSelection;
                         nextReversingSelection = null;
-                        return;
+                        return upcomingSelection;
                     }
-                    super.createUpcomingSelection();
+                    return super.createUpcomingSelection();
                 }
 
                 @Override
                 protected Move newSwapSelection(SubChain leftSubSelection, SubChain rightSubSelection) {
                     if (selectReversingMoveToo) {
-                        nextReversingSelection
-                                = new SubChainReversingSwapMove(variableDescriptor, leftSubSelection, rightSubSelection);
+                        nextReversingSelection = new SubChainReversingSwapMove(
+                                variableDescriptor, leftSubSelection, rightSubSelection);
                     }
                     return new SubChainSwapMove(variableDescriptor, leftSubSelection, rightSubSelection);
                 }

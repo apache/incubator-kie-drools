@@ -91,7 +91,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
         }
 
         @Override
-        protected void createUpcomingSelection() {
+        protected Move createUpcomingSelection() {
             List<Move> moveList = new ArrayList<Move>(subSelections); // Clone to avoid CompositeMove corruption
             for (int i = moveIteratorList.size() - 1; i >= 0; i--) {
                 Iterator<Move> moveIterator =  moveIteratorList.get(i);
@@ -100,20 +100,18 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
                     break;
                 }
                 if (i == 0) {
-                    upcomingSelection = null;
-                    return;
+                    return null;
                 }
                 moveIterator = childMoveSelectorList.get(i).iterator();
                 moveIteratorList.set(i, moveIterator);
                 if (!moveIterator.hasNext()) { // in case a moveIterator is empty
-                    upcomingSelection = null;
-                    return;
+                    return null;
                 }
                 moveList.set(i, moveIterator.next());
             }
             // No need to clone to avoid CompositeMove corruption because subSelections's elements never change
             subSelections = moveList;
-            upcomingSelection = new CompositeMove(moveList);
+            return new CompositeMove(moveList);
         }
 
     }

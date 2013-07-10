@@ -89,7 +89,7 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
         }
 
         @Override
-        protected void createUpcomingSelection() {
+        protected Object createUpcomingSelection() {
             Object next;
             long attemptsBeforeBailOut = bailOutEnabled ? determineBailOutSize() : 0L;
             do {
@@ -109,7 +109,7 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
                 }
                 next = childEntityIterator.next();
             } while (!accept(scoreDirector, next));
-            upcomingSelection = next;
+            return next;
         }
 
     }

@@ -97,17 +97,16 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         }
 
         @Override
-        protected void createUpcomingSelection() {
+        protected Move createUpcomingSelection() {
             while (!valueIterator.hasNext()) {
                 if (!entityIterator.hasNext()) {
-                    upcomingSelection = null;
-                    return;
+                    return null;
                 }
                 upcomingEntity = entityIterator.next();
                 valueIterator = valueSelector.iterator(upcomingEntity);
             }
             Object toValue = valueIterator.next();
-            upcomingSelection = chained
+            return chained
                     ? new ChainedChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue)
                     : new ChangeMove(upcomingEntity, valueSelector.getVariableDescriptor(), toValue);
         }
@@ -128,7 +127,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         }
 
         @Override
-        protected void createUpcomingSelection() {
+        protected Move createUpcomingSelection() {
             // Ideally, this code should have read:
             //     Object entity = entityIterator.next();
             //     Object toValue = valueIterator.next(entity);
@@ -147,15 +146,14 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                     entityIteratorCreationCount++;
                     if (entityIteratorCreationCount >= 2) {
                         // All entity-value combinations have been tried (some even more than once)
-                        upcomingSelection = null;
-                        return;
+                        return null;
                     }
                 }
                 entity = entityIterator.next();
                 valueIterator = valueSelector.iterator(entity);
             }
             Object toValue = valueIterator.next();
-            upcomingSelection = chained
+            return chained
                     ? new ChainedChangeMove(entity, valueSelector.getVariableDescriptor(), toValue)
                     : new ChangeMove(entity, valueSelector.getVariableDescriptor(), toValue);
         }

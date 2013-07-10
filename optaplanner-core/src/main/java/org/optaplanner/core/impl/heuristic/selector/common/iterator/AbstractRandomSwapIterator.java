@@ -39,7 +39,7 @@ public abstract class AbstractRandomSwapIterator<S, SubS> extends UpcomingSelect
     }
 
     @Override
-    protected void createUpcomingSelection() {
+    protected S createUpcomingSelection() {
         // Ideally, this code should have read:
         //     SubS leftSubSelection = leftSubSelectionIterator.next();
         //     SubS rightSubSelection = rightSubSelectionIterator.next();
@@ -52,7 +52,7 @@ public abstract class AbstractRandomSwapIterator<S, SubS> extends UpcomingSelect
             rightSubSelectionIterator = rightSubSelector.iterator();
         }
         SubS rightSubSelection = rightSubSelectionIterator.next();
-        upcomingSelection = newSwapSelection(leftSubSelection, rightSubSelection);
+        return newSwapSelection(leftSubSelection, rightSubSelection);
     }
 
     protected abstract S newSwapSelection(SubS leftSubSelection, SubS rightSubSelection);
