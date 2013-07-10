@@ -128,40 +128,50 @@ public class UnionMoveSelector extends CompositeMoveSelector {
 
     public class RandomUnionMoveIterator implements Iterator<Move> {
 
-        protected final NavigableMap<Double, Iterator<Move>> moveIteratorMap;
         protected final Map<Iterator<Move>, ProbabilityItem> probabilityItemMap;
+
+        protected final NavigableMap<Double, Iterator<Move>> moveIteratorMap;
         protected double probabilityWeightTotal;
+        protected boolean stale;
 
         public RandomUnionMoveIterator() {
-            moveIteratorMap = new TreeMap<Double, Iterator<Move>>();
             probabilityItemMap = new LinkedHashMap<Iterator<Move>, ProbabilityItem>(childMoveSelectorList.size());
             for (MoveSelector moveSelector : childMoveSelectorList) {
                 Iterator<Move> moveIterator = moveSelector.iterator();
-                if (moveIterator.hasNext()) {
-                    ProbabilityItem probabilityItem = new ProbabilityItem();
-                    probabilityItem.moveSelector = moveSelector;
-                    probabilityItem.moveIterator = moveIterator;
-                    probabilityItem.probabilityWeight= selectorProbabilityWeightFactory
-                            .createProbabilityWeight(scoreDirector, moveSelector);
-                    probabilityItemMap.put(moveIterator, probabilityItem);
+                ProbabilityItem probabilityItem = new ProbabilityItem();
+                probabilityItem.moveSelector = moveSelector;
+                probabilityItem.moveIterator = moveIterator;
+                probabilityItem.probabilityWeight = selectorProbabilityWeightFactory
+                        .createProbabilityWeight(scoreDirector, moveSelector);
+                if (probabilityItem.probabilityWeight < 0.0) {
+                    throw new IllegalStateException(
+                            "The selectorProbabilityWeightFactory (" + selectorProbabilityWeightFactory
+                            + ") returned a negative probabilityWeight (" + probabilityItem.probabilityWeight + ").");
                 }
+                probabilityItemMap.put(moveIterator, probabilityItem);
             }
-            refreshMoveIteratorMap();
+            moveIteratorMap = new TreeMap<Double, Iterator<Move>>();
+            stale = true;
         }
 
         public boolean hasNext() {
+            if (stale) {
+                refreshMoveIteratorMap();
+            }
             return !moveIteratorMap.isEmpty();
         }
 
         public Move next() {
+            if (stale) {
+                refreshMoveIteratorMap();
+            }
             double randomOffset = RandomUtils.nextDouble(workingRandom, probabilityWeightTotal);
             Map.Entry<Double, Iterator<Move>> entry = moveIteratorMap.floorEntry(randomOffset);
             // entry is never null because randomOffset < probabilityWeightTotal
             Iterator<Move> moveIterator = entry.getValue();
             Move next = moveIterator.next();
             if (!moveIterator.hasNext()) {
-                probabilityItemMap.remove(moveIterator);
-                refreshMoveIteratorMap();
+                stale = true;
             }
             return next;
         }
@@ -170,8 +180,11 @@ public class UnionMoveSelector extends CompositeMoveSelector {
             moveIteratorMap.clear();
             double probabilityWeightOffset = 0.0;
             for (ProbabilityItem probabilityItem : probabilityItemMap.values()) {
-                moveIteratorMap.put(probabilityWeightOffset, probabilityItem.moveIterator);
-                probabilityWeightOffset += probabilityItem.probabilityWeight;
+                if (probabilityItem.probabilityWeight != 0.0
+                        && probabilityItem.moveIterator.hasNext()) {
+                    moveIteratorMap.put(probabilityWeightOffset, probabilityItem.moveIterator);
+                    probabilityWeightOffset += probabilityItem.probabilityWeight;
+                }
             }
             probabilityWeightTotal = probabilityWeightOffset;
         }
