@@ -37,7 +37,7 @@ public class ProjectClassLoader extends ClassLoader {
             return cls == null ? createProjectClassLoader() : createProjectClassLoader(cls.getClassLoader());
         } else if (classLoaders.length == 1) {
             ProjectClassLoader classLoader = createProjectClassLoader(classLoaders[0]);
-            if (cls != null) {
+            if (cls != null && cls.getClassLoader() != classLoaders[0]) {
                 classLoader.setDroolsClassLoader(cls.getClassLoader());
             }
             return classLoader;
