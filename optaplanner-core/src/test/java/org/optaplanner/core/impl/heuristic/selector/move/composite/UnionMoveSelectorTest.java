@@ -38,10 +38,10 @@ public class UnionMoveSelectorTest {
     @Test
     public void originSelection() {
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
-        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(
-                DummyMove.class, new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
-        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(
-                DummyMove.class,new DummyMove("b1"), new DummyMove("b2")));
+        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
+                new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
+        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
+                new DummyMove("b1"), new DummyMove("b2")));
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, false);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
@@ -64,6 +64,32 @@ public class UnionMoveSelectorTest {
     }
 
     @Test
+    public void emptyOriginSelection() {
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
+        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
+        UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, false);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        moveSelector.solvingStarted(solverScope);
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        moveSelector.phaseStarted(phaseScopeA);
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        moveSelector.stepStarted(stepScopeA1);
+
+        assertAllCodesOfEndingMoveSelector(moveSelector);
+
+        moveSelector.stepEnded(stepScopeA1);
+        moveSelector.phaseEnded(phaseScopeA);
+        moveSelector.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
+        verifySolverPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
+    }
+
+    @Test
     public void randomSelection() {
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
         Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<MoveSelector, Double>();
@@ -74,7 +100,7 @@ public class UnionMoveSelectorTest {
                 new DummyMove("b1"), new DummyMove("b2")));
         fixedProbabilityWeightMap.put(childMoveSelectorList.get(1), 20.0);
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, true,
-                new FixedSelectorProbabilityWeightFactory(fixedProbabilityWeightMap));
+                new FixedSelectorProbabilityWeightFactory<MoveSelector>(fixedProbabilityWeightMap));
 
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextDouble()).thenReturn(1.0 / 1020.0, 1019.0 / 1020.0, 1000.0 / 1020.0, 0.0, 999.0 / 1020.0);
@@ -93,6 +119,43 @@ public class UnionMoveSelectorTest {
 
         // A union of ending MoveSelectors does end, even with randomSelection
         assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "b1", "b2", "a2", "a3");
+
+        moveSelector.stepEnded(stepScopeA1);
+        moveSelector.phaseEnded(phaseScopeA);
+        moveSelector.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
+        verifySolverPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
+    }
+
+    @Test
+    public void emptyRandomSelection() {
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<MoveSelector, Double>();
+        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
+        fixedProbabilityWeightMap.put(childMoveSelectorList.get(0), 1000.0);
+        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
+        fixedProbabilityWeightMap.put(childMoveSelectorList.get(1), 20.0);
+        UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, true,
+                new FixedSelectorProbabilityWeightFactory<MoveSelector>(fixedProbabilityWeightMap));
+
+        Random workingRandom = mock(Random.class);
+        when(workingRandom.nextDouble()).thenReturn(1.0);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
+        moveSelector.solvingStarted(solverScope);
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
+        moveSelector.phaseStarted(phaseScopeA);
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
+        moveSelector.stepStarted(stepScopeA1);
+
+        // A union of ending MoveSelectors does end, even with randomSelection
+        assertAllCodesOfEndingMoveSelector(moveSelector);
 
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);
