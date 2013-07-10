@@ -19,6 +19,7 @@ package org.drools.core.factmodel;
 
 import org.drools.core.base.TypeResolver;
 import org.kie.api.definition.type.Annotation;
+import org.kie.api.definition.type.Role;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -115,6 +116,13 @@ public class AnnotationDefinition implements Externalizable, Annotation {
     }
 
     private static AnnotationPropertyVal rebuild(String key, Class annotationClass, String valueStr, TypeResolver resolver) throws NoSuchMethodException {
+        if (annotationClass == Role.class) {
+            return new AnnotationPropertyVal(key,
+                                             Role.Type.class,
+                                             valueStr.equalsIgnoreCase("event") ? Role.Type.EVENT : Role.Type.FACT,
+                                             AnnotationPropertyVal.ValType.ENUMERATION);
+        }
+
         Method prop = annotationClass.getMethod(key);
         Class returnType = prop.getReturnType();
         Object val = decode(returnType, valueStr, resolver);

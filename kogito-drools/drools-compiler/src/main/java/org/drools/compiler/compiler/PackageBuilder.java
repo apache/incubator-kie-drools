@@ -2576,9 +2576,9 @@ public class PackageBuilder
      */
     private Class resolveAnnotation(String annotation,
                                     TypeResolver resolver) {
-        // do not waste time with @role and @format
-        if ( TypeDeclaration.Role.ID.equals( annotation )
-             || TypeDeclaration.Format.ID.equals( annotation ) ) {
+
+        // do not waste time with @format
+        if ( TypeDeclaration.Format.ID.equals( annotation ) ) {
             return null;
         }
         // known conflicting annotation
@@ -2590,6 +2590,9 @@ public class PackageBuilder
             return resolver.resolveType( annotation.substring( 0, 1 ).toUpperCase() + annotation.substring( 1 ) );
         } catch ( ClassNotFoundException e ) {
             // internal annotation, or annotation which can't be resolved.
+            if ( TypeDeclaration.Role.ID.equals( annotation ) ) {
+                return Role.class;
+            }
             return null;
         }
     }
@@ -2703,7 +2706,8 @@ public class PackageBuilder
                                                                         annotationName + ": " +
                                                                         nsme.getMessage() + ";" ) );
                 }
-            } else {
+            }
+            if (annotation == null || annotation == Role.class) {
                 def.addMetaData( annotationName, typeDescr.getAnnotation( annotationName ).getSingleValue() );
             }
         }
