@@ -1,5 +1,7 @@
 package org.drools.core.rule;
 
+import org.kie.api.definition.type.Role;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,14 +10,19 @@ public class TypeMetaInfo {
     private TypeDeclaration.Role role;
     private boolean isDeclaredType;
 
-    public static TypeMetaInfo DEFAULT_TYPE_META_INFO = new TypeMetaInfo();
-
     private TypeMetaInfo() { }
 
     public TypeMetaInfo(TypeDeclaration typeDeclaration) {
         this.kind = typeDeclaration.getKind();
         this.role = typeDeclaration.getRole();
         this.isDeclaredType = !typeDeclaration.isJavaBased();
+    }
+
+    public TypeMetaInfo(Class<?> clazz) {
+        this.kind = TypeDeclaration.Kind.CLASS;
+        Role role = clazz.getAnnotation(Role.class);
+        this.role = role == null || role.value() == Role.Type.FACT ? TypeDeclaration.Role.FACT : TypeDeclaration.Role.EVENT;
+        this.isDeclaredType = false;
     }
 
     public boolean isEvent() {

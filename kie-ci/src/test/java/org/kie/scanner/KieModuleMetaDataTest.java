@@ -1,7 +1,7 @@
 package org.kie.scanner;
 
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.TypeMetaInfo;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -12,6 +12,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.definition.type.Role;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -103,12 +104,14 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         Class<?> beanClass = kieModuleMetaData.getClass("org.kie.test", "Bean");
         assertNotNull(beanClass.getMethod("getValue"));
 
-        TypeMetaInfo beanTypeInfo = kieModuleMetaData.getTypeMetaInfo( beanClass);
+        TypeMetaInfo beanTypeInfo = kieModuleMetaData.getTypeMetaInfo( beanClass );
         assertNotNull( beanTypeInfo );
 
-        if (useTypeDeclaration) {
-            assertTrue(beanTypeInfo.isEvent());
-        }
+        assertTrue(beanTypeInfo.isEvent());
+
+        Role role = beanClass.getAnnotation(Role.class);
+        assertNotNull(role);
+        assertEquals(Role.Type.EVENT, role.value());
 
         assertEquals(useTypeDeclaration, beanTypeInfo.isDeclaredType());
     }

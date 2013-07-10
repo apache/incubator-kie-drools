@@ -460,8 +460,11 @@ public class TypeDeclarationTest {
         assertEquals( "Bean", bean.getSimpleName() );
         assertEquals( "org.drools.compiler.test", bean.getPackageName() );
 
-        assertEquals( 1, bean.getClassAnnotations().size() );
+        assertEquals( 2, bean.getClassAnnotations().size() );
         Annotation ann = bean.getClassAnnotations().get( 0 );
+        if (!ann.getName().equals("org.drools.compiler.compiler.TypeDeclarationTest$KlassAnnotation")) {
+            ann = bean.getClassAnnotations().get( 1 );
+        }
         assertEquals( "org.drools.compiler.compiler.TypeDeclarationTest$KlassAnnotation", ann.getName() );
         assertEquals( "klass", ann.getPropertyValue( "value" ) );
         assertEquals( String.class, ann.getPropertyType( "value" ) );

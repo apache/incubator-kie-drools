@@ -270,161 +270,35 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
 
     private Collection<CompositePackageDescr> buildPackageDescr() {
         Map<String, CompositePackageDescr> packages = new HashMap<String, CompositePackageDescr>();
-        List<ResourceDescr> resourcesByType = this.resourcesByType.remove(ResourceType.DRL);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.drlToPackageDescr(resourceDescr.resource));
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.GDRL);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.drlToPackageDescr(resourceDescr.resource));
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.RDRL);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.drlToPackageDescr(resourceDescr.resource));
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.DESCR);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.drlToPackageDescr(resourceDescr.resource));
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.DSLR);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.dslrToPackageDescr(resourceDescr.resource));
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.RDSLR);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.dslrToPackageDescr(resourceDescr.resource));
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.XDRL);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.xmlToPackageDescr(resourceDescr.resource));
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.DTABLE);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.decisionTableToPackageDescr(resourceDescr.resource, resourceDescr.configuration));
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.SCARD);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.decisionTableToPackageDescr(resourceDescr.resource, resourceDescr.configuration));
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-
+        buildResource(packages, ResourceType.DRL, DRL_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.GDRL, DRL_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.RDRL, DRL_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.DESCR, DRL_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.DSLR, DSLR_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.RDSLR, DSLR_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.XDRL, XML_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.DTABLE, DTABLE_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.SCARD, DTABLE_TO_PKG_DESCR);
         return packages.values();
+    }
+
+    private void buildResource(Map<String, CompositePackageDescr> packages, ResourceType resourceType, ResourceToPkgDescrMapper mapper) {
+        List<ResourceDescr> resourcesByType = this.resourcesByType.remove(resourceType);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
+                    registerPackageDescr(packages, resourceDescr.resource, mapper.map(pkgBuilder, resourceDescr));
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
+                }
+            }
+        }
     }
 
     private void registerPackageDescr(Map<String, CompositePackageDescr> packages, Resource resource, PackageDescr packageDescr) {
@@ -447,4 +321,32 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             this.resource = resource;
         }
     }
+
+    private interface ResourceToPkgDescrMapper {
+        PackageDescr map(PackageBuilder pkgBuilder, ResourceDescr resourceDescr) throws Exception;
+    }
+
+    private static final ResourceToPkgDescrMapper DRL_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
+        public PackageDescr map(PackageBuilder pkgBuilder, ResourceDescr resourceDescr) throws Exception {
+            return pkgBuilder.drlToPackageDescr(resourceDescr.resource);
+        }
+    };
+
+    private static final ResourceToPkgDescrMapper DSLR_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
+        public PackageDescr map(PackageBuilder pkgBuilder, ResourceDescr resourceDescr) throws Exception {
+            return pkgBuilder.dslrToPackageDescr(resourceDescr.resource);
+        }
+    };
+
+    private static final ResourceToPkgDescrMapper XML_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
+        public PackageDescr map(PackageBuilder pkgBuilder, ResourceDescr resourceDescr) throws Exception {
+            return pkgBuilder.xmlToPackageDescr(resourceDescr.resource);
+        }
+    };
+
+    private static final ResourceToPkgDescrMapper DTABLE_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
+        public PackageDescr map(PackageBuilder pkgBuilder, ResourceDescr resourceDescr) throws Exception {
+            return pkgBuilder.decisionTableToPackageDescr(resourceDescr.resource, resourceDescr.configuration);
+        }
+    };
 }

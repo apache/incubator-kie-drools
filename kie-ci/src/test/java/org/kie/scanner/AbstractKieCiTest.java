@@ -109,6 +109,8 @@ public class AbstractKieCiTest {
 
     private String createJavaSource(int factor) {
         return "package org.kie.test;\n" +
+                "import org.kie.api.definition.type.Role;\n" +
+                "@Role(Role.Type.EVENT)\n" +
                 "public class Bean {\n" +
                 "   private final int value;\n" +
                 "   public Bean(int value) {\n" +
