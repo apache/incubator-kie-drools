@@ -29,9 +29,11 @@ import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
+import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableEntity;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -41,6 +43,43 @@ import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class InitializedValueSelectorTest {
+
+    @Test
+    public void originalSelectionNullable() {
+        PlanningEntityDescriptor entityDescriptor = TestdataNullableEntity.buildEntityDescriptor();
+        TestdataNullableEntity e1 = new TestdataNullableEntity("e1");
+        // This variable is unable to have entity's as values, but it's an interesting nullable test anyway
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor("value");
+        TestdataValue v1 = new TestdataValue("v1");
+        TestdataValue v2 = null;
+        TestdataValue v3 = new TestdataValue("v3");
+        ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
+                v1, v2, v3);
+
+        ValueSelector valueSelector = new InitializedValueSelector(childValueSelector);
+        verify(childValueSelector, times(1)).isNeverEnding();
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        valueSelector.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        valueSelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        valueSelector.stepStarted(stepScopeA1);
+        runAsserts(valueSelector, e1, "v1", null, "v3");
+        e1.setValue(v1);
+        valueSelector.stepEnded(stepScopeA1);
+
+        valueSelector.phaseEnded(phaseScopeA);
+
+        valueSelector.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(childValueSelector, 1, 1, 1);
+        verify(childValueSelector, times(1)).iterator(any());
+    }
 
     @Test
     public void originalSelectionChained() {
@@ -102,12 +141,17 @@ public class InitializedValueSelectorTest {
         verify(childValueSelector, times(4)).iterator(any());
     }
 
-    private void runAsserts(ValueSelector valueSelector, TestdataChainedEntity entity, String... valueCodes) {
+    private void runAsserts(ValueSelector valueSelector, TestdataObject entity, String... valueCodes) {
         Iterator<Object> iterator = valueSelector.iterator(entity);
         assertNotNull(iterator);
         for (String valueCode : valueCodes) {
             assertTrue(iterator.hasNext());
-            assertCode(valueCode, iterator.next());
+            Object next = iterator.next();
+            if (valueCode == null) {
+                assertNull(next);
+            } else {
+                assertCode(valueCode, next);
+            }
         }
         assertFalse(iterator.hasNext());
         assertEquals(false, valueSelector.isContinuous());
