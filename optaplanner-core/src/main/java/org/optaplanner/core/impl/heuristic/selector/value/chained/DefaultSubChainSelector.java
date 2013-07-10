@@ -217,7 +217,7 @@ public class DefaultSubChainSelector extends AbstractSelector
                 // minimumSubChainSize <= maximumSubChainSize so (toIndex - fromIndex > maximumSubChainSize) is true
                 while (toIndex > anchorTrailingChain.size()) {
                     if (!anchorTrailingChainIterator.hasNext()) {
-                        return null;
+                        return noUpcomingSelection();
                     }
                     anchorTrailingChain = anchorTrailingChainIterator.next().getEntityList();
                     fromIndex = 0;
@@ -265,8 +265,8 @@ public class DefaultSubChainSelector extends AbstractSelector
 
         private RandomSubChainIterator() {
             if (anchorTrailingChainList.isEmpty()) {
-                upcomingSelection = null;
-                upcomingSelected = true;
+                upcomingSelection = noUpcomingSelection();
+                upcomingCreated = true;
             }
         }
 

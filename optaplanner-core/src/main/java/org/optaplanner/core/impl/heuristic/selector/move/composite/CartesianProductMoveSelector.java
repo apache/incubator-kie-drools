@@ -100,12 +100,12 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
                     break;
                 }
                 if (i == 0) {
-                    return null;
+                    return noUpcomingSelection();
                 }
                 moveIterator = childMoveSelectorList.get(i).iterator();
                 moveIteratorList.set(i, moveIterator);
                 if (!moveIterator.hasNext()) { // in case a moveIterator is empty
-                    return null;
+                    return noUpcomingSelection();
                 }
                 moveList.set(i, moveIterator.next());
             }

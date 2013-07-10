@@ -88,16 +88,14 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
             long attemptsBeforeBailOut = bailOutEnabled ? determineBailOutSize() : 0L;
             do {
                 if (!childMoveIterator.hasNext()) {
-                    next = null;
-                    break;
+                    return noUpcomingSelection();
                 }
                 if (bailOutEnabled) {
                     // if childMoveIterator is neverEnding and nothing is accepted, bail out of the infinite loop
                     if (attemptsBeforeBailOut <= 0L) {
                         logger.warn("Bailing out of neverEnding selector ({}) to avoid infinite loop.",
                                 FilteringMoveSelector.this);
-                        next = null;
-                        break;
+                        return noUpcomingSelection();
                     }
                     attemptsBeforeBailOut--;
                 }

@@ -82,14 +82,14 @@ public class InitializedValueSelector extends AbstractValueSelector {
             long attemptsBeforeBailOut = bailOutEnabled ? determineBailOutSize(entity) : 0L;
             do {
                 if (!childValueIterator.hasNext()) {
-                    return null;
+                    return noUpcomingSelection();
                 }
                 if (bailOutEnabled) {
                     // if childValueIterator is neverEnding and nothing is accepted, bail out of the infinite loop
                     if (attemptsBeforeBailOut <= 0L) {
                         logger.warn("Bailing out of neverEnding selector ({}) to avoid infinite loop.",
                                 InitializedValueSelector.this);
-                        return null;
+                        return noUpcomingSelection();
                     }
                     attemptsBeforeBailOut--;
                 }

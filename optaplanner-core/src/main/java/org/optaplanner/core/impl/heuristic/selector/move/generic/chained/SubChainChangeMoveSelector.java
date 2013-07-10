@@ -99,8 +99,8 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             valueIterator = valueSelector.iterator();
             // valueIterator.hasNext() returns true if there is a next for any entity parameter
             if (!subChainIterator.hasNext() || !valueIterator.hasNext()) {
-                upcomingSelection = null;
-                upcomingSelected = true;
+                upcomingSelection = noUpcomingSelection();
+                upcomingCreated = true;
             } else {
                 upcomingSubChain = subChainIterator.next();
             }
@@ -114,7 +114,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             }
             while (!valueIterator.hasNext()) {
                 if (!subChainIterator.hasNext()) {
-                    return null;
+                    return noUpcomingSelection();
                 }
                 upcomingSubChain = subChainIterator.next();
                 valueIterator = valueSelector.iterator();
@@ -141,8 +141,8 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             valueIterator = valueSelector.iterator();
             // valueIterator.hasNext() returns true if there is a next for any subChain parameter
             if (!subChainIterator.hasNext() || !valueIterator.hasNext()) {
-                upcomingSelection = null;
-                upcomingSelected = true;
+                upcomingSelection = noUpcomingSelection();
+                upcomingCreated = true;
             }
         }
 
@@ -167,7 +167,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
                         subChainIteratorCreationCount++;
                         if (subChainIteratorCreationCount >= 2) {
                             // All subChain-value combinations have been tried (some even more than once)
-                            return null;
+                            return noUpcomingSelection();
                         }
                     }
                     subChain = subChainIterator.next();

@@ -88,8 +88,8 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         private OriginalChangeMoveIterator() {
             entityIterator = entitySelector.iterator();
             if (!entityIterator.hasNext()) {
-                upcomingSelection = null;
-                upcomingSelected = true;
+                upcomingSelection = noUpcomingSelection();
+                upcomingCreated = true;
             } else {
                 upcomingEntity = entityIterator.next();
                 valueIterator = valueSelector.iterator(upcomingEntity);
@@ -100,7 +100,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         protected Move createUpcomingSelection() {
             while (!valueIterator.hasNext()) {
                 if (!entityIterator.hasNext()) {
-                    return null;
+                    return noUpcomingSelection();
                 }
                 upcomingEntity = entityIterator.next();
                 valueIterator = valueSelector.iterator(upcomingEntity);
@@ -121,8 +121,8 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         private RandomChangeMoveIterator() {
             entityIterator = entitySelector.iterator();
             if (!entityIterator.hasNext()) {
-                upcomingSelection = null;
-                upcomingSelected = true;
+                upcomingSelection = noUpcomingSelection();
+                upcomingCreated = true;
             }
         }
 
@@ -146,7 +146,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                     entityIteratorCreationCount++;
                     if (entityIteratorCreationCount >= 2) {
                         // All entity-value combinations have been tried (some even more than once)
-                        return null;
+                        return noUpcomingSelection();
                     }
                 }
                 entity = entityIterator.next();

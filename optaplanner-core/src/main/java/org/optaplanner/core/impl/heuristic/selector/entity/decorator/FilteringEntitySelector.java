@@ -94,16 +94,14 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
             long attemptsBeforeBailOut = bailOutEnabled ? determineBailOutSize() : 0L;
             do {
                 if (!childEntityIterator.hasNext()) {
-                    next = null;
-                    break;
+                    return noUpcomingSelection();
                 }
                 if (bailOutEnabled) {
                     // if childEntityIterator is neverEnding and nothing is accepted, bail out of the infinite loop
                     if (attemptsBeforeBailOut <= 0L) {
                         logger.warn("Bailing out of neverEnding selector ({}) to avoid infinite loop.",
                                 FilteringEntitySelector.this);
-                        next = null;
-                        break;
+                        return noUpcomingSelection();
                     }
                     attemptsBeforeBailOut--;
                 }

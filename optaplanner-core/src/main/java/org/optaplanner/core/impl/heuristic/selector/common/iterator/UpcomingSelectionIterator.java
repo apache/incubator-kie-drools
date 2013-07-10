@@ -21,27 +21,26 @@ import java.util.NoSuchElementException;
 
 public abstract class UpcomingSelectionIterator<S> implements Iterator<S>  {
 
+    protected boolean upcomingCreated = false;
+    protected boolean hasUpcomingSelection = true;
     protected S upcomingSelection;
-    protected boolean upcomingSelected = false;
 
     public boolean hasNext() {
-        if (!upcomingSelected) {
+        if (!upcomingCreated) {
             upcomingSelection = createUpcomingSelection();
-            upcomingSelected = true;
+            upcomingCreated = true;
         }
-        return upcomingSelection != null;
+        return hasUpcomingSelection;
     }
 
     public S next() {
-        if (upcomingSelection == null) {
+        if (!hasUpcomingSelection) {
             throw new NoSuchElementException();
         }
-        if (upcomingSelected) {
-            upcomingSelected = false;
-        } else {
+        if (!upcomingCreated) {
             upcomingSelection = createUpcomingSelection();
-            upcomingSelected = true;
         }
+        upcomingCreated = false;
         return upcomingSelection;
     }
 
@@ -50,5 +49,10 @@ public abstract class UpcomingSelectionIterator<S> implements Iterator<S>  {
     }
 
     protected abstract S createUpcomingSelection();
+
+    protected S noUpcomingSelection() {
+        hasUpcomingSelection = false;
+        return null;
+    }
 
 }
