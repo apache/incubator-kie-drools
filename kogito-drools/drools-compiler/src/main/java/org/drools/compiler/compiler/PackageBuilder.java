@@ -3867,6 +3867,15 @@ public class PackageBuilder
             }
         }
 
+        if ( processBuilder != null && processBuilder.getErrors() != null ) {
+            Iterator<? extends KnowledgeBuilderResult> i = processBuilder.getErrors().iterator();
+            while ( i.hasNext() ) {
+                if ( resource.equals( i.next().getResource() ) ) {
+                    i.remove();
+                }
+            }
+        }
+
         if ( results.size() == 0 ) {
             // TODO Error attribution might be bugged
             for ( PackageRegistry packageRegistry : pkgRegistryMap.values() ) {
