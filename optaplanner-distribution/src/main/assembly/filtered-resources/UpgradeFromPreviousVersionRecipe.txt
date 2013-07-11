@@ -3428,3 +3428,13 @@ After in *Config.java:
 
 From 6.0.0.Beta5 to 6.0.0.CR1
 -----------------------------
+
+[MINOR] XStreamProblemIO has been modified to use a vanilla XStream instance (but still with ID_REFERENCES)
+instead of a complex construction to avoid an issue that has been fixed meanwhile.
+Before it did:
+    xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
+    xStream.setMode(XStream.ID_REFERENCES);
+Now it simply does:
+    xStream = new XStream();
+    xStream.setMode(XStream.ID_REFERENCES);
+Normally this should have no relevant impact on your XML dataset files or your code.

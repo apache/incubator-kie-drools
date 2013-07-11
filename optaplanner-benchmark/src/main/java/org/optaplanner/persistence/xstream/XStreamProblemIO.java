@@ -39,8 +39,7 @@ public class XStreamProblemIO implements ProblemIO {
     private XStream xStream;
 
     public XStreamProblemIO() {
-        // TODO From Xstream 1.3.3 that KeySorter will be the default. See http://jira.codehaus.org/browse/XSTR-363
-        xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
+        xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
     }
 
