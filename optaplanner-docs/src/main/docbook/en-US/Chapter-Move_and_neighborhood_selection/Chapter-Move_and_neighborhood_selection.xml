@@ -585,6 +585,35 @@
       <para>For example, if there are 3 entities: process A (probabilityWeight 2.0), process B (probabilityWeight 0.5)
       and process C (probabilityWeight 0.5), then process A will be selected 4 times more than B and C.</para>
     </section>
+
+    <section xml:id="mimicSelection">
+      <title>Mimic selection (record/replay)</title>
+
+      <para>During mimic selection, 1 normal selector records its selection and 1 or multiple other special selectors
+      replay that selection. The recording selector acts as a normal selector and supports all other configuration
+      properties. A replaying selector mimics the recording selection and support no other configuration
+      properties.</para>
+
+      <para>The recording selector needs an <literal>id</literal>. A replaying selector must reference a recorder's id
+      with a <literal>mimicSelectorRef</literal>:</para>
+
+      <programlisting language="xml">      &lt;cartesianProductMoveSelector&gt;
+        &lt;changeMoveSelector&gt;
+          &lt;entitySelector id="entitySelector"/&gt;
+          &lt;valueSelector&gt;
+            &lt;variableName&gt;period&lt;/variableName&gt;
+          &lt;/valueSelector&gt;
+        &lt;/changeMoveSelector&gt;
+        &lt;changeMoveSelector&gt;
+          &lt;entitySelector mimicSelectorRef="entitySelector"/&gt;
+          &lt;valueSelector&gt;
+            &lt;variableName&gt;room&lt;/variableName&gt;
+          &lt;/valueSelector&gt;
+        &lt;/changeMoveSelector&gt;
+      &lt;/cartesianProductMoveSelector&gt;</programlisting>
+
+      <para>Mimic selection is usefull to create a composite move from 2 moves that affect the same entity.</para>
+    </section>
   </section>
 
   <section>
