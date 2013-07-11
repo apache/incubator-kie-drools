@@ -37,7 +37,7 @@ import org.subethamail.wiser.WiserMessage;
 
 public class SendHtmlTest extends AbstractBaseTest {
 
-    private static Logger logger = LoggerFactory.getLogger(SendHtmlTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SendHtmlTest.class);
     private Wiser wiser;
     
     private String emailHost;
@@ -322,8 +322,7 @@ public class SendHtmlTest extends AbstractBaseTest {
             UsernamePasswordValidator validator = new UsernamePasswordValidator() {
                 public void login(String username, String password) throws LoginFailedException {
                   if (!authUsername.equals(username) || !authPassword.equals(password)) {
-                    String message = "Tried to login with user/password [" + username + "/" + password + "]";
-                    logger.debug(message);
+                    logger.debug("Tried to login with user/password [{}/{}]", username, password);
                     throw new LoginFailedException("Incorrect password for user " + authUsername);
                   }
                 }

@@ -48,7 +48,7 @@ public class SendHtmlRealTest extends AbstractBaseTest {
     @Ignore
     public void sendEmailViaAnotherDomain() throws Exception { 
         String testMethodName = Thread.currentThread().getStackTrace()[1].getMethodName(); 
-        logger.info( testMethodName + ": " + uniqueTestNum);
+        logger.info("{} : {}", testMethodName, uniqueTestNum);
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "To", toAddress );

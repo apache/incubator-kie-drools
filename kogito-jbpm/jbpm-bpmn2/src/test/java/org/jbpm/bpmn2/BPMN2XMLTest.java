@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
 
 public class BPMN2XMLTest extends XMLTestCase {
 	
-    private Logger logger = LoggerFactory.getLogger(BPMN2XMLTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(BPMN2XMLTest.class);
    
 	private static final String[] processes = {
 		"BPMN2-SimpleXMLProcess.bpmn2",

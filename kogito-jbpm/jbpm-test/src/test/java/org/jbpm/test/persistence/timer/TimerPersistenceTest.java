@@ -120,7 +120,7 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
     
         // The timer fires..
         int sleep = 2000;
-        logger.debug("Sleeping " + sleep / 1000 + " seconds.");
+        logger.debug("Sleeping {} seconds", sleep / 1000);
         Thread.sleep(sleep);
         logger.debug("Awake!");
     
@@ -212,7 +212,7 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
         // wait 3 seconds to see if the boss is notified
         if (processState == ProcessInstance.STATE_ACTIVE) {
             int sleep = 2000;
-            logger.debug("Sleeping " + sleep / 1000 + " seconds.");
+            logger.debug("Sleeping {} seconds", sleep / 1000);
             Thread.sleep(sleep);
             logger.debug("Awake!");
         }

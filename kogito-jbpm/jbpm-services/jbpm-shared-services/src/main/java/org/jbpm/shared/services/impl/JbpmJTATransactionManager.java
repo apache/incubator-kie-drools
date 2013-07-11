@@ -92,7 +92,7 @@ public class JbpmJTATransactionManager implements JbpmServicesTransactionManager
 		        		UserTransaction ut = (UserTransaction) context.lookup(utLookup);
 		        		return ut;
 					} catch (NamingException e) {
-						logger.debug("User Transaction not found in JNDI under " + utLookup);
+						logger.debug("User Transaction not found in JNDI under {}", utLookup);
 						
 					}
         		}

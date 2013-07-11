@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 
 public class ForEachTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(ForEachTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ForEachTest.class);
     
 	@Test
     public void testForEach() {
@@ -99,7 +99,7 @@ public class ForEachTest extends AbstractBaseTest {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-                logger.info("Executed action for child " + ((Person) context.getVariable("child")).getName());
+                logger.info("Executed action for child {}", ((Person) context.getVariable("child")).getName());
                 myList.add("Executed action");
             }
         });

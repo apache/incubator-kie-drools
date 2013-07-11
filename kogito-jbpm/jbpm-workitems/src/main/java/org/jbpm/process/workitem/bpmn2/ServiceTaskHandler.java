@@ -43,7 +43,7 @@ public class ServiceTaskHandler implements WorkItemHandler {
     
     public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/";
     
-    private static Logger logger = LoggerFactory.getLogger(ServiceTaskHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ServiceTaskHandler.class);
     
     private ConcurrentHashMap<String, Client> clients = new ConcurrentHashMap<String, Client>();
     private JaxWsDynamicClientFactory dcf;

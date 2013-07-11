@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessMilestoneTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(ProcessMilestoneTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessMilestoneTest.class);
     
     @Test
     public void testMilestone() {

@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
 
-    private Logger testLogger = LoggerFactory.getLogger(ProcessPersistenceHumanTaskTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessPersistenceHumanTaskTest.class);
 
     public ProcessPersistenceHumanTaskTest() {
         super(true);
@@ -43,7 +43,7 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
         String taskGroup = "en-UK";
         List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", taskGroup);
         TaskSummary task = list.get(0);
-        testLogger.debug("John is executing task " + task.getName());
+        logger.debug("John is executing task " + task.getName());
         taskService.start(task.getId(), "john");
         taskService.complete(task.getId(), "john", null);
 
@@ -58,7 +58,7 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
         list = taskService.getTasksAssignedAsPotentialOwner(taskUser, taskGroup);
         assertTrue("No tasks found for potential owner " + taskUser + "/" + taskGroup, list.size() > 0);
         task = list.get(0);
-        testLogger.debug("Mary is executing task " + task.getName());
+        logger.debug("Mary is executing task " + task.getName());
         taskService.start(task.getId(), "mary");
         taskService.complete(task.getId(), "mary", null);
 

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public class AgendaFilterTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(AgendaFilterTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(AgendaFilterTest.class);
     
     @Test
     public void testAgendaFilter() {
@@ -160,7 +160,7 @@ public class AgendaFilterTest extends AbstractBaseTest {
             boolean nocancel = currentSalience >= Integer.valueOf(rule.getSalience().toString());
 
             if(!nocancel){
-                logger.info("cancelling ->"+ rule.getName());
+                logger.info("cancelling -> {}", rule.getName());
             }
 
             return nocancel;

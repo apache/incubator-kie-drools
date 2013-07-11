@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessMarshallingTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(ProcessMarshallingTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessMarshallingTest.class);
 
     @Test
     @SuppressWarnings("unchecked")
@@ -617,7 +617,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
     private static class TestListWorkItemHandler implements WorkItemHandler {
     	private List<WorkItem> workItems = new ArrayList<WorkItem>();
     	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-    	    logger.info("Executing workItem " + workItem.getParameter("TaskName"));
+    	    logger.info("Executing workItem {}", workItem.getParameter("TaskName"));
 			workItems.add(workItem);
 		}
 		public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {

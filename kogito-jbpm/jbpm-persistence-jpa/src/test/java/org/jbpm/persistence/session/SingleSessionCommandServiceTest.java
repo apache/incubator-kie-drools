@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 
 public class SingleSessionCommandServiceTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(SingleSessionCommandServiceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SingleSessionCommandServiceTest.class);
 
 	private HashMap<String, Object> context;
 	private Environment env;
@@ -115,7 +115,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
-        logger.info( "Started process instance " + processInstance.getId() );
+        logger.info( "Started process instance {}", processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
@@ -230,7 +230,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
-        logger.info( "Started process instance " + processInstance.getId() );
+        logger.info( "Started process instance {}", processInstance.getId() );
         ut.commit();
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
@@ -429,7 +429,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         RuleFlowProcessInstance processInstance = (RuleFlowProcessInstance) service.execute( startProcessCommand );
-        logger.info( "Started process instance " + processInstance.getId() );
+        logger.info( "Started process instance {}", processInstance.getId() );
         long processInstanceId = processInstance.getId();
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
@@ -616,7 +616,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
-        logger.info( "Started process instance " + processInstance.getId() );
+        logger.info( "Started process instance {}", processInstance.getId() );
         
         
         Thread.sleep( 500 );
@@ -721,7 +721,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         StartProcessCommand startProcessCommand = new StartProcessCommand();
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
-        logger.info( "Started process instance " + processInstance.getId() );
+        logger.info( "Started process instance {}", processInstance.getId() );
 
         Thread.sleep( 2000 );
 

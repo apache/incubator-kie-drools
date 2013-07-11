@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory {
     
-    private static Logger logger = LoggerFactory.getLogger(RuleFlowProcessFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(RuleFlowProcessFactory.class);
 
     public static RuleFlowProcessFactory createProcess(String id) {
         return new RuleFlowProcessFactory(id);

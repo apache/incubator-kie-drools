@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ExtendedJTATransactionManager extends JtaTransactionManager {
 
-    private  Logger logger = LoggerFactory.getLogger( getClass() );
+    private  static final Logger logger = LoggerFactory.getLogger( ExtendedJTATransactionManager.class );
     private TransactionManager tm;
     private UserTransaction ut;
     private TransactionSynchronizationRegistry tsr;

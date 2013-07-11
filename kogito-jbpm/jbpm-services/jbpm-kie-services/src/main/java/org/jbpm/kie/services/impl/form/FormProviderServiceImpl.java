@@ -98,7 +98,7 @@ public class FormProviderServiceImpl implements FormProviderService {
             if (!StringUtils.isEmpty(template)) return template;
         }
 
-        logger.warn("Unable to find form to render for process '" + processDesc.getName() + "'");
+        logger.warn("Unable to find form to render for process '{}'", processDesc.getName());
         return "";
     }
 
@@ -178,7 +178,7 @@ public class FormProviderServiceImpl implements FormProviderService {
             if (!StringUtils.isEmpty(template)) return template;
         }
 
-        logger.warn("Unable to find form to render for task '" + name + "' on process '" + processDesc.getName() + "'");
+        logger.warn("Unable to find form to render for task '{}' on process '{}'", name, processDesc.getName());
         return "";
     }
 

@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 public class SubProcessNodeInstance extends StateBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 510l;
-    private static Logger logger = LoggerFactory.getLogger(SubProcessNodeInstance.class);
+    private static final Logger logger = LoggerFactory.getLogger(SubProcessNodeInstance.class);
     
     private long processInstanceId;
 	
@@ -78,8 +78,8 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
             	try {
             		parameterValue = MVEL.eval(mapping.getSources().get(0), new NodeInstanceResolverFactory(this));
             	} catch (Throwable t) {
-            	    logger.error("Could not find variable scope for variable " + mapping.getSources().get(0));
-            	    logger.error("when trying to execute SubProcess node " + getSubProcessNode().getName());
+            	    logger.error("Could not find variable scope for variable {}", mapping.getSources().get(0));
+            	    logger.error("when trying to execute SubProcess node {}", getSubProcessNode().getName());
             	    logger.error("Continuing without setting parameter.");
             	}
             }
@@ -110,8 +110,8 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	                	String variableValueString = variableValue == null ? "" : variableValue.toString();
 	                	replacements.put(paramName, variableValueString);
                 	} catch (Throwable t) {
-                	    logger.error("Could not find variable scope for variable " + paramName);
-                	    logger.error("when trying to replace variable in processId for sub process " + getNodeName());
+                	    logger.error("Could not find variable scope for variable {}", paramName);
+                	    logger.error("when trying to replace variable in processId for sub process {}", getNodeName());
                 	    logger.error("Continuing without setting process id.");
                 	}
                 }
@@ -135,7 +135,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         }
         
         if (process == null) {
-            logger.error("Could not find process " + processId);
+            logger.error("Could not find process {}", processId);
             logger.error("Aborting process");
         	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
         	throw new RuntimeDroolsException("Could not find process " + processId);
@@ -234,8 +234,8 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 		        	}
 		            variableScopeInstance.setVariable(mapping.getTarget(), value);
 		        } else {
-		            logger.error("Could not find variable scope for variable " + mapping.getTarget());
-		            logger.error("when trying to complete SubProcess node " + getSubProcessNode().getName());
+		            logger.error("Could not find variable scope for variable {}", mapping.getTarget());
+		            logger.error("when trying to complete SubProcess node {}", getSubProcessNode().getName());
 		            logger.error("Continuing without setting variable.");
 		        }
 		    }

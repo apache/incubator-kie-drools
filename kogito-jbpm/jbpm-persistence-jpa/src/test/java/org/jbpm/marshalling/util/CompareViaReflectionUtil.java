@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 
 public class CompareViaReflectionUtil {
 
-    private static Logger logger = LoggerFactory.getLogger(CompareViaReflectionUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(CompareViaReflectionUtil.class);
 
     public static IdentityHashMap<Object, Object> seenObjects = null;
     private static Class<?> OBJECT_ARRAY_CLASS = (new Object[0]).getClass();
@@ -106,7 +106,7 @@ public class CompareViaReflectionUtil {
             doNotCompareFieldsMap.add(JDKTimerService.class.getDeclaredField("scheduler"));
             doNotCompareFieldsMap.add(AbstractRuleBase.class.getDeclaredField("classFieldAccessorCache"));
         } catch (Exception e) {
-            logger.error(e.getClass().getSimpleName() + ": " + e.getMessage());
+            logger.error("{}: {}", e.getClass().getSimpleName(), e.getMessage());
             // do nothing
         }
     }
@@ -386,7 +386,7 @@ public class CompareViaReflectionUtil {
                         if( Modifier.isTransient(fields[i].getModifiers()) ||
                             doNotCompareFieldsMap.contains(fields[i]) ) {   
                             if( context.print ) { 
-                                logger.trace( context.name + ": " + fields[i].getName() + " %" );
+                                logger.trace("{}: {} %", context.name, fields[i].getName());
                             }
                             continue; 
                         }

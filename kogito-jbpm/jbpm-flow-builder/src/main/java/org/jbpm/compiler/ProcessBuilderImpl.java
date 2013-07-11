@@ -83,7 +83,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessBuilder {
 
-    private static Logger logger = LoggerFactory.getLogger(ProcessBuilderImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessBuilderImpl.class);
     
     private PackageBuilder                packageBuilder;
     private final List<DroolsError>       errors                         = new ArrayList<DroolsError>();
@@ -111,8 +111,8 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         boolean hasErrors = false;
         ProcessValidator validator = ProcessValidatorRegistry.getInstance().getValidator(process, resource);
         if (validator == null) {
-            logger.warn("Could not find validator for process " + ((Process)process).getType() + ".");
-            logger.warn("Continuing without validation of the process " + process.getName() + "[" + process.getId() + "]");
+            logger.warn("Could not find validator for process {}.", ((Process)process).getType());
+            logger.warn("Continuing without validation of the process {} [{}]", process.getName(), process.getId());
         } else {
             ProcessValidationError[] errors = validator.validateProcess( (WorkflowProcess) process );
             if ( errors.length != 0 ) {

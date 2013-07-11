@@ -286,7 +286,7 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
 
         
         int removeAllTasks = ((InternalTaskService) taskService).removeAllTasks();
-        logger.debug(">>> Removed Tasks > " + removeAllTasks);
+        logger.debug(">>> Removed Tasks > {}", removeAllTasks);
 
     }
 }

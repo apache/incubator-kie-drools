@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
 public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.NodeInstance, Serializable {
 
 	private static final long serialVersionUID = 510l;
-	private static Logger logger = LoggerFactory.getLogger(NodeInstanceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(NodeInstanceImpl.class);
 	
 	private long id;
     private long nodeId;
@@ -436,7 +436,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     		}
     	}
     	if (variableScope == null) {
-    		logger.error("Could not find variable " + variableName);
+    		logger.error("Could not find variable {}", variableName);
     		logger.error("Using process-level scope");
     		variableScope = (VariableScopeInstance) ((ProcessInstance) 
     			getProcessInstance()).getContextInstance(VariableScope.VARIABLE_SCOPE);

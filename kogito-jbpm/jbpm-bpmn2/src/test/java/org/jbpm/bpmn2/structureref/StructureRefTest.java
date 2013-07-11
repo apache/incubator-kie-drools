@@ -43,7 +43,7 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         return Arrays.asList(data);
     };
 
-    private Logger logger = LoggerFactory.getLogger(StartEventTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(StartEventTest.class);
 
     public StructureRefTest(boolean persistence) {
         super(persistence);

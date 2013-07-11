@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public class TestXml extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(TestXml.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestXml.class);
 
     @Test
     public void testSimpleXml() throws Exception {

@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessSplitTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(ProcessSplitTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessSplitTest.class);
     
     @Test
     public void testSplitWithProcessInstanceConstraint() {

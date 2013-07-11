@@ -301,7 +301,7 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
     private void startHornetQServer() throws Exception {
         jmsServer = new EmbeddedJMS();
         jmsServer.start();
-        logger.info("Started Embedded JMS Server");
+        logger.debug("Started Embedded JMS Server");
 
         BitronixHornetQXAConnectionFactory.connectionFactory = (XAConnectionFactory) jmsServer.lookup("ConnectionFactory");
 

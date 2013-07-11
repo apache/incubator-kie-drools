@@ -95,7 +95,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     process.setForms(formsData);
                     deployedUnit.addAssetLocation(process.getId(), process);
                 } catch (UnsupportedEncodingException e) {
-                    logger.warn("Unable to load content for file '" + fileName + "': ", e);
+                    logger.warn("Unable to load content for file '{}' : {}", fileName, e);
                 }
             } else if (fileName.matches(".+ftl$")) {
                 try {
@@ -108,7 +108,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     }
                     formsData.put(key, formContent);
                 } catch (UnsupportedEncodingException e) {
-                    logger.warn("Unable to load content for form '" + fileName + "': ", e);
+                    logger.warn("Unable to load content for form '{}' : {}", fileName, e);
                 }
             } else if (fileName.matches(".+form$")) {
                 try {
@@ -121,7 +121,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     }
                     formsData.put(key+".form", formContent);
                 } catch (UnsupportedEncodingException e) {
-                    logger.warn("Unable to load content for form '" + fileName + "': ", e);
+                    logger.warn("Unable to load content for form '{}' : {}", fileName, e);
                 }
             }
         }

@@ -80,7 +80,7 @@ public class LDAPUserInfoImpl implements UserInfo {
         if (propertiesLocation == null) {
             propertiesLocation = DEFAULT_PROPERTIES_NAME;
         }
-        logger.debug("Callback properties will be loaded from " + propertiesLocation);
+        logger.debug("Callback properties will be loaded from {}", propertiesLocation);
         InputStream in = this.getClass().getResourceAsStream(propertiesLocation);
         if (in != null) {
             config = new Properties();
@@ -259,9 +259,8 @@ public class LDAPUserInfoImpl implements UserInfo {
         }
         
         if (missingRequiredProps.length() > 0) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Validation failed due to missing required properties: " + missingRequiredProps.toString());
-            }
+            logger.debug("Validation failed due to missing required properties: {}", missingRequiredProps.toString());
+            
             throw new IllegalArgumentException("Missing required properties to configure LDAPUserInfoImpl: " + missingRequiredProps.toString());
         }
     }
@@ -295,10 +294,10 @@ public class LDAPUserInfoImpl implements UserInfo {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Using following InitialLdapContext properties:");
-            logger.debug("Factory " + this.config.getProperty(Context.INITIAL_CONTEXT_FACTORY));
-            logger.debug("Authentication " + this.config.getProperty(Context.SECURITY_AUTHENTICATION));
-            logger.debug("Protocol " +  this.config.getProperty(Context.SECURITY_PROTOCOL));
-            logger.debug("Provider URL " +  this.config.getProperty(Context.PROVIDER_URL));
+            logger.debug("Factory {}", this.config.getProperty(Context.INITIAL_CONTEXT_FACTORY));
+            logger.debug("Authentication {}", this.config.getProperty(Context.SECURITY_AUTHENTICATION));
+            logger.debug("Protocol {}",  this.config.getProperty(Context.SECURITY_PROTOCOL));
+            logger.debug("Provider URL {}",  this.config.getProperty(Context.PROVIDER_URL));
         }
         
         return new InitialLdapContext(this.config, null);

@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
 public class JPAWorkingMemoryDbLoggerTest extends AbstractBaseTest {
 
     private HashMap<String, Object> context;
-    private Logger logger = LoggerFactory.getLogger(JPAWorkingMemoryDbLoggerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(JPAWorkingMemoryDbLoggerTest.class);
 
     @Before
     public void setUp() throws Exception {
@@ -106,8 +106,7 @@ public class JPAWorkingMemoryDbLoggerTest extends AbstractBaseTest {
         processInstances = logService.findProcessInstances("com.sample.ruleflow");
         assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
-        logger.debug(processInstance.toString() 
-        + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+        logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
@@ -157,12 +156,10 @@ public class JPAWorkingMemoryDbLoggerTest extends AbstractBaseTest {
         processInstances = logService.findProcessInstances("com.sample.ruleflow");
         assertEquals(initialProcessInstanceSize + 2, processInstances.size());
         for (ProcessInstanceLog processInstance: processInstances) {
-            logger.debug(processInstance.toString()
-            + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+            logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
             List<NodeInstanceLog> nodeInstances = logService.findNodeInstances(processInstance.getProcessInstanceId());
             for (NodeInstanceLog nodeInstance: nodeInstances) {
-                logger.debug(nodeInstance.toString()
-              + " -> " + nodeInstance.getDate());
+                logger.debug("{} -> {}", nodeInstance.toString(), nodeInstance.getDate());
             }
             assertEquals(6, nodeInstances.size());
         }
@@ -197,16 +194,14 @@ public class JPAWorkingMemoryDbLoggerTest extends AbstractBaseTest {
         processInstances = logService.findProcessInstances("com.sample.ruleflow2");
         assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
-        logger.debug(processInstance.toString() 
-        + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+        logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow2", processInstance.getProcessId());
         List<NodeInstanceLog> nodeInstances = logService.findNodeInstances(processInstanceId);
         for (NodeInstanceLog nodeInstance: nodeInstances) {
-            logger.debug(nodeInstance.toString()
-            + " -> " + nodeInstance.getDate());
+            logger.debug("{} -> {}", nodeInstance.toString(), nodeInstance.getDate());
             assertEquals(processInstanceId, processInstance.getProcessInstanceId());
             assertEquals("com.sample.ruleflow2", processInstance.getProcessId());
             assertNotNull(nodeInstance.getDate());
@@ -257,7 +252,7 @@ public class JPAWorkingMemoryDbLoggerTest extends AbstractBaseTest {
         processInstances = logService.findProcessInstances("com.sample.ruleflow3");
         assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
-        logger.debug(processInstance.toString() + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+        logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
@@ -323,8 +318,7 @@ public class JPAWorkingMemoryDbLoggerTest extends AbstractBaseTest {
         assertEquals("[Expected " + expected + " ProcessInstanceLog instances, not " + processInstances.size() + "]",  
                 expected, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
-        logger.debug(processInstance.toString()
-        + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+        logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
@@ -372,8 +366,7 @@ public class JPAWorkingMemoryDbLoggerTest extends AbstractBaseTest {
         processInstances = logService.findProcessInstances("com.sample.ruleflow");
         assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
-        logger.debug(processInstance.toString() 
-        + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+        logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull(processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
@@ -422,8 +415,7 @@ public class JPAWorkingMemoryDbLoggerTest extends AbstractBaseTest {
         processInstances = logService.findProcessInstances("com.sample.ruleflow");
         assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
-        logger.debug(processInstance.toString() 
-        + " -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+        logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
         assertNotNull(processInstance.getStart());
         assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());

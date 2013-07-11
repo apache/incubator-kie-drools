@@ -34,7 +34,7 @@ public class OneProcessPerThreadTest extends AbstractBaseTest {
     private static volatile AtomicInteger started = new AtomicInteger(0);
     private static volatile AtomicInteger done = new AtomicInteger(0);
     
-    private static Logger logger = LoggerFactory.getLogger(OneProcessPerThreadTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(OneProcessPerThreadTest.class);
     
     protected StatefulKnowledgeSession createStatefulKnowledgeSession(KnowledgeBase kbase) { 
         return kbase.newStatefulKnowledgeSession();
@@ -70,7 +70,7 @@ public class OneProcessPerThreadTest extends AbstractBaseTest {
         
         int i = 0;
         while(started.get() > done.get() ) { 
-            logger.info( started + " > " + done );
+            logger.info("{} > {}", started, done );
             Thread.sleep(10*1000);
             if( ++i > 10 ) { 
                 fail("Not all threads completed.");
@@ -124,7 +124,7 @@ public class OneProcessPerThreadTest extends AbstractBaseTest {
 	        	ksession.startProcess(processId, params);
 	        } catch ( Throwable t ) {
 	            this.status = Status.FAIL;
-	            logger.error( Thread.currentThread().getName() + " failed: " + t.getMessage() );
+	            logger.error("{} failed: {}",  Thread.currentThread().getName(), t.getMessage() );
 	            t.printStackTrace();
 	        }
 	        done.incrementAndGet();

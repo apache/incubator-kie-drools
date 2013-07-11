@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
 
 public class WorkItemPersistenceTest extends AbstractBaseTest {
 
-    private static Logger logger = LoggerFactory.getLogger(WorkItemPersistenceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(WorkItemPersistenceTest.class);
     
     private HashMap<String, Object> context;
     private EntityManagerFactory emf;
@@ -268,7 +268,7 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
             logger.debug("STATE_SUSPENDED");
             break;
         default: 
-            logger.debug("Unknown state: " + state );
+            logger.debug("Unknown state: {}", state );
         }
        
         procInstInfoList = retrieveProcessInstanceInfo(emf);
@@ -294,7 +294,7 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
         for( Object resultObject : mdList ) { 
             ProcessInstanceInfo procInstInfo = (ProcessInstanceInfo) resultObject;
             procInstInfoList.add(procInstInfo);
-            logger.trace("> " + procInstInfo);
+            logger.trace("> {}", procInstInfo);
         }
         
         txm.commit(txOwner);

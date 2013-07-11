@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 public class ResourceTest extends JbpmBpmn2TestCase {
 
-    private Logger logger = LoggerFactory.getLogger(ResourceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ResourceTest.class);
 
     private StatefulKnowledgeSession ksession;
 

@@ -81,7 +81,7 @@ import org.slf4j.LoggerFactory;
 
 public class VariablePersistenceStrategyTest extends AbstractBaseTest {
 
-    private static Logger logger = LoggerFactory.getLogger( VariablePersistenceStrategyTest.class );
+    private static final Logger logger = LoggerFactory.getLogger( VariablePersistenceStrategyTest.class );
     
     private HashMap<String, Object> context;
     private EntityManagerFactory emf;

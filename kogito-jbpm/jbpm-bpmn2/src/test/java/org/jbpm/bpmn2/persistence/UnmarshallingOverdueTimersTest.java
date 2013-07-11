@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
 
-    private static Logger logger = LoggerFactory.getLogger(MultipleProcessesPerThreadTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MultipleProcessesPerThreadTest.class);
 
     private HashMap<String, Object> context;
 
@@ -69,7 +69,7 @@ public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
     private StatefulKnowledgeSession reloadStatefulKnowledgeSession(String bpmn2FileName, int ksessionId) {
         KnowledgeBase kbase = loadKnowledgeBase(bpmn2FileName);
 
-        logger.debug(". reloading ksession " + ksessionId);
+        logger.debug("reloading ksession {}", ksessionId);
         Environment env = null;
         env = createEnvironment(context);
 
@@ -116,7 +116,7 @@ public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
                 processPropVal = Long.toString(processId);
             }
             else { 
-                logger.info("export " + processPropName + "=" + processId );
+                logger.info("export {}={}", processPropName, processId );
             }
 
             // dispose of session 
@@ -128,20 +128,20 @@ public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
                 sessionPropVal = Integer.toString(ksessionId);
             }
             else { 
-                logger.info("export " + sessionPropName + "=" + ksessionId );
+                logger.info("export {}={}", sessionPropName, ksessionId );
                 
             }
             
             if( !debug ) { 
                 cal.add(Calendar.SECOND, (int) seconds);
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
-                logger.info("\nPlease wait at least " + seconds + timeUnit + " [" +  sdf.format(cal.getTime()) + "]\n" );
+                logger.info("Please wait at least {} [{}]", (seconds + timeUnit),  sdf.format(cal.getTime()));
             }
         } 
         
         if( debug ) { 
             long wait = (long) ((double) seconds * 1000d * 1.1);
-            logger.debug("sleeping " + wait + " seconds" );
+            logger.debug("sleeping {} seconds", wait);
             Thread.sleep(seconds * 1000 );
         }
         

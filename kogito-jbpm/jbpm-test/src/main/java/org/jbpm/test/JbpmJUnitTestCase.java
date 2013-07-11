@@ -71,6 +71,8 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
  *
  */
 public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
+    
+    private static final Logger testLogger = LoggerFactory.getLogger(JbpmJUnitTestCase.class);
 
     protected final static String EOL = System.getProperty("line.separator");
     private boolean setupDataSource = false;
@@ -81,7 +83,6 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
     private TaskService taskService;
     private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
     private WorkingMemoryInMemoryLogger logger;    
-    private Logger testLogger = null;
     
     private RuntimeManager manager;
     private RuntimeEnvironment environment;
@@ -128,9 +129,7 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
 
     @Before
     public void setUp() throws Exception {
-        if (testLogger == null) {
-            testLogger = LoggerFactory.getLogger(getClass());
-        }
+
         if (setupDataSource) {
             server.start();
             ds = setupPoolingDataSource();

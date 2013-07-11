@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessExceptionHandlerTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(ProcessExceptionHandlerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessExceptionHandlerTest.class);
     
     @Test
     public void testFaultWithoutHandler() {

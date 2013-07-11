@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessStartTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(ProcessStartTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessStartTest.class);
     
     @Test
 	public void testStartConstraintTrigger() throws Exception {

@@ -69,7 +69,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         return Arrays.asList(data);
     };
 
-    private Logger logger = LoggerFactory.getLogger(FlowTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(FlowTest.class);
 
     private KieSession ksession;
 

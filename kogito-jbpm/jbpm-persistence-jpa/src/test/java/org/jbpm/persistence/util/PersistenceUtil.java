@@ -51,7 +51,7 @@ import static org.kie.api.runtime.EnvironmentName.*;
 
 public class PersistenceUtil {
 
-    private static Logger logger = LoggerFactory.getLogger( PersistenceUtil.class );
+    private static final Logger logger = LoggerFactory.getLogger( PersistenceUtil.class );
 
     private static boolean TEST_MARSHALLING = true;
     
@@ -338,8 +338,8 @@ public class PersistenceUtil {
                 props.load(propsInputStream);
             } catch (IOException ioe) {
                 propertiesNotFound = true;
-                logger.warn("Unable to find properties, using default H2 properties: " + ioe.getMessage());
-                ioe.printStackTrace();
+                logger.warn("Unable to find properties, using default H2 properties: {}", ioe.getMessage());
+                logger.warn("Stacktrace:", ioe);
             }
         } else {
             propertiesNotFound = true;

@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StaticAuditLogService {
 
-    private static Logger logger = LoggerFactory.getLogger(StaticAuditLogService.class);
+    private static final Logger logger = LoggerFactory.getLogger(StaticAuditLogService.class);
     
     private static volatile Environment env;
     private static EntityManagerFactory emf;
@@ -252,8 +252,7 @@ public class StaticAuditLogService {
 	                newTx = true;
 	            }
 	        } catch(Exception e) { 
-	            logger.error("Unable to find or open a transaction: " + e.getMessage());
-	            e.printStackTrace();
+	            logger.error("Unable to find or open a transaction: ", e);
 	        }
         }
         
@@ -300,7 +299,7 @@ public class StaticAuditLogService {
 	    	        	UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
 		                ut.commit();
 	    	        } catch(Exception e) { 
-	    	            logger.error("Unable to commit transaction: " + e.getMessage(), e);
+	    	            logger.error("Unable to commit transaction", e);
 	    	        }
             	}
             }

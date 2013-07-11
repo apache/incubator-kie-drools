@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessTimerTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(ProcessTimerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessTimerTest.class);
 
     @Test
 	public void testSimpleProcess() throws Exception {

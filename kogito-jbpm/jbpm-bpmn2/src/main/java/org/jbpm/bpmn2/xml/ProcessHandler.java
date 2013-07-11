@@ -56,7 +56,7 @@ import org.xml.sax.SAXException;
 
 public class ProcessHandler extends BaseAbstractHandler implements Handler {
 	
-    private static Logger logger = LoggerFactory.getLogger(ProcessHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessHandler.class);
 
 	public static final String CONNECTIONS = "BPMN.Connections";
     public static final String LINKS = "BPMN.ThrowLinks";
@@ -446,7 +446,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         EventNode eventNode = (EventNode) node;
         String activityRef = (String) node.getMetaData().get("ActivityRef");
         if( activityRef != null ) {
-            logger.warn("Attribute activityRef=" + activityRef + " will be IGNORED since this is a Boundary Compensation Event.");
+            logger.warn("Attribute activityRef={} will be IGNORED since this is a Boundary Compensation Event.", activityRef);
         }
 
         // linkAssociations takes care of the rest
@@ -508,7 +508,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                    Object compensationObject = targetNodeImpl.getMetaData(isForCompensation);
                    if( compensationObject == null ) {
                        targetNodeImpl.setMetaData(isForCompensation, true);
-                       logger.warn("Setting " + isForCompensation + " attribute to true for node " + targetRef );
+                       logger.warn("Setting {} attribute to true for node {}", isForCompensation, targetRef );
                    } else if( ! Boolean.parseBoolean(compensationObject.toString()) ) { 
                        throw new IllegalArgumentException(isForCompensation + " attribute [" + compensationObject + "] should be true for Compensation Activity [" + targetRef + "]");
                    }    

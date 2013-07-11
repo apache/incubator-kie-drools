@@ -59,7 +59,7 @@ public class DataTest extends JbpmBpmn2TestCase {
         return Arrays.asList(data);
     };
 
-    private Logger logger = LoggerFactory.getLogger(DataTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataTest.class);
 
     private StatefulKnowledgeSession ksession;
     

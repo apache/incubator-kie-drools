@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessMultiThreadTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(ProcessMultiThreadTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessMultiThreadTest.class);
 
     @Test
     public void testMultiThreadProcessInstanceSignalling() {
@@ -89,7 +89,7 @@ public class ProcessMultiThreadTest extends AbstractBaseTest {
 	        	processInstance.signalEvent(type, null);
 	        } catch ( Exception e ) {
 	            this.status = Status.FAIL;
-	            logger.warn( Thread.currentThread().getName() + " failed: " + e.getMessage(), e);
+	            logger.warn("{} failed: {}",Thread.currentThread().getName(), e.getMessage());
 	        }
 	    }
 	

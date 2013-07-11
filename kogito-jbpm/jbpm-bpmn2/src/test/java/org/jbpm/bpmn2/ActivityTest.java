@@ -86,7 +86,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         return Arrays.asList(data);
     };
 
-    private Logger logger = LoggerFactory.getLogger(ActivityTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActivityTest.class);
 
     private KieSession ksession;
     private KieSession ksession2;
@@ -995,7 +995,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceActive(processInstance);
 
         long sleep = 1000;
-        logger.debug("Sleeping " + sleep / 1000 + " seconds.");
+        logger.debug("Sleeping {} seconds", sleep / 1000);
         Thread.sleep(sleep);
 
         assertProcessInstanceFinished(processInstance, ksession);

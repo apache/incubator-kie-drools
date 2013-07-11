@@ -59,7 +59,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 	private static final long serialVersionUID = 510l;
     protected static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{([\\S&&[^\\}]]+)\\}", Pattern.DOTALL);
     
-    private static Logger logger = LoggerFactory.getLogger(StateBasedNodeInstance.class);
+    private static final Logger logger = LoggerFactory.getLogger(StateBasedNodeInstance.class);
 
 	private List<Long> timerInstances;
 
@@ -218,8 +218,8 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 	                	String variableValueString = variableValue == null ? "" : variableValue.toString();
 	                	replacements.put(paramName, variableValueString);
                 	} catch (Throwable t) {
-                	    logger.error("Could not find variable scope for variable " + paramName);
-                	    logger.error("when trying to replace variable in processId for sub process " + getNodeName());
+                	    logger.error("Could not find variable scope for variable {}", paramName);
+                	    logger.error("when trying to replace variable in processId for sub process {}", getNodeName());
                 	    logger.error("Continuing without setting process id.");
                 	}
                 }

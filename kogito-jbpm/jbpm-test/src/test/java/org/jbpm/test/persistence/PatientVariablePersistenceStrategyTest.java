@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 public class PatientVariablePersistenceStrategyTest extends JbpmJUnitTestCase {
 
-    private static Logger logger = LoggerFactory.getLogger(PatientVariablePersistenceStrategyTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PatientVariablePersistenceStrategyTest.class);
 
     private EntityManagerFactory emfDomain;
     protected TaskService taskService ;
@@ -142,7 +142,7 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitTestCase {
     }
     
     private MedicalRecord getTaskContent(TaskSummary summary) throws IOException, ClassNotFoundException{
-        logger.info(" >>> Getting Task Content = "+summary.getId());
+        logger.info(" >>> Getting Task Content = {}", summary.getId());
         
         Task task = taskService.getTaskById(summary.getId());
         long documentContentId = task.getTaskData().getDocumentContentId();
@@ -151,7 +151,7 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitTestCase {
                 ContentMarshallerHelper.unmarshall(         content.getContent(), 
                                                             ksession.getEnvironment());
         
-        logger.info(" >>> Object = "+readObject);
+        logger.info(" >>> Object = {}", readObject);
         return (MedicalRecord)readObject;
     }
     

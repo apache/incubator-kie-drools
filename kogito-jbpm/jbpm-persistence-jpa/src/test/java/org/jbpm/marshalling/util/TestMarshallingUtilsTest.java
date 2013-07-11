@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
 
 public class TestMarshallingUtilsTest extends AbstractBaseTest {
 
-    private static Logger logger = LoggerFactory.getLogger(TestMarshallingUtilsTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestMarshallingUtilsTest.class);
     
     private static boolean debug = false;
 
@@ -78,9 +78,9 @@ public class TestMarshallingUtilsTest extends AbstractBaseTest {
                     .lastIndexOf('.') + 1);
             try {
                 unmarshallObject(marshalledData);
-                logger.debug("- " + className + ": " + marshalledData.getTestMethodAndSnapshotNum());
+                logger.debug("- {} : {}", className, marshalledData.getTestMethodAndSnapshotNum());
             } catch (Exception e) {
-                logger.debug("X " + className + ": " + marshalledData.getTestMethodAndSnapshotNum());
+                logger.debug("X {} : {}", className, marshalledData.getTestMethodAndSnapshotNum());
             }
         }
     }
@@ -164,7 +164,7 @@ public class TestMarshallingUtilsTest extends AbstractBaseTest {
             return;
         }
 
-        logger.debug("Same: " + same);
+        logger.debug("Same: {}", same);
         String outLine = "a: {";
         for (int i = 0; i < Array.getLength(objA); ++i) {
             outLine += Array.get(objA, i) + ",";

@@ -10,12 +10,9 @@
   </appender>
 
   <logger name="org.jbpm" level="info"/>
-  <logger name="org.jbpm.persistence" level="info"/>
   <logger name="bitronix.tm" level="error"/>
-  <logger name="org.hibernate.tool.hbm2ddl" level="warn"/>
-  <logger name="org.hibernate.hql.internal" level="warn"/>
-  <logger name="org.hibernate.engine.jdbc.internal" level="warn"/>
-
+  <logger name="org.hibernate" level="warn"/>
+  
   <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>

@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JPAAuditLogService implements AuditLogService {
 
-    private static Logger logger = LoggerFactory.getLogger(JPAAuditLogService.class);
+    private static final Logger logger = LoggerFactory.getLogger(JPAAuditLogService.class);
     
     private Environment env;
     private EntityManagerFactory emf;

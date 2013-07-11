@@ -93,7 +93,7 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
         if (propertiesLocation == null) {
             propertiesLocation = DEFAULT_PROPERTIES_NAME;
         }
-        logger.debug("Callback properties will be loaded from " + propertiesLocation);
+        logger.debug("Callback properties will be loaded from {}", propertiesLocation);
         InputStream in = this.getClass().getResourceAsStream(propertiesLocation);
         if (in != null) {
             config = new Properties();
@@ -126,9 +126,7 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
             
             userFilter = userFilter.replaceAll("\\{0\\}", userId);
             
-            if (logger.isDebugEnabled()) {
-                logger.debug("Seaching for user existence with filter " + userFilter + " on context " + userContext);
-            }
+            logger.debug("Seaching for user existence with filter {} on context {}", userFilter, userContext);            
             
             SearchControls constraints = new SearchControls();
             
@@ -141,9 +139,8 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
                 if (ldapUserId.contains(userId)) {
                     exists = true;
                 }
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Entry in LDAP found and result of matching with given user id is " + exists);
-                }
+                logger.debug("Entry in LDAP found and result of matching with given user id is {}", exists);
+                
             }
             result.close();
         
@@ -217,25 +214,22 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
             String userDN = null;
             // if user id is not DN look it up first in ldap
             if (!Boolean.parseBoolean(this.config.getProperty(IS_USER_ID_DN, "false"))) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("User id is not DN, looking up user first...");
-                }
+                logger.debug("User id is not DN, looking up user first...");
+                
                 String userContext = this.config.getProperty(USER_CTX);
                 String userFilter = this.config.getProperty(USER_FILTER);
                 
                 userFilter = userFilter.replaceAll("\\{0\\}", userId);
                 SearchControls constraints = new SearchControls();
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Searching for user DN with filter " + userFilter + " on context " + userContext);
-                }
+
+                logger.debug("Searching for user DN with filter {} on context {}", userFilter, userContext);                
                 
                 NamingEnumeration<SearchResult> result = ctx.search(userContext, userFilter, constraints);
                 if (result.hasMore()) {
                     SearchResult searchResult = result.nextElement();
                     userDN = searchResult.getNameInNamespace();
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("User DN found, DN is " + userDN);
-                    }
+                    logger.debug("User DN found, DN is {}", userDN);
+                    
                 }
                 result.close();
             }
@@ -246,9 +240,8 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
             
             roleFilter = roleFilter.replaceAll("\\{0\\}", (userDN != null ? userDN : userId));
             SearchControls constraints = new SearchControls();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Searching for groups for user with filter " + roleFilter + " on context " + roleContext);
-            }
+            logger.debug("Searching for groups for user with filter {} on context {}", roleFilter, roleContext);
+            
             NamingEnumeration<SearchResult> result = ctx.search(roleContext, roleFilter, constraints);
             if (result.hasMore()) {
                 SearchResult searchResult = null;
@@ -256,9 +249,8 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
                 while (result.hasMore()) {
                     searchResult = result.nextElement();
                     name = (String) searchResult.getAttributes().get(roleAttrId).get();
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Found group " + name);
-                    }
+                    logger.debug("Found group {}", name);
+                    
                     userGroups.add(name);
                 }
             }
@@ -294,9 +286,8 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
         }
         
         if (missingRequiredProps.length() > 0) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Validation failed due to missing required properties: " + missingRequiredProps.toString());
-            }
+            logger.debug("Validation failed due to missing required properties: {}", missingRequiredProps.toString());
+            
             throw new IllegalArgumentException("Missing required properties to configure LDAPUserGroupCallbackImpl: " + missingRequiredProps.toString());
         }
     }
@@ -344,10 +335,10 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
         
         if (logger.isDebugEnabled()) {
             logger.debug("Using following InitialLdapContext properties:");
-            logger.debug("Factory " + this.config.getProperty(Context.INITIAL_CONTEXT_FACTORY));
-            logger.debug("Authentication " + this.config.getProperty(Context.SECURITY_AUTHENTICATION));
-            logger.debug("Protocol " +  this.config.getProperty(Context.SECURITY_PROTOCOL));
-            logger.debug("Provider URL " +  this.config.getProperty(Context.PROVIDER_URL));
+            logger.debug("Factory {}", this.config.getProperty(Context.INITIAL_CONTEXT_FACTORY));
+            logger.debug("Authentication {}", this.config.getProperty(Context.SECURITY_AUTHENTICATION));
+            logger.debug("Protocol {}",  this.config.getProperty(Context.SECURITY_PROTOCOL));
+            logger.debug("Provider URL {}",  this.config.getProperty(Context.PROVIDER_URL));
         }
         
         return new InitialLdapContext(this.config, null);

@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 public class TimerTest extends AbstractBaseTest  {
 
-    private static Logger logger = LoggerFactory.getLogger(TimerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TimerTest.class);
 	private int counter = 0;
 	   
     static {
@@ -58,7 +58,7 @@ public class TimerTest extends AbstractBaseTest  {
 			public void signalEvent(String type, Object event) {
         		if ("timerTriggered".equals(type)) {
         			TimerInstance timer = (TimerInstance) event;
-        			logger.info("Timer " + timer.getId() + " triggered");
+        			logger.info("Timer {} triggered", timer.getId());
             		counter++;
         		}
         	}

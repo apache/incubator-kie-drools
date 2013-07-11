@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
 
-    private static Logger logger = LoggerFactory.getLogger(AdminAPIsWithListenerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdminAPIsWithListenerTest.class);
 
     private EntityManagerFactory emfTasks;
     protected UserInfo userInfo;

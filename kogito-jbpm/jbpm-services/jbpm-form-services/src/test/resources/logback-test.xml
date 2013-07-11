@@ -10,8 +10,10 @@
   </appender>
 
   <logger name="org.jbpm" level="info"/>
-
-  <root level="warn">
+  <logger name="bitronix.tm" level="error"/>
+  <logger name="org.hibernate" level="warn"/>
+  
+  <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>
 

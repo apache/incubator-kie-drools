@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class LoggingTaskHandlerDecorator extends AbstractExceptionHandlingTaskHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(LoggingTaskHandlerDecorator.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoggingTaskHandlerDecorator.class);
     private int loggedExceptionsLimit = 100;
     private Queue<WorkItemExceptionInfo> exceptionInfoList = new ArrayDeque<WorkItemExceptionInfo>(loggedExceptionsLimit);
 

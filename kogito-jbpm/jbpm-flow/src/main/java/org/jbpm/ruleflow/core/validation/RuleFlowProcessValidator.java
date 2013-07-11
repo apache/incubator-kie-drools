@@ -80,7 +80,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 
     private static RuleFlowProcessValidator instance;
     
-    private static Logger logger = LoggerFactory.getLogger(RuleFlowProcessValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(RuleFlowProcessValidator.class);
 
     private boolean startNodeFound;
     private boolean endNodeFound;
@@ -606,8 +606,8 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 String stringType = varDataType.getStringType();
                 if (varDataType instanceof ObjectDataType) {
                      if (stringType.startsWith("java.lang")) {
-                        logger.warn("Process variable " + var.getName() + " uses ObjectDataType for default type (java.lang) " +
-                        		"which could cause problems with setting variables, use dedicated type instead");
+                        logger.warn("Process variable {} uses ObjectDataType for default type (java.lang) which could cause problems with setting variables, use dedicated type instead",
+                                var.getName());
                     }
                 }
             }

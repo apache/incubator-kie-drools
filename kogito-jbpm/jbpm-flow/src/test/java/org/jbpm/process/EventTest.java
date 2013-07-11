@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 
 public class EventTest extends AbstractBaseTest  {
     
-    private static Logger logger = LoggerFactory.getLogger(EventTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(EventTest.class);
     
 	@Test
     public void testEvent1() {
@@ -98,7 +98,7 @@ public class EventTest extends AbstractBaseTest  {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-                logger.info("Detected event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected event for person {}", ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -199,7 +199,7 @@ public class EventTest extends AbstractBaseTest  {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-                logger.info("Detected event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected event for person {}", ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -271,7 +271,7 @@ public class EventTest extends AbstractBaseTest  {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-                logger.info("Detected event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected event for person {}", ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -296,7 +296,7 @@ public class EventTest extends AbstractBaseTest  {
         action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-                logger.info("Detected other event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected other event for person {}", ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -387,7 +387,7 @@ public class EventTest extends AbstractBaseTest  {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-                logger.info("Detected event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected event for person {}", ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -412,7 +412,7 @@ public class EventTest extends AbstractBaseTest  {
         action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-                logger.info("Detected other event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected other event for person {}", ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });
@@ -626,7 +626,7 @@ public class EventTest extends AbstractBaseTest  {
         DroolsAction action = new DroolsConsequenceAction("java", null);
         action.setMetaData("Action", new Action() {
             public void execute(ProcessContext context) throws Exception {
-                logger.info("Detected event for person " + ((Person) context.getVariable("event")).getName());
+                logger.info("Detected event for person {}", ((Person) context.getVariable("event")).getName());
                 myList.add("Executed action");
             }
         });

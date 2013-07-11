@@ -24,7 +24,7 @@ import bitronix.tm.BitronixTransactionManager;
 
 public class UserTransactionProxy implements InvocationHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(UserTransactionProxy.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserTransactionProxy.class);
     
     private UserTransaction ut;
     private EntityManagerFactory emf;
@@ -107,7 +107,7 @@ public class UserTransactionProxy implements InvocationHandler {
         try { 
             result = method.invoke(object, args);
         } catch( InvocationTargetException ite ) { 
-           logger.warn(method.getName() + " threw " + ite.getClass().getSimpleName() + ": " + ite.getMessage());
+           logger.warn("{} threw {} : {}", method.getName(), ite.getClass().getSimpleName(), ite.getMessage());
            throw ite;
         }
         return result;

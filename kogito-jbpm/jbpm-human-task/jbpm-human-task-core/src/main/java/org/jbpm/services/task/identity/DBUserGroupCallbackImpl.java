@@ -70,7 +70,7 @@ public class DBUserGroupCallbackImpl implements UserGroupCallback {
         if (propertiesLocation == null) {
             propertiesLocation = DEFAULT_PROPERTIES_NAME;
         }
-        logger.debug("Callback properties will be loaded from " + propertiesLocation);
+        logger.debug("Callback properties will be loaded from {}", propertiesLocation);
         InputStream in = this.getClass().getResourceAsStream(propertiesLocation);
         if (in != null) {
             config = new Properties();

@@ -26,7 +26,7 @@ import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 
 public class JbpmLocalTransactionManager implements JbpmServicesTransactionManager {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(JbpmLocalTransactionManager.class);
     
     public JbpmLocalTransactionManager() { 
         // empty constructor

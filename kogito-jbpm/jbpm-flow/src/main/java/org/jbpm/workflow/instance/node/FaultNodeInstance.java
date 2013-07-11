@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 public class FaultNodeInstance extends NodeInstanceImpl {
 
     private static final long serialVersionUID = 510l;
-    private static Logger logger = LoggerFactory.getLogger(FaultNodeInstance.class);
+    private static final Logger logger = LoggerFactory.getLogger(FaultNodeInstance.class);
     
     protected FaultNode getFaultNode() {
         return (FaultNode) getNode();
@@ -100,8 +100,8 @@ public class FaultNodeInstance extends NodeInstanceImpl {
             if (variableScopeInstance != null) {
                 value = variableScopeInstance.getVariable(faultVariable);
             } else {
-                logger.error("Could not find variable scope for variable " + faultVariable);
-                logger.error("when trying to execute fault node " + getFaultNode().getName());
+                logger.error("Could not find variable scope for variable {}", faultVariable);
+                logger.error("when trying to execute fault node {}", getFaultNode().getName());
                 logger.error("Continuing without setting value.");
             }
     	}

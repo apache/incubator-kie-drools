@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitTestCase {
 
-    private Logger testLogger = LoggerFactory.getLogger(ProcessPersistenceHumanTaskOnLaneTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessPersistenceHumanTaskOnLaneTest.class);
 
     public ProcessPersistenceHumanTaskOnLaneTest() {
         super(true);

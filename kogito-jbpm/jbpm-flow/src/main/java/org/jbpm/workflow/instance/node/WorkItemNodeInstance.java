@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 public class WorkItemNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
     
     private static final long serialVersionUID = 510l;
-    private static Logger logger = LoggerFactory.getLogger(WorkItemNodeInstance.class);
+    private static final Logger logger = LoggerFactory.getLogger(WorkItemNodeInstance.class);
     // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
@@ -161,8 +161,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                     try {
                         parameterValue = MVEL.eval(association.getSources().get(0), new NodeInstanceResolverFactory(this));
                     } catch (Throwable t) {
-                        logger.error("Could not find variable scope for variable " + association.getSources().get(0));
-                        logger.error("when trying to execute Work Item " + work.getName());
+                        logger.error("Could not find variable scope for variable {}", association.getSources().get(0));
+                        logger.error("when trying to execute Work Item {}", work.getName());
                         logger.error("Continuing without setting parameter.");
                     }
                 }
@@ -196,8 +196,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                                 String variableValueString = variableValue == null ? "" : variableValue.toString();
                                 replacements.put(paramName, variableValueString);
                             } catch (Throwable t) {
-                                logger.error("Could not find variable scope for variable " + paramName);
-                                logger.error("when trying to replace variable in string for Work Item " + work.getName());
+                                logger.error("Could not find variable scope for variable {}", paramName);
+                                logger.error("when trying to replace variable in string for Work Item {}", work.getName());
                                 logger.error("Continuing without setting parameter.");
                             }
                         }
@@ -250,8 +250,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         }
                         variableScopeInstance.setVariable(association.getTarget(), value);
                     } else {
-                        logger.warn("Could not find variable scope for variable " + association.getTarget());
-                        logger.warn("when trying to complete Work Item " + workItem.getName());
+                        logger.warn("Could not find variable scope for variable {}", association.getTarget());
+                        logger.warn("when trying to complete Work Item {}", workItem.getName());
                         logger.warn("Continuing without setting variable.");
                     }
 

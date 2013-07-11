@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 public class RuleSetNodeInstance extends StateBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 510l;
-    private static Logger logger = LoggerFactory.getLogger(RuleSetNodeInstance.class);
+    private static final Logger logger = LoggerFactory.getLogger(RuleSetNodeInstance.class);
     
     private Map<String, FactHandle> factHandles = new HashMap<String, FactHandle>();
     private String ruleFlowGroup;
@@ -157,7 +157,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                         }
                         variableScopeInstance.setVariable(association.getTarget(), value);
                     } else {
-                        logger.warn("Could not find variable scope for variable " + association.getTarget());
+                        logger.warn("Could not find variable scope for variable {}", association.getTarget());
                     }
 
                 }               
@@ -204,7 +204,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                             return variableValue;
                         }
                     } catch (Throwable t) {
-                        logger.error("Could not find variable scope for variable " + paramName);
+                        logger.error("Could not find variable scope for variable {}", paramName);
                     }
                 }
             }

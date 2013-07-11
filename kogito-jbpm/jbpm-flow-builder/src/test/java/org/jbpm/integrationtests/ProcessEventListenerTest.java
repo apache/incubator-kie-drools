@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessEventListenerTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(ProcessEventListenerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessEventListenerTest.class);
 
     @Test
 	public void testInternalNodeSignalEvent() {

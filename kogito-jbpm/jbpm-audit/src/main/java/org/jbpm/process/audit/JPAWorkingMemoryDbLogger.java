@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
 
-    private static Logger logger = LoggerFactory.getLogger(JPAWorkingMemoryDbLogger.class);
+    private static final Logger logger = LoggerFactory.getLogger(JPAWorkingMemoryDbLogger.class);
     
     private static final String[] KNOWN_UT_JNDI_KEYS = new String[] {"UserTransaction", "java:jboss/UserTransaction", System.getProperty("jbpm.ut.jndi.lookup")};
     
@@ -259,8 +259,7 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
                 ut.commit();
             }
         } catch(Exception e) { 
-            logger.error("Unable to commit transaction: " + e.getMessage());
-            e.printStackTrace();
+            logger.error("Unable to commit transaction: ", e);
         }
     }
     
@@ -279,7 +278,7 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
 		        		UserTransaction ut = (UserTransaction) context.lookup(utLookup);
 		        		return ut;
 					} catch (NamingException e) {
-						logger.debug("User Transaction not found in JNDI under " + utLookup);
+						logger.debug("User Transaction not found in JNDI under {}", utLookup);
 						
 					}
         		}

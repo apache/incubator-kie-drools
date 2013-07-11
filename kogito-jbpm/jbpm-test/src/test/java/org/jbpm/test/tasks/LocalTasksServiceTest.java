@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 public class LocalTasksServiceTest extends JbpmJUnitTestCase {
 
-    private static Logger logger = LoggerFactory.getLogger(LocalTasksServiceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(LocalTasksServiceTest.class);
     
     private EntityManagerFactory emfTasks;
     protected Map<String, UserImpl> users;

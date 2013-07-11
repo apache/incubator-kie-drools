@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  */
 public class QuartzSchedulerService implements GlobalSchedulerService {
     
-    private static Logger logger = LoggerFactory.getLogger(QuartzSchedulerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(QuartzSchedulerService.class);
 
     private AtomicLong idCounter = new AtomicLong();
     private TimerService globalTimerService;
@@ -268,7 +268,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
                 failedCount++;
                 quartzContext.getJobDetail().getJobDataMap().put("failedCount", failedCount);
                 if (failedCount > 5) {
-                    logger.error("Timer execution failed 5 times in a roll, unscheduling (" + quartzContext.getJobDetail().getFullName()+")");
+                    logger.error("Timer execution failed 5 times in a roll, unscheduling ({})", quartzContext.getJobDetail().getFullName());
                     reschedule = false;
                 }
                 throw new JobExecutionException("Exception when executing scheduled job", e, reschedule);

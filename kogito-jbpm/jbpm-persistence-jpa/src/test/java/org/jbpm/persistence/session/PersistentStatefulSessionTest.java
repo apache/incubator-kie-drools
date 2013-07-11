@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 
 public class PersistentStatefulSessionTest extends AbstractBaseTest {
 
-    private static Logger logger = LoggerFactory.getLogger(PersistentStatefulSessionTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(PersistentStatefulSessionTest.class);
     
     private HashMap<String, Object> context;
     private Environment env;
@@ -220,7 +220,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
         ksession.insert( "TestString" );
-        logger.debug( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance {}", processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
@@ -285,7 +285,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
         ksession.insert( "TestString" );
-        logger.debug( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance {}", processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
@@ -358,7 +358,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         int id = ksession.getId();
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
-        logger.debug( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance {}", processInstance.getId() );
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
         processInstance = ksession.getProcessInstance( processInstance.getId() );
@@ -413,7 +413,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         int id = ksession.getId();
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
-        logger.debug( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance {}", processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
@@ -455,11 +455,11 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         final List<ProcessEvent> events = new ArrayList<ProcessEvent>();
         ProcessEventListener listener = new ProcessEventListener() {
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                logger.debug("After node left: " + event.getNodeInstance().getNodeName());
+                logger.debug("After node left: {}", event.getNodeInstance().getNodeName());
                 events.add(event);              
             }
             public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-                logger.debug("After node triggered: " + event.getNodeInstance().getNodeName());
+                logger.debug("After node triggered: {}", event.getNodeInstance().getNodeName());
                 events.add(event);              
             }
             public void afterProcessCompleted(ProcessCompletedEvent event) {
@@ -471,11 +471,11 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
                 events.add(event);              
             }
             public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-                logger.debug("Before node left: " + event.getNodeInstance().getNodeName());
+                logger.debug("Before node left: {}", event.getNodeInstance().getNodeName());
                 events.add(event);              
             }
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-                logger.debug("Before node triggered: " + event.getNodeInstance().getNodeName());
+                logger.debug("Before node triggered: {}", event.getNodeInstance().getNodeName());
                 events.add(event);              
             }
             public void beforeProcessCompleted(ProcessCompletedEvent event) {
@@ -498,7 +498,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         ksession.addEventListener(listener);
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
-        logger.debug( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance {}", processInstance.getId() );
         
         assertEquals(12, events.size());
         assertTrue(events.get(0) instanceof ProcessStartedEvent);
@@ -518,7 +518,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         events.clear();
         
         processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
-        logger.debug( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance {}", processInstance.getId() );
         
         assertTrue(events.isEmpty());
     }
@@ -537,7 +537,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         int id = ksession.getId();
         
         ProcessInstance processInstance = ksession.startProcess( "com.sample.SuperProcess" );
-        logger.debug( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance {}", processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();

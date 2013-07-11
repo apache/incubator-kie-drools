@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 @Transactional
 public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersistenceManager {
 
-    private static Logger logger = LoggerFactory.getLogger(JbpmServicesPersistenceManagerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(JbpmServicesPersistenceManagerImpl.class);
     
     private JbpmServicesTransactionManager ttxm;
    
@@ -374,10 +374,10 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
              * This is usually used with background tasks triggered by timers so no RequestScope
              */
             LocalEntityMangerHolder noScopeEntityManager = noScopeEmLocal.get();
-            logger.debug("No ctx available trying to use no scoped entity manager " + noScopeEntityManager);
+            logger.debug("No ctx available trying to use no scoped entity manager {}", noScopeEntityManager);
             if (noScopeEntityManager == null) {                
                 noScopeEntityManager = new LocalEntityMangerHolder(emf.createEntityManager());
-                logger.debug("local (no scoped) entity manager was not set, creating new entity manager " + noScopeEntityManager);
+                logger.debug("local (no scoped) entity manager was not set, creating new entity manager {}", noScopeEntityManager);
                 noScopeEmLocal.set(noScopeEntityManager);
          
             }

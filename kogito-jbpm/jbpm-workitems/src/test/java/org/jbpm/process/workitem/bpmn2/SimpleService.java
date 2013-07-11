@@ -19,7 +19,7 @@ public class SimpleService {
         } catch (InterruptedException e) {
             logger.error("Interupted while waiting", e);
         }
-        logger.info("Hello " + name);
+        logger.info("Hello {}", name);
         return "Hello " + name;
     }
     

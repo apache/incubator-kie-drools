@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 public class DebugJbpmUnmarshallingTest extends AbstractBaseTest {
 
-    private static Logger logger = LoggerFactory.getLogger(DebugJbpmUnmarshallingTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(DebugJbpmUnmarshallingTest.class);
     
     @Test
     @Ignore
@@ -49,7 +49,7 @@ public class DebugJbpmUnmarshallingTest extends AbstractBaseTest {
            fail( e.getClass().getSimpleName() + " thrown: " + e.getMessage());
        }
        
-       logger.info(": \"" + result + "\"");
+       logger.info(": \"{}\"", result);
     }
 
     @Test
@@ -82,11 +82,11 @@ public class DebugJbpmUnmarshallingTest extends AbstractBaseTest {
                     + ": " + marshalledData.getTestMethodAndSnapshotNum();
                 unmarshalledObject = MarshallingTestUtil.unmarshallObject(marshalledData);
                 assertNotNull(unmarshalledObject);
-                logger.info( ".: " + logMsg);
+                logger.info( ".: {}", logMsg);
             } 
         }
         catch( Exception e ) { 
-            logger.info( "X: " + logMsg);
+            logger.info( "X: {}", logMsg);
             e.printStackTrace();
             fail( "[" + e.getClass().getSimpleName() + "]: " + e.getMessage() );
         }
@@ -192,10 +192,10 @@ public class DebugJbpmUnmarshallingTest extends AbstractBaseTest {
                 + ": " + marshalledData.getTestMethodAndSnapshotNum();
             try { 
                 MarshallingTestUtil.unmarshallObject(marshalledData);
-                logger.info( ".: " + logMsg );
+                logger.info( ".: {}", logMsg );
             } 
             catch( Exception e ) { 
-                logger.info( "X: " + logMsg );
+                logger.info( "X: {}", logMsg );
                 StackTraceElement [] ste = e.getStackTrace();
                 for( int i = 0; i < 1; ++i ) { 
                     StringBuilder elemMsg = new StringBuilder();

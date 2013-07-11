@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 public class TimerNodeInstance extends StateBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 510l;
-    private static Logger logger = LoggerFactory.getLogger(TimerNodeInstance.class);
+    private static final Logger logger = LoggerFactory.getLogger(TimerNodeInstance.class);
     
     private long timerId;
     private TimerInstance timerInstance;
@@ -114,8 +114,8 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
                         String variableValueString = variableValue == null ? "" : variableValue.toString();
                         replacements.put(paramName, variableValueString);
                     } catch (Throwable t) {
-                        logger.error("Could not find variable scope for variable " + paramName);
-                        logger.error("when trying to replace variable in processId for sub process " + getNodeName());
+                        logger.error("Could not find variable scope for variable {}", paramName);
+                        logger.error("when trying to replace variable in processId for sub process {}", getNodeName());
                         logger.error("Continuing without setting process id.");
                     }
                 }

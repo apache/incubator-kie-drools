@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessDynamicNodeTest extends AbstractBaseTest {
     
-    private static Logger logger = LoggerFactory.getLogger(ProcessDynamicNodeTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessDynamicNodeTest.class);
     
     @Test
     @Ignore

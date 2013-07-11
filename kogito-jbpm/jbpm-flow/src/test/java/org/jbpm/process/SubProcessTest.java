@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 
 public class SubProcessTest extends AbstractBaseTest  {
     
-    private static Logger logger = LoggerFactory.getLogger(SubProcessTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SubProcessTest.class);
 
 	private boolean executed = false;
 	private WorkItem workItem;

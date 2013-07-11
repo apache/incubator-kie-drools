@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  ******************************************************************************/
 public class RuleFlowMigrator 
 {
-    private static Logger logger = LoggerFactory.getLogger(RuleFlowMigrator.class);
+    private static final Logger logger = LoggerFactory.getLogger(RuleFlowMigrator.class);
     /**
      * XSL file that transforms drools 4 .rfm ruleflow files to version 5
      */

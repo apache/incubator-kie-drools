@@ -44,7 +44,7 @@ import com.thoughtworks.xstream.XStream;
  */
 public class AsyncAuditLogProducer extends AbstractAuditLogger {
     
-    private static Logger logger = LoggerFactory.getLogger(AsyncAuditLogProducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(AsyncAuditLogProducer.class);
 
     private ConnectionFactory connectionFactory;    
     private Queue queue;

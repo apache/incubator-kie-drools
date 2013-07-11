@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
 
-    private static Logger logger = LoggerFactory.getLogger(ProcessInstanceResolverStrategyTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessInstanceResolverStrategyTest.class);
     
     private HashMap<String, Object> context;
     private StatefulKnowledgeSession ksession;

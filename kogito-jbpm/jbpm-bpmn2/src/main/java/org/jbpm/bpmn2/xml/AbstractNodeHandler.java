@@ -60,7 +60,7 @@ import org.xml.sax.SAXParseException;
 
 public abstract class AbstractNodeHandler extends BaseAbstractHandler implements Handler {
 
-    protected static Logger logger = LoggerFactory.getLogger(AbstractNodeHandler.class);
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractNodeHandler.class);
     
     protected final static String EOL = System.getProperty( "line.separator" );
     protected Map<String, String> dataInputs = new HashMap<String, String>();

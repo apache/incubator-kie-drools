@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SerializationHelper {
     
-    private static Logger logger = LoggerFactory.getLogger(SerializationHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(SerializationHelper.class);
     
     public static <T> T serializeObject(T obj) throws IOException,
                                               ClassNotFoundException {
@@ -172,13 +172,13 @@ public class SerializationHelper {
     public static boolean areByteArraysEqual(byte[] b1,
                                              byte[] b2) {
         if ( b1.length != b2.length ) {
-            logger.info( "Different length: b1=" + b1.length + " b2=" + b2.length );
+            logger.info( "Different length: b1={} b2={}", b1.length, b2.length );
             return false;
         }
 
         for ( int i = 0, length = b1.length; i < length; i++ ) {
             if ( b1[i] != b2[i] ) {
-                logger.info( "Difference at " + i + ": [" + b1[i] + "] != [" + b2[i] + "]" );
+                logger.info( "Difference at {} : [{}] != [{}]", i, b1[i], b2[i]);
                 return false;
             }
         }

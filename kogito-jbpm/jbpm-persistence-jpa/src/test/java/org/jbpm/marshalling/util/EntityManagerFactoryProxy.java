@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  */
 public class EntityManagerFactoryProxy implements InvocationHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(EntityManagerFactoryProxy.class);
+    private static final Logger logger = LoggerFactory.getLogger(EntityManagerFactoryProxy.class);
     
     private EntityManagerFactory emf;
     private EntityManager em;
@@ -207,7 +207,7 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         try { 
             result = method.invoke(object, args);
         } catch( InvocationTargetException ite ) { 
-           logger.warn(method.getName() + " threw " + ite.getClass().getSimpleName() + ": " + ite.getMessage());
+           logger.warn("{} threw {} : {}", method.getName(), ite.getClass().getSimpleName(), ite.getMessage());
            throw ite;
         }
         return result;
@@ -252,7 +252,7 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
             if( byteArray != null ) { 
                 marshalledData = new MarshalledData(sessionInfo);
                 em.persist(marshalledData);
-                logger.trace("-.-: " + marshalledData);
+                logger.trace("-.-: {}", marshalledData);
             }
         }
         else if( args[0] instanceof WorkItemInfo ) { 
@@ -262,7 +262,7 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
             if( byteArray != null ) { 
                 marshalledData = new MarshalledData(workItemInfo);
                 em.persist(marshalledData);
-                logger.trace("-.-: " + marshalledData);
+                logger.trace("-.-: {}", marshalledData);
             }
         }
         else if( PROCESS_INSTANCE_INFO_CLASS_NAME.equals(args[0].getClass().getName()) ) { 
@@ -273,7 +273,7 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
             if( byteArray != null ) { 
                 marshalledData = new MarshalledData(args[0]);
                 em.persist(marshalledData);
-                logger.trace("-.-: " + marshalledData);
+                logger.trace("-.-: {}", marshalledData);
             }
         }
     }
@@ -395,7 +395,7 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
             MarshalledData marshalledData = new MarshalledData(sessionInfo);
             em.persist(marshalledData);
             sessionMarshalledDataMap.get().put(sessionInfo.getId(), marshalledData.byteArray);
-            logger.trace("-!-: " + marshalledData);
+            logger.trace("-!-: {}", marshalledData);
         }
     }
 
@@ -419,7 +419,7 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
             MarshalledData marshalledData = new MarshalledData(workItemInfo);
             em.persist(marshalledData);
             workItemMarshalledDataMap.get().put(workItemInfo.getId(), marshalledData.byteArray);
-            logger.trace("-!-: " + marshalledData);
+            logger.trace("-!-: {}", marshalledData);
         }
     }
    
@@ -444,7 +444,7 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
             MarshalledData marshalledData = new MarshalledData(processInstanceInfo);
             em.persist(marshalledData);
             processInstanceInfoMarshalledDataMap.get().put(id, marshalledData.byteArray);
-            logger.trace("-!-: " + marshalledData);
+            logger.trace("-!-: {}", marshalledData);
         }
     }
 }

@@ -34,7 +34,7 @@ public class MultipleProcessesPerThreadTest extends AbstractBaseTest {
     
     private static final int LOOPS = 1000;
     
-    private static Logger logger = LoggerFactory.getLogger(MultipleProcessesPerThreadTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MultipleProcessesPerThreadTest.class);
     
     protected static StatefulKnowledgeSession createStatefulKnowledgeSession(KnowledgeBase kbase) {
         return kbase.newStatefulKnowledgeSession();
@@ -89,7 +89,7 @@ public class MultipleProcessesPerThreadTest extends AbstractBaseTest {
             }
 
             for (int i = 1; i <= LOOPS; i++) {
-                logger.debug("Starting hello world process, loop " + i + "/" + LOOPS);
+                logger.debug("Starting hello world process, loop {}/{}", i, LOOPS);
 
                 latch = new CountDownLatch(1);
                 CompleteProcessListener listener = new CompleteProcessListener(latch);
@@ -147,7 +147,7 @@ public class MultipleProcessesPerThreadTest extends AbstractBaseTest {
             ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
 
             for (int i = 1; i <= LOOPS; i++) {
-                logger.debug("Starting user task process, loop " + i + "/" + LOOPS);
+                logger.debug("Starting user task process, loop {}/{}", i, LOOPS);
 
                 latch = new CountDownLatch(1);
                 CompleteProcessListener listener = new CompleteProcessListener(latch);
