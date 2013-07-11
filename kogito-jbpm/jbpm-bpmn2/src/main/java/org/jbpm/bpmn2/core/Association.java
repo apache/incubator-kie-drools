@@ -60,4 +60,8 @@ public class Association implements Serializable {
     public void setDirection(String direction) {
         this.direction = direction;
     }
+    
+    public String toString() { 
+        return "Association (" + this.id + ") [" + this.sourceRef + " -> " + this.targetRef + "]";
+    }
 }

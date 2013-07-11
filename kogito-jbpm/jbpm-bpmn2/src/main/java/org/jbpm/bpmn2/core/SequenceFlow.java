@@ -97,4 +97,8 @@ public class SequenceFlow implements Serializable {
 	public void setPriority(int priority) {
 		this.priority = priority;
 	}
+	
+	public String toString() { 
+	    return "SequenceFlow (" + this.id + ") [" + this.sourceRef + " -> " + this.targetRef + "]";
+	}
 }
