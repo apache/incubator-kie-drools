@@ -36,7 +36,7 @@ import org.optaplanner.core.api.solver.Solver;
 public class XmlSolverFactory implements SolverFactory {
 
     public static XStream buildXstream() {
-        XStream xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
+        XStream xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.processAnnotations(SolverConfig.class);
         return xStream;

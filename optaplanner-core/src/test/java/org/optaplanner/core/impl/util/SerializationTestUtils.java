@@ -37,7 +37,7 @@ public class SerializationTestUtils {
     }
 
     public static <T> T serializeAndDeserializeWithXStream(T input) {
-        XStream xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
+        XStream xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
         String xmlString = xStream.toXML(input);
         return (T) xStream.fromXML(xmlString);
