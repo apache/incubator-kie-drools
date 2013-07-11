@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
@@ -87,13 +88,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
 
         private OriginalChangeMoveIterator() {
             entityIterator = entitySelector.iterator();
-            if (!entityIterator.hasNext()) {
-                upcomingSelection = noUpcomingSelection();
-                upcomingCreated = true;
-            } else {
-                upcomingEntity = entityIterator.next();
-                valueIterator = valueSelector.iterator(upcomingEntity);
-            }
+            valueIterator = Collections.emptyIterator();
         }
 
         @Override
@@ -120,10 +115,6 @@ public class ChangeMoveSelector extends GenericMoveSelector {
 
         private RandomChangeMoveIterator() {
             entityIterator = entitySelector.iterator();
-            if (!entityIterator.hasNext()) {
-                upcomingSelection = noUpcomingSelection();
-                upcomingCreated = true;
-            }
         }
 
         @Override
@@ -134,6 +125,9 @@ public class ChangeMoveSelector extends GenericMoveSelector {
             // But empty selectors and ending selectors (such as non-random or shuffled) make it more complex
             if (!entityIterator.hasNext()) {
                 entityIterator = entitySelector.iterator();
+                if (!entityIterator.hasNext()) {
+                    return noUpcomingSelection();
+                }
             }
             Object entity = entityIterator.next();
             valueIterator = valueSelector.iterator(entity);
