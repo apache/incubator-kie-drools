@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public abstract class UpcomingSelectionIterator<S> implements Iterator<S>  {
+public abstract class UpcomingSelectionIterator<S> extends SelectionIterator<S>  {
 
     protected boolean upcomingCreated = false;
     protected boolean hasUpcomingSelection = true;
@@ -42,10 +42,6 @@ public abstract class UpcomingSelectionIterator<S> implements Iterator<S>  {
         }
         upcomingCreated = false;
         return upcomingSelection;
-    }
-
-    public void remove() {
-        throw new UnsupportedOperationException("The optional operation remove() is not supported.");
     }
 
     protected abstract S createUpcomingSelection();

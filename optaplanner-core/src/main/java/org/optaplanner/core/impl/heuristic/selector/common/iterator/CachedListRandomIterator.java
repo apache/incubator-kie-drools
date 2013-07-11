@@ -24,7 +24,7 @@ import java.util.Random;
  * This {@link Iterator} does not shuffle and is never ending.
  * @param <S>
  */
-public class CachedListRandomIterator<S> implements Iterator<S>  {
+public class CachedListRandomIterator<S> extends SelectionIterator<S>  {
 
     protected final List<S> cachedList;
     protected final Random workingRandom;
@@ -43,10 +43,6 @@ public class CachedListRandomIterator<S> implements Iterator<S>  {
     public S next() {
         int index = workingRandom.nextInt(cachedList.size());
         return cachedList.get(index);
-    }
-
-    public void remove() {
-        throw new UnsupportedOperationException("The optional operation remove() is not supported.");
     }
 
 }

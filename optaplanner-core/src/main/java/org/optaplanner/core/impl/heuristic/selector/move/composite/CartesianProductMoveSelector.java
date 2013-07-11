@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.move.CompositeMove;
@@ -116,7 +117,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
 
     }
 
-    public class RandomCartesianProductMoveIterator implements Iterator<Move> {
+    public class RandomCartesianProductMoveIterator extends SelectionIterator<Move> {
 
         private List<Iterator<Move>> moveIteratorList;
         private Boolean empty;
@@ -157,10 +158,6 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
                 moveList.add(moveIterator.next());
             }
             return new CompositeMove(moveList);
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }
 
     }

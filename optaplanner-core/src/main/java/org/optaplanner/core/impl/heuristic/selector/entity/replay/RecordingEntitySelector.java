@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -78,7 +79,7 @@ public class RecordingEntitySelector extends AbstractEntitySelector {
         return new RecordingEntityIterator(childEntitySelector.iterator());
     }
 
-    private class RecordingEntityIterator implements Iterator<Object> {
+    private class RecordingEntityIterator extends SelectionIterator<Object> {
 
         private final Iterator<Object> childEntityIterator;
 
@@ -96,10 +97,6 @@ public class RecordingEntitySelector extends AbstractEntitySelector {
             recordedSelection = childEntityIterator.next();
             recordedSelectionCreated = true;
             return recordedSelection;
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }
 
     }

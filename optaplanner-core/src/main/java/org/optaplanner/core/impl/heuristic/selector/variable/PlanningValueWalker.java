@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.variable;
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.optaplanner.core.impl.move.Move;
@@ -144,7 +145,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         }
     }
 
-    private class ChangeMoveIterator implements Iterator<Move> {
+    private class ChangeMoveIterator extends SelectionIterator<Move> {
 
         protected final Iterator<?> planningValueIterator;
         protected final Object planningEntity;
@@ -161,10 +162,6 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         public Move next() {
             Object toPlanningValue = planningValueIterator.next();
             return new ChangeMove(planningEntity, variableDescriptor, toPlanningValue);
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException();
         }
 
     }

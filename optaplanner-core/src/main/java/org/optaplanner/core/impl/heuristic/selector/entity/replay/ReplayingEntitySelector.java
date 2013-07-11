@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 
 public class ReplayingEntitySelector extends AbstractEntitySelector {
@@ -39,7 +40,7 @@ public class ReplayingEntitySelector extends AbstractEntitySelector {
         return new ReplayingEntityIterator();
     }
 
-    private class ReplayingEntityIterator implements Iterator<Object> {
+    private class ReplayingEntityIterator extends SelectionIterator<Object> {
 
         public boolean hasNext() {
             return recordingEntitySelector.hasRecordedSelection();
@@ -47,10 +48,6 @@ public class ReplayingEntitySelector extends AbstractEntitySelector {
 
         public Object next() {
             return recordingEntitySelector.getRecordedSelection();
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }
 
     }

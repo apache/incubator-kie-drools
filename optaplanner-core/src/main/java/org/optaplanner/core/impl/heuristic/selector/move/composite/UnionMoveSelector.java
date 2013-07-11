@@ -26,6 +26,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.collections.iterators.IteratorChain;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -126,7 +127,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
         }
     }
 
-    public class RandomUnionMoveIterator implements Iterator<Move> {
+    public class RandomUnionMoveIterator extends SelectionIterator<Move> {
 
         protected final Map<Iterator<Move>, ProbabilityItem> probabilityItemMap;
 
@@ -187,10 +188,6 @@ public class UnionMoveSelector extends CompositeMoveSelector {
                 }
             }
             probabilityWeightTotal = probabilityWeightOffset;
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }
 
     }
