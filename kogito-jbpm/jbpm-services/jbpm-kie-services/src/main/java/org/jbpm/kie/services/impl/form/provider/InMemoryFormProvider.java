@@ -8,6 +8,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.kie.api.task.model.Task;
+import org.kie.internal.task.api.model.InternalTask;
 
 @ApplicationScoped
 public class InMemoryFormProvider extends FreemakerFormProvider {
@@ -35,11 +36,18 @@ public class InMemoryFormProvider extends FreemakerFormProvider {
     public String render(String name, Task task, ProcessDesc process, Map<String, Object> renderContext) {
         InputStream template = null;
         if(task != null && process != null){
-            String taskName = task.getNames().get(0).getText();
-            if (process.getForms().containsKey(taskName)) {
-                template = new ByteArrayInputStream(process.getForms().get(taskName).getBytes());
-            } else if (process.getForms().containsKey(taskName.replace(" ", "")+ "-taskform")) {
-                template = new ByteArrayInputStream(process.getForms().get(taskName.replace(" ", "") + "-taskform").getBytes());
+            String lookupName = "";
+            String formName = ((InternalTask)task).getFormName();
+            if(formName != null && !formName.equals("")){
+                lookupName = formName;
+            }else{
+                lookupName = task.getNames().get(0).getText();
+                
+            }
+            if (process.getForms().containsKey(lookupName)) {
+                template = new ByteArrayInputStream(process.getForms().get(lookupName).getBytes());
+            } else if (process.getForms().containsKey(lookupName.replace(" ", "")+ "-taskform")) {
+                template = new ByteArrayInputStream(process.getForms().get(lookupName.replace(" ", "") + "-taskform").getBytes());
             } else if (process.getForms().containsKey(DEFAULT_TASK)) {
                 template = new ByteArrayInputStream(process.getForms().get(DEFAULT_TASK).getBytes());
             }

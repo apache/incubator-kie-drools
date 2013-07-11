@@ -100,6 +100,8 @@ public class TaskImpl implements InternalTask {
     
     private String               taskType;
     
+    private String               formName;
+    
     @Basic
     private Short archived = 0;
     
@@ -112,6 +114,7 @@ public class TaskImpl implements InternalTask {
         out.writeInt( priority );
         out.writeShort( archived );
         out.writeUTF(taskType);
+        out.writeUTF(formName);
         CollectionUtils.writeI18NTextList( names, out );
         CollectionUtils.writeI18NTextList( subjects, out );
         CollectionUtils.writeI18NTextList( descriptions, out );
@@ -159,6 +162,7 @@ public class TaskImpl implements InternalTask {
         priority = in.readInt();
         archived = in.readShort();
         taskType = in.readUTF();
+        formName = in.readUTF();
         names = CollectionUtils.readI18NTextList( in );
         subjects = CollectionUtils.readI18NTextList( in );
         descriptions = CollectionUtils.readI18NTextList( in );
@@ -287,6 +291,15 @@ public class TaskImpl implements InternalTask {
     public void setTaskType(String taskType) {
         this.taskType = taskType;
     }
+
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
+    }
+    
 
     public Short getArchived() {
         return archived;
