@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.heuristic.selector.entity.replay;
+package org.optaplanner.core.impl.heuristic.selector.entity.mimic;
 
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -9,7 +9,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelecto
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 
-public class RecordingEntitySelector extends AbstractEntitySelector {
+public class MimicRecordingEntitySelector extends AbstractEntitySelector {
 
     protected final EntitySelector childEntitySelector;
 
@@ -18,7 +18,7 @@ public class RecordingEntitySelector extends AbstractEntitySelector {
     protected boolean recordedSelectionCreated;
     protected Object recordedSelection;
 
-    public RecordingEntitySelector(EntitySelector childEntitySelector) {
+    public MimicRecordingEntitySelector(EntitySelector childEntitySelector) {
         this.childEntitySelector = childEntitySelector;
         solverPhaseLifecycleSupport.addEventListener(childEntitySelector);
     }
