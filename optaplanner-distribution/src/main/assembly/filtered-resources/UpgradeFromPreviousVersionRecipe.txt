@@ -3424,3 +3424,7 @@ Before in *Config.java:
     public ... build...(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
 After in *Config.java:
     public ... build...(HeuristicConfigPolicy configPolicy) {
+
+
+From 6.0.0.Beta5 to 6.0.0.CR1
+-----------------------------
