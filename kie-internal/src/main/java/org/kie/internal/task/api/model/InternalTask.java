@@ -36,6 +36,10 @@ public interface InternalTask extends Task {
     void setPriority(int priority);
 
     void setNames(List<I18NText> names);
+    
+    void setFormName(String formName);
+    
+    String getFormName();
 
     void setSubjects(List<I18NText> subjects);
 
