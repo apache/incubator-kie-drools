@@ -19,7 +19,6 @@ import static junit.framework.Assert.*;
 public class IncrementalCompilationTest {
 
     @Test
-    @Ignore("See https://issues.jboss.org/browse/DROOLS-179")
     public void testIncrementalProcessCompilation() throws Exception {
 
         String invalidProcessDefinition = getResource( "/BPMN2-Incremental-Build-Invalid.bpmn2" );
