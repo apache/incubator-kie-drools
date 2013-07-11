@@ -9,4 +9,5 @@ public interface ProcessBuilder {
 
     List<DroolsError> addProcessFromXml(Resource resource) throws IOException;
 
+    List<DroolsError> getErrors();
 }

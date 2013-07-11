@@ -37,7 +37,7 @@ public class ProjectClassLoader extends ClassLoader {
             return cls == null ? createProjectClassLoader() : createProjectClassLoader(cls.getClassLoader());
         } else if (classLoaders.length == 1) {
             ProjectClassLoader classLoader = createProjectClassLoader(classLoaders[0]);
-            if (cls != null && cls.getClassLoader() != classLoaders[0]) {
+            if (cls != null) {
                 classLoader.setDroolsClassLoader(cls.getClassLoader());
             }
             return classLoader;
@@ -151,9 +151,11 @@ public class ProjectClassLoader extends ClassLoader {
     }
 
     public void setDroolsClassLoader(ClassLoader droolsClassLoader) {
-        this.droolsClassLoader = droolsClassLoader;
-        if (CACHE_NON_EXISTING_CLASSES) {
-            nonExistingClasses.clear();
+        if (getParent() != droolsClassLoader) {
+            this.droolsClassLoader = droolsClassLoader;
+            if (CACHE_NON_EXISTING_CLASSES) {
+                nonExistingClasses.clear();
+            }
         }
     }
 }
