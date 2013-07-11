@@ -14,6 +14,7 @@ import org.mvel2.ast.Negation;
 import org.mvel2.ast.NewObjectNode;
 import org.mvel2.ast.Or;
 import org.mvel2.ast.RegExMatch;
+import org.mvel2.ast.Sign;
 import org.mvel2.ast.Soundslike;
 import org.mvel2.ast.Substatement;
 import org.mvel2.ast.TypeCast;
@@ -215,6 +216,17 @@ public class ConditionAnalyzer {
                 throw new RuntimeException("Unexpected accessor: " + accessor);
             }
             return expression;
+        }
+
+        if (node instanceof Sign) {
+            ExecutableStatement statement = getFieldValue(Sign.class, "stmt", (Sign) node);
+            if (statement instanceof ExecutableAccessor) {
+                ExecutableAccessor accessor = (ExecutableAccessor) statement;
+                return new AritmeticExpression(new FixedExpression(0), AritmeticOperator.SUB, analyzeNode(accessor.getNode()));
+            } else {
+                ExecutableLiteral literal = (ExecutableLiteral) statement;
+                return new AritmeticExpression(new FixedExpression(0), AritmeticOperator.SUB, new FixedExpression(literal.getLiteral()));
+            }
         }
 
         Accessor accessor = node.getAccessor();
