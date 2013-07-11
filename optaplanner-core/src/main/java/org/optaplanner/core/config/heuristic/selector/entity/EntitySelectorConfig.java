@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -43,9 +44,16 @@ import org.optaplanner.core.impl.heuristic.selector.entity.decorator.FilteringEn
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ProbabilityEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.ShufflingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SortingEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 
 @XStreamAlias("entitySelector")
 public class EntitySelectorConfig extends SelectorConfig {
+
+    @XStreamAsAttribute
+    protected String id = null;
+    @XStreamAsAttribute
+    protected String mimicSelectorRef = null;
 
     protected Class<?> entityClass = null;
 
@@ -61,6 +69,22 @@ public class EntitySelectorConfig extends SelectorConfig {
     protected Class<? extends SelectionSorter> sorterClass = null;
 
     protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getMimicSelectorRef() {
+        return mimicSelectorRef;
+    }
+
+    public void setMimicSelectorRef(String mimicSelectorRef) {
+        this.mimicSelectorRef = mimicSelectorRef;
+    }
 
     public Class<?> getEntityClass() {
         return entityClass;
@@ -139,7 +163,6 @@ public class EntitySelectorConfig extends SelectorConfig {
     // ************************************************************************
 
     /**
-     *
      * @param configPolicy never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
@@ -149,6 +172,9 @@ public class EntitySelectorConfig extends SelectorConfig {
      */
     public EntitySelector buildEntitySelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
+        if (mimicSelectorRef != null) {
+            return buildMimicReplaying(configPolicy);
+        }
         PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(
                 configPolicy.getSolutionDescriptor(), entityClass);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
@@ -168,7 +194,33 @@ public class EntitySelectorConfig extends SelectorConfig {
         entitySelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, entitySelector);
+        entitySelector = applyMimicRecording(configPolicy, entitySelector);
         return entitySelector;
+    }
+
+    protected EntitySelector buildMimicReplaying(HeuristicConfigPolicy configPolicy) {
+        if (id != null
+                || entityClass != null
+                || cacheType != null
+                || selectionOrder != null
+                || filterClassList != null
+                || sorterComparatorClass != null
+                || sorterWeightFactoryClass != null
+                || sorterOrder != null
+                || sorterClass != null
+                || probabilityWeightFactoryClass != null) {
+            throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                    + ") with mimicSelectorRef ("  + mimicSelectorRef
+                    + ") has another property that is not null.");
+        }
+        MimicRecordingEntitySelector mimicRecordingEntitySelector
+                = configPolicy.getMimicRecordingEntitySelector(mimicSelectorRef);
+        if (mimicRecordingEntitySelector == null) {
+            throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                    + ") has a mimicSelectorRef ("  + mimicSelectorRef
+                    + ") for which no entitySelector with that id exists (in its solver phase).");
+        }
+        return new MimicReplayingEntitySelector(mimicRecordingEntitySelector);
     }
 
     protected boolean determineBaseRandomSelection(PlanningEntityDescriptor entityDescriptor,
@@ -342,8 +394,26 @@ public class EntitySelectorConfig extends SelectorConfig {
         return entitySelector;
     }
 
+    private EntitySelector applyMimicRecording(HeuristicConfigPolicy configPolicy, EntitySelector entitySelector) {
+        if (id != null) {
+            if (id.isEmpty()) {
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                        + ") has an empty id (" + id + ").");
+            }
+            MimicRecordingEntitySelector mimicRecordingEntitySelector
+                    = new MimicRecordingEntitySelector(entitySelector);
+            configPolicy.addMimicRecordingEntitySelector(id, mimicRecordingEntitySelector);
+            entitySelector = mimicRecordingEntitySelector;
+        }
+        return entitySelector;
+    }
+
     public void inherit(EntitySelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
+        id = ConfigUtils.inheritOverwritableProperty(id,
+                inheritedConfig.getId());
+        mimicSelectorRef = ConfigUtils.inheritOverwritableProperty(mimicSelectorRef,
+                inheritedConfig.getMimicSelectorRef());
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass,
                 inheritedConfig.getEntityClass());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());

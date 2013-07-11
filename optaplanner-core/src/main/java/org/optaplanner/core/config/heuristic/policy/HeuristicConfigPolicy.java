@@ -1,7 +1,11 @@
 package org.optaplanner.core.config.heuristic.policy;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class HeuristicConfigPolicy {
@@ -11,6 +15,9 @@ public class HeuristicConfigPolicy {
     private final ScoreDefinition scoreDefinition;
 
     private boolean initializedChainedValueFilterEnabled = false;
+
+    private Map<String, MimicRecordingEntitySelector> mimicRecordingEntitySelectorMap
+            = new HashMap<String, MimicRecordingEntitySelector>();
 
     public HeuristicConfigPolicy(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             ScoreDefinition scoreDefinition) {
@@ -45,6 +52,21 @@ public class HeuristicConfigPolicy {
 
     public HeuristicConfigPolicy createPhaseConfigPolicy() {
         return new HeuristicConfigPolicy(environmentMode, solutionDescriptor, scoreDefinition);
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    public void addMimicRecordingEntitySelector(String id, MimicRecordingEntitySelector mimicRecordingEntitySelector) {
+        MimicRecordingEntitySelector put = mimicRecordingEntitySelectorMap.put(id, mimicRecordingEntitySelector);
+        if (put != null) {
+            throw new IllegalStateException("Multiple entity selectors have the same id (" + id + ").");
+        }
+    }
+
+    public MimicRecordingEntitySelector getMimicRecordingEntitySelector(String id) {
+        return mimicRecordingEntitySelectorMap.get(id);
     }
 
 }

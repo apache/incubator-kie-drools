@@ -22,6 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
+
 public class ConfigUtils {
 
     public static <T> T newInstance(Object bean, String propertyName, Class<T> clazz) {
