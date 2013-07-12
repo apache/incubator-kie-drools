@@ -20,6 +20,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
+import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.base.mvel.ActivationPropertyHandler;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
@@ -36,7 +37,9 @@ import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.common.AgendaItemImpl;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
@@ -423,6 +426,14 @@ public class PatternBuilder
                 }
             }
 
+            for ( Constraint constr : pattern.getConstraints() ) {
+                if ( constr instanceof EvaluatorConstraint ) {
+                    EvaluatorConstraint ec = ((EvaluatorConstraint) constr );
+                    if ( ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.ISA || ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.NOT_ISA ) {
+                        listenedProperties.add( TraitableBean.TRAITSET_FIELD_NAME );
+                    }
+                }
+            }
             pattern.setListenedProperties(listenedProperties);
         }
     }

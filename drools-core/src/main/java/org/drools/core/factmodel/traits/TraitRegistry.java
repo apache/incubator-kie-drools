@@ -206,8 +206,8 @@ public class TraitRegistry implements Externalizable {
             Class concreteType = concreteField != null ? concreteField.getType() : null;
             Class virtualType = field.getType();
 
-            if ( concreteType != null
-                    && concreteType.isAssignableFrom( virtualType ) ) {
+            if ( ( concreteType != null && concreteType.isAssignableFrom( virtualType ) )
+                || ( traits.containsKey( virtualType.getName() ) && ( (FieldDefinition) field ).hasAlias() ) ) {
                 bitmask |= 1 << j;
             }
             j++;

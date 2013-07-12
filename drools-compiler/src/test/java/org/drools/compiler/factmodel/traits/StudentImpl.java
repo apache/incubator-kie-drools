@@ -151,7 +151,7 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
     }
 
     public BitSet getCurrentTypeCode() {
-        return new BitSet();
+        return null;
     }
 
     public BitSet getTypeCode() {

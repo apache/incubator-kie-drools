@@ -536,14 +536,24 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD,
-                BuildUtils.getInternalType( classDef.getName() ),
-                TraitableBean.TRAITSET_FIELD_NAME,
-                Type.getDescriptor( Map.class ) );
+                           BuildUtils.getInternalType( classDef.getName() ),
+                           TraitableBean.TRAITSET_FIELD_NAME,
+                           Type.getDescriptor( Map.class ) );
+        Label l3 = new Label();
+        mv.visitJumpInsn( IFNONNULL, l3 );
+        mv.visitInsn( ACONST_NULL );
+        mv.visitInsn( ARETURN );
+        mv.visitLabel( l3 );
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitFieldInsn( GETFIELD,
+                           BuildUtils.getInternalType( classDef.getName() ),
+                           TraitableBean.TRAITSET_FIELD_NAME,
+                           Type.getDescriptor( Map.class ) );
         mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitTypeMap.class ) );
         mv.visitMethodInsn( INVOKEVIRTUAL,
-                Type.getInternalName( TraitTypeMap.class ),
-                "getCurrentTypeCode",
-                Type.getMethodDescriptor( Type.getType( BitSet.class ), new Type[] { } ) );
+                            Type.getInternalName( TraitTypeMap.class ),
+                            "getCurrentTypeCode",
+                            Type.getMethodDescriptor( Type.getType( BitSet.class ), new Type[] { } ) );
         mv.visitInsn( ARETURN );
         mv.visitMaxs( 0, 0 );
         mv.visitEnd();

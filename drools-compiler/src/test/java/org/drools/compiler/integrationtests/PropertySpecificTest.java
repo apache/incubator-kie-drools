@@ -58,8 +58,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getSinkPropagator().getSinks()[0];
         
         RuleTerminalNode rtNode = ( RuleTerminalNode ) liaNode.getSinkPropagator().getSinks()[0];
-        assertEquals( Long.MAX_VALUE, rtNode.getDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, rtNode.getInferredMask() );
+        assertEquals( -1L, rtNode.getDeclaredMask() );
+        assertEquals( -1L, rtNode.getInferredMask() );
     }   
     
     @Test
@@ -80,8 +80,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getSinkPropagator().getSinks()[0];
         
         RuleTerminalNode rtNode = ( RuleTerminalNode ) liaNode.getSinkPropagator().getSinks()[0];
-        assertEquals( Long.MAX_VALUE, rtNode.getDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, rtNode.getInferredMask() );
+        assertEquals( -1L, rtNode.getDeclaredMask() );
+        assertEquals( -1L, rtNode.getInferredMask() );
     }   
     
     @Test
@@ -100,15 +100,15 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertNotNull( otn );
 
         AlphaNode alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( Long.MAX_VALUE, alphaNode.getDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, alphaNode.getInferredMask() );        
+        assertEquals( -1L, alphaNode.getDeclaredMask() );
+        assertEquals( -1L, alphaNode.getInferredMask() );
         
         
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) alphaNode.getSinkPropagator().getSinks()[0];
         
         RuleTerminalNode rtNode = ( RuleTerminalNode ) liaNode.getSinkPropagator().getSinks()[0];
-        assertEquals( Long.MAX_VALUE, rtNode.getDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, rtNode.getInferredMask() );
+        assertEquals( -1L, rtNode.getDeclaredMask() );
+        assertEquals( -1L, rtNode.getInferredMask() );
     }  
     
     @Test
@@ -130,8 +130,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         BetaNode betaNode = ( BetaNode ) otn.getSinkPropagator().getSinks()[0];
         
-        assertEquals( Long.MAX_VALUE, betaNode.getRightDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNode.getRightInferredMask() );
+        assertEquals( -1L, betaNode.getRightDeclaredMask() );
+        assertEquals( -1L, betaNode.getRightInferredMask() );
     }    
     
     @Test
@@ -152,13 +152,13 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertNotNull( otn );
 
         AlphaNode alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( Long.MAX_VALUE, alphaNode.getDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, alphaNode.getInferredMask() );
+        assertEquals( -1L, alphaNode.getDeclaredMask() );
+        assertEquals( -1L, alphaNode.getInferredMask() );
         
         BetaNode betaNode = ( BetaNode ) alphaNode.getSinkPropagator().getSinks()[0]; 
         
-        assertEquals( Long.MAX_VALUE, betaNode.getRightDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNode.getRightInferredMask() );
+        assertEquals( -1L, betaNode.getRightDeclaredMask() );
+        assertEquals( -1L, betaNode.getRightInferredMask() );
     }  
     
     @Test
@@ -180,10 +180,10 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getSinkPropagator().getSinks()[0];
         BetaNode betaNode = ( BetaNode ) liaNode.getSinkPropagator().getSinks()[1];
         
-        assertEquals( Long.MAX_VALUE, betaNode.getLeftDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNode.getLeftInferredMask() );
-        assertEquals( Long.MAX_VALUE, betaNode.getRightDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNode.getRightInferredMask() );                
+        assertEquals( -1L, betaNode.getLeftDeclaredMask() );
+        assertEquals( -1L, betaNode.getLeftInferredMask() );
+        assertEquals( -1L, betaNode.getRightDeclaredMask() );
+        assertEquals( -1L, betaNode.getRightInferredMask() );
     }  
     
     @Test
@@ -206,10 +206,10 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getSinkPropagator().getSinks()[0];
         BetaNode betaNode = ( BetaNode ) liaNode.getSinkPropagator().getSinks()[1];
         
-        assertEquals( Long.MAX_VALUE, betaNode.getLeftDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNode.getLeftInferredMask() );
-        assertEquals( Long.MAX_VALUE, betaNode.getRightDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNode.getRightInferredMask() );                
+        assertEquals( -1L, betaNode.getLeftDeclaredMask() );
+        assertEquals( -1L, betaNode.getLeftInferredMask() );
+        assertEquals( -1L, betaNode.getRightDeclaredMask() );
+        assertEquals( -1L, betaNode.getRightInferredMask() );
     }    
     
     @Test
@@ -236,30 +236,30 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertNotNull( otn );
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( Long.MAX_VALUE, alphaNode1.getDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, alphaNode1.getInferredMask() );
+        assertEquals( -1L, alphaNode1.getDeclaredMask() );
+        assertEquals( -1L, alphaNode1.getInferredMask() );
         
         
         // first share
         AlphaNode alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( Long.MAX_VALUE, alphaNode1_1.getDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, alphaNode1_1.getInferredMask() );  
+        assertEquals( -1L, alphaNode1_1.getDeclaredMask() );
+        assertEquals( -1L, alphaNode1_1.getInferredMask() );
         
         BetaNode betaNode1 = ( BetaNode ) alphaNode1_1.getSinkPropagator().getSinks()[0]; 
         
-        assertEquals( Long.MAX_VALUE, betaNode1.getRightDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNode1.getRightInferredMask() );
+        assertEquals( -1L, betaNode1.getRightDeclaredMask() );
+        assertEquals( -1L, betaNode1.getRightInferredMask() );
         
         
         // second share
         AlphaNode alphaNode1_2 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[1];
-        assertEquals( Long.MAX_VALUE, alphaNode1_2.getDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, alphaNode1_2.getInferredMask() );  
+        assertEquals( -1L, alphaNode1_2.getDeclaredMask() );
+        assertEquals( -1L, alphaNode1_2.getInferredMask() );
         
         BetaNode betaNode2 = ( BetaNode ) alphaNode1_2.getSinkPropagator().getSinks()[0]; 
         
-        assertEquals( Long.MAX_VALUE, betaNode2.getRightDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNode2.getRightInferredMask() );
+        assertEquals( -1L, betaNode2.getRightDeclaredMask() );
+        assertEquals( -1L, betaNode2.getRightInferredMask() );
     }       
     
 
@@ -2020,8 +2020,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         BetaNode betaNodeA = ( BetaNode ) otnA.getSinkPropagator().getSinks()[0];
         assertEquals( calculatePositiveMask(list("i", "b", "c"), sp), betaNodeA.getRightDeclaredMask() );
         assertEquals( calculatePositiveMask(list("i", "b", "c"), sp), betaNodeA.getRightInferredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeA.getLeftDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeA.getLeftInferredMask() );
+        assertEquals( -1L, betaNodeA.getLeftDeclaredMask() );
+        assertEquals( -1L, betaNodeA.getLeftInferredMask() );
 
         BetaNode betaNodeC = ( BetaNode ) otnC.getSinkPropagator().getSinks()[0];
         assertEquals( 0L, betaNodeC.getRightDeclaredMask() );
@@ -2049,8 +2049,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         BetaNode betaNodeC = ( BetaNode ) otnC.getSinkPropagator().getSinks()[0];
         assertEquals(0L, betaNodeC.getRightDeclaredMask());
         assertEquals( 0L, betaNodeC.getRightInferredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeC.getLeftDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeC.getLeftInferredMask() );
+        assertEquals( -1L, betaNodeC.getLeftDeclaredMask() );
+        assertEquals( -1L, betaNodeC.getLeftInferredMask() );
     }
 
     @Test
@@ -2124,13 +2124,13 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         assertEquals( 0L, betaNodeA1.getRightDeclaredMask() );
         assertEquals( 0L, betaNodeA1.getRightInferredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeA1.getLeftDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeA1.getLeftInferredMask() );
+        assertEquals( -1L, betaNodeA1.getLeftDeclaredMask() );
+        assertEquals( -1L, betaNodeA1.getLeftInferredMask() );
 
         assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNodeA2.getRightDeclaredMask() );
         assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNodeA2.getRightInferredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeA2.getLeftDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeA2.getLeftInferredMask() );
+        assertEquals( -1L, betaNodeA2.getLeftDeclaredMask() );
+        assertEquals( -1L, betaNodeA2.getLeftInferredMask() );
 
         kbase.removeRule( "org.drools.compiler.integrationtests", "r0" );
         assertEquals(1, betaNodeC.getSinkPropagator().getSinks().length);
@@ -2169,16 +2169,16 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         assertEquals( 0L, betaNodeC.getRightDeclaredMask() );
         assertEquals( 0L, betaNodeC.getRightInferredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeC.getLeftDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeC.getLeftInferredMask() );
+        assertEquals( -1L, betaNodeC.getLeftDeclaredMask() );
+        assertEquals( -1L, betaNodeC.getLeftInferredMask() );
 
         ObjectTypeNode otnD = getObjectTypeNode(kbase, "D" );
         BetaNode betaNodeD = ( BetaNode ) otnC.getSinkPropagator().getSinks()[0];
 
         assertEquals( 0L, betaNodeD.getRightDeclaredMask() );
         assertEquals( 0L, betaNodeD.getRightInferredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeD.getLeftDeclaredMask() );
-        assertEquals( Long.MAX_VALUE, betaNodeD.getLeftInferredMask() );
+        assertEquals( -1L, betaNodeD.getLeftDeclaredMask() );
+        assertEquals( -1L, betaNodeD.getLeftInferredMask() );
 
         kbase.removeRule( "org.drools.compiler.integrationtests", "r1" );
         assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
