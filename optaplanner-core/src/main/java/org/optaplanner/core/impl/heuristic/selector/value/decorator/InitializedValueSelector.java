@@ -27,6 +27,8 @@ import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 /**
  * Filters out every value that is planning entity for which the planning variable
  * (for which this {@link ValueSelector} applies to) and that is uninitialized too.
+ * <p/>
+ * Mainly used for chained planning variables.
  */
 public class InitializedValueSelector extends AbstractValueSelector {
 
