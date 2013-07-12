@@ -319,6 +319,18 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "getCurrentTypeCode", "()" + Type.getDescriptor( BitSet.class ), null, null );
                 mv.visitCode();
+
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitFieldInsn( GETFIELD,
+                                   BuildUtils.getInternalType( wrapperName ),
+                                   TraitableBean.TRAITSET_FIELD_NAME,
+                                   Type.getDescriptor( Map.class ) );
+                Label l3 = new Label();
+                mv.visitJumpInsn( IFNONNULL, l3 );
+                mv.visitInsn( ACONST_NULL );
+                mv.visitInsn( ARETURN );
+                mv.visitLabel( l3 );
+
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitFieldInsn(GETFIELD,
                         BuildUtils.getInternalType(wrapperName),

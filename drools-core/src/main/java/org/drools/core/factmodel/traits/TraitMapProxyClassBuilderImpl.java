@@ -525,11 +525,31 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
                 null);
         mv.visitCode();
 
-
-        TraitFactory.invokeExtractor( mv, masterName, proxy, core, field );
-
-        if ( ! BuildUtils.isPrimitive( fieldType.getName() ) ) {
-            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
+        if ( field.hasAlias() && proxy.getField( field.getAlias() ) != null ) {
+            FieldDefinition aliasedField = proxy.getField( field.getAlias() );
+            if ( field.getType().isAssignableFrom( aliasedField.getType() ) ) {
+                // a simple cast is sufficient
+                TraitFactory.invokeExtractor( mv, masterName, proxy, core, field );
+                if ( ! BuildUtils.isPrimitive( fieldType.getName() ) ) {
+                    mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
+                }
+            } else {
+                TraitFactory.invokeExtractor( mv, masterName, proxy, core, field );
+                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
+                mv.visitVarInsn( ASTORE, 1 );
+                mv.visitVarInsn( ALOAD, 1 );
+                mv.visitLdcInsn( fieldType.getName() );
+                mv.visitMethodInsn( INVOKEINTERFACE,
+                                    Type.getInternalName( TraitableBean.class ),
+                                    "getTrait",
+                                    Type.getMethodDescriptor( Type.getType( Thing.class ), new Type[] { Type.getType( String.class ) } ) );
+                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
+            }
+        } else {
+            TraitFactory.invokeExtractor( mv, masterName, proxy, core, field );
+            if ( ! BuildUtils.isPrimitive( fieldType.getName() ) ) {
+                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
+            }
         }
 
         mv.visitInsn( BuildUtils.returnType ( field.getTypeName() ) );
@@ -553,11 +573,37 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
                 null);
         mv.visitCode();
 
-        TraitFactory.invokeInjector( mv, masterName, trait, core, field, false, 1 );
+        if ( field.hasAlias() && trait.getField( field.getAlias() ) != null ) {
+            FieldDefinition aliasedField = trait.getField( field.getAlias() );
+            if ( field.getType().isAssignableFrom( aliasedField.getType() ) ) {
+                TraitFactory.invokeInjector( mv, masterName, trait, core, field, false, 1 );
+            } else {
+                mv.visitFieldInsn( GETSTATIC,
+                                   BuildUtils.getInternalType( masterName ),
+                                   field.getName() + "_writer",
+                                   Type.getDescriptor( WriteAccessor.class ) );
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitFieldInsn( GETFIELD,
+                                   BuildUtils.getInternalType( masterName ),
+                                   "object",
+                                   BuildUtils.getTypeDescriptor( core.getName() ) );
+                mv.visitVarInsn( ALOAD, 1 );
+                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( Thing.class ) );
+                mv.visitMethodInsn( INVOKEINTERFACE,
+                                    Type.getInternalName( Thing.class ),
+                                    "getCore",
+                                    Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] {} ) );
+                mv.visitMethodInsn( INVOKEINTERFACE,
+                                    Type.getInternalName( WriteAccessor.class ),
+                                    "setValue",
+                                    Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( Object.class ), Type.getType( Object.class ) } ) );
+            }
+        } else {
+            TraitFactory.invokeInjector( mv, masterName, trait, core, field, false, 1 );
+        }
 
         mv.visitInsn(RETURN);
-//        mv.visitMaxs( 2 + BuildUtils.sizeOf( fieldType ),
-//                1 + BuildUtils.sizeOf( fieldType ) );
+
         mv.visitMaxs( 0, 0 );
         mv.visitEnd();
 

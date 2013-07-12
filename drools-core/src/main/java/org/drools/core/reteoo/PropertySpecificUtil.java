@@ -3,6 +3,7 @@ package org.drools.core.reteoo;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -31,13 +32,13 @@ public class PropertySpecificUtil {
     }
 
     private static long calculatePatternMask(List<String> listenedProperties, List<String> settableProperties, boolean isPositive) {
-        long mask = 0L;
+        long mask = isPositive ? ( listenedProperties != null && listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME ) ? Long.MIN_VALUE : 0 ) : 0;
         if (listenedProperties == null) {
             return mask;
         }
         for (String propertyName : listenedProperties) {
             if (propertyName.equals(isPositive ? "*" : "!*")) {
-                return Long.MAX_VALUE;
+                return isPositive ? -1L : Long.MAX_VALUE;
             }
             if (propertyName.startsWith("!") ^ !isPositive) {
                 continue;
