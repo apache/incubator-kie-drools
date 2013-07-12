@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.move;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.util.CodeAssertable;
@@ -53,11 +54,11 @@ public class DummyMove implements Move, CodeAssertable {
     }
 
     public Collection<? extends Object> getPlanningEntities() {
-        return null;
+        return Collections.<Object>emptyList();
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        return null;
+        return Collections.<Object>emptyList();
     }
 
     @Override
