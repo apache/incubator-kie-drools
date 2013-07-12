@@ -134,6 +134,48 @@
       </localSearch>
     </solver>
   </solverBenchmark>
+  <solverBenchmark>
+    <name>mimic-jit</name>
+    <solver>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>period</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>room</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <cartesianProductMoveSelector>
+            <changeMoveSelector>
+              <entitySelector id="entitySelector"/>
+              <valueSelector>
+                <variableName>period</variableName>
+              </valueSelector>
+            </changeMoveSelector>
+            <changeMoveSelector>
+              <entitySelector mimicSelectorRef="entitySelector"/>
+              <valueSelector>
+                <variableName>room</variableName>
+              </valueSelector>
+            </changeMoveSelector>
+          </cartesianProductMoveSelector>
+          <swapMoveSelector>
+            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
+          </swapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>10</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
   <!--<solverBenchmark>-->
     <!--<name>simulatedAnnealing100</name>-->
     <!--<solver>-->
