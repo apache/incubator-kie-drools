@@ -34,14 +34,51 @@ import org.jbpm.services.task.events.AfterTaskStartedEvent;
 import org.jbpm.services.task.events.AfterTaskStoppedEvent;
 import org.jbpm.services.task.impl.model.BAMTaskSummaryImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.PeopleAssignments;
+import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * <p></p>This listener implementation populates a table named BAMTASKCUMMARY in order to allow BAM module to query all tasks.</p>
+ *
+ * <p>The available status for a task instance are:</p>
+ * @see org.kie.api.task.model.Status
+ * <ul>
+ *     <li>Created</li>
+ *     <li>Ready</li>
+ *     <li>Reserved</li>
+ *     <li>InProgress</li>
+ *     <li>Suspended</li>
+ *     <li>Completed</li>                    org.hibernate.dialect.H2Dialect
+ *     <li>Failed</li>
+ *     <li>Error</li>
+ *     <li>Exited</li>
+ *     <li>Obsolete</li>
+ * </ul>
+ *
+ * <p>The BAM module does not use all task predefined stauts, the following list shows the status for a jBPM task and the relationship with the BAM task status:</p>
+ * <ul>
+ *     <li>Kie Task status - BAM task status</li>
+ *     <li>Created - Created</li>
+ *     <li>Ready - Ready</li>
+ *     <li>Reserved - Reserved</li>
+ *     <li>InProgress - InProgress</li>
+ *     <li>Suspended - Suspended</li>
+ *     <li>Completed - Completed</li>
+ *     <li>Failed - Obsolete</li>
+ *     <li>Error - Obsolete</li>
+ *     <li>Exited - Obsolete</li>
+ *     <li>Obsolete - Obsolete</li>
+ * </ul>
+ */
+
 @ApplicationScoped
 @Transactional
 public class BAMTaskEventListener implements TaskLifeCycleEventListener {
-    
+
+    /** Class logger. */
     private static final Logger logger = LoggerFactory.getLogger(BAMTaskEventListener.class);
 
     @Inject
@@ -51,94 +88,146 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
     }
 
     public void afterTaskStartedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskStartedEvent Task ti) {
-        List<BAMTaskSummaryImpl> taskSummaries = (List<BAMTaskSummaryImpl>) pm.queryStringWithParametersInTransaction("select bts from BAMTaskSummaryImpl bts where bts.taskId=:taskId", 
-                pm.addParametersToMap("taskId", ti.getId()));
-        if (taskSummaries.isEmpty()) {
-            String actualOwner = "";
-            if (ti.getTaskData().getActualOwner() != null) {
-                actualOwner = ti.getTaskData().getActualOwner().getId();
+        createOrUpdateTask(ti, Status.InProgress, new BAMTaskWorker() {
+            @Override
+            public BAMTaskSummaryImpl createTask(BAMTaskSummaryImpl bamTask, Task task) {
+                bamTask.setStartDate(new Date());
+                return bamTask;
             }
-            BAMTaskSummaryImpl bamTaskSummary = new BAMTaskSummaryImpl(ti.getId(), ti.getNames().get(0).getText(), "Started", new Date(), actualOwner, ti.getTaskData().getProcessInstanceId());
-            bamTaskSummary.setStartDate(new Date());
-            pm.persist(bamTaskSummary);
-            
-        } else if (taskSummaries.size() == 1) {
-            
-            BAMTaskSummaryImpl taskSummaryById = taskSummaries.get(0);
-            taskSummaryById.setStatus("Started");
-            taskSummaryById.setStartDate(new Date());
-            if (ti.getTaskData().getActualOwner() != null) {
-                taskSummaryById.setUserId(ti.getTaskData().getActualOwner().getId());
+
+            @Override
+            public BAMTaskSummaryImpl updateTask(BAMTaskSummaryImpl bamTask, Task task) {
+                bamTask.setStartDate(new Date());
+                return bamTask;
             }
-            pm.merge(taskSummaryById);
-
-        } else {
-            throw new IllegalStateException("We cannot have more than one BAM Task Summary for the task id = " + ti.getId());
-        }
-
+        });
     }
 
     public void afterTaskActivatedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskActivatedEvent Task ti) {
+        createOrUpdateTask(ti, Status.Ready);
     }
 
     public void afterTaskClaimedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskClaimedEvent Task ti) {
-        
-        List<BAMTaskSummaryImpl> taskSummaries = (List<BAMTaskSummaryImpl>) pm.queryStringWithParametersInTransaction("select bts from BAMTaskSummaryImpl bts where bts.taskId=:taskId",
-                pm.addParametersToMap("taskId", ti.getId()));
-        if (taskSummaries.isEmpty()) {
-            
-            String actualOwner = "";
-            if (ti.getTaskData().getActualOwner() != null) {
-                actualOwner = ti.getTaskData().getActualOwner().getId();
-            }
-
-            pm.persist(new BAMTaskSummaryImpl(ti.getId(), ti.getNames().get(0).getText(), "Claimed", new Date(), actualOwner, ti.getTaskData().getProcessInstanceId()));
-        } else if (taskSummaries.size() == 1) {
-            
-            BAMTaskSummaryImpl taskSummaryById = taskSummaries.get(0);
-            taskSummaryById.setStatus("Claimed");
-            if (ti.getTaskData().getActualOwner() != null) {
-                taskSummaryById.setUserId(ti.getTaskData().getActualOwner().getId());
-            }
-            pm.merge(taskSummaryById);
-
-        } else {
-            throw new IllegalStateException("We cannot have more than one BAM Task Summary for the task id = " + ti.getId());
-        }
-
+        createOrUpdateTask(ti, Status.Reserved);
     }
 
     public void afterTaskSkippedEvent(Task ti) {
+        createOrUpdateTask(ti, Status.Obsolete);
     }
 
     public void afterTaskStoppedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskStoppedEvent Task ti) {
+        createOrUpdateTask(ti, Status.Obsolete);
     }
 
     public void afterTaskCompletedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskCompletedEvent Task ti) {
 
-        List<BAMTaskSummaryImpl> summaries = (List<BAMTaskSummaryImpl>) pm.queryStringWithParametersInTransaction("select bts from BAMTaskSummaryImpl bts where bts.taskId=:taskId",
-                pm.addParametersToMap("taskId", ti.getId()));
-        
-        if(summaries.size() == 1){
-        
-          BAMTaskSummaryImpl taskSummaryById = (BAMTaskSummaryImpl)summaries.get(0);
+        createOrUpdateTask(ti, Status.Completed, new BAMTaskWorker() {
+            @Override
+            public BAMTaskSummaryImpl createTask(BAMTaskSummaryImpl bamTask, Task task) {
+                return bamTask;
+            }
 
-          taskSummaryById.setStatus("Completed");
-          Date completedDate = new Date();
-          taskSummaryById.setEndDate(completedDate);
-          taskSummaryById.setDuration(completedDate.getTime() - taskSummaryById.getStartDate().getTime());
-          pm.merge(taskSummaryById);
-        }else{
-          logger.warn("Something went wrong with the Task BAM Listener");
-        }
+            @Override
+            public BAMTaskSummaryImpl updateTask(BAMTaskSummaryImpl bamTask, Task task) {
+                Date completedDate = new Date();
+                bamTask.setEndDate(completedDate);
+                bamTask.setDuration(completedDate.getTime() - bamTask.getStartDate().getTime());
+                return bamTask;
+            }
+        });
     }
 
     public void afterTaskFailedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskFailedEvent Task ti) {
+        createOrUpdateTask(ti, Status.Obsolete);
     }
 
+    /**
+     * When a task is added it can be reserved for a user or not.
+     * If already reserved for a user when adding it,set reserved status.
+     * Otherwise set created status.
+     *
+     * @param ti The task to add.
+     */
     public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskAddedEvent Task ti) {
+        Status statusToSet =  Status.Created;
+
+        // Check if task is already reserved.
+        PeopleAssignments peopleAssignments = ti.getPeopleAssignments();
+        if (peopleAssignments != null) {
+            java.util.List<org.kie.api.task.model.OrganizationalEntity> owners = peopleAssignments.getPotentialOwners();
+            if (owners != null && owners.size() > 0) statusToSet =  Status.Reserved;
+        }
+
+        // Set the task status.
+        createOrUpdateTask(ti, statusToSet);
     }
 
     public void afterTaskExitedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskExitedEvent Task ti) {
+        createOrUpdateTask(ti, Status.Obsolete);
+    }
+
+    /**
+     * Creates or updates a bam task summary instance.
+     *
+     * @param ti The source task
+     * @param newStatus The new state for the task.
+     * @param worker Perform additional operations to the bam task summary instance.
+     * @return The created or updated bam task summary instance.
+     */
+    protected BAMTaskSummaryImpl createOrUpdateTask(Task ti, Status newStatus, BAMTaskWorker worker) {
+        BAMTaskSummaryImpl result = null;
+
+        if (ti == null) {
+            logger.error("The task instance does not exist.");
+            return result;
+        }
+
+        List<BAMTaskSummaryImpl> taskSummaries = (List<BAMTaskSummaryImpl>) pm.queryStringWithParametersInTransaction("select bts from BAMTaskSummaryImpl bts where bts.taskId=:taskId",
+                pm.addParametersToMap("taskId", ti.getId()));
+        if (taskSummaries.isEmpty()) {
+
+            String actualOwner = "";
+            if (ti.getTaskData().getActualOwner() != null) {
+                actualOwner = ti.getTaskData().getActualOwner().getId();
+            }
+
+            result = new BAMTaskSummaryImpl(ti.getId(), ti.getNames().get(0).getText(), newStatus.toString(), new Date(), actualOwner, ti.getTaskData().getProcessInstanceId());
+            if (worker != null) worker.createTask(result, ti);
+            pm.persist(result);
+        } else if (taskSummaries.size() == 1) {
+
+            result = taskSummaries.get(0);
+            result.setStatus(newStatus.toString());
+            if (ti.getTaskData().getActualOwner() != null) {
+                result.setUserId(ti.getTaskData().getActualOwner().getId());
+            }
+            if (worker != null) worker.updateTask(result, ti);
+            pm.merge(result);
+
+        } else {
+            logger.warn("Something went wrong with the Task BAM Listener");
+            throw new IllegalStateException("We cannot have more than one BAM Task Summary for the task id = " + ti.getId());
+        }
+
+        return result;
+    }
+
+    /**
+     * Creates or updates a bam task summary instance.
+     *
+     * @param ti The source task
+     * @param newStatus The new state for the task.
+     * @return The created or updated bam task summary instance.
+     */
+    protected BAMTaskSummaryImpl createOrUpdateTask(Task ti, Status newStatus) {
+        return createOrUpdateTask(ti, newStatus, null);
+    }
+
+    /**
+     * Interface for performing additional operations to a <code>org.jbpm.services.task.impl.model.BAMTaskSummaryImpl</code> instance.
+     */
+    protected interface BAMTaskWorker {
+        BAMTaskSummaryImpl createTask(BAMTaskSummaryImpl bamTask, Task task);
+        BAMTaskSummaryImpl updateTask(BAMTaskSummaryImpl bamTask, Task task);
     }
 }
