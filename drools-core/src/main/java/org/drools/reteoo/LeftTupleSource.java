@@ -211,13 +211,13 @@ public abstract class LeftTupleSource extends BaseNode
                                     LeftTupleSource leftInput) {
         if ( context == null || context.getLastBuiltPatterns() == null ) {
             // only happens during unit tests
-            leftDeclaredMask = Long.MAX_VALUE;
+            leftDeclaredMask = -1L;
             return;
         }
 
         if ( !(leftInput instanceof LeftInputAdapterNode) ) {
             // BetaNode's not after LIANode are not relevant for left mask property specific, so don't block anything.
-            leftDeclaredMask = Long.MAX_VALUE;
+            leftDeclaredMask = -1L;
             return;
         }
 
@@ -229,7 +229,7 @@ public abstract class LeftTupleSource extends BaseNode
 
         if ( !(objectType instanceof ClassObjectType) ) {
             // Only ClassObjectType can use property specific
-            leftDeclaredMask = Long.MAX_VALUE;
+            leftDeclaredMask = -1L;
             return;
         }
 
@@ -245,7 +245,7 @@ public abstract class LeftTupleSource extends BaseNode
             }
         } else {
             // if property specific is not on, then accept all modification propagations
-            leftDeclaredMask = Long.MAX_VALUE;
+            leftDeclaredMask = -1L;
         }
     }
 
@@ -259,7 +259,7 @@ public abstract class LeftTupleSource extends BaseNode
         } else {
             leftInferredMask = leftDeclaredMask;
         }
-        leftInferredMask &= (Long.MAX_VALUE - leftNegativeMask);
+        leftInferredMask &= (-1L - leftNegativeMask);
     }
 
     protected LeftTupleSource unwrapLeftInput(LeftTupleSource leftInput) {

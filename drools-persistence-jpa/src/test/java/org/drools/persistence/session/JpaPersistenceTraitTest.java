@@ -68,6 +68,7 @@ public class JpaPersistenceTraitTest {
                 "global java.util.List list; \n" +
                 "" +
                 "declare TBean \n" +
+                "  @propertyReactive \n" +
                 "  @Traitable \n" +
                 "  fld : String \n" +
                 "end \n " +
@@ -170,6 +171,7 @@ public class JpaPersistenceTraitTest {
                 "global java.util.List list; \n" +
                 "" +
                 "declare TBean2 \n" +
+                "  @propertyReactive \n" +
                 "  @Traitable \n" +
                 "  fld : String \n" +
                 "end \n " +
