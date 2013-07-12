@@ -44,7 +44,7 @@ end
 
 rule "Trait2"
 when
-    $s : Student( )
+    $s : Student( this not isA Worker )
     String( this == "hire" )
 then
     System.out.println( "Don worker" );
@@ -75,7 +75,7 @@ end
 
 rule "Nothing Left"
 when
-    $t : Thing( this not isA Student && this not isA Worker )
+    $t : Thing( this not isA Student, this not isA Worker )
 then
     System.out.println( "Bare Thing" );
     list.add( "Nothing" );

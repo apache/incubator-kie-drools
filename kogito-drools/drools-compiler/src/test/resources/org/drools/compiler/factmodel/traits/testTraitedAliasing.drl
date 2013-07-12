@@ -1,0 +1,76 @@
+package org.drools.core.factmodel.traits;
+
+import org.drools.core.factmodel.traits.Traitable;
+import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.factmodel.traits.Alias
+
+global java.util.List list;
+
+declare Procedure
+@propertyReactive
+@Traitable
+    id : int
+    approachBodySite : BodySite
+    targetBodySite : BodySite
+end
+
+declare BodySite
+@propertyReactive
+@Traitable
+    id : int
+end
+
+
+declare trait SomeProcedure
+@propertyReactive
+    approachBodySite : BodySite
+    targetBodySite : BodySite
+    price   : Double = 1000.0
+end
+
+declare trait LeftNail @propertyReactive end
+declare trait RightNail @propertyReactive end
+
+declare trait PolishingProcedure extends SomeProcedure
+@propertyReactive
+    locus : LeftNail      @Alias( "approachBodySite" )
+    focus : RightNail     @Alias( "targetBodySite" )
+end
+
+
+// Some mock data
+rule "Init Data"
+when
+then
+    BodySite b1 = new BodySite( 11 );
+    BodySite b2 = new BodySite( 12 );
+    Procedure pe = new Procedure( 1, b1, b2 );
+
+    don( b1, LeftNail.class );
+    don( b2, RightNail.class );
+    don( pe, PolishingProcedure.class );
+end
+
+
+
+rule "Procedures v4"
+when
+    $o : PolishingProcedure( approachBodySite isA LeftNail, targetBodySite isA RightNail,
+                             $app : approachBodySite, $tgt : targetBodySite,
+                             $loc : locus, $foc : focus,
+                             price > 100.0 )
+then
+    list.add( $app instanceof BodySite );
+    list.add( $tgt instanceof BodySite );
+    list.add( $loc instanceof LeftNail );
+    list.add( $foc instanceof RightNail );
+    list.add( $app == $loc.getCore() );
+    list.add( $tgt == $foc.getCore() );
+
+    BodySite bs = new BodySite( 99 );
+    RightNail rn = don( bs, RightNail.class );
+    $o.setFocus( rn );
+
+    list.add( $o.getFocus() == rn );
+    list.add( $o.getTargetBodySite() == bs );
+end

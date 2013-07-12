@@ -158,7 +158,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
                 return Collections.singleton( b );
             }
         } else {
-            return parents( getBottomCode() );
+            return immediateParents( getBottomCode() );
         }
     }
 

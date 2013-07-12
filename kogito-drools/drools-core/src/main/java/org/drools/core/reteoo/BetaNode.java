@@ -184,7 +184,7 @@ public abstract class BetaNode extends LeftTupleSource
                                     LeftTupleSource leftInput) {
         if (context == null || context.getLastBuiltPatterns() == null) {
             // only happens during unit tests
-            rightDeclaredMask = Long.MAX_VALUE;
+            rightDeclaredMask = -1L;
             super.initDeclaredMask(context, leftInput);
             return;
         }
@@ -203,15 +203,15 @@ public abstract class BetaNode extends LeftTupleSource
                     rightNegativeMask = calculateNegativeMask(rightListenedProperties, settableProperties);
                 } else {
                     // if property reactive is not on, then accept all modification propagations
-                    rightDeclaredMask = Long.MAX_VALUE;
+                    rightDeclaredMask = -1L;
                 }
             } else {
                 // InitialFact has no type declaration and cannot be property specific
                 // Only ClassObjectType can use property specific
-                rightDeclaredMask = Long.MAX_VALUE;
+                rightDeclaredMask = -1L;
             }
         } else {
-            rightDeclaredMask = Long.MAX_VALUE;
+            rightDeclaredMask = -1L;
             // There would have been no right input pattern, so swap current to first, so leftInput can still work
             context.setLastBuiltPattern( context.getLastBuiltPatterns()[0] );
         }
@@ -238,7 +238,7 @@ public abstract class BetaNode extends LeftTupleSource
         } else {
             rightInferredMask = rightDeclaredMask;
         }
-        rightInferredMask &= (Long.MAX_VALUE - rightNegativeMask);
+        rightInferredMask &= (-1L - rightNegativeMask);
     }
 
     public ObjectSource unwrapRightInput() {

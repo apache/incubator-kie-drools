@@ -128,7 +128,7 @@ public abstract class ObjectSource extends BaseNode
     public void initDeclaredMask(BuildContext context) {
         if ( context == null || context.getLastBuiltPatterns() == null ) {
             // only happens during unit tests
-            declaredMask = Long.MAX_VALUE;
+            declaredMask = -1L;
             return;
         }
         
@@ -137,7 +137,7 @@ public abstract class ObjectSource extends BaseNode
         
         if ( !(objectType instanceof ClassObjectType)) {
             // Only ClassObjectType can use property specific
-            declaredMask = Long.MAX_VALUE;
+            declaredMask = -1L;
             return;
         }
         
@@ -145,7 +145,7 @@ public abstract class ObjectSource extends BaseNode
         TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
         if ( typeDeclaration == null || !typeDeclaration.isPropertyReactive() ) {
             // if property specific is not on, then accept all modification propagations
-            declaredMask = Long.MAX_VALUE;             
+            declaredMask = -1L;
         } else {
             List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
             declaredMask = calculateDeclaredMask(settableProperties);

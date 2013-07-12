@@ -327,17 +327,22 @@ public class PropagationContextImpl
             return this;
         }
 
+        long typeBit = modificationMask & Long.MIN_VALUE;
+        modificationMask &= Long.MAX_VALUE;
+
         ClassObjectType classObjectType = (ClassObjectType)type;
         Class<?> classType = classObjectType.getClassType();
         String pkgName = classType.getPackage().getName();
 
         if (classType == modifiedClass || "java.lang".equals(pkgName) || !(classType.isInterface() || modifiedClass.isInterface())) {
+            modificationMask |= typeBit;
             return this;
         }
 
         Long cachedMask = classObjectType.getTransformedMask(modifiedClass, originalMask);
         if (cachedMask != null) {
             modificationMask = cachedMask;
+            modificationMask |= typeBit;
             return this;
         }
 
@@ -353,6 +358,9 @@ public class PropagationContextImpl
                 }
             }
         }
+
+        modificationMask |= typeBit;
+
         classObjectType.storeTransformedMask(modifiedClass, originalMask, modificationMask);
 
         return this;
@@ -363,7 +371,12 @@ public class PropagationContextImpl
     }
 
     private List<String> getSettableProperties(InternalWorkingMemory workingMemory, Class<?> classType, String pkgName) {
-        return workingMemory.getRuleBase().getPackage(pkgName).getTypeDeclaration(classType).getSettableProperties();
+        if ( pkgName.equals( "java.lang" ) || pkgName.equals( "java.util" ) ) {
+            return Collections.EMPTY_LIST;
+        }
+        Package pkg = workingMemory.getRuleBase().getPackage( pkgName );
+        TypeDeclaration tdecl =  pkg != null ? pkg.getTypeDeclaration( classType ) : null;
+        return tdecl != null ? tdecl.getSettableProperties() : Collections.EMPTY_LIST;
     }
 
     public ObjectType getObjectType() {

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -30,11 +31,13 @@ import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.runtime.rule.Operator;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
 
@@ -390,10 +393,17 @@ public class AlphaNode extends ObjectSource
     }
 
     public long calculateDeclaredMask(List<String> settableProperties) {
-        if (settableProperties == null || !(constraint instanceof MvelConstraint)) {
-            return Long.MAX_VALUE;
+        Long typeBit = 0L;
+        if ( constraint instanceof EvaluatorConstraint) {
+            Operator op = ((EvaluatorConstraint) constraint).getEvaluator().getOperator();
+            if ( op == IsAEvaluatorDefinition.ISA || op == IsAEvaluatorDefinition.NOT_ISA ) {
+                typeBit = Long.MIN_VALUE;
+            }
         }
-        return ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
+        if (settableProperties == null || !(constraint instanceof MvelConstraint)) {
+            return typeBit | Long.MAX_VALUE;
+        }
+        return typeBit | ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
     }
 
     @Override

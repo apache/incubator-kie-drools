@@ -100,11 +100,11 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return evaluator == null ? null : evaluator.getInterval();
     }
 
-    protected Evaluator getEvaluator() {
+    public Evaluator getEvaluator() {
         return evaluator;
     }
 
-    protected FieldValue getField() {
+    public FieldValue getField() {
         return field;
     }
 
