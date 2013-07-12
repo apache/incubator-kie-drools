@@ -1,7 +1,6 @@
 package org.drools.core.phreak;
 
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -79,7 +78,7 @@ public class RuleNetworkEvaluator {
 
     }
 
-    public int evaluateNetwork(PathMemory pmem, LinkedList<StackEntry> outerStack, RuleExecutor executor, InternalWorkingMemory wm) {
+    public void evaluateNetwork(PathMemory pmem, LinkedList<StackEntry> outerStack, RuleExecutor executor, InternalWorkingMemory wm) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
 
         int smemIndex = 0;
@@ -107,16 +106,14 @@ public class RuleNetworkEvaluator {
         }
 
         Set<String> visitedRules;
-        if (((TerminalNode)pmem.getNetworkNode()).getType() == NodeTypeEnums.QueryTerminalNode) {
+        if (pmem.getNetworkNode().getType() == NodeTypeEnums.QueryTerminalNode) {
             visitedRules = new HashSet<String>();
         } else {
-            visitedRules = Collections.<String>emptySet();
+            visitedRules = Collections.emptySet();
         }
 
         LinkedList<StackEntry> stack = new LinkedList<StackEntry>();
-        outerEval(liaNode, pmem, (LeftTupleSink) node, nodeMem, smems, smemIndex, srcTuples, wm, stack, outerStack, visitedRules, true, executor);
-
-        return 0;
+        outerEval(liaNode, pmem, node, nodeMem, smems, smemIndex, srcTuples, wm, stack, outerStack, visitedRules, true, executor);
     }
 
     public static String indent(int size) {
@@ -130,7 +127,7 @@ public class RuleNetworkEvaluator {
     }
 
     public static int getOffset(NetworkNode node) {
-        LeftTupleSource lt = null;
+        LeftTupleSource lt;
         int offset = 1;
         if (NodeTypeEnums.isTerminalNode(node)) {
             lt = ((TerminalNode) node).getLeftTupleSource();
@@ -216,7 +213,7 @@ public class RuleNetworkEvaluator {
                                             wm);
                 smem = smems[++smemIndex];
                 trgTuples = smem.getStagedLeftTuples();
-                node = (LeftTupleSink) smem.getRootNode();
+                node = smem.getRootNode();
                 nodeMem = smem.getNodeMemories().getFirst();
             }
         }
@@ -359,7 +356,7 @@ public class RuleNetworkEvaluator {
                     int offset = getOffset(node);
                     log.trace("{} Segment {}", indent(offset), smemIndex);
                 }
-                node = (LeftTupleSink) smem.getRootNode();
+                node = smem.getRootNode();
                 nodeMem = smem.getNodeMemories().getFirst();
             }
             processRian = true; //  make sure it's reset, so ria nodes are processed
@@ -472,7 +469,7 @@ public class RuleNetworkEvaluator {
     private boolean evalBetaNode(LeftInputAdapterNode liaNode, PathMemory pmem, NetworkNode node, Memory nodeMem, SegmentMemory[] smems, int smemIndex, LeftTupleSets trgTuples, InternalWorkingMemory wm, LinkedList<StackEntry> stack, LinkedList<StackEntry> outerStack, Set<String> visitedRules, boolean processRian, RuleExecutor executor,
                                  LeftTupleSets srcTuples, LeftTupleSets stagedLeftTuples, LeftTupleSinkNode sink) {BetaNode betaNode = (BetaNode) node;
 
-        BetaMemory bm = null;
+        BetaMemory bm;
         AccumulateMemory am = null;
         if (NodeTypeEnums.AccumulateNode == node.getType()) {
             am = (AccumulateMemory) nodeMem;

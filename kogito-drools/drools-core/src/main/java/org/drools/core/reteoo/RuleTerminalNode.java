@@ -49,7 +49,7 @@ import java.util.Map;
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
  * matched <code>Rule</code>.
  *
- * @see org.kie.rule.Rule
+ * @see org.kie.api.definition.rule.Rule
  */
 public class RuleTerminalNode extends AbstractTerminalNode {
     private static final long             serialVersionUID = 510l;
@@ -354,12 +354,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public void networkUpdated(UpdateContext updateContext) {
         getLeftTupleSource().networkUpdated(updateContext);
-    }
-
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
-        getLeftTupleSource().removeTupleSink(this);
     }
 
     protected void doCollectAncestors(NodeSet nodeSet) {

@@ -19,6 +19,7 @@ import org.drools.core.StatefulSession;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.rule.Rule;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -166,11 +167,19 @@ public class DynamicRulesChangesTest {
     }
 
     public static void addRule(String ruleName) throws Exception {
+        addRule(ruleName, null);
+    }
+
+    public static void addRule(String ruleName, Rule firingRule) throws Exception {
         String rule = rules.get(ruleName);
         PackageBuilder builder = new PackageBuilder();
         System.out.println( rule );
         builder.addPackageFromDrl(new StringReader(rule));
         ruleBase.addPackage(builder.getPackage());
+
+        if (false && firingRule != null) {
+            ruleBase.removeRule("defaultpkg", firingRule.getName());
+        }
     }
 
     // Rules
@@ -185,7 +194,7 @@ public class DynamicRulesChangesTest {
                 "then\n" +
                 "    insert( new DynamicRulesChangesTest.Alarm() );\n" +
                 "    events.add( \"Raise the alarm\" );\n" +
-                "    DynamicRulesChangesTest.addRule(\"onFire\");\n" +
+                "    DynamicRulesChangesTest.addRule(\"onFire\", drools.getRule());\n" +
                 "end");
 
        put("onFire",
@@ -198,7 +207,7 @@ public class DynamicRulesChangesTest {
                "then\n" +
                "    modify( $sprinkler ) { setOn( true ) };\n" +
                "    events.add( \"Turn on the sprinkler for room \" + $room.getName() );\n" +
-               "    DynamicRulesChangesTest.addRule(\"fireGone\");\n" +
+               "    DynamicRulesChangesTest.addRule(\"fireGone\", drools.getRule());\n" +
                "end");
 
         put("fireGone",
@@ -212,7 +221,7 @@ public class DynamicRulesChangesTest {
                 "then\n" +
                 "    modify( $sprinkler ) { setOn( false ) };\n" +
                 "    events.add( \"Turn off the sprinkler for room \" + $room.getName() );\n" +
-                "    DynamicRulesChangesTest.addRule(\"cancelAlarm\");\n" +
+                "    DynamicRulesChangesTest.addRule(\"cancelAlarm\", drools.getRule());\n" +
                 "end");
 
         put("cancelAlarm",
@@ -225,7 +234,7 @@ public class DynamicRulesChangesTest {
                 "then\n" +
                 "    retract( $alarm );\n" +
                 "    events.add( \"Cancel the alarm\" );\n" +
-                "    DynamicRulesChangesTest.addRule(\"status\");\n" +
+                "    DynamicRulesChangesTest.addRule(\"status\", drools.getRule());\n" +
                 "end");
 
         put("status",

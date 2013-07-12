@@ -100,7 +100,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
     public LeftTupleSource unwrapTupleSource() {
-        return tupleSource instanceof FromNode ? ((FromNode)tupleSource).getLeftTupleSource() : tupleSource;
+        return tupleSource instanceof FromNode ? tupleSource.getLeftTupleSource() : tupleSource;
     }
 
     public void modifyLeftTuple(InternalFactHandle factHandle,
@@ -205,7 +205,14 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         peer.initPeer( (BaseLeftTuple) original, this );
         original.setPeer( peer );
         return peer;
-    }      
+    }
+
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final InternalWorkingMemory[] workingMemories) {
+        getLeftTupleSource().removeTupleSink(this);
+        this.tupleSource = null;
+    }
 
     public LeftTupleSource getLeftTupleSource() {
         return this.tupleSource;

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 public class RuleExecutor {
     protected static transient Logger               log              = LoggerFactory.getLogger(RuleExecutor.class);
     private static             RuleNetworkEvaluator networkEvaluator = new RuleNetworkEvaluator();
-    private          PathMemory      pmem;
+    private final    PathMemory      pmem;
     private          RuleAgendaItem  ruleAgendaItem;
     private          LeftTupleList   tupleList;
     private          BinaryHeapQueue queue;
@@ -102,7 +102,6 @@ public class RuleExecutor {
                 // if the current Rule is no-loop and the origin rule is the same then return
                 if (cancelAndContinue(wm, rtn, rule, leftTuple, pctx, filter)) {
                     continue;
-
                 }
 
                 AgendaItem item = (AgendaItem) leftTuple;
@@ -113,6 +112,10 @@ public class RuleExecutor {
 
                 agenda.fireActivation(item);
                 localFireCount++;
+
+                if (rtn.getLeftTupleSource() == null) {
+                    break; // The activation firing removed this rule from the rule base
+                }
 
                 salience = ruleAgendaItem.getSalience(); // dyanmic salience may have updated it, so get again.
                 if (queue != null && !queue.isEmpty() && salience != queue.peek().getSalience()) {
@@ -188,14 +191,6 @@ public class RuleExecutor {
     private void removeQueuedTupleEntry() {
         TupleEntry tupleEntry = pmem.getQueue().remove();
         PropagationContext originalPctx = tupleEntry.getPropagationContext();
-
-        EventFactHandle  evFh1 = null;
-        EventFactHandle  evFh2 = null;
-        if ( tupleEntry.getLeftTuple() != null ) {
-            evFh1 = ( EventFactHandle ) tupleEntry.getLeftTuple().getLastHandle();
-        }  else {
-            evFh1 = ( EventFactHandle ) tupleEntry.getRightTuple().getFactHandle();
-        }
 
         boolean repeat = true;
         while ( repeat ) {
@@ -388,10 +383,7 @@ public class RuleExecutor {
             }
         }
 
-        if (filter != null && !filter.accept((Activation) leftTuple)) {
-            return true;
-        }
-        return false;
+        return filter != null && !filter.accept((Activation) leftTuple);
     }
 
     private boolean haltRuleFiring(RuleAgendaItem nextRule,
@@ -400,10 +392,7 @@ public class RuleExecutor {
                                    int localFireCount,
                                    InternalAgenda agenda,
                                    int salience) {
-        if (!agenda.continueFiring(0) || !isHighestSalience(nextRule, salience) || (fireLimit >= 0 && (localFireCount + fireCount >= fireLimit))) {
-            return true;
-        }
-        return false;
+        return !agenda.continueFiring(0) || !isHighestSalience(nextRule, salience) || (fireLimit >= 0 && (localFireCount + fireCount >= fireLimit));
     }
 
     public boolean isHighestSalience(RuleAgendaItem nextRule,
@@ -424,7 +413,7 @@ public class RuleExecutor {
     }
 
     public void addQueuedLeftTuple(LeftTuple leftTuple) {
-        int currentSalience = queue.isEmpty() ? 0 : ((Activation) queue.peek()).getSalience();
+        int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
         queue.enqueue((Activation) leftTuple);
         updateSalience(currentSalience);
     }
@@ -438,7 +427,7 @@ public class RuleExecutor {
     }
 
     public void removeQueuedLeftTuple(LeftTuple leftTuple) {
-        int currentSalience = queue.isEmpty() ? 0 : ((Activation) queue.peek()).getSalience();
+        int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
         queue.dequeue(((Activation) leftTuple).getQueueIndex());
         updateSalience(currentSalience);
     }
@@ -447,7 +436,7 @@ public class RuleExecutor {
         // this method is only call when dynamic salience is on for the current rule and the salience for the LeftTuple has changed
         if (salience != leftTuple.getSalience()) {
             // saliences are different, so it must be dynamic and thus the queue is not null
-            int currentSalience = queue.isEmpty() ? 0 : ((Activation) queue.peek()).getSalience();
+            int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
 
             leftTuple.dequeue();
             queue.enqueue(leftTuple);
@@ -457,7 +446,7 @@ public class RuleExecutor {
     }
 
     private void updateSalience(int currentSalience) {
-        int newSalience = ((Activation) queue.peek()).getSalience();
+        int newSalience = queue.peek().getSalience();
         if (currentSalience != newSalience) {
             // salience changed, so the RuleAgendaItem needs to be removed and re-added, for sorting
             ruleAgendaItem.remove();
