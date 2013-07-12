@@ -55,7 +55,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     public void initDeclaredMask(BuildContext context) {
         if ( !(unwrapTupleSource() instanceof LeftInputAdapterNode)) {
             // RTN's not after LIANode are not relevant for property specific, so don't block anything.
-            setDeclaredMask( Long.MAX_VALUE );
+            setDeclaredMask( -1L );
             return;
         }
 
@@ -65,7 +65,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         if ( !(objectType instanceof ClassObjectType) ) {
             // InitialFact has no type declaration and cannot be property specific
             // Only ClassObjectType can use property specific
-            setDeclaredMask( Long.MAX_VALUE );
+            setDeclaredMask( -1L );
             return;
         }
 
@@ -73,7 +73,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
         if (  typeDeclaration == null || !typeDeclaration.isPropertyReactive() ) {
             // if property specific is not on, then accept all modification propagations
-            setDeclaredMask( Long.MAX_VALUE );
+            setDeclaredMask( -1L );
         } else  {
             List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
             setDeclaredMask( calculatePositiveMask(pattern.getListenedProperties(), settableProperties) );
@@ -90,7 +90,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             setInferredMask(  getDeclaredMask() );
         }
 
-        setInferredMask( getInferredMask() & (Long.MAX_VALUE - getNegativeMask() ) );
+        setInferredMask( getInferredMask() & ( -1L - getNegativeMask() ) );
     }
 
     public LeftTupleSource unwrapTupleSource() {

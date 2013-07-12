@@ -3,7 +3,7 @@ package org.drools.core.util;
 public class BitMaskUtil {
 
     public static boolean intersect(long mask1, long mask2) {
-        return (mask1 & mask2) != 0 || ( mask1 & Long.MIN_VALUE ) != 0;
+        return (mask1 & mask2) != 0;
     }
 
     public static long set(long mask, int pos) {

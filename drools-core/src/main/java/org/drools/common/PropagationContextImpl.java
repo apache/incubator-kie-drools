@@ -400,6 +400,7 @@ public class PropagationContextImpl
         String pkgName = classType.getPackage().getName();
 
         if (classType == modifiedClass || "java.lang".equals(pkgName) || !(classType.isInterface() || modifiedClass.isInterface())) {
+            modificationMask |= typeBit;
             return this;
         }
 

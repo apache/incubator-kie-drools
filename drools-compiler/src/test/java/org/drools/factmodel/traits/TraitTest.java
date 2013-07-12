@@ -2747,7 +2747,8 @@ public class TraitTest extends CommonTestMethodBase {
                 "when \n" +
                 "  $p : Person( name == \"john\" ) \n" +
                 "then \n" +
-                "  modify ( $p ) { setName( \"alan\" ); } " +
+                "   System.out.println( \"-----------------------------\" );\n" +
+                "   modify ( $p ) { setName( \"alan\" ); } " +
                 "end \n" +
                 "";
 
@@ -2794,7 +2795,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "when \n" +
                 "  $p : Person( name == \"john\" ) \n" +
                 "then \n" +
-                "  System.out.println( $p ); \n" +
+                "  System.out.println( \">>> \" + $p ); \n" +
                 "  don( $p, Worker.class ); \n" +
                 "  don( $p, StudentWorker.class ); \n" +
                 "  don( $p, Assistant.class ); \n" +
@@ -2825,6 +2826,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "  System.out.println( \"Assistant >> \" + $t ); \n" +
                 "end \n" +
                 "rule \"Log Px\" \n" +
+                "salience -1 \n" +
                 "when \n" +
                 "  $p : Person() @watch( name ) \n" +
                 "then \n" +
@@ -3427,11 +3429,11 @@ public class TraitTest extends CommonTestMethodBase {
         ks.insert( "shed" );
         ks.fireAllRules();
 
-        assertEquals( 2, ks.getObjects().size() );
-
         for ( Object o : ks.getObjects() ) {
             System.out.println( o );
         }
+        assertEquals( 2, ks.getObjects().size() );
+
     }
 
 
@@ -3782,12 +3784,13 @@ public class TraitTest extends CommonTestMethodBase {
                         "global java.util.List list; \n" +
                         "\n" +
                         "" +
-                        "declare trait A @propertyReactive end\n" +
-                        "declare trait B extends A @propertyReactive end\n" +
-                        "declare trait C extends B @propertyReactive end\n" +
-                        "declare trait D extends A @propertyReactive end\n" +
-                        "declare trait E extends C, D @propertyReactive end\n" +
-                        "declare trait F extends E @propertyReactive end\n" +
+                        "declare trait A end\n" +
+                        "declare trait B extends A end\n" +
+                        "declare trait C extends B end\n" +
+                        "declare trait D extends A end\n" +
+                        "declare trait E extends C, D end\n" +
+                        "declare trait F extends E end\n" +
+                        "declare trait G extends A end\n" +
                         "" +
                         "declare Kore\n" +
                         "   @Traitable\n" +
@@ -3802,6 +3805,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "   don( k, B.class ); \n" +
                         "   don( k, A.class ); \n" +
                         "   don( k, F.class ); \n" +
+                        "   don( k, G.class ); \n" +
                         "   shed( k, B.class ); \n" +
                         "end\n" +
                         "" +
@@ -3812,7 +3816,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "   System.out.println( $x ); \n " +
                         "end\n" +
                         " \n" +
-                        "query queryA\n" +
+                        "query queryA1\n" +
                         "   $x := A(  ) \n" +
                         "end\n" +
                         "";
@@ -3824,13 +3828,9 @@ public class TraitTest extends CommonTestMethodBase {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
-        QueryResults res = ks.getQueryResults( "queryA" );
-        Iterator<QueryResultsRow> iter = res.iterator();
-        Object a = iter.next().get( "$x" );
-        assertFalse( iter.hasNext() );
-
+        QueryResults res;
+        res = ks.getQueryResults( "queryA1" );
         assertEquals( 1, res.size() );
-
     }
 
     @Test
@@ -3908,6 +3908,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "" +
                         "declare Kore\n" +
                         "   @Traitable\n" +
+                        "   @propertyReactive" +
                         "   age : int\n" +
                         "end\n" +
                         "" +
@@ -3956,7 +3957,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "import java.util.*;\n" +
                         "global List list;\n " +
                         "\n" +
-                        "declare org.drools.factmodel.MapCore " +
+                        "declare org.drools.factmodel.MapCore \n" +
                         "end\n" +
                         "\n" +
                         "global List list; \n" +
@@ -3976,7 +3977,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "\n" +
                         "rule Don  \n" +
                         "when  \n" +
-                        "  $m : Map( this[ \"age\"] == 18 )\n" +
+                        "  $m : Map( this[ \"age\"] == 18, this[ \"ID\" ] != \"100\" )\n" +
                         "then  \n" +
                         "   don( $m, PersonMap.class );\n" +
                         "   System.out.println( \"done: PersonMap\" );\n" +
@@ -3997,7 +3998,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "rule Don2\n" +
                         "salience -1\n" +
                         "when\n" +
-                        "   $m : Map( this[ \"age\"] == 18 ) " +
+                        "   $m : Map( this[ \"age\"] == 18, this[ \"ID\" ] != \"100\" ) " +
                         "then\n" +
                         "   don( $m, StudentMap.class );\n" +
                         "   System.out.println( \"done2: StudentMap\" );\n" +
@@ -4036,6 +4037,16 @@ public class TraitTest extends CommonTestMethodBase {
                         "   shed( $m, StudentMap.class );\n" +
                         "   System.out.println( \"shed: StudentMap\" );\n" +
                         "end\n" +
+                        "" +
+                        "rule Last  \n" +
+                        "salience -99 \n" +
+                        "when  \n" +
+                        "  $m : Map( this not isA StudentMap.class )\n" +
+                        "then  \n" +
+                        "   System.out.println( \"Final\" );\n" +
+                        "   $m.put( \"final\", true );" +
+                        "\n" +
+                        "end\n" +
                         "\n" +
                         "\n";
 
@@ -4060,6 +4071,7 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( "100", map.get( "ID" ) );
         assertEquals( 184.0, map.get( "height" ) );
         assertEquals( 4.0, map.get( "GPA" ) );
+        assertEquals( true, map.get( "final" ) );
 
     }
 

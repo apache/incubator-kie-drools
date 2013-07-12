@@ -20,6 +20,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
+import org.drools.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.base.mvel.ActivationPropertyHandler;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
@@ -38,6 +39,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
@@ -72,6 +74,7 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.rule.constraint.EvaluatorConstraint;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.AcceptsReadAccessor;
@@ -422,6 +425,14 @@ public class PatternBuilder
                 }
             }
 
+            for ( Constraint constr : pattern.getConstraints() ) {
+                if ( constr instanceof EvaluatorConstraint ) {
+                    EvaluatorConstraint ec = ((EvaluatorConstraint) constr );
+                    if ( ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.ISA || ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.NOT_ISA ) {
+                        listenedProperties.add( TraitableBean.TRAITSET_FIELD_NAME );
+                    }
+                }
+            }
             pattern.setListenedProperties(listenedProperties);
         }
     }

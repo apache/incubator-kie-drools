@@ -5,8 +5,6 @@ import org.drools.factmodel.traits.Thing;
 
 global java.util.List list;
 
- 
-
 
 declare trait Student
     school  : String
@@ -78,7 +76,7 @@ end
 
 rule "Nothing Left"
 when
-    $t : Thing( this not isA Student && this not isA Worker )
+    $t : Thing( this not isA Student, this not isA Worker )
 then
     System.out.println( "Bare Thing" );
     list.add( "Nothing" );

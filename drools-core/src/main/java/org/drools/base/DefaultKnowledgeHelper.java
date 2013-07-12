@@ -703,7 +703,7 @@ public class DefaultKnowledgeHelper
                                                                               Long.MIN_VALUE,
                                                                               core.getClass(),
                                                                               this.activation );
-                updateTraits( inner, Long.MIN_VALUE, null, trait, veto );
+                updateTraits( inner, -1L, null, trait, veto );
             } else {
                 handle = this.workingMemory.insert( inner,
                                                     null,
@@ -740,7 +740,8 @@ public class DefaultKnowledgeHelper
     public <T,K,X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait ) {
         if ( trait.isAssignableFrom( core.getClass() ) ) {
             core.removeTrait( trait.getName() );
-            updateTraits( core, Long.MIN_VALUE, null, Object.class, null );
+            update( core, Long.MIN_VALUE, core.getClass() );
+            updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null );
             return (Thing<K>) core;
         } else {
             Collection<Thing<K>> removedTypes;
@@ -759,7 +760,9 @@ public class DefaultKnowledgeHelper
             }
 
             Thing<K> thing = core.getTrait( Thing.class.getName() );
-            updateTraits( core, Long.MIN_VALUE, null, Object.class, null );
+
+            update( core, Long.MIN_VALUE, core.getClass() );
+            updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null );
             return thing;
         }
     }
