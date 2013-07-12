@@ -8,14 +8,14 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Makes no changes.
  */
-public class NothingMove implements Move {
+public class NoChangeMove implements Move {
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true;
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new NothingMove();
+        return new NoChangeMove();
     }
 
     public void doMove(ScoreDirector scoreDirector) {
@@ -28,6 +28,11 @@ public class NothingMove implements Move {
 
     public Collection<? extends Object> getPlanningValues() {
         return Collections.<Object>emptyList();
+    }
+
+    @Override
+    public String toString() {
+        return "No change";
     }
 
 }
