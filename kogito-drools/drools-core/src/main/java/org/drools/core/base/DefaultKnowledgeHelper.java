@@ -765,17 +765,18 @@ public class DefaultKnowledgeHelper
             FactHandle handle = lookupFactHandle( inner );
             InternalFactHandle h = (InternalFactHandle) handle;
             if ( handle != null ) {
-                ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
-                                                                              ((InternalFactHandle)handle).getObject(),
-                                                                              Long.MIN_VALUE,
-                                                                              core.getClass(),
-                                                                              this.activation );
+                ((NamedEntryPoint) h.getEntryPoint()).update( h,
+                                                              logical,
+                                                              ((InternalFactHandle)handle).getObject(),
+                                                              Long.MIN_VALUE,
+                                                              core.getClass(),
+                                                              this.activation );
                 updateTraits( inner, -1L, null, trait, veto );
             } else {
                 handle = this.workingMemory.insert( inner,
                                                     null,
                                                     false,
-                                                    false,
+                                                    logical,
                                                     this.activation.getRule(),
                                                     this.activation );
                 if ( this.identityMap != null ) {
