@@ -69,30 +69,33 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public void discoverKieModules() {
-        final Enumeration<URL> e;
-        try {
-            e = cl.getResources( KieModuleModelImpl.KMODULE_JAR_PATH );
-        } catch ( IOException exc ) {
-            log.error( "Unable to find and build index of kmodule.xml \n" + exc.getMessage() );
-            return;
-        }
-
-        // Map of kmodule urls
-        while ( e.hasMoreElements() ) {
-            URL url = e.nextElement();
-            System.out.println( "kmodules: " + url);
+        String[] configFiles = {KieModuleModelImpl.KMODULE_JAR_PATH, KieModuleModelImpl.KMODULE_SPRING_JAR_PATH};
+        for ( String configFile : configFiles) {
+            final Enumeration<URL> e;
             try {
-                InternalKieModule kModule = fetchKModule(url);
+                e = cl.getResources( configFile );
+            } catch ( IOException exc ) {
+                log.error( "Unable to find and build index of "+configFile+" \n" + exc.getMessage() );
+                return;
+            }
 
-                ReleaseId releaseId = kModule.getReleaseId();
-                kieModules.put(releaseId, kModule);
+            // Map of kmodule urls
+            while ( e.hasMoreElements() ) {
+                URL url = e.nextElement();
+                System.out.println( "kmodules: " + url);
+                try {
+                    InternalKieModule kModule = fetchKModule(url);
 
-                log.debug( "Discovered classpath module " + releaseId.toExternalForm() );
-                
-                kr.addKieModule(kModule);
+                    ReleaseId releaseId = kModule.getReleaseId();
+                    kieModules.put(releaseId, kModule);
 
-            } catch ( Exception exc ) {
-                log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );
+                    log.debug( "Discovered classpath module " + releaseId.toExternalForm() );
+
+                    kr.addKieModule(kModule);
+
+                } catch ( Exception exc ) {
+                    log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );
+                }
             }
         }
     }
@@ -147,7 +150,18 @@ public class ClasspathKieProject extends AbstractKieProject {
             // if it's a file it must be zip and end with .jar, otherwise we log an error
             log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" );
             kJar = null;
-        }        
+        }
+        if ( kJar != null && url.getPath().endsWith("-spring.xml")) {
+            try {
+                Class<?> clazz = Class.forName("org.kie.spring.KModuleSpringUtils");
+                Method m = clazz.getMethod("setReleaseIdForKieModuleModel", ReleaseId.class, KieModuleModel.class);
+                if ( m != null) {
+                    m.invoke(null, releaseId, kieProject);
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
         return kJar;
     }    
 
@@ -277,8 +291,12 @@ public class ClasspathKieProject extends AbstractKieProject {
         } else if ( "vfs".equals( urlType ) ) {
             urlPath = getPathForVFS(url);
         } else {
-            urlPath = urlPath.substring( 0,
-                                         urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
+            if (url.toString().contains("-spring.xml")){
+                urlPath = urlPath.substring( 0, urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_SPRING_JAR_PATH).length() );
+            } else {
+                urlPath = urlPath.substring( 0,
+                        urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
+            }
         }
 
         // remove any remaining protocols, normally only if it was a jar

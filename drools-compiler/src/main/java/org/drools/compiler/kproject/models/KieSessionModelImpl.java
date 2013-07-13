@@ -9,6 +9,8 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.ListenerModel;
 import org.kie.api.builder.model.WorkItemHandlerModel;
+import org.kie.api.command.Command;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
 import java.util.ArrayList;
@@ -28,19 +30,47 @@ public class KieSessionModelImpl
 
     private final List<ListenerModel>        listeners = new ArrayList<ListenerModel>();
     private final List<WorkItemHandlerModel> wihs = new ArrayList<WorkItemHandlerModel>();
+    private List<Command<?>> batchCommandsList = new ArrayList<Command<?>>();
+    private KieSessionConfiguration sessionConfiguration;
+    private Object jpaConfiguration;
 
     private boolean                      isDefault = false;
 
     private KieSessionModelImpl() { }
 
+    public Object getJpaConfiguration() {
+        return jpaConfiguration;
+    }
+
+    public void setJpaConfiguration(Object jpaConfiguration) {
+        this.jpaConfiguration = jpaConfiguration;
+    }
+
     public KieSessionModelImpl(KieBaseModelImpl kBase, String name) {
         this.kBase = kBase;
         this.name = name;
     }
-    
+
+    public KieSessionConfiguration getSessionConfiguration() {
+        return sessionConfiguration;
+    }
+
+    public void setSessionConfiguration(KieSessionConfiguration sessionConfiguration) {
+        this.sessionConfiguration = sessionConfiguration;
+    }
+
+    public List<Command<?>> getCommandsList() {
+        return batchCommandsList;
+    }
+
+    public void setCommandsList(List<Command<?>> commands) {
+        this.batchCommandsList = commands;
+    }
+
     public KieBaseModelImpl getKieBaseModel() {
         return kBase;
     }
+
     public boolean isDefault() {
         return isDefault;
     }

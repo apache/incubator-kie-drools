@@ -18,6 +18,7 @@ import javax.xml.validation.SchemaFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 public class KieModuleModelImpl implements KieModuleModel {
 
     public static String KMODULE_JAR_PATH = "META-INF/kmodule.xml";
+    public static String KMODULE_SPRING_JAR_PATH = "META-INF/kmodule-spring.xml";
     public static String KMODULE_INFO_JAR_PATH = "META-INF/kmodule.info";
     public static String KMODULE_SRC_PATH = "src/main/resources/" + KMODULE_JAR_PATH;
 
@@ -115,15 +117,45 @@ public class KieModuleModelImpl implements KieModuleModel {
     }
 
     public static KieModuleModel fromXML(java.io.File kModuleFile) {
-        return MARSHALLER.fromXML(kModuleFile);
+        if ( kModuleFile.getPath().endsWith("-spring.xml")){
+            try{
+                Class clazz = Class.forName("org.kie.spring.KModuleSpringMarshaller");
+                Method method = clazz.getDeclaredMethod("fromXML", java.io.File.class);
+                return (KieModuleModel) method.invoke(null, kModuleFile);
+            } catch (Exception e){
+                throw new RuntimeException(e);
+            }
+        } else {
+            return MARSHALLER.fromXML(kModuleFile);
+        }
     }
 
     public static KieModuleModel fromXML(URL kModuleUrl) {
-        return MARSHALLER.fromXML(kModuleUrl);
+        if ( kModuleUrl.getPath().endsWith("-spring.xml")){
+            try{
+                Class clazz = Class.forName("org.kie.spring.KModuleSpringMarshaller");
+                Method method = clazz.getDeclaredMethod("fromXML", java.net.URL.class);
+                return (KieModuleModel) method.invoke(null, kModuleUrl);
+            } catch (Exception e){
+                throw new RuntimeException(e);
+            }
+        } else {
+            return MARSHALLER.fromXML(kModuleUrl);
+        }
     }
 
     public static KieModuleModel fromXML(String kModuleString) {
-        return MARSHALLER.fromXML(kModuleString);
+        if ( kModuleString != null && kModuleString.contains("<beans xmlns=")) {
+            try{
+                Class clazz = Class.forName("org.kie.spring.KModuleSpringMarshaller");
+                Method method = clazz.getDeclaredMethod("fromXML", java.net.URL.class);
+                return (KieModuleModel) method.invoke(null, kModuleString);
+            } catch (Exception e){
+                throw new RuntimeException(e);
+            }
+        } else {
+            return MARSHALLER.fromXML(kModuleString);
+        }
     }
 
     private static final kModuleMarshaller MARSHALLER = new kModuleMarshaller();

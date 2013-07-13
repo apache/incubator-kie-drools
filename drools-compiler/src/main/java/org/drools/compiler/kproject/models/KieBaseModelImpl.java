@@ -48,7 +48,7 @@ public class KieBaseModelImpl
 
     private boolean                      isDefault = false;
 
-    private KieBaseModelImpl() {
+    public KieBaseModelImpl() {
     }
 
     public KieBaseModelImpl(KieModuleModel kModule,
