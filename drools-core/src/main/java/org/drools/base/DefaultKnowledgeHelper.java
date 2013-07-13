@@ -434,13 +434,20 @@ public class DefaultKnowledgeHelper
     }
 
     public void retract(final FactHandle handle) {
+        Object o = ((InternalFactHandle) handle).getObject();
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).retract( handle,
                                                                                                    true,
                                                                                                    true,
                                                                                                    this.activation.getRule(),
                                                                                                    this.activation );
         if ( this.identityMap != null ) {
-            this.getIdentityMap().remove( ((InternalFactHandle) handle).getObject() );
+            this.getIdentityMap().remove( o );
+        }
+
+        if ( o instanceof TraitableBean ) {
+            for ( Object t : ( (TraitableBean) o )._getTraitMap().values() ) {
+                retract( t );
+            }
         }
     }
 
@@ -691,7 +698,7 @@ public class DefaultKnowledgeHelper
         }
 
         if ( ! inner.hasTrait( Thing.class.getName() ) ) {
-            don( inner, Thing.class, logical );
+            don( inner, Thing.class, false );
         }
 
         if ( refresh ) {
@@ -708,7 +715,7 @@ public class DefaultKnowledgeHelper
                 handle = this.workingMemory.insert( inner,
                                                     null,
                                                     false,
-                                                    false,
+                                                    logical,
                                                     this.activation.getRule(),
                                                     this.activation );
                 if ( this.identityMap != null ) {
@@ -745,7 +752,13 @@ public class DefaultKnowledgeHelper
             return (Thing<K>) core;
         } else {
             Collection<Thing<K>> removedTypes;
-            if ( core.hasTrait( trait.getName() ) ) {
+            Thing<K> thing = core.getTrait( Thing.class.getName() );
+            if ( trait == Thing.class ) {
+                core._getTraitMap().clear();
+                core._setTraitMap( null );
+                retract( thing );
+                return thing;
+            } else if ( core.hasTrait( trait.getName() ) ) {
                 removedTypes = core.removeTrait( trait.getName() );
             } else {
                 HierarchyEncoder hier = ((ReteooRuleBase) this.workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
@@ -758,8 +771,6 @@ public class DefaultKnowledgeHelper
                     retract( t );
                 }
             }
-
-            Thing<K> thing = core.getTrait( Thing.class.getName() );
 
             update( core, Long.MIN_VALUE, core.getClass() );
             updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null );
