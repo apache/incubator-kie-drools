@@ -73,4 +73,9 @@ public abstract class AbstractBaseLinkedListNode<T extends LinkedListNode<T>>
     public void setPrevious(final T previous) {
         this.previous = previous;
     }
+
+    public void nullPrevNext() {
+        previous = null;
+        next = null;
+    }
 }

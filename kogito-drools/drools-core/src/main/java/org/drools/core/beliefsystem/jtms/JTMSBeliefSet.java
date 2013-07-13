@@ -4,30 +4,33 @@ import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
-import org.drools.core.common.SimpleLogicalDependency;
+import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.spi.PropagationContext;
 
 public class JTMSBeliefSet  extends LinkedList implements BeliefSet {
+    private static final FastIterator iterator = new LinkedListFastIterator();
+
     private BeliefSystem beliefSystem;
-    
+
     private WorkingMemoryAction wmAction;
-    
+
     private InternalFactHandle rootHandle;
     private InternalFactHandle positiveFactHandle;
     private InternalFactHandle negativeFactHandle;
-    
+
     private int posCounter = 0;
     private int negCounter = 0;
-    
+
     public JTMSBeliefSet(BeliefSystem beliefSystem, InternalFactHandle rootHandle) {
         this.beliefSystem = beliefSystem;
         this.rootHandle = rootHandle;
     }
-    
+
     public InternalFactHandle getPositiveFactHandle() {
         return positiveFactHandle;
     }
@@ -51,8 +54,8 @@ public class JTMSBeliefSet  extends LinkedList implements BeliefSet {
             super.addLast( node ); //we add negatives to end
             negCounter++;
         } else {
-            super.add( node ); // we add positied to start
-            ld.setValue( MODE.POSITIVE.getId() ); // user may not have explicitely set MODE, so implicitely it's negative
+            super.addFirst( node ); // we add positied to start
+            ld.setValue( MODE.POSITIVE.getId() ); // user may not have explicitely set MODE, so implicitely it's positive
             posCounter++;
         }
     }
@@ -162,4 +165,5 @@ public class JTMSBeliefSet  extends LinkedList implements BeliefSet {
     public WorkingMemoryAction getWorkingMemoryAction() {
         return this.wmAction;
     }
+
 }

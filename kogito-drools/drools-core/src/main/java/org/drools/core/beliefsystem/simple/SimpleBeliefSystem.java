@@ -5,7 +5,6 @@ import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.common.SimpleLogicalDependency;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.common.TruthMaintenanceSystem.LogicalCallback;

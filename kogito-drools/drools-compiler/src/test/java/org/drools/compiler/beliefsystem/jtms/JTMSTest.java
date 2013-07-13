@@ -157,6 +157,98 @@ public class JTMSTest {
         assertEquals( 0, kSession.getEntryPoint( "DEFAULT" ).getObjects().size() );
         assertEquals( 0, kSession.getEntryPoint( "neg" ).getObjects().size() ); 
     }
+
+    @Test
+    public void testConflictToggleWithoutGoingEmpty() {
+        String s = "package org.drools.core.beliefsystem.jtms;\n" +
+                   "\n" +
+                   "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
+                   "import java.util.List \n" +
+                   "import org.drools.core.common.AgendaItem;" +
+                   "global java.util.List list;\n" +
+                   "\n" +
+                   "rule \"go1\"\n" +
+                   "when\n" +
+                   "    String( this == 'go1' )\n" +
+                   "then\n" +
+                   "    insertLogical( 'xxx' );\n" +
+                   "end\n" +
+                   "rule \"go2\"\n" +
+                   "when\n" +
+                   "    String( this == 'go2' )\n" +
+                   "then\n" +
+                   "    insertLogical( 'xxx');\n" +
+                   "end\n" +
+                   "rule \"go3\"\n" +
+                   "when\n" +
+                   "    String( this == 'go3' )\n" +
+                   "then\n" +
+                   "    insertLogical( 'xxx');\n" +
+                   "end\n" +
+
+                   "\n" +
+                   "rule \"go4\"\n" +
+                   "when\n" +
+                   "    String( this == 'go4' )\n" +
+                   "then\n" +
+                   "    insertLogical( 'xxx', 'neg' );\n" +
+                   "end\n" +
+                   "\n" +
+
+
+                   "rule \"Positive\"\n" +
+                   "when\n" +
+                   "    $n : String( this == 'xxx' ) \n" +
+                   "then\n" +
+                   "    final String s = '+' + $n;" +
+                   "    final List l = list;" +
+                   "    l.add( s );\n" +
+                   "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
+                   "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" +
+                   "        \n" +
+                   "        public void unMatch(org.kie.api.runtime.rule.Session wm,\n" +
+                   "                            org.kie.api.runtime.rule.Match activation) {\n" +
+                   "            l.remove( s );\n" +
+                   "        }\n" +
+                   "    } );" +
+                   "end\n" +
+                   "rule \"Negative\"\n" +
+                   "when\n" +
+                   "    $n : String(  this == 'xxx' ) from entry-point 'neg' \n" +
+                   "then\n" +
+                   "    final String s = '-' + $n; \n" +
+                   "    final List l = list; \n" +
+                   "    l.add( s ); \n" +
+                   "    AgendaItem item = ( AgendaItem ) kcontext.getMatch();" +
+                   "    item.setActivationUnMatchListener( new ActivationUnMatchListener() {\n" +
+                   "        \n" +
+                   "        public void unMatch(org.kie.api.runtime.rule.Session wm,\n" +
+                   "                            org.kie.api.runtime.rule.Match activation) {\n" +
+                   "            l.remove( s );\n" +
+                   "        }\n" +
+                   "    } );" +
+                   "end\n" +
+                "";
+
+        StatefulKnowledgeSession kSession =  getSessionFromString( s );
+        List list = new ArrayList();
+        kSession.setGlobal( "list", list );
+
+        FactHandle fhGo1 = kSession.insert( "go1" );
+        FactHandle fhGo2 = kSession.insert( "go2" );
+        FactHandle fhGo3 = kSession.insert( "go3" );
+
+        kSession.fireAllRules();
+        assertTrue( list.contains( "+xxx" ) );
+
+        FactHandle fhGo4 = kSession.insert( "go4" );
+        kSession.fireAllRules();
+        assertTrue( list.isEmpty());
+
+        kSession.delete(fhGo4);
+        kSession.fireAllRules();
+        assertTrue( list.contains( "+xxx" ) );
+    }
     
     @Test
     public void testChangeInPositivePrime() {
@@ -238,9 +330,9 @@ public class JTMSTest {
         }
               
         assertEquals( 2, key.getBeliefSet().size() );        
-        assertEquals( new Integer(2), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
+        assertEquals( new Integer(3), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
         
-        kSession.retract( fhGo2 );
+        kSession.retract( fhGo3 );
         kSession.fireAllRules();
         it = equalityMap.iterator();
         key = ( EqualityKey  ) (( ObjectEntry ) it.next() ).getValue();
@@ -249,7 +341,7 @@ public class JTMSTest {
         }
               
         assertEquals( 1, key.getBeliefSet().size() );        
-        assertEquals( new Integer(3), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );        
+        assertEquals( new Integer(2), ((Person)key.getBeliefSet().getFactHandle().getObject()).getNotInEqualTestObject() );
     }    
     
     @Test

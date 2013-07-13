@@ -30,6 +30,7 @@ import org.drools.core.FactException;
 import org.drools.core.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.*;
 import org.drools.core.factmodel.MapCore;
 import org.drools.core.factmodel.traits.TraitProxy;

@@ -542,7 +542,9 @@ public class ProtobufOutputMarshaller {
 
         ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
 
-        for ( LinkedListEntry node = (LinkedListEntry) beliefSet.getFirst(); node != null; node = (LinkedListEntry) node.getNext() ) {
+        // for ( LinkedListEntry node = (LinkedListEntry) beliefSet.getFirst(); node != null; node = (LinkedListEntry) node.getNext() ) {
+        FastIterator it =  beliefSet.iterator();
+        for ( LinkedListEntry node = (LinkedListEntry) beliefSet.getFirst(); node != null; node = (LinkedListEntry) it.next(node) ) {
             LogicalDependency belief = (LogicalDependency) node.getObject();
             ProtobufMessages.LogicalDependency.Builder _logicalDependency = ProtobufMessages.LogicalDependency.newBuilder();
             //_belief.setActivation( value )
