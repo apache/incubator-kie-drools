@@ -234,12 +234,14 @@ public class SplitInstance extends NodeInstanceImpl {
         
     }
     
-    protected boolean checkNodes(Node currentNode, final Node lookFor, Set<Long> vistedNodes) {
+    protected boolean checkNodes(Node currentNode, final Node lookFor, Set<Long> vistedNodes) {        
         List<Connection> connections = currentNode.getOutgoingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
 
         for (Connection conn : connections) {
             Node nextNode = conn.getTo();
             if (nextNode == null) {
+                continue;
+            } else if (vistedNodes.contains(nextNode.getId())) {
                 continue;
             } else {
                 vistedNodes.add(nextNode.getId());

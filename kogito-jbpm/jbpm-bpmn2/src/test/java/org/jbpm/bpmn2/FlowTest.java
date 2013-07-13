@@ -1244,6 +1244,38 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("com.sample.test");
         assertProcessInstanceFinished(processInstance, ksession);
     }
+    
+    @Test
+    public void testMultipleGatewaysProcess() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultipleGatewaysProcess.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(new DefaultProcessEventListener(){
+            ProcessInstance pi;
+
+            @Override
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {                
+                if(event.getNodeInstance().getNodeName().equals("CreateAgent")){
+                    pi.signalEvent("Signal_1", null);                    
+                }                
+            }
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                logger.info("Before Node triggered event received for node: {}", event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                pi=event.getProcessInstance();
+                
+            }
+        });
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("action", "CreateAgent");
+        ProcessInstance processInstance = ksession.startProcess("multiplegateways", params);
+        
+        assertProcessInstanceCompleted(processInstance);
+    }
 
     private static class GetProcessVariableCommand implements GenericCommand<Object> {
 
