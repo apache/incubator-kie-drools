@@ -754,9 +754,15 @@ public class DefaultKnowledgeHelper
             Collection<Thing<K>> removedTypes;
             Thing<K> thing = core.getTrait( Thing.class.getName() );
             if ( trait == Thing.class ) {
+
+                removedTypes = core._getTraitMap().values();
+                for ( Thing t : removedTypes ) {
+                    if ( ! ((TraitType) t).isVirtual() ) {
+                        retract( t );
+                    }
+                }
                 core._getTraitMap().clear();
                 core._setTraitMap( null );
-                retract( thing );
                 return thing;
             } else if ( core.hasTrait( trait.getName() ) ) {
                 removedTypes = core.removeTrait( trait.getName() );
