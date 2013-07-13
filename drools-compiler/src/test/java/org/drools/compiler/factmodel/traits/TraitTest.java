@@ -3197,12 +3197,12 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( list.contains( "Italy" ) );
     }
 
-    @Test @Ignore
+    @Test
     public void isAWithBackChainingTriples() {
         isAWithBackChaining( TraitFactory.VirtualPropertyMode.TRIPLES );
     }
 
-    @Test @Ignore
+    @Test
     public void isAWithBackChainingMap() {
         isAWithBackChaining( TraitFactory.VirtualPropertyMode.MAP );
     }
@@ -3321,7 +3321,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    @Test @Ignore
+    @Test
     public void testShedWithTMS( ) {
         String source = "package t.x \n" +
                         "\n" +
@@ -3728,7 +3728,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "global java.util.List list; \n" +
                         "\n" +
                         "" +
-                        "declare trait A @propertyReactive end\n" +
+                        "declare trait A end\n" +
                         "declare trait B extends A end\n" +
                         "declare trait C extends B end\n" +
                         "declare trait D extends A end\n" +
