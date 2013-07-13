@@ -4209,4 +4209,146 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
+
+
+    @Test
+    public void testShedThing() {
+        String s1 = "package test;\n" +
+                    "import org.drools.factmodel.traits.*;\n" +
+                    "global java.util.List list; \n" +
+                    "" +
+                    "declare trait A id : int end\n" +
+                    "declare trait B extends A end\n" +
+                    "declare trait C extends A end\n" +
+                    "declare trait D extends A end\n" +
+                    "declare trait E extends B end\n" +
+                    "" +
+                    "declare Core @Traitable id : int = 0 end \n" +
+                    "" +
+                    "rule \"Init\" when \n" +
+                    "then \n" +
+                    "   insert( new Core() );" +
+                    "end \n" +
+                    "" +
+                    "rule \"donManyThing\"\n" +
+                    "when\n" +
+                    "    $x : Core( id == 0 )\n" +
+                    "then\n" +
+                    "    don( $x, A.class );\n" +
+                    "    don( $x, B.class );\n" +
+                    "    don( $x, C.class );\n" +
+                    "    don( $x, D.class );\n" +
+                    "    don( $x, E.class );\n" +
+                    "end\n" +
+                    "\n" +
+                    "\n" +
+                    "" +
+                    "rule \"Mod\" \n" +
+                    "salience -10 \n" +
+                    "when \n" +
+                    "  $g : String( this == \"go\" ) \n" +
+                    "  $x : Core( id == 0 ) \n" +
+                    "then \n" +
+                    "  shed( $x, Thing.class ); " +
+                    "  retract( $g ); \n\n" +
+                    "end \n" +
+                    "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, kbase ); // not relevant
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.out.println( o );
+        }
+
+        assertEquals( 1, ksession.getObjects().size() );
+    }
+
+
+    @Test
+    public void testRetractThings() {
+        String s1 = "package test;\n" +
+                    "import org.drools.factmodel.traits.*;\n" +
+                    "global java.util.List list; \n" +
+                    "" +
+                    "declare trait A id : int end\n" +
+                    "declare trait B extends A end\n" +
+                    "declare trait C extends A end\n" +
+                    "declare trait D extends A end\n" +
+                    "declare trait E extends B end\n" +
+                    "" +
+                    "declare Core @Traitable id : int = 0 end \n" +
+                    "" +
+                    "rule \"Init\" when \n" +
+                    "then \n" +
+                    "   insert( new Core() );" +
+                    "end \n" +
+                    "" +
+                    "rule \"donManyThing\"\n" +
+                    "when\n" +
+                    "    $x : Core( id == 0 )\n" +
+                    "then\n" +
+                    "    don( $x, A.class );\n" +
+                    "    don( $x, B.class );\n" +
+                    "    don( $x, C.class );\n" +
+                    "    don( $x, D.class );\n" +
+                    "    don( $x, E.class );\n" +
+                    "end\n" +
+                    "\n" +
+                    "\n" +
+                    "" +
+                    "rule \"Mod\" \n" +
+                    "salience -10 \n" +
+                    "when \n" +
+                    "  $g : String( this == \"go\" ) \n" +
+                    "  $x : Core( id == 0 ) \n" +
+                    "then \n" +
+                    "  retract( $x ); \n\n" +
+                    "  retract( $g ); \n\n" +
+                    "end \n" +
+                    "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, kbase ); // not relevant
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.out.println( o );
+        }
+
+        assertEquals( 0, ksession.getObjects().size() );
+    }
+
+
 }
