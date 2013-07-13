@@ -2,6 +2,7 @@ package org.drools.core.beliefsystem;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.spi.PropagationContext;
 
@@ -11,6 +12,9 @@ public interface BeliefSet {
     public InternalFactHandle getFactHandle();
     
     public LinkedListNode getFirst();
+
+    public FastIterator iterator();
+
     
     public void add(LinkedListNode node);
     public void remove(LinkedListNode node);

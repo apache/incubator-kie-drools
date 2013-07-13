@@ -36,7 +36,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.PropagationContextImpl;
-import org.drools.core.common.SimpleLogicalDependency;
+import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;

@@ -128,15 +128,29 @@ public class LinkedList<T extends LinkedListNode<T>>
             this.firstNode = node;
             this.lastNode = node;
         } else {
-            T currentLast = getLast();
+            T currentLast = this.lastNode;
             currentLast.setNext( node );
             node.setPrevious( currentLast );
             this.lastNode = node;            
         }
         
         this.size++;
-    }    
-    
+    }
+
+    public void addFirst(final T node) {
+        if ( this.firstNode == null ) {
+            this.firstNode = node;
+            this.lastNode = node;
+        } else {
+            T currentFirst = this.firstNode;
+            currentFirst.setPrevious( node );
+            node.setNext( currentFirst );
+            this.firstNode = node;
+        }
+
+        this.size++;
+    }
+
     /**
      * Removes a <code>LinkedListNode</code> from the list. This works by attach the previous reference to the child reference.
      * When the node to be removed is the first node it calls <code>removeFirst()</code>. When the node to be removed is the last node

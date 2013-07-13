@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.core.common;
+package org.drools.core.beliefsystem.simple;
 
+import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.spi.Activation;

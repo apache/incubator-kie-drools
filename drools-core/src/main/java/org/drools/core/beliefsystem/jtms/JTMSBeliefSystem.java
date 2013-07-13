@@ -6,7 +6,7 @@ import org.drools.core.beliefsystem.jtms.JTMSBeliefSet.MODE;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.common.SimpleLogicalDependency;
+import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.TruthMaintenanceSystem.LogicalCallback;
 import org.drools.core.common.WorkingMemoryAction;
@@ -68,7 +68,7 @@ public class JTMSBeliefSystem
                 jtmsBeliefSet.setNegativeFactHandle( null );
                 fullyRetract = true; // Only fully retract negatives
             } else {
-                fh = jtmsBeliefSet.getPositiveFactHandle(); // we can't lose the postive handle
+                fh = jtmsBeliefSet.getPositiveFactHandle();
                 jtmsBeliefSet.setPositiveFactHandle( null );
                 fullyRetract = false; // Positives only retract from the rete network, handle must remain                
             }
@@ -88,7 +88,7 @@ public class JTMSBeliefSystem
             
             // As the neg partition is always stated, it'll have no equality key.
             // However the equality key is needed to stop duplicate LogicalCallbacks, so we manually set it
-            // **MDP could this be a problem during derialization, where the 
+            // @FIXME **MDP could this be a problem during derialization, where the
             jtmsBeliefSet.getNegativeFactHandle().setEqualityKey( jtmsBeliefSet.getFactHandle().getEqualityKey() ); 
             jtmsBeliefSet.setPositiveFactHandle( null );
             if ( !(wasNegated || wasConflicting) ) {
@@ -137,7 +137,7 @@ public class JTMSBeliefSystem
                      BeliefSet beliefSet,
                      PropagationContext context,
                      ObjectTypeConf typeConf) {
-        throw new UnsupportedOperationException( "This is not serializale yet" );
+        throw new UnsupportedOperationException( "This is not serializable yet" );
     }
 
     public void delete(LogicalDependency node,
