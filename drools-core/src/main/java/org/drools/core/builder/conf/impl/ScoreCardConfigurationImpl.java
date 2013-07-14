@@ -25,10 +25,12 @@ import org.slf4j.LoggerFactory;
 
 public class ScoreCardConfigurationImpl implements ScoreCardConfiguration {
     public static final String DROOLS_SCARD_WORKSHEET = "drools.dt.worksheet";
+    public static final String DROOLS_SCARD_USE_EXTERNAL_TYPES = "drools.sc.useExternalTypes";
 
     private final Logger logger = LoggerFactory.getLogger( ScoreCardConfigurationImpl.class );
 
     private String worksheetName;
+    private boolean useExternalTypes = false;
 
     public ScoreCardConfigurationImpl() {
     }
@@ -40,15 +42,25 @@ public class ScoreCardConfigurationImpl implements ScoreCardConfiguration {
     public String getWorksheetName() {
         return this.worksheetName;
     }
-    
+
+    public void setUsingExternalTypes(boolean useExternalTypes) {
+        this.useExternalTypes = useExternalTypes;
+    }
+
+    public boolean IsUsingExternalTypes() {
+        return useExternalTypes;
+    }
+
     public Properties toProperties() {
         Properties prop = new Properties();
         prop.setProperty( DROOLS_SCARD_WORKSHEET, worksheetName );
+        prop.setProperty( DROOLS_SCARD_USE_EXTERNAL_TYPES, Boolean.toString(useExternalTypes));
         return prop;
     }
 
     public ResourceConfiguration fromProperties(Properties prop) {
         worksheetName = prop.getProperty( DROOLS_SCARD_WORKSHEET, null );
+        useExternalTypes = Boolean.getBoolean(prop.getProperty(DROOLS_SCARD_USE_EXTERNAL_TYPES, "false"));
         return this;
     }
   
