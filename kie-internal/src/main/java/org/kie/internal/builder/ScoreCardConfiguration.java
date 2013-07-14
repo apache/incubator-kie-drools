@@ -50,4 +50,17 @@ public interface ScoreCardConfiguration
     void setWorksheetName( String name );
 
     String getWorksheetName();
+
+    /**
+     * Which Type strategy to be used
+     * This parameter determines if the generated DRL uses
+     * Internal Types or dependes on external types (provided in the clasapath) for attibutes.
+     *
+     * Default value is FALSE. Drl will be generated with internal types.
+     *
+     * @param useExternalTypes
+     *
+     */
+    void setUsingExternalTypes(boolean useExternalTypes);
+    boolean IsUsingExternalTypes();
 }
