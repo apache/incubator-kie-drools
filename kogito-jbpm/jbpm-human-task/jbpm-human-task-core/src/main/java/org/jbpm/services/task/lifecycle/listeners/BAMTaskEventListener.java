@@ -15,6 +15,7 @@
  */
 package org.jbpm.services.task.lifecycle.listeners;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,11 +33,14 @@ import org.jbpm.services.task.events.AfterTaskExitedEvent;
 import org.jbpm.services.task.events.AfterTaskFailedEvent;
 import org.jbpm.services.task.events.AfterTaskStartedEvent;
 import org.jbpm.services.task.events.AfterTaskStoppedEvent;
+import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.services.task.impl.model.BAMTaskSummaryImpl;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.kie.api.task.model.PeopleAssignments;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.Task;
+import org.kie.api.task.model.*;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTaskData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,17 +153,12 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
      * @param ti The task to add.
      */
     public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskAddedEvent Task ti) {
-        Status statusToSet =  Status.Created;
 
-        // Check if task is already reserved.
-        PeopleAssignments peopleAssignments = ti.getPeopleAssignments();
-        if (peopleAssignments != null) {
-            java.util.List<org.kie.api.task.model.OrganizationalEntity> owners = peopleAssignments.getPotentialOwners();
-            if (owners != null && owners.size() > 0) statusToSet =  Status.Reserved;
-        }
+        // Initialize task assigments and status.
+        initializeTask(ti);
 
         // Set the task status.
-        createOrUpdateTask(ti, statusToSet);
+        createOrUpdateTask(ti);
     }
 
     public void afterTaskExitedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskExitedEvent Task ti) {
@@ -182,6 +181,8 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
             return result;
         }
 
+        Status status = newStatus != null ? newStatus : ti.getTaskData().getStatus();
+
         List<BAMTaskSummaryImpl> taskSummaries = (List<BAMTaskSummaryImpl>) pm.queryStringWithParametersInTransaction("select bts from BAMTaskSummaryImpl bts where bts.taskId=:taskId",
                 pm.addParametersToMap("taskId", ti.getId()));
         if (taskSummaries.isEmpty()) {
@@ -191,13 +192,13 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
                 actualOwner = ti.getTaskData().getActualOwner().getId();
             }
 
-            result = new BAMTaskSummaryImpl(ti.getId(), ti.getNames().get(0).getText(), newStatus.toString(), new Date(), actualOwner, ti.getTaskData().getProcessInstanceId());
+            result = new BAMTaskSummaryImpl(ti.getId(), ti.getNames().get(0).getText(), status.toString(), new Date(), actualOwner, ti.getTaskData().getProcessInstanceId());
             if (worker != null) worker.createTask(result, ti);
             pm.persist(result);
         } else if (taskSummaries.size() == 1) {
 
             result = taskSummaries.get(0);
-            result.setStatus(newStatus.toString());
+            result.setStatus(status.toString());
             if (ti.getTaskData().getActualOwner() != null) {
                 result.setUserId(ti.getTaskData().getActualOwner().getId());
             }
@@ -210,6 +211,16 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
         }
 
         return result;
+    }
+
+    /**
+     * Creates or updates a bam task summary instance.
+     *
+     * @param ti The source task
+     * @return The created or updated bam task summary instance.
+     */
+    protected BAMTaskSummaryImpl createOrUpdateTask(Task ti) {
+        return createOrUpdateTask(ti, null, null);
     }
 
     /**
@@ -229,5 +240,51 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
     protected interface BAMTaskWorker {
         BAMTaskSummaryImpl createTask(BAMTaskSummaryImpl bamTask, Task task);
         BAMTaskSummaryImpl updateTask(BAMTaskSummaryImpl bamTask, Task task);
+    }
+
+    /**
+     * Chekc the owners for a task and initialzes its assigments.
+     *
+     * TODO: Duplicate of org.jbpm.services.task.impl.TaskServiceEntryPointImpl#initializeTask.
+     * TODO: Centralize this behaviour in a common task handler.
+     *
+     *
+     * @param task The task.
+     */
+    protected void initializeTask(Task task){
+        Status assignedStatus = null;
+
+        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getPotentialOwners() != null && task.getPeopleAssignments().getPotentialOwners().size() == 1) {
+            // if there is a single potential owner, assign and set status to Reserved
+            OrganizationalEntity potentialOwner = task.getPeopleAssignments().getPotentialOwners().get(0);
+            // if there is a single potential user owner, assign and set status to Reserved
+            if (potentialOwner instanceof UserImpl) {
+                ((InternalTaskData) task.getTaskData()).setActualOwner((UserImpl) potentialOwner);
+
+                assignedStatus = Status.Reserved;
+            }
+            //If there is a group set as potentialOwners, set the status to Ready ??
+            if (potentialOwner instanceof GroupImpl) {
+
+                assignedStatus = Status.Ready;
+            }
+        } else if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getPotentialOwners() != null && task.getPeopleAssignments().getPotentialOwners().size() > 1) {
+            // multiple potential owners, so set to Ready so one can claim.
+            assignedStatus = Status.Ready;
+        } else {
+            //@TODO: we have no potential owners
+        }
+
+        if (assignedStatus != null) {
+            ((InternalTaskData) task.getTaskData()).setStatus(assignedStatus);
+        }
+
+        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
+            List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
+            businessAdmins.add(new UserImpl("Administrator"));
+            businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
+            ((InternalPeopleAssignments) task.getPeopleAssignments()).setBusinessAdministrators(businessAdmins);
+        }
+
     }
 }
