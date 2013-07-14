@@ -19,7 +19,11 @@ public class ScoreCardProviderImpl
 
     private String compileStream( InputStream is,
                                   ScoreCardConfiguration configuration ) {
+
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler();
+        if ( configuration.IsUsingExternalTypes() ) {
+            scorecardCompiler.setDrlType(ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL);
+        }
         if ( StringUtils.isEmpty( configuration.getWorksheetName() ) ) {
             boolean compileResult = scorecardCompiler.compileFromExcel( is );
             return scorecardCompiler.getDRL();

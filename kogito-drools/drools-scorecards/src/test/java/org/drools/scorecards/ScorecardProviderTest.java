@@ -1,10 +1,10 @@
 package org.drools.scorecards;
 
 
-import org.dmg.pmml.pmml_4_1.descr.PMML;
+
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.ScoreCardProvider;
-import org.drools.core.builder.conf.impl.ScoreCardConfigurationImpl;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
@@ -19,8 +19,11 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.InputStream;
 
-import static junit.framework.Assert.*;
-import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertEquals;
+
 
 public class ScorecardProviderTest {
     private static String drl;
@@ -83,6 +86,23 @@ public class ScorecardProviderTest {
         session.dispose();
         //occupation = 5, age = 25, validLicence -1
         assertEquals(29.0,scorecard.getCalculatedScore());
+
+    }
+
+    @Test
+    public void testDrlGenerationWithExternalTypes() throws Exception {
+
+        InputStream is = ScorecardProviderTest.class.getResourceAsStream("/scoremodel_externalmodel.xls");
+        assertNotNull(is);
+
+        ScoreCardConfiguration scconf = KnowledgeBuilderFactory.newScoreCardConfiguration();
+        scconf.setWorksheetName( "scorecards" );
+        scconf.setUsingExternalTypes(true);
+        String drl = scoreCardProvider.loadFromInputStream(is, scconf);
+        assertNotNull(drl);
+        assertTrue(drl.length() > 0);
+
+        assertTrue(drl.contains("org.drools.scorecards.example.Applicant"));
 
     }
 }

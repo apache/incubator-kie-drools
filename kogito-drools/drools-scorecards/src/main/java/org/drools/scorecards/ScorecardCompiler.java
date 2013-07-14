@@ -47,6 +47,14 @@ public class ScorecardCompiler {
         this(DrlType.INTERNAL_DECLARED_TYPES);
     }
 
+    public DrlType getDrlType() {
+        return drlType;
+    }
+
+    public void setDrlType(DrlType drlType) {
+        this.drlType = drlType;
+    }
+
     /* method for use from Guvnor */
     protected void setPMMLDocument(PMML pmmlDocument){
         this.pmmlDocument = pmmlDocument;
