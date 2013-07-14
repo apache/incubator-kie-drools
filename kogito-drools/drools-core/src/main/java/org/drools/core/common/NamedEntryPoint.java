@@ -33,6 +33,8 @@ import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
@@ -622,6 +624,10 @@ public class NamedEntryPoint
                 if ( key.isEmpty() ) {
                     tms.remove( key );
                 }
+            }
+
+            if ( handle.isTrait() && handle.getObject() instanceof TraitProxy ) {
+                (( TraitableBean) ( (TraitProxy) handle.getObject() ).getObject()).removeTrait( ( (TraitProxy) handle.getObject() ).getTypeCode() );
             }
 
             propagationContext.evaluateActionQueue( this.wm );
