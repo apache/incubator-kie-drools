@@ -4350,5 +4350,61 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 0, ksession.getObjects().size() );
     }
 
+    @Test
+    public void traitLogicalRemovalSimple( ) {
+        String drl = "package org.drools.compiler.trait.test;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare trait Student\n" +
+                     " age : int\n" +
+                     " name : String\n" +
+                     "end\n" +
+                     "declare trait Worker\n" +
+                     " wage : int\n" +
+                     "end\n" +
+                     "" +
+                     "declare trait Scholar extends Student\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare Person\n" +
+                     " @Traitable\n" +
+                     " name : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"Don Logical\"\n" +
+                     "when\n" +
+                     " $s : String( this == \"trigger\" )\n" +
+                     "then\n" +
+                     " Person p = new Person( \"john\" );\n" +
+                     " don( p, Student.class, true );\n" +
+                     " don( p, Worker.class );\n" +
+                     " don( p, Scholar.class );\n" +
+                     "end";
+
+
+        StatefulKnowledgeSession ksession = getSessionFromString(drl);
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ksession.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactHandle h = ksession.insert( "trigger" );
+        ksession.fireAllRules();
+        assertEquals( 6, ksession.getObjects().size() );
+
+        ksession.retract( h );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.out.println( o );
+        }
+        assertEquals( 3, ksession.getObjects().size() );
+
+    }
+
 
 }

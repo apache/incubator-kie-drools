@@ -38,6 +38,8 @@ import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.definition.type.FactType;
+import org.drools.factmodel.traits.TraitProxy;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeConf;
@@ -608,6 +610,10 @@ public class NamedEntryPoint
                 if ( key.isEmpty() ) {
                     tms.remove( key );
                 }
+            }
+
+            if ( handle.isTrait() && handle.getObject() instanceof TraitProxy ) {
+                ((TraitableBean) ( (TraitProxy) handle.getObject() ).getObject()).removeTrait( ( (TraitProxy) handle.getObject() ).getTypeCode() );
             }
 
             propagationContext.evaluateActionQueue( this.wm );
