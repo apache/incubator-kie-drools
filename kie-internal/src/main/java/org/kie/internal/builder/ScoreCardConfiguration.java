@@ -63,4 +63,19 @@ public interface ScoreCardConfiguration
      */
     void setUsingExternalTypes(boolean useExternalTypes);
     boolean IsUsingExternalTypes();
+
+    /**
+     * Defines the input source for reading the scorecard
+     * Supported sources are
+     *      SCORECARD_INPUT_TYPE.PMML for a valid PMML 4.1 file
+     *      SCORECARD_INPUT_TYPE.EXCEL for an excel file
+     *
+     * Default value is SCORECARD_INPUT_TYPE.EXCEL
+     *
+     * @param inputType
+     */
+    void setInputType(SCORECARD_INPUT_TYPE inputType);
+    String getInputType();
+
+    public enum SCORECARD_INPUT_TYPE {PMML,EXCEL};
 }
