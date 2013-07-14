@@ -19,13 +19,23 @@ public class ScoreCardProviderImpl
 
     private String compileStream( InputStream is,
                                   ScoreCardConfiguration configuration ) {
-        ScorecardCompiler scorecardCompiler = new ScorecardCompiler();
-        if ( StringUtils.isEmpty( configuration.getWorksheetName() ) ) {
-            boolean compileResult = scorecardCompiler.compileFromExcel( is );
-            return scorecardCompiler.getDRL();
-        }
 
-        boolean compileResult = scorecardCompiler.compileFromExcel( is, configuration.getWorksheetName() );
+        ScorecardCompiler scorecardCompiler = new ScorecardCompiler();
+        if ( configuration.IsUsingExternalTypes() ) {
+            scorecardCompiler.setDrlType(ScorecardCompiler.DrlType.EXTERNAL_OBJECT_MODEL);
+        }
+        String inputTypeExcel = ScoreCardConfiguration.SCORECARD_INPUT_TYPE.EXCEL.toString();
+        if ( configuration.getInputType() == null || inputTypeExcel.equalsIgnoreCase(configuration.getInputType())) {
+            if ( StringUtils.isEmpty( configuration.getWorksheetName() ) ) {
+                boolean compileResult = scorecardCompiler.compileFromExcel( is );
+                return scorecardCompiler.getDRL();
+            }
+
+            boolean compileResult = scorecardCompiler.compileFromExcel( is, configuration.getWorksheetName() );
+
+        } else if (ScoreCardConfiguration.SCORECARD_INPUT_TYPE.PMML.toString().equalsIgnoreCase(configuration.getInputType())){
+            scorecardCompiler.compileFromPMML(is);
+        }
         return scorecardCompiler.getDRL();
     }
 

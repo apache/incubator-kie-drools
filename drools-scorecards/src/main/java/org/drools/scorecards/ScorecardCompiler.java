@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.util.List;
 
@@ -45,6 +46,14 @@ public class ScorecardCompiler {
 
     public ScorecardCompiler() {
         this(DrlType.INTERNAL_DECLARED_TYPES);
+    }
+
+    public DrlType getDrlType() {
+        return drlType;
+    }
+
+    public void setDrlType(DrlType drlType) {
+        this.drlType = drlType;
     }
 
     /* method for use from Guvnor */
@@ -91,6 +100,25 @@ public class ScorecardCompiler {
         }
         return false;
     }
+
+    /* This is a temporary workaround till drools-chance is fully integrated. */
+    public boolean compileFromPMML(final InputStream stream) {
+        try {
+            // create a JAXBContext for the PMML class
+            JAXBContext ctx = JAXBContext.newInstance(PMML.class);
+            Unmarshaller unmarshaller = ctx.createUnmarshaller();
+            pmmlDocument = (PMML) unmarshaller.unmarshal(stream);
+            if ( pmmlDocument == null) {
+                return false;
+            }
+        } catch (JAXBException e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
+
+
 
     public PMML getPMMLDocument() {
         return pmmlDocument;
