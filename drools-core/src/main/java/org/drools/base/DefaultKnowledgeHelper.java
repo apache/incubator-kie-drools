@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,6 +38,7 @@ import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
+import org.drools.common.NamedEntryPoint;
 import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.common.TraitFactHandle;
@@ -445,7 +447,8 @@ public class DefaultKnowledgeHelper
         }
 
         if ( o instanceof TraitableBean ) {
-            for ( Object t : ( (TraitableBean) o )._getTraitMap().values() ) {
+            Collection removedTypes = new ArrayList( ( (TraitableBean) o )._getTraitMap().values() );
+            for ( Object t : removedTypes ) {
                 retract( t );
             }
         }
@@ -705,7 +708,7 @@ public class DefaultKnowledgeHelper
             FactHandle handle = lookupFactHandle( inner );
             InternalFactHandle h = (InternalFactHandle) handle;
             if ( handle != null ) {
-                ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
+                ((NamedEntryPoint) h.getEntryPoint()).update( h,
                                                                               ((InternalFactHandle)handle).getObject(),
                                                                               Long.MIN_VALUE,
                                                                               core.getClass(),
@@ -755,7 +758,7 @@ public class DefaultKnowledgeHelper
             Thing<K> thing = core.getTrait( Thing.class.getName() );
             if ( trait == Thing.class ) {
 
-                removedTypes = core._getTraitMap().values();
+                removedTypes = new ArrayList<Thing<K>>( core._getTraitMap().values() );
                 for ( Thing t : removedTypes ) {
                     if ( ! ((TraitType) t).isVirtual() ) {
                         retract( t );
@@ -772,6 +775,7 @@ public class DefaultKnowledgeHelper
                 removedTypes = core.removeTrait( code );
             }
 
+            removedTypes = new ArrayList<Thing<K>>( removedTypes );
             for ( Thing t : removedTypes ) {
                 if ( ! ((TraitType) t).isVirtual() ) {
                     retract( t );

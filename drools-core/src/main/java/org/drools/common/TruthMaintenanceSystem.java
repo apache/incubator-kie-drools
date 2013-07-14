@@ -318,13 +318,6 @@ public class TruthMaintenanceSystem {
 
         public void execute(InternalWorkingMemory workingMemory) {
             if ( beliefSet.isEmpty() ) {
-                if ( this.handle.isTrait() && handle.getObject() instanceof TraitProxy ) {
-                    TraitProxy traitProxy = (TraitProxy) handle.getObject();
-                    TraitableBean core = ((TraitableBean) ((Thing) traitProxy).getCore());
-                    if ( core.hasTrait( traitProxy.getTraitName() ) ) {
-                        core.removeTrait( traitProxy.getTypeCode() );
-                    }
-                }
                 // this needs to be scheduled so we don't upset the current
                 // working memory operation
                 workingMemory.retract( this.handle,

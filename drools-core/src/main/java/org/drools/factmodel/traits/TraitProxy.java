@@ -97,17 +97,12 @@ public abstract class TraitProxy implements Externalizable, TraitType {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        TraitProxy that = (TraitProxy) o;
-
-        if (fields != null ? !fields.equals(that.fields) : that.fields != null) return false;
-
-        return true;
+        return getObject().equals( ( (TraitProxy) o ).getObject() );
     }
 
 
     public int hashCode() {
-        return fields != null ? fields.hashCode() : 0;
+        return getClass().hashCode() ^ getObject().hashCode();
     }
 
 
