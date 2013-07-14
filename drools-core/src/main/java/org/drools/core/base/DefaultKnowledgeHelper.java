@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,7 +59,6 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.internal.runtime.KnowledgeRuntime;
@@ -399,11 +399,12 @@ public class DefaultKnowledgeHelper
 
     public void update(final FactHandle handle, long mask, Class<?> modifiedClass) {
         InternalFactHandle h = (InternalFactHandle) handle;
-        ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
-                                                                      ((InternalFactHandle)handle).getObject(),
-                                                                      mask,
-                                                                      modifiedClass,
-                                                                      this.activation );
+        ((NamedEntryPoint) h.getEntryPoint()).update( h,
+                                                      h.getEqualityKey() != null && h.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED,
+                                                      ((InternalFactHandle)handle).getObject(),
+                                                      mask,
+                                                      modifiedClass,
+                                                      this.activation );
         if ( h.isTrait() ) {
             if ( ( (TraitFactHandle) h ).isTraitable() ) {
                 // this is a traitable core object, so its traits must be updated as well
@@ -414,8 +415,9 @@ public class DefaultKnowledgeHelper
                 if ( x != x.getCore() ) {
                     Object core = x.getCore();
                     InternalFactHandle coreHandle = (InternalFactHandle) getFactHandle( core );
-                    ((InternalWorkingMemoryEntryPoint) coreHandle.getEntryPoint()).update(
+                    ((NamedEntryPoint) coreHandle.getEntryPoint()).update(
                             coreHandle,
+                            coreHandle.getEqualityKey() != null && coreHandle.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED,
                             core,
                             mask,
                             modifiedClass,
@@ -442,11 +444,12 @@ public class DefaultKnowledgeHelper
                 proxy.setTypeFilter( veto );
                 InternalFactHandle h = (InternalFactHandle) lookupFactHandle(t);
                 if ( h != null) {
-                    ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
-                                                                                  t,
-                                                                                  mask,
-                                                                                  modifiedClass,
-                                                                                  this.activation );
+                    ((NamedEntryPoint) h.getEntryPoint()).update( h,
+                                                                  true,
+                                                                  t,
+                                                                  mask,
+                                                                  modifiedClass,
+                                                                  this.activation );
                 }
                 proxy.setTypeFilter( null );
 
@@ -473,11 +476,19 @@ public class DefaultKnowledgeHelper
     }
 
     public void retract(final FactHandle handle) {
+        Object o = ((InternalFactHandle) handle).getObject();
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).delete( handle,
                                                                                                    this.activation.getRule(),
                                                                                                    this.activation );
         if ( this.identityMap != null ) {
-            this.getIdentityMap().remove( ((InternalFactHandle) handle).getObject() );
+            this.getIdentityMap().remove( o );
+        }
+
+        if ( o instanceof TraitableBean ) {
+            Collection proxies = new ArrayList( ( (TraitableBean) o )._getTraitMap().values() );
+            for ( Object t : proxies ) {
+                retract( t );
+            }
         }
     }
 
@@ -638,58 +649,16 @@ public class DefaultKnowledgeHelper
     }
 
     protected <T> T doInsertTrait( T thing, boolean logical ) {
-        FactHandle fh = insert( thing );
-        
         if ( logical ) {
-            AgendaItem agendaItem = ( AgendaItem ) activation;
-            
-            RetractTrait newUnMatch = new RetractTrait(fh);
-            ActivationUnMatchListener unmatch = agendaItem.getActivationUnMatchListener();
-            if ( unmatch != null ) {
-                newUnMatch.setNext( ( RetractTrait ) unmatch );
-            }
-            agendaItem.setActivationUnMatchListener( newUnMatch );
+            insertLogical( thing );
+        } else {
+            insert( thing );
         }
         return thing;
     }
 
     public KieRuntime getKieRuntime() {
         return getKnowledgeRuntime();
-    }
-
-    public static class RetractTrait implements ActivationUnMatchListener {
-        private FactHandle fh;
-
-        private RetractTrait next;
-        
-        public RetractTrait(FactHandle fh) {
-            this.fh = fh;
-        }
-
-        public void unMatch(org.kie.api.runtime.rule.Session wm,
-                            Match activation) {
-            wm.retract( fh );
-            if ( next != null ) {
-                next.unMatch( wm, activation );
-            }
-        }
-
-        public FactHandle getFh() {
-            return fh;
-        }
-
-        public void setFh(FactHandle fh) {
-            this.fh = fh;
-        }
-
-        public RetractTrait getNext() {
-            return next;
-        }
-
-        public void setNext(RetractTrait next) {
-            this.next = next;
-        }                
-        
     }
 
     protected <T, K> T applyTrait( K core, Class<T> trait, boolean logical ) throws LogicalTypeInconsistencyException {
@@ -758,7 +727,7 @@ public class DefaultKnowledgeHelper
         }
 
         if ( ! inner.hasTrait( Thing.class.getName() ) ) {
-            don( inner, Thing.class, logical );
+            don( inner, Thing.class, false );
         }
 
         if ( refresh ) {
@@ -813,7 +782,19 @@ public class DefaultKnowledgeHelper
             return (Thing<K>) core;
         } else {
             Collection<Thing<K>> removedTypes;
-            if ( core.hasTrait( trait.getName() ) ) {
+            Thing<K> thing = core.getTrait( Thing.class.getName() );
+            if ( trait == Thing.class ) {
+                removedTypes = new ArrayList( core._getTraitMap().values() );
+                for ( Thing t : removedTypes ) {
+                    if ( ! ((TraitType) t).isVirtual() ) {
+                        retract( t );
+                    }
+                }
+
+                core._getTraitMap().clear();
+                core._setTraitMap( null );
+                return thing;
+            } if ( core.hasTrait( trait.getName() ) ) {
                 removedTypes = core.removeTrait( trait.getName() );
             } else {
                 HierarchyEncoder hier = ((ReteooRuleBase) this.workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
@@ -821,13 +802,12 @@ public class DefaultKnowledgeHelper
                 removedTypes = core.removeTrait( code );
             }
 
+            removedTypes = new ArrayList<Thing<K>>( removedTypes );
             for ( Thing t : removedTypes ) {
                 if ( ! ((TraitType) t).isVirtual() ) {
                     retract( t );
                 }
             }
-
-            Thing<K> thing = core.getTrait( Thing.class.getName() );
 
             update( core, Long.MIN_VALUE, core.getClass() );
             updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null );

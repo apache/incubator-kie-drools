@@ -1951,7 +1951,6 @@ public class TraitTest extends CommonTestMethodBase {
                 " $s : String( this == \"trigger\" )\n" +
                 "then\n" +
                 " Person p = new Person( \"john\" );\n" +
-                " insertLogical( p ); \n" +
                 " don( p, Student.class, true );\n" +
                 "end\n" +
                 " " +
@@ -1977,24 +1976,31 @@ public class TraitTest extends CommonTestMethodBase {
         ksession.retract( h );
         ksession.fireAllRules();
 
-        assertEquals( 0, ksession.getObjects().size() );
+        assertEquals( 1, ksession.getObjects().size() );
 
+        System.out.println( "-------------" );
 
         FactHandle h1 = ksession.insert( "trigger" );
         FactHandle h2 = ksession.insert( "trigger2" );
         ksession.fireAllRules();
 
-        assertEquals( 6, ksession.getObjects().size() );
+        assertEquals( 7, ksession.getObjects().size() );
 
         ksession.retract( h2 );
         ksession.fireAllRules();
 
-        assertEquals( 4, ksession.getObjects().size() );
+        System.out.println( "-------------" );
+
+        assertEquals( 5, ksession.getObjects().size() );
 
         ksession.retract( h1 );
         ksession.fireAllRules();
 
-        assertEquals( 0, ksession.getObjects().size() );
+        for (Object o: ksession.getObjects()) {
+            System.out.println( o );
+        }
+
+        assertEquals( 2, ksession.getObjects().size() );
 
     }
 
@@ -4014,4 +4020,338 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( true, map.get( "final" ) );
 
     }
+
+
+    @Test
+    public void traitLogicalSupportAndRetract() {
+        String drl = "package org.drools.trait.test;\n" +
+                     "\n" +
+                     "import org.drools.core.factmodel.traits.Traitable;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare trait Student\n" +
+                     "  age  : int\n" +
+                     "  name : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare Person\n" +
+                     "  @Traitable\n" +
+                     "  name : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Init when then insert( new Person( \"john\" ) ); end \n" +
+                     "" +
+                     "rule \"Don Logical\"\n" +
+                     "when\n" +
+                     "  $s : String( this == \"trigger1\" )\n" +
+                     "  $p : Person() \n" +
+                     "then\n" +
+                     "  don( $p, Student.class, true );\n" +
+                     "end\n" +
+                     "" +
+                     "rule \"Don Logical2\"\n" +
+                     "when\n" +
+                     "  $s : String( this == \"trigger2\" )\n" +
+                     "  $p : Person() \n" +
+                     "then\n" +
+                     "  don( $p, Student.class, true );\n" +
+                     "end\n" +
+                     "" +
+                     "rule \"Undon \"\n" +
+                     "when\n" +
+                     "  $s : String( this == \"trigger3\" )\n" +
+                     "  $p : Person() \n" +
+                     "then\n" +
+                     "  shed( $p, org.drools.core.factmodel.traits.Thing.class ); " +
+                     "  retract( $s ); \n" +
+                     "end\n" +
+                     " " +
+                     "rule \"Don Logical3\"\n" +
+                     "when\n" +
+                     "  $s : String( this == \"trigger4\" )\n" +
+                     "  $p : Person() \n" +
+                     "then\n" +
+                     "  don( $p, Student.class, true );" +
+                     "end\n" +
+                     " " +
+                     "rule \"Undon 2\"\n" +
+                     "when\n" +
+                     "  $s : String( this == \"trigger5\" )\n" +
+                     "  $p : Person() \n" +
+                     "then\n" +
+                     "  retract( $s ); \n" +
+                     "  retract( $p ); \n" +
+                     "end\n" +
+                     "";
+
+
+        StatefulKnowledgeSession ksession = getSessionFromString(drl);
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ksession.getKieBase() );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactHandle h1 = ksession.insert( "trigger1" );
+        FactHandle h2 = ksession.insert( "trigger2" );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.err.println( o );
+        }
+        System.err.println( "---------------------------------" );
+
+        assertEquals( 5, ksession.getObjects().size() );
+
+        ksession.retract( h1 );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.err.println( o );
+        }
+        System.err.println( "---------------------------------" );
+
+        assertEquals( 4, ksession.getObjects().size() );
+
+        ksession.retract( h2 );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.err.println( o );
+        }
+        System.err.println( "---------------------------------" );
+
+        assertEquals( 2, ksession.getObjects().size() );
+
+        ksession.insert( "trigger3" );
+
+
+        for ( Object o : ksession.getObjects() ) {
+            System.err.println( o );
+        }
+        ksession.fireAllRules();
+        System.err.println( "---------------------------------" );
+
+        assertEquals( 1, ksession.getObjects().size() );
+
+        ksession.insert( "trigger4" );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.err.println( o );
+        }
+        System.err.println( "---------------------------------" );
+
+        assertEquals( 4, ksession.getObjects().size() );
+
+        ksession.insert( "trigger5" );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.err.println( o );
+        }
+        System.err.println( "---------------------------------" );
+
+        assertEquals( 1, ksession.getObjects().size() );
+    }
+
+
+
+
+    @Test
+    public void testShedThing() {
+        String s1 = "package test;\n" +
+                    "import org.drools.core.factmodel.traits.*;\n" +
+                    "global java.util.List list; \n" +
+                    "" +
+                    "declare trait A id : int end\n" +
+                    "declare trait B extends A end\n" +
+                    "declare trait C extends A end\n" +
+                    "declare trait D extends A end\n" +
+                    "declare trait E extends B end\n" +
+                    "" +
+                    "declare Core @Traitable id : int = 0 end \n" +
+                    "" +
+                    "rule \"Init\" when \n" +
+                    "then \n" +
+                    "   insert( new Core() );" +
+                    "end \n" +
+                    "" +
+                    "rule \"donManyThing\"\n" +
+                    "when\n" +
+                    "    $x : Core( id == 0 )\n" +
+                    "then\n" +
+                    "    don( $x, A.class );\n" +
+                    "    don( $x, B.class );\n" +
+                    "    don( $x, C.class );\n" +
+                    "    don( $x, D.class );\n" +
+                    "    don( $x, E.class );\n" +
+                    "end\n" +
+                    "\n" +
+                    "\n" +
+                    "" +
+                    "rule \"Mod\" \n" +
+                    "salience -10 \n" +
+                    "when \n" +
+                    "  $g : String( this == \"go\" ) \n" +
+                    "  $x : Core( id == 0 ) \n" +
+                    "then \n" +
+                    "  shed( $x, Thing.class ); " +
+                    "  retract( $g ); \n\n" +
+                    "end \n" +
+                    "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, kbase ); // not relevant
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.out.println( o );
+        }
+
+        assertEquals( 1, ksession.getObjects().size() );
+    }
+
+
+    @Test
+    public void testRetractThings() {
+        String s1 = "package test;\n" +
+                    "import org.drools.factmodel.traits.*;\n" +
+                    "global java.util.List list; \n" +
+                    "" +
+                    "declare trait A id : int end\n" +
+                    "declare trait B extends A end\n" +
+                    "declare trait C extends A end\n" +
+                    "declare trait D extends A end\n" +
+                    "declare trait E extends B end\n" +
+                    "" +
+                    "declare Core @Traitable id : int = 0 end \n" +
+                    "" +
+                    "rule \"Init\" when \n" +
+                    "then \n" +
+                    "   insert( new Core() );" +
+                    "end \n" +
+                    "" +
+                    "rule \"donManyThing\"\n" +
+                    "when\n" +
+                    "    $x : Core( id == 0 )\n" +
+                    "then\n" +
+                    "    don( $x, A.class );\n" +
+                    "    don( $x, B.class );\n" +
+                    "    don( $x, C.class );\n" +
+                    "    don( $x, D.class );\n" +
+                    "    don( $x, E.class );\n" +
+                    "end\n" +
+                    "\n" +
+                    "\n" +
+                    "" +
+                    "rule \"Mod\" \n" +
+                    "salience -10 \n" +
+                    "when \n" +
+                    "  $g : String( this == \"go\" ) \n" +
+                    "  $x : Core( id == 0 ) \n" +
+                    "then \n" +
+                    "  retract( $x ); \n\n" +
+                    "  retract( $g ); \n\n" +
+                    "end \n" +
+                    "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, kbase ); // not relevant
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        List list = new ArrayList();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.out.println( o );
+        }
+
+        assertEquals( 0, ksession.getObjects().size() );
+    }
+
+
+    @Test
+    public void traitLogicalRemovalSimple( ) {
+        String drl = "package org.drools.compiler.trait.test;\n" +
+                     "\n" +
+                     "import org.drools.core.factmodel.traits.Traitable;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare trait Student\n" +
+                     " age : int\n" +
+                     " name : String\n" +
+                     "end\n" +
+                     "declare trait Worker\n" +
+                     " wage : int\n" +
+                     "end\n" +
+                     "" +
+                     "declare trait Scholar extends Student\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare Person\n" +
+                     " @Traitable\n" +
+                     " name : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"Don Logical\"\n" +
+                     "when\n" +
+                     " $s : String( this == \"trigger\" )\n" +
+                     "then\n" +
+                     " Person p = new Person( \"john\" );\n" +
+                     " don( p, Student.class, true );\n" +
+                     " don( p, Worker.class );\n" +
+                     " don( p, Scholar.class );\n" +
+                     "end";
+
+
+        StatefulKnowledgeSession ksession = getSessionFromString(drl);
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ksession.getKieBase() );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactHandle h = ksession.insert( "trigger" );
+        ksession.fireAllRules();
+        assertEquals( 6, ksession.getObjects().size() );
+
+        ksession.retract( h );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.out.println( o );
+        }
+        assertEquals( 4, ksession.getObjects().size() );
+
+    }
+
 }
