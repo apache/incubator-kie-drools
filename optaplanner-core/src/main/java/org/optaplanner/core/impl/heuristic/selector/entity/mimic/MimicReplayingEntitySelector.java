@@ -31,14 +31,15 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     @Override
     public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
-        // Doing this in phaseStarted instead of stepStarted due to EntityPlacer compatibility
+        // Doing this in phaseStarted instead of stepStarted due to QueuedEntityPlacer compatibility
         hasRecordedSelectionCreated = false;
         recordedSelectionCreated = false;
     }
 
     @Override
-    public void stepEnded(AbstractStepScope stepScope) {
-        super.stepEnded(stepScope);
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
+        // Doing this in phaseEnded instead of stepEnded due to QueuedEntityPlacer compatibility
         hasRecordedSelectionCreated = false;
         hasRecordedSelection = false;
         recordedSelectionCreated = false;

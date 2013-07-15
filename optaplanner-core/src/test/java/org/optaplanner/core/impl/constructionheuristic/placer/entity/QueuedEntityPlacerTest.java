@@ -20,6 +20,7 @@ import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -92,6 +93,76 @@ public class QueuedEntityPlacerTest {
 
         verifySolverPhaseLifecycle(entitySelector, 1, 2, 4);
         verifySolverPhaseLifecycle(valueSelector, 1, 2, 4);
+    }
+
+    @Test
+    public void multiMoveSelector() {
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataMultiVarEntity.class,
+                new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b"));
+        MimicRecordingEntitySelector recordingEntitySelector = new MimicRecordingEntitySelector(
+                entitySelector);
+        ValueSelector primaryValueSelector = SelectorTestUtils.mockValueSelector(
+                TestdataMultiVarEntity.class, "primaryValue",
+                new TestdataValue("1"), new TestdataValue("2"));
+        ValueSelector secondaryValueSelector = SelectorTestUtils.mockValueSelector(
+                TestdataMultiVarEntity.class, "secondaryValue",
+                new TestdataValue("8"), new TestdataValue("9"));
+
+        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(2);
+        moveSelectorList.add(new ChangeMoveSelector(
+                new MimicReplayingEntitySelector(recordingEntitySelector),
+                primaryValueSelector,
+                false));
+        moveSelectorList.add(new ChangeMoveSelector(
+                new MimicReplayingEntitySelector(recordingEntitySelector),
+                secondaryValueSelector,
+                false));
+        QueuedEntityPlacer placer = new QueuedEntityPlacer(recordingEntitySelector, moveSelectorList);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        placer.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        placer.phaseStarted(phaseScopeA);
+        Iterator<Placement> placementIterator = placer.iterator();
+
+        assertTrue(placementIterator.hasNext());
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        placer.stepStarted(stepScopeA1);
+        assertPlacement(placementIterator.next(), "a", "1", "2");
+        placer.stepEnded(stepScopeA1);
+
+        assertTrue(placementIterator.hasNext());
+        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
+        placer.stepStarted(stepScopeA2);
+        assertPlacement(placementIterator.next(), "a", "8", "9");
+        placer.stepEnded(stepScopeA2);
+
+        assertTrue(placementIterator.hasNext());
+        AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
+        when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
+        placer.stepStarted(stepScopeA3);
+        assertPlacement(placementIterator.next(), "b", "1", "2");
+        placer.stepEnded(stepScopeA3);
+
+        assertTrue(placementIterator.hasNext());
+        AbstractStepScope stepScopeA4 = mock(AbstractStepScope.class);
+        when(stepScopeA4.getPhaseScope()).thenReturn(phaseScopeA);
+        placer.stepStarted(stepScopeA4);
+        assertPlacement(placementIterator.next(), "b", "8", "9");
+        placer.stepEnded(stepScopeA4);
+
+        assertFalse(placementIterator.hasNext());
+        placer.phaseEnded(phaseScopeA);
+
+        placer.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(entitySelector, 1, 1, 4);
+        verifySolverPhaseLifecycle(primaryValueSelector, 1, 1, 4);
+        verifySolverPhaseLifecycle(secondaryValueSelector, 1, 1, 4);
     }
 
     private void assertPlacement(Placement placement, String entityCode, String... valueCodes) {
