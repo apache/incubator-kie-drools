@@ -416,7 +416,7 @@ $ mvn exec:exec
     <para>Pull requests are very welcome and get priority treatment! By open sourcing your improvements, you 'll benefit
     from our peer review and from our improvements made upon your improvements.</para>
 
-    <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link>, Google+(<link
+    <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link>, Google+ (<link
     xlink:href="https://plus.google.com/112724449845406009021">OptaPlanner</link>, <link
     xlink:href="https://plus.google.com/112811208792575157490">Geoffrey De Smet</link>) and twitter (<link
     xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news and articles. If OptaPlanner helps
