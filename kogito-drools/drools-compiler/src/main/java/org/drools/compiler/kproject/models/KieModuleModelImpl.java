@@ -31,6 +31,7 @@ public class KieModuleModelImpl implements KieModuleModel {
     public static String KMODULE_JAR_PATH = "META-INF/kmodule.xml";
     public static String KMODULE_INFO_JAR_PATH = "META-INF/kmodule.info";
     public static String KMODULE_SRC_PATH = "src/main/resources/" + KMODULE_JAR_PATH;
+    public static String KMODULE_SPRING_JAR_PATH = "META-INF/kmodule-spring.xml";
 
     private Map<String, KieBaseModel>  kBases  = new HashMap<String, KieBaseModel>();
     
