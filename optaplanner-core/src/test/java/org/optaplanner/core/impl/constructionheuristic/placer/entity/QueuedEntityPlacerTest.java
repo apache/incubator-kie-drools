@@ -11,9 +11,11 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.composite.CartesianProductMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.move.CompositeMove;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -96,14 +98,14 @@ public class QueuedEntityPlacerTest {
     }
 
     @Test
-    public void multiMoveSelector() {
+    public void multiQueuedMoveSelector() {
         EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataMultiVarEntity.class,
                 new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b"));
         MimicRecordingEntitySelector recordingEntitySelector = new MimicRecordingEntitySelector(
                 entitySelector);
         ValueSelector primaryValueSelector = SelectorTestUtils.mockValueSelector(
                 TestdataMultiVarEntity.class, "primaryValue",
-                new TestdataValue("1"), new TestdataValue("2"));
+                new TestdataValue("1"), new TestdataValue("2"), new TestdataValue("3"));
         ValueSelector secondaryValueSelector = SelectorTestUtils.mockValueSelector(
                 TestdataMultiVarEntity.class, "secondaryValue",
                 new TestdataValue("8"), new TestdataValue("9"));
@@ -131,7 +133,7 @@ public class QueuedEntityPlacerTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
-        assertPlacement(placementIterator.next(), "a", "1", "2");
+        assertPlacement(placementIterator.next(), "a", "1", "2", "3");
         placer.stepEnded(stepScopeA1);
 
         assertTrue(placementIterator.hasNext());
@@ -145,7 +147,7 @@ public class QueuedEntityPlacerTest {
         AbstractStepScope stepScopeA3 = mock(AbstractStepScope.class);
         when(stepScopeA3.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA3);
-        assertPlacement(placementIterator.next(), "b", "1", "2");
+        assertPlacement(placementIterator.next(), "b", "1", "2", "3");
         placer.stepEnded(stepScopeA3);
 
         assertTrue(placementIterator.hasNext());
@@ -173,6 +175,88 @@ public class QueuedEntityPlacerTest {
             ChangeMove move = (ChangeMove) iterator.next();
             assertCode(entityCode, move.getEntity());
             assertCode(valueCode, move.getToPlanningValue());
+        }
+        assertFalse(iterator.hasNext());
+    }
+
+    @Test
+    public void cartesianProductMoveSelector() {
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataMultiVarEntity.class,
+                new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b"));
+        MimicRecordingEntitySelector recordingEntitySelector = new MimicRecordingEntitySelector(
+                entitySelector);
+        ValueSelector primaryValueSelector = SelectorTestUtils.mockValueSelector(
+                TestdataMultiVarEntity.class, "primaryValue",
+                new TestdataValue("1"), new TestdataValue("2"), new TestdataValue("3"));
+        ValueSelector secondaryValueSelector = SelectorTestUtils.mockValueSelector(
+                TestdataMultiVarEntity.class, "secondaryValue",
+                new TestdataValue("8"), new TestdataValue("9"));
+
+        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(2);
+        moveSelectorList.add(new ChangeMoveSelector(
+                new MimicReplayingEntitySelector(recordingEntitySelector),
+                primaryValueSelector,
+                false));
+        moveSelectorList.add(new ChangeMoveSelector(
+                new MimicReplayingEntitySelector(recordingEntitySelector),
+                secondaryValueSelector,
+                false));
+        MoveSelector moveSelector = new CartesianProductMoveSelector(moveSelectorList, false);
+        QueuedEntityPlacer placer = new QueuedEntityPlacer(recordingEntitySelector,
+                Collections.singletonList(moveSelector));
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        placer.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        placer.phaseStarted(phaseScopeA);
+        Iterator<Placement> placementIterator = placer.iterator();
+
+        assertTrue(placementIterator.hasNext());
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        placer.stepStarted(stepScopeA1);
+        assertCartesianProductPlacement(placementIterator.next(), "a", new String[][]{
+                {"1", "8"}, {"1", "9"},
+                {"2", "8"}, {"2", "9"},
+                {"3", "8"}, {"3", "9"}});
+        placer.stepEnded(stepScopeA1);
+
+        assertTrue(placementIterator.hasNext());
+        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
+        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
+        placer.stepStarted(stepScopeA2);
+        assertCartesianProductPlacement(placementIterator.next(), "b", new String[][]{
+                {"1", "8"}, {"1", "9"},
+                {"2", "8"}, {"2", "9"},
+                {"3", "8"}, {"3", "9"}});
+        placer.stepEnded(stepScopeA2);
+
+        assertFalse(placementIterator.hasNext());
+        placer.phaseEnded(phaseScopeA);
+
+        placer.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(entitySelector, 1, 1, 2);
+        verifySolverPhaseLifecycle(primaryValueSelector, 1, 1, 2);
+        verifySolverPhaseLifecycle(secondaryValueSelector, 1, 1, 2);
+    }
+
+    private void assertCartesianProductPlacement(Placement placement, String entityCode,
+            String[][] valueCodeCombinations) {
+        Iterator<Move> iterator = placement.iterator();
+        assertNotNull(iterator);
+        for (String[] valueCodeCombination : valueCodeCombinations) {
+            assertTrue(iterator.hasNext());
+            CompositeMove move = (CompositeMove) iterator.next();
+            List<Move> subMoveList = move.getMoveList();
+            assertEquals(valueCodeCombination.length, subMoveList.size());
+            for (int i = 0; i < valueCodeCombination.length; i++) {
+                ChangeMove changeMove = (ChangeMove) subMoveList.get(i);
+                assertCode(entityCode, changeMove.getEntity());
+                assertCode(valueCodeCombination[i], changeMove.getToPlanningValue());
+            }
         }
         assertFalse(iterator.hasNext());
     }
