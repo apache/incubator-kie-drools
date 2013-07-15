@@ -86,12 +86,14 @@ public class ClasspathKieProject extends AbstractKieProject {
                 try {
                     InternalKieModule kModule = fetchKModule(url);
 
-                    ReleaseId releaseId = kModule.getReleaseId();
-                    kieModules.put(releaseId, kModule);
+                    if (kModule != null) {
+                        ReleaseId releaseId = kModule.getReleaseId();
+                        kieModules.put(releaseId, kModule);
 
-                    log.debug( "Discovered classpath module " + releaseId.toExternalForm() );
+                        log.debug( "Discovered classpath module " + releaseId.toExternalForm() );
 
-                    kr.addKieModule(kModule);
+                        kr.addKieModule(kModule);
+                    }
 
                 } catch ( Exception exc ) {
                     log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );
