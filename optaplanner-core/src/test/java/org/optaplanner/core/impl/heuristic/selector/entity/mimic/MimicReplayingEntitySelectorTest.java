@@ -101,23 +101,23 @@ public class MimicReplayingEntitySelectorTest {
         Iterator<Object> replayingIterator = replayingEntitySelector.iterator();
         assertNotNull(replayingIterator);
 
-        assertTrue(recordingIterator.hasNext());
-        assertTrue(replayingIterator.hasNext());
+        assertEquals(true, recordingIterator.hasNext());
+        assertEquals(true, replayingIterator.hasNext());
         assertCode("e1", recordingIterator.next());
         assertCode("e1", replayingIterator.next());
-        assertTrue(recordingIterator.hasNext());
-        assertTrue(replayingIterator.hasNext());
+        assertEquals(true, recordingIterator.hasNext());
+        assertEquals(true, replayingIterator.hasNext());
         assertCode("e2", recordingIterator.next());
         assertCode("e2", replayingIterator.next());
-        assertCode("e2", replayingIterator.next()); // Duplicated call
-        assertTrue(recordingIterator.hasNext());
-        assertTrue(replayingIterator.hasNext());
-        assertTrue(replayingIterator.hasNext()); // Duplicated call
+        assertEquals(false, replayingIterator.hasNext()); // Extra call
+        assertEquals(true, recordingIterator.hasNext());
+        assertEquals(true, replayingIterator.hasNext());
+        assertEquals(true, replayingIterator.hasNext()); // Duplicated call
         assertCode("e3", recordingIterator.next());
         assertCode("e3", replayingIterator.next());
-        assertFalse(recordingIterator.hasNext());
-        assertFalse(replayingIterator.hasNext());
-        assertFalse(replayingIterator.hasNext()); // Duplicated call
+        assertEquals(false, recordingIterator.hasNext());
+        assertEquals(false, replayingIterator.hasNext());
+        assertEquals(false, replayingIterator.hasNext()); // Duplicated call
 
         assertEquals(false, recordingEntitySelector.isContinuous());
         assertEquals(false, replayingEntitySelector.isContinuous());

@@ -6,55 +6,104 @@ import java.util.ListIterator;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 
 public class MimicReplayingEntitySelector extends AbstractEntitySelector {
 
-    protected final MimicRecordingEntitySelector mimicRecordingEntitySelector;
+    protected final MimicRecordingEntitySelector recordingEntitySelector;
 
-    public MimicReplayingEntitySelector(MimicRecordingEntitySelector mimicRecordingEntitySelector) {
-        this.mimicRecordingEntitySelector = mimicRecordingEntitySelector;
+    protected boolean hasRecordedSelectionCreated;
+    protected boolean hasRecordedSelection;
+    protected boolean recordedSelectionCreated;
+    protected Object recordedSelection;
+
+    public MimicReplayingEntitySelector(MimicRecordingEntitySelector recordingEntitySelector) {
+        this.recordingEntitySelector = recordingEntitySelector;
         // No solverPhaseLifecycleSupport because the MimicRecordingEntitySelector is hooked up elsewhere too
+        recordingEntitySelector.addMimicReplayingEntitySelector(this);
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
+    @Override
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
+        // Doing this in phaseStarted instead of stepStarted due to EntityPlacer compatibility
+        hasRecordedSelectionCreated = false;
+        recordedSelectionCreated = false;
+    }
+
+    @Override
+    public void stepEnded(AbstractStepScope stepScope) {
+        super.stepEnded(stepScope);
+        hasRecordedSelectionCreated = false;
+        hasRecordedSelection = false;
+        recordedSelectionCreated = false;
+        recordedSelection = null;
+    }
+
     public PlanningEntityDescriptor getEntityDescriptor() {
-        return mimicRecordingEntitySelector.getEntityDescriptor();
+        return recordingEntitySelector.getEntityDescriptor();
     }
 
     public boolean isContinuous() {
-        return mimicRecordingEntitySelector.isContinuous();
+        return recordingEntitySelector.isContinuous();
     }
 
     public boolean isNeverEnding() {
-        return mimicRecordingEntitySelector.isNeverEnding();
+        return recordingEntitySelector.isNeverEnding();
     }
 
     public long getSize() {
-        return mimicRecordingEntitySelector.getSize();
+        return recordingEntitySelector.getSize();
     }
 
     public Iterator<Object> iterator() {
         return new ReplayingEntityIterator();
     }
 
+    public void recordedHasNext(boolean hasNext) {
+        hasRecordedSelection = hasNext;
+        hasRecordedSelectionCreated = true;
+    }
+
+    public void recordedNext(Object next) {
+        recordedSelection = next;
+        recordedSelectionCreated = true;
+    }
+
     private class ReplayingEntityIterator extends SelectionIterator<Object> {
 
         public boolean hasNext() {
-            return mimicRecordingEntitySelector.hasRecordedSelection();
+            if (!hasRecordedSelectionCreated) {
+                throw new IllegalStateException("Replay must occur after record."
+                        + " The recordingEntitySelector (" + recordingEntitySelector
+                        + ")'s hasNext() has not been called yet. ");
+            }
+            return hasRecordedSelection;
         }
 
         public Object next() {
-            return mimicRecordingEntitySelector.getRecordedSelection();
+            if (!recordedSelectionCreated) {
+                throw new IllegalStateException("Replay must occur after record."
+                        + " The recordingEntitySelector (" + recordingEntitySelector
+                        + ")'s next() has not been called yet. ");
+            }
+            Object next = recordedSelection;
+            // Until the recorder records something, this iterator has no next.
+            hasRecordedSelection = false;
+            recordedSelection = null;
+            return next;
         }
 
     }
 
     public Iterator<Object> endingIterator() {
         // No replaying, because the endingIterator() is used for determining size
-        return mimicRecordingEntitySelector.endingIterator();
+        return recordingEntitySelector.endingIterator();
     }
 
     public ListIterator<Object> listIterator() {
@@ -69,7 +118,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
 
     @Override
     public String toString() {
-        return "Replaying(" + mimicRecordingEntitySelector + ")";
+        return "Replaying(" + recordingEntitySelector + ")";
     }
 
 }
