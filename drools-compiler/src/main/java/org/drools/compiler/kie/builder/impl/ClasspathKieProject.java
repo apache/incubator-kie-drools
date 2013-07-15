@@ -69,30 +69,33 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public void discoverKieModules() {
-        final Enumeration<URL> e;
-        try {
-            e = cl.getResources( KieModuleModelImpl.KMODULE_JAR_PATH );
-        } catch ( IOException exc ) {
-            log.error( "Unable to find and build index of kmodule.xml \n" + exc.getMessage() );
-            return;
-        }
-
-        // Map of kmodule urls
-        while ( e.hasMoreElements() ) {
-            URL url = e.nextElement();
-            System.out.println( "kmodules: " + url);
+        String[] configFiles = {KieModuleModelImpl.KMODULE_JAR_PATH, KieModuleModelImpl.KMODULE_SPRING_JAR_PATH};
+        for ( String configFile : configFiles) {
+            final Enumeration<URL> e;
             try {
-                InternalKieModule kModule = fetchKModule(url);
+                e = cl.getResources(configFile );
+            } catch ( IOException exc ) {
+                log.error( "Unable to find and build index of "+configFile+"." + exc.getMessage() );
+                return;
+            }
 
-                ReleaseId releaseId = kModule.getReleaseId();
-                kieModules.put(releaseId, kModule);
+            // Map of kmodule urls
+            while ( e.hasMoreElements() ) {
+                URL url = e.nextElement();
+                System.out.println( "kmodules: " + url);
+                try {
+                    InternalKieModule kModule = fetchKModule(url);
 
-                log.debug( "Discovered classpath module " + releaseId.toExternalForm() );
-                
-                kr.addKieModule(kModule);
+                    ReleaseId releaseId = kModule.getReleaseId();
+                    kieModules.put(releaseId, kModule);
 
-            } catch ( Exception exc ) {
-                log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );
+                    log.debug( "Discovered classpath module " + releaseId.toExternalForm() );
+
+                    kr.addKieModule(kModule);
+
+                } catch ( Exception exc ) {
+                    log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" + exc.getMessage() );
+                }
             }
         }
     }
@@ -119,7 +122,23 @@ public class ClasspathKieProject extends AbstractKieProject {
         }
     }
 
+    private static void fetchKModuleFromSpring(URL kModuleUrl, String fixedURL){
+        try{
+            Class clazz = Class.forName("org.kie.spring.KModuleSpringMarshaller");
+            Method method = clazz.getDeclaredMethod("fromXML", java.net.URL.class, String.class);
+            method.invoke(null, kModuleUrl, fixedURL);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
     private static InternalKieModule fetchKModule(URL url, String fixedURL) {
+        if ( url.getPath().endsWith("-spring.xml")) {
+            // the entire kmodule creation is happening in the kie-spring module,
+            // hence we force a null return
+            fetchKModuleFromSpring(url, fixedURL);
+            return null;
+        }
         KieModuleModel kieProject = KieModuleModelImpl.fromXML( url );
 
         setDefaultsforEmptyKieModule(kieProject);
