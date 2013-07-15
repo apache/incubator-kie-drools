@@ -40,65 +40,65 @@ public class MimicReplayingEntitySelectorTest {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
 
-        MimicRecordingEntitySelector mimicRecordingEntitySelector = new MimicRecordingEntitySelector(childEntitySelector);
-        MimicReplayingEntitySelector mimicReplayingEntitySelector = new MimicReplayingEntitySelector(mimicRecordingEntitySelector);
+        MimicRecordingEntitySelector recordingEntitySelector = new MimicRecordingEntitySelector(childEntitySelector);
+        MimicReplayingEntitySelector replayingEntitySelector = new MimicReplayingEntitySelector(recordingEntitySelector);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
-        mimicRecordingEntitySelector.solvingStarted(solverScope);
-        mimicReplayingEntitySelector.solvingStarted(solverScope);
+        recordingEntitySelector.solvingStarted(solverScope);
+        replayingEntitySelector.solvingStarted(solverScope);
 
         AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        mimicRecordingEntitySelector.phaseStarted(phaseScopeA);
-        mimicReplayingEntitySelector.phaseStarted(phaseScopeA);
+        recordingEntitySelector.phaseStarted(phaseScopeA);
+        replayingEntitySelector.phaseStarted(phaseScopeA);
 
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        mimicRecordingEntitySelector.stepStarted(stepScopeA1);
-        mimicReplayingEntitySelector.stepStarted(stepScopeA1);
-        runOriginalAsserts(mimicRecordingEntitySelector, mimicReplayingEntitySelector);
-        mimicRecordingEntitySelector.stepEnded(stepScopeA1);
-        mimicReplayingEntitySelector.stepEnded(stepScopeA1);
+        recordingEntitySelector.stepStarted(stepScopeA1);
+        replayingEntitySelector.stepStarted(stepScopeA1);
+        runOriginalAsserts(recordingEntitySelector, replayingEntitySelector);
+        recordingEntitySelector.stepEnded(stepScopeA1);
+        replayingEntitySelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
-        mimicRecordingEntitySelector.stepStarted(stepScopeA2);
-        mimicReplayingEntitySelector.stepStarted(stepScopeA2);
-        runOriginalAsserts(mimicRecordingEntitySelector, mimicReplayingEntitySelector);
-        mimicRecordingEntitySelector.stepEnded(stepScopeA2);
-        mimicReplayingEntitySelector.stepEnded(stepScopeA2);
+        recordingEntitySelector.stepStarted(stepScopeA2);
+        replayingEntitySelector.stepStarted(stepScopeA2);
+        runOriginalAsserts(recordingEntitySelector, replayingEntitySelector);
+        recordingEntitySelector.stepEnded(stepScopeA2);
+        replayingEntitySelector.stepEnded(stepScopeA2);
 
-        mimicRecordingEntitySelector.phaseEnded(phaseScopeA);
-        mimicReplayingEntitySelector.phaseEnded(phaseScopeA);
+        recordingEntitySelector.phaseEnded(phaseScopeA);
+        replayingEntitySelector.phaseEnded(phaseScopeA);
 
         AbstractSolverPhaseScope phaseScopeB = mock(AbstractSolverPhaseScope.class);
         when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-        mimicRecordingEntitySelector.phaseStarted(phaseScopeB);
-        mimicReplayingEntitySelector.phaseStarted(phaseScopeB);
+        recordingEntitySelector.phaseStarted(phaseScopeB);
+        replayingEntitySelector.phaseStarted(phaseScopeB);
 
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
-        mimicRecordingEntitySelector.stepStarted(stepScopeB1);
-        mimicReplayingEntitySelector.stepStarted(stepScopeB1);
-        runOriginalAsserts(mimicRecordingEntitySelector, mimicReplayingEntitySelector);
-        mimicRecordingEntitySelector.stepEnded(stepScopeB1);
-        mimicReplayingEntitySelector.stepEnded(stepScopeB1);
+        recordingEntitySelector.stepStarted(stepScopeB1);
+        replayingEntitySelector.stepStarted(stepScopeB1);
+        runOriginalAsserts(recordingEntitySelector, replayingEntitySelector);
+        recordingEntitySelector.stepEnded(stepScopeB1);
+        replayingEntitySelector.stepEnded(stepScopeB1);
 
-        mimicRecordingEntitySelector.phaseEnded(phaseScopeB);
-        mimicReplayingEntitySelector.phaseEnded(phaseScopeB);
+        recordingEntitySelector.phaseEnded(phaseScopeB);
+        replayingEntitySelector.phaseEnded(phaseScopeB);
 
-        mimicRecordingEntitySelector.solvingEnded(solverScope);
-        mimicReplayingEntitySelector.solvingEnded(solverScope);
+        recordingEntitySelector.solvingEnded(solverScope);
+        replayingEntitySelector.solvingEnded(solverScope);
 
         verifySolverPhaseLifecycle(childEntitySelector, 1, 2, 3);
         verify(childEntitySelector, times(3)).iterator();
     }
 
-    private void runOriginalAsserts(
-            MimicRecordingEntitySelector mimicRecordingEntitySelector, MimicReplayingEntitySelector mimicReplayingEntitySelector) {
-        Iterator<Object> recordingIterator = mimicRecordingEntitySelector.iterator();
+    private void runOriginalAsserts(MimicRecordingEntitySelector recordingEntitySelector,
+            MimicReplayingEntitySelector replayingEntitySelector) {
+        Iterator<Object> recordingIterator = recordingEntitySelector.iterator();
         assertNotNull(recordingIterator);
-        Iterator<Object> replayingIterator = mimicReplayingEntitySelector.iterator();
+        Iterator<Object> replayingIterator = replayingEntitySelector.iterator();
         assertNotNull(replayingIterator);
 
         assertTrue(recordingIterator.hasNext());
@@ -119,12 +119,12 @@ public class MimicReplayingEntitySelectorTest {
         assertFalse(replayingIterator.hasNext());
         assertFalse(replayingIterator.hasNext()); // Duplicated call
 
-        assertEquals(false, mimicRecordingEntitySelector.isContinuous());
-        assertEquals(false, mimicReplayingEntitySelector.isContinuous());
-        assertEquals(false, mimicRecordingEntitySelector.isNeverEnding());
-        assertEquals(false, mimicReplayingEntitySelector.isNeverEnding());
-        assertEquals(3L, mimicRecordingEntitySelector.getSize());
-        assertEquals(3L, mimicReplayingEntitySelector.getSize());
+        assertEquals(false, recordingEntitySelector.isContinuous());
+        assertEquals(false, replayingEntitySelector.isContinuous());
+        assertEquals(false, recordingEntitySelector.isNeverEnding());
+        assertEquals(false, replayingEntitySelector.isNeverEnding());
+        assertEquals(3L, recordingEntitySelector.getSize());
+        assertEquals(3L, replayingEntitySelector.getSize());
     }
 
 }
