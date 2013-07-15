@@ -7,6 +7,7 @@ import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 
 public class MimicRecordingEntitySelector extends AbstractEntitySelector {
@@ -44,8 +45,9 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector {
     // ************************************************************************
 
     @Override
-    public void stepStarted(AbstractStepScope stepScope) {
-        super.stepStarted(stepScope);
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
+        // Doing this in phaseStarted instead of stepStarted due to EntityPlacer compatibility
         hasRecordedSelectionCreated = false;
         recordedSelectionCreated = false;
     }
