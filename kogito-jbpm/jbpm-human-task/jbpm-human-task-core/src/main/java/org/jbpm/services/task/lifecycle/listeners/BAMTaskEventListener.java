@@ -25,14 +25,7 @@ import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.events.AfterTaskActivatedEvent;
-import org.jbpm.services.task.events.AfterTaskAddedEvent;
-import org.jbpm.services.task.events.AfterTaskClaimedEvent;
-import org.jbpm.services.task.events.AfterTaskCompletedEvent;
-import org.jbpm.services.task.events.AfterTaskExitedEvent;
-import org.jbpm.services.task.events.AfterTaskFailedEvent;
-import org.jbpm.services.task.events.AfterTaskStartedEvent;
-import org.jbpm.services.task.events.AfterTaskStoppedEvent;
+import org.jbpm.services.task.events.*;
 import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.services.task.impl.model.BAMTaskSummaryImpl;
 import org.jbpm.services.task.impl.model.GroupImpl;
@@ -55,7 +48,7 @@ import org.slf4j.LoggerFactory;
  *     <li>Reserved</li>
  *     <li>InProgress</li>
  *     <li>Suspended</li>
- *     <li>Completed</li>                    org.hibernate.dialect.H2Dialect
+ *     <li>Completed</li>
  *     <li>Failed</li>
  *     <li>Error</li>
  *     <li>Exited</li>
@@ -92,7 +85,7 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
     }
 
     public void afterTaskStartedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskStartedEvent Task ti) {
-        createOrUpdateTask(ti, Status.InProgress, new BAMTaskWorker() {
+        createOrUpdateTask(ti, new BAMTaskWorker() {
             @Override
             public BAMTaskSummaryImpl createTask(BAMTaskSummaryImpl bamTask, Task task) {
                 bamTask.setStartDate(new Date());
@@ -108,24 +101,16 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
     }
 
     public void afterTaskActivatedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskActivatedEvent Task ti) {
-        createOrUpdateTask(ti, Status.Ready);
+        createOrUpdateTask(ti);
     }
 
     public void afterTaskClaimedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskClaimedEvent Task ti) {
-        createOrUpdateTask(ti, Status.Reserved);
-    }
-
-    public void afterTaskSkippedEvent(Task ti) {
-        createOrUpdateTask(ti, Status.Obsolete);
-    }
-
-    public void afterTaskStoppedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskStoppedEvent Task ti) {
-        createOrUpdateTask(ti, Status.Obsolete);
+        createOrUpdateTask(ti);
     }
 
     public void afterTaskCompletedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskCompletedEvent Task ti) {
 
-        createOrUpdateTask(ti, Status.Completed, new BAMTaskWorker() {
+        createOrUpdateTask(ti, new BAMTaskWorker() {
             @Override
             public BAMTaskSummaryImpl createTask(BAMTaskSummaryImpl bamTask, Task task) {
                 return bamTask;
@@ -141,28 +126,101 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
         });
     }
 
+    public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskAddedEvent Task ti) {
+        createOrUpdateTask(ti);
+    }
+
+    /**
+     * When a task is skipped, the status for dashbuilder integration task must be Obsolete.
+     *
+     * @param ti The task.
+     */
+    public void afterTaskSkippedEvent(Task ti) {
+        createOrUpdateTask(ti, Status.Obsolete);
+    }
+
+    /**
+     * When a task is stopped, the status for dashbuilder integration task must be Obsolete.
+     *
+     * @param ti The task.
+     */
+    public void afterTaskStoppedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskStoppedEvent Task ti) {
+        createOrUpdateTask(ti, Status.Obsolete);
+    }
+
+    /**
+     * When a task is failed, the status for dashbuilder integration task must be Obsolete.
+     *
+     * @param ti The task.
+     */
     public void afterTaskFailedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskFailedEvent Task ti) {
         createOrUpdateTask(ti, Status.Obsolete);
     }
 
     /**
-     * When a task is added it can be reserved for a user or not.
-     * If already reserved for a user when adding it,set reserved status.
-     * Otherwise set created status.
+     * When a task is exited, the status for dashbuilder integration task must be Obsolete.
      *
-     * @param ti The task to add.
+     * @param ti The task.
      */
-    public void afterTaskAddedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskAddedEvent Task ti) {
+    public void afterTaskExitedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskExitedEvent Task ti) {
+        createOrUpdateTask(ti, Status.Obsolete);
+    }
 
-        // Initialize task assigments and status.
-        initializeTask(ti);
-
-        // Set the task status.
+    public void afterTaskReleasedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskReleasedEvent Task ti) {
         createOrUpdateTask(ti);
     }
 
-    public void afterTaskExitedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskExitedEvent Task ti) {
-        createOrUpdateTask(ti, Status.Obsolete);
+    public void afterTaskDelegatedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskDelegatedEvent Task ti) {
+        createOrUpdateTask(ti);
+    }
+
+    public void afterTaskForwaredEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskForwardedEvent Task ti) {
+        createOrUpdateTask(ti);
+    }
+
+    public void afterTaskNomiatedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskNominatedEvent Task ti) {
+        createOrUpdateTask(ti);
+    }
+
+    public void afterTaskResumedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskResumedEvent Task ti) {
+        createOrUpdateTask(ti);
+    }
+
+    public void afterTaskSuspendedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskSuspendedEvent Task ti) {
+        createOrUpdateTask(ti);
+    }
+
+    /**
+     * Creates or updates a bam task summary instance.
+     *
+     * @param ti The source task
+     * @param worker Perform additional operations to the bam task summary instance.
+     * @return The created or updated bam task summary instance.
+     */
+    protected BAMTaskSummaryImpl createOrUpdateTask(Task ti, BAMTaskWorker worker) {
+        return createOrUpdateTask(ti, null, worker);
+    }
+
+
+    /**
+     * Creates or updates a bam task summary instance.
+     *
+     * @param ti The source task
+     * @return The created or updated bam task summary instance.
+     */
+    protected BAMTaskSummaryImpl createOrUpdateTask(Task ti) {
+        return createOrUpdateTask(ti, null, null);
+    }
+
+    /**
+     * Creates or updates a bam task summary instance.
+     *
+     * @param ti The source task
+     * @param newStatus The new state for the task.
+     * @return The created or updated bam task summary instance.
+     */
+    protected BAMTaskSummaryImpl createOrUpdateTask(Task ti, Status newStatus) {
+        return createOrUpdateTask(ti, newStatus, null);
     }
 
     /**
@@ -214,77 +272,10 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
     }
 
     /**
-     * Creates or updates a bam task summary instance.
-     *
-     * @param ti The source task
-     * @return The created or updated bam task summary instance.
-     */
-    protected BAMTaskSummaryImpl createOrUpdateTask(Task ti) {
-        return createOrUpdateTask(ti, null, null);
-    }
-
-    /**
-     * Creates or updates a bam task summary instance.
-     *
-     * @param ti The source task
-     * @param newStatus The new state for the task.
-     * @return The created or updated bam task summary instance.
-     */
-    protected BAMTaskSummaryImpl createOrUpdateTask(Task ti, Status newStatus) {
-        return createOrUpdateTask(ti, newStatus, null);
-    }
-
-    /**
      * Interface for performing additional operations to a <code>org.jbpm.services.task.impl.model.BAMTaskSummaryImpl</code> instance.
      */
     protected interface BAMTaskWorker {
         BAMTaskSummaryImpl createTask(BAMTaskSummaryImpl bamTask, Task task);
         BAMTaskSummaryImpl updateTask(BAMTaskSummaryImpl bamTask, Task task);
-    }
-
-    /**
-     * Chekc the owners for a task and initialzes its assigments.
-     *
-     * TODO: Duplicate of org.jbpm.services.task.impl.TaskServiceEntryPointImpl#initializeTask.
-     * TODO: Centralize this behaviour in a common task handler.
-     *
-     *
-     * @param task The task.
-     */
-    protected void initializeTask(Task task){
-        Status assignedStatus = null;
-
-        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getPotentialOwners() != null && task.getPeopleAssignments().getPotentialOwners().size() == 1) {
-            // if there is a single potential owner, assign and set status to Reserved
-            OrganizationalEntity potentialOwner = task.getPeopleAssignments().getPotentialOwners().get(0);
-            // if there is a single potential user owner, assign and set status to Reserved
-            if (potentialOwner instanceof UserImpl) {
-                ((InternalTaskData) task.getTaskData()).setActualOwner((UserImpl) potentialOwner);
-
-                assignedStatus = Status.Reserved;
-            }
-            //If there is a group set as potentialOwners, set the status to Ready ??
-            if (potentialOwner instanceof GroupImpl) {
-
-                assignedStatus = Status.Ready;
-            }
-        } else if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getPotentialOwners() != null && task.getPeopleAssignments().getPotentialOwners().size() > 1) {
-            // multiple potential owners, so set to Ready so one can claim.
-            assignedStatus = Status.Ready;
-        } else {
-            //@TODO: we have no potential owners
-        }
-
-        if (assignedStatus != null) {
-            ((InternalTaskData) task.getTaskData()).setStatus(assignedStatus);
-        }
-
-        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
-            List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
-            businessAdmins.add(new UserImpl("Administrator"));
-            businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
-            ((InternalPeopleAssignments) task.getPeopleAssignments()).setBusinessAdministrators(businessAdmins);
-        }
-
     }
 }
