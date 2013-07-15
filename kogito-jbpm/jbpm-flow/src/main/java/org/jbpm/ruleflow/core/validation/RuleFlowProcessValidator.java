@@ -194,9 +194,10 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 if (split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR ) {
                     for ( final Iterator<Connection> it = split.getDefaultOutgoingConnections().iterator(); it.hasNext(); ) {
                         final Connection connection = it.next();
-                        if (split.getConstraint(connection) == null 
-                                && !split.isDefault(connection) 
-                                && (split.getConstraint(connection).getConstraint() == null || split.getConstraint(connection).getConstraint().trim().length() == 0)) {
+                        if (split.getConstraint(connection) == null && !split.isDefault(connection) 
+                            || (!split.isDefault(connection) 
+                                 && (split.getConstraint(connection).getConstraint() == null 
+                                 || split.getConstraint(connection).getConstraint().trim().length() == 0))) {
                             errors.add(new ProcessValidationErrorImpl(process,
                                 "Split node '" + node.getName() + "' [" + node.getId() + "] does not have a constraint for " + connection.toString() + "."));
                         }

@@ -44,7 +44,7 @@ public class SplitHandler extends AbstractNodeHandler {
 			case Split.TYPE_XOR:
 				writeNode("exclusiveGateway", node, xmlDump, metaDataType);
 				for (Map.Entry<ConnectionRef, Constraint> entry: split.getConstraints().entrySet()) {
-					if (entry.getValue().isDefault()) {
+					if (entry.getValue() != null && entry.getValue().isDefault()) {
 						xmlDump.append("default=\"" +
 							XmlBPMNProcessDumper.getUniqueNodeId(split) + "-" +
 							XmlBPMNProcessDumper.getUniqueNodeId(node.getNodeContainer().getNode(entry.getKey().getNodeId())) + 
@@ -56,7 +56,7 @@ public class SplitHandler extends AbstractNodeHandler {
 			case Split.TYPE_OR:
                 writeNode("inclusiveGateway", node, xmlDump, metaDataType);
 				for (Map.Entry<ConnectionRef, Constraint> entry: split.getConstraints().entrySet()) {
-					if (entry.getValue().isDefault()) {
+					if (entry.getValue() != null && entry.getValue().isDefault()) {
 						xmlDump.append("default=\"" +
 							XmlBPMNProcessDumper.getUniqueNodeId(split) + "-" +
 							XmlBPMNProcessDumper.getUniqueNodeId(node.getNodeContainer().getNode(entry.getKey().getNodeId())) + 

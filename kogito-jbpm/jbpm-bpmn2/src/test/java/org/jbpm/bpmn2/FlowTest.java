@@ -89,7 +89,18 @@ public class FlowTest extends JbpmBpmn2TestCase {
             ksession = null;
         }
     }
+    
+    @Test
+    public void testExclusiveSplitWithNoConditions() throws Exception {
+        try {
+            createKnowledgeBaseWithoutDumper("BPMN2-ExclusiveGatewayWithNoConditionsDefined.bpmn2");
+            fail("Should fail as XOR gateway does not have conditions defined");
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().indexOf("does not have a constraint for Connection") != -1);
+        }
 
+    }
+    
     @Test
     public void testExclusiveSplit() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.bpmn2");
