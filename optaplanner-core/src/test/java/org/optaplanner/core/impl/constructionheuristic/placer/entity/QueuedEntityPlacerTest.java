@@ -29,17 +29,18 @@ public class QueuedEntityPlacerTest {
 
     @Test
     public void oneMoveSelector() {
-        MimicRecordingEntitySelector entitySelector = new MimicRecordingEntitySelector(
-                SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
-                        new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c")));
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
+                new TestdataEntity("a"), new TestdataEntity("b"), new TestdataEntity("c"));
+        MimicRecordingEntitySelector recordingEntitySelector = new MimicRecordingEntitySelector(
+                entitySelector);
         ValueSelector valueSelector = SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value",
                 new TestdataValue("1"), new TestdataValue("2"));
 
         MoveSelector moveSelector = new ChangeMoveSelector(
-                new MimicReplayingEntitySelector(entitySelector),
+                new MimicReplayingEntitySelector(recordingEntitySelector),
                 valueSelector,
                 false);
-        QueuedEntityPlacer placer = new QueuedEntityPlacer(entitySelector, Collections.singletonList(moveSelector));
+        QueuedEntityPlacer placer = new QueuedEntityPlacer(recordingEntitySelector, Collections.singletonList(moveSelector));
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         placer.solvingStarted(solverScope);
