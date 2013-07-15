@@ -26,16 +26,18 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector {
 
     public boolean hasRecordedSelection() {
         if (!hasRecordedSelectionCreated) {
-            throw new IllegalStateException("The method hasRecordedSelection() fails on the selector (" + this
-                    + ") because it hasNext() hasn't been called yet.");
+            throw new IllegalStateException("Replay must occur after record."
+                    + " The childEntitySelector (" + childEntitySelector
+                    + ")'s hasNext() has not been called yet. ");
         }
         return hasRecordedSelection;
     }
 
     public Object getRecordedSelection() {
         if (!recordedSelectionCreated) {
-            throw new IllegalStateException("The method getRecordedSelection() fails on the selector (" + this
-                    + ") because it next() hasn't been called yet.");
+            throw new IllegalStateException("Replay must occur after record."
+                    + " The childEntitySelector (" + childEntitySelector
+                    + ")'s next() has not been called yet. ");
         }
         return recordedSelection;
     }
