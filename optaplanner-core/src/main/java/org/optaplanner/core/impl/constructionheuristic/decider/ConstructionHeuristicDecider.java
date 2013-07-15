@@ -1,13 +1,15 @@
-package org.optaplanner.core.impl.constructionheuristic.placer.value;
+package org.optaplanner.core.impl.constructionheuristic.decider;
 
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.constructionheuristic.placer.AbstractPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.entity.Placement;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -16,34 +18,15 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.termination.Termination;
 
-public class ValuePlacer extends AbstractPlacer {
+public class ConstructionHeuristicDecider extends AbstractPlacer {
 
     protected final Termination termination;
-    protected final ValueSelector valueSelector;
-    protected final PlanningVariableDescriptor variableDescriptor;
-    protected final SelectionFilter reinitializeVariableEntityFilter;
-    protected final int selectedCountLimit;
 
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
-    public ValuePlacer(Termination termination, ValueSelector valueSelector, int selectedCountLimit) {
+    public ConstructionHeuristicDecider(Termination termination) {
         this.termination = termination;
-        this.valueSelector = valueSelector;
-        variableDescriptor = valueSelector.getVariableDescriptor();
-        reinitializeVariableEntityFilter = variableDescriptor.getReinitializeVariableEntityFilter();
-        this.selectedCountLimit = selectedCountLimit;
-        solverPhaseLifecycleSupport.addEventListener(valueSelector);
-        // TODO don't use Integer.MAX_VALUE as a magical value
-        if (valueSelector.isNeverEnding() && selectedCountLimit == Integer.MAX_VALUE) {
-            throw new IllegalStateException("The placer (" + this
-                    + ") with selectedCountLimit (" + selectedCountLimit + ") has valueSelector (" + valueSelector
-                    + ") with neverEnding (" + valueSelector.isNeverEnding() + ").");
-        }
-    }
-
-    public PlanningVariableDescriptor getVariableDescriptor() {
-        return variableDescriptor;
     }
 
     public void setAssertMoveScoreFromScratch(boolean assertMoveScoreFromScratch) {
@@ -54,39 +37,24 @@ public class ValuePlacer extends AbstractPlacer {
         this.assertExpectedUndoMoveScore = assertExpectedUndoMoveScore;
     }
 
-    public ConstructionHeuristicMoveScope nominateMove(ConstructionHeuristicStepScope stepScope) {
-        Object entity = stepScope.getEntity();
-        if (!reinitializeVariableEntityFilter.accept(stepScope.getScoreDirector(), entity)) {
-            return null;
-        }
-        // TODO extract to PlacerForager
+    public ConstructionHeuristicMoveScope nominateMove(ConstructionHeuristicStepScope stepScope, Placement placement) {
         Score maxScore = null;
         ConstructionHeuristicMoveScope nominatedMoveScope = null;
 
         int moveIndex = 0;
-        for (Iterator it = valueSelector.iterator(entity); it.hasNext(); ) {
-            Object value =  it.next();
+        for (Move move : placement) {
             ConstructionHeuristicMoveScope moveScope = new ConstructionHeuristicMoveScope(stepScope);
             moveScope.setMoveIndex(moveIndex);
-            Move move;
-            if (variableDescriptor.isChained()) {
-                move = new ChainedChangeMove(entity, variableDescriptor, value);
-            } else {
-                move = new ChangeMove(entity, variableDescriptor, value);
-            }
             moveScope.setMove(move);
+            // TODO use Selector filtering to filter out not doable moves
             if (!move.isMoveDoable(stepScope.getScoreDirector())) {
                 logger.trace("        Move index ({}) not doable, ignoring move ({}).", moveScope.getMoveIndex(), move);
             } else {
                 doMove(moveScope);
-                // TODO extract to PlacerForager
                 if (maxScore == null || moveScope.getScore().compareTo(maxScore) > 0) {
                     maxScore = moveScope.getScore();
-                    // TODO for non explicit Best Fit *, default to random picking from a maxMoveScopeList
+                    // TODO for non explicit Best Fit *, default to random picking from a maxMoveScopeList?
                     nominatedMoveScope = moveScope;
-                }
-                if (moveIndex >= selectedCountLimit) {
-                    break;
                 }
             }
             moveIndex++;

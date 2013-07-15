@@ -31,6 +31,7 @@ import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuristicSolverPhase;
+import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
@@ -121,7 +122,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
 
             DefaultConstructionHeuristicSolverPhase phase = new DefaultConstructionHeuristicSolverPhase();
             configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, solverTermination);
-
+            phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
             EntityPlacer entityPlacer;
             if (entityPlacerConfigList.size() == 1) {
                 entityPlacer = entityPlacerConfigList.get(0).buildEntityPlacer(
@@ -145,6 +146,18 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
             throw new IllegalArgumentException("A constructionHeuristic requires configuration, " +
                     "for example a constructionHeuristicType.");
         }
+    }
+
+    private ConstructionHeuristicDecider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
+        ConstructionHeuristicDecider decider = new ConstructionHeuristicDecider(termination);
+        EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
+            decider.setAssertMoveScoreFromScratch(true);
+        }
+        if (environmentMode.isIntrusiveFastAsserted()) {
+            decider.setAssertExpectedUndoMoveScore(true);
+        }
+        return decider;
     }
 
     @Deprecated

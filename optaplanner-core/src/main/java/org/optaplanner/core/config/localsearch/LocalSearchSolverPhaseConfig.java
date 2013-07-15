@@ -90,23 +90,23 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     public LocalSearchSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        DefaultLocalSearchSolverPhase localSearchSolverPhase = new DefaultLocalSearchSolverPhase();
-        configureSolverPhase(localSearchSolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
-        localSearchSolverPhase.setDecider(buildDecider(phaseConfigPolicy,
-                localSearchSolverPhase.getTermination()));
+        DefaultLocalSearchSolverPhase phase = new DefaultLocalSearchSolverPhase();
+        configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, solverTermination);
+        phase.setDecider(buildDecider(phaseConfigPolicy,
+                phase.getTermination()));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
-            localSearchSolverPhase.setAssertStepScoreFromScratch(true);
+            phase.setAssertStepScoreFromScratch(true);
         }
         if (environmentMode.isIntrusiveFastAsserted()) {
-            localSearchSolverPhase.setAssertExpectedStepScore(true);
+            phase.setAssertExpectedStepScore(true);
         }
-        return localSearchSolverPhase;
+        return phase;
     }
 
-    private Decider buildDecider(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
+    private Decider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
         DefaultDecider decider = new DefaultDecider();
-        decider.setTermination(phaseTermination);
+        decider.setTermination(termination);
         MoveSelector moveSelector = buildMoveSelector(configPolicy);
         decider.setMoveSelector(moveSelector);
         AcceptorConfig acceptorConfig_ = acceptorConfig == null ? new AcceptorConfig()

@@ -3,67 +3,60 @@ package org.optaplanner.core.impl.constructionheuristic.placer.entity;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections.iterators.EmptyIterator;
 import org.optaplanner.core.impl.constructionheuristic.placer.AbstractPlacer;
-import org.optaplanner.core.impl.constructionheuristic.placer.value.ValuePlacer;
-import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
-import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
+import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.move.Move;
 
 public class QueuedEntityPlacer extends AbstractPlacer implements EntityPlacer {
 
     protected final EntitySelector entitySelector;
-    protected final List<ValuePlacer> valuePlacerList;
+    protected final List<MoveSelector> moveSelectorList;
 
-    protected Iterator<Object> entityIterator = null;
-
-    protected Object nominatedEntity;
-    protected Iterator<ValuePlacer> valuePlacerIterator;
-
-    public QueuedEntityPlacer(EntitySelector entitySelector, List<ValuePlacer> valuePlacerList) {
+    public QueuedEntityPlacer(EntitySelector entitySelector, List<MoveSelector> moveSelectorList) {
         this.entitySelector = entitySelector;
-        this.valuePlacerList = valuePlacerList;
-        if (valuePlacerList.isEmpty()) {
-            throw new IllegalArgumentException("The placer (" + this
-                    + ") with valuePlacerList (" + valuePlacerList + ") must have at least 1 valuePlacer.");
-        }
+        this.moveSelectorList = moveSelectorList;
         solverPhaseLifecycleSupport.addEventListener(entitySelector);
-        for (ValuePlacer valuePlacer : valuePlacerList) {
-            solverPhaseLifecycleSupport.addEventListener(valuePlacer);
+        for (MoveSelector moveSelector : moveSelectorList) {
+            solverPhaseLifecycleSupport.addEventListener(moveSelector);
         }
     }
 
-    @Override
-    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseStarted(solverPhaseScope);
-        entityIterator = entitySelector.iterator();
-        nominatedEntity = null;
-        valuePlacerIterator = null;
+    public Iterator<Placement> iterator() {
+        return new QueuedEntityPlacingIterator(entitySelector.iterator());
     }
 
-    public ConstructionHeuristicMoveScope nominateMove(ConstructionHeuristicStepScope stepScope) {
-        ConstructionHeuristicMoveScope nominatedMoveScope = null;
-        while (nominatedMoveScope == null) {
-            if (valuePlacerIterator == null || !valuePlacerIterator.hasNext()) {
-                if (!entityIterator.hasNext()) {
-                    return null;
+    private class QueuedEntityPlacingIterator extends UpcomingSelectionIterator<Placement> {
+
+        private final Iterator<Object> entityIterator;
+        private Iterator<MoveSelector> moveSelectorIterator;
+
+        private QueuedEntityPlacingIterator(Iterator<Object> entityIterator) {
+            this.entityIterator = entityIterator;
+            moveSelectorIterator = EmptyIterator.INSTANCE;
+        }
+
+        protected Placement createUpcomingSelection() {
+            Iterator<Move> moveIterator = null;
+            // Do not return empty placements to avoid no-operation steps
+            while (moveIterator == null || !moveIterator.hasNext()) {
+                // If a moveSelector's iterator is empty, it might not be empty the next time
+                // (because the entity changes)
+                while (!moveSelectorIterator.hasNext()) {
+                    if (!entityIterator.hasNext()) {
+                        return noUpcomingSelection();
+                    }
+                    entityIterator.next();
+                    moveSelectorIterator = moveSelectorList.iterator();
                 }
-                nominatedEntity = entityIterator.next();
-                valuePlacerIterator = valuePlacerList.iterator();
+                MoveSelector moveSelector = moveSelectorIterator.next();
+                moveIterator = moveSelector.iterator();
             }
-            stepScope.setEntity(nominatedEntity);
-            ValuePlacer valuePlacer = valuePlacerIterator.next();
-            nominatedMoveScope = valuePlacer.nominateMove(stepScope);
+            return new Placement(moveIterator);
         }
-        return nominatedMoveScope;
-    }
 
-    @Override
-    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        super.phaseEnded(solverPhaseScope);
-        entityIterator = null;
-        nominatedEntity = null;
-        valuePlacerIterator = null;
     }
 
 }

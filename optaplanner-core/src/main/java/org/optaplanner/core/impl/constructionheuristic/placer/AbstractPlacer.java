@@ -29,16 +29,13 @@ import org.slf4j.LoggerFactory;
  * Abstract superclass for {@link Placer}.
  * @see Placer
  */
-public abstract class AbstractPlacer implements Placer {
+public abstract class AbstractPlacer {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected SolverPhaseLifecycleSupport solverPhaseLifecycleSupport = new SolverPhaseLifecycleSupport();
 
-    protected Random workingRandom = null;
-
     public void solvingStarted(DefaultSolverScope solverScope) {
-        workingRandom = solverScope.getWorkingRandom();
         solverPhaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
@@ -60,7 +57,6 @@ public abstract class AbstractPlacer implements Placer {
 
     public void solvingEnded(DefaultSolverScope solverScope) {
         solverPhaseLifecycleSupport.fireSolvingEnded(solverScope);
-        workingRandom = null;
     }
 
 }

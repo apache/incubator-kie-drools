@@ -22,17 +22,21 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.config.constructionheuristic.placer.value.ValuePlacerConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.placer.entity.QueuedEntityPlacer;
-import org.optaplanner.core.impl.constructionheuristic.placer.value.ValuePlacer;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("queuedEntityPlacer")
@@ -40,8 +44,8 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
 
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
-    @XStreamImplicit(itemFieldName = "valuePlacer")
-    protected List<ValuePlacerConfig> valuePlacerConfigList = null;
+    @XStreamImplicit()
+    private List<MoveSelectorConfig> moveSelectorConfigList = null;
 
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
@@ -51,12 +55,12 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
         this.entitySelectorConfig = entitySelectorConfig;
     }
 
-    public List<ValuePlacerConfig> getValuePlacerConfigList() {
-        return valuePlacerConfigList;
+    public List<MoveSelectorConfig> getMoveSelectorConfigList() {
+        return moveSelectorConfigList;
     }
 
-    public void setValuePlacerConfigList(List<ValuePlacerConfig> valuePlacerConfigList) {
-        this.valuePlacerConfigList = valuePlacerConfigList;
+    public void setMoveSelectorConfigList(List<MoveSelectorConfig> moveSelectorConfigList) {
+        this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
     // ************************************************************************
@@ -64,20 +68,22 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
     // ************************************************************************
 
     public QueuedEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
-        // TODO filter out initialized entities
+        SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME; // TODO fix selection order
+        SelectionOrder defaultSelectionOrder = SelectionOrder.ORIGINAL;
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
                 : entitySelectorConfig;
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
-                SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL); // TODO fix selection order
-        List<ValuePlacerConfig> valuePlacerConfigList_
-                = valuePlacerConfigList == null ? Arrays.asList(new ValuePlacerConfig())
-                : valuePlacerConfigList;
-        List<ValuePlacer> valuePlacerList = new ArrayList<ValuePlacer>(valuePlacerConfigList_.size());
-        for (ValuePlacerConfig valuePlacerConfig : valuePlacerConfigList_) {
-            valuePlacerList.add(valuePlacerConfig.buildValuePlacer(configPolicy,
-                    phaseTermination, entitySelector.getEntityDescriptor()));
+                defaultCacheType, defaultSelectionOrder);
+        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
+        if (CollectionUtils.isEmpty(moveSelectorConfigList)) {
+            throw new UnsupportedOperationException(); // TODO
+        } else {
+            for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
+                moveSelectorList.add(moveSelectorConfig.buildMoveSelector(
+                        configPolicy, defaultCacheType, defaultSelectionOrder));
+            }
         }
-        return new QueuedEntityPlacer(entitySelector, valuePlacerList);
+        return new QueuedEntityPlacer(entitySelector, moveSelectorList);
     }
 
     public void inherit(QueuedEntityPlacerConfig inheritedConfig) {
@@ -87,13 +93,13 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
         } else if (inheritedConfig.getEntitySelectorConfig() != null) {
             entitySelectorConfig.inherit(inheritedConfig.getEntitySelectorConfig());
         }
-        valuePlacerConfigList = ConfigUtils.inheritMergeableListProperty(
-                valuePlacerConfigList, inheritedConfig.getValuePlacerConfigList());
+        moveSelectorConfigList = ConfigUtils.inheritMergeableListProperty(
+                moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + entitySelectorConfig + ", " + valuePlacerConfigList + ")";
+        return getClass().getSimpleName() + "(" + entitySelectorConfig + ", " + moveSelectorConfigList + ")";
     }
 
 }
