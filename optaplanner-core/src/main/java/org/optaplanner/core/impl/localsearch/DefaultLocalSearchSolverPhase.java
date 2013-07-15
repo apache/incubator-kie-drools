@@ -41,7 +41,6 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
 
     public void setDecider(Decider decider) {
         this.decider = decider;
-        this.decider.setLocalSearchSolverPhase(this);
     }
 
     public void setAssertStepScoreFromScratch(boolean assertStepScoreFromScratch) {

@@ -38,8 +38,6 @@ public class DefaultDecider implements Decider {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected LocalSearchSolverPhase localSearchSolverPhase;
-
     protected Termination termination;
     protected MoveSelector moveSelector;
     protected Acceptor acceptor;
@@ -47,10 +45,6 @@ public class DefaultDecider implements Decider {
 
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
-
-    public void setLocalSearchSolverPhase(LocalSearchSolverPhase localSearchSolverPhase) {
-        this.localSearchSolverPhase = localSearchSolverPhase;
-    }
 
     public void setTermination(Termination termination) {
         this.termination = termination;

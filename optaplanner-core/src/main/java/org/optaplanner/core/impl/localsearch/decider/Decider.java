@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.localsearch.decider;
 
-import org.optaplanner.core.impl.localsearch.LocalSearchSolverAware;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -25,7 +24,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  * A decider decides the next step.
  * @see DefaultDecider
  */
-public interface Decider extends LocalSearchSolverAware, LocalSearchSolverPhaseLifecycleListener {
+public interface Decider extends LocalSearchSolverPhaseLifecycleListener {
 
     /**
      * Decides the next step
