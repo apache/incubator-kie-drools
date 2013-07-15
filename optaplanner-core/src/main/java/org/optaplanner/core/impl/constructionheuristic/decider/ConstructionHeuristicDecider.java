@@ -62,6 +62,7 @@ public class ConstructionHeuristicDecider extends AbstractPlacer {
                 break;
             }
         }
+        stepScope.setSelectedMoveCount((long) moveIndex);
         return nominatedMoveScope;
     }
 
