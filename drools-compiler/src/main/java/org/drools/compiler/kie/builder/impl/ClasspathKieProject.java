@@ -298,8 +298,12 @@ public class ClasspathKieProject extends AbstractKieProject {
         } else if ( "vfs".equals( urlType ) ) {
             urlPath = getPathForVFS(url);
         } else {
-            urlPath = urlPath.substring( 0,
-                                         urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
+            if (url.toString().contains("-spring.xml")){
+                urlPath = urlPath.substring( 0, urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_SPRING_JAR_PATH).length() );
+            } else {
+                urlPath = urlPath.substring( 0,
+                        urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
+            }
         }
 
         // remove any remaining protocols, normally only if it was a jar
