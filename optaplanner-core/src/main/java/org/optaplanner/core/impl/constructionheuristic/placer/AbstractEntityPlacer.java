@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.constructionheuristic.placer;
 
-import java.util.Random;
-
-import org.optaplanner.core.impl.constructionheuristic.placer.entity.EntityPlacer;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;

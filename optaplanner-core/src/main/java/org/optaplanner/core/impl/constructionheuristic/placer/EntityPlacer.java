@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.constructionheuristic.placer.entity;
+package org.optaplanner.core.impl.constructionheuristic.placer;
 
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 

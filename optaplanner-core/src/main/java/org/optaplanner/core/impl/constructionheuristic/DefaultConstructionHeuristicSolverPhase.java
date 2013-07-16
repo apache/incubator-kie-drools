@@ -16,11 +16,9 @@
 
 package org.optaplanner.core.impl.constructionheuristic;
 
-import java.util.List;
-
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
-import org.optaplanner.core.impl.constructionheuristic.placer.entity.EntityPlacer;
-import org.optaplanner.core.impl.constructionheuristic.placer.entity.Placement;
+import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;

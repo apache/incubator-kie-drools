@@ -1,7 +1,7 @@
 package org.optaplanner.core.impl.constructionheuristic.decider;
 
 import org.optaplanner.core.impl.constructionheuristic.placer.AbstractEntityPlacer;
-import org.optaplanner.core.impl.constructionheuristic.placer.entity.Placement;
+import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;

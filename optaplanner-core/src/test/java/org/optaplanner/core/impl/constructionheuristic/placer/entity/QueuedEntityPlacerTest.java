@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
+import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
+import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacer;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;

@@ -19,14 +19,13 @@ package org.optaplanner.core.config.constructionheuristic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.config.constructionheuristic.placer.entity.EntityPlacerConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicSolverPhase;
@@ -38,7 +37,7 @@ import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.Default
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.GreedyDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
-import org.optaplanner.core.impl.constructionheuristic.placer.entity.EntityPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
@@ -48,7 +47,6 @@ import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelect
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueWalker;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningVariableWalker;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("constructionHeuristic")

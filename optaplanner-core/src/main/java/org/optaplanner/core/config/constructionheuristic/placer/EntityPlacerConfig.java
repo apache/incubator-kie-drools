@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.config.constructionheuristic.placer.entity;
+package org.optaplanner.core.config.constructionheuristic.placer;
 
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.constructionheuristic.placer.entity.EntityPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
 import org.optaplanner.core.impl.termination.Termination;
 
 /**
