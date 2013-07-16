@@ -14,7 +14,6 @@
 
     <modules>
         <module>jbpm-shared-services</module>
-        <module>jbpm-shared-services-btm</module>
         <module>jbpm-kie-services</module>
         <module>jbpm-form-services</module>
         <module>jbpm-executor</module>
