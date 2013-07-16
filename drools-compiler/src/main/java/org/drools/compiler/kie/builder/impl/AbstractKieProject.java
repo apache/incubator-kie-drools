@@ -103,4 +103,12 @@ public abstract class AbstractKieProject implements KieProject {
             }
         }
     }
+    
+    protected void cleanIndex() {
+        kBaseModels.clear();
+        kSessionModels.clear();
+        defaultKieBase = null;
+        defaultKieSession = null;
+        defaultStatelessKieSession = null;
+    }
 }

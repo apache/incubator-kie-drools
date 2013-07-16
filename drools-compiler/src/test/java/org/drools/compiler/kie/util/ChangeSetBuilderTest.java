@@ -45,7 +45,6 @@ public class ChangeSetBuilderTest {
 
         ChangeSetBuilder builder = new ChangeSetBuilder();
         KieJarChangeSet changes = builder.build( kieJar1, kieJar2 );
-        System.out.println( builder.toProperties( changes ) );
         
         assertThat( changes.getChanges().size(), is(0));
     }
@@ -85,9 +84,8 @@ public class ChangeSetBuilderTest {
         assertThat( cs.getChanges().get( 1 ), is( new ResourceChange(ChangeType.ADDED, Type.RULE, "R3") ) );
         assertThat( cs.getChanges().get( 0 ), is( new ResourceChange(ChangeType.REMOVED, Type.RULE, "R2") ) );
         
-        ChangeSetBuilder builder = new ChangeSetBuilder();
-        System.out.println( builder.toProperties( changes ) );
-        
+//        ChangeSetBuilder builder = new ChangeSetBuilder();
+//        System.out.println( builder.toProperties( changes ) );
     }
 
     @Test
@@ -166,7 +164,7 @@ public class ChangeSetBuilderTest {
         ChangeSetBuilder builder = new ChangeSetBuilder();
         KieJarChangeSet changes = builder.build( kieJar1, kieJar2 );
         
-        System.out.println( builder.toProperties( changes ) );
+//        System.out.println( builder.toProperties( changes ) );
 
         String modifiedFile = (String) kieJar2.getFileNames().toArray()[0];
         String addedFile = (String) kieJar2.getFileNames().toArray()[1];
@@ -202,7 +200,7 @@ public class ChangeSetBuilderTest {
         
         for( int i=0; i<drls.length; i++ ) {
             if( drls[i] != null ) {
-                String fileName = "src/main/resoureces/org/pkg1/drlFile"+i+".drl";
+                String fileName = "src/main/resources/org/pkg1/drlFile"+i+".drl";
                 drlFs.add( fileName );
                 when( kieJar.getBytes( fileName ) ).thenReturn( drls[i].getBytes() );
             }

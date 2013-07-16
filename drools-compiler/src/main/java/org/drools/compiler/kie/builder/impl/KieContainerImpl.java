@@ -1,9 +1,22 @@
 package org.drools.compiler.kie.builder.impl;
 
+import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
+import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.kie.util.ChangeSetBuilder;
+import org.drools.compiler.kie.util.ChangeType;
+import org.drools.compiler.kie.util.KieJarChangeSet;
+import org.drools.compiler.kie.util.ResourceChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -20,14 +33,14 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static org.drools.compiler.kie.builder.impl.AbstractKieModule.*;
-import static org.drools.compiler.kie.util.CDIHelper.*;
 
 public class KieContainerImpl
     implements
@@ -55,12 +68,78 @@ public class KieContainerImpl
         return kProject.getGAV();
     }
 
-    public void updateToVersion(ReleaseId releaseId) {
-        kBases.clear();
-        this.kProject = new KieModuleKieProject( (InternalKieModule)kr.getKieModule(releaseId) );
-        this.kProject.init();
-    }
+    public void updateToVersion(ReleaseId newReleaseId) {
+        if( kProject instanceof ClasspathKieProject ) {
+            throw new UnsupportedOperationException( "It is not possible to update a classpath container to a new version." );
+        }
+        ReleaseId currentReleaseId = kProject.getGAV();
+        InternalKieModule currentKM = (InternalKieModule) kr.getKieModule( currentReleaseId );
+        InternalKieModule newKM = (InternalKieModule) kr.getKieModule( newReleaseId );
+        
+        ChangeSetBuilder csb = new ChangeSetBuilder();
+        KieJarChangeSet cs = csb.build( currentKM, newKM );
 
+        ((KieModuleKieProject) kProject).updateToModule( newKM );
+
+        List<String> kbasesToRemove = new ArrayList<String>();
+        for( Map.Entry<String, KieBase> kBaseEntry : kBases.entrySet() ) {
+            String kbaseName = kBaseEntry.getKey();
+            KieBaseModel kieBaseModel = kProject.getKieBaseModel( kbaseName );
+            // if a kbase no longer exists, just remove it from the cache
+            if( kieBaseModel == null ) {
+                // have to save for later removal to avoid iteration errors
+                kbasesToRemove.add( kbaseName );
+            } else {
+                // attaching the builder to the kbase
+                KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( (KnowledgeBase) kBaseEntry.getValue() );
+                PackageBuilder pkgbuilder = kbuilder instanceof PackageBuilder ? ((PackageBuilder) kbuilder) : ((KnowledgeBuilderImpl)kbuilder).getPackageBuilder();
+                CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+                int fileCount = 0;
+                
+                // remove resources first
+                for( ResourceChangeSet rcs : cs.getChanges().values() ) {
+                    if( rcs.getChangeType().equals( ChangeType.REMOVED ) ) {
+                        String resourceName = rcs.getResourceName();
+                        if( KieBuilderImpl.filterFileInKBase( kieBaseModel, resourceName ) && ! resourceName.endsWith( ".properties" ) ) {
+                            pkgbuilder.removeObjectsGeneratedFromResource( currentKM.getResource( resourceName ) );
+                        }
+                    }
+                }
+                
+                // then update and add new resources
+                for( ResourceChangeSet rcs : cs.getChanges().values() ) {
+                    if( ! rcs.getChangeType().equals( ChangeType.REMOVED ) ) {
+                        String resourceName = rcs.getResourceName();
+                        if( KieBuilderImpl.filterFileInKBase( kieBaseModel, resourceName ) && ! resourceName.endsWith( ".properties" ) ) {
+                            fileCount += AbstractKieModule.addFile( ckbuilder, 
+                                                                    newKM, 
+                                                                    resourceName ) ? 1 : 0;
+                        }
+                    }
+                }
+                if( fileCount > 0 ) {
+                    ckbuilder.build();
+                }
+            }
+        }
+        
+        for( Iterator<Map.Entry<String,KieSession>> it = this.kSessions.entrySet().iterator(); it.hasNext(); ) {
+            Entry<String, KieSession> ksession = it.next();
+            if( kProject.getKieSessionModel( ksession.getKey() ) == null ) {
+                // remove sessions that no longer exist
+                it.remove();
+            }
+        }
+        
+        for( Iterator<Map.Entry<String,StatelessKieSession>> it = this.statelessKSessions.entrySet().iterator(); it.hasNext(); ) {
+            Entry<String, StatelessKieSession> ksession = it.next();
+            if( kProject.getKieSessionModel( ksession.getKey() ) == null ) {
+                // remove sessions that no longer exist
+                it.remove();
+            }
+        }
+    }
+    
     public KieBase getKieBase() {
         KieBaseModel defaultKieBaseModel = kProject.getDefaultKieBaseModel();
         if (defaultKieBaseModel == null) {
@@ -165,7 +244,7 @@ public class KieContainerImpl
     private KieSessionModel findKieSessionModel(boolean stateless) {
         KieSessionModel defaultKieSessionModel = stateless ? kProject.getDefaultStatelessKieSession() : kProject.getDefaultKieSession();
         if (defaultKieSessionModel == null) {
-            throw new RuntimeException(stateless ? "Cannot find a defualt StatelessKieSession" : "Cannot find a defualt KieSession");
+            throw new RuntimeException(stateless ? "Cannot find a default StatelessKieSession" : "Cannot find a default KieSession");
         }
         return defaultKieSessionModel;
     }

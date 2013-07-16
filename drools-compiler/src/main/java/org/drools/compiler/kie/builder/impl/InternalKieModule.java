@@ -5,6 +5,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.Results;
+import org.kie.api.io.Resource;
 import org.kie.internal.definition.KnowledgePackage;
 
 import java.io.File;
@@ -25,7 +26,9 @@ public interface InternalKieModule extends KieModule {
     
     KieModuleModel getKieModuleModel();    
     
-    byte[] getBytes( );    
+    byte[] getBytes( );  
+    
+    Resource getResource( String fileName );
     
     Map<ReleaseId, InternalKieModule> getDependencies();
 

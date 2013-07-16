@@ -1,6 +1,8 @@
 package org.drools.compiler.kie.builder.impl;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import static org.drools.core.rule.TypeMetaInfo.unmarshallMetaInfos;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -16,16 +18,16 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.rule.TypeMetaInfo;
-import org.drools.core.util.StringUtils;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
+import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.StringUtils;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
@@ -35,26 +37,11 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceConfiguration;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceTypeImpl;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ExtensionRegistry;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-import static org.drools.core.rule.TypeMetaInfo.unmarshallMetaInfos;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public abstract class AbstractKieModule
     implements
@@ -205,20 +192,7 @@ public abstract class AbstractKieModule
         int fileCount = 0;
         for ( String fileName : kieModule.getFileNames() ) {
             if ( filterFileInKBase(kieBaseModel, fileName) && !fileName.endsWith( ".properties" ) ) {
-                ResourceConfiguration conf = getResourceConfiguration(kieModule, fileName);
-                byte[] bytes = kieModule.getBytes( fileName );
-                if ( bytes == null || bytes.length == 0 ) {
-                    continue;
-                }
-                if ( conf == null ) {
-                    ckbuilder.add( ResourceFactory.newByteArrayResource( bytes ).setSourcePath( fileName ),
-                                   ResourceType.determineResourceType( fileName ) );
-                } else {
-                    ckbuilder.add( ResourceFactory.newByteArrayResource(bytes).setSourcePath(fileName),
-                                   ResourceType.determineResourceType( fileName ),
-                                   conf );
-                }
-                fileCount++;
+                fileCount += addFile( ckbuilder, kieModule, fileName ) ? 1 : 0;
             }
         }
         if ( fileCount == 0 ) {
@@ -229,6 +203,33 @@ public abstract class AbstractKieModule
             }
         }
 
+    }
+    
+    public static boolean addFile(CompositeKnowledgeBuilder ckbuilder,
+                                  InternalKieModule kieModule, 
+                                  String fileName ) {
+        ResourceConfiguration conf = getResourceConfiguration(kieModule, fileName);
+        Resource resource = kieModule.getResource( fileName );
+        if ( resource != null ) {
+            if ( conf == null ) {
+                ckbuilder.add( resource,
+                               ResourceType.determineResourceType( fileName ) );
+            } else {
+                ckbuilder.add( resource,
+                               ResourceType.determineResourceType( fileName ),
+                               conf );
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    public Resource getResource( String fileName ) {
+        byte[] bytes = getBytes( fileName );
+        if ( bytes != null && bytes.length > 0 ) {
+            return ResourceFactory.newByteArrayResource( bytes ).setSourcePath( fileName );
+        }
+        return null;
     }
 
     public static ResourceConfiguration getResourceConfiguration(InternalKieModule kieModule, String fileName) {
