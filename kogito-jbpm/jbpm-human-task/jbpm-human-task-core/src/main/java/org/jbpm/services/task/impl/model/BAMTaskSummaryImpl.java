@@ -17,10 +17,13 @@ package org.jbpm.services.task.impl.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,13 +34,15 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name="BAMTaskSummary")
+@SequenceGenerator(name="bamTaskIdSeq", sequenceName="BAM_TASK_ID_SEQ")
 public class BAMTaskSummaryImpl implements Serializable {
 
     private static final long serialVersionUID = 2793651602463099870L;
 
     @Id
-    @GeneratedValue()
-    private Long pk;
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="bamTaskIdSeq")
+    @Column(name = "BAMTaskId")
+    private Long pk  = 0L;
     
     private long taskId;
     

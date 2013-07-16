@@ -45,7 +45,7 @@ public class ReassignmentImpl implements org.kie.internal.task.api.model.Reassig
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="reassignmentIdSeq")
-    private long                       id;
+    private Long                       id;
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity=I18NTextImpl.class)
     @JoinColumn(name = "Reassignment_Documentation_Id", nullable = true)     

@@ -36,7 +36,7 @@ public class BooleanExpressionImpl implements org.kie.internal.task.api.model.Bo
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="booleanExprIdSeq")
-    private long   id;
+    private Long   id;
     private String type;
     
     @Lob @Column(length=65535)

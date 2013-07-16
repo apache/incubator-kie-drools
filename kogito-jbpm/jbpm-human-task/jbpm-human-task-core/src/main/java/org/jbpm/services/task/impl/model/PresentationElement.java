@@ -14,5 +14,5 @@ public class PresentationElement {
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
 }

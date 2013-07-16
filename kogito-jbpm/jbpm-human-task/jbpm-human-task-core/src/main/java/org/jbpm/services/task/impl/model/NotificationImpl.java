@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -46,7 +47,8 @@ public class NotificationImpl implements org.kie.internal.task.api.model.Notific
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="notificationIdSeq")
-    private long                             id;
+    @Column(name = "NotificationId")
+    private Long                             id;
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity=I18NTextImpl.class)
     @JoinColumn(name = "Notification_Documentation_Id", nullable = true)

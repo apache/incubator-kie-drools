@@ -39,7 +39,7 @@ public class EmailNotificationHeaderImpl implements org.kie.internal.task.api.mo
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="emailNotificationHeadIdSeq")
-    private long   id;
+    private Long   id;
     
     private String language;    
     

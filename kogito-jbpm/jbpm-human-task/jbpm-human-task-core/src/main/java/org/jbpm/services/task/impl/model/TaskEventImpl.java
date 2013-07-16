@@ -7,11 +7,14 @@ package org.jbpm.services.task.impl.model;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import javax.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.kie.api.task.model.User;
@@ -24,11 +27,13 @@ import org.kie.internal.task.api.model.TaskEvent.TaskEventType;
 
 @Entity
 @Table(name="TaskEvent")
+@SequenceGenerator(name="taskEventIdSeq", sequenceName="TASK_EVENT_ID_SEQ")
 public class TaskEventImpl implements TaskEvent {
     
     @Id
-    @GeneratedValue
-    private long id;
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="taskEventIdSeq")
+    @Column(name = "TaskEventId")
+    private Long id;
     
     private long taskId;
     

@@ -41,7 +41,7 @@ public class CommentImpl implements InternalComment  {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="commentIdSeq")
-    private long id;
+    private Long id = 0L;
 
     @Lob @Column(length=65535)
     private String text;

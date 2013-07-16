@@ -39,7 +39,8 @@ public class I18NTextImpl implements InternalI18NText {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="i18nTextIdSeq")
-    private long   id;
+    @Column(name = "I18NTextId")
+    private Long   id = 0L;
 
     private String language;
 

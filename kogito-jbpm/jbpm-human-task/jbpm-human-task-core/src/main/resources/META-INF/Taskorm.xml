@@ -208,6 +208,7 @@ where
     ) and
 
     t.taskData.status in (:status) 
+    order by t.id          
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -561,6 +562,7 @@ where
     ) and
     (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
     t.taskData.status in (:status) 
+    order by t.id          
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>

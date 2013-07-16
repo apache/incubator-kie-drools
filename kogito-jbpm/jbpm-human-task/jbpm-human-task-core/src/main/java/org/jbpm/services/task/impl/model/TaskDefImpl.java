@@ -7,11 +7,13 @@ package org.jbpm.services.task.impl.model;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import javax.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -19,10 +21,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name="TaskDef")
+@SequenceGenerator(name="taskDefIdSeq", sequenceName="TASK_DEF_ID_SEQ")
 public class TaskDefImpl implements org.kie.internal.task.api.model.TaskDef {
     
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="taskDefIdSeq")
+    @Column(name = "TaskDefId")
     private long id;
     
     private String name;

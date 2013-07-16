@@ -57,7 +57,8 @@ public class TaskImpl implements InternalTask {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="taskIdSeq")
-    private long                 id;
+    @Column(name = "TaskId")
+    private Long                 id = 0L;
     
     @Version
     @Column(name = "OPTLOCK")

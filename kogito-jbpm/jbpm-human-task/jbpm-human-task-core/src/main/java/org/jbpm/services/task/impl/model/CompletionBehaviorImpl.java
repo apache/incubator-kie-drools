@@ -17,7 +17,7 @@ public class CompletionBehaviorImpl implements Serializable {
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     
     
 }

@@ -44,7 +44,7 @@ public class EscalationImpl implements org.kie.internal.task.api.model.Escalatio
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="escalationIdSeq")
-    private long                    id;
+    private Long                    id;
 
     private String                  name;
 

@@ -16,6 +16,7 @@
 package org.jbpm.services.task.wih;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -121,6 +122,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         String createdBy = (String) workItem.getParameter("CreatedBy");
         if (createdBy != null && createdBy.trim().length() > 0) {
             taskData.setCreatedBy(new UserImpl(createdBy));
+            taskData.setCreatedOn(new Date());
         }
         PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper();
         peopleAssignmentHelper.handlePeopleAssignments(workItem, task, taskData);

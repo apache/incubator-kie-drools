@@ -45,7 +45,7 @@ public class DeadlineImpl implements org.kie.internal.task.api.model.Deadline {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="deadlineIdSeq")
-    private long id;
+    private Long id;
     @OneToMany(cascade = CascadeType.ALL, targetEntity=I18NTextImpl.class)
     @JoinColumn(name = "Deadline_Documentation_Id", nullable = true)
     private List<I18NText> documentation = Collections.emptyList();
