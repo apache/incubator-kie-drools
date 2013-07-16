@@ -1,24 +1,16 @@
 package org.optaplanner.core.impl.constructionheuristic.decider;
 
-import java.util.Iterator;
-
-import org.optaplanner.core.impl.constructionheuristic.placer.AbstractPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.AbstractEntityPlacer;
 import org.optaplanner.core.impl.constructionheuristic.placer.entity.Placement;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.termination.Termination;
 
-public class ConstructionHeuristicDecider extends AbstractPlacer {
+public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
 
     protected final Termination termination;
 

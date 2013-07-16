@@ -4,13 +4,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.iterators.EmptyIterator;
-import org.optaplanner.core.impl.constructionheuristic.placer.AbstractPlacer;
+import org.optaplanner.core.impl.constructionheuristic.placer.AbstractEntityPlacer;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.move.Move;
 
-public class QueuedEntityPlacer extends AbstractPlacer implements EntityPlacer {
+public class QueuedEntityPlacer extends AbstractEntityPlacer implements EntityPlacer {
 
     protected final EntitySelector entitySelector;
     protected final List<MoveSelector> moveSelectorList;

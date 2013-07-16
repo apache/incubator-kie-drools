@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.constructionheuristic.placer;
 
 import java.util.Random;
 
+import org.optaplanner.core.impl.constructionheuristic.placer.entity.EntityPlacer;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
@@ -26,10 +27,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract superclass for {@link Placer}.
- * @see Placer
+ * Abstract superclass for {@link EntityPlacer}.
+ * @see EntityPlacer
  */
-public abstract class AbstractPlacer {
+public abstract class AbstractEntityPlacer {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
