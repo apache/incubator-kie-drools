@@ -24,6 +24,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -63,6 +64,7 @@ public class EntitySelectorConfig extends SelectorConfig {
     @XStreamImplicit(itemFieldName = "filterClass")
     protected List<Class<? extends SelectionFilter>> filterClassList = null;
 
+    protected EntitySorterManner sorterManner = null;
     protected Class<? extends Comparator> sorterComparatorClass = null;
     protected Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass = null;
     protected SelectionSorterOrder sorterOrder = null;
@@ -116,6 +118,14 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     public void setFilterClassList(List<Class<? extends SelectionFilter>> filterClassList) {
         this.filterClassList = filterClassList;
+    }
+
+    public EntitySorterManner getSorterManner() {
+        return sorterManner;
+    }
+
+    public void setSorterManner(EntitySorterManner sorterManner) {
+        this.sorterManner = sorterManner;
     }
 
     public Class<? extends Comparator> getSorterComparatorClass() {
@@ -204,6 +214,7 @@ public class EntitySelectorConfig extends SelectorConfig {
                 || cacheType != null
                 || selectionOrder != null
                 || filterClassList != null
+                || sorterManner != null
                 || sorterComparatorClass != null
                 || sorterWeightFactoryClass != null
                 || sorterOrder != null
@@ -289,16 +300,37 @@ public class EntitySelectorConfig extends SelectorConfig {
     }
 
     private void validateSorting(SelectionOrder resolvedSelectionOrder) {
-        if ((sorterComparatorClass != null || sorterWeightFactoryClass != null
+        if ((sorterManner != null || sorterComparatorClass != null || sorterWeightFactoryClass != null
                 || sorterOrder != null || sorterClass != null)
                 && resolvedSelectionOrder != SelectionOrder.SORTED) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + this
-                    + ") with sorterComparatorClass ("  + sorterComparatorClass
+                    + ") with sorterManner ("  + sorterManner
+                    + ") and sorterComparatorClass ("  + sorterComparatorClass
                     + ") and sorterWeightFactoryClass ("  + sorterWeightFactoryClass
                     + ") and sorterOrder ("  + sorterOrder
                     + ") and sorterClass ("  + sorterClass
                     + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
                     + ") that is not " + SelectionOrder.SORTED + ".");
+        }
+        if (sorterManner != null && sorterComparatorClass != null) {
+            throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                    + ") has both a sorterManner (" + sorterManner
+                    + ") and a sorterComparatorClass (" + sorterComparatorClass + ").");
+        }
+        if (sorterManner != null && sorterWeightFactoryClass != null) {
+            throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                    + ") has both a sorterManner (" + sorterManner
+                    + ") and a sorterWeightFactoryClass (" + sorterWeightFactoryClass + ").");
+        }
+        if (sorterManner != null && sorterClass != null) {
+            throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                    + ") has both a sorterManner (" + sorterManner
+                    + ") and a sorterClass (" + sorterClass + ").");
+        }
+        if (sorterManner != null && sorterOrder != null) {
+            throw new IllegalArgumentException("The entitySelectorConfig (" + this
+                    + ") with sorterManner (" + sorterManner
+                    + ") has a non-null sorterOrder (" + sorterOrder + ").");
         }
         if (sorterComparatorClass != null && sorterWeightFactoryClass != null) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + this
@@ -326,7 +358,9 @@ public class EntitySelectorConfig extends SelectorConfig {
             EntitySelector entitySelector) {
         if (resolvedSelectionOrder == SelectionOrder.SORTED) {
             SelectionSorter sorter;
-            if (sorterComparatorClass != null) {
+            if (sorterManner != null) {
+                sorter = sorterManner.determineSorter(entitySelector.getEntityDescriptor());
+            } else if (sorterComparatorClass != null) {
                 Comparator<Object> sorterComparator = ConfigUtils.newInstance(this,
                         "sorterComparatorClass", sorterComparatorClass);
                 sorter = new ComparatorSelectionSorter(sorterComparator,
@@ -341,7 +375,8 @@ public class EntitySelectorConfig extends SelectorConfig {
             } else {
                 throw new IllegalArgumentException("The sorterClass (" + this
                         + ") with resolvedSelectionOrder ("  + resolvedSelectionOrder
-                        + ") needs a sorterComparatorClass (" + sorterComparatorClass
+                        + ") needs a sorterManner (" + sorterManner
+                        + ") or a sorterComparatorClass (" + sorterComparatorClass
                         + ") or a sorterWeightFactoryClass (" + sorterWeightFactoryClass
                         + ") or a sorterClass (" + sorterClass + ").");
             }
@@ -420,6 +455,8 @@ public class EntitySelectorConfig extends SelectorConfig {
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         filterClassList = ConfigUtils.inheritOverwritableProperty
                 (filterClassList, inheritedConfig.getFilterClassList());
+        sorterManner = ConfigUtils.inheritOverwritableProperty(
+                sorterManner, inheritedConfig.getSorterManner());
         sorterComparatorClass = ConfigUtils.inheritOverwritableProperty(
                 sorterComparatorClass, inheritedConfig.getSorterComparatorClass());
         sorterWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
@@ -435,6 +472,31 @@ public class EntitySelectorConfig extends SelectorConfig {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + entityClass + ")";
+    }
+
+    /**
+     * Build-in ways of sorting.
+     */
+    public static enum EntitySorterManner {
+        DECREASING_DIFFICULTY;
+
+        public SelectionSorter determineSorter(PlanningEntityDescriptor entityDescriptor) {
+            SelectionSorter sorter;
+            switch (this) {
+                case DECREASING_DIFFICULTY:
+                    sorter = entityDescriptor.getDecreasingDifficultySorter();
+                    if (sorter == null) {
+                        throw new IllegalArgumentException("The sorterManner (" + this
+                                + ") on entity class (" + entityDescriptor.getPlanningEntityClass()
+                                + ") fails because that entity class's " + PlanningEntity.class.getSimpleName()
+                                + " annotation does not declare any difficulty comparison.");
+                    }
+                    return sorter;
+                default:
+                    throw new IllegalStateException("The sorterManner ("
+                            + this + ") is not implemented.");
+            }
+        }
     }
 
 }

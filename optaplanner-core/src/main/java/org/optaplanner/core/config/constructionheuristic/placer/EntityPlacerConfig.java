@@ -37,7 +37,7 @@ public abstract class EntityPlacerConfig {
     // Helper methods
     // ************************************************************************
 
-    protected Class<?> deduceEntityClass(SolutionDescriptor solutionDescriptor) {
+    protected PlanningEntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor) {
         Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
         if (entityDescriptors.size() != 1) {
             throw new IllegalArgumentException("The entityPlacerConfig (" + this
@@ -46,8 +46,7 @@ public abstract class EntityPlacerConfig {
                     + solutionDescriptor.getPlanningEntityClassSet()
                     + "), it can not be deducted automatically.");
         }
-        PlanningEntityDescriptor entityDescriptor = entityDescriptors.iterator().next();
-        return entityDescriptor.getPlanningEntityClass();
+        return entityDescriptors.iterator().next();
     }
 
     // ************************************************************************

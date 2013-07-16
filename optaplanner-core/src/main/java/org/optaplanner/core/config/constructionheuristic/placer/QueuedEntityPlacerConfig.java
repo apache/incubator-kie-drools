@@ -74,16 +74,15 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
         String entitySelectorId = "undefined";
         if (entitySelectorConfig == null) {
             entitySelectorConfig_ = new EntitySelectorConfig();
-            Class<?> entityClass = deduceEntityClass(configPolicy.getSolutionDescriptor());
+            PlanningEntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
+            Class<?> entityClass = entityDescriptor.getPlanningEntityClass();
             entitySelectorId = entityClass.getName();
             entitySelectorConfig_.setId(entitySelectorId);
             entitySelectorConfig_.setEntityClass(entityClass);
             if (configPolicy.isSortEntitiesByDecreasingDifficultyEnabled()) {
                 entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
                 entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
-                // TODO
-
-
+                entitySelectorConfig_.setSorterManner(EntitySelectorConfig.EntitySorterManner.DECREASING_DIFFICULTY);
             }
         } else {
             entitySelectorConfig_ = entitySelectorConfig;

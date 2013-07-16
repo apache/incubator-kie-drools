@@ -34,8 +34,12 @@ import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.domain.variable.shadow.ShadowVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.solution.Solution;
 
 public class PlanningEntityDescriptor {
@@ -45,6 +49,7 @@ public class PlanningEntityDescriptor {
     private final Class<?> planningEntityClass;
     private final BeanInfo planningEntityBeanInfo;
     private SelectionFilter movableEntitySelectionFilter;
+    private SelectionSorter decreasingDifficultySorter;
     private PlanningEntitySorter planningEntitySorter;
 
     private Map<String, PlanningVariableDescriptor> genuineVariableDescriptorMap;
@@ -108,11 +113,15 @@ public class PlanningEntityDescriptor {
         if (difficultyComparatorClass != null) {
             Comparator<Object> difficultyComparator = ConfigUtils.newInstance(this,
                     "difficultyComparatorClass", difficultyComparatorClass);
+            decreasingDifficultySorter = new ComparatorSelectionSorter(
+                    difficultyComparator, SelectionSorterOrder.DESCENDING);
             planningEntitySorter.setDifficultyComparator(difficultyComparator);
         }
         if (difficultyWeightFactoryClass != null) {
             SelectionSorterWeightFactory difficultyWeightFactory = ConfigUtils.newInstance(this,
                     "difficultyWeightFactoryClass", difficultyWeightFactoryClass);
+            decreasingDifficultySorter = new WeightFactorySelectionSorter(
+                    difficultyWeightFactory, SelectionSorterOrder.DESCENDING);
             planningEntitySorter.setDifficultyWeightFactory(difficultyWeightFactory);
         }
     }
@@ -183,6 +192,10 @@ public class PlanningEntityDescriptor {
 
     public SelectionFilter getMovableEntitySelectionFilter() {
         return movableEntitySelectionFilter;
+    }
+
+    public SelectionSorter getDecreasingDifficultySorter() {
+        return decreasingDifficultySorter;
     }
 
     public PlanningEntitySorter getPlanningEntitySorter() {
