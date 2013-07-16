@@ -28,10 +28,11 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.drools.core.process.instance.WorkItemHandler;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 
-public class RESTWorkItemHandler implements WorkItemHandler {
+public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	
 	private String username;
 	private String password;
@@ -100,8 +101,7 @@ public class RESTWorkItemHandler implements WorkItemHandler {
 	        // notify manager that work item has been completed
 	        manager.completeWorkItem(workItem.getId(), results);
     	} catch (Exception e) {
-    		e.printStackTrace();
-    		manager.abortWorkItem(workItem.getId());
+    		handleException(e);
     	} finally {
     		theMethod.releaseConnection();
     	}

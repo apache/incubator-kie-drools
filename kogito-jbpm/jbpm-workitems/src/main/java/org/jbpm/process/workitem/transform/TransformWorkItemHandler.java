@@ -20,13 +20,13 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.process.instance.WorkItemHandler;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TransformWorkItemHandler implements WorkItemHandler {
+public class TransformWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(TransformWorkItemHandler.class);
     
@@ -54,7 +54,7 @@ public class TransformWorkItemHandler implements WorkItemHandler {
 			    logger.error("Failed to find a transform ");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			handleException(e);
 		}
 	}
 

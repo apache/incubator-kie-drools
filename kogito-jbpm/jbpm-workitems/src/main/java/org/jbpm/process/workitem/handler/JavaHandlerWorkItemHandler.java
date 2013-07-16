@@ -37,13 +37,10 @@ public class JavaHandlerWorkItemHandler extends AbstractLogOrThrowWorkItemHandle
             manager.completeWorkItem(workItem.getId(), results);
     		return;
         } catch (ClassNotFoundException cnfe) {
-            manager.abortWorkItem(workItem.getId());
             handleException(cnfe);
         } catch (InstantiationException ie) {
-            manager.abortWorkItem(workItem.getId());
             handleException(ie);
         } catch (IllegalAccessException iae) {
-            manager.abortWorkItem(workItem.getId());
             handleException(iae);
         }
 	}

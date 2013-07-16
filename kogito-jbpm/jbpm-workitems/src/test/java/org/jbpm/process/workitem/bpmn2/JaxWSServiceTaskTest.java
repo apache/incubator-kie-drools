@@ -106,6 +106,20 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         // Thread.sleep(5000);
     }
     
+    @Test
+    public void testServiceInvocationWithErrorHandled() throws Exception {
+        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
+        KnowledgeBase kbase = readKnowledgeBase();
+        StatefulKnowledgeSession ksession = createSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new ServiceTaskHandler(ksession));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "john");
+        params.put("mode", "sync");
+        
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("WebServiceTaskError", params);        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+    
     private void startWebService() {
         this.service = new SimpleService();
         this.endpoint = Endpoint.publish("http://127.0.0.1:9876/HelloService/greeting", service);
@@ -122,6 +136,7 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         BPMN2ProcessFactory.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-JaxWSServiceTask.bpmn2"), ResourceType.BPMN2);
+        kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-JaxWSServiceTaskWithErrorBoundaryEvent.bpmn2"), ResourceType.BPMN2);        
         return kbuilder.newKnowledgeBase();
     }
     

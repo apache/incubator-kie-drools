@@ -18,7 +18,7 @@ package org.jbpm.process.workitem.email;
 
 import java.util.Arrays;
 
-import org.drools.core.process.instance.WorkItemHandler;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 
@@ -37,7 +37,7 @@ import org.kie.api.runtime.process.WorkItemManager;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */	
-public class EmailWorkItemHandler implements WorkItemHandler {
+public class EmailWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
 	private Connection connection;
 	
@@ -62,17 +62,18 @@ public class EmailWorkItemHandler implements WorkItemHandler {
 	
 	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
 		if (connection == null) {
-			throw new IllegalArgumentException(
-				"Connection not initialized for Email");
+			throw new IllegalArgumentException("Connection not initialized for Email");
 		}
-	
-		Email email = createEmail(workItem, connection);
-		SendHtml.sendHtml(email);
-		// avoid null pointer when used from deadline escalation handler
-	    if (manager != null) {
-	 	  manager.completeWorkItem(workItem.getId(), null);
-	 	
-	    }
+		try {
+    		Email email = createEmail(workItem, connection);
+    		SendHtml.sendHtml(email);
+    		// avoid null pointer when used from deadline escalation handler
+    	    if (manager != null) {
+    	 	  manager.completeWorkItem(workItem.getId(), null);    	 	
+    	    }
+		} catch (Exception e) {
+		    handleException(e);
+		}
 	}
 
 	protected static Email createEmail(WorkItem workItem, Connection connection) { 

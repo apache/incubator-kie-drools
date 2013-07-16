@@ -21,7 +21,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.drools.core.process.instance.WorkItemHandler;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
@@ -42,7 +41,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 /*@author: salaboy*/
-public class RestGeoCodeApiCallWorkItemHandler implements WorkItemHandler {
+public class RestGeoCodeApiCallWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RestGeoCodeApiCallWorkItemHandler.class);
     
@@ -87,16 +86,9 @@ public class RestGeoCodeApiCallWorkItemHandler implements WorkItemHandler {
             logger.info("{}" + response);
             connection.disconnect();
 
-        } catch (MalformedURLException ex) {
-            logger.error("Error durring processing", ex);
-        } catch (IOException ex) {
-            logger.error("Error durring processing", ex);
+        } catch (Exception ex) {
+            handleException(ex);
         }
-
-
-
-
-
     }
 
     private List<ResultGeoCodeApi> parseResults(String xml){

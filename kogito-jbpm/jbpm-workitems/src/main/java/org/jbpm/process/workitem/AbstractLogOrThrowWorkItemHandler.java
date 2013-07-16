@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractLogOrThrowWorkItemHandler implements WorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractLogOrThrowWorkItemHandler.class);
-    protected boolean logThrownException = true;
+    protected boolean logThrownException = false;
 
     public void setLogThrownException(boolean logException) {
         this.logThrownException = logException;

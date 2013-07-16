@@ -11,6 +11,7 @@
 
   <logger name="org.jbpm" level="info"/>
   <logger name="bitronix.tm" level="error"/>
+  <logger name="org.apache.cxf" level="error"/>
   <logger name="org.hibernate" level="warn"/>
   
   <root level="info">

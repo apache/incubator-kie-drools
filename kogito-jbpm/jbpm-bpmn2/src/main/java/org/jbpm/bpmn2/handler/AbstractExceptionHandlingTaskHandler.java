@@ -9,18 +9,16 @@ public abstract class AbstractExceptionHandlingTaskHandler implements WorkItemHa
     
     public AbstractExceptionHandlingTaskHandler(WorkItemHandler originalTaskHandler) { 
         this.originalTaskHandler = originalTaskHandler;
-        unsetLoggingInHandler(originalTaskHandler);
     }
     
     public AbstractExceptionHandlingTaskHandler(Class<? extends WorkItemHandler> originalTaskHandlerClass) { 
-        Class [] clsParams = {};
+        Class<?> [] clsParams = {};
         Object [] objParams = {};
         try { 
             this.originalTaskHandler = originalTaskHandlerClass.getConstructor(clsParams).newInstance(objParams);
         } catch( Exception e ) { 
             throw new UnsupportedOperationException("The " + WorkItemHandler.class.getSimpleName() + " parameter must have a public no-argument constructor." );
         }
-        unsetLoggingInHandler(originalTaskHandler);
     }
     
     @Override
@@ -29,12 +27,6 @@ public abstract class AbstractExceptionHandlingTaskHandler implements WorkItemHa
             originalTaskHandler.executeWorkItem(workItem, manager);
         } catch( Throwable cause ) { 
            handleExecuteException(cause, workItem, manager);
-        }
-    }
-
-    private void unsetLoggingInHandler(WorkItemHandler originalTaskHandler) { 
-        if( originalTaskHandler instanceof ServiceTaskHandler ) { 
-            ((ServiceTaskHandler) originalTaskHandler).setLogThrownException(false);
         }
     }
     

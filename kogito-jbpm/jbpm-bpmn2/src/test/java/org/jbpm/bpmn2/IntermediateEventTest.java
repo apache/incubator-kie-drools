@@ -1109,6 +1109,27 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     }
     
     @Test
+    public void testErrorBoundaryEventOnServiceTask() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventOnServiceTask.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",handler);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new ServiceTaskHandler());
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "test");
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-ErrorBoundaryEventOnServiceTask", params);
+
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertEquals(1, workItems.size());
+        ksession.getWorkItemManager().completeWorkItem(workItems.get(0).getId(), null);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstance.getId(), "start", "split", "User Task", "Service task error attached", "end0",
+                "Script Task", "error2");
+    }
+    
+    @Test
     public void testCatchErrorBoundaryEventOnTask() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventOnTask.bpmn2");
         ksession = createKnowledgeSession(kbase);

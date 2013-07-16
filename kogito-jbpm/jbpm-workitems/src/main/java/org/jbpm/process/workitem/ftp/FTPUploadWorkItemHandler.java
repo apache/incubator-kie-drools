@@ -17,19 +17,17 @@
 package org.jbpm.process.workitem.ftp;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.SocketException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
-import org.drools.core.process.instance.WorkItemHandler;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.jbpm.process.workitem.email.Connection;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -37,7 +35,10 @@ import org.kie.api.runtime.process.WorkItemManager;
  *
  * @author salaboy
  */
-public class FTPUploadWorkItemHandler implements WorkItemHandler {
+public class FTPUploadWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
+    
+    private static final Logger logger = LoggerFactory.getLogger(FTPUploadWorkItemHandler.class);
+    
     private String user;
     private String password;
     private String server;
@@ -55,13 +56,8 @@ public class FTPUploadWorkItemHandler implements WorkItemHandler {
 		connection.setUserName(userName);
 		connection.setPassword(password);
 	}
-    
-
-
 
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-
-        
 
         this.user = (String) workItem.getParameter("User");
         this.password = (String) workItem.getParameter("Password");
@@ -73,8 +69,7 @@ public class FTPUploadWorkItemHandler implements WorkItemHandler {
                 client.connect(connection.getHost(), Integer.parseInt(connection.getPort()));
                 int reply = client.getReplyCode();
 
-                if (FTPReply.isPositiveCompletion(reply))
-                {
+                if (FTPReply.isPositiveCompletion(reply)) {
             
                     if(client.login(user, password)){
 
@@ -82,23 +77,21 @@ public class FTPUploadWorkItemHandler implements WorkItemHandler {
                         input = new FileInputStream(filePath);
                         client.setFileType(FTP.BINARY_FILE_TYPE);
                         this.setResult(client.storeFile(filePath, input));
-                         client.logout();
+                        client.logout();
+                        
+                        manager.completeWorkItem(workItem.getId(), null);
+                    } else {
+                        logger.warn("Could not logon to FTP server, status returned {}", client.getStatus());
                     }
+                } else {
+                    logger.warn("Could not connect to FTP server, status returned {}", client.getStatus());
                 }
 
             }
-        } catch (SocketException ex) {
-            Logger.getLogger(FTPUploadWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(FTPUploadWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+            
+        } catch (Exception ex) {
+            handleException(ex);
         }
-       
-       
-       
-
-        manager.completeWorkItem(workItem.getId(), null);
-
-         
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {

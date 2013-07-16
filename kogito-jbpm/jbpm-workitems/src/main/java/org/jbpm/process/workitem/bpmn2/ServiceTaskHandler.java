@@ -31,6 +31,7 @@ import org.apache.cxf.endpoint.ClientCallback;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.core.Bpmn2Import;
+import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
@@ -145,7 +146,7 @@ public class ServiceTaskHandler implements WorkItemHandler {
                 }
 
              } catch (Exception e) {
-                 logger.error("Error when executing work item", e);
+                 handleException(e, interfaceRef, operationRef, parameter.getClass().getName(), parameter);
              }
         } else {
             executeJavaWorkItem(workItem, manager);
@@ -208,16 +209,37 @@ public class ServiceTaskHandler implements WorkItemHandler {
             results.put("Result", result);
             manager.completeWorkItem(workItem.getId(), results);
         } catch (ClassNotFoundException e) {
-            logger.error("{}", e);
+            handleException(e, i, operation, parameterType, parameter);
         } catch (InstantiationException e) {
-            logger.error("{}", e);
+            handleException(e, i, operation, parameterType, parameter);
         } catch (IllegalAccessException e) {
-            logger.error("{}", e);
+            handleException(e, i, operation, parameterType, parameter);
         } catch (NoSuchMethodException e) {
-            logger.error("{}", e);
+            handleException(e, i, operation, parameterType, parameter);
         } catch (InvocationTargetException e) {
-            logger.error("{}", e);
+            handleException(e, i, operation, parameterType, parameter);
         }
+    }
+    
+    private void handleException(Throwable cause, String service, String operation, String paramType, Object param) { 
+        logger.debug("Handling exception {} inside service {} and operation {} with param type {} and value {}",
+                cause.getMessage(), service, operation, paramType, param);
+        WorkItemHandlerRuntimeException wihRe;
+        if( cause instanceof InvocationTargetException ) { 
+            Throwable realCause = cause.getCause();
+            wihRe = new WorkItemHandlerRuntimeException(realCause);
+            wihRe.setStackTrace(realCause.getStackTrace());
+        } else { 
+            wihRe = new WorkItemHandlerRuntimeException(cause);
+            wihRe.setStackTrace(cause.getStackTrace());
+        }
+        wihRe.setInformation("Interface", service);
+        wihRe.setInformation("Operation", operation);
+        wihRe.setInformation("ParameterType", paramType);
+        wihRe.setInformation("Parameter", param);
+        wihRe.setInformation(WorkItemHandlerRuntimeException.WORKITEMHANDLERTYPE, this.getClass().getSimpleName());
+        throw wihRe;
+        
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {

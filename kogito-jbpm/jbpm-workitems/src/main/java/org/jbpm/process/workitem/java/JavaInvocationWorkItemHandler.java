@@ -8,13 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JavaInvocationWorkItemHandler implements WorkItemHandler {
+public class JavaInvocationWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     
     private static final Logger logger = LoggerFactory.getLogger(JavaInvocationWorkItemHandler.class);
 
@@ -68,17 +68,17 @@ public class JavaInvocationWorkItemHandler implements WorkItemHandler {
             manager.completeWorkItem(workItem.getId(), results);
     		return;
         } catch (ClassNotFoundException e) {
-            logger.error("{}", e);
+            handleException(e);
         } catch (InstantiationException e) {
-            logger.error("{}", e);
+            handleException(e);
         } catch (IllegalAccessException e) {
-            logger.error("{}", e);
+            handleException(e);
         } catch (NoSuchMethodException e) {
-            logger.error("{}", e);
+            handleException(e);
         } catch (InvocationTargetException e) {
-            logger.error("{}", e);
+            handleException(e);
         }
-        manager.abortWorkItem(workItem.getId());
+
 	}
 
 	public void abortWorkItem(WorkItem arg0, WorkItemManager arg1) {

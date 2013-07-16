@@ -23,4 +23,10 @@ public class SimpleService {
         return "Hello " + name;
     }
     
+    @WebMethod(operationName = "helloException")
+    public String helloException(@WebParam(name = "name") String name) {
+        logger.info("Throwing error for {}", name);
+        throw new RuntimeException("Hello exception " + name);
+    }
+    
 }

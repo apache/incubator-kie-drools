@@ -22,4 +22,7 @@ public class HelloService {
         return "Hello " + name + "!";
     }
 
+    public String helloException(String name) {
+        throw new RuntimeException("Hello Exception " + name + "!");
+    }
 }

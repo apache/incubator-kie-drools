@@ -16,7 +16,6 @@
 
 package org.jbpm.process.workitem.webservice;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,15 +29,15 @@ import org.apache.cxf.endpoint.ClientCallback;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.core.Bpmn2Import;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WebServiceWorkItemHandler implements WorkItemHandler {
+public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     
 public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/";
     
@@ -76,20 +75,16 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
     }
 
     public void executeWorkItem(WorkItem workItem, final WorkItemManager manager) {
-        String implementation = (String) workItem.getParameter("Implementation");
-        if (implementation == null || implementation.trim().length() == 0) {
-        	implementation = "##WebService";
-        }
-        if ("##WebService".equalsIgnoreCase(implementation)) {
-            String interfaceRef = (String) workItem.getParameter("Interface");
-            String operationRef = (String) workItem.getParameter("Operation");
-            Object parameter = workItem.getParameter("Parameter");
-            String modeParam = (String) workItem.getParameter("Mode");
-            WSMode mode = WSMode.valueOf(modeParam == null ? "SYNC" : modeParam.toUpperCase());
+
+        String interfaceRef = (String) workItem.getParameter("Interface");
+        String operationRef = (String) workItem.getParameter("Operation");
+        Object parameter = workItem.getParameter("Parameter");
+        String modeParam = (String) workItem.getParameter("Mode");
+        WSMode mode = WSMode.valueOf(modeParam == null ? "SYNC" : modeParam.toUpperCase());
             
-            try {
-                 Client client = getWSClient(workItem, interfaceRef);
-                 switch (mode) {
+        try {
+             Client client = getWSClient(workItem, interfaceRef);
+             switch (mode) {
                 case SYNC:
                     Object[] result = client.invoke(operationRef, parameter);
                     
@@ -98,9 +93,9 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
                     if (result == null || result.length == 0) {
                       output.put("Result", null);
                     } else {
-                      output.put("Result", result[0]);
+                        output.put("Result", result[0]);
                     }
-   
+                    logger.debug("Received sync response {} completeing work item {}", result, workItem.getId());
                     manager.completeWorkItem(workItem.getId(), output);
                     break;
                 case ASYNC:
@@ -118,39 +113,35 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
                                if (callback.isDone()) {
                                    if (result == null) {
                                      output.put("Result", null);
-                                   } else {
-                                     output.put("Result", result[0]);
-                                   }
+                               } else {
+                                 output.put("Result", result[0]);
                                }
-                               ksession.getWorkItemManager().completeWorkItem(workItemId, output);
-                           } catch (Exception e) {
-                        	   e.printStackTrace();
-                               throw new RuntimeException("Error encountered while invoking ws operation asynchronously", e);
                            }
-                           
-                           
+                           logger.debug("Received async response {} completeing work item {}", result, workItemId);
+                           ksession.getWorkItemManager().completeWorkItem(workItemId, output);
+                       } catch (Exception e) {
+                    	   e.printStackTrace();
+                           throw new RuntimeException("Error encountered while invoking ws operation asynchronously", e);
                        }
-                   }).start();
-                    break;
-                case ONEWAY:
-                    ClientCallback callbackFF = new ClientCallback();
-                    
-                    client.invoke(callbackFF, operationRef, parameter);
-                    manager.completeWorkItem(workItem.getId(),  new HashMap<String, Object>());
-                    break;
-                default:
-                    break;
-                }
+                       
+                       
+                   }
+               }).start();
+                break;
+            case ONEWAY:
+                ClientCallback callbackFF = new ClientCallback();
+                
+                client.invoke(callbackFF, operationRef, parameter);
+                logger.debug("One way operation, not going to wait for response, completing work item {}", workItem.getId());
+                manager.completeWorkItem(workItem.getId(),  new HashMap<String, Object>());
+                break;
+            default:
+                break;
+            }
 
-             } catch (Exception e) {
-                 logger.error("Error when executing work item", e);
-                 throw new RuntimeException(e);
-             }
-        } else {
-            executeJavaWorkItem(workItem, manager);
-        }
-        
-
+         } catch (Exception e) {
+             handleException(e);
+         }
     }
     
     @SuppressWarnings("unchecked")
@@ -184,35 +175,6 @@ public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/"
             }
         }
         return null;
-    }
-
-    public void executeJavaWorkItem(WorkItem workItem, WorkItemManager manager) {
-        String i = (String) workItem.getParameter("Interface");
-        String operation = (String) workItem.getParameter("Operation");
-        String parameterType = (String) workItem.getParameter("ParameterType");
-        Object parameter = workItem.getParameter("Parameter");
-        try {
-            Class<?> c = Class.forName(i, true, classLoader);
-            Object instance = c.newInstance();
-            Class<?>[] classes = null;
-            Object[] params = null;
-            if (parameterType != null) {
-                classes = new Class<?>[] {
-                    Class.forName(parameterType, true, classLoader)
-                };
-                params = new Object[] {
-                    parameter
-                };
-            }
-            Method method = c.getMethod(operation, classes);
-            Object result = method.invoke(instance, params);
-            Map<String, Object> results = new HashMap<String, Object>();
-            results.put("Result", result);
-            manager.completeWorkItem(workItem.getId(), results);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {

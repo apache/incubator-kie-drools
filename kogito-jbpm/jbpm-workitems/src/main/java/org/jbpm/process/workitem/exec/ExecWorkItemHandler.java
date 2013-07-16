@@ -18,11 +18,11 @@ package org.jbpm.process.workitem.exec;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
-import org.drools.core.process.instance.WorkItemHandler;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 
-public class ExecWorkItemHandler implements WorkItemHandler {
+public class ExecWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
 	public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
 		String command = (String) workItem.getParameter("Command");
@@ -32,8 +32,7 @@ public class ExecWorkItemHandler implements WorkItemHandler {
 			executor.execute(commandLine);
 			manager.completeWorkItem(workItem.getId(), null);
 		} catch (Throwable t) {
-			t.printStackTrace();
-			manager.abortWorkItem(workItem.getId());
+			handleException(t);
 		}
 	}
 

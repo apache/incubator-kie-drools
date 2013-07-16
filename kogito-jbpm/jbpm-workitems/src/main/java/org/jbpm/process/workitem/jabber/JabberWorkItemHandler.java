@@ -19,12 +19,11 @@ package org.jbpm.process.workitem.jabber;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.process.instance.WorkItemHandler;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.kie.api.runtime.process.WorkItem;
@@ -38,7 +37,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author salaboy
  */
-public class JabberWorkItemHandler implements WorkItemHandler {
+public class JabberWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     
     private static final Logger logger = LoggerFactory.getLogger(JabberWorkItemHandler.class);
     
@@ -87,46 +86,32 @@ public class JabberWorkItemHandler implements WorkItemHandler {
            connection.connect();
            logger.info("Connected to {}", connection.getHost());
 
-        } catch (XMPPException ex) {            
-            logger.error("Failed to connect to {} {}", connection.getHost(), ex);
-            System.exit(1);
 
-        }
-
-        try{
             connection.login(user, password);
             logger.info("Logged in as {}", connection.getUser());
             Presence presence = new Presence(Presence.Type.available);
             connection.sendPacket(presence);
 
-        } catch (XMPPException ex){
-            logger.error("Failed to log in as {} {}" + connection.getUser(), ex);
-            System.exit(1);
 
-        }
-
-        for(String toUser : toUsers){
-
-            ChatManager chatmanager = connection.getChatManager();
-            Chat chat = chatmanager.createChat(toUser, null);
-
-            try {
+            for(String toUser : toUsers){
+    
+                ChatManager chatmanager = connection.getChatManager();
+                Chat chat = chatmanager.createChat(toUser, null);
+    
                 // google bounces back the default message types, you must use chat
                 Message msg = new Message(toUser, Message.Type.chat);
                 msg.setBody(text);
                 chat.sendMessage(msg);
-                logger.info("Message Sent");
-            } catch (XMPPException e) {
-                logger.error("Failed to send message", e);
-                // handle this how?
+                logger.info("Message Sent {}", msg);   
             }
+
+
+            connection.disconnect();
+
+            manager.completeWorkItem(workItem.getId(), null);
+        } catch (Exception e) {
+            handleException(e);
         }
-
-
-        connection.disconnect();
-
-        manager.completeWorkItem(workItem.getId(), null);
-
          
     }
 

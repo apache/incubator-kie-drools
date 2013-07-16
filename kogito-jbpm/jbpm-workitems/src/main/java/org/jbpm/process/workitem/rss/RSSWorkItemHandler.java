@@ -16,19 +16,15 @@
 
 package org.jbpm.process.workitem.rss;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.drools.core.process.instance.WorkItemHandler;
+import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 
 import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 
@@ -38,11 +34,8 @@ import com.sun.syndication.io.XmlReader;
  *
  * @author salaboy
  */
-public class RSSWorkItemHandler implements WorkItemHandler {
+public class RSSWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 
-   
-
-    
     List<SyndFeed> feeds = new ArrayList<SyndFeed>();
 
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -65,15 +58,8 @@ public class RSSWorkItemHandler implements WorkItemHandler {
             }
 
             manager.completeWorkItem(workItem.getId(), null);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            Logger.getLogger(RSSWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-            Logger.getLogger(RSSWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FeedException ex) {
-            ex.printStackTrace();
-            Logger.getLogger(RSSWorkItemHandler.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            handleException(ex);
         } 
 
          
