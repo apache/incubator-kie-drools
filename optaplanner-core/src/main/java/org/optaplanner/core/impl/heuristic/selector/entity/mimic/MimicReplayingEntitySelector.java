@@ -2,21 +2,22 @@ package org.optaplanner.core.impl.heuristic.selector.entity.mimic;
 
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
-import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 
 public class MimicReplayingEntitySelector extends AbstractEntitySelector {
 
     protected final MimicRecordingEntitySelector recordingEntitySelector;
 
-    protected boolean hasRecordedSelectionCreated;
-    protected boolean hasRecordedSelection;
-    protected boolean recordedSelectionCreated;
-    protected Object recordedSelection;
+    protected boolean hasRecordingCreated;
+    protected boolean hasRecording;
+    protected boolean recordingCreated;
+    protected Object recording;
+    protected boolean recordingAlreadyReturned;
 
     public MimicReplayingEntitySelector(MimicRecordingEntitySelector recordingEntitySelector) {
         this.recordingEntitySelector = recordingEntitySelector;
@@ -32,18 +33,18 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
         // Doing this in phaseStarted instead of stepStarted due to QueuedEntityPlacer compatibility
-        hasRecordedSelectionCreated = false;
-        recordedSelectionCreated = false;
+        hasRecordingCreated = false;
+        recordingCreated = false;
     }
 
     @Override
     public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         // Doing this in phaseEnded instead of stepEnded due to QueuedEntityPlacer compatibility
-        hasRecordedSelectionCreated = false;
-        hasRecordedSelection = false;
-        recordedSelectionCreated = false;
-        recordedSelection = null;
+        hasRecordingCreated = false;
+        hasRecording = false;
+        recordingCreated = false;
+        recording = null;
     }
 
     public PlanningEntityDescriptor getEntityDescriptor() {
@@ -67,37 +68,50 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
     }
 
     public void recordedHasNext(boolean hasNext) {
-        hasRecordedSelection = hasNext;
-        hasRecordedSelectionCreated = true;
+        hasRecordingCreated = true;
+        hasRecording = hasNext;
+        recordingCreated = false;
+        recording = null;
+        recordingAlreadyReturned = false;
     }
 
     public void recordedNext(Object next) {
-        recordedSelection = next;
-        recordedSelectionCreated = true;
+        hasRecordingCreated = true;
+        hasRecording = true;
+        recordingCreated = true;
+        recording = next;
+        recordingAlreadyReturned = false;
     }
 
     private class ReplayingEntityIterator extends SelectionIterator<Object> {
 
+        private ReplayingEntityIterator() {
+            // Reset so the last recording plays again even if it has already played
+            recordingAlreadyReturned = false;
+        }
+
         public boolean hasNext() {
-            if (!hasRecordedSelectionCreated) {
+            if (!hasRecordingCreated) {
                 throw new IllegalStateException("Replay must occur after record."
                         + " The recordingEntitySelector (" + recordingEntitySelector
                         + ")'s hasNext() has not been called yet. ");
             }
-            return hasRecordedSelection;
+            return hasRecording && !recordingAlreadyReturned;
         }
 
         public Object next() {
-            if (!recordedSelectionCreated) {
+            if (!recordingCreated) {
                 throw new IllegalStateException("Replay must occur after record."
                         + " The recordingEntitySelector (" + recordingEntitySelector
                         + ")'s next() has not been called yet. ");
             }
-            Object next = recordedSelection;
+            if (recordingAlreadyReturned) {
+                throw new NoSuchElementException("The recordingAlreadyReturned (" + recordingAlreadyReturned
+                        + ") is impossible. Check if hasNext() returns true before this call.");
+            }
             // Until the recorder records something, this iterator has no next.
-            hasRecordedSelection = false;
-            recordedSelection = null;
-            return next;
+            recordingAlreadyReturned = true;
+            return recording;
         }
 
     }
