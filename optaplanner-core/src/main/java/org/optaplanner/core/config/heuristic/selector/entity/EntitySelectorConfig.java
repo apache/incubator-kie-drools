@@ -373,7 +373,7 @@ public class EntitySelectorConfig extends SelectorConfig {
             } else if (sorterClass != null) {
                 sorter = ConfigUtils.newInstance(this, "sorterClass", sorterClass);
             } else {
-                throw new IllegalArgumentException("The sorterClass (" + this
+                throw new IllegalArgumentException("The entitySelectorConfig (" + this
                         + ") with resolvedSelectionOrder ("  + resolvedSelectionOrder
                         + ") needs a sorterManner (" + sorterManner
                         + ") or a sorterComparatorClass (" + sorterComparatorClass
