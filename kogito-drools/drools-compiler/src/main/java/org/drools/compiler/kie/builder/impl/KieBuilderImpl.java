@@ -325,8 +325,8 @@ public class KieBuilderImpl
         }
     }
 
-    static boolean filterFileInKBase(KieBaseModel kieBase,
-                                     String fileName) {
+    public static boolean filterFileInKBase(KieBaseModel kieBase,
+                                            String fileName) {
         return FormatsManager.isKieExtension( fileName ) && isFileInKieBase( kieBase, fileName );
     }
 

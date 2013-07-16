@@ -22,15 +22,15 @@ import static org.drools.core.rule.JavaDialectRuntimeData.convertResourceToClass
  */
 public class KieModuleKieProject extends AbstractKieProject {
 
-    private static final Logger                  log               = LoggerFactory.getLogger( KieModuleKieProject.class );
+    private static final Logger            log               = LoggerFactory.getLogger( KieModuleKieProject.class );
 
-    private List<InternalKieModule>              kieModules;
+    private List<InternalKieModule>        kieModules;
 
-    private final Map<String, InternalKieModule> kJarFromKBaseName = new HashMap<String, InternalKieModule>();
+    private Map<String, InternalKieModule> kJarFromKBaseName = new HashMap<String, InternalKieModule>();
 
-    private final InternalKieModule              kieModule;
+    private InternalKieModule              kieModule;
 
-    private final ProjectClassLoader             cl;
+    private ProjectClassLoader             cl;
 
     public KieModuleKieProject(InternalKieModule kieModule) {
         this.kieModule = kieModule;
@@ -43,16 +43,16 @@ public class KieModuleKieProject extends AbstractKieProject {
             kieModules.addAll( kieModule.getDependencies().values() );
             kieModules.add( kieModule );
             indexParts( kieModules, kJarFromKBaseName );
-            initClassLoader(cl);
+            initClassLoader( cl );
         }
     }
 
     private void initClassLoader(ProjectClassLoader projectCL) {
-        for (Map.Entry<String, byte[]> entry : getClassesMap().entrySet()) {
-            if (entry.getValue() != null) {
+        for ( Map.Entry<String, byte[]> entry : getClassesMap().entrySet() ) {
+            if ( entry.getValue() != null ) {
                 String resourceName = entry.getKey();
-                String className = convertResourceToClassName(resourceName);
-                projectCL.storeClass(className, resourceName, entry.getValue());
+                String className = convertResourceToClassName( resourceName );
+                projectCL.storeClass( className, resourceName, entry.getValue() );
             }
         }
     }
@@ -61,7 +61,7 @@ public class KieModuleKieProject extends AbstractKieProject {
         Map<String, byte[]> classes = new HashMap<String, byte[]>();
         for ( InternalKieModule kModule : kieModules ) {
             // avoid to take type declarations defined directly in this kieModule since they have to be recompiled
-            classes.putAll(kModule.getClassesMap(kModule != this.kieModule));
+            classes.putAll( kModule.getClassesMap( kModule != this.kieModule ) );
         }
         return classes;
     }
@@ -71,7 +71,7 @@ public class KieModuleKieProject extends AbstractKieProject {
     }
 
     public InternalKieModule getKieModuleForKBase(String kBaseName) {
-        return this.kJarFromKBaseName.get(kBaseName);
+        return this.kJarFromKBaseName.get( kBaseName );
     }
 
     public ClassLoader getClassLoader() {
@@ -79,8 +79,18 @@ public class KieModuleKieProject extends AbstractKieProject {
     }
 
     public ClassLoader getClonedClassLoader() {
-        ProjectClassLoader clonedCL = createProjectClassLoader(cl.getParent());
-        initClassLoader(clonedCL);
+        ProjectClassLoader clonedCL = createProjectClassLoader( cl.getParent() );
+        initClassLoader( clonedCL );
         return clonedCL;
+    }
+
+    public void updateToModule(InternalKieModule kieModule) {
+        this.kieModules = null;
+        this.kJarFromKBaseName.clear();
+        cleanIndex();
+        
+        this.kieModule = kieModule;
+        //this.cl.getStore().clear(); // can we do this in order to preserve the reference to the classloader? 
+        this.init(); // this might override class definitions, not sure we can do it any other way though
     }
 }
