@@ -14,6 +14,8 @@ public class HeuristicConfigPolicy {
     private final SolutionDescriptor solutionDescriptor;
     private final ScoreDefinition scoreDefinition;
 
+    private boolean sortEntitiesByDecreasingDifficultyEnabled = false;
+    private boolean sortValuesByIncreasingStrengthEnabled = false;
     private boolean initializedChainedValueFilterEnabled = false;
 
     private Map<String, MimicRecordingEntitySelector> mimicRecordingEntitySelectorMap
@@ -36,6 +38,22 @@ public class HeuristicConfigPolicy {
 
     public ScoreDefinition getScoreDefinition() {
         return scoreDefinition;
+    }
+
+    public boolean isSortEntitiesByDecreasingDifficultyEnabled() {
+        return sortEntitiesByDecreasingDifficultyEnabled;
+    }
+
+    public void setSortEntitiesByDecreasingDifficultyEnabled(boolean sortEntitiesByDecreasingDifficultyEnabled) {
+        this.sortEntitiesByDecreasingDifficultyEnabled = sortEntitiesByDecreasingDifficultyEnabled;
+    }
+
+    public boolean isSortValuesByIncreasingStrengthEnabled() {
+        return sortValuesByIncreasingStrengthEnabled;
+    }
+
+    public void setSortValuesByIncreasingStrengthEnabled(boolean sortValuesByIncreasingStrengthEnabled) {
+        this.sortValuesByIncreasingStrengthEnabled = sortValuesByIncreasingStrengthEnabled;
     }
 
     public boolean isInitializedChainedValueFilterEnabled() {

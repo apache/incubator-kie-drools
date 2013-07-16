@@ -35,6 +35,13 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig {
     @XStreamImplicit()
     private List<MoveSelectorConfig> moveSelectorConfigList = null;
 
+    public CartesianProductMoveSelectorConfig() {
+    }
+
+    public CartesianProductMoveSelectorConfig(List<MoveSelectorConfig> moveSelectorConfigList) {
+        this.moveSelectorConfigList = moveSelectorConfigList;
+    }
+
     public List<MoveSelectorConfig> getMoveSelectorConfigList() {
         return moveSelectorConfigList;
     }

@@ -41,6 +41,13 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
 
     private Class<? extends SelectionProbabilityWeightFactory> selectorProbabilityWeightFactoryClass = null;
 
+    public UnionMoveSelectorConfig() {
+    }
+
+    public UnionMoveSelectorConfig(List<MoveSelectorConfig> moveSelectorConfigList) {
+        this.moveSelectorConfigList = moveSelectorConfigList;
+    }
+
     public List<MoveSelectorConfig> getMoveSelectorConfigList() {
         return moveSelectorConfigList;
     }

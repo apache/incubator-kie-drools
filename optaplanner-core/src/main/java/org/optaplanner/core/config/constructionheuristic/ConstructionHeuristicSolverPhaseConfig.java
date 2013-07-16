@@ -97,29 +97,17 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
             Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
-        if (constructionHeuristicType != null) {
-            // TODO delete this legacy piece for GreedyFitSolverPhase
-            DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
-            configureSolverPhase(greedySolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
-            greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(
-                    solverConfigPolicy.getSolutionDescriptor()));
-            greedySolverPhase.setGreedyDecider(buildGreedyDecider(
-                    solverConfigPolicy.getSolutionDescriptor(), solverConfigPolicy.getEnvironmentMode()));
-            EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
-            if (environmentMode.isNonIntrusiveFullAsserted()) {
-                greedySolverPhase.setAssertStepScoreFromScratch(true);
-            }
-            if (environmentMode.isIntrusiveFastAsserted()) {
-                greedySolverPhase.setAssertExpectedStepScore(true);
-            }
-            return greedySolverPhase;
-        } else if (!CollectionUtils.isEmpty(entityPlacerConfigList)) {
+        if (!CollectionUtils.isEmpty(entityPlacerConfigList)) {
             if (constructionHeuristicPickEarlyType != null) {
                 // TODO throw decent exception
                 throw new UnsupportedOperationException();
             }
-
-
+            ConstructionHeuristicType constructionHeuristicType_ = constructionHeuristicType == null
+                    ? ConstructionHeuristicType.FIRST_FIT : constructionHeuristicType;
+            phaseConfigPolicy.setSortEntitiesByDecreasingDifficultyEnabled(
+                    constructionHeuristicType_.isSortEntitiesByDecreasingDifficulty());
+            phaseConfigPolicy.setSortValuesByIncreasingStrengthEnabled(
+                    constructionHeuristicType_.isSortValuesByIncreasingStrength());
             DefaultConstructionHeuristicSolverPhase phase = new DefaultConstructionHeuristicSolverPhase();
             configureSolverPhase(phase, phaseIndex, phaseConfigPolicy, solverTermination);
             phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
@@ -142,6 +130,22 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                 phase.setAssertExpectedStepScore(true);
             }
             return phase;
+        } else if (constructionHeuristicType != null) {
+            // TODO delete this legacy piece for GreedyFitSolverPhase
+            DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
+            configureSolverPhase(greedySolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
+            greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(
+                    solverConfigPolicy.getSolutionDescriptor()));
+            greedySolverPhase.setGreedyDecider(buildGreedyDecider(
+                    solverConfigPolicy.getSolutionDescriptor(), solverConfigPolicy.getEnvironmentMode()));
+            EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
+            if (environmentMode.isNonIntrusiveFullAsserted()) {
+                greedySolverPhase.setAssertStepScoreFromScratch(true);
+            }
+            if (environmentMode.isIntrusiveFastAsserted()) {
+                greedySolverPhase.setAssertExpectedStepScore(true);
+            }
+            return greedySolverPhase;
         } else {
             throw new IllegalArgumentException("A constructionHeuristic requires configuration, " +
                     "for example a constructionHeuristicType.");
@@ -221,6 +225,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         return forager;
     }
 
+    @Deprecated
     private PlanningEntitySelectionOrder determinePlanningEntitySelectionOrder() {
         switch (constructionHeuristicType) {
             case FIRST_FIT:
@@ -235,6 +240,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         }
     }
 
+    @Deprecated
     private PlanningValueSelectionOrder determinePlanningValueSelectionOrder() {
         switch (constructionHeuristicType) {
             case FIRST_FIT:
@@ -265,7 +271,35 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         FIRST_FIT,
         FIRST_FIT_DECREASING,
         BEST_FIT,
-        BEST_FIT_DECREASING
+        BEST_FIT_DECREASING;
+
+        public boolean isSortEntitiesByDecreasingDifficulty() {
+            switch (this) {
+                case FIRST_FIT:
+                case BEST_FIT:
+                    return false;
+                case FIRST_FIT_DECREASING:
+                case BEST_FIT_DECREASING:
+                    return true;
+                default:
+                    throw new IllegalStateException("The constructionHeuristicType ("
+                            + this + ") is not implemented.");
+            }
+        }
+
+        public boolean isSortValuesByIncreasingStrength() {
+            switch (this) {
+                case FIRST_FIT:
+                case FIRST_FIT_DECREASING:
+                    return false;
+                case BEST_FIT:
+                case BEST_FIT_DECREASING:
+                    return true;
+                default:
+                    throw new IllegalStateException("The constructionHeuristicType ("
+                            + this + ") is not implemented.");
+            }
+        }
     }
 
 }

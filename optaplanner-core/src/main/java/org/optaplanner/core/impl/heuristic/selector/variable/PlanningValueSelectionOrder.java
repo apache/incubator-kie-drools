@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.variable;
 
+@Deprecated
 public enum PlanningValueSelectionOrder {
     ORIGINAL,
     RANDOM,

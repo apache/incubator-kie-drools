@@ -18,6 +18,8 @@ package org.optaplanner.core.config.constructionheuristic.placer.entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -31,9 +33,12 @@ import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianPr
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.placer.entity.QueuedEntityPlacer;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
+import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -69,8 +74,20 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
 
     public QueuedEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
         SelectionOrder defaultSelectionOrder = SelectionOrder.ORIGINAL;
-        EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
-                : entitySelectorConfig;
+        EntitySelectorConfig entitySelectorConfig_;
+        if (entitySelectorConfig == null) {
+            entitySelectorConfig_ = new EntitySelectorConfig();
+            entitySelectorConfig_.setId("TODO"); // TODO
+            if (configPolicy.isSortEntitiesByDecreasingDifficultyEnabled()) {
+                entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
+                entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
+                // TODO
+
+
+            }
+        } else {
+            entitySelectorConfig_ = entitySelectorConfig;
+        }
         if (entitySelectorConfig_.getCacheType() != null
                 && entitySelectorConfig_.getCacheType().compareTo(SelectionCacheType.PHASE) < 0) {
             throw new IllegalArgumentException("The queuedEntityPlacer (" + this
@@ -80,15 +97,42 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
         }
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
                 SelectionCacheType.PHASE, defaultSelectionOrder);
-        List<MoveSelector> moveSelectorList;
+
+        List<MoveSelectorConfig> moveSelectorConfigList_;
         if (CollectionUtils.isEmpty(moveSelectorConfigList)) {
-            throw new UnsupportedOperationException(); // TODO
-        } else {
-            moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
-            for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
-                moveSelectorList.add(moveSelectorConfig.buildMoveSelector(
-                        configPolicy, SelectionCacheType.JUST_IN_TIME, defaultSelectionOrder));
+            PlanningEntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
+            Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getVariableDescriptors();
+            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<MoveSelectorConfig>(
+                    variableDescriptors.size());
+            for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+                ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
+                EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig();
+                changeEntitySelectorConfig.setMimicSelectorRef("TODO"); // TODO
+                changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
+                ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
+                changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
+                if (configPolicy.isSortValuesByIncreasingStrengthEnabled()) {
+                    changeValueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
+                    // TODO
+
+
+                }
+                changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
+                subMoveSelectorConfigList.add(changeMoveSelectorConfig);
             }
+            if (true) { // TODO
+                moveSelectorConfigList_ = Collections.<MoveSelectorConfig>singletonList(
+                        new CartesianProductMoveSelectorConfig(subMoveSelectorConfigList));
+            } else {
+                moveSelectorConfigList_ = subMoveSelectorConfigList;
+            }
+        } else {
+            moveSelectorConfigList_ = moveSelectorConfigList;
+        }
+        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList_.size());
+        for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList_) {
+            moveSelectorList.add(moveSelectorConfig.buildMoveSelector(
+                    configPolicy, SelectionCacheType.JUST_IN_TIME, defaultSelectionOrder));
         }
         return new QueuedEntityPlacer(entitySelector, moveSelectorList);
     }
