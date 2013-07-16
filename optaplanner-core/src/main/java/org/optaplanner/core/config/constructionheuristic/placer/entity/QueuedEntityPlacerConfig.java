@@ -68,12 +68,18 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
     // ************************************************************************
 
     public QueuedEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
-        SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME; // TODO fix selection order
         SelectionOrder defaultSelectionOrder = SelectionOrder.ORIGINAL;
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
                 : entitySelectorConfig;
+        if (entitySelectorConfig_.getCacheType() != null
+                && entitySelectorConfig_.getCacheType().compareTo(SelectionCacheType.PHASE) < 0) {
+            throw new IllegalArgumentException("The queuedEntityPlacer (" + this
+                    + ") cannot have an entitySelectorConfig ("  + entitySelectorConfig
+                    + ") with a cacheType (" + entitySelectorConfig_.getCacheType()
+                    + ") lower than " + SelectionCacheType.PHASE + ".");
+        }
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
-                defaultCacheType, defaultSelectionOrder);
+                SelectionCacheType.PHASE, defaultSelectionOrder);
         List<MoveSelector> moveSelectorList;
         if (CollectionUtils.isEmpty(moveSelectorConfigList)) {
             throw new UnsupportedOperationException(); // TODO
@@ -81,7 +87,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
             moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
             for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
                 moveSelectorList.add(moveSelectorConfig.buildMoveSelector(
-                        configPolicy, defaultCacheType, defaultSelectionOrder));
+                        configPolicy, SelectionCacheType.JUST_IN_TIME, defaultSelectionOrder));
             }
         }
         return new QueuedEntityPlacer(entitySelector, moveSelectorList);
