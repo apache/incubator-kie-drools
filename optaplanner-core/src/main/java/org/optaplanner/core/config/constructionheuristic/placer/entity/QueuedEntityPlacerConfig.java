@@ -74,10 +74,11 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
                 : entitySelectorConfig;
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
                 defaultCacheType, defaultSelectionOrder);
-        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
+        List<MoveSelector> moveSelectorList;
         if (CollectionUtils.isEmpty(moveSelectorConfigList)) {
             throw new UnsupportedOperationException(); // TODO
         } else {
+            moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
             for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
                 moveSelectorList.add(moveSelectorConfig.buildMoveSelector(
                         configPolicy, defaultCacheType, defaultSelectionOrder));
