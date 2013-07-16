@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn20="http://www.omg.org/bpmn20" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="_n7DF8DSVEeKUpI5A3_jcdA" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_simpleStringItem" structureRef="String"/>
+  <bpmn2:process id="defaultPackage.SingleTaskWithVarDef" drools:version="1" drools:packageName="defaultPackage" drools:adHoc="false" name="SingleTaskWithVarDef" isExecutable="true">
+    <bpmn2:property id="simpleString" itemSubjectRef="_simpleStringItem"/>
+    <bpmn2:startEvent id="_7DBBE26D-5EF9-47A5-A13E-316A8B9B06E3" drools:bgcolor="#ffffff" drools:selectable="true" name="">
+      <bpmn2:outgoing>_D17293DA-6E54-432C-AE28-A7BD2CE9B241</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="_1B1A56E2-24A9-4E92-BE6D-5D1D597CAE47" drools:bgcolor="#ffffff" drools:selectable="true" name="">
+      <bpmn2:incoming>_52545CE6-BD17-4F63-B72E-E883154A8073</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:task id="_E366BBD2-59F3-4481-94AF-097E5A534EFD" drools:selectable="true" drools:taskName="CustomTask" name="SingleTask">
+      <bpmn2:incoming>_D17293DA-6E54-432C-AE28-A7BD2CE9B241</bpmn2:incoming>
+      <bpmn2:outgoing>_52545CE6-BD17-4F63-B72E-E883154A8073</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_n7DF8TSVEeKUpI5A3_jcdA">
+        <bpmn2:dataInput id="_E366BBD2-59F3-4481-94AF-097E5A534EFD_TaskNameInput" name="TaskName"/>
+        <bpmn2:inputSet id="_n7DF8jSVEeKUpI5A3_jcdA"/>
+        <bpmn2:outputSet id="_n7DF8zSVEeKUpI5A3_jcdA"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_n7DF9DSVEeKUpI5A3_jcdA">
+        <bpmn2:sourceRef>simpleString</bpmn2:sourceRef>
+        <bpmn2:targetRef>_E366BBD2-59F3-4481-94AF-097E5A534EFD_TaskNameInput</bpmn2:targetRef>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:sequenceFlow id="_52545CE6-BD17-4F63-B72E-E883154A8073" drools:priority="1" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_E366BBD2-59F3-4481-94AF-097E5A534EFD" targetRef="_1B1A56E2-24A9-4E92-BE6D-5D1D597CAE47"/>
+    <bpmn2:sequenceFlow id="_D17293DA-6E54-432C-AE28-A7BD2CE9B241" drools:priority="1" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_7DBBE26D-5EF9-47A5-A13E-316A8B9B06E3" targetRef="_E366BBD2-59F3-4481-94AF-097E5A534EFD"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_n7DF-DSVEeKUpI5A3_jcdA">
+    <bpmndi:BPMNPlane id="_n7DF-TSVEeKUpI5A3_jcdA" bpmnElement="defaultPackage.SingleTaskWithVarDef">
+      <bpmndi:BPMNShape id="_n7DF-jSVEeKUpI5A3_jcdA" bpmnElement="_7DBBE26D-5EF9-47A5-A13E-316A8B9B06E3">
+        <dc:Bounds height="30.0" width="30.0" x="105.0" y="135.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_n7DF-zSVEeKUpI5A3_jcdA" bpmnElement="_1B1A56E2-24A9-4E92-BE6D-5D1D597CAE47">
+        <dc:Bounds height="28.0" width="28.0" x="341.0" y="135.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_n7DF_DSVEeKUpI5A3_jcdA" bpmnElement="_E366BBD2-59F3-4481-94AF-097E5A534EFD">
+        <dc:Bounds height="80.0" width="100.0" x="180.0" y="110.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_n7DF_TSVEeKUpI5A3_jcdA" bpmnElement="_52545CE6-BD17-4F63-B72E-E883154A8073">
+        <di:waypoint xsi:type="dc:Point" x="230.0" y="150.0"/>
+        <di:waypoint xsi:type="dc:Point" x="355.0" y="149.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_n7DF_jSVEeKUpI5A3_jcdA" bpmnElement="_D17293DA-6E54-432C-AE28-A7BD2CE9B241">
+        <di:waypoint xsi:type="dc:Point" x="120.0" y="150.0"/>
+        <di:waypoint xsi:type="dc:Point" x="230.0" y="150.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

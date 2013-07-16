@@ -77,10 +77,11 @@ public class SessionTest extends AbstractBaseTest {
     
     @After
     public void teardown() {
+        pds.close();
         if (manager != null) {
             manager.close();
         }
-        pds.close();
+        
     }
 
 	@Test

@@ -449,6 +449,28 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    public void testCallActivityWithContantsAssignment() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("subprocess/SingleTaskWithVarDef.bpmn2",
+                "subprocess/InputMappingUsingValue.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("CustomTask", handler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        ProcessInstance processInstance = ksession.startProcess("defaultPackage.InputMappingUsingValue", params);
+        
+        WorkItem workItem = handler.getWorkItem();
+        assertNotNull(workItem);
+        
+        Object value = workItem.getParameter("TaskName");
+        assertNotNull(value);
+        assertEquals("test string", value);
+        
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        assertProcessInstanceCompleted(processInstance);
+    }
+    
+    @Test
     public void testCallActivity() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-CallActivity.bpmn2",
                 "BPMN2-CallActivitySubProcess.bpmn2");

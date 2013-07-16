@@ -39,8 +39,8 @@ public class SubProcessNode extends StateBasedNode implements Mappable {
 	private String processName;
 	private boolean waitForCompletion = true;
 
-        private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
-        private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
+    private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
+    private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
 
     private boolean independent = true;
 
@@ -164,5 +164,5 @@ public class SubProcessNode extends StateBasedNode implements Mappable {
     public String getProcessName() {
         return processName;
     }
-    
+
 }
