@@ -71,9 +71,13 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
     public QueuedEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
         SelectionOrder defaultSelectionOrder = SelectionOrder.ORIGINAL;
         EntitySelectorConfig entitySelectorConfig_;
+        String entitySelectorId = "undefined";
         if (entitySelectorConfig == null) {
             entitySelectorConfig_ = new EntitySelectorConfig();
-            entitySelectorConfig_.setId("TODO"); // TODO
+            Class<?> entityClass = deduceEntityClass(configPolicy.getSolutionDescriptor());
+            entitySelectorId = entityClass.getName();
+            entitySelectorConfig_.setId(entitySelectorId);
+            entitySelectorConfig_.setEntityClass(entityClass);
             if (configPolicy.isSortEntitiesByDecreasingDifficultyEnabled()) {
                 entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
                 entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
@@ -103,7 +107,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
             for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
                 ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
                 EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig();
-                changeEntitySelectorConfig.setMimicSelectorRef("TODO"); // TODO
+                changeEntitySelectorConfig.setMimicSelectorRef(entitySelectorId);
                 changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
                 ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
                 changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
