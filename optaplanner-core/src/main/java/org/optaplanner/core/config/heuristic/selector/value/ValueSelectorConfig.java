@@ -16,8 +16,12 @@
 
 package org.optaplanner.core.config.heuristic.selector.value;
 
+import java.util.Comparator;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -26,7 +30,14 @@ import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterOrder;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SortingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
@@ -35,6 +46,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValue
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.InitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValueSelector;
 
 @XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig {
@@ -46,7 +58,11 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     // TODO filterClass
 
-    // TODO sorterClass, ...
+    protected ValueSorterManner sorterManner = null;
+    protected Class<? extends Comparator> sorterComparatorClass = null;
+    protected Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass = null;
+    protected SelectionSorterOrder sorterOrder = null;
+    protected Class<? extends SelectionSorter> sorterClass = null;
 
     protected Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass = null;
 
@@ -72,6 +88,46 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     public void setSelectionOrder(SelectionOrder selectionOrder) {
         this.selectionOrder = selectionOrder;
+    }
+
+    public ValueSorterManner getSorterManner() {
+        return sorterManner;
+    }
+
+    public void setSorterManner(ValueSorterManner sorterManner) {
+        this.sorterManner = sorterManner;
+    }
+
+    public Class<? extends Comparator> getSorterComparatorClass() {
+        return sorterComparatorClass;
+    }
+
+    public void setSorterComparatorClass(Class<? extends Comparator> sorterComparatorClass) {
+        this.sorterComparatorClass = sorterComparatorClass;
+    }
+
+    public Class<? extends SelectionSorterWeightFactory> getSorterWeightFactoryClass() {
+        return sorterWeightFactoryClass;
+    }
+
+    public void setSorterWeightFactoryClass(Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass) {
+        this.sorterWeightFactoryClass = sorterWeightFactoryClass;
+    }
+
+    public SelectionSorterOrder getSorterOrder() {
+        return sorterOrder;
+    }
+
+    public void setSorterOrder(SelectionSorterOrder sorterOrder) {
+        this.sorterOrder = sorterOrder;
+    }
+
+    public Class<? extends SelectionSorter> getSorterClass() {
+        return sorterClass;
+    }
+
+    public void setSorterClass(Class<? extends SelectionSorter> sorterClass) {
+        this.sorterClass = sorterClass;
     }
 
     public Class<? extends SelectionProbabilityWeightFactory> getProbabilityWeightFactoryClass() {
@@ -105,7 +161,7 @@ public class ValueSelectorConfig extends SelectorConfig {
                 inheritedSelectionOrder);
 
         validateCacheTypeVersusSelectionOrder(resolvedCacheType, resolvedSelectionOrder);
-//        validateSorting(resolvedSelectionOrder);
+        validateSorting(resolvedSelectionOrder);
         validateProbability(resolvedSelectionOrder);
 
         // baseValueSelector and lower should be SelectionOrder.ORIGINAL if they are going to get cached completely
@@ -116,7 +172,7 @@ public class ValueSelectorConfig extends SelectorConfig {
 //        valueSelector = applyFiltering(variableDescriptor, resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyInitializedChainedValueFilter(configPolicy, variableDescriptor,
                 resolvedCacheType, resolvedSelectionOrder, valueSelector);
-//        valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
@@ -182,6 +238,99 @@ public class ValueSelectorConfig extends SelectorConfig {
         if (configPolicy.isInitializedChainedValueFilterEnabled()
                     && variableDescriptor.isChained()) {
             valueSelector = new InitializedValueSelector(valueSelector);
+        }
+        return valueSelector;
+    }
+
+    private void validateSorting(SelectionOrder resolvedSelectionOrder) {
+        if ((sorterManner != null || sorterComparatorClass != null || sorterWeightFactoryClass != null
+                || sorterOrder != null || sorterClass != null)
+                && resolvedSelectionOrder != SelectionOrder.SORTED) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") with sorterManner ("  + sorterManner
+                    + ") and sorterComparatorClass ("  + sorterComparatorClass
+                    + ") and sorterWeightFactoryClass ("  + sorterWeightFactoryClass
+                    + ") and sorterOrder ("  + sorterOrder
+                    + ") and sorterClass ("  + sorterClass
+                    + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
+                    + ") that is not " + SelectionOrder.SORTED + ".");
+        }
+        if (sorterManner != null && sorterComparatorClass != null) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") has both a sorterManner (" + sorterManner
+                    + ") and a sorterComparatorClass (" + sorterComparatorClass + ").");
+        }
+        if (sorterManner != null && sorterWeightFactoryClass != null) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") has both a sorterManner (" + sorterManner
+                    + ") and a sorterWeightFactoryClass (" + sorterWeightFactoryClass + ").");
+        }
+        if (sorterManner != null && sorterClass != null) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") has both a sorterManner (" + sorterManner
+                    + ") and a sorterClass (" + sorterClass + ").");
+        }
+        if (sorterManner != null && sorterOrder != null) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") with sorterManner (" + sorterManner
+                    + ") has a non-null sorterOrder (" + sorterOrder + ").");
+        }
+        if (sorterComparatorClass != null && sorterWeightFactoryClass != null) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") has both a sorterComparatorClass (" + sorterComparatorClass
+                    + ") and a sorterWeightFactoryClass (" + sorterWeightFactoryClass + ").");
+        }
+        if (sorterComparatorClass != null && sorterClass != null) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") has both a sorterComparatorClass (" + sorterComparatorClass
+                    + ") and a sorterClass (" + sorterClass + ").");
+        }
+        if (sorterWeightFactoryClass != null && sorterClass != null) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") has both a sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                    + ") and a sorterClass (" + sorterClass + ").");
+        }
+        if (sorterClass != null && sorterOrder != null) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") with sorterClass (" + sorterClass
+                    + ") has a non-null sorterOrder (" + sorterOrder + ").");
+        }
+    }
+
+    private ValueSelector applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            ValueSelector valueSelector) {
+        if (resolvedSelectionOrder == SelectionOrder.SORTED) {
+            SelectionSorter sorter;
+            if (sorterManner != null) {
+                sorter = sorterManner.determineSorter(valueSelector.getVariableDescriptor());
+            } else if (sorterComparatorClass != null) {
+                Comparator<Object> sorterComparator = ConfigUtils.newInstance(this,
+                        "sorterComparatorClass", sorterComparatorClass);
+                sorter = new ComparatorSelectionSorter(sorterComparator,
+                        SelectionSorterOrder.resolve(sorterOrder));
+            } else if (sorterWeightFactoryClass != null) {
+                SelectionSorterWeightFactory sorterWeightFactory = ConfigUtils.newInstance(this,
+                        "sorterWeightFactoryClass", sorterWeightFactoryClass);
+                sorter = new WeightFactorySelectionSorter(sorterWeightFactory,
+                        SelectionSorterOrder.resolve(sorterOrder));
+            } else if (sorterClass != null) {
+                sorter = ConfigUtils.newInstance(this, "sorterClass", sorterClass);
+            } else {
+                throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                        + ") with resolvedSelectionOrder ("  + resolvedSelectionOrder
+                        + ") needs a sorterManner (" + sorterManner
+                        + ") or a sorterComparatorClass (" + sorterComparatorClass
+                        + ") or a sorterWeightFactoryClass (" + sorterWeightFactoryClass
+                        + ") or a sorterClass (" + sorterClass + ").");
+            }
+            if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+                throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") needs to be based on a EntityIndependentValueSelector."
+                        + " Check your @" + ValueRange.class.getSimpleName() + " annotations.");
+            }
+            valueSelector = new SortingValueSelector((EntityIndependentValueSelector) valueSelector,
+                    resolvedCacheType, sorter);
         }
         return valueSelector;
     }
@@ -256,6 +405,16 @@ public class ValueSelectorConfig extends SelectorConfig {
         }
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
+        sorterManner = ConfigUtils.inheritOverwritableProperty(
+                sorterManner, inheritedConfig.getSorterManner());
+        sorterComparatorClass = ConfigUtils.inheritOverwritableProperty(
+                sorterComparatorClass, inheritedConfig.getSorterComparatorClass());
+        sorterWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
+                sorterWeightFactoryClass, inheritedConfig.getSorterWeightFactoryClass());
+        sorterOrder = ConfigUtils.inheritOverwritableProperty(
+                sorterOrder, inheritedConfig.getSorterOrder());
+        sorterClass = ConfigUtils.inheritOverwritableProperty(
+                sorterClass, inheritedConfig.getSorterClass());
         probabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 probabilityWeightFactoryClass, inheritedConfig.getProbabilityWeightFactoryClass());
     }
@@ -263,6 +422,33 @@ public class ValueSelectorConfig extends SelectorConfig {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + variableName + ")";
+    }
+
+    /**
+     * Build-in ways of sorting.
+     */
+    public static enum ValueSorterManner {
+        INCREASING_STRENGTH;
+
+        public SelectionSorter determineSorter(PlanningVariableDescriptor variableDescriptor) {
+            SelectionSorter sorter;
+            switch (this) {
+                case INCREASING_STRENGTH:
+                    sorter = variableDescriptor.getIncreasingStrengthSorter();
+                    if (sorter == null) {
+                        throw new IllegalArgumentException("The sorterManner (" + this
+                                + ") on entity class ("
+                                + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
+                                + ")'s variable (" + variableDescriptor.getVariableName()
+                                + ") fails because that variable getter's " + PlanningVariable.class.getSimpleName()
+                                + " annotation does not declare any strength comparison.");
+                    }
+                    return sorter;
+                default:
+                    throw new IllegalStateException("The sorterManner ("
+                            + this + ") is not implemented.");
+            }
+        }
     }
 
 }

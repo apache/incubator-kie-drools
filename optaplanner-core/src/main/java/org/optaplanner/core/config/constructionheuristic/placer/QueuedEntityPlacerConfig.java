@@ -111,10 +111,9 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
                 ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
                 changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
                 if (configPolicy.isSortValuesByIncreasingStrengthEnabled()) {
+                    changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
                     changeValueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-                    // TODO
-
-
+                    changeValueSelectorConfig.setSorterManner(ValueSelectorConfig.ValueSorterManner.INCREASING_STRENGTH);
                 }
                 changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
                 subMoveSelectorConfigList.add(changeMoveSelectorConfig);

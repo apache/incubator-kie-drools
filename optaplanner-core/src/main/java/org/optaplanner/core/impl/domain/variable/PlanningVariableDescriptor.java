@@ -38,8 +38,12 @@ import org.optaplanner.core.impl.domain.value.PlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.value.UndefinedPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.domain.variable.shadow.ShadowVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
 import org.optaplanner.core.impl.solution.Solution;
 
@@ -53,6 +57,7 @@ public class PlanningVariableDescriptor {
     private PlanningValueRangeDescriptor valueRangeDescriptor;
     private boolean nullable;
     private SelectionFilter reinitializeVariableEntityFilter;
+    private SelectionSorter increasingStrengthSorter;
     private PlanningValueSorter valueSorter;
 
     private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
@@ -152,11 +157,15 @@ public class PlanningVariableDescriptor {
         if (strengthComparatorClass != null) {
             Comparator<Object> strengthComparator = ConfigUtils.newInstance(this,
                     "strengthComparatorClass", strengthComparatorClass);
+            increasingStrengthSorter = new ComparatorSelectionSorter(
+                    strengthComparator, SelectionSorterOrder.ASCENDING);
             valueSorter.setStrengthComparator(strengthComparator);
         }
         if (strengthWeightFactoryClass != null) {
             SelectionSorterWeightFactory strengthWeightFactory = ConfigUtils.newInstance(this,
                     "strengthWeightFactoryClass", strengthWeightFactoryClass);
+            increasingStrengthSorter = new WeightFactorySelectionSorter(
+                    strengthWeightFactory, SelectionSorterOrder.ASCENDING);
             valueSorter.setStrengthWeightFactory(strengthWeightFactory);
         }
     }
@@ -319,6 +328,10 @@ public class PlanningVariableDescriptor {
     @Deprecated
     public boolean isPlanningValuesCacheable() {
         return valueRangeDescriptor.isValuesCacheable();
+    }
+
+    public SelectionSorter getIncreasingStrengthSorter() {
+        return increasingStrengthSorter;
     }
 
     @Deprecated
