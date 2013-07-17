@@ -18,6 +18,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.builder.BuildContext;
 
@@ -48,7 +49,7 @@ public class
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
        
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         // objectTypeNode.
     }

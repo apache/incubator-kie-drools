@@ -18,6 +18,7 @@ package org.drools.compiler.reteoo;
 
 import org.drools.core.FactException;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -33,7 +34,6 @@ import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.NodeSet;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -110,7 +110,7 @@ public class MockLeftTupleSink extends LeftTupleSource
 
     }
 
-    public List getPropagatedTuples(final ReteooWorkingMemory workingMemory,
+    public List getPropagatedTuples(final AbstractWorkingMemory workingMemory,
                                     final LeftTupleSink sink) {
         // TODO Auto-generated method stub
         return Collections.EMPTY_LIST;

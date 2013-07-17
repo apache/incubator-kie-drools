@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.drools.core.Agenda;
 import org.drools.core.RuleBaseFactory;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextImpl;
@@ -121,7 +122,7 @@ public class SchedulerTest extends DroolsTestCase {
     public void testDoLoopScheduledActivation() throws Exception {
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
         final Agenda agenda = workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
@@ -152,7 +153,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                                                             true  );
                     node.assertLeftTuple( tuple2,
                                       context2,
-                                      (ReteooWorkingMemory) workingMemory );
+                                      (AbstractWorkingMemory) workingMemory );
                 }
                 data.add( "tested" );
             }
@@ -203,7 +204,7 @@ public class SchedulerTest extends DroolsTestCase {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
         final Agenda agenda = workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
@@ -238,7 +239,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                                                             true  );
                     node.assertLeftTuple( tuple2,
                                       context2,
-                                      (ReteooWorkingMemory) workingMemory );
+                                      (AbstractWorkingMemory) workingMemory );
                 }
                 data.add( "tested" );
             }

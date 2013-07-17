@@ -205,4 +205,5 @@ public interface InternalWorkingMemory
     
     InternalProcessRuntime getProcessRuntime();
 
+    void closeLiveQuery(InternalFactHandle factHandle);
 }

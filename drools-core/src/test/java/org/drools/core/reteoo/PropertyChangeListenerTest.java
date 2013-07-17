@@ -20,6 +20,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import org.drools.core.RuleBaseFactory;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -44,7 +45,7 @@ public class PropertyChangeListenerTest {
     
     @Test
     public void test1() {
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   this.entryPoint,

@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
@@ -54,7 +55,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
     Rule                    rule;
     PropagationContext      context;
-    ReteooWorkingMemory     workingMemory;
+    AbstractWorkingMemory   workingMemory;
     MockObjectSource        objectSource;
     MockTupleSource         tupleSource;
     MockLeftTupleSink       sink;
@@ -68,48 +69,48 @@ public class JoinNodeTest extends DroolsTestCase {
     @Before
     public void setUp() {
         // create mock objects
-        constraint = mock( BetaNodeFieldConstraint.class );
-        final ContextEntry c = mock( ContextEntry.class );
+        constraint = mock(BetaNodeFieldConstraint.class);
+        final ContextEntry c = mock(ContextEntry.class);
 
-        when( constraint.createContextEntry() ).thenReturn( c );
+        when(constraint.createContextEntry()).thenReturn(c);
 
-        this.rule = new Rule( "test-rule" );
-        this.context = new PropagationContextImpl( 0,
-                                                   PropagationContext.INSERTION, null, null, null );
-        this.workingMemory = new ReteooWorkingMemory( 1,
-                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        this.rule = new Rule("test-rule");
+        this.context = new PropagationContextImpl(0,
+                                                  PropagationContext.INSERTION, null, null, null);
+        this.workingMemory = new AbstractWorkingMemory(1,
+                                                     (ReteooRuleBase) RuleBaseFactory.newRuleBase());
 
-        this.tupleSource = new MockTupleSource( 4 );
-        this.objectSource = new MockObjectSource( 4 );
+        this.tupleSource = new MockTupleSource(4);
+        this.objectSource = new MockObjectSource(4);
         this.sink = new MockLeftTupleSink();
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator());
 
-        this.node = new JoinNode( 15, this.tupleSource, this.objectSource,
-                                  new DefaultBetaConstraints(
-                                                              new BetaNodeFieldConstraint[]{this.constraint},
-                                                              configuration ),
-                                  buildContext );
+        this.node = new JoinNode(15, this.tupleSource, this.objectSource,
+                                 new DefaultBetaConstraints(
+                                         new BetaNodeFieldConstraint[]{this.constraint},
+                                         configuration),
+                                 buildContext);
 
-        this.node.addTupleSink( this.sink );
+        this.node.addTupleSink(this.sink);
 
-        this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
+        this.memory = (BetaMemory) this.workingMemory.getNodeMemory(this.node);
 
         // check memories are empty
-        assertEquals( 0,
-                      this.memory.getLeftTupleMemory().size() );
-        assertEquals( 0,
-                      this.memory.getRightTupleMemory().size() );
+        assertEquals(0,
+                     this.memory.getLeftTupleMemory().size());
+        assertEquals(0,
+                     this.memory.getRightTupleMemory().size());
 
     }
 
     @Test
     public void testAttach() throws Exception {
-        when( constraint.isAllowedCachedLeft( any( ContextEntry.class ),
-                                              any( InternalFactHandle.class ) ) ).thenReturn( true );
+        when(constraint.isAllowedCachedLeft(any(ContextEntry.class),
+                                            any( InternalFactHandle.class ) ) ).thenReturn( true );
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ),
                                                any( ContextEntry.class ) ) ).thenReturn( true );
 
@@ -155,7 +156,7 @@ public class JoinNodeTest extends DroolsTestCase {
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ),
                                                any( ContextEntry.class ) ) ).thenReturn( true );
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final MockObjectSource objectSource = new MockObjectSource( 1 );
@@ -233,7 +234,7 @@ public class JoinNodeTest extends DroolsTestCase {
         conf.setPhreakEnabled(false);
         conf.setSequential( true );
 
-        this.workingMemory = new ReteooWorkingMemory( 1,
+        this.workingMemory = new AbstractWorkingMemory( 1,
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory
@@ -521,7 +522,7 @@ public class JoinNodeTest extends DroolsTestCase {
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ),
                                                any( ContextEntry.class ) ) ).thenReturn( true );
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory(
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory(
                                                                            1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
@@ -584,7 +585,7 @@ public class JoinNodeTest extends DroolsTestCase {
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
         when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory(1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory(1,
                 (ReteooRuleBase) RuleBaseFactory.newRuleBase());
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory

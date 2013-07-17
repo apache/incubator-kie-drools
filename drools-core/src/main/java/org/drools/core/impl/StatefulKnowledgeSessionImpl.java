@@ -31,6 +31,7 @@ import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -64,7 +65,6 @@ import org.drools.core.event.rule.impl.RuleFlowGroupActivatedEventImpl;
 import org.drools.core.event.rule.impl.RuleFlowGroupDeactivatedEventImpl;
 import org.drools.core.reteoo.DisposedReteooWorkingMemory;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.rule.Rule;
@@ -112,12 +112,12 @@ public class StatefulKnowledgeSessionImpl
     public ReteooWorkingMemoryInterface session;
     public KnowledgeBase                kbase;
 
-    public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session) {
+    public StatefulKnowledgeSessionImpl(AbstractWorkingMemory session) {
         this( session,
               new KnowledgeBaseImpl( session.getRuleBase() ) );
     }
 
-    public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session,
+    public StatefulKnowledgeSessionImpl(AbstractWorkingMemory session,
                                         KnowledgeBase kbase) {
         this.session = session;
         this.kbase = kbase;

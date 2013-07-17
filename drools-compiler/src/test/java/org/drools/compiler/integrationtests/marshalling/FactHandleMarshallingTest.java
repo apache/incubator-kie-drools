@@ -31,7 +31,6 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.EntryPoint;
 import org.junit.Assert;
 import org.junit.Test;
@@ -71,7 +70,7 @@ public class FactHandleMarshallingTest {
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
         SessionConfiguration sessionConf = ((SessionConfiguration) ksconf);
-        AbstractWorkingMemory wm = new ReteooWorkingMemory(1, (InternalRuleBase) ruleBase, 
+        AbstractWorkingMemory wm = new AbstractWorkingMemory(1, (InternalRuleBase) ruleBase,
                 sessionConf, EnvironmentFactory.newEnvironment());
         
         return wm;

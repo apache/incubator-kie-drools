@@ -32,6 +32,7 @@ import org.drools.core.FactHandle;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -45,7 +46,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.test.dsl.DslStep;
 import org.drools.core.reteoo.test.dsl.NodeTestCase;
@@ -337,7 +337,7 @@ public class ReteDslTestEngineTest {
                                                                  null,
                                                                  null,
                                                                  null );
-        ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( join1 );

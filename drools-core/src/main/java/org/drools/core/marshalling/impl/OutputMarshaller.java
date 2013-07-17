@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.DefaultAgenda;
@@ -60,7 +61,6 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.WindowNode;
@@ -103,7 +103,7 @@ public class OutputMarshaller {
 
     public static void writeSession(MarshallerWriteContext context) throws IOException {
         //context.out.println( "... write session");
-        ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
+        AbstractWorkingMemory wm = (AbstractWorkingMemory) context.wm;
         wm.getAgenda().unstageActivations();
 
         context.writeBoolean( false );
@@ -245,7 +245,7 @@ public class OutputMarshaller {
     }
 
     public static void writeActionQueue(MarshallerWriteContext context) throws IOException {
-        ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
+        AbstractWorkingMemory wm = (AbstractWorkingMemory) context.wm;
 
         WorkingMemoryAction[] queue = wm.getActionQueue().toArray( new WorkingMemoryAction[wm.getActionQueue().size()] );
         for ( int i = queue.length - 1; i >= 0; i-- ) {

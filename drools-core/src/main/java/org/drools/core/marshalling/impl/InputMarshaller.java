@@ -29,6 +29,7 @@ import org.drools.core.RuntimeDroolsException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.BaseNode;
@@ -73,8 +74,6 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
-import org.drools.core.reteoo.ReteooStatefulSession;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
@@ -122,7 +121,7 @@ public class InputMarshaller {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public static ReteooStatefulSession readSession( ReteooStatefulSession session,
+    public static AbstractWorkingMemory readSession( AbstractWorkingMemory session,
             MarshallerReaderContext context ) throws IOException,
             ClassNotFoundException {
         boolean multithread = context.readBoolean();
@@ -158,7 +157,7 @@ public class InputMarshaller {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public static ReteooStatefulSession readSession( MarshallerReaderContext context,
+    public static AbstractWorkingMemory readSession( MarshallerReaderContext context,
             int id ) throws IOException,
             ClassNotFoundException {
         return readSession( context,
@@ -167,7 +166,7 @@ public class InputMarshaller {
                             SessionConfiguration.getDefaultInstance() );
     }
 
-    public static ReteooStatefulSession readSession( MarshallerReaderContext context,
+    public static AbstractWorkingMemory readSession( MarshallerReaderContext context,
             int id,
             Environment environment,
             SessionConfiguration config ) throws IOException,
@@ -194,7 +193,7 @@ public class InputMarshaller {
 
         readAgenda( context,
                     agenda );
-        ReteooStatefulSession session = new ReteooStatefulSession( id,
+        AbstractWorkingMemory session = new AbstractWorkingMemory( id,
                                                                    context.ruleBase,
                                                                    handleFactory,
                                                                    initialFactHandle,
@@ -213,7 +212,7 @@ public class InputMarshaller {
                             context );
     }
 
-    public static ReteooStatefulSession readSession( ReteooStatefulSession session,
+    public static AbstractWorkingMemory readSession( AbstractWorkingMemory session,
             DefaultAgenda agenda,
             long time,
             boolean multithread,
@@ -352,7 +351,7 @@ public class InputMarshaller {
     }
 
     public static void readActionQueue( MarshallerReaderContext context ) throws IOException, ClassNotFoundException {
-        ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
+        AbstractWorkingMemory wm = (AbstractWorkingMemory) context.wm;
         Queue<WorkingMemoryAction> actionQueue = wm.getActionQueue();
         while (context.readShort() == PersisterEnums.WORKING_MEMORY_ACTION) {
             actionQueue.offer( PersisterHelper.readWorkingMemoryAction( context ) );

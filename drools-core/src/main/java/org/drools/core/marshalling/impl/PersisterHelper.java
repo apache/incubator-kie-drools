@@ -26,6 +26,8 @@ import java.security.SignatureException;
 import java.util.Map.Entry;
 
 import org.drools.core.RuntimeDroolsException;
+import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertAction;
+import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteExpireAction;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.TruthMaintenanceSystem.LogicalCallback;
@@ -35,8 +37,6 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Header;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex.Builder;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PropagationQueuingNode.PropagateAction;
-import org.drools.core.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
-import org.drools.core.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorExpireWMAction;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategy.Context;

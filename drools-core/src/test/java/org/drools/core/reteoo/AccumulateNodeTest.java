@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
@@ -51,7 +52,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
     Rule                    rule;
     PropagationContext      context;
-    ReteooWorkingMemory     workingMemory;
+    AbstractWorkingMemory     workingMemory;
     MockObjectSource        objectSource;
     MockTupleSource         tupleSource;
     MockLeftTupleSink       sink;
@@ -76,7 +77,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ruleBase.getReteooBuilder().getIdGenerator() );
 
-        this.workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        this.workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         this.tupleSource = new MockTupleSource( 4 );
         this.objectSource = new MockObjectSource( 4 );
@@ -159,7 +160,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     /**
-     * Test method for {@link org.kie.reteoo.AccumulateNode#assertLeftTuple(org.kie.reteoo.LeftTupleImpl, org.kie.spi.PropagationContext, org.kie.reteoo.ReteooWorkingMemory)}.
+     * Test method for {@link org.kie.reteoo.AccumulateNode#assertLeftTuple(org.kie.reteoo.LeftTupleImpl, org.kie.spi.PropagationContext, org.kie.reteoo.AbstractWorkingMemory)}.
      */
     @Test
     public void testAssertTuple() {
@@ -210,7 +211,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     /**
-     * Test method for {@link org.kie.reteoo.AccumulateNode#assertLeftTuple(org.kie.reteoo.LeftTupleImpl, org.kie.spi.PropagationContext, org.kie.reteoo.ReteooWorkingMemory)}.
+     * Test method for {@link org.kie.reteoo.AccumulateNode#assertLeftTuple(org.kie.reteoo.LeftTupleImpl, org.kie.spi.PropagationContext, org.kie.reteoo.AbstractWorkingMemory)}.
      */
     @Test
     public void testAssertTupleWithObjects() {
@@ -270,7 +271,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     /**
-     * Test method for {@link org.kie.reteoo.AccumulateNode#retractLeftTuple(org.kie.reteoo.LeftTupleImpl, org.kie.spi.PropagationContext, org.kie.reteoo.ReteooWorkingMemory)}.
+     * Test method for {@link org.kie.reteoo.AccumulateNode#retractLeftTuple(org.kie.reteoo.LeftTupleImpl, org.kie.spi.PropagationContext, org.kie.reteoo.AbstractWorkingMemory)}.
      */
     @Test
     public void testRetractTuple() {
@@ -312,7 +313,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ruleBase.getReteooBuilder().getIdGenerator() );
 
-        this.workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        this.workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final MockObjectSource objectSource = new MockObjectSource( 1 );
         final MockTupleSource tupleSource = new MockTupleSource( 1 );
@@ -360,7 +361,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         this.node.addTupleSink( this.sink );
 
-        this.workingMemory = new ReteooWorkingMemory( 1,
+        this.workingMemory = new AbstractWorkingMemory( 1,
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
 
         this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).betaMemory;

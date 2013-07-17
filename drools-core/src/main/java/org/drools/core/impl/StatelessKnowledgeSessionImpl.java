@@ -29,6 +29,8 @@ import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.common.AbstractWorkingMemory;
+import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.event.AgendaEventSupport;
@@ -37,8 +39,6 @@ import org.drools.core.event.WorkingMemoryEventSupport;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.AgendaEventListenerWrapper;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper;
 import org.drools.core.reteoo.InitialFactImpl;
-import org.drools.core.reteoo.ReteooWorkingMemory;
-import org.drools.core.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -110,10 +110,10 @@ public class StatelessKnowledgeSessionImpl
         }
         this.ruleBase.readLock();
         try {
-            ReteooWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
-                                                              this.ruleBase,
-                                                              (SessionConfiguration) this.conf,
-                                                              this.environment );
+            AbstractWorkingMemory wm = new AbstractWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
+                                                                  this.ruleBase,
+                                                                  (SessionConfiguration) this.conf,
+                                                                  this.environment );
 
             // we don't pass the mapped listener wrappers to the session constructor anymore,
             // because they would be ignored anyway, since the wm already contains those listeners

@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.core.SessionConfiguration;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.DefaultAgenda;
@@ -56,8 +57,6 @@ import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.reteoo.ReteooStatefulSession;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.Activation;
@@ -104,7 +103,7 @@ public class ProtobufInputMarshaller {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public static ReteooStatefulSession readSession(ReteooStatefulSession session,
+    public static AbstractWorkingMemory readSession(AbstractWorkingMemory session,
                                                     MarshallerReaderContext context) throws IOException,
                                                                                     ClassNotFoundException {
 
@@ -131,17 +130,17 @@ public class ProtobufInputMarshaller {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public static ReteooStatefulSession readSession(MarshallerReaderContext context,
+    public static AbstractWorkingMemory readSession(MarshallerReaderContext context,
                                                     int id) throws IOException,
                                                            ClassNotFoundException {
-        ReteooStatefulSession session = readSession( context,
+        AbstractWorkingMemory session = readSession( context,
                                                      id,
                                                      EnvironmentFactory.newEnvironment(),
                                                      SessionConfiguration.getDefaultInstance() );
         return session;
     }
 
-    public static ReteooStatefulSession readSession(MarshallerReaderContext context,
+    public static AbstractWorkingMemory readSession(MarshallerReaderContext context,
                                                     int id,
                                                     Environment environment,
                                                     SessionConfiguration config) throws IOException,
@@ -149,7 +148,7 @@ public class ProtobufInputMarshaller {
 
         ProtobufMessages.KnowledgeSession _session = loadAndParseSession( context );
         
-        ReteooStatefulSession session = createAndInitializeSession( context,
+        AbstractWorkingMemory session = createAndInitializeSession( context,
                                                                     id,
                                                                     environment,
                                                                     config,
@@ -161,7 +160,7 @@ public class ProtobufInputMarshaller {
                             context );
     }
 
-    private static DefaultAgenda resetSession(ReteooStatefulSession session,
+    private static DefaultAgenda resetSession(AbstractWorkingMemory session,
                                               MarshallerReaderContext context,
                                               ProtobufMessages.KnowledgeSession _session) {
         session.reset( _session.getRuleData().getLastId(),
@@ -175,7 +174,7 @@ public class ProtobufInputMarshaller {
         return agenda;
     }
 
-    private static ReteooStatefulSession createAndInitializeSession(MarshallerReaderContext context,
+    private static AbstractWorkingMemory createAndInitializeSession(MarshallerReaderContext context,
                                                                     int id,
                                                                     Environment environment,
                                                                     SessionConfiguration config,
@@ -195,7 +194,7 @@ public class ProtobufInputMarshaller {
                     _session.getRuleData(),
                     agenda );
 
-        ReteooStatefulSession session = new ReteooStatefulSession( id,
+        AbstractWorkingMemory session = new AbstractWorkingMemory( id,
                                                                    context.ruleBase,
                                                                    handleFactory,
                                                                    initialFactHandle,
@@ -218,8 +217,8 @@ public class ProtobufInputMarshaller {
         return ProtobufMessages.KnowledgeSession.parseFrom( _header.getPayload(), registry );
     }
 
-    public static ReteooStatefulSession readSession(ProtobufMessages.KnowledgeSession _session,
-                                                    ReteooStatefulSession session,
+    public static AbstractWorkingMemory readSession(ProtobufMessages.KnowledgeSession _session,
+                                                    AbstractWorkingMemory session,
                                                     DefaultAgenda agenda,
                                                     MarshallerReaderContext context) throws IOException,
                                                                                     ClassNotFoundException {
@@ -427,7 +426,7 @@ public class ProtobufInputMarshaller {
     public static void readActionQueue(MarshallerReaderContext context,
                                        RuleData _session) throws IOException,
                                                          ClassNotFoundException {
-        ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
+        AbstractWorkingMemory wm = (AbstractWorkingMemory) context.wm;
         Queue<WorkingMemoryAction> actionQueue = wm.getActionQueue();
         for ( ProtobufMessages.ActionQueue.Action _action : _session.getActionQueue().getActionList() ) {
             actionQueue.offer( PersisterHelper.deserializeWorkingMemoryAction( context,

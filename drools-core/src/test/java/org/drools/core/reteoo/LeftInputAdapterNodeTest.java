@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.test.model.DroolsTestCase;
@@ -105,7 +106,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                                                                        buildContext );
         liaNode.attach(context);
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final MockLeftTupleSink sink = new MockLeftTupleSink();

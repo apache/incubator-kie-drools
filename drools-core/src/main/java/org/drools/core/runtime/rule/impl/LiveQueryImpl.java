@@ -18,23 +18,23 @@ package org.drools.core.runtime.rule.impl;
 
 import org.drools.core.FactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.ReteooWorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
 import org.kie.api.runtime.rule.LiveQuery;
 
 public class LiveQueryImpl
     implements
     LiveQuery {
-    ReteooWorkingMemory wm;
-    InternalFactHandle  factHandle;
+    InternalWorkingMemory wm;
+    InternalFactHandle    factHandle;
 
-    public LiveQueryImpl(ReteooWorkingMemory wm,
+    public LiveQueryImpl(InternalWorkingMemory wm,
                          FactHandle factHandle) {
         this.wm = wm;
         this.factHandle = (InternalFactHandle) factHandle;
     }
 
     public void close() {
-        this.wm.closeLiveQuery( this.factHandle );
+        this.wm.closeLiveQuery(this.factHandle);
     }
 
 }

@@ -30,6 +30,7 @@ import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
@@ -103,7 +104,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
-        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = ( AbstractWorkingMemory ) ruleBase.newStatefulSession();
 
         final Rete source = ruleBase.getRete();
 
@@ -158,7 +159,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
         buildContext.setObjectTypeNodeMemoryEnabled( false );
         
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            ruleBase );
 
         final Rete source = ruleBase.getRete();
@@ -203,7 +204,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
         
-        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = ( AbstractWorkingMemory ) ruleBase.newStatefulSession();
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   this.entryPoint,
@@ -251,7 +252,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory)ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory)ruleBase.newStatefulSession();
 
         final Rete source = new Rete((InternalRuleBase) ruleBase);
 
@@ -304,7 +305,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            (ReteooRuleBase) ruleBase );
 
         final Rete source = new Rete( (InternalRuleBase)ruleBase);
@@ -371,7 +372,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     public void testAssertObjectWithShadowEnabled() throws Exception {
 
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            ruleBase );
 
         final Rete source = ruleBase.getRete();
@@ -419,7 +420,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
-        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = ( AbstractWorkingMemory ) ruleBase.newStatefulSession();
 
         final Rete source = ruleBase.getRete();
         
