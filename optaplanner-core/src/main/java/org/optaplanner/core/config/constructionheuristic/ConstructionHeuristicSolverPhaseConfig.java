@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicSolv
 import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuristicSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
-import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
+import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.GreedyDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.forager.GreedyForager;
@@ -56,7 +56,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     // and also because the input config file should match the output config file
 
     protected ConstructionHeuristicType constructionHeuristicType = null;
-    protected ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType = null;
+    protected ConstructionHeuristicPickEarlyType pickEarlyType = null;
 
     // TODO This is a List due to XStream limitations. With JAXB it could be just a EntityPlacerConfig instead.
     @XStreamImplicit
@@ -70,12 +70,12 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         this.constructionHeuristicType = constructionHeuristicType;
     }
 
-    public ConstructionHeuristicPickEarlyType getConstructionHeuristicPickEarlyType() {
-        return constructionHeuristicPickEarlyType;
+    public ConstructionHeuristicPickEarlyType getPickEarlyType() {
+        return pickEarlyType;
     }
 
-    public void setConstructionHeuristicPickEarlyType(ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType) {
-        this.constructionHeuristicPickEarlyType = constructionHeuristicPickEarlyType;
+    public void setPickEarlyType(ConstructionHeuristicPickEarlyType pickEarlyType) {
+        this.pickEarlyType = pickEarlyType;
     }
 
     public List<EntityPlacerConfig> getEntityPlacerConfigList() {
@@ -96,7 +96,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
         if (!CollectionUtils.isEmpty(entityPlacerConfigList)) {
-            if (constructionHeuristicPickEarlyType != null) {
+            if (pickEarlyType != null) {
                 // TODO throw decent exception
                 throw new UnsupportedOperationException();
             }
@@ -217,9 +217,9 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     @Deprecated
     private GreedyForager buildGreedyForager() {
         GreedyForager forager = new GreedyForager();
-        ConstructionHeuristicPickEarlyType pickEarlyType = (this.constructionHeuristicPickEarlyType == null)
-                ? ConstructionHeuristicPickEarlyType.NEVER : this.constructionHeuristicPickEarlyType;
-        forager.setPickEarlyType(pickEarlyType);
+        ConstructionHeuristicPickEarlyType pickEarlyType_ = (this.pickEarlyType == null)
+                ? ConstructionHeuristicPickEarlyType.NEVER : this.pickEarlyType;
+        forager.setPickEarlyType(pickEarlyType_);
         return forager;
     }
 
@@ -258,8 +258,8 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         if (constructionHeuristicType == null) {
             constructionHeuristicType = inheritedConfig.getConstructionHeuristicType();
         }
-        if (constructionHeuristicPickEarlyType == null) {
-            constructionHeuristicPickEarlyType = inheritedConfig.getConstructionHeuristicPickEarlyType();
+        if (pickEarlyType == null) {
+            pickEarlyType = inheritedConfig.getPickEarlyType();
         }
         entityPlacerConfigList = ConfigUtils.inheritMergeableListProperty(
                 entityPlacerConfigList, inheritedConfig.getEntityPlacerConfigList());

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.constructionheuristic.greedyFit.decider;
+package org.optaplanner.core.impl.constructionheuristic.decider;
 
 public enum ConstructionHeuristicPickEarlyType {
     NEVER,
-    FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING;
+    FIRST_NON_DETERIORATING_SCORE;
 }

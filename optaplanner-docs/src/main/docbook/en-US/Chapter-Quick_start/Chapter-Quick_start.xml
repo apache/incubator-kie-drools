@@ -239,7 +239,7 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
   &lt;/termination&gt;
   &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
-    &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt;
+    &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
     &lt;acceptor&gt;
@@ -288,7 +288,7 @@ cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of
   &lt;/termination&gt;
   &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
-    &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt;
+    &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
     &lt;acceptor&gt;

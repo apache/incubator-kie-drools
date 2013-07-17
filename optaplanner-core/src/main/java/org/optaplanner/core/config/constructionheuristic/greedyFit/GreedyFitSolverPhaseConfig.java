@@ -19,7 +19,6 @@ package org.optaplanner.core.config.constructionheuristic.greedyFit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -29,7 +28,7 @@ import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.GreedyFitSolverPhase;
-import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
+import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.GreedyDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
@@ -40,7 +39,6 @@ import org.optaplanner.core.impl.heuristic.selector.entity.PlanningEntitySelecto
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueWalker;
 import org.optaplanner.core.impl.heuristic.selector.variable.PlanningVariableWalker;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("greedyFit")
@@ -107,7 +105,7 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
 
     private GreedyDecider buildGreedyDecider(SolutionDescriptor solutionDescriptor, EnvironmentMode environmentMode) {
         DefaultGreedyDecider greedyDecider = new DefaultGreedyDecider();
-        ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType = (this.constructionHeuristicPickEarlyType == null)
+        ConstructionHeuristicPickEarlyType pickEarlyType = (this.constructionHeuristicPickEarlyType == null)
                 ? ConstructionHeuristicPickEarlyType.NEVER : this.constructionHeuristicPickEarlyType;
 
         Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
@@ -130,7 +128,7 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         planningVariableWalker.setPlanningValueWalkerList(planningValueWalkerList);
         greedyDecider.setPlanningVariableWalker(planningVariableWalker);
         
-        // TODO greedyDecider.setConstructionHeuristicPickEarlyType(constructionHeuristicPickEarlyType);
+        // TODO greedyDecider.setConstructionHeuristicPickEarlyType(pickEarlyType);
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             greedyDecider.setAssertMoveScoreFromScratch(true);
         }

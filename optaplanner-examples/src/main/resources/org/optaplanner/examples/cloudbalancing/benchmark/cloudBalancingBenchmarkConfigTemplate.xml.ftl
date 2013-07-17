@@ -29,7 +29,7 @@
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+        <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
       </constructionHeuristic>
     </solver>
   </inheritedSolverBenchmark>

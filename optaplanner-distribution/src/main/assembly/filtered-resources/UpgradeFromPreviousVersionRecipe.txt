@@ -3438,3 +3438,16 @@ Now it simply does:
     xStream = new XStream();
     xStream.setMode(XStream.ID_REFERENCES);
 Normally this should have no relevant impact on your XML dataset files or your code.
+
+[MAJOR] The construction heuristic property <constructionHeuristicPickEarlyType> has been renamed to <pickEarlyType>.
+Also the value FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING has been renamed to FIRST_NON_DETERIORATING_SCORE.
+Before in *SolverConfig.java and *BenchmarkConfig.java:
+      <constructionHeuristic>
+        ...
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+After in *SolverConfig.java and *BenchmarkConfig.java:
+      <constructionHeuristic>
+        ...
+        <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+      </constructionHeuristic>

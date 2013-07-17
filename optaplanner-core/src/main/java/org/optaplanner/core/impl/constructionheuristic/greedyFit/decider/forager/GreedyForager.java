@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
+import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.GreedyMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitStepScope;
@@ -73,7 +73,7 @@ public class GreedyForager extends GreedySolverPhaseLifecycleListenerAdapter {
         switch (pickEarlyType) {
             case NEVER:
                 break;
-            case FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING:
+            case FIRST_NON_DETERIORATING_SCORE:
                 Score lastStepScore = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
                 if (lastStepScore != null && moveScope.getScore().compareTo(lastStepScore) >= 0) {

@@ -46,13 +46,15 @@
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!-- &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt; --&gt;
+    &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
 
       <note>
-        <para>The <literal>constructionHeuristicPickEarlyType</literal> of
-        <literal>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</literal> is a big speedup, which should be applied when
-        initializing a planning entity which can only make the score lower or equal. So if:</para>
+        <para>The <literal>pickEarlyType</literal> of <literal>FIRST_NON_DETERIORATING_SCORE</literal>
+        is a big speedup: for an entity, it picks the first move for which the score does not deteriorate the last step
+        score, ignoring all subsequent moves.
+        It should be applied when initializing a planning entity cannot improve the last step score:
+        it can only make the score lower or equal. So if:</para>
 
         <itemizedlist>
           <listitem>
@@ -60,12 +62,12 @@
           </listitem>
 
           <listitem>
-            <para>There is no negative constraint that can stop being broken by adding a planning entity (except if
+            <para>And there is no negative constraint that can stop being broken by adding a planning entity (except if
             another negative constraint gets broken which outweighs the first negative constraint).</para>
           </listitem>
         </itemizedlist>
 
-        <para>If that is not the case, then it can still be good to apply it in some cases, but not in most cases. Use
+        <para>If that is not the case, then it might still be good to apply it in some cases. Use
         the <literal>Benchmarker</literal> to decide.</para>
       </note>
     </section>
@@ -103,7 +105,7 @@
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!-- &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt; --&gt;
+    &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
     </section>
   </section>
@@ -135,7 +137,7 @@
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;BEST_FIT&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!-- &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt; --&gt;
+    &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
     </section>
   </section>
@@ -166,7 +168,7 @@
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;BEST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!-- &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt; --&gt;
+    &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
     </section>
   </section>

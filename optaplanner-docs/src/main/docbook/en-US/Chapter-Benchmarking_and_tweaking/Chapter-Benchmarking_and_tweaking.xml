@@ -80,7 +80,7 @@
       &lt;/termination&gt;
       &lt;constructionHeuristic&gt;
         &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
-        &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt;
+        &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt;
       &lt;/constructionHeuristic&gt;
     &lt;/solver&gt;
   &lt;/inheritedSolverBenchmark&gt;

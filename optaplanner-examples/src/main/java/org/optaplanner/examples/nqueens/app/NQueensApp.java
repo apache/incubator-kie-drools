@@ -33,7 +33,7 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.termination.TerminationConfig;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
+import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
@@ -93,8 +93,8 @@ public class NQueensApp extends CommonApp {
                 = new ConstructionHeuristicSolverPhaseConfig();
         constructionHeuristicSolverPhaseConfig.setConstructionHeuristicType(
                 ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING);
-        constructionHeuristicSolverPhaseConfig.setConstructionHeuristicPickEarlyType(
-                ConstructionHeuristicPickEarlyType.FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING);
+        constructionHeuristicSolverPhaseConfig.setPickEarlyType(
+                ConstructionHeuristicPickEarlyType.FIRST_NON_DETERIORATING_SCORE);
         solverPhaseConfigList.add(constructionHeuristicSolverPhaseConfig);
         LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
         ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
