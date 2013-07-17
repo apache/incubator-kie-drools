@@ -20,6 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.localsearch.decider.forager.PickEarlyType;
@@ -79,12 +80,12 @@ public class ForagerConfig {
         PickEarlyType pickEarlyType = (this.pickEarlyType == null) ? PickEarlyType.NEVER : this.pickEarlyType;
         int acceptedCountLimit = (this.acceptedCountLimit == null) ? Integer.MAX_VALUE : this.acceptedCountLimit;
 
-        AcceptedForager forager = new AcceptedForager(pickEarlyType, acceptedCountLimit);
         DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig_
                 = deciderScoreComparatorFactoryConfig == null ? new DeciderScoreComparatorFactoryConfig()
                 : deciderScoreComparatorFactoryConfig;
-        forager.setDeciderScoreComparatorFactory(
-                deciderScoreComparatorFactoryConfig_.buildDeciderScoreComparatorFactory());
+        DeciderScoreComparatorFactory deciderScoreComparatorFactory = deciderScoreComparatorFactoryConfig_
+                .buildDeciderScoreComparatorFactory();
+        AcceptedForager forager = new AcceptedForager(deciderScoreComparatorFactory, pickEarlyType, acceptedCountLimit);
         return forager;
     }
 

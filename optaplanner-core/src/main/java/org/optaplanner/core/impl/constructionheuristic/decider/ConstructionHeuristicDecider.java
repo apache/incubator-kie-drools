@@ -1,24 +1,31 @@
 package org.optaplanner.core.impl.constructionheuristic.decider;
 
+import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.placer.AbstractEntityPlacer;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.termination.Termination;
 
 public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
 
     protected final Termination termination;
+    protected final ConstructionHeuristicForager forager;
 
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
-    public ConstructionHeuristicDecider(Termination termination) {
+    public ConstructionHeuristicDecider(Termination termination, ConstructionHeuristicForager forager) {
         this.termination = termination;
+        this.forager = forager;
     }
 
     public void setAssertMoveScoreFromScratch(boolean assertMoveScoreFromScratch) {
@@ -29,33 +36,65 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
         this.assertExpectedUndoMoveScore = assertExpectedUndoMoveScore;
     }
 
-    public ConstructionHeuristicMoveScope nominateMove(ConstructionHeuristicStepScope stepScope, Placement placement) {
-        Score maxScore = null;
-        ConstructionHeuristicMoveScope nominatedMoveScope = null;
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
 
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        forager.solvingStarted(solverScope);
+    }
+
+    public void phaseStarted(ConstructionHeuristicSolverPhaseScope phaseScope) {
+        forager.phaseStarted(phaseScope);
+    }
+
+    public void stepStarted(ConstructionHeuristicStepScope stepScope) {
+        forager.stepStarted(stepScope);
+    }
+
+    public void stepEnded(ConstructionHeuristicStepScope stepScope) {
+        forager.stepEnded(stepScope);
+    }
+
+    public void phaseEnded(ConstructionHeuristicSolverPhaseScope phaseScope) {
+        forager.phaseEnded(phaseScope);
+    }
+
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        forager.solvingEnded(solverScope);
+    }
+
+    public void decideNextStep(ConstructionHeuristicStepScope stepScope, Placement placement) {
         int moveIndex = 0;
         for (Move move : placement) {
             ConstructionHeuristicMoveScope moveScope = new ConstructionHeuristicMoveScope(stepScope);
             moveScope.setMoveIndex(moveIndex);
+            moveIndex++;
             moveScope.setMove(move);
             // TODO use Selector filtering to filter out not doable moves
             if (!move.isMoveDoable(stepScope.getScoreDirector())) {
                 logger.trace("        Move index ({}) not doable, ignoring move ({}).", moveScope.getMoveIndex(), move);
             } else {
                 doMove(moveScope);
-                if (maxScore == null || moveScope.getScore().compareTo(maxScore) > 0) {
-                    maxScore = moveScope.getScore();
-                    // TODO for non explicit Best Fit *, default to random picking from a maxMoveScopeList?
-                    nominatedMoveScope = moveScope;
+                if (forager.isQuitEarly()) {
+                    break;
                 }
             }
-            moveIndex++;
             if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
                 break;
             }
         }
         stepScope.setSelectedMoveCount((long) moveIndex);
-        return nominatedMoveScope;
+        ConstructionHeuristicMoveScope pickedMoveScope = forager.pickMove(stepScope);
+        if (pickedMoveScope != null) {
+            Move step = pickedMoveScope.getMove();
+            stepScope.setStep(step);
+            if (logger.isDebugEnabled()) {
+                stepScope.setStepString(step.toString());
+            }
+            stepScope.setUndoStep(pickedMoveScope.getUndoMove());
+            stepScope.setScore(pickedMoveScope.getScore());
+        }
     }
 
     private void doMove(ConstructionHeuristicMoveScope moveScope) {
@@ -80,8 +119,7 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
             moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score, moveScope.getMove());
         }
         moveScope.setScore(score);
-        // TODO work with forager
-        // forager.addMove(moveScope);
+        forager.addMove(moveScope);
     }
 
 }

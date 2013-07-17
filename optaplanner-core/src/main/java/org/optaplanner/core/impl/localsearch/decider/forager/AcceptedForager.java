@@ -34,8 +34,7 @@ import org.optaplanner.core.api.score.Score;
  */
 public class AcceptedForager extends AbstractForager {
 
-    protected DeciderScoreComparatorFactory deciderScoreComparatorFactory;
-    // final to allow better hotspot optimization. TODO prove that it indeed makes a difference
+    protected final DeciderScoreComparatorFactory deciderScoreComparatorFactory;
     protected final PickEarlyType pickEarlyType;
     protected final int acceptedCountLimit;
 
@@ -50,7 +49,9 @@ public class AcceptedForager extends AbstractForager {
 
     protected LocalSearchMoveScope earlyPickedMoveScope;
 
-    public AcceptedForager(PickEarlyType pickEarlyType, int acceptedCountLimit) {
+    public AcceptedForager(DeciderScoreComparatorFactory deciderScoreComparatorFactory, PickEarlyType pickEarlyType,
+            int acceptedCountLimit) {
+        this.deciderScoreComparatorFactory = deciderScoreComparatorFactory;
         this.pickEarlyType = pickEarlyType;
         this.acceptedCountLimit = acceptedCountLimit;
         if (acceptedCountLimit < 1) {
@@ -59,21 +60,19 @@ public class AcceptedForager extends AbstractForager {
         }
     }
 
-    public void setDeciderScoreComparatorFactory(DeciderScoreComparatorFactory deciderScoreComparator) {
-        this.deciderScoreComparatorFactory = deciderScoreComparator;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
         deciderScoreComparatorFactory.phaseStarted(phaseScope);
     }
 
     @Override
     public void stepStarted(LocalSearchStepScope stepScope) {
+        super.stepStarted(stepScope);
         deciderScoreComparatorFactory.stepStarted(stepScope);
         scoreComparator = deciderScoreComparatorFactory.createDeciderScoreComparator();
         selectedMoveCount = 0L;
@@ -178,11 +177,13 @@ public class AcceptedForager extends AbstractForager {
 
     @Override
     public void stepEnded(LocalSearchStepScope stepScope) {
+        super.stepEnded(stepScope);
         deciderScoreComparatorFactory.stepEnded(stepScope);
     }
 
     @Override
     public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
         deciderScoreComparatorFactory.phaseEnded(phaseScope);
     }
 

@@ -65,14 +65,25 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
         ConstructionHeuristicStepScope stepScope = new ConstructionHeuristicStepScope(phaseScope);
         for (Placement placement : entityPlacer) {
             stepStarted(stepScope);
-            ConstructionHeuristicMoveScope moveScope = decider.nominateMove(stepScope, placement);
-            Move step = moveScope.getMove();
-            stepScope.setStep(step);
-            if (logger.isDebugEnabled()) {
-                stepScope.setStepString(step.toString());
+            decider.decideNextStep(stepScope, placement);
+            if (stepScope.getStep() == null) {
+                if (termination.isPhaseTerminated(phaseScope)) {
+                    logger.trace("    Step index ({}), time spend ({}) terminated without picking a nextStep.",
+                            stepScope.getStepIndex(),
+                            stepScope.getPhaseScope().calculateSolverTimeMillisSpend());
+                } else if (stepScope.getSelectedMoveCount() == 0L) {
+                    logger.warn("    No doable selected move at step index ({}), time spend ({})."
+                            + " Terminating phase early.",
+                            stepScope.getStepIndex(),
+                            stepScope.getPhaseScope().calculateSolverTimeMillisSpend());
+                } else {
+                    throw new IllegalStateException("The step index (" + stepScope.getStepIndex()
+                            + ") has selected move count (" + stepScope.getSelectedMoveCount()
+                            + ") but failed to pick a nextStep (" + stepScope.getStep() + ").");
+                }
+                // Although stepStarted has been called, stepEnded is not called for this step
+                break;
             }
-            stepScope.setUndoStep(moveScope.getUndoMove());
-            stepScope.setScore(moveScope.getScore());
             doStep(stepScope);
             stepEnded(stepScope);
             phaseScope.setLastCompletedStepScope(stepScope);
@@ -86,15 +97,15 @@ public class DefaultConstructionHeuristicSolverPhase extends AbstractSolverPhase
 
     private void doStep(ConstructionHeuristicStepScope stepScope) {
         ConstructionHeuristicSolverPhaseScope phaseScope = stepScope.getPhaseScope();
-        Move step = stepScope.getStep();
-        step.doMove(stepScope.getScoreDirector());
+        Move nextStep = stepScope.getStep();
+        nextStep.doMove(stepScope.getScoreDirector());
         // there is no need to recalculate the score, but we still need to set it
         phaseScope.getWorkingSolution().setScore(stepScope.getScore());
         if (assertStepScoreFromScratch) {
-            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), step);
+            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), nextStep);
         }
         if (assertExpectedStepScore) {
-            phaseScope.assertExpectedWorkingScore(stepScope.getScore(), step);
+            phaseScope.assertExpectedWorkingScore(stepScope.getScore(), nextStep);
         }
     }
 

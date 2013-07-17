@@ -64,8 +64,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
             stepScope.setTimeGradient(termination.calculatePhaseTimeGradient(phaseScope));
             stepStarted(stepScope);
             decider.decideNextStep(stepScope);
-            Move nextStep = stepScope.getStep();
-            if (nextStep == null) {
+            if (stepScope.getStep() == null) {
                 if (termination.isPhaseTerminated(phaseScope)) {
                     logger.trace("    Step index ({}), time spend ({}) terminated without picking a nextStep.",
                             stepScope.getStepIndex(),
@@ -78,25 +77,32 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
                 } else {
                     throw new IllegalStateException("The step index (" + stepScope.getStepIndex()
                             + ") has accepted/selected move count (" + stepScope.getAcceptedMoveCount() + "/"
-                            + stepScope.getSelectedMoveCount() + ") but failed to pick a nextStep (" + nextStep + ").");
+                            + stepScope.getSelectedMoveCount()
+                            + ") but failed to pick a nextStep (" + stepScope.getStep() + ").");
                 }
                 // Although stepStarted has been called, stepEnded is not called for this step
                 break;
             }
-            nextStep.doMove(stepScope.getScoreDirector());
-            // there is no need to recalculate the score, but we still need to set it
-            phaseScope.getWorkingSolution().setScore(stepScope.getScore());
-            if (assertStepScoreFromScratch) {
-                phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), nextStep);
-            }
-            if (assertExpectedStepScore) {
-                phaseScope.assertExpectedWorkingScore(stepScope.getScore(), nextStep);
-            }
+            doStep(stepScope);
             stepEnded(stepScope);
             phaseScope.setLastCompletedStepScope(stepScope);
             stepScope = new LocalSearchStepScope(phaseScope);
         }
         phaseEnded(phaseScope);
+    }
+
+    private void doStep(LocalSearchStepScope stepScope) {
+        LocalSearchSolverPhaseScope phaseScope = stepScope.getPhaseScope();
+        Move nextStep = stepScope.getStep();
+        nextStep.doMove(stepScope.getScoreDirector());
+        // there is no need to recalculate the score, but we still need to set it
+        phaseScope.getWorkingSolution().setScore(stepScope.getScore());
+        if (assertStepScoreFromScratch) {
+            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), nextStep);
+        }
+        if (assertExpectedStepScore) {
+            phaseScope.assertExpectedWorkingScore(stepScope.getScore(), nextStep);
+        }
     }
 
     @Override

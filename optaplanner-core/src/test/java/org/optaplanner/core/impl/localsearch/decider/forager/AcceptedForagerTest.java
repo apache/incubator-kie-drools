@@ -39,8 +39,8 @@ public class AcceptedForagerTest {
     @Test
     public void pickMoveMaxScoreAccepted() {
         // Setup
-        Forager forager = new AcceptedForager(PickEarlyType.NEVER, Integer.MAX_VALUE);
-        ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
+        Forager forager = new AcceptedForager(new NaturalDeciderScoreComparatorFactory(),
+                PickEarlyType.NEVER, Integer.MAX_VALUE);
         LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
@@ -71,8 +71,8 @@ public class AcceptedForagerTest {
     @Test
     public void pickMoveMaxScoreUnaccepted() {
         // Setup
-        Forager forager = new AcceptedForager(PickEarlyType.NEVER, Integer.MAX_VALUE);
-        ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
+        Forager forager = new AcceptedForager(new NaturalDeciderScoreComparatorFactory(),
+                PickEarlyType.NEVER, Integer.MAX_VALUE);
         LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
@@ -103,8 +103,8 @@ public class AcceptedForagerTest {
     @Test
     public void pickMoveFirstBestScoreImproving() {
         // Setup
-        Forager forager = new AcceptedForager(PickEarlyType.FIRST_BEST_SCORE_IMPROVING, Integer.MAX_VALUE);
-        ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
+        Forager forager = new AcceptedForager(new NaturalDeciderScoreComparatorFactory(),
+                PickEarlyType.FIRST_BEST_SCORE_IMPROVING, Integer.MAX_VALUE);
         LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
@@ -132,8 +132,8 @@ public class AcceptedForagerTest {
     @Test
     public void pickMoveFirstLastStepScoreImproving() {
         // Setup
-        Forager forager = new AcceptedForager(PickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING, Integer.MAX_VALUE);
-        ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
+        Forager forager = new AcceptedForager(new NaturalDeciderScoreComparatorFactory(),
+                PickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING, Integer.MAX_VALUE);
         LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);
@@ -161,8 +161,8 @@ public class AcceptedForagerTest {
     @Test
     public void pickMoveAcceptedRandomly() {
         // Setup
-        Forager forager = new AcceptedForager(PickEarlyType.NEVER, 3);
-        ((AcceptedForager) forager).setDeciderScoreComparatorFactory(new NaturalDeciderScoreComparatorFactory()); // TODO
+        Forager forager = new AcceptedForager(new NaturalDeciderScoreComparatorFactory(),
+                PickEarlyType.NEVER, 3);
         LocalSearchSolverPhaseScope phaseScope = createPhaseScope();
         forager.phaseStarted(phaseScope);
         LocalSearchStepScope stepScope = createStepScope(phaseScope);

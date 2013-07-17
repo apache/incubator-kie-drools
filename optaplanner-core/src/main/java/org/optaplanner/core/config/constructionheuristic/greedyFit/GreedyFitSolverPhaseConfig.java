@@ -28,7 +28,7 @@ import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.GreedyFitSolverPhase;
-import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicPickEarlyType;
+import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.GreedyDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;

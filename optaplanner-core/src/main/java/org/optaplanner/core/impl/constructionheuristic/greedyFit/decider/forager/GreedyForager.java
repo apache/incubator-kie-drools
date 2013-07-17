@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicPickEarlyType;
+import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.GreedyMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.scope.GreedyFitStepScope;

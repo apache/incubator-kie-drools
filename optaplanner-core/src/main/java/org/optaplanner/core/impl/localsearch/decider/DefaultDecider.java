@@ -102,6 +102,7 @@ public class DefaultDecider implements Decider {
         for (Move move : moveSelector) {
             LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
             moveScope.setMoveIndex(moveIndex);
+            moveIndex++;
             moveScope.setMove(move);
             // TODO use Selector filtering to filter out not doable moves
             if (!move.isMoveDoable(scoreDirector)) {
@@ -112,7 +113,6 @@ public class DefaultDecider implements Decider {
                     break;
                 }
             }
-            moveIndex++;
             if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
                 break;
             }

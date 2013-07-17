@@ -31,8 +31,10 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuristicSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
+import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
+import org.optaplanner.core.impl.constructionheuristic.decider.forager.DefaultConstructionHeuristicForager;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
-import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicPickEarlyType;
+import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.GreedyDecider;
 import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.forager.GreedyForager;
@@ -96,10 +98,6 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
         if (!CollectionUtils.isEmpty(entityPlacerConfigList)) {
-            if (pickEarlyType != null) {
-                // TODO throw decent exception
-                throw new UnsupportedOperationException();
-            }
             ConstructionHeuristicType constructionHeuristicType_ = constructionHeuristicType == null
                     ? ConstructionHeuristicType.FIRST_FIT : constructionHeuristicType;
             phaseConfigPolicy.setSortEntitiesByDecreasingDifficultyEnabled(
@@ -151,7 +149,10 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     }
 
     private ConstructionHeuristicDecider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
-        ConstructionHeuristicDecider decider = new ConstructionHeuristicDecider(termination);
+        ConstructionHeuristicPickEarlyType pickEarlyType_ = (this.pickEarlyType == null)
+                ? ConstructionHeuristicPickEarlyType.NEVER : this.pickEarlyType;
+        ConstructionHeuristicForager forager = new DefaultConstructionHeuristicForager(pickEarlyType_);
+        ConstructionHeuristicDecider decider = new ConstructionHeuristicDecider(termination, forager);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             decider.setAssertMoveScoreFromScratch(true);
