@@ -136,6 +136,9 @@ public class NurseRosteringPanel extends SolutionPanel {
         employeeToPanelMap.put(null, unassignedPanel);
         shiftAssignmentToPanelMap.clear();
         unassignedPanel.clearShiftAssignments();
+        List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
+        List<Shift> shiftList = nurseRoster.getShiftList();
+        unassignedPanel.setShiftDateListAndShiftList(shiftDateList, shiftList);
         updatePanel(nurseRoster);
         advancePlanningWindowStartButton.setEnabled(true);
         planningWindowStartField.setText(nurseRoster.getNurseRosterInfo().getPlanningWindowStart().getLabel());
@@ -146,7 +149,6 @@ public class NurseRosteringPanel extends SolutionPanel {
         NurseRoster nurseRoster = (NurseRoster) solution;
         List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
         List<Shift> shiftList = nurseRoster.getShiftList();
-        unassignedPanel.setShiftDateListAndShiftList(shiftDateList, shiftList);
         Set<Employee> deadEmployeeSet = new LinkedHashSet<Employee>(employeeToPanelMap.keySet());
         deadEmployeeSet.remove(null);
         for (Employee employee : nurseRoster.getEmployeeList()) {
