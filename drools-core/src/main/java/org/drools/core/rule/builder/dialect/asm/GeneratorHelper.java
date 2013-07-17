@@ -3,7 +3,6 @@ package org.drools.core.rule.builder.dialect.asm;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.asm.MethodComparator;

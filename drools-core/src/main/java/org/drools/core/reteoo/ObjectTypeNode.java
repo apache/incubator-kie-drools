@@ -20,7 +20,6 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteExpireAction;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.EventFactHandle;
@@ -217,7 +216,7 @@ public class ObjectTypeNode extends ObjectSource
         // this is here as not all objectTypeNodes used ClassObjectTypes in packages (i.e. rules with those nodes did not exist yet)
         // and thus have no wiring targets
         if ( objectType instanceof ClassObjectType ) {
-            objectType = ((AbstractRuleBase) ((DroolsObjectInputStream) in).getRuleBase()).getClassFieldAccessorCache().getClassObjectType( (ClassObjectType) objectType );
+            objectType = ((ReteooRuleBase) ((DroolsObjectInputStream) in).getRuleBase()).getClassFieldAccessorCache().getClassObjectType( (ClassObjectType) objectType );
         }
         idGenerator = new IdGenerator(objectType);
 
