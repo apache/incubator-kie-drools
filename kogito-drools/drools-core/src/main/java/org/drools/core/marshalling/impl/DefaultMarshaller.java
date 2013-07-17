@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Scheduler.ActivationTimerInputMarshaller;
@@ -32,7 +33,6 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 import org.drools.core.spi.GlobalResolver;
 import org.kie.api.KieBase;
@@ -101,7 +101,7 @@ public class DefaultMarshaller
         int id = ((ReteooRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).nextWorkingMemoryCounter();
         RuleBaseConfiguration conf = ((ReteooRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).getConfiguration();
 
-        ReteooStatefulSession session = InputMarshaller.readSession( context,
+        AbstractWorkingMemory session = InputMarshaller.readSession( context,
                                                                      id,
                                                                      environment,
                                                                      (SessionConfiguration) config );
@@ -125,7 +125,7 @@ public class DefaultMarshaller
                                                                        marshallingConfig.isMarshallWorkItems(),
                                                                        ksession.getEnvironment() );
 
-        InputMarshaller.readSession( (ReteooStatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session,
+        InputMarshaller.readSession( (AbstractWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession).session,
                                      context );
         context.close();
 

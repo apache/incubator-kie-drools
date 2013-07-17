@@ -29,6 +29,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
@@ -97,7 +98,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             rule1.getLhs(),
                                                             0,
                                                             buildContext );
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
@@ -228,7 +229,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             0,
                                                             buildContext );
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
 
@@ -340,7 +341,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             0,
                                                             buildContext );
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
 
@@ -495,7 +496,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             0,
                                                             buildContext );
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Consequence consequence = new Consequence() {
             private static final long serialVersionUID = 510l;
@@ -625,7 +626,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             rule1.getLhs(),
                                                             0,
                                                             buildContext );
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
 
@@ -793,7 +794,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             0,
                                                             buildContext );
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
 
@@ -917,7 +918,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             rule1.getLhs(),
                                                             0,
                                                             buildContext );
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
 

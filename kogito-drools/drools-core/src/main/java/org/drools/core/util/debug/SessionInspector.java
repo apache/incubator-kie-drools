@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.AccumulateNode;
@@ -42,7 +43,6 @@ import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
@@ -102,7 +102,7 @@ public class SessionInspector {
     }
 
     public SessionInspector(WorkingMemory session) {
-        this.session = (ReteooWorkingMemory) session;
+        this.session = (AbstractWorkingMemory) session;
     }
 
     public StatefulKnowledgeSessionInfo getSessionInfo() {

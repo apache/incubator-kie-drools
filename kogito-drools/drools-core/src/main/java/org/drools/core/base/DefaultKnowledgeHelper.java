@@ -52,7 +52,6 @@ import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
@@ -505,7 +504,7 @@ public class DefaultKnowledgeHelper
     }
 
     public KnowledgeRuntime getKnowledgeRuntime() {
-        return ((ReteooWorkingMemory) this.workingMemory).getKnowledgeRuntime();
+        return ((AbstractWorkingMemory) this.workingMemory).getKnowledgeRuntime();
     }
 
     public Activation getMatch() {

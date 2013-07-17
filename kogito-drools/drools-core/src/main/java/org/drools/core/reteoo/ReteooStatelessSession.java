@@ -28,13 +28,14 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.StatelessSession;
 import org.drools.core.StatelessSessionResult;
 import org.drools.core.base.MapGlobalResolver;
+import org.drools.core.common.AbstractWorkingMemory;
+import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalStatelessSession;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.event.*;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.GlobalExporter;
@@ -93,7 +94,7 @@ public class ReteooStatelessSession
     public InternalWorkingMemory newWorkingMemory() {
         this.ruleBase.readLock();
         try {
-            InternalWorkingMemory wm = new ReteooWorkingMemory(this.ruleBase.nextWorkingMemoryCounter(),
+            InternalWorkingMemory wm = new AbstractWorkingMemory(this.ruleBase.nextWorkingMemoryCounter(),
                                                                this.ruleBase,
                                                                this.sessionConf,
                                                                EnvironmentFactory.newEnvironment(),

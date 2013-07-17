@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.core.FactHandle;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -59,17 +60,17 @@ public class ReteooWorkingMemoryTest {
      */
     @Test
     public void testBasicWorkingMemoryActions() {
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) RuleBaseFactory.newRuleBase().newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) RuleBaseFactory.newRuleBase().newStatefulSession();
         final TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
         final String string = "test";
-        
+
         workingMemory.insert( string );
-        
+
         FactHandle fd = workingMemory.insertLogical( string );
 
         assertEquals( 1,
                       tms.getEqualityKeyMap().size() );
-        
+
         EqualityKey key = tms.get( string );
         assertSame( fd,
                     key.getFactHandle() );
@@ -132,18 +133,18 @@ public class ReteooWorkingMemoryTest {
         assertEquals( "value2",
                       workingMemory.getGlobal( "global2" ) );
     }
-    
+
     @Test
     public void testObjectIterator() {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final StatefulSession session = ruleBase.newStatefulSession();
-        
+
         session.insert( new Person( "bob", 35) );
         session.insert( new Cheese( "stilton", 35) );
         session.insert( new Cheese( "brie", 35) );
         session.insert( new Person( "steve", 55) );
         session.insert( new Person( "tom", 100) );
-        
+
         int i = 0;
         for ( Iterator it = session.iterateFactHandles(); it.hasNext(); ) {
             Object object = it.next();
@@ -151,7 +152,7 @@ public class ReteooWorkingMemoryTest {
                 fail( "should not iterate for than 3 times" );
             }
         }
-        
+
         i = 0;
         for ( Iterator it = session.iterateObjects(); it.hasNext(); ) {
             Object object = it.next();
@@ -160,11 +161,11 @@ public class ReteooWorkingMemoryTest {
             }
         }
     }
-    
+
     @Test
     public void testExecuteQueueActions() {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory wm = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final AbstractWorkingMemory wm = (AbstractWorkingMemory) ruleBase.newStatefulSession();
         final ReentrantAction action = new ReentrantAction();
         wm.queueWorkingMemoryAction( action );
         wm.executeQueuedActions();

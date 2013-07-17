@@ -19,6 +19,7 @@ package org.drools.core.impl;
 import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.StatefulSession;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -59,7 +60,6 @@ import org.drools.core.event.knowlegebase.impl.BeforeProcessRemovedEventImpl;
 import org.drools.core.event.knowlegebase.impl.BeforeRuleAddedEventImpl;
 import org.drools.core.event.knowlegebase.impl.BeforeRuleRemovedEventImpl;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.rule.Package;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.definition.KiePackage;
@@ -175,7 +175,7 @@ public class KnowledgeBaseImpl
             environment = EnvironmentFactory.newEnvironment();
         }
         
-        ReteooStatefulSession session = (ReteooStatefulSession) this.ruleBase.newStatefulSession( (SessionConfiguration) conf, environment );
+        AbstractWorkingMemory session = (AbstractWorkingMemory) this.ruleBase.newStatefulSession( (SessionConfiguration) conf, environment );
         return (StatefulKnowledgeSession) session.getKnowledgeRuntime();
     }
     
@@ -185,8 +185,8 @@ public class KnowledgeBaseImpl
         StatefulSession[] sss = this.ruleBase.getStatefulSessions();
         if (sss != null) {
             for (StatefulSession ss : sss) {
-                if (ss instanceof ReteooStatefulSession) {
-                    c.add(new StatefulKnowledgeSessionImpl((ReteooStatefulSession)ss, this));
+                if (ss instanceof AbstractWorkingMemory) {
+                    c.add(new StatefulKnowledgeSessionImpl((AbstractWorkingMemory)ss, this));
                 }
             }
         }

@@ -18,6 +18,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.FactException;
 import org.drools.core.RuleBaseFactory;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.test.model.DroolsTestCase;
@@ -32,40 +33,40 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class EvalConditionNodeTest extends DroolsTestCase {
-    private PropagationContext  context;
-    private ReteooWorkingMemory workingMemory;
-    private ReteooRuleBase      ruleBase;
-    private BuildContext        buildContext;
+    private PropagationContext    context;
+    private AbstractWorkingMemory workingMemory;
+    private ReteooRuleBase        ruleBase;
+    private BuildContext          buildContext;
 
     @Before
     public void setUp() {
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        this.buildContext = new BuildContext( ruleBase,
-                                              ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
+        this.buildContext = new BuildContext(ruleBase,
+                                             ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator());
 
-        this.context = new PropagationContextImpl( 0,
-                                                   PropagationContext.INSERTION,
-                                                   null,
-                                                   null,
-                                                   null );
+        this.context = new PropagationContextImpl(0,
+                                                  PropagationContext.INSERTION,
+                                                  null,
+                                                  null,
+                                                  null);
 
-        this.workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
+        this.workingMemory = (AbstractWorkingMemory) this.ruleBase.newStatefulSession();
     }
 
     @Test
     public void testAttach() throws Exception {
-        final MockTupleSource source = new MockTupleSource( 12 );
+        final MockTupleSource source = new MockTupleSource(12);
 
-        final EvalConditionNode node = new EvalConditionNode( 18,
-                                                              source,
-                                                              new MockEvalCondition( true ),
-                                                              buildContext );
+        final EvalConditionNode node = new EvalConditionNode(18,
+                                                             source,
+                                                             new MockEvalCondition(true),
+                                                             buildContext);
 
-        assertEquals( 18,
-                      node.getId() );
+        assertEquals(18,
+                     node.getId());
 
-        assertEquals( 0,
-                      source.getAttached() );
+        assertEquals(0,
+                     source.getAttached());
 
         node.attach(buildContext);
 
@@ -76,7 +77,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
     @Test
     public void testMemory() {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final MockTupleSource source = new MockTupleSource( 12 );

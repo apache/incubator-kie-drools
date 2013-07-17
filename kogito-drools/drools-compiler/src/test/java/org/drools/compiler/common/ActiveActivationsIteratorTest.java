@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.ActiveActivationIterator;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -80,7 +80,7 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
             ksession.insert( new String( "" + i ) );
         }
 
-        ReteooWorkingMemory wm = (ReteooWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession).session;
+        AbstractWorkingMemory wm = (AbstractWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession).session;
         wm.getAgenda().unstageActivations();
 
         ((DefaultAgenda) ((AgendaImpl) ksession.getAgenda()).getAgenda()).evaluateEagerList();

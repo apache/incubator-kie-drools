@@ -25,6 +25,7 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.FieldFactory;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
@@ -78,7 +79,7 @@ public class FromNodeTest {
                                                                        null,
                                                                        null,
                                                                        null );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            ruleBase );
 
         final ClassFieldReader extractor = store.getReader( Cheese.class,
@@ -186,7 +187,7 @@ public class FromNodeTest {
                                                                        null,
                                                                        null );
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final ClassFieldReader priceExtractor = store.getReader( Cheese.class,
@@ -306,7 +307,7 @@ public class FromNodeTest {
                                                                        null,
                                                                        null,
                                                                        null );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                             "type",
@@ -388,7 +389,7 @@ public class FromNodeTest {
                                                                        null,
                                                                        null,
                                                                        null );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            ruleBase );
 
 

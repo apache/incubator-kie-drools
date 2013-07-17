@@ -27,9 +27,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
@@ -85,13 +85,13 @@ public class GetObjectsCommand
         return col;
     }
     
-    public Collection< ? extends Object > getObjects(ReteooWorkingMemory session) {
+    public Collection< ? extends Object > getObjects(AbstractWorkingMemory session) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        null,
                                        ObjectStoreWrapper.OBJECT );
     }
 
-    public Collection< ? extends Object > getObjects(ReteooWorkingMemory session, org.kie.api.runtime.ObjectFilter filter) {
+    public Collection< ? extends Object > getObjects(AbstractWorkingMemory session, org.kie.api.runtime.ObjectFilter filter) {
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.OBJECT );

@@ -30,7 +30,6 @@ import org.drools.core.StatefulSession;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
@@ -99,7 +98,7 @@ public interface InternalRuleBase
      */
     void retractObject(FactHandle handle,
                               PropagationContext context,
-                              ReteooWorkingMemory workingMemory) throws FactException;
+                              AbstractWorkingMemory workingMemory) throws FactException;
  
     ClassLoader getRootClassLoader();
     

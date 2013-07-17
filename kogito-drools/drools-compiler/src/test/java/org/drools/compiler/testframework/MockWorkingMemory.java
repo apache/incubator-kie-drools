@@ -374,6 +374,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
+    @Override
+    public void closeLiveQuery(InternalFactHandle factHandle) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public void addEventListener(WorkingMemoryEventListener listener) {
         // TODO Auto-generated method stub
         

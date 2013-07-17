@@ -36,6 +36,8 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.StatefulSession;
 import org.drools.core.StatelessSession;
 import org.drools.core.common.AbstractRuleBase;
+import org.drools.core.common.AbstractWorkingMemory;
+import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.common.DroolsObjectInputStream;
@@ -48,7 +50,6 @@ import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
-import org.drools.core.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.Package;
@@ -300,7 +301,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
      */
     public void retractObject(final FactHandle handle,
                               final PropagationContext context,
-                              final ReteooWorkingMemory workingMemory) throws FactException {
+                              final AbstractWorkingMemory workingMemory) throws FactException {
         getRete().retractObject( (InternalFactHandle) handle,
                                  context,
                                  workingMemory );
@@ -338,7 +339,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     
                 // standard serialisation would have written the statateful session instance info to the stream first
                 // so we read it, but we don't need it, so just ignore.
-                ReteooStatefulSession rsession = (ReteooStatefulSession) ois.readObject();
+                AbstractWorkingMemory rsession = (AbstractWorkingMemory) ois.readObject();
     
                 // now unmarshall that byte[]
                 ByteArrayInputStream bais = new ByteArrayInputStream( rsession.bytes );
@@ -397,7 +398,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
         readLock();
         try {
-            ReteooStatefulSession session = new ReteooStatefulSession( id,
+            AbstractWorkingMemory session = new AbstractWorkingMemory( id,
                                                                        this,
                                                                        sessionConfig,
                                                                        environment );

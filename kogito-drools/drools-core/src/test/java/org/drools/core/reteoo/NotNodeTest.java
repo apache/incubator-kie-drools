@@ -28,6 +28,7 @@ import java.beans.IntrospectionException;
 import org.drools.core.FactException;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
@@ -49,7 +50,7 @@ import org.junit.Test;
 public class NotNodeTest extends DroolsTestCase {
     Rule                    rule;
     PropagationContext      context;
-    ReteooWorkingMemory     workingMemory;
+    AbstractWorkingMemory   workingMemory;
     MockObjectSource        objectSource;
     MockTupleSource         tupleSource;
     MockLeftTupleSink       sink;
@@ -60,41 +61,41 @@ public class NotNodeTest extends DroolsTestCase {
 
     /**
      * Setup the BetaNode used in each of the tests
-     * @throws IntrospectionException 
+     * @throws IntrospectionException
      */
     @Before
     public void setUp() throws IntrospectionException {
         // create mock objects
-        constraint = mock( BetaNodeFieldConstraint.class );
-        final ContextEntry c = mock( ContextEntry.class );
-        
-        when( constraint.createContextEntry() ).thenReturn(c);
+        constraint = mock(BetaNodeFieldConstraint.class);
+        final ContextEntry c = mock(ContextEntry.class);
 
-        this.rule = new Rule( "test-rule" );
-        this.context = new PropagationContextImpl( 0,
-                                                   PropagationContext.INSERTION,
-                                                   null,
-                                                   null,
-                                                   null );
-        this.workingMemory = new ReteooWorkingMemory( 1,
-                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        when(constraint.createContextEntry()).thenReturn(c);
+
+        this.rule = new Rule("test-rule");
+        this.context = new PropagationContextImpl(0,
+                                                  PropagationContext.INSERTION,
+                                                  null,
+                                                  null,
+                                                  null);
+        this.workingMemory = new AbstractWorkingMemory(1,
+                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase());
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase,
-                                                      ruleBase.getReteooBuilder().getIdGenerator() );
-        
-        this.objectSource = new MockObjectSource( 155 );
-        this.tupleSource = new MockTupleSource( 60 );
+        BuildContext buildContext = new BuildContext(ruleBase,
+                                                     ruleBase.getReteooBuilder().getIdGenerator());
+
+        this.objectSource = new MockObjectSource(155);
+        this.tupleSource = new MockTupleSource(60);
 
         // string1Declaration is bound to pattern 3 
-        this.node = new NotNode( 15,
-                                 new MockTupleSource( 5 ),
-                                 new MockObjectSource( 8 ),
-                                 new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
-                                                             configuration ),
-                                 buildContext );
+        this.node = new NotNode(15,
+                                new MockTupleSource(5),
+                                new MockObjectSource(8),
+                                new DefaultBetaConstraints(new BetaNodeFieldConstraint[]{this.constraint},
+                                                           configuration),
+                                buildContext);
 
         this.sink = new MockLeftTupleSink();
         this.node.addTupleSink( this.sink );
@@ -399,7 +400,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
 
-        this.workingMemory = new ReteooWorkingMemory( 1,
+        this.workingMemory = new AbstractWorkingMemory( 1,
                                                       ruleBase );
 
         BuildContext buildContext = new BuildContext( ruleBase,

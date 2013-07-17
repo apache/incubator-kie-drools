@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.drools.core.InitialFact;
 import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
@@ -59,7 +60,6 @@ import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.Rule;
@@ -114,7 +114,7 @@ public class ProtobufOutputMarshaller {
     }
 
     private static ProtobufMessages.KnowledgeSession serializeSession(MarshallerWriteContext context) throws IOException {
-        ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
+        AbstractWorkingMemory wm = (AbstractWorkingMemory) context.wm;
         wm.getAgenda().unstageActivations();
         
         evaluateRuleActivations( wm );
@@ -190,7 +190,7 @@ public class ProtobufOutputMarshaller {
         return _session.build();
     }
 
-    private static void evaluateRuleActivations(ReteooWorkingMemory wm) {
+    private static void evaluateRuleActivations(AbstractWorkingMemory wm) {
         // ET: NOTE: initially we were only resolving partially evaluated rules
         // but some tests fail because of that. Have to resolve all rule agenda items
         // in order to fix the tests
@@ -476,7 +476,7 @@ public class ProtobufOutputMarshaller {
     public static void writeActionQueue(MarshallerWriteContext context,
                                         ProtobufMessages.RuleData.Builder _session) throws IOException {
 
-        ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
+        AbstractWorkingMemory wm = (AbstractWorkingMemory) context.wm;
         if ( !wm.getActionQueue().isEmpty() ) {
             ProtobufMessages.ActionQueue.Builder _queue = ProtobufMessages.ActionQueue.newBuilder();
 

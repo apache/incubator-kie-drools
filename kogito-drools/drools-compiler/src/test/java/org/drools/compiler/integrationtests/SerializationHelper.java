@@ -9,12 +9,12 @@ import java.io.ObjectOutputStream;
 import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.StatefulSession;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.marshalling.impl.ProtobufMarshaller;
-import org.drools.core.reteoo.ReteooStatefulSession;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -84,7 +84,7 @@ public class SerializationHelper {
         // Serialize to a byte array
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         
-        ((ReteooStatefulSession)session).getTimerService();
+        ((AbstractWorkingMemory)session).getTimerService();
         
         
         ObjectOutput out = new ObjectOutputStream( bos );

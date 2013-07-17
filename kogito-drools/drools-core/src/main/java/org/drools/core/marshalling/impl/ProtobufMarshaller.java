@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Scheduler.ActivationTimerInputMarshaller;
@@ -33,7 +34,6 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeTimerInputMarshaller;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 import org.drools.core.spi.GlobalResolver;
 import org.kie.api.KieBase;
@@ -113,7 +113,7 @@ public class ProtobufMarshaller
         int id = ((ReteooRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).nextWorkingMemoryCounter();
         RuleBaseConfiguration conf = ((ReteooRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).getConfiguration();
 
-        ReteooStatefulSession session = ProtobufInputMarshaller.readSession( context,
+        AbstractWorkingMemory session = ProtobufInputMarshaller.readSession( context,
                                                                              id,
                                                                              environment,
                                                                              (SessionConfiguration) config );
@@ -137,7 +137,7 @@ public class ProtobufMarshaller
                                                                        marshallingConfig.isMarshallWorkItems(),
                                                                        ksession.getEnvironment() );
 
-        ProtobufInputMarshaller.readSession( (ReteooStatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session,
+        ProtobufInputMarshaller.readSession( (AbstractWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession).session,
                                              context );
         context.close();
 

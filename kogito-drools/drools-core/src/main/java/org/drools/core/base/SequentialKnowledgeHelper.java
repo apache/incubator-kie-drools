@@ -22,11 +22,11 @@ import java.util.Map;
 
 import org.drools.core.FactHandle;
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
@@ -102,7 +102,7 @@ public class SequentialKnowledgeHelper
     }
     
     public KnowledgeRuntime getKnowledgeRuntime() {
-        return new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) this.workingMemory );
+        return new StatefulKnowledgeSessionImpl( (AbstractWorkingMemory) this.workingMemory );
      }
 
     public KieRuntime getKieRuntime() {

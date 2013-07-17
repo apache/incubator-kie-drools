@@ -44,6 +44,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.StatefulSession;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DroolsObjectInputStream;
@@ -60,7 +61,6 @@ import org.drools.core.marshalling.impl.RuleBaseNodes;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MapBackedClassLoader;
@@ -556,7 +556,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         // serialize session and rulebase out
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) session );
+        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (AbstractWorkingMemory) session );
         Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase() );
         marshaller.marshall( baos,
                              ksession );
@@ -573,7 +573,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = (StatefulKnowledgeSessionImpl) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ),
                                                                          KnowledgeBaseFactory.newKnowledgeSessionConfiguration(),
                                                                          EnvironmentFactory.newEnvironment() );
-        session = (ReteooStatefulSession) ksession.session;
+        session = (AbstractWorkingMemory) ksession.session;
         session.setGlobalResolver( resolver );
 
         // dynamically add a new package
@@ -648,7 +648,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         // serialize session and rulebase out
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) session );
+        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (AbstractWorkingMemory) session );
         Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase() );
         marshaller.marshall( baos,
                              ksession );
@@ -669,7 +669,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = (StatefulKnowledgeSessionImpl) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ),
                                                                          KnowledgeBaseFactory.newKnowledgeSessionConfiguration(),
                                                                          EnvironmentFactory.newEnvironment() );
-        session = (ReteooStatefulSession) ksession.session;
+        session = (AbstractWorkingMemory) ksession.session;
         session.setGlobalResolver( resolver );
 
         results = (List) session.getGlobal( "results" );
@@ -735,7 +735,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         GlobalResolver resolver = session.getGlobalResolver();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) session );
+        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (AbstractWorkingMemory) session );
         Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase() );
         marshaller.marshall( baos,
                              ksession );
@@ -755,7 +755,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = (StatefulKnowledgeSessionImpl) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ),
                                                                          KnowledgeBaseFactory.newKnowledgeSessionConfiguration(),
                                                                          EnvironmentFactory.newEnvironment() );
-        session = (ReteooStatefulSession) ksession.session;
+        session = (AbstractWorkingMemory) ksession.session;
         session.setGlobalResolver( resolver );
         results = (List) session.getGlobal( "results" );
 
@@ -788,7 +788,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         resolver = session.getGlobalResolver();
         baos = new ByteArrayOutputStream();
-        ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) session );
+        ksession = new StatefulKnowledgeSessionImpl( (AbstractWorkingMemory) session );
         marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase() );
         marshaller.marshall( baos,
                              ksession );
@@ -803,7 +803,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = (StatefulKnowledgeSessionImpl) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ),
                                                                          KnowledgeBaseFactory.newKnowledgeSessionConfiguration(),
                                                                          EnvironmentFactory.newEnvironment() );
-        session = (ReteooStatefulSession) ksession.session;
+        session = (AbstractWorkingMemory) ksession.session;
         session.setGlobalResolver( resolver );
         results = (List) session.getGlobal( "results" );
 
@@ -842,7 +842,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         resolver = session.getGlobalResolver();
         baos = new ByteArrayOutputStream();
-        ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) session );
+        ksession = new StatefulKnowledgeSessionImpl( (AbstractWorkingMemory) session );
         marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase() );
         marshaller.marshall( baos,
                              ksession );
@@ -856,7 +856,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = (StatefulKnowledgeSessionImpl) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ),
                                                                          KnowledgeBaseFactory.newKnowledgeSessionConfiguration(),
                                                                          EnvironmentFactory.newEnvironment() );
-        session = (ReteooStatefulSession) ksession.session;
+        session = (AbstractWorkingMemory) ksession.session;
         session.setGlobalResolver( resolver );
         results = (List) session.getGlobal( "results" );
 
@@ -928,7 +928,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         GlobalResolver resolver = session.getGlobalResolver();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) session );
+        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( (AbstractWorkingMemory) session );
         Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase() );
         marshaller.marshall( baos,
                              ksession );
@@ -948,7 +948,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = (StatefulKnowledgeSessionImpl) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ),
                                                                          KnowledgeBaseFactory.newKnowledgeSessionConfiguration(),
                                                                          EnvironmentFactory.newEnvironment() );
-        session = (ReteooStatefulSession) ksession.session;
+        session = (AbstractWorkingMemory) ksession.session;
         results.clear();
         session.setGlobal( "results",
                            results );
@@ -981,7 +981,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         serializedRulebase = null;
 
         baos = new ByteArrayOutputStream();
-        ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) session );
+        ksession = new StatefulKnowledgeSessionImpl( (AbstractWorkingMemory) session );
         marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase() );
         marshaller.marshall( baos,
                              ksession );
@@ -996,7 +996,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = (StatefulKnowledgeSessionImpl) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ),
                                                                          KnowledgeBaseFactory.newKnowledgeSessionConfiguration(),
                                                                          EnvironmentFactory.newEnvironment() );
-        session = (ReteooStatefulSession) ksession.session;
+        session = (AbstractWorkingMemory) ksession.session;
         results.clear();
         session.setGlobal( "results",
                            results );
@@ -1028,7 +1028,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = (StatefulKnowledgeSessionImpl) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ),
                                                                          KnowledgeBaseFactory.newKnowledgeSessionConfiguration(),
                                                                          EnvironmentFactory.newEnvironment() );
-        session = (ReteooStatefulSession) ksession.session;
+        session = (AbstractWorkingMemory) ksession.session;
         results.clear();
         session.setGlobal( "results",
                            results );
@@ -1056,7 +1056,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         byte[] serializedSession = null;
         serializedRulebase = null;
         baos = new ByteArrayOutputStream();
-        ksession = new StatefulKnowledgeSessionImpl( (ReteooStatefulSession) session );
+        ksession = new StatefulKnowledgeSessionImpl( (AbstractWorkingMemory) session );
         marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase() );
         marshaller.marshall( baos,
                              ksession );
@@ -1070,7 +1070,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession = (StatefulKnowledgeSessionImpl) marshaller.unmarshall( new ByteArrayInputStream( baos.toByteArray() ),
                                                                          KnowledgeBaseFactory.newKnowledgeSessionConfiguration(),
                                                                          EnvironmentFactory.newEnvironment() );
-        session = (ReteooStatefulSession) ksession.session;
+        session = (AbstractWorkingMemory) ksession.session;
         results.clear();
         session.setGlobal( "results",
                            results );

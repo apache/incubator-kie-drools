@@ -28,6 +28,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ShadowProxy;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
@@ -101,7 +102,7 @@ public class ReteTest extends DroolsTestCase {
      */
     @Test
     public void testCache() throws FactException {
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
@@ -167,7 +168,7 @@ public class ReteTest extends DroolsTestCase {
      */
     @Test
     public void testAssertObject() throws Exception {
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
@@ -220,7 +221,7 @@ public class ReteTest extends DroolsTestCase {
 
     @Test
     public void testAssertObjectWithNoMatchingObjectTypeNode() {
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) this.ruleBase.newStatefulSession();
 
         final Rete rete = ruleBase.getRete();
         assertEquals( 0,
@@ -236,7 +237,7 @@ public class ReteTest extends DroolsTestCase {
 
     @Test @Ignore
     public void testHierarchy() {
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) this.ruleBase.newStatefulSession();
 
         final Rete rete = ruleBase.getRete();
         final IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
@@ -330,7 +331,7 @@ public class ReteTest extends DroolsTestCase {
      */
     @Test
     public void testRetractObject() throws Exception {
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
@@ -392,7 +393,7 @@ public class ReteTest extends DroolsTestCase {
 
     @Test
     public void testIsShadowed() {
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
+        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
@@ -432,7 +433,7 @@ public class ReteTest extends DroolsTestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
         buildContext = new BuildContext( ruleBase,
                                          ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            ruleBase );
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList

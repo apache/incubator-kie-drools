@@ -261,6 +261,11 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
+    @Override
+    public void closeLiveQuery(InternalFactHandle factHandle) {
+        throw new IllegalStateException( ERRORMSG );
+    }
+
     public Agenda getAgenda() {
         throw new IllegalStateException( ERRORMSG );
     }

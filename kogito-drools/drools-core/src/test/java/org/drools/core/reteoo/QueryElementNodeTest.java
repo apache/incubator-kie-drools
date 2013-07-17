@@ -18,6 +18,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.PropagationContextImpl;
@@ -39,7 +40,7 @@ import static org.junit.Assert.*;
 
 public class QueryElementNodeTest extends DroolsTestCase {
     private PropagationContext  context;
-    private ReteooWorkingMemory workingMemory;
+    private AbstractWorkingMemory workingMemory;
     private ReteooRuleBase      ruleBase;
     private BuildContext        buildContext;
 
@@ -147,7 +148,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
     }
 
 
-    public static class InstrumentedWorkingMemory extends ReteooWorkingMemory {
+    public static class InstrumentedWorkingMemory extends AbstractWorkingMemory {
 
         public InstrumentedWorkingMemory(final int id,
                                          final InternalRuleBase ruleBase) {

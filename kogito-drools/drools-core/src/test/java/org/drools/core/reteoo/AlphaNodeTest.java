@@ -22,6 +22,7 @@ import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.FieldFactory;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.test.model.Cheese;
@@ -57,7 +58,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
-        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
@@ -134,7 +135,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
-        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
@@ -201,7 +202,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
-        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
