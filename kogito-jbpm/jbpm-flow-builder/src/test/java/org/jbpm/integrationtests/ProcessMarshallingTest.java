@@ -17,8 +17,8 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.reteoo.ReteooWorkingMemory;
 import org.drools.core.rule.Package;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Person;
@@ -588,7 +588,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
         session.startProcess("com.sample.ruleflow", null);
         assertEquals(1, session.getProcessInstances().size());
         
-        StatefulKnowledgeSession ksession = new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session );
+        StatefulKnowledgeSession ksession = new StatefulKnowledgeSessionImpl( (AbstractWorkingMemory) session );
         Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKieBase() );
      
 

@@ -9,9 +9,9 @@ import java.io.ObjectOutputStream;
 import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.StatefulSession;
+import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.reteoo.ReteooStatefulSession;
 import org.drools.core.util.DroolsStreamUtils;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -74,7 +74,7 @@ public class SerializationHelper {
         final byte[] b1 = bos.toByteArray();        
 
         ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
-        StatefulSession session2 = ruleBase.newStatefulSession( bais, true, ((ReteooStatefulSession)session).getSessionConfiguration() );
+        StatefulSession session2 = ruleBase.newStatefulSession( bais, true, ((AbstractWorkingMemory)session).getSessionConfiguration() );
         bais.close();
 
         bos = new ByteArrayOutputStream();
