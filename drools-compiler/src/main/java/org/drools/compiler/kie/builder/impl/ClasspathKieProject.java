@@ -40,7 +40,7 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     private static final Logger             log               = LoggerFactory.getLogger( ClasspathKieProject.class );
 
-    private static final String OSGI_KIE_MODULE_CLASS_NAME    = "org.drools.osgi.compiler.OsgiKieModule";
+    public static final String OSGI_KIE_MODULE_CLASS_NAME     = "org.drools.osgi.compiler.OsgiKieModule";
 
     private Map<ReleaseId, InternalKieModule>     kieModules  = new HashMap<ReleaseId, InternalKieModule>();
 
@@ -154,6 +154,10 @@ public class ClasspathKieProject extends AbstractKieProject {
             rootPath = fixedURL.substring( rootPath.lastIndexOf( ':' ) + 1 );
         }
 
+        return createInternalKieModule(url, fixedURL, kieProject, releaseId, rootPath);
+    }
+
+    public static InternalKieModule createInternalKieModule(URL url, String fixedURL, KieModuleModel kieProject, ReleaseId releaseId, String rootPath) {
         InternalKieModule kJar;
         File file = new File( rootPath );
         if ( fixedURL.endsWith( ".jar" ) ) {
@@ -168,9 +172,9 @@ public class ClasspathKieProject extends AbstractKieProject {
             // if it's a file it must be zip and end with .jar, otherwise we log an error
             log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" );
             kJar = null;
-        }        
+        }
         return kJar;
-    }    
+    }
 
     public static String getPomProperties(String urlPathToAdd) {
         String rootPath = urlPathToAdd;
