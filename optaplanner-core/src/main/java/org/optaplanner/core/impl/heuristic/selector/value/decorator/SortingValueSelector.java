@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class SortingValueSelector extends AbstractCachingValueSelector {
+public class SortingValueSelector extends AbstractCachingValueSelector implements EntityIndependentValueSelector {
 
     protected final SelectionSorter sorter;
 

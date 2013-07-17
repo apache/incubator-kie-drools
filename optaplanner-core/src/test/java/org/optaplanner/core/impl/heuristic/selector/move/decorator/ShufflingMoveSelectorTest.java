@@ -71,7 +71,7 @@ public class ShufflingMoveSelectorTest {
         when(workingRandom.nextInt(3)).thenReturn(2);
         when(workingRandom.nextInt(2)).thenReturn(0);
         moveSelector.stepStarted(stepScopeA1);
-        assertAllCodesOfEndingMoveSelector(moveSelector, "a2", "a1", "a3");
+        assertAllCodesOfMoveSelector(moveSelector, "a2", "a1", "a3");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
@@ -82,10 +82,10 @@ public class ShufflingMoveSelectorTest {
         moveSelector.stepStarted(stepScopeA2);
         if (cacheType.compareTo(SelectionCacheType.STEP) > 0) {
             // From a1, a2, a3
-            assertAllCodesOfEndingMoveSelector(moveSelector, "a3", "a1", "a2");
+            assertAllCodesOfMoveSelector(moveSelector, "a3", "a1", "a2");
         } else {
             // Reset from a1, a2, a3
-            assertAllCodesOfEndingMoveSelector(moveSelector, "a3", "a2", "a1");
+            assertAllCodesOfMoveSelector(moveSelector, "a3", "a2", "a1");
         }
         moveSelector.stepEnded(stepScopeA2);
 
@@ -104,10 +104,10 @@ public class ShufflingMoveSelectorTest {
         moveSelector.stepStarted(stepScopeB1);
         if (cacheType.compareTo(SelectionCacheType.PHASE) > 0) {
             // From a3, a1, a2
-            assertAllCodesOfEndingMoveSelector(moveSelector, "a2", "a3", "a1");
+            assertAllCodesOfMoveSelector(moveSelector, "a2", "a3", "a1");
         } else {
             // Reset from a1, a2, a3
-            assertAllCodesOfEndingMoveSelector(moveSelector, "a3", "a1", "a2");
+            assertAllCodesOfMoveSelector(moveSelector, "a3", "a1", "a2");
         }
         moveSelector.stepEnded(stepScopeB1);
 

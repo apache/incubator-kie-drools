@@ -53,7 +53,7 @@ public class UnionMoveSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
-        assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "a2", "a3", "b1", "b2");
+        assertAllCodesOfMoveSelector(moveSelector, "a1", "a2", "a3", "b1", "b2");
 
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);
@@ -79,7 +79,7 @@ public class UnionMoveSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
-        assertAllCodesOfEndingMoveSelector(moveSelector);
+        assertAllCodesOfMoveSelector(moveSelector);
 
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);
@@ -118,7 +118,7 @@ public class UnionMoveSelectorTest {
         moveSelector.stepStarted(stepScopeA1);
 
         // A union of ending MoveSelectors does end, even with randomSelection
-        assertAllCodesOfEndingMoveSelector(moveSelector, "a1", "b1", "b2", "a2", "a3");
+        assertAllCodesOfMoveSelector(moveSelector, "a1", "b1", "b2", "a2", "a3");
 
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);
@@ -155,7 +155,7 @@ public class UnionMoveSelectorTest {
         moveSelector.stepStarted(stepScopeA1);
 
         // A union of ending MoveSelectors does end, even with randomSelection
-        assertAllCodesOfEndingMoveSelector(moveSelector);
+        assertAllCodesOfMoveSelector(moveSelector);
 
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);

@@ -18,7 +18,9 @@ package org.optaplanner.core.impl.testdata.util;
 
 import java.util.Iterator;
 
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.move.CompositeMove;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
@@ -121,14 +123,17 @@ public class PlannerAssert extends Assert {
         }
     }
 
-    public static void assertAllCodesOfEndingMoveSelector(MoveSelector moveSelector, String... codes) {
-        assertAllCodesOfEndingMoveSelector(moveSelector, (long) codes.length, codes);
-    }
-
-    public static void assertAllCodesOfEndingMoveSelector(MoveSelector moveSelector, long size, String... codes) {
-        Iterator<Move> iterator = moveSelector.iterator();
+    public static <O> void assertAllCodesOfIterator(Iterator<O> iterator, String... codes) {
         assertCodesOfIterator(iterator, codes);
         assertFalse(iterator.hasNext());
+    }
+
+    public static void assertAllCodesOfMoveSelector(MoveSelector moveSelector, String... codes) {
+        assertAllCodesOfMoveSelector(moveSelector, (long) codes.length, codes);
+    }
+
+    public static void assertAllCodesOfMoveSelector(MoveSelector moveSelector, long size, String... codes) {
+        assertAllCodesOfIterator(moveSelector.iterator(), codes);
         assertEquals(false, moveSelector.isContinuous());
         assertEquals(false, moveSelector.isNeverEnding());
         assertEquals(size, moveSelector.getSize());
@@ -157,6 +162,30 @@ public class PlannerAssert extends Assert {
         assertEquals(false, moveSelector.isContinuous());
         assertEquals(true, moveSelector.isNeverEnding());
         assertEquals(size, moveSelector.getSize());
+    }
+
+    public static void assertAllCodesOfEntitySelector(EntitySelector entitySelector, String... codes) {
+        assertAllCodesOfEntitySelector(entitySelector, (long) codes.length, codes);
+    }
+
+    public static void assertAllCodesOfEntitySelector(EntitySelector entitySelector, long size, String... codes) {
+        assertAllCodesOfIterator(entitySelector.iterator(), codes);
+        assertEquals(false, entitySelector.isContinuous());
+        assertEquals(false, entitySelector.isNeverEnding());
+        assertEquals(size, entitySelector.getSize());
+    }
+
+    public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector valueSelector,
+            String... codes) {
+        assertAllCodesOfValueSelector(valueSelector, (long) codes.length, codes);
+    }
+
+    public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector valueSelector, long size,
+            String... codes) {
+        assertAllCodesOfIterator(valueSelector.iterator(), codes);
+        assertEquals(false, valueSelector.isContinuous());
+        assertEquals(false, valueSelector.isNeverEnding());
+        assertEquals(size, valueSelector.getSize());
     }
 
     private PlannerAssert() {

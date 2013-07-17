@@ -49,7 +49,7 @@ public class CartesianProductMoveSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
-        assertAllCodesOfEndingMoveSelector(moveSelector,
+        assertAllCodesOfMoveSelector(moveSelector,
                 "a1+b1", "a1+b2",
                 "a2+b1", "a2+b2",
                 "a3+b1", "a3+b2");
@@ -79,7 +79,7 @@ public class CartesianProductMoveSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
-        assertAllCodesOfEndingMoveSelector(moveSelector);
+        assertAllCodesOfMoveSelector(moveSelector);
 
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);
@@ -109,7 +109,7 @@ public class CartesianProductMoveSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
-        assertAllCodesOfEndingMoveSelector(moveSelector,
+        assertAllCodesOfMoveSelector(moveSelector,
                 "a1+b1+c1", "a1+b1+c2", "a1+b2+c1", "a1+b2+c2",
                 "a2+b1+c1", "a2+b1+c2", "a2+b2+c1", "a2+b2+c2");
 

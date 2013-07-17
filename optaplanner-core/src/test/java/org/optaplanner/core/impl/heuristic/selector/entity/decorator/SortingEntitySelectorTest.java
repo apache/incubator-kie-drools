@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
@@ -32,8 +31,8 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.junit.Test;
 
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SortingEntitySelectorTest {
 
@@ -83,13 +82,13 @@ public class SortingEntitySelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA1);
-        runAsserts(entitySelector, cacheType);
+        assertAllCodesOfEntitySelector(entitySelector, "apr", "feb", "jan", "jun", "mar", "may");
         entitySelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA2);
-        runAsserts(entitySelector, cacheType);
+        assertAllCodesOfEntitySelector(entitySelector, "apr", "feb", "jan", "jun", "mar", "may");
         entitySelector.stepEnded(stepScopeA2);
 
         entitySelector.phaseEnded(phaseScopeA);
@@ -101,19 +100,19 @@ public class SortingEntitySelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB1);
-        runAsserts(entitySelector, cacheType);
+        assertAllCodesOfEntitySelector(entitySelector, "apr", "feb", "jan", "jun", "mar", "may");
         entitySelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB2);
-        runAsserts(entitySelector, cacheType);
+        assertAllCodesOfEntitySelector(entitySelector, "apr", "feb", "jan", "jun", "mar", "may");
         entitySelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB3);
-        runAsserts(entitySelector, cacheType);
+        assertAllCodesOfEntitySelector(entitySelector, "apr", "feb", "jan", "jun", "mar", "may");
         entitySelector.stepEnded(stepScopeB3);
 
         entitySelector.phaseEnded(phaseScopeB);
@@ -123,27 +122,6 @@ public class SortingEntitySelectorTest {
         verifySolverPhaseLifecycle(childEntitySelector, 1, 2, 5);
         verify(childEntitySelector, times(timesCalled)).iterator();
         verify(childEntitySelector, times(timesCalled)).getSize();
-    }
-
-    private void runAsserts(EntitySelector entitySelector, SelectionCacheType cacheType) {
-        Iterator<Object> iterator = entitySelector.iterator();
-        assertNotNull(iterator);
-        assertTrue(iterator.hasNext());
-        assertCode("apr", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("feb", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("jan", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("jun", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("mar", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("may", iterator.next());
-        assertFalse(iterator.hasNext());
-        assertEquals(false, entitySelector.isContinuous());
-        assertEquals(false, entitySelector.isNeverEnding());
-        assertEquals(6L, entitySelector.getSize());
     }
 
 }

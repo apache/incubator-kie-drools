@@ -80,13 +80,13 @@ public class FilteringMoveSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
-        assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
-        assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -98,19 +98,19 @@ public class FilteringMoveSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
-        assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB2);
-        assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB3);
-        assertAllCodesOfEndingMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
+        assertAllCodesOfMoveSelector(moveSelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         moveSelector.stepEnded(stepScopeB3);
 
         moveSelector.phaseEnded(phaseScopeB);

@@ -16,26 +16,30 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
+import org.junit.Test;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.junit.Test;
 
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
-public class CachingValueSelectorTest {
+public class SortingValueSelectorTest {
 
     @Test
     public void originalSelectionCacheTypeSolver() {
@@ -55,10 +59,20 @@ public class CachingValueSelectorTest {
     public void runOriginalSelection(SelectionCacheType cacheType, int timesCalled) {
         EntityIndependentValueSelector childValueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
                 TestdataEntity.class, "value",
-                new TestdataValue("e1"), new TestdataValue("e2"), new TestdataValue("e3"));
+                new TestdataValue("jan"), new TestdataValue("feb"), new TestdataValue("mar"),
+                new TestdataValue("apr"), new TestdataValue("may"), new TestdataValue("jun"));
 
-        EntityIndependentValueSelector valueSelector = new CachingValueSelector(childValueSelector, cacheType, false);
-        verify(childValueSelector, times(1)).isNeverEnding();
+
+        SelectionSorter<TestdataValue> sorter = new SelectionSorter<TestdataValue>() {
+            public void sort(ScoreDirector scoreDirector, List<TestdataValue> selectionList) {
+                Collections.sort(selectionList, new Comparator<TestdataValue>() {
+                    public int compare(TestdataValue a, TestdataValue b) {
+                        return a.getCode().compareTo(b.getCode());
+                    }
+                });
+            }
+        };
+        EntityIndependentValueSelector valueSelector = new SortingValueSelector(childValueSelector, cacheType, sorter);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         valueSelector.solvingStarted(solverScope);
@@ -70,13 +84,13 @@ public class CachingValueSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA1);
-        runAsserts(valueSelector);
+        assertAllCodesOfValueSelector(valueSelector, "apr", "feb", "jan", "jun", "mar", "may");
         valueSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA2);
-        runAsserts(valueSelector);
+        assertAllCodesOfValueSelector(valueSelector, "apr", "feb", "jan", "jun", "mar", "may");
         valueSelector.stepEnded(stepScopeA2);
 
         valueSelector.phaseEnded(phaseScopeA);
@@ -88,19 +102,19 @@ public class CachingValueSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB1);
-        runAsserts(valueSelector);
+        assertAllCodesOfValueSelector(valueSelector, "apr", "feb", "jan", "jun", "mar", "may");
         valueSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB2);
-        runAsserts(valueSelector);
+        assertAllCodesOfValueSelector(valueSelector, "apr", "feb", "jan", "jun", "mar", "may");
         valueSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB3);
-        runAsserts(valueSelector);
+        assertAllCodesOfValueSelector(valueSelector, "apr", "feb", "jan", "jun", "mar", "may");
         valueSelector.stepEnded(stepScopeB3);
 
         valueSelector.phaseEnded(phaseScopeB);
@@ -110,21 +124,6 @@ public class CachingValueSelectorTest {
         verifySolverPhaseLifecycle(childValueSelector, 1, 2, 5);
         verify(childValueSelector, times(timesCalled)).iterator();
         verify(childValueSelector, times(timesCalled)).getSize();
-    }
-
-    private void runAsserts(EntityIndependentValueSelector valueSelector) {
-        Iterator<Object> iterator = valueSelector.iterator();
-        assertNotNull(iterator);
-        assertTrue(iterator.hasNext());
-        assertCode("e1", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e2", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e3", iterator.next());
-        assertFalse(iterator.hasNext());
-        assertEquals(false, valueSelector.isContinuous());
-        assertEquals(false, valueSelector.isNeverEnding());
-        assertEquals(3L, valueSelector.getSize());
     }
 
 }
