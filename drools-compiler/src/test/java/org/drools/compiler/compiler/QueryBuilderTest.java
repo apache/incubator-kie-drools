@@ -4,10 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
-import org.drools.core.QueryResults;
-import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
+import org.drools.core.definitions.impl.KnowledgePackageImp;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
@@ -18,6 +17,14 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.definition.KnowledgePackage;
+
+import java.util.Arrays;
 
 public class QueryBuilderTest extends DroolsTestCase {
 
@@ -76,9 +83,9 @@ public class QueryBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors().getErrors() );
 
-        RuleBase rbase = RuleBaseFactory.newRuleBase();
-        rbase.addPackage( builder.getPackage() );
-        StatefulSession session = rbase.newStatefulSession();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(Arrays.asList( new KnowledgePackage[] {new KnowledgePackageImp(builder.getPackage() ) } ));
+        final KieSession session = kbase.newStatefulKnowledgeSession();
 
         session.insert( new Person( "bobba",
                                     "stilton",
@@ -133,10 +140,10 @@ public class QueryBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors().getErrors() );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(Arrays.asList( new KnowledgePackage[] {new KnowledgePackageImp(builder.getPackage() ) } ) );
 
-        StatefulSession session = ruleBase.newStatefulSession();
+        final KieSession session = kbase.newStatefulKnowledgeSession();
 
         session.insert( new Cheese( "stilton",
                                     15 ) );
@@ -145,7 +152,8 @@ public class QueryBuilderTest extends DroolsTestCase {
                                                         "stilton" );
         assertEquals( 1,
                       results.size() );
-        Object object = results.get( 0 ).get( 0 );
+
+        Object object = results.iterator().next().get("stilton");
         assertEquals( new Cheese( "stilton",
                                   15 ),
                       object );
@@ -155,8 +163,8 @@ public class QueryBuilderTest extends DroolsTestCase {
         assertEquals( 0,
                       results.size() );
 
-        session.insert( new Cheese( "dolcelatte",
-                                    20 ) );
+        session.insert(new Cheese("dolcelatte",
+                                  20));
         results = session.getQueryResults( "query2",
                                            new Object[]{} );
         assertEquals( 2,

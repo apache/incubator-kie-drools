@@ -43,6 +43,8 @@ import org.drools.core.time.SessionPseudoClock;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -489,16 +491,11 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testRemoveIdentitiesSubNetwork() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_removeIdentitiesSubNetwork.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption(RemoveIdentitiesOption.YES);
 
-        final RuleBaseConfiguration config = new RuleBaseConfiguration();
-        config.setRemoveIdentities( true );
-        RuleBase ruleBase = getRuleBase( config );
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KieBase kbase = loadKnowledgeBase(conf, "test_removeIdentitiesSubNetwork.drl");
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -514,10 +511,10 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             6 );
-        final FactHandle stilton1Handle = workingMemory.insert( stilton1 );
+        final FactHandle stilton1Handle = (FactHandle) workingMemory.insert( stilton1 );
         final Cheese stilton2 = new Cheese( "stilton",
                                             7 );
-        final FactHandle stilton2Handle = workingMemory.insert( stilton2 );
+        final FactHandle stilton2Handle =  (FactHandle) workingMemory.insert( stilton2 );
 
         workingMemory.fireAllRules();
         assertEquals( 0,
@@ -542,15 +539,9 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectWithNestedFromWithParams() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectWithNestedFrom.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KieBase kbase = loadKnowledgeBase( "test_CollectWithNestedFrom.drl");
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
 
-        RuleBase ruleBase = getSinglethreadRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
                                  results );
@@ -589,11 +580,9 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectModifyAlphaRestriction() throws Exception {
-        // read in the source 
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectAlphaRestriction.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
+        KieBase kbase = loadKnowledgeBase( "test_CollectAlphaRestriction.drl");
+        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
 
-        final WorkingMemory wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
 
         wm.setGlobal( "results", results );
@@ -607,7 +596,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
         final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
-            cheeseHandles[i] = wm.insert( cheese[i] );
+            cheeseHandles[i] =  (FactHandle) wm.insert( cheese[i] );
         }
 
         // ---------------- 1st scenario 
@@ -640,14 +629,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     @Ignore("This test requires us to fix the propagation order")
     public void testForallSinglePattern() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ForallSinglePattern.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getSinglethreadRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KieBase kbase = loadKnowledgeBase( "test_ForallSinglePattern.drl");
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -660,14 +643,14 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                       list.size() );
 
         // only stilton, so should not fire again 
-        FactHandle stilton1 = workingMemory.insert( new Cheese( "stilton",
+        FactHandle stilton1 = (FactHandle) workingMemory.insert( new Cheese( "stilton",
                                                                 10 ) );
         workingMemory.fireAllRules();
         assertEquals( fired,
                       list.size() );
 
         // only stilton, so should not fire again 
-        FactHandle stilton2 = workingMemory.insert( new Cheese( "stilton",
+        FactHandle stilton2 = (FactHandle) workingMemory.insert( new Cheese( "stilton",
                                                                 11 ) );
         workingMemory.fireAllRules();
         assertEquals( fired,
@@ -680,7 +663,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                       list.size() );
 
         // there is a brie, so should not fire  
-        FactHandle brie = workingMemory.insert( new Cheese( "brie",
+        FactHandle brie = (FactHandle) workingMemory.insert( new Cheese( "brie",
                                                             10 ) );
         workingMemory.fireAllRules();
         assertEquals( fired,
@@ -722,12 +705,9 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testMVELCollect() throws Exception {
+        KieBase kbase = loadKnowledgeBase( "test_MVELCollect.drl");
+        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
 
-        // read in the source 
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_MVELCollect.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -760,14 +740,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testNestedCorelatedRulesWithForall() throws Exception {
-
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( FirstOrderLogicTest.class.getResourceAsStream( "test_NestedCorrelatedRulesWithForall.drl" ) ) );
-
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        StatefulSession session = ruleBase.newStatefulSession();
+        KieBase kbase = loadKnowledgeBase( "test_NestedCorrelatedRulesWithForall.drl");
+        StatefulKnowledgeSession session = createKnowledgeSession((KnowledgeBase) kbase);
 
         List list1 = new ArrayList();
         List list2 = new ArrayList();
@@ -860,14 +834,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testOr() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrNesting.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getSinglethreadRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KieBase kbase = loadKnowledgeBase( "test_OrNesting.drl");
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -882,10 +850,10 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         final Person mark = new Person( "mark",
                                         "stilton" );
 
-        FactHandle ch = workingMemory.insert( cheddar );
-        FactHandle ph = workingMemory.insert( provolone );
-        FactHandle bh = workingMemory.insert( brie );
-        FactHandle markh = workingMemory.insert( mark );
+        FactHandle ch = (FactHandle) workingMemory.insert( cheddar );
+        FactHandle ph = (FactHandle) workingMemory.insert( provolone );
+        FactHandle bh = (FactHandle) workingMemory.insert( brie );
+        FactHandle markh = (FactHandle) workingMemory.insert( mark );
 
         workingMemory.fireAllRules();
         assertEquals( 1,
@@ -895,6 +863,9 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     // JBRULES-2482 
     @Test
     public void testOrWithVariableResolution() throws Exception {
+//        KieBase kbase = loadKnowledgeBase( "test_OrCEFollowedByMultipleEval.drl");
+//        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_OrCEFollowedByMultipleEval.drl",
                                                             FirstOrderLogicTest.class ),
@@ -923,6 +894,9 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     // JBRULES-2526 
     @Test
     public void testOrWithVariableResolution2() throws Exception {
+        //        KieBase kbase = loadKnowledgeBase( "test_OrCEFollowedByMultipleEval.drl");
+        //        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
+
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_OrCEFollowedByMultipleEval2.drl",
                                                             FirstOrderLogicTest.class ),
@@ -950,14 +924,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectWithMemberOfOperators() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectMemberOfOperator.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getSinglethreadRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KieBase kbase = loadKnowledgeBase( "test_CollectMemberOfOperator.drl");
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -1009,14 +977,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectWithContainsOperators() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectContainsOperator.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getSinglethreadRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KieBase kbase = loadKnowledgeBase( "test_CollectContainsOperator.drl");
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -1068,14 +1030,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testForallSinglePatternWithExists() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ForallSinglePatternWithExists.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getSinglethreadRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KieBase kbase = loadKnowledgeBase( "test_ForallSinglePatternWithExists.drl");
+        StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -1103,12 +1059,9 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectResultBetaConstraint() throws Exception {
+        KieBase kbase = loadKnowledgeBase( "test_CollectResultsBetaConstraint.drl");
+        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
 
-        // read in the source 
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectResultsBetaConstraint.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
-
-        StatefulSession wm = ruleBase.newStatefulSession();
         List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -1116,11 +1069,6 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
         wm.insert( new Double( 10 ) );
         wm.insert( new Integer( 2 ) );
-
-        //        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        //        wm = serializeWorkingMemory( ruleBase, 
-        //                                     wm );
-        //        results = (List) wm.getGlobal( "results" );
 
         wm.fireAllRules();
 
@@ -1141,19 +1089,8 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testFromWithOr() throws Exception {
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_FromWithOr.drl" ) ),
-                     ResourceType.DRL );
-
-        if ( builder.hasErrors() ) {
-            logger.info( builder.getErrors().toString() );
-        }
-        assertFalse( builder.hasErrors() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( builder.getKnowledgePackages() );
-
-        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase( "test_FromWithOr.drl");
+        StatefulKnowledgeSession session = createKnowledgeSession((KnowledgeBase) kbase);
 
         final List<Address> results = new ArrayList<Address>();
         session.setGlobal( "results",
@@ -1184,19 +1121,12 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     @Test
     @Ignore("This test requires us to fix the propagation order")
     public void testForallWithSlidingWindow() throws Exception {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_ForallSlidingWindow.drl" ) ),
-                      ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
         final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf,
-                                                                                     null );
+
+        KieBase kbase = loadKnowledgeBase( "test_ForallSlidingWindow.drl");
+        StatefulKnowledgeSession ksession = createKnowledgeSession((KnowledgeBase) kbase, conf);
+
         final SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results",
@@ -1285,12 +1215,9 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectFromMVELAfterOr() throws Exception {
+        KieBase kbase = loadKnowledgeBase( "test_CollectFromMVELAfterOr.drl");
+        StatefulKnowledgeSession wm = createKnowledgeSession((KnowledgeBase) kbase);
 
-        // read in the source 
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectFromMVELAfterOr.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
-
-        StatefulSession wm = ruleBase.newStatefulSession();
         List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -1308,7 +1235,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         wm.insert( jill );
         wm.insert( bob );
 
-        wm = SerializationHelper.getSerialisedStatefulSession(wm);
+        wm = SerializationHelper.getSerialisedStatefulKnowledgeSession(wm, true);
         results = (List) wm.getGlobal( "results" );
 
         wm.fireAllRules();
@@ -1321,31 +1248,17 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     @Test
     public void testCollectAfterOrCE() throws Exception {
+        Collection<KnowledgePackage> pkgs = loadKnowledgePackages("test_OrCEFollowedByCollect.drl");
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(pkgs);
+        StatefulKnowledgeSession session = createKnowledgeSession((KnowledgeBase) kbase);
+
         //Set up facts
         final Cheesery bonFromage = new Cheesery();
         bonFromage.addCheese( new Cheese( "cheddar" ) );
         bonFromage.addCheese( new Cheese( "cheddar" ) );
 
-        //Test in memory compile of DRL
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_OrCEFollowedByCollect.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( errors.size() > 0 ) {
-            for ( KnowledgeBuilderError error : errors ) {
-                logger.warn( error.toString() );
-            }
-            throw new IllegalArgumentException( "Could not parse knowledge." );
-        }
-        assertFalse( kbuilder.hasErrors() );
-
-        Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( knowledgePackages );
-
-        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         session.insert( bonFromage );
 
         int rules = session.fireAllRules();
@@ -1353,9 +1266,9 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                       rules );
 
         //Serialize and test again
-        knowledgePackages = SerializationHelper.serializeObject(knowledgePackages);
+        pkgs = SerializationHelper.serializeObject(pkgs);
         kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( knowledgePackages );
+        kbase.addKnowledgePackages( pkgs );
         
         session = createKnowledgeSession(kbase);
         session.insert( bonFromage );

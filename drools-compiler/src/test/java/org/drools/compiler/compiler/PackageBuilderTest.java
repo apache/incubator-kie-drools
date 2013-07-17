@@ -49,6 +49,8 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.compiler.commons.jci.compilers.JavaCompiler;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
@@ -98,6 +100,7 @@ import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.definition.type.FactField;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.internal.utils.CompositeClassLoader;
 
@@ -179,7 +182,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         ruleBase.getGlobals().put( "map",
                                    Map.class );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        final KieSession workingMemory = new KnowledgeBaseImpl( ruleBase ).newStatefulKnowledgeSession();
 
         final HashMap map = new HashMap();
         workingMemory.setGlobal( "map",
@@ -192,11 +195,11 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                           rule.getLhs(),
                                                           tuple );
 
-        DefaultKnowledgeHelper knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( workingMemory );
+        DefaultKnowledgeHelper knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory).session );
         knowledgeHelper.setActivation( activation );
 
         rule.getConsequence().evaluate( knowledgeHelper,
-                                        workingMemory );
+                                        ((StatefulKnowledgeSessionImpl)workingMemory).session );
         assertEquals( new Integer( 1 ),
                       map.get( "value" ) );
 
@@ -213,11 +216,11 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         rule = pkg.getRule( "rule-1" );
 
-        knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( workingMemory );
+        knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory).session );
         knowledgeHelper.setActivation( activation );
 
         rule.getConsequence().evaluate( knowledgeHelper,
-                                        workingMemory );
+                                        ((StatefulKnowledgeSessionImpl)workingMemory).session );
         assertEquals( new Integer( 2 ),
                       map.get( "value" ) );
 
@@ -262,7 +265,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         ruleBase.getGlobals().put( "map",
                                    Map.class );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        final KieSession workingMemory = new KnowledgeBaseImpl( ruleBase ).newStatefulKnowledgeSession();
 
         final HashMap map = new HashMap();
 
@@ -276,11 +279,11 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                           newRule.getLhs(),
                                                           tuple );
 
-        final DefaultKnowledgeHelper knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( workingMemory );
+        final DefaultKnowledgeHelper knowledgeHelper = new org.drools.core.base.DefaultKnowledgeHelper( ((StatefulKnowledgeSessionImpl)workingMemory).session );
         knowledgeHelper.setActivation( activation );
 
         newRule.getConsequence().evaluate( knowledgeHelper,
-                                           workingMemory );
+                                           ((StatefulKnowledgeSessionImpl)workingMemory).session );
         assertEquals( new Integer( 1 ),
                       map.get( "value" ) );
     }

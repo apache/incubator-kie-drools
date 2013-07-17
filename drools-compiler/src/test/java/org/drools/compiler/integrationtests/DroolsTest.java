@@ -4,14 +4,21 @@ import static org.junit.Assert.fail;
 
 import java.io.Serializable;
 import java.io.StringReader;
+import java.util.Arrays;
 
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.WorkingMemory;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.definition.KnowledgePackage;
 
-public class DroolsTest {
+public class DroolsTest extends CommonTestMethodBase  {
     private final static int NUM_FACTS = 20;
 
     private static int       counter;
@@ -56,8 +63,9 @@ public class DroolsTest {
 
         counter = 0;
 
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-        WorkingMemory wm = rb.newStatefulSession();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+
+        KieSession wm = createKnowledgeSession(kbase);
 
         for ( int i = 0; i < NUM_FACTS; i++ ) {
             wm.insert( new Foo( i ) );
@@ -69,7 +77,8 @@ public class DroolsTest {
             fail( bld.getErrors().toString() );
         }
 
-        rb.addPackage( bld.getPackage() );
+        kbase.addKnowledgePackages(Arrays.asList(new KnowledgePackage[]{new KnowledgePackageImp(bld.getPackage())}) );
+
         wm.fireAllRules();
         System.out.println( counter + ":" + (counter == NUM_FACTS ? "passed" : "failed" ));
     }

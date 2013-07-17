@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.RuleBase;
 import org.drools.core.StatefulSession;
 import org.drools.compiler.compiler.PackageBuilder;
@@ -35,23 +36,17 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 
-public class DynamicRulesChangesTest {
+public class DynamicRulesChangesTest extends CommonTestMethodBase {
 
     private static final int PARALLEL_THREADS = 1;
     private static final ExecutorService executor = Executors.newFixedThreadPool(PARALLEL_THREADS);
 
     private static InternalKnowledgeBase kbase;
-    private static RuleBase ruleBase;
 
     @Before
     public void setUp() throws Exception {
         kbase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
-        ruleBase = ((KnowledgeBaseImpl)kbase).ruleBase;
         addRule("raiseAlarm");
-    }
-
-    protected static StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) { 
-        return kbase.newStatefulKnowledgeSession();
     }
 
     @Test//(timeout=10000) @Ignore("beta4 phreak")
@@ -81,7 +76,7 @@ public class DynamicRulesChangesTest {
             final List<String> events = new ArrayList<String>();
 
             try {
-                StatefulSession ksession = ruleBase.newStatefulSession();
+                KieSession ksession = kbase.newKieSession();
                 ksession.setGlobal("events", events);
 
                 // phase 1
@@ -117,7 +112,7 @@ public class DynamicRulesChangesTest {
         }
     }
 
-    public static class BatchRulesExecutor implements Callable<List<String>> {
+    public static class BatchRulesExecutor extends CommonTestMethodBase implements Callable<List<String>> {
 
         public List<String> call() throws Exception {
             final List<String> events = new ArrayList<String>();
@@ -172,13 +167,13 @@ public class DynamicRulesChangesTest {
 
     public static void addRule(String ruleName, Rule firingRule) throws Exception {
         String rule = rules.get(ruleName);
-        PackageBuilder builder = new PackageBuilder();
-        System.out.println( rule );
-        builder.addPackageFromDrl(new StringReader(rule));
-        ruleBase.addPackage(builder.getPackage());
+
+        CommonTestMethodBase testBaseMethod = new CommonTestMethodBase();
+
+        kbase.addKnowledgePackages(testBaseMethod.loadKnowledgePackagesFromString( rule ));
 
         if (false && firingRule != null) {
-            ruleBase.removeRule("defaultpkg", firingRule.getName());
+            kbase.removeRule("defaultpkg", firingRule.getName());
         }
     }
 
