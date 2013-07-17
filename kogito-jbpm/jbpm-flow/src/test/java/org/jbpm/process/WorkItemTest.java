@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.core.ParameterDefinition;
 import org.drools.core.process.core.Work;
@@ -17,6 +16,7 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.process.core.impl.ParameterDefinitionImpl;
 import org.drools.core.process.core.impl.WorkImpl;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.test.Person;
@@ -43,7 +43,7 @@ public class WorkItemTest extends AbstractBaseTest {
         RuleFlowProcess process = getWorkItemProcess( processId,
                                                       workName );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess( process );
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess( process );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         Map<String, Object> parameters = new HashMap<String, Object>();
@@ -70,7 +70,7 @@ public class WorkItemTest extends AbstractBaseTest {
         RuleFlowProcess process = getWorkItemProcess( processId,
                                                       workName );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess( process );
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess( process );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         ksession.getWorkItemManager().registerWorkItemHandler( workName,

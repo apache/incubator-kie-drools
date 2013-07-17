@@ -21,10 +21,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.impl.WorkImpl;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -91,7 +91,7 @@ public class SubProcessTest extends AbstractBaseTest  {
         );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         process = new RuleFlowProcess();
         process.setId("org.drools.core.process.subprocess");
@@ -125,7 +125,7 @@ public class SubProcessTest extends AbstractBaseTest  {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.startProcess("org.drools.core.process.process");
@@ -162,7 +162,7 @@ public class SubProcessTest extends AbstractBaseTest  {
         );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         process = new RuleFlowProcess();
         process.setId("org.drools.core.process.subprocess");
@@ -191,7 +191,7 @@ public class SubProcessTest extends AbstractBaseTest  {
             endNode, Node.CONNECTION_DEFAULT_TYPE
         );
         
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.getWorkItemManager().registerWorkItemHandler("MyWork", new WorkItemHandler() {
@@ -235,7 +235,7 @@ public class SubProcessTest extends AbstractBaseTest  {
         process.addNode( endNode );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         try{

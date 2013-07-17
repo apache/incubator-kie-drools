@@ -22,7 +22,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.core.WorkItemHandlerNotFoundException;
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.core.ParameterDefinition;
 import org.drools.core.process.core.Work;
@@ -31,6 +30,7 @@ import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.process.core.impl.ParameterDefinitionImpl;
 import org.drools.core.process.core.impl.WorkImpl;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
@@ -95,7 +95,7 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
         String workName = "Unnexistent Task";
         RuleFlowProcess process = getWorkItemProcess( processId, workName );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess( process );
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess( process );
         StatefulKnowledgeSession ksession = createSession(kbase);
 
         ksession.getWorkItemManager().registerWorkItemHandler( workName, new DoNothingWorkItemHandler() );

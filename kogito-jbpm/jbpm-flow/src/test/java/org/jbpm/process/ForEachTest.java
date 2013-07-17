@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.core.datatype.impl.type.ListDataType;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.test.Person;
@@ -114,7 +114,7 @@ public class ForEachTest extends AbstractBaseTest {
         forEachNode.setVariable("child", personDataType);
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         
         Map<String, Object> parameters = new HashMap<String, Object>();

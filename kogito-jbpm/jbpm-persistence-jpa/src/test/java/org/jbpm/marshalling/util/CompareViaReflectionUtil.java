@@ -41,8 +41,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.AbstractWorkingMemory;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.process.instance.impl.WorkItemImpl;
@@ -97,14 +97,14 @@ public class CompareViaReflectionUtil {
         try {
             doNotCompareFieldsMap.add(AbstractWorkingMemory.class.getDeclaredField("id"));
             doNotCompareFieldsMap.add(KnowledgeBaseImpl.class.getDeclaredField("mappedKnowledgeBaseListeners"));
-            doNotCompareFieldsMap.add(AbstractRuleBase.class.getDeclaredField("id"));
-            doNotCompareFieldsMap.add(AbstractRuleBase.class.getDeclaredField("workingMemoryCounter"));
+            doNotCompareFieldsMap.add(ReteooRuleBase.class.getDeclaredField("id"));
+            doNotCompareFieldsMap.add(ReteooRuleBase.class.getDeclaredField("workingMemoryCounter"));
             doNotCompareFieldsMap.add(WorkItemImpl.class.getDeclaredField("id"));
             doNotCompareFieldsMap.add(WorkItemImpl.class.getDeclaredField("processInstanceId"));
             doNotCompareFieldsMap.add(ClassFieldAccessorCache.class.getDeclaredField("classLoader"));
             doNotCompareFieldsMap.add(AbstractWorkingMemory.class.getDeclaredField("globalResolver"));
             doNotCompareFieldsMap.add(JDKTimerService.class.getDeclaredField("scheduler"));
-            doNotCompareFieldsMap.add(AbstractRuleBase.class.getDeclaredField("classFieldAccessorCache"));
+            doNotCompareFieldsMap.add(ReteooRuleBase.class.getDeclaredField("classFieldAccessorCache"));
         } catch (Exception e) {
             logger.error("{}: {}", e.getClass().getSimpleName(), e.getMessage());
             // do nothing

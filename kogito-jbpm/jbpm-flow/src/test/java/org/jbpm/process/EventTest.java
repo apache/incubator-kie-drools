@@ -21,9 +21,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.instance.impl.Action;
@@ -134,7 +134,7 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
@@ -222,7 +222,7 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
@@ -336,7 +336,7 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
@@ -452,7 +452,7 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         System.setProperty("jbpm.loop.level.disabled", "true");
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
@@ -568,7 +568,7 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
@@ -661,7 +661,7 @@ public class EventTest extends AbstractBaseTest  {
         );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        ((ReteooRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.core.process.event");
