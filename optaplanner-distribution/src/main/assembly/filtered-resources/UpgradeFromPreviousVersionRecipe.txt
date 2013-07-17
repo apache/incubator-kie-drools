@@ -3451,3 +3451,5 @@ After in *SolverConfig.java and *BenchmarkConfig.java:
         ...
         <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
       </constructionHeuristic>
+
+[MINOR] The class ConstructionHeuristicPickEarlyType has moved to another package.
