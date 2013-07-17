@@ -31,7 +31,6 @@ import org.drools.core.FactException;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.ShadowProxy;
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
@@ -82,7 +81,7 @@ public class ClassObjectTypeConf
         this.typeDecl = ruleBase.getTypeDeclaration( clazz );
         isEvent = typeDecl != null && typeDecl.getRole() == TypeDeclaration.Role.EVENT;
 
-        ObjectType objectType = ((AbstractRuleBase) ruleBase).getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz,
+        ObjectType objectType = ((ReteooRuleBase) ruleBase).getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz,
                                                                                                                                     isEvent ) );
 
         this.concreteObjectTypeNode = ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );

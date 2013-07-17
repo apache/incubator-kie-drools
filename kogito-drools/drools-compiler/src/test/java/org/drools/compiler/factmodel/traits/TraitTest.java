@@ -38,7 +38,6 @@ import junit.framework.Assert;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
@@ -159,7 +158,7 @@ public class TraitTest extends CommonTestMethodBase {
         TraitFactory.setMode( mode, kb );
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactory tFactory = ((ReteooRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -434,7 +433,7 @@ public class TraitTest extends CommonTestMethodBase {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         TraitFactory.setMode( mode, kb );
-        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactory tFactory = ((ReteooRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -530,7 +529,7 @@ public class TraitTest extends CommonTestMethodBase {
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         TraitFactory.setMode( mode, kb );
-        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactory tFactory = ((ReteooRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
 
         try {
@@ -672,7 +671,7 @@ public class TraitTest extends CommonTestMethodBase {
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         TraitFactory.setMode( mode, kb );
 
-        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactory tFactory = ((ReteooRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -769,7 +768,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
         TraitFactory.setMode( mode, kb );
-        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactory tFactory = ((ReteooRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -906,7 +905,7 @@ public class TraitTest extends CommonTestMethodBase {
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         TraitFactory.setMode( mode, kb );
 
-        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactory tFactory = ((ReteooRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -1016,7 +1015,7 @@ public class TraitTest extends CommonTestMethodBase {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         TraitFactory.setMode( mode, kb );
-        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactory tFactory = ((ReteooRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
         try {
             FactType impClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -2214,7 +2213,7 @@ public class TraitTest extends CommonTestMethodBase {
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, kb );
-        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactory tFactory = ((ReteooRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
 
         try {
@@ -2267,7 +2266,7 @@ public class TraitTest extends CommonTestMethodBase {
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES, kb );
-        TraitFactory tFactory = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactory tFactory = ((ReteooRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
 
 
         try {

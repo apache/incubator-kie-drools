@@ -661,7 +661,7 @@ public class DefaultKnowledgeHelper
     }
 
     protected <T, K> T applyTrait( K core, Class<T> trait, boolean logical ) throws LogicalTypeInconsistencyException {
-        AbstractRuleBase arb = (AbstractRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeRuntime().getKieBase() ).getRuleBase();
+        ReteooRuleBase arb = (ReteooRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeRuntime().getKieBase() ).getRuleBase();
         TraitFactory builder = arb.getConfiguration().getComponentFactory().getTraitFactory();
 
         boolean needsWrapping = ! ( core instanceof TraitableBean );

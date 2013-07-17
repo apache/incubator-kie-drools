@@ -67,46 +67,46 @@ public class KnowledgeBaseMonitoring
 
     protected static final transient Logger logger = LoggerFactory.getLogger(KnowledgeBaseMonitoring.class);
 
-    private static final String ATTR_PACKAGES = "Packages";
-    private static final String ATTR_GLOBALS = "Globals";
+    private static final String ATTR_PACKAGES      = "Packages";
+    private static final String ATTR_GLOBALS       = "Globals";
     private static final String ATTR_SESSION_COUNT = "SessionCount";
-    private static final String ATTR_ID = "Id";
+    private static final String ATTR_ID            = "Id";
 
-    private static final String OP_STOP_INTERNAL_MBEANS = "stopInternalMBeans";
+    private static final String OP_STOP_INTERNAL_MBEANS  = "stopInternalMBeans";
     private static final String OP_START_INTERNAL_MBEANS = "startInternalMBeans";
 
-    private static final String  KBASE_PREFIX    = "org.drools.kbases";
+    private static final String KBASE_PREFIX = "org.drools.kbases";
 
     // ************************************************************************************************
     // MBean attributes
     //
-    private ReteooRuleBase       kbase;
-    private ObjectName           name;
+    private ReteooRuleBase kbase;
+    private ObjectName     name;
 
     private OpenMBeanInfoSupport info;
 
     // ************************************************************************************************
     // Define and instantiate all info related to the globals table
     //
-    private static String[]      globalsColNames = {"name", "class"};
-    private static String[]      globalsColDescr = {"Global identifier", "Fully qualified class name"};
-    private static OpenType[]    globalsColTypes = {SimpleType.STRING, SimpleType.STRING};
+    private static String[]   globalsColNames = {"name", "class"};
+    private static String[]   globalsColDescr = {"Global identifier", "Fully qualified class name"};
+    private static OpenType[] globalsColTypes = {SimpleType.STRING, SimpleType.STRING};
     private static CompositeType globalsType;
-    private static String[]      index           = {"name"};
-    private static TabularType   globalsTableType;
+    private static String[] index = {"name"};
+    private static TabularType globalsTableType;
 
     static {
         try {
-            globalsType = new CompositeType( "globalsType",
-                                             "Globals row type",
-                                             globalsColNames,
-                                             globalsColDescr,
-                                             globalsColTypes );
-            globalsTableType = new TabularType( "globalsTableType",
-                                                "List of globals",
-                                                globalsType,
-                                                index );
-        } catch ( Exception e ) {
+            globalsType = new CompositeType("globalsType",
+                                            "Globals row type",
+                                            globalsColNames,
+                                            globalsColDescr,
+                                            globalsColTypes);
+            globalsTableType = new TabularType("globalsTableType",
+                                               "List of globals",
+                                               globalsType,
+                                               index);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -116,7 +116,7 @@ public class KnowledgeBaseMonitoring
     // Constructor
     public KnowledgeBaseMonitoring(ReteooRuleBase kbase) {
         this.kbase = kbase;
-        this.name = DroolsManagementAgent.createObjectName( KBASE_PREFIX + ":type=" + kbase.getId() );
+        this.name = DroolsManagementAgent.createObjectName(KBASE_PREFIX + ":type=" + kbase.getId());
 
         initOpenMBeanInfo();
     }
@@ -132,20 +132,20 @@ public class KnowledgeBaseMonitoring
 
         try {
             // Define the attributes 
-            attributes[0] = new OpenMBeanAttributeInfoSupport( ATTR_ID,
-                                                               "Knowledge Base Id",
-                                                               SimpleType.STRING,
-                                                               true,
-                                                               false,
-                                                               false );
-            attributes[1] = new OpenMBeanAttributeInfoSupport( ATTR_SESSION_COUNT,
-                                                               "Number of created sessions for this Knowledge Base",
-                                                               SimpleType.LONG,
-                                                               true,
-                                                               false,
-                                                               false );
-            attributes[2] = new OpenMBeanAttributeInfoSupport( ATTR_GLOBALS,
-                                                               "List of globals",
+            attributes[0] = new OpenMBeanAttributeInfoSupport(ATTR_ID,
+                                                              "Knowledge Base Id",
+                                                              SimpleType.STRING,
+                                                              true,
+                                                              false,
+                                                              false);
+            attributes[1] = new OpenMBeanAttributeInfoSupport(ATTR_SESSION_COUNT,
+                                                              "Number of created sessions for this Knowledge Base",
+                                                              SimpleType.LONG,
+                                                              true,
+                                                              false,
+                                                              false);
+            attributes[2] = new OpenMBeanAttributeInfoSupport(ATTR_GLOBALS,
+                                                              "List of globals",
                                                                globalsTableType,
                                                                true,
                                                                false,

@@ -32,7 +32,7 @@ import org.drools.core.RuleBase;
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.common.AbstractRuleBase;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
@@ -66,29 +66,28 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     private Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
 
-    private transient AbstractRuleBase ruleBase;
+    private transient ReteooRuleBase ruleBase;
 
 
-    public static void setMode( VirtualPropertyMode newMode, KnowledgeBase kBase ) {
+    public static void setMode(VirtualPropertyMode newMode, KnowledgeBase kBase) {
         RuleBase ruleBase = ((KnowledgeBaseImpl) kBase).getRuleBase();
-        ReteooComponentFactory rcf = ((AbstractRuleBase) ruleBase).getConfiguration().getComponentFactory();
+        ReteooComponentFactory rcf = ((ReteooRuleBase) ruleBase).getConfiguration().getComponentFactory();
         ClassBuilderFactory cbf = rcf.getClassBuilderFactory();
         rcf.getTraitFactory().mode = newMode;
-        switch ( newMode ) {
-            case MAP    :
-                cbf.setPropertyWrapperBuilder( new TraitMapPropertyWrapperClassBuilderImpl() );
-                cbf.setTraitProxyBuilder( new TraitMapProxyClassBuilderImpl() );
+        switch (newMode) {
+            case MAP:
+                cbf.setPropertyWrapperBuilder(new TraitMapPropertyWrapperClassBuilderImpl());
+                cbf.setTraitProxyBuilder(new TraitMapProxyClassBuilderImpl());
                 break;
             case TRIPLES:
-                cbf.setPropertyWrapperBuilder( new TraitTriplePropertyWrapperClassBuilderImpl() );
-                cbf.setTraitProxyBuilder( new TraitTripleProxyClassBuilderImpl() );
+                cbf.setPropertyWrapperBuilder(new TraitTriplePropertyWrapperClassBuilderImpl());
+                cbf.setTraitProxyBuilder(new TraitTripleProxyClassBuilderImpl());
                 break;
-            default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + newMode );
+            default:
+                throw new RuntimeException(" This should not happen : unexpected property wrapping method " + newMode);
         }
 
     }
-
-
 
 
     public TraitFactory() {
@@ -96,9 +95,9 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( mode );
-        out.writeObject( factoryCache );
-        out.writeObject( wrapperCache );
+        out.writeObject(mode);
+        out.writeObject(factoryCache);
+        out.writeObject(wrapperCache);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -108,26 +107,26 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     }
 
 
-
-    public T getProxy( K core, Class<?> trait ) throws LogicalTypeInconsistencyException {
+    public T getProxy(K core, Class<?> trait) throws LogicalTypeInconsistencyException {
         String traitName = trait.getName();
 
-        if ( core.hasTrait( traitName ) ) {
-            return (T) core.getTrait( traitName );
+        if (core.hasTrait(traitName)) {
+            return (T) core.getTrait(traitName);
         }
 
-        String key = getKey( core.getClass(), trait );
+        String key = getKey(core.getClass(), trait);
 
 
-        Constructor<T> konst = factoryCache.get( key );
-        if ( konst == null ) {
-            konst = cacheConstructor( key, core, trait );
+        Constructor<T> konst = factoryCache.get(key);
+        if (konst == null) {
+            konst = cacheConstructor(key, core, trait);
         }
 
         T proxy = null;
         try {
-            switch ( mode ) {
-                case MAP    :   proxy = konst.newInstance( core, core._getDynamicProperties() );
+            switch (mode) {
+                case MAP:
+                    proxy = konst.newInstance(core, core._getDynamicProperties());
                     break;
                 case TRIPLES:   proxy = konst.newInstance( core, ruleBase.getTripleStore(), getTripleFactory() );
                     break;
@@ -153,11 +152,11 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     }
 
 
-    public AbstractRuleBase getRuleBase() {
+    public ReteooRuleBase getRuleBase() {
         return ruleBase;
     }
 
-    public void setRuleBase( AbstractRuleBase ruleBase ) {
+    public void setRuleBase( ReteooRuleBase ruleBase ) {
         this.ruleBase = ruleBase;
     }
 

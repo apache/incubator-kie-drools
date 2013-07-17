@@ -18,9 +18,9 @@ package org.drools.workbench.models.testscenarios.backend;
 
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.runtime.rule.impl.RuleFlowGroupImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.workbench.models.commons.shared.imports.Import;
@@ -535,7 +535,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         scenario.getFixtures().addAll(Arrays.asList(assertions));
 
         KieSession ksession = getKieSession("test_rules3.drl");
-        ClassLoader cl = ((AbstractRuleBase) ((KnowledgeBaseImpl) ksession.getKieBase()).getRuleBase()).getRootClassLoader();
+        ClassLoader cl = ((ReteooRuleBase) ((KnowledgeBaseImpl) ksession.getKieBase()).getRuleBase()).getRootClassLoader();
 
         HashSet<String> imports = new HashSet<String>();
         imports.add("foo.bar.*");
@@ -593,7 +593,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         scenario.getFixtures().addAll(Arrays.asList(assertions));
 
         KieSession ksession = getKieSession("rule_flow_actication.drl");
-        ClassLoader classLoader = ((AbstractRuleBase) ((KnowledgeBaseImpl) ksession.getKieBase()).getRuleBase()).getRootClassLoader();
+        ClassLoader classLoader = ((ReteooRuleBase) ((KnowledgeBaseImpl) ksession.getKieBase()).getRuleBase()).getRootClassLoader();
 
         HashSet<String> imports = new HashSet<String>();
         imports.add("foo.bar.*");

@@ -23,12 +23,12 @@ import static junit.framework.Assert.fail;
 
 import java.util.Date;
 
-import org.drools.core.common.AbstractRuleBase;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -71,7 +71,7 @@ public class TripleBasedTraitsTest {
         }
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        TraitFactory traitBuilder = ((AbstractRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
+        TraitFactory traitBuilder = ((ReteooRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
         TraitFactory.setMode( TraitFactory.VirtualPropertyMode.TRIPLES, kb );
 
         try {
