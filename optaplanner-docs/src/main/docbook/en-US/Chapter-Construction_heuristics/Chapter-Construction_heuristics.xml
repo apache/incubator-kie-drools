@@ -46,7 +46,9 @@
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
+    &lt;!--forager--&gt;
+      &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
+    &lt;!--/forager--&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
 
       <note>
@@ -105,7 +107,9 @@
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
+    &lt;!--forager--&gt;
+      &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
+    &lt;!--/forager--&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
     </section>
   </section>
@@ -137,7 +141,9 @@
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;BEST_FIT&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
+    &lt;!--forager--&gt;
+      &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
+    &lt;!--/forager--&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
     </section>
   </section>
@@ -168,7 +174,9 @@
       <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;BEST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
-    &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
+    &lt;!--forager--&gt;
+      &lt;!-- &lt;pickEarlyType&gt;FIRST_NON_DETERIORATING_SCORE&lt;/pickEarlyType&gt; --&gt;
+    &lt;!--/forager--&gt;
   &lt;/constructionHeuristic&gt;</programlisting>
     </section>
   </section>

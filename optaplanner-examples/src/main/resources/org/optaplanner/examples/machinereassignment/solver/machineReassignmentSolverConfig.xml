@@ -15,7 +15,9 @@
   
   <!--<constructionHeuristic>-->
     <!--<constructionHeuristicType>FIRST_FIT</constructionHeuristicType>-->
-    <!--<pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>-->
+    <!--<forager>-->
+      <!--<pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>-->
+    <!--</forager>-->
   <!--</constructionHeuristic>-->
   <customSolverPhase>
     <customSolverPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>

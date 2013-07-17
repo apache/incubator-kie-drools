@@ -23,6 +23,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.collections.CollectionUtils;
+import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
@@ -58,11 +59,13 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     // and also because the input config file should match the output config file
 
     protected ConstructionHeuristicType constructionHeuristicType = null;
-    protected ConstructionHeuristicPickEarlyType pickEarlyType = null;
 
     // TODO This is a List due to XStream limitations. With JAXB it could be just a EntityPlacerConfig instead.
     @XStreamImplicit
     protected List<EntityPlacerConfig> entityPlacerConfigList = null;
+
+    @XStreamAlias("forager")
+    protected ConstructionHeuristicForagerConfig foragerConfig = null;
 
     public ConstructionHeuristicType getConstructionHeuristicType() {
         return constructionHeuristicType;
@@ -72,20 +75,20 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         this.constructionHeuristicType = constructionHeuristicType;
     }
 
-    public ConstructionHeuristicPickEarlyType getPickEarlyType() {
-        return pickEarlyType;
-    }
-
-    public void setPickEarlyType(ConstructionHeuristicPickEarlyType pickEarlyType) {
-        this.pickEarlyType = pickEarlyType;
-    }
-
     public List<EntityPlacerConfig> getEntityPlacerConfigList() {
         return entityPlacerConfigList;
     }
 
     public void setEntityPlacerConfigList(List<EntityPlacerConfig> entityPlacerConfigList) {
         this.entityPlacerConfigList = entityPlacerConfigList;
+    }
+
+    public ConstructionHeuristicForagerConfig getForagerConfig() {
+        return foragerConfig;
+    }
+
+    public void setForagerConfig(ConstructionHeuristicForagerConfig foragerConfig) {
+        this.foragerConfig = foragerConfig;
     }
 
     // ************************************************************************
@@ -149,9 +152,9 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     }
 
     private ConstructionHeuristicDecider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
-        ConstructionHeuristicPickEarlyType pickEarlyType_ = (this.pickEarlyType == null)
-                ? ConstructionHeuristicPickEarlyType.NEVER : this.pickEarlyType;
-        ConstructionHeuristicForager forager = new DefaultConstructionHeuristicForager(pickEarlyType_);
+        ConstructionHeuristicForagerConfig foragerConfig_ = foragerConfig == null
+                ? new ConstructionHeuristicForagerConfig() : foragerConfig;
+        ConstructionHeuristicForager forager = foragerConfig_.buildForager(configPolicy);
         ConstructionHeuristicDecider decider = new ConstructionHeuristicDecider(termination, forager);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
@@ -218,8 +221,9 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     @Deprecated
     private GreedyForager buildGreedyForager() {
         GreedyForager forager = new GreedyForager();
-        ConstructionHeuristicPickEarlyType pickEarlyType_ = (this.pickEarlyType == null)
-                ? ConstructionHeuristicPickEarlyType.NEVER : this.pickEarlyType;
+        ConstructionHeuristicPickEarlyType pickEarlyType_ =
+                (foragerConfig == null || foragerConfig.getPickEarlyType() == null )
+                ? ConstructionHeuristicPickEarlyType.NEVER : foragerConfig.getPickEarlyType();
         forager.setPickEarlyType(pickEarlyType_);
         return forager;
     }
@@ -256,14 +260,15 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
 
     public void inherit(ConstructionHeuristicSolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (constructionHeuristicType == null) {
-            constructionHeuristicType = inheritedConfig.getConstructionHeuristicType();
-        }
-        if (pickEarlyType == null) {
-            pickEarlyType = inheritedConfig.getPickEarlyType();
-        }
+        constructionHeuristicType = ConfigUtils.inheritOverwritableProperty(constructionHeuristicType,
+                inheritedConfig.getConstructionHeuristicType());
         entityPlacerConfigList = ConfigUtils.inheritMergeableListProperty(
                 entityPlacerConfigList, inheritedConfig.getEntityPlacerConfigList());
+        if (foragerConfig == null) {
+            foragerConfig = inheritedConfig.getForagerConfig();
+        } else if (inheritedConfig.getForagerConfig() != null) {
+            foragerConfig.inherit(inheritedConfig.getForagerConfig());
+        }
     }
 
     public static enum ConstructionHeuristicType {

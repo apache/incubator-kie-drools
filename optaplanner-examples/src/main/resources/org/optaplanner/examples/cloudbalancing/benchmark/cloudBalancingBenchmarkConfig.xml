@@ -49,7 +49,9 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-        <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -58,7 +60,9 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -68,7 +72,9 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
@@ -89,7 +95,9 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
@@ -110,7 +118,9 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
@@ -131,7 +141,9 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>

@@ -3439,8 +3439,14 @@ Now it simply does:
     xStream.setMode(XStream.ID_REFERENCES);
 Normally this should have no relevant impact on your XML dataset files or your code.
 
+[README] The construction heuristics have been rewritten from scratch to take advantage of the selector architecture.
+The basic configuration hasn't changed much, but power users can do advanced configuration too.
+These advanced options allow you to use construction heuristics with multiple entity classes,
+a higher number of variables, nullable variables, ...
+
 [MAJOR] The construction heuristic property <constructionHeuristicPickEarlyType> has been renamed to <pickEarlyType>.
-Also the value FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING has been renamed to FIRST_NON_DETERIORATING_SCORE.
+The value FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING has been renamed to FIRST_NON_DETERIORATING_SCORE.
+The <pickEarlyType> has been nested into a <forager> element (similar like for Local Search).
 Before in *SolverConfig.java and *BenchmarkConfig.java:
       <constructionHeuristic>
         ...
@@ -3449,7 +3455,41 @@ Before in *SolverConfig.java and *BenchmarkConfig.java:
 After in *SolverConfig.java and *BenchmarkConfig.java:
       <constructionHeuristic>
         ...
-        <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
       </constructionHeuristic>
 
 [MINOR] The class ConstructionHeuristicPickEarlyType has moved to another package.
+
+[MAJOR] If you have multiple variables, the result of the construction heuristic is likely to differ.
+Even though the default still does a cartesian production over the variables for the FIT algorithm you choose,
+it will order the combinations in the original order (instead of the reverse as the old implementation did),
+which might cause it to take a totally different path.
+Note: Through advanced configuration it's possible to make the new implementation behave exactly the same as the old,
+but this is NOT recommended:
+      <constructionHeuristic>
+         ...
+         <queuedEntityPlacer>
+           <entitySelector id="placerEntitySelector">
+             <cacheType>PHASE</cacheType>
+             ...
+           </entitySelector>
+           <cartesianProductMoveSelector>
+             <changeMoveSelector>
+               <entitySelector mimicSelectorRef="placerEntitySelector"/>
+               <valueSelector>
+                 <variableName>secondVariable</variableName>
+                 ...
+               </valueSelector>
+             </changeMoveSelector>
+             <changeMoveSelector>
+               <entitySelector mimicSelectorRef="placerEntitySelector"/>
+               <valueSelector>
+                 <variableName>firstVariable</variableName>
+                 ...
+               </valueSelector>
+             </changeMoveSelector>
+           </cartesianProductMoveSelector>
+         </queuedEntityPlacer>
+       </constructionHeuristic>
