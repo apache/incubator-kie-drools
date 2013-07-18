@@ -21,6 +21,7 @@ import java.util.Iterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.move.CompositeMove;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
@@ -186,6 +187,19 @@ public class PlannerAssert extends Assert {
         assertEquals(false, valueSelector.isContinuous());
         assertEquals(false, valueSelector.isNeverEnding());
         assertEquals(size, valueSelector.getSize());
+    }
+
+    public static void assertAllCodesOfValueSelectorForEntity(ValueSelector valueSelector, Object entity,
+            String... codes) {
+        assertAllCodesOfValueSelectorForEntity(valueSelector, entity, (long) codes.length, codes);
+    }
+
+    public static void assertAllCodesOfValueSelectorForEntity(ValueSelector valueSelector, Object entity,
+            long size,  String... codes) {
+        assertAllCodesOfIterator(valueSelector.iterator(entity), codes);
+        assertEquals(false, valueSelector.isContinuous());
+        assertEquals(false, valueSelector.isNeverEnding());
+        assertEquals(size, valueSelector.getSize(entity));
     }
 
     private PlannerAssert() {

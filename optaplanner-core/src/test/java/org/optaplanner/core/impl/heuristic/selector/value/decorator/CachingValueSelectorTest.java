@@ -55,7 +55,7 @@ public class CachingValueSelectorTest {
     public void runOriginalSelection(SelectionCacheType cacheType, int timesCalled) {
         EntityIndependentValueSelector childValueSelector = SelectorTestUtils.mockEntityIndependentValueSelector(
                 TestdataEntity.class, "value",
-                new TestdataValue("e1"), new TestdataValue("e2"), new TestdataValue("e3"));
+                new TestdataValue("v1"), new TestdataValue("v2"), new TestdataValue("v3"));
 
         EntityIndependentValueSelector valueSelector = new CachingValueSelector(childValueSelector, cacheType, false);
         verify(childValueSelector, times(1)).isNeverEnding();
@@ -70,13 +70,13 @@ public class CachingValueSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA1);
-        assertAllCodesOfValueSelector(valueSelector, "e1", "e2", "e3");
+        assertAllCodesOfValueSelector(valueSelector, "v1", "v2", "v3");
         valueSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA2);
-        assertAllCodesOfValueSelector(valueSelector, "e1", "e2", "e3");
+        assertAllCodesOfValueSelector(valueSelector, "v1", "v2", "v3");
         valueSelector.stepEnded(stepScopeA2);
 
         valueSelector.phaseEnded(phaseScopeA);
@@ -88,19 +88,19 @@ public class CachingValueSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB1);
-        assertAllCodesOfValueSelector(valueSelector, "e1", "e2", "e3");
+        assertAllCodesOfValueSelector(valueSelector, "v1", "v2", "v3");
         valueSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB2);
-        assertAllCodesOfValueSelector(valueSelector, "e1", "e2", "e3");
+        assertAllCodesOfValueSelector(valueSelector, "v1", "v2", "v3");
         valueSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB3);
-        assertAllCodesOfValueSelector(valueSelector, "e1", "e2", "e3");
+        assertAllCodesOfValueSelector(valueSelector, "v1", "v2", "v3");
         valueSelector.stepEnded(stepScopeB3);
 
         valueSelector.phaseEnded(phaseScopeB);
