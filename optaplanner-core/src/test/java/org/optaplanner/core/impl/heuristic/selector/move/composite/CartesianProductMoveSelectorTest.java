@@ -426,16 +426,16 @@ public class CartesianProductMoveSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
         assertAllCodesOfMoveSelector(moveSelector,
-                "a=>1+a=>8", "a=>1+a=>9", "a=>2+a=>8", "a=>2+a=>9",
-                "b=>1+b=>8", "b=>1+b=>9", "b=>2+b=>8", "b=>2+b=>9");
+                "a=>1+a=>8", "a=>1+a=>9", "a=>2+a=>8", "a=>2+a=>9", "a=>3+a=>8", "a=>3+a=>9",
+                "b=>1+b=>8", "b=>1+b=>9", "b=>2+b=>8", "b=>2+b=>9", "b=>3+b=>8", "b=>3+b=>9");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
         assertAllCodesOfMoveSelector(moveSelector,
-                "a=>1+a=>8", "a=>1+a=>9", "a=>2+a=>8", "a=>2+a=>9",
-                "b=>1+b=>8", "b=>1+b=>9", "b=>2+b=>8", "b=>2+b=>9");
+                "a=>1+a=>8", "a=>1+a=>9", "a=>2+a=>8", "a=>2+a=>9", "a=>3+a=>8", "a=>3+a=>9",
+                "b=>1+b=>8", "b=>1+b=>9", "b=>2+b=>8", "b=>2+b=>9", "b=>3+b=>8", "b=>3+b=>9");
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -445,6 +445,63 @@ public class CartesianProductMoveSelectorTest {
         verifySolverPhaseLifecycle(entitySelector, 1, 1, 2);
         verifySolverPhaseLifecycle(primaryValueSelector, 1, 1, 2);
         verifySolverPhaseLifecycle(secondaryValueSelector, 1, 1, 2);
+    }
+
+    @Test
+    public void randomMimicNotIgnoringEmpty() {
+        randomMimic(false);
+    }
+
+    @Test
+    public void randomMimicIgnoringEmpty() {
+        randomMimic(true);
+    }
+
+    public void randomMimic(boolean ignoreEmptyChildIterators) {
+        EntitySelector entitySelector = SelectorTestUtils.mockEntitySelector(TestdataMultiVarEntity.class,
+                new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b"));
+        MimicRecordingEntitySelector recordingEntitySelector = new MimicRecordingEntitySelector(
+                entitySelector);
+        ValueSelector primaryValueSelector = SelectorTestUtils.mockValueSelector(
+                TestdataMultiVarEntity.class, "primaryValue",
+                new TestdataValue("1"), new TestdataValue("2"), new TestdataValue("3"));
+        ValueSelector secondaryValueSelector = SelectorTestUtils.mockValueSelector(
+                TestdataMultiVarEntity.class, "secondaryValue",
+                new TestdataValue("8"), new TestdataValue("9"));
+
+        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(2);
+        moveSelectorList.add(new ChangeMoveSelector(
+                recordingEntitySelector,
+                primaryValueSelector,
+                false));
+        moveSelectorList.add(new ChangeMoveSelector(
+                new MimicReplayingEntitySelector(recordingEntitySelector),
+                secondaryValueSelector,
+                false));
+        MoveSelector moveSelector = new CartesianProductMoveSelector(moveSelectorList,
+                ignoreEmptyChildIterators, true);
+
+        DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
+        moveSelector.solvingStarted(solverScope);
+
+        AbstractSolverPhaseScope phaseScopeA = mock(AbstractSolverPhaseScope.class);
+        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
+        moveSelector.phaseStarted(phaseScopeA);
+
+        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
+        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
+        moveSelector.stepStarted(stepScopeA1);
+        assertCodesOfNeverEndingMoveSelector(moveSelector, 24L,
+                "a=>1+a=>8", "a=>2+a=>9", "a=>3+a=>8", "b=>1+a=>9", "b=>2+b=>8", "b=>3+b=>9");
+        moveSelector.stepEnded(stepScopeA1);
+
+        moveSelector.phaseEnded(phaseScopeA);
+
+        moveSelector.solvingEnded(solverScope);
+
+        verifySolverPhaseLifecycle(entitySelector, 1, 1, 1);
+        verifySolverPhaseLifecycle(primaryValueSelector, 1, 1, 1);
+        verifySolverPhaseLifecycle(secondaryValueSelector, 1, 1, 1);
     }
 
 }
