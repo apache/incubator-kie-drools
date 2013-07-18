@@ -37,6 +37,8 @@ import static org.mockito.Mockito.*;
 
 public class PlannerAssert extends Assert {
 
+    public static final long DO_NOT_ASSERT_SIZE = Long.MIN_VALUE;
+
     public static void assertInstanceOf(Class expectedClass, Object actualInstance) {
         assertInstanceOf(null, expectedClass, actualInstance);
     }
@@ -147,7 +149,9 @@ public class PlannerAssert extends Assert {
         assertAllCodesOfIterator(moveSelector.iterator(), codes);
         assertEquals(false, moveSelector.isContinuous());
         assertEquals(false, moveSelector.isNeverEnding());
-        assertEquals(size, moveSelector.getSize());
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertEquals(size, moveSelector.getSize());
+        }
     }
 
     public static void assertCodesOfNeverEndingMoveSelector(MoveSelector moveSelector, String... codes) {
@@ -160,7 +164,9 @@ public class PlannerAssert extends Assert {
         assertTrue(iterator.hasNext());
         assertEquals(false, moveSelector.isContinuous());
         assertEquals(true, moveSelector.isNeverEnding());
-        assertEquals(size, moveSelector.getSize());
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertEquals(size, moveSelector.getSize());
+        }
     }
 
     public static void assertEmptyNeverEndingMoveSelector(MoveSelector moveSelector) {
@@ -172,7 +178,9 @@ public class PlannerAssert extends Assert {
         assertFalse(iterator.hasNext());
         assertEquals(false, moveSelector.isContinuous());
         assertEquals(true, moveSelector.isNeverEnding());
-        assertEquals(size, moveSelector.getSize());
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertEquals(size, moveSelector.getSize());
+        }
     }
 
     public static void assertAllCodesOfEntitySelector(EntitySelector entitySelector, String... codes) {
@@ -183,7 +191,9 @@ public class PlannerAssert extends Assert {
         assertAllCodesOfIterator(entitySelector.iterator(), codes);
         assertEquals(false, entitySelector.isContinuous());
         assertEquals(false, entitySelector.isNeverEnding());
-        assertEquals(size, entitySelector.getSize());
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertEquals(size, entitySelector.getSize());
+        }
     }
 
     public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector valueSelector,
@@ -196,7 +206,9 @@ public class PlannerAssert extends Assert {
         assertAllCodesOfIterator(valueSelector.iterator(), codes);
         assertEquals(false, valueSelector.isContinuous());
         assertEquals(false, valueSelector.isNeverEnding());
-        assertEquals(size, valueSelector.getSize());
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertEquals(size, valueSelector.getSize());
+        }
     }
 
     public static void assertAllCodesOfValueSelectorForEntity(ValueSelector valueSelector, Object entity,
@@ -209,7 +221,9 @@ public class PlannerAssert extends Assert {
         assertAllCodesOfIterator(valueSelector.iterator(entity), codes);
         assertEquals(false, valueSelector.isContinuous());
         assertEquals(false, valueSelector.isNeverEnding());
-        assertEquals(size, valueSelector.getSize(entity));
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertEquals(size, valueSelector.getSize(entity));
+        }
     }
 
     private PlannerAssert() {

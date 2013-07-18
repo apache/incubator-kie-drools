@@ -17,21 +17,16 @@
 package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.move.CompositeMove;
 import org.optaplanner.core.impl.move.DummyMove;
-import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -423,7 +418,7 @@ public class CartesianProductMoveSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
-        assertAllCodesOfMoveSelector(moveSelector,
+        assertAllCodesOfMoveSelector(moveSelector, DO_NOT_ASSERT_SIZE,
                 "a=>1+a=>8", "a=>1+a=>9", "a=>2+a=>8", "a=>2+a=>9", "a=>3+a=>8", "a=>3+a=>9",
                 "b=>1+b=>8", "b=>1+b=>9", "b=>2+b=>8", "b=>2+b=>9", "b=>3+b=>8", "b=>3+b=>9");
         moveSelector.stepEnded(stepScopeA1);
@@ -431,7 +426,7 @@ public class CartesianProductMoveSelectorTest {
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
-        assertAllCodesOfMoveSelector(moveSelector,
+        assertAllCodesOfMoveSelector(moveSelector, DO_NOT_ASSERT_SIZE,
                 "a=>1+a=>8", "a=>1+a=>9", "a=>2+a=>8", "a=>2+a=>9", "a=>3+a=>8", "a=>3+a=>9",
                 "b=>1+b=>8", "b=>1+b=>9", "b=>2+b=>8", "b=>2+b=>9", "b=>3+b=>8", "b=>3+b=>9");
         moveSelector.stepEnded(stepScopeA2);
