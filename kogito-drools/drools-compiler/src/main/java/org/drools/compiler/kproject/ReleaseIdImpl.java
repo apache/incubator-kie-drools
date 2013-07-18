@@ -12,6 +12,13 @@ public class ReleaseIdImpl implements ReleaseId {
     private final String artifactId;
     private final String version;
 
+    public ReleaseIdImpl(String releaseId) {
+        String[] split = releaseId.split(":");
+        this.groupId = split[0];
+        this.artifactId = split[1];
+        this.version = split[2];
+    }
+
     public ReleaseIdImpl(String groupId,
                          String artifactId,
                          String version) {

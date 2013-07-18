@@ -43,7 +43,7 @@ public class KieRepositoryImpl
     private static final String        DEFAULT_ARTIFACT = "artifact";
     private static final String        DEFAULT_GROUP    = "org.default";
 
-    static final KieRepositoryImpl     INSTANCE         = new KieRepositoryImpl();
+    public static final KieRepository  INSTANCE         = new KieRepositoryImpl();
 
     private final KieModuleRepo        kieModuleRepo    = new KieModuleRepo();
 
@@ -154,7 +154,7 @@ public class KieRepositoryImpl
     public KieModule getKieModule(Resource resource) {
         InternalResource res = (InternalResource) resource;
         try {
-            KieModule kModule = null;
+            KieModule kModule;
             // find kmodule.xml
             if( res.hasURL() ) {
                 String urlPath = res.getURL().toExternalForm();
