@@ -63,7 +63,11 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
     public long getSize() {
         long size = 1L;
         for (MoveSelector moveSelector : childMoveSelectorList) {
-            size *= moveSelector.getSize();
+            long childSize = moveSelector.getSize();
+            if (ignoreEmptyChildIterators && childSize == 0L) {
+                childSize = 1L;
+            }
+            size *= childSize;
         }
         return size;
     }
@@ -137,14 +141,17 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
         }
 
         public boolean hasNext() {
-            if (empty == null) {
-                empty = false;
+            if (empty == null) { // Only done in the first call
+                int emptyCount = 0;
                 for (Iterator<Move> moveIterator : moveIteratorList) {
                     if (!moveIterator.hasNext()) {
-                        empty = true;
-                        break;
+                        emptyCount++;
+                        if (!ignoreEmptyChildIterators) {
+                            break;
+                        }
                     }
                 }
+                empty = ignoreEmptyChildIterators ? emptyCount == moveIteratorList.size(): emptyCount > 0;
             }
             return !empty;
         }
@@ -153,15 +160,31 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
             List<Move> moveList = new ArrayList<Move>(moveIteratorList.size());
             for (int i = 0; i < moveIteratorList.size(); i++) {
                 Iterator<Move> moveIterator = moveIteratorList.get(i);
+                boolean skip = false;
                 if (!moveIterator.hasNext()) {
                     MoveSelector moveSelector = childMoveSelectorList.get(i);
                     moveIterator = moveSelector.iterator();
                     moveIteratorList.set(i, moveIterator);
                     if (!moveIterator.hasNext()) {
-                        throw new NoSuchElementException("The moveSelector (" + moveSelector + ") is empty.");
+                        if (ignoreEmptyChildIterators) {
+                            skip = true;
+                        } else {
+                            throw new NoSuchElementException("The iterator of childMoveSelector (" + moveSelector
+                                    + ") is empty.");
+                        }
                     }
                 }
-                moveList.add(moveIterator.next());
+                if (!skip) {
+                    moveList.add(moveIterator.next());
+                }
+            }
+            if (ignoreEmptyChildIterators) {
+                if (moveList.isEmpty()) {
+                    throw new NoSuchElementException("All iterators of childMoveSelectorList (" + childMoveSelectorList
+                            + ") are empty.");
+                } else if (moveList.size() == 1) {
+                    return moveList.get(0);
+                }
             }
             return new CompositeMove(moveList);
         }

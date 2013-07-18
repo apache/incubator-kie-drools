@@ -279,7 +279,6 @@ public class CartesianProductMoveSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
-        assertEmptyNeverEndingMoveSelector(moveSelector);
         if (ignoreEmptyChildIterators) {
             assertCodesOfNeverEndingMoveSelector(moveSelector, "b1", "b2");
         } else {
@@ -324,7 +323,7 @@ public class CartesianProductMoveSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
-        assertCodesOfNeverEndingMoveSelector(moveSelector, 8, "a1+b1+c1", "a2+b2+c2", "a1+b1+c1");
+        assertCodesOfNeverEndingMoveSelector(moveSelector, 8L, "a1+b1+c1", "a2+b2+c2", "a1+b1+c1");
 
         moveSelector.stepEnded(stepScopeA1);
         moveSelector.phaseEnded(phaseScopeA);
@@ -364,7 +363,7 @@ public class CartesianProductMoveSelectorTest {
         moveSelector.stepStarted(stepScopeA1);
 
         if (ignoreEmptyChildIterators) {
-            assertCodesOfNeverEndingMoveSelector(moveSelector, 8, "b1+c1", "b2+c2", "b1+c3");
+            assertCodesOfNeverEndingMoveSelector(moveSelector, 6L, "b1+c1", "b2+c2", "b1+c3");
         } else {
             assertEmptyNeverEndingMoveSelector(moveSelector);
         }
