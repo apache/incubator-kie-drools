@@ -70,13 +70,13 @@ public class CachingValueSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA1);
-        runAsserts(valueSelector);
+        assertAllCodesOfValueSelector(valueSelector, "e1", "e2", "e3");
         valueSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA2);
-        runAsserts(valueSelector);
+        assertAllCodesOfValueSelector(valueSelector, "e1", "e2", "e3");
         valueSelector.stepEnded(stepScopeA2);
 
         valueSelector.phaseEnded(phaseScopeA);
@@ -88,19 +88,19 @@ public class CachingValueSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB1);
-        runAsserts(valueSelector);
+        assertAllCodesOfValueSelector(valueSelector, "e1", "e2", "e3");
         valueSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB2);
-        runAsserts(valueSelector);
+        assertAllCodesOfValueSelector(valueSelector, "e1", "e2", "e3");
         valueSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB3);
-        runAsserts(valueSelector);
+        assertAllCodesOfValueSelector(valueSelector, "e1", "e2", "e3");
         valueSelector.stepEnded(stepScopeB3);
 
         valueSelector.phaseEnded(phaseScopeB);
@@ -110,21 +110,6 @@ public class CachingValueSelectorTest {
         verifySolverPhaseLifecycle(childValueSelector, 1, 2, 5);
         verify(childValueSelector, times(timesCalled)).iterator();
         verify(childValueSelector, times(timesCalled)).getSize();
-    }
-
-    private void runAsserts(EntityIndependentValueSelector valueSelector) {
-        Iterator<Object> iterator = valueSelector.iterator();
-        assertNotNull(iterator);
-        assertTrue(iterator.hasNext());
-        assertCode("e1", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e2", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e3", iterator.next());
-        assertFalse(iterator.hasNext());
-        assertEquals(false, valueSelector.isContinuous());
-        assertEquals(false, valueSelector.isNeverEnding());
-        assertEquals(3L, valueSelector.getSize());
     }
 
 }
