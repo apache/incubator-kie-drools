@@ -1,13 +1,18 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
+import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.api.builder.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MessageImpl implements Message {
+
+    protected static transient Logger logger = LoggerFactory.getLogger( MessageImpl.class );
 
     private final long id;
     private final Level level;
@@ -16,7 +21,10 @@ public class MessageImpl implements Message {
     private final int column;
     private final String text;
 
-    public MessageImpl(long id, Level level, String path, String text) {
+    public MessageImpl( long id,
+                        Level level,
+                        String path,
+                        String text ) {
         this.id = id;
         this.level = level;
         this.path = path;
@@ -24,8 +32,9 @@ public class MessageImpl implements Message {
         this.line = 0;
         this.column = 0;
     }
-    
-    public MessageImpl(long id, CompilationProblem problem) {
+
+    public MessageImpl( long id,
+                        CompilationProblem problem ) {
         this.id = id;
         level = problem.isError() ? Level.ERROR : Level.WARNING;
         path = problem.getFileName();
@@ -34,9 +43,10 @@ public class MessageImpl implements Message {
         text = problem.getMessage();
     }
 
-    public MessageImpl(long id, KnowledgeBuilderResult result) {
+    public MessageImpl( long id,
+                        KnowledgeBuilderResult result ) {
         this.id = id;
-        switch (result.getSeverity()) {
+        switch ( result.getSeverity() ) {
             case ERROR:
                 level = Level.ERROR;
                 break;
@@ -46,9 +56,17 @@ public class MessageImpl implements Message {
             default:
                 level = Level.INFO;
         }
-        path = result.getResource().getSourcePath();
-        if( result.getLines().length > 0 ) { 
-            line = result.getLines()[0];
+        //See JIRA DROOLS-193 (KnowledgeBuilderResult does not always contain a Resource)
+        Resource resource = result.getResource();
+        if ( resource == null ) {
+            logger.debug( "resource is null: " + result.toString() );
+            path = null;
+        } else {
+            path = resource.getSourcePath();
+        }
+
+        if ( result.getLines().length > 0 ) {
+            line = result.getLines()[ 0 ];
         } else {
             line = -1;
         }
@@ -79,11 +97,12 @@ public class MessageImpl implements Message {
     public String getText() {
         return text;
     }
-    
-    public static List<Message> filterMessages(List<Message> messages, Level... levels) {
+
+    public static List<Message> filterMessages( List<Message> messages,
+                                                Level... levels ) {
         List<Message> filteredMsgs = new ArrayList<Message>();
         if ( levels != null && levels.length > 0 ) {
-            for ( Level level : levels )  {
+            for ( Level level : levels ) {
                 for ( Message msg : messages ) {
                     if ( msg.getLevel() == level ) {
                         filteredMsgs.add( msg );
@@ -98,6 +117,5 @@ public class MessageImpl implements Message {
     public String toString() {
         return "Message [id=" + id + ", level=" + level + ", path=" + path + ", line=" + line + ", column=" + column + "\n   text=" + text + "]";
     }
-    
 
 }
