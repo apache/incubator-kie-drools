@@ -48,7 +48,8 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * @see ScoreDirector
  */
-public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFactory> implements ScoreDirector {
+public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFactory>
+        implements ScoreDirector, Cloneable {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
