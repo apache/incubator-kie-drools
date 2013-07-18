@@ -200,8 +200,7 @@ public class CartesianProductMoveSelectorTest {
 
         if (ignoreEmptyChildIterators) {
             assertAllCodesOfMoveSelector(moveSelector,
-                    "a1+c1", "a1+c2", "a1+c1", "a1+c2",
-                    "a2+c1", "a2+c2", "a2+c1", "a2+c2");
+                    "a1+c1", "a1+c2", "a2+c1", "a2+c2");
         } else {
             assertAllCodesOfMoveSelector(moveSelector);
         }

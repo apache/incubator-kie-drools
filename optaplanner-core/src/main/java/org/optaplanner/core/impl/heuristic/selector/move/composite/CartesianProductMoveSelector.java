@@ -101,27 +101,51 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
 
         @Override
         protected Move createUpcomingSelection() {
-            List<Move> moveList = new ArrayList<Move>(subSelections); // Clone to avoid CompositeMove corruption
-            for (int i = moveIteratorList.size() - 1; i >= 0; i--) {
-                Iterator<Move> moveIterator =  moveIteratorList.get(i);
+            int startingIndex = moveIteratorList.size() - 1;
+            while (startingIndex >= 0) {
+                Iterator<Move> moveIterator =  moveIteratorList.get(startingIndex);
                 if (moveIterator.hasNext()) {
-                    moveList.set(i, moveIterator.next());
                     break;
                 }
-                if (i == 0) {
-                    return noUpcomingSelection();
-                }
-                moveIterator = childMoveSelectorList.get(i).iterator();
+                startingIndex--;
+            }
+            if (startingIndex < 0) {
+                return noUpcomingSelection();
+            }
+            // Clone to avoid CompositeMove corruption
+            List<Move> moveList = new ArrayList<Move>(subSelections.subList(0, startingIndex));
+            moveList.add(moveIteratorList.get(startingIndex).next());
+            for (int i = startingIndex + 1; i < moveIteratorList.size(); i++) {
+                Iterator<Move>  moveIterator = childMoveSelectorList.get(i).iterator();
                 moveIteratorList.set(i, moveIterator);
+                Move next;
                 if (!moveIterator.hasNext()) { // in case a moveIterator is empty
-
-
-                    return noUpcomingSelection();
+                    if (ignoreEmptyChildIterators) {
+                        next = null; // OK because a Move is never null (unlike a planning value)
+                    } else {
+                        return noUpcomingSelection();
+                    }
+                } else {
+                    next = moveIterator.next();
                 }
-                moveList.set(i, moveIterator.next());
+                moveList.add(next);
             }
             // No need to clone to avoid CompositeMove corruption because subSelections's elements never change
             subSelections = moveList;
+            if (ignoreEmptyChildIterators) {
+                moveList = new ArrayList<Move>(moveList); // Clone because the null should survive in subSelections
+                for (Iterator<Move> it = moveList.iterator(); it.hasNext(); ) {
+                    Move move = it.next();
+                    if (move == null) {
+                        it.remove();
+                    }
+                }
+                if (moveList.isEmpty()) {
+                    return noUpcomingSelection();
+                } else if (moveList.size() == 1) {
+                    return moveList.get(0);
+                }
+            }
             return new CompositeMove(moveList);
         }
 
