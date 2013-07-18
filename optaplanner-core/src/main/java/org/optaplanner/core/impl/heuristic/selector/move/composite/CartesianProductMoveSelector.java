@@ -38,8 +38,12 @@ import org.optaplanner.core.impl.move.Move;
  */
 public class CartesianProductMoveSelector extends CompositeMoveSelector {
 
-    public CartesianProductMoveSelector(List<MoveSelector> childMoveSelectorList, boolean randomSelection) {
+    private final boolean ignoreEmptyChildIterators;
+
+    public CartesianProductMoveSelector(List<MoveSelector> childMoveSelectorList, boolean ignoreEmptyChildIterators,
+            boolean randomSelection) {
         super(childMoveSelectorList, randomSelection);
+        this.ignoreEmptyChildIterators = ignoreEmptyChildIterators;
     }
 
     // ************************************************************************
@@ -106,6 +110,8 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
                 moveIterator = childMoveSelectorList.get(i).iterator();
                 moveIteratorList.set(i, moveIterator);
                 if (!moveIterator.hasNext()) { // in case a moveIterator is empty
+
+
                     return noUpcomingSelection();
                 }
                 moveList.set(i, moveIterator.next());

@@ -63,7 +63,8 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig {
                             minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection)));
         }
 
-        return new CartesianProductMoveSelector(moveSelectorList, randomSelection);
+
+        return new CartesianProductMoveSelector(moveSelectorList, false, randomSelection);
     }
 
     public void inherit(CartesianProductMoveSelectorConfig inheritedConfig) {

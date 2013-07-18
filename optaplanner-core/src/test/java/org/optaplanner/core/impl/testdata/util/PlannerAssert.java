@@ -20,6 +20,7 @@ import java.util.Iterator;
 
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.move.CompositeMove;
@@ -82,6 +83,15 @@ public class PlannerAssert extends Assert {
         assertNotNull(o);
         if (o instanceof CodeAssertable) {
             return (CodeAssertable) o;
+        } else if (o instanceof ChangeMove) {
+            ChangeMove changeMove = (ChangeMove) o;
+            final String code = convertToCodeAssertable(changeMove.getEntity()).getCode()
+                    + "=>" + convertToCodeAssertable(changeMove.getToPlanningValue()).getCode();
+            return new CodeAssertable() {
+                public String getCode() {
+                    return code;
+                }
+            };
         } else if (o instanceof CompositeMove) {
             CompositeMove compositeMove = (CompositeMove) o;
             StringBuilder codeBuilder = new StringBuilder(compositeMove.getMoveList().size() * 80);

@@ -203,7 +203,7 @@ public class QueuedEntityPlacerTest {
                 new MimicReplayingEntitySelector(recordingEntitySelector),
                 secondaryValueSelector,
                 false));
-        MoveSelector moveSelector = new CartesianProductMoveSelector(moveSelectorList, false);
+        MoveSelector moveSelector = new CartesianProductMoveSelector(moveSelectorList, true, false);
         QueuedEntityPlacer placer = new QueuedEntityPlacer(recordingEntitySelector,
                 Collections.singletonList(moveSelector));
 
@@ -215,27 +215,23 @@ public class QueuedEntityPlacerTest {
         placer.phaseStarted(phaseScopeA);
         Iterator<Placement> placementIterator = placer.iterator();
 
-        assertTrue(placementIterator.hasNext());
+        assertEquals(true, placementIterator.hasNext());
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
-        assertCartesianProductPlacement(placementIterator.next(), "a", new String[][]{
-                {"1", "8"}, {"1", "9"},
-                {"2", "8"}, {"2", "9"},
-                {"3", "8"}, {"3", "9"}});
+        assertAllCodesOfIterator(placementIterator.next().iterator(),
+                "a=>1+a=>8", "a=>1+a=>9", "a=>2+a=>8", "a=>2+a=>9", "a=>3+a=>8", "a=>3+a=>9");
         placer.stepEnded(stepScopeA1);
 
-        assertTrue(placementIterator.hasNext());
+        assertEquals(true, placementIterator.hasNext());
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
-        assertCartesianProductPlacement(placementIterator.next(), "b", new String[][]{
-                {"1", "8"}, {"1", "9"},
-                {"2", "8"}, {"2", "9"},
-                {"3", "8"}, {"3", "9"}});
+        assertAllCodesOfIterator(placementIterator.next().iterator(),
+                "b=>1+b=>8", "b=>1+b=>9", "b=>2+b=>8", "b=>2+b=>9", "b=>3+b=>8", "b=>3+b=>9");
         placer.stepEnded(stepScopeA2);
 
-        assertFalse(placementIterator.hasNext());
+        assertEquals(false, placementIterator.hasNext());
         placer.phaseEnded(phaseScopeA);
 
         placer.solvingEnded(solverScope);
@@ -243,24 +239,6 @@ public class QueuedEntityPlacerTest {
         verifySolverPhaseLifecycle(entitySelector, 1, 1, 2);
         verifySolverPhaseLifecycle(primaryValueSelector, 1, 1, 2);
         verifySolverPhaseLifecycle(secondaryValueSelector, 1, 1, 2);
-    }
-
-    private void assertCartesianProductPlacement(Placement placement, String entityCode,
-            String[][] valueCodeCombinations) {
-        Iterator<Move> iterator = placement.iterator();
-        assertNotNull(iterator);
-        for (String[] valueCodeCombination : valueCodeCombinations) {
-            assertTrue(iterator.hasNext());
-            CompositeMove move = (CompositeMove) iterator.next();
-            List<Move> subMoveList = move.getMoveList();
-            assertEquals(valueCodeCombination.length, subMoveList.size());
-            for (int i = 0; i < valueCodeCombination.length; i++) {
-                ChangeMove changeMove = (ChangeMove) subMoveList.get(i);
-                assertCode(entityCode, changeMove.getEntity());
-                assertCode(valueCodeCombination[i], changeMove.getToPlanningValue());
-            }
-        }
-        assertFalse(iterator.hasNext());
     }
 
 }

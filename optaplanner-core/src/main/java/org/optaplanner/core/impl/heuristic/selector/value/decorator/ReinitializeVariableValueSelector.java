@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.collections.iterators.EmptyIterator;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
@@ -81,7 +82,7 @@ public class ReinitializeVariableValueSelector extends AbstractValueSelector {
 
     public Iterator<Object> iterator(Object entity) {
         if (!reinitializeVariableEntityFilter.accept(scoreDirector, entity)) {
-            return EmptyIterator.INSTANCE;
+            return IteratorUtils.emptyIterator();
         }
         return childValueSelector.iterator(entity);
     }
