@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.api.domain.value.ValueRanges;
@@ -318,13 +317,13 @@ public class PlanningVariableDescriptor {
     public Collection<?> extractAllPlanningValues(Solution solution) {
         // TODO this does not include null if nullable
         // currently FromSolutionPropertyValueSelector and FromEntityPropertyValueSelector do that
-        return valueRangeDescriptor.extractAllValuesWithFiltering(solution);
+        return valueRangeDescriptor.extractAllValues(solution);
     }
 
     public Collection<?> extractPlanningValues(Solution solution, Object entity) {
         // TODO this does not include null if nullable
         // currently FromSolutionPropertyValueSelector and FromEntityPropertyValueSelector do that
-        return valueRangeDescriptor.extractValuesWithFiltering(solution, entity);
+        return valueRangeDescriptor.extractValues(solution, entity);
     }
 
     @Deprecated

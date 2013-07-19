@@ -93,21 +93,16 @@ public class FromSolutionPropertyPlanningValueRangeDescriptor extends AbstractPl
         return false;
     }
 
-    public Collection<?> extractAllValuesWithFiltering(Solution solution) {
-        Collection<?> values = extractValuesWithoutFiltering(solution);
-        return applyFiltering(values);
-    }
-
-    public Collection<?> extractValuesWithFiltering(Solution solution, Object planningEntity) {
-        return extractAllValuesWithFiltering(solution);
-    }
-
-    private Collection<?> extractValuesWithoutFiltering(Solution solution) {
+    public Collection<?> extractAllValues(Solution solution) {
         return (Collection<?>) rangePropertyAccessor.executeGetter(solution);
     }
 
-    public long getValueCount(Solution solution, Object planningEntity) {
-        return extractValuesWithoutFiltering(solution).size();
+    public Collection<?> extractValues(Solution solution, Object entity) {
+        return extractAllValues(solution);
+    }
+
+    public long getValueCount(Solution solution, Object entity) {
+        return extractAllValues(solution).size();
     }
 
     @Override

@@ -54,21 +54,21 @@ public class UndefinedPlanningValueRangeDescriptor extends AbstractPlanningValue
                 + ") which uses a @ValueRangeUndefined.");
     }
 
-    public Collection<?> extractAllValuesWithFiltering(Solution solution) {
+    public Collection<?> extractAllValues(Solution solution) {
         throw new IllegalStateException("The planningEntityClass ("
                 + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                 + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                 + ") which uses a @ValueRangeUndefined.");
     }
 
-    public Collection<?> extractValuesWithFiltering(Solution solution, Object planningEntity) {
+    public Collection<?> extractValues(Solution solution, Object entity) {
         throw new IllegalStateException("The planningEntityClass ("
                 + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
                 + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                 + ") which uses a @ValueRangeUndefined.");
     }
 
-    public long getValueCount(Solution solution, Object planningEntity) {
+    public long getValueCount(Solution solution, Object entity) {
         // Return 1, so the problem scale becomes the planning entity count. This is not perfect.
         return 1L;
     }

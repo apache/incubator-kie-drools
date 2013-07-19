@@ -35,11 +35,6 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
         return variableDescriptor;
     }
 
-    protected Collection<?> applyFiltering(Collection<?> values) {
-        // TODO this method is now probably dead code due to the removal of excludeUninitializedPlanningEntity
-        return values;
-    }
-
     public boolean isValuesCacheable() {
         return false;
     }

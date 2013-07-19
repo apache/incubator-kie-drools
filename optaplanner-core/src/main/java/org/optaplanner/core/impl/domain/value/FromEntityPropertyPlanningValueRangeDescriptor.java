@@ -92,25 +92,24 @@ public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlan
         return true;
     }
 
-    public Collection<?> extractAllValuesWithFiltering(Solution solution) {
+    public Collection<?> extractAllValues(Solution solution) {
         Set<Object> valueSet = new LinkedHashSet<Object>();
         for (Object entity : variableDescriptor.getEntityDescriptor().extractEntities(solution)) {
-            valueSet.addAll(extractValuesWithFiltering(solution, entity));
+            valueSet.addAll(extractValues(solution, entity));
         }
         return valueSet;
     }
 
-    public Collection<?> extractValuesWithFiltering(Solution solution, Object planningEntity) {
-        Collection<?> values = extractValues(planningEntity);
-        return applyFiltering(values);
+    public Collection<?> extractValues(Solution solution, Object entity) {
+        return extractValuesFromEntity(entity);
     }
 
-    public Collection<Object> extractValues(Object entity) {
+    public Collection<Object> extractValuesFromEntity(Object entity) {
         return (Collection<Object>) rangePropertyAccessor.executeGetter(entity);
     }
 
-    public long getValueCount(Solution solution, Object planningEntity) {
-        return extractValues(planningEntity).size();
+    public long getValueCount(Solution solution, Object entity) {
+        return extractValues(solution, entity).size();
     }
 
 }

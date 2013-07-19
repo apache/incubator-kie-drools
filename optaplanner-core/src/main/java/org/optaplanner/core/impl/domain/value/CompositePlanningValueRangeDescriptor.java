@@ -55,26 +55,26 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
         return entityDependent;
     }
 
-    public Collection<?> extractAllValuesWithFiltering(Solution solution) {
+    public Collection<?> extractAllValues(Solution solution) {
         Collection<Object> values = new ArrayList<Object>(0);
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            values.addAll(valueRangeDescriptor.extractAllValuesWithFiltering(solution));
+            values.addAll(valueRangeDescriptor.extractAllValues(solution));
         }
         return values;
     }
 
-    public Collection<?> extractValuesWithFiltering(Solution solution, Object planningEntity) {
+    public Collection<?> extractValues(Solution solution, Object entity) {
         Collection<Object> values = new ArrayList<Object>(0);
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            values.addAll(valueRangeDescriptor.extractValuesWithFiltering(solution, planningEntity));
+            values.addAll(valueRangeDescriptor.extractValues(solution, entity));
         }
         return values;
     }
 
-    public long getValueCount(Solution solution, Object planningEntity) {
+    public long getValueCount(Solution solution, Object entity) {
         long problemScale = 0L;
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            problemScale += valueRangeDescriptor.getValueCount(solution, planningEntity);
+            problemScale += valueRangeDescriptor.getValueCount(solution, entity);
         }
         return problemScale;
     }

@@ -24,11 +24,11 @@ public interface PlanningValueRangeDescriptor {
 
     boolean isEntityDependent();
 
-    Collection<?> extractAllValuesWithFiltering(Solution solution);
+    Collection<?> extractAllValues(Solution solution);
 
-    Collection<?> extractValuesWithFiltering(Solution solution, Object planningEntity);
+    Collection<?> extractValues(Solution solution, Object entity);
 
-    long getValueCount(Solution solution, Object planningEntity);
+    long getValueCount(Solution solution, Object entity);
 
     boolean isValuesCacheable();
 

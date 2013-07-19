@@ -63,7 +63,7 @@ public class FromEntityPropertyValueSelector extends AbstractValueSelector {
     }
 
     public long getSize(Object entity) {
-        Collection<?> values = valueRangeDescriptor.extractValues(entity);
+        Collection<?> values = valueRangeDescriptor.extractValuesFromEntity(entity);
         long size = (long) values.size();
         if (variableDescriptor.isNullable()) {
             size++;
@@ -72,7 +72,7 @@ public class FromEntityPropertyValueSelector extends AbstractValueSelector {
     }
 
     public Iterator<Object> iterator(Object entity) {
-        Collection<Object> values = valueRangeDescriptor.extractValues(entity);
+        Collection<Object> values = valueRangeDescriptor.extractValuesFromEntity(entity);
         List<Object> valueList = new ArrayList<Object>(values.size() + 1);
         valueList.addAll(values);
         if (variableDescriptor.isNullable()) {
