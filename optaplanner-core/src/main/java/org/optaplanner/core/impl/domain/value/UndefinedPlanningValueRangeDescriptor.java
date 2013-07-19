@@ -45,13 +45,6 @@ public class UndefinedPlanningValueRangeDescriptor extends AbstractPlanningValue
                     + ") of type (" + valueRangeAnnotation.type() + ") with a non-empty planningEntityProperty ("
                     + valueRangeAnnotation.planningEntityProperty() + ").");
         }
-        if (valueRangeAnnotation.excludeUninitializedPlanningEntity()) {
-            throw new IllegalArgumentException("The planningEntityClass ("
-                    + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
-                    + ") of type (" + valueRangeAnnotation.type() + ") with excludeUninitializedPlanningEntity ("
-                    + valueRangeAnnotation.excludeUninitializedPlanningEntity() + ").");
-        }
     }
 
     public boolean isEntityDependent() {

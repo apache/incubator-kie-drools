@@ -594,24 +594,6 @@ public class Queen {
         return car;
     }</programlisting>
         </section>
-
-        <section>
-          <title>A <literal>ValueRange</literal> which includes other planning entities</title>
-
-          <para>In some cases (such as in chaining), the planning value itself is sometimes another planning entity. In
-          such cases, it's often required that a planning entity is only eligible as a planning value if it's
-          initialized:</para>
-
-          <programlisting language="java">    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "copList", excludeUninitializedPlanningEntity = true)
-    public Cop getPartner() {
-        return partner;
-    }</programlisting>
-
-          <para>TODO: this is likely to change in the future (<link
-          xlink:href="https://issues.jboss.org/browse/PLANNER-115">jira</link>), as it should support specific planning
-          variable initialization too.</para>
-        </section>
       </section>
 
       <section xml:id="planningValueStrength">
@@ -781,8 +763,7 @@ public class Visit ... implements Standstill {
     @PlanningVariable(chained = true)
     @ValueRanges({
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList",
-                    excludeUninitializedPlanningEntity = true)})
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList")})
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
@@ -802,9 +783,7 @@ public class Visit ... implements Standstill {
 
           <listitem>
             <para>The value range which holds the initialized planning entities, for example
-            <literal>visitList</literal>. This always requires an enabled
-            <literal>excludeUninitializedPlanningEntity</literal>, because an initialized entity should never point to
-            an uninitialized entity: that would break the principle that every chain must have an anchor.</para>
+            <literal>visitList</literal>.</para>
           </listitem>
         </itemizedlist>
       </section>

@@ -3462,9 +3462,9 @@ After in *SolverConfig.java and *BenchmarkConfig.java:
 
 [MINOR] The class ConstructionHeuristicPickEarlyType has moved to another package.
 
-[MAJOR] If you have multiple variables, the result of the construction heuristic is likely to differ.
+[MINOR] If you have multiple variables, the result of the construction heuristic is likely to differ.
 Even though the default still does a cartesian production over the variables for the FIT algorithm you choose,
-it will order the combinations in the original order (instead of the reverse as the old implementation did),
+it will order the combinations in the original order (instead of reverse order as the old implementation did by accident),
 which might cause it to take a totally different path.
 Note: Through advanced configuration it's possible to make the new implementation behave exactly the same as the old,
 but this is NOT recommended:
@@ -3493,3 +3493,19 @@ but this is NOT recommended:
            </cartesianProductMoveSelector>
          </queuedEntityPlacer>
        </constructionHeuristic>
+
+[MAJOR] The @ValueRange property excludeUninitializedPlanningEntity has been removed.
+Planner now does the right thing automatically for a chained variable.
+Before in *.java:
+    @PlanningVariable(chained = true, ...)
+    @ValueRanges({...,
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "customerList",
+                    excludeUninitializedPlanningEntity = true)})
+    public VrpStandstill getPreviousStandstill() {...}
+After in *.java:
+    @PlanningVariable(chained = true, ...)
+    @ValueRanges({...,
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "customerList")})
+    public VrpStandstill getPreviousStandstill() {...}
+If you used it on a non-chained variable (which is highly unlikely), look into ValueSelector filtering
+and let us know that such use cases exist (by creating a jira in our issue tracker).

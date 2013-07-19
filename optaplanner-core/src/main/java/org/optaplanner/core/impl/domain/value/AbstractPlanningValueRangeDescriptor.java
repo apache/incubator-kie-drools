@@ -26,8 +26,6 @@ import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 public abstract class AbstractPlanningValueRangeDescriptor implements PlanningValueRangeDescriptor {
 
     protected PlanningVariableDescriptor variableDescriptor;
-    // TODO rename excludeUninitializedPlanningEntity: only applies to the uninitializedVariable
-    protected boolean excludeUninitializedPlanningEntity; // TODO make this compatible with PlanningVariable.reinitializeVariableEntityFilter and use a SelectionFilter
 
     public AbstractPlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor) {
         this.variableDescriptor = variableDescriptor;
@@ -37,43 +35,9 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
         return variableDescriptor;
     }
 
-    protected void processExcludeUninitializedPlanningEntity(ValueRange valueRangeAnnotation) {
-        excludeUninitializedPlanningEntity = valueRangeAnnotation.excludeUninitializedPlanningEntity();
-        if (excludeUninitializedPlanningEntity) {
-            Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
-            Set<Class<?>> entityClassSet = variableDescriptor.getEntityDescriptor().getSolutionDescriptor()
-                    .getPlanningEntityClassSet();
-            boolean assignableFrom = false;
-            for (Class<?> entityClass : entityClassSet) {
-                if (variablePropertyType.isAssignableFrom(entityClass)) {
-                    assignableFrom = true;
-                    break;
-                }
-            }
-            if (!assignableFrom) {
-                throw new IllegalArgumentException("The planningEntityClass ("
-                        + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
-                        + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
-                        + ") with excludeUninitializedPlanningEntity (true), but there is no planning entity class"
-                        + " that extends the variablePropertyType (" + variablePropertyType + ").");
-            }
-        }
-    }
-
     protected Collection<?> applyFiltering(Collection<?> values) {
-        if (!excludeUninitializedPlanningEntity) {
-            return values;
-        }
-        // TODO HACK remove me and replace by SelectionFilter
-        Collection<Object> filteredValues = new ArrayList<Object>(values.size());
-        for (Object value : values) {
-            Class<?> entityClass = variableDescriptor.getEntityDescriptor().getPlanningEntityClass();
-            if (!entityClass.isAssignableFrom(value.getClass())
-                    || variableDescriptor.isInitialized(value)) {
-                filteredValues.add(value);
-            }
-        }
-        return filteredValues;
+        // TODO this method is now probably dead code due to the removal of excludeUninitializedPlanningEntity
+        return values;
     }
 
     public boolean isValuesCacheable() {

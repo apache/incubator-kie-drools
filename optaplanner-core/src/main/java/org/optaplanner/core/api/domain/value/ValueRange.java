@@ -52,10 +52,4 @@ public @interface ValueRange {
      */
     String planningEntityProperty() default "";
 
-    /**
-     * @return never true for {@link ValueRangeType#UNDEFINED}
-     */
-    // TODO support specific-variable-uninitialized + document in manual
-    boolean excludeUninitializedPlanningEntity() default false;
-
 }

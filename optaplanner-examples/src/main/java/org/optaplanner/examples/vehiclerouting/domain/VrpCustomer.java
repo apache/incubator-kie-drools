@@ -68,8 +68,7 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
     @PlanningVariable(chained = true, variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
     @ValueRanges({
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "vehicleList"),
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "customerList",
-                    excludeUninitializedPlanningEntity = true)})
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "customerList")})
     public VrpStandstill getPreviousStandstill() {
         return previousStandstill;
     }

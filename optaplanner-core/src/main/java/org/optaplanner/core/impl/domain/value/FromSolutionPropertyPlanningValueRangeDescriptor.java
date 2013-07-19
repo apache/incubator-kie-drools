@@ -54,7 +54,6 @@ public class FromSolutionPropertyPlanningValueRangeDescriptor extends AbstractPl
 
     private void processValueRangeAnnotation(ValueRange valueRangeAnnotation) {
         processSolutionProperty(valueRangeAnnotation);
-        processExcludeUninitializedPlanningEntity(valueRangeAnnotation);
     }
 
     private void processSolutionProperty(ValueRange valueRangeAnnotation) {
@@ -113,7 +112,7 @@ public class FromSolutionPropertyPlanningValueRangeDescriptor extends AbstractPl
 
     @Override
     public boolean isValuesCacheable() {
-        return !excludeUninitializedPlanningEntity;
+        return true;
     }
 
 }

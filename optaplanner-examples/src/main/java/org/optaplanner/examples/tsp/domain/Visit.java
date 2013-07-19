@@ -47,8 +47,7 @@ public class Visit extends AbstractPersistable implements Standstill {
     @PlanningVariable(chained = true)
     @ValueRanges({
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList",
-                    excludeUninitializedPlanningEntity = true)})
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList")})
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }

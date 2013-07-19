@@ -57,7 +57,6 @@ public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlan
 
     private void processValueRangeAnnotation(ValueRange valueRangeAnnotation) {
         processPlanningEntityProperty(valueRangeAnnotation);
-        processExcludeUninitializedPlanningEntity(valueRangeAnnotation);
     }
 
     private void processPlanningEntityProperty(ValueRange valueRangeAnnotation) {
