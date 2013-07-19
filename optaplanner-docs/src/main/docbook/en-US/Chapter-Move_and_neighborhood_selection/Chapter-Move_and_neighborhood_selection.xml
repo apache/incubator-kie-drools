@@ -907,6 +907,7 @@
 
       <programlisting language="xml">    &lt;cartesianProductMoveSelector&gt;
       ... &lt;!-- Normal selector properties --&gt;
+      &lt;ignoreEmptyChildIterators&gt;true&lt;/ignoreEmptyChildIterators&gt;
       &lt;changeMoveSelector&gt;
         ...
       &lt;/changeMoveSelector&gt;
@@ -918,6 +919,12 @@
       &lt;/...MoveSelector&gt;
       ...
     &lt;/cartesianProductMoveSelector&gt;</programlisting>
+
+      <para>The propery <literal>ignoreEmptyChildIterators</literal> (true by default) will ignore every empty
+      <literal>childMoveSelector</literal> to avoid returning no moves. For example: a cartesian product of
+      <literal>changeMoveSelector</literal> A and B, for which B is empty (because all it's entities are immovable)
+      returns no moves if <literal>ignoreEmptyChildIterators</literal> is <literal>false</literal> and the moves of A if
+      <literal>ignoreEmptyChildIterators</literal> is <literal>true</literal>.</para>
     </section>
   </section>
 

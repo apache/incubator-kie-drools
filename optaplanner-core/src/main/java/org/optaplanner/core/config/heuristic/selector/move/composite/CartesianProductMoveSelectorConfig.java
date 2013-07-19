@@ -35,6 +35,8 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig {
     @XStreamImplicit()
     private List<MoveSelectorConfig> moveSelectorConfigList = null;
 
+    private Boolean ignoreEmptyChildIterators = null;
+
     public CartesianProductMoveSelectorConfig() {
     }
 
@@ -50,6 +52,14 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig {
         this.moveSelectorConfigList = moveSelectorConfigList;
     }
 
+    public Boolean getIgnoreEmptyChildIterators() {
+        return ignoreEmptyChildIterators;
+    }
+
+    public void setIgnoreEmptyChildIterators(Boolean ignoreEmptyChildIterators) {
+        this.ignoreEmptyChildIterators = ignoreEmptyChildIterators;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -62,15 +72,16 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig {
                     moveSelectorConfig.buildMoveSelector(configPolicy,
                             minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection)));
         }
-
-
-        return new CartesianProductMoveSelector(moveSelectorList, false, randomSelection);
+        boolean ignoreEmptyChildIterators_ = ignoreEmptyChildIterators == null ? true : ignoreEmptyChildIterators;
+        return new CartesianProductMoveSelector(moveSelectorList, ignoreEmptyChildIterators_, randomSelection);
     }
 
     public void inherit(CartesianProductMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveSelectorConfigList = ConfigUtils.inheritMergeableListProperty(
                 moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
+        ignoreEmptyChildIterators = ConfigUtils.inheritOverwritableProperty(
+                ignoreEmptyChildIterators, inheritedConfig.getIgnoreEmptyChildIterators());
     }
 
     @Override
