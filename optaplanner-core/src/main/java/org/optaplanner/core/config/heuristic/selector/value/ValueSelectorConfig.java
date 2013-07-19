@@ -19,7 +19,6 @@ package org.optaplanner.core.config.heuristic.selector.value;
 import java.util.Comparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -36,8 +35,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.entity.decorator.SortingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
@@ -45,6 +42,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.InitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.ReinitializeVariableValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValueSelector;
 
@@ -176,6 +174,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         valueSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyReinitializeVariableFiltering(configPolicy, valueSelector);
         return valueSelector;
     }
 
@@ -394,6 +393,14 @@ public class ValueSelectorConfig extends SelectorConfig {
             }
             valueSelector = new CachingValueSelector((EntityIndependentValueSelector) valueSelector, resolvedCacheType,
                     resolvedSelectionOrder.toRandomSelectionBoolean());
+        }
+        return valueSelector;
+    }
+
+    private ValueSelector applyReinitializeVariableFiltering(HeuristicConfigPolicy configPolicy,
+            ValueSelector valueSelector) {
+        if (configPolicy.isReinitializeVariableFilterEnabled()) {
+            valueSelector = new ReinitializeVariableValueSelector(valueSelector);
         }
         return valueSelector;
     }

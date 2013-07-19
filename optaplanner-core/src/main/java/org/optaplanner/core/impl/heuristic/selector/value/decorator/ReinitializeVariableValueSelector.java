@@ -38,10 +38,10 @@ public class ReinitializeVariableValueSelector extends AbstractValueSelector {
 
     protected ScoreDirector scoreDirector = null;
 
-    public ReinitializeVariableValueSelector(ValueSelector childValueSelector,
-            SelectionFilter reinitializeVariableEntityFilter) {
+    public ReinitializeVariableValueSelector(ValueSelector childValueSelector) {
         this.childValueSelector = childValueSelector;
-        this.reinitializeVariableEntityFilter = reinitializeVariableEntityFilter;
+        this.reinitializeVariableEntityFilter = childValueSelector.getVariableDescriptor()
+                .getReinitializeVariableEntityFilter();
         solverPhaseLifecycleSupport.addEventListener(childValueSelector);
     }
 

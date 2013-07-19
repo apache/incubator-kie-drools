@@ -99,6 +99,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     public ConstructionHeuristicSolverPhase buildSolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
+        phaseConfigPolicy.setReinitializeVariableFilterEnabled(true);
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
         if (!CollectionUtils.isEmpty(entityPlacerConfigList)) {
             ConstructionHeuristicType constructionHeuristicType_ = constructionHeuristicType == null

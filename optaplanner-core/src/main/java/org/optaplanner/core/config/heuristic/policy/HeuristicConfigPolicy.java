@@ -16,6 +16,7 @@ public class HeuristicConfigPolicy {
 
     private boolean sortEntitiesByDecreasingDifficultyEnabled = false;
     private boolean sortValuesByIncreasingStrengthEnabled = false;
+    private boolean reinitializeVariableFilterEnabled = false;
     private boolean initializedChainedValueFilterEnabled = false;
 
     private Map<String, MimicRecordingEntitySelector> mimicRecordingEntitySelectorMap
@@ -54,6 +55,22 @@ public class HeuristicConfigPolicy {
 
     public void setSortValuesByIncreasingStrengthEnabled(boolean sortValuesByIncreasingStrengthEnabled) {
         this.sortValuesByIncreasingStrengthEnabled = sortValuesByIncreasingStrengthEnabled;
+    }
+
+    public boolean isReinitializeVariableFilterEnabled() {
+        return reinitializeVariableFilterEnabled;
+    }
+
+    public void setReinitializeVariableFilterEnabled(boolean reinitializeVariableFilterEnabled) {
+        this.reinitializeVariableFilterEnabled = reinitializeVariableFilterEnabled;
+    }
+
+    public Map<String, MimicRecordingEntitySelector> getMimicRecordingEntitySelectorMap() {
+        return mimicRecordingEntitySelectorMap;
+    }
+
+    public void setMimicRecordingEntitySelectorMap(Map<String, MimicRecordingEntitySelector> mimicRecordingEntitySelectorMap) {
+        this.mimicRecordingEntitySelectorMap = mimicRecordingEntitySelectorMap;
     }
 
     public boolean isInitializedChainedValueFilterEnabled() {

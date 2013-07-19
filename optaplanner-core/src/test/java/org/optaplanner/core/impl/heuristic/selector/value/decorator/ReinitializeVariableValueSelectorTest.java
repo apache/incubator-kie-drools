@@ -48,10 +48,7 @@ public class ReinitializeVariableValueSelectorTest {
         ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
                 v1, v2, v3);
 
-        NullValueReinitializeVariableEntityFilter reinitializeVariableEntityFilter
-                = new NullValueReinitializeVariableEntityFilter(childValueSelector.getVariableDescriptor());
-        ValueSelector valueSelector = new ReinitializeVariableValueSelector(childValueSelector,
-                reinitializeVariableEntityFilter);
+        ValueSelector valueSelector = new ReinitializeVariableValueSelector(childValueSelector);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         valueSelector.solvingStarted(solverScope);
@@ -116,10 +113,7 @@ public class ReinitializeVariableValueSelectorTest {
         ValueSelector childValueSelector = SelectorTestUtils.mockValueSelector(variableDescriptor,
                 s1, s2, s3);
 
-        NullValueReinitializeVariableEntityFilter reinitializeVariableEntityFilter
-                = new NullValueReinitializeVariableEntityFilter(childValueSelector.getVariableDescriptor());
-        ValueSelector valueSelector = new ReinitializeVariableValueSelector(childValueSelector,
-                reinitializeVariableEntityFilter);
+        ValueSelector valueSelector = new ReinitializeVariableValueSelector(childValueSelector);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         valueSelector.solvingStarted(solverScope);
