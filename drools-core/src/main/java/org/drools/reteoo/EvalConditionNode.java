@@ -46,7 +46,6 @@ import java.util.Map.Entry;
  * </p>
  *
  * @see EvalConditionNode
- * @see Eval
  * @see LeftTuple
  */
 public class EvalConditionNode extends LeftTupleSource
@@ -80,11 +79,12 @@ public class EvalConditionNode extends LeftTupleSource
     /**
      * Construct.
      *
-     * @param rule
-     *            The rule
+     * @param id
+     *            The id
      * @param tupleSource
      *            The source of incoming <code>Tuples</code>.
      * @param eval
+     * @param context
      */
     public EvalConditionNode(final int id,
                              final LeftTupleSource tupleSource,
@@ -165,8 +165,6 @@ public class EvalConditionNode extends LeftTupleSource
      *            The <code>Tuple</code> being asserted.
      * @param workingMemory
      *            The working memory seesion.
-     * @throws AssertionException
-     *             If an error occurs while asserting.
      */
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
@@ -274,19 +272,26 @@ public class EvalConditionNode extends LeftTupleSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         LeftTupleIterator it = LeftTupleIterator.iterator( workingMemory, this );
-        
+
         for ( LeftTuple leftTuple =  ( LeftTuple ) it.next(); leftTuple != null; leftTuple =  ( LeftTuple ) it.next() ) {
             LeftTuple childLeftTuple = leftTuple.getFirstChild();
-            while ( childLeftTuple != null ) {
-                RightTuple rightParent = childLeftTuple.getRightParent();            
-                sink.assertLeftTuple( sink.createLeftTuple( leftTuple, rightParent, childLeftTuple, null, sink, true ),
-                                      context,
-                                      workingMemory );  
-                
-                while ( childLeftTuple != null && childLeftTuple.getRightParent() == rightParent ) {
-                    // skip to the next child that has a different right parent
-                    childLeftTuple = childLeftTuple.getLeftParentNext();
+            if ( childLeftTuple != null ) {
+                while ( childLeftTuple != null ) {
+                    RightTuple rightParent = childLeftTuple.getRightParent();
+                    sink.assertLeftTuple( sink.createLeftTuple( leftTuple, sink, true ),
+                            context,
+                            workingMemory );
+
+                    while ( childLeftTuple != null && childLeftTuple.getRightParent() == rightParent ) {
+                        // skip to the next child that has a different right parent
+                        childLeftTuple = childLeftTuple.getLeftParentNext();
+                    }
                 }
+            } else {
+                childLeftTuple = sink.createLeftTuple( leftTuple, sink, true );
+                sink.assertLeftTuple( childLeftTuple,
+                                      context,
+                                      workingMemory );
             }
         }
     }
