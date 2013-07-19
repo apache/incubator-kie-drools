@@ -150,9 +150,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.builder.DecisionTableConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.xml.sax.SAXException;
 
 /**
@@ -3129,31 +3126,6 @@ public class PackageBuilder
                                         pkgRegistry.getTypeResolver() );
     }
 
-    private void addFactTemplate(final PackageDescr pkgDescr,
-                                 final FactTemplateDescr factTemplateDescr) {
-        List<FieldTemplate> fields = new ArrayList<FieldTemplate>();
-        int index = 0;
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( pkgDescr.getNamespace() );
-        for ( FieldTemplateDescr fieldTemplateDescr : factTemplateDescr.getFields() ) {
-            FieldTemplate fieldTemplate = null;
-            try {
-                fieldTemplate = new FieldTemplateImpl( fieldTemplateDescr.getName(),
-                                                       index++,
-                                                       pkgRegistry.getTypeResolver().resolveType( fieldTemplateDescr.getClassType() ) );
-            } catch ( final ClassNotFoundException e ) {
-                this.results.add( new FieldTemplateError( pkgRegistry.getPackage(),
-                                                          fieldTemplateDescr,
-                                                          null,
-                                                          "Unable to resolve Class '" + fieldTemplateDescr.getClassType() + "'" ) );
-            }
-            fields.add( fieldTemplate );
-        }
-
-        new FactTemplateImpl( pkgRegistry.getPackage(),
-                              factTemplateDescr.getName(),
-                              fields.toArray( new FieldTemplate[fields.size()] ) );
-    }
-
     private void addRule(final RuleDescr ruleDescr) {
         if ( ruleDescr.getResource() == null ) {
             ruleDescr.setResource( resource );
@@ -3901,7 +3873,10 @@ public class PackageBuilder
             }
         }
 
+        if (ruleBase != null) {
+            ruleBase.removeObjectsGeneratedFromResource(resource);
+        }
+
         return modified;
     }
-
 }

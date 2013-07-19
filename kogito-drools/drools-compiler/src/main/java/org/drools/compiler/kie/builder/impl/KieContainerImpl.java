@@ -122,6 +122,10 @@ public class KieContainerImpl
                 }
             }
         }
+
+        for (String kbaseToRemove : kbasesToRemove) {
+            kBases.remove(kbaseToRemove);
+        }
         
         for( Iterator<Map.Entry<String,KieSession>> it = this.kSessions.entrySet().iterator(); it.hasNext(); ) {
             Entry<String, KieSession> ksession = it.next();
@@ -161,10 +165,7 @@ public class KieContainerImpl
                 // build error, throw runtime exception
                 throw new RuntimeException( "Error while creating KieBase" + msgs.filterMessages( Level.ERROR  ) );
             }
-            if ( kBase != null ) {
-                kBases.put( kBaseName,
-                            kBase );
-            }
+            kBases.put( kBaseName, kBase );
         }
         return kBase;
     }
@@ -220,7 +221,7 @@ public class KieContainerImpl
     }
 
     public KieSession newKieSession() {
-        return newKieSession((Environment)null, (KieSessionConfiguration)null);
+        return newKieSession((Environment)null, null);
     }
 
     public KieSession getKieSession() {
@@ -233,7 +234,7 @@ public class KieContainerImpl
     }
 
     public KieSession newKieSession(Environment environment) {
-        return newKieSession(environment, (KieSessionConfiguration)null);
+        return newKieSession(environment, null);
     }
 
     public KieSession newKieSession(Environment environment, KieSessionConfiguration conf) {
