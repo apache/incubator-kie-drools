@@ -59,10 +59,6 @@ public abstract class AbstractSolverPhaseScope {
         return startingScore;
     }
 
-    public void setStartingScore(Score startingScore) {
-        this.startingScore = startingScore;
-    }
-
     public int getBestSolutionStepIndex() {
         return bestSolutionStepIndex;
     }
