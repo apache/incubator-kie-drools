@@ -316,12 +316,14 @@ public class PlanningVariableDescriptor {
     }
 
     public Collection<?> extractAllPlanningValues(Solution solution) {
-        // TODO this does not include null if nullable, currently FromSolutionPropertyValueSelector does that
+        // TODO this does not include null if nullable
+        // currently FromSolutionPropertyValueSelector and FromEntityPropertyValueSelector do that
         return valueRangeDescriptor.extractAllValuesWithFiltering(solution);
     }
 
     public Collection<?> extractPlanningValues(Solution solution, Object entity) {
-        // TODO this does not include null if nullable, currently FromSolutionPropertyValueSelector does that
+        // TODO this does not include null if nullable
+        // currently FromSolutionPropertyValueSelector and FromEntityPropertyValueSelector do that
         return valueRangeDescriptor.extractValuesWithFiltering(solution, entity);
     }
 
