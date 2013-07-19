@@ -43,6 +43,7 @@ import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.io.Resource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -281,7 +282,7 @@ abstract public class AbstractRuleBase
         this.id = (String) droolsStream.readObject();
         this.workingMemoryCounter.set(droolsStream.readInt());
 
-        this.processes = (Map) droolsStream.readObject();
+        this.processes = (Map<String, Process>) droolsStream.readObject();
         Class cls = null;
         try {
             cls = droolsStream.getParentClassLoader().loadClass( droolsStream.readUTF() );
@@ -478,10 +479,15 @@ abstract public class AbstractRuleBase
      * @param newPkgs The package to add.
      */
     public void addPackages( final Collection<Package> newPkgs ) {
+        List<Package> clonedPkgs = new ArrayList<Package>();
+        for (Package newPkg : newPkgs) {
+            clonedPkgs.add(newPkg.deepCloneIfAlreadyInUse(rootClassLoader));
+        }
+
         lock();
         try {
             // we need to merge all byte[] first, so that the root classloader can resolve classes
-            for (Package newPkg : newPkgs) {
+            for (Package newPkg : clonedPkgs) {
                 newPkg.checkValidity();
                 this.additionsSinceLock++;
                 this.eventSupport.fireBeforePackageAdded( newPkg );
@@ -507,7 +513,7 @@ abstract public class AbstractRuleBase
 
 
             // Add all Type Declarations, this has to be done first incase packages cross reference each other during build process.
-            for ( Package newPkg : newPkgs ) {
+            for ( Package newPkg : clonedPkgs ) {
                 // we have to do this before the merging, as it does some classloader resolving
                 String lastType = null;
                 try {
@@ -560,7 +566,7 @@ abstract public class AbstractRuleBase
             }
 
              // now iterate again, this time onBeforeExecute will handle any wiring or cloader re-creating that needs to be done as part of the merge
-            for (Package newPkg : newPkgs) {
+            for (Package newPkg : clonedPkgs) {
                 Package pkg = this.pkgs.get( newPkg.getName() );
                 
                 // this needs to go here, as functions will set a java dialect to dirty
@@ -577,7 +583,7 @@ abstract public class AbstractRuleBase
             }
 
 
-            for (Package newPkg : newPkgs) {
+            for (Package newPkg : clonedPkgs) {
                 Package pkg = this.pkgs.get( newPkg.getName() );
 
                 // now merge the new package into the existing one
@@ -1080,7 +1086,7 @@ abstract public class AbstractRuleBase
      * Handle rule removal.
      *
      * This method is intended for sub-classes, and called after the
-     * {@link RuleBaseEventListener#beforeRuleRemoved(org.kie.api.event.BeforeRuleRemovedEvent) before-rule-removed}
+     * {@link RuleBaseEventListener#beforeRuleRemoved(org.drools.core.event.BeforeRuleRemovedEvent) before-rule-removed}
      * event is fired, and before the rule is physically removed from the package.
      *
      * This method is called with the rulebase lock held.
@@ -1119,7 +1125,7 @@ abstract public class AbstractRuleBase
      * Handle function removal.
      *
      * This method is intended for sub-classes, and called after the
-     * {@link RuleBaseEventListener#beforeFunctionRemoved(org.kie.api.event.BeforeFunctionRemovedEvent) before-function-removed}
+     * {@link RuleBaseEventListener#beforeFunctionRemoved(org.drools.core.event.BeforeFunctionRemovedEvent) before-function-removed}
      * event is fired, and before the function is physically removed from the package.
      *
      * This method is called with the rulebase lock held.
@@ -1326,4 +1332,16 @@ abstract public class AbstractRuleBase
         return this.getConfiguration().getComponentFactory().getTraitRegistry();
     }
 
+    public void removeObjectsGeneratedFromResource(Resource resource) {
+        for (Package pkg : pkgs.values()) {
+            List<Rule> rulesToBeRemoved = pkg.removeRulesGeneratedFromResource(resource);
+            for (Rule rule : rulesToBeRemoved) {
+                removeRule(rule);
+            }
+            List<Function> functionsToBeRemoved = pkg.removeFunctionsGeneratedFromResource(resource);
+            for (Function function : functionsToBeRemoved) {
+                removeFunction(function.getName());
+            }
+        }
+    }
 }

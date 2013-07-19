@@ -23,7 +23,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -430,17 +429,17 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     protected void addRule(final Rule rule) throws InvalidPatternException {
         // This adds the rule. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
-        this.reteooBuilder.addRule( rule );
+        this.reteooBuilder.addRule(rule);
     }
 
     protected void addEntryPoint(final String id) throws InvalidPatternException {
         // This adds the entry point. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
-        this.reteooBuilder.addEntryPoint( id );
+        this.reteooBuilder.addEntryPoint(id);
     }
 
     protected void addWindowDeclaration(final WindowDeclaration window) throws InvalidPatternException {
         // This adds the named window. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
-        this.reteooBuilder.addNamedWindow( window );
+        this.reteooBuilder.addNamedWindow(window);
     }
 
     protected void removeRule(final Rule rule) {
@@ -453,11 +452,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     }
 
     public void addPackages(Package[] pkgs) {
-        addPackages( Arrays.asList( pkgs ) );
-    }
-
-    public void addPackages(Collection<Package> pkgs) {
-        super.addPackages( pkgs );
+        addPackages(Arrays.asList(pkgs));
     }
 
     public void addPackage(final Package newPkg) {
@@ -490,7 +485,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     public void invalidateSegmentPrototype(LeftTupleSource tupleSource) {
         segmentProtos.remove(tupleSource.getId());
         LeftTupleSinkPropagator sinkProp = tupleSource.getSinkPropagator();
-        for (LeftTupleSinkNode sink = (LeftTupleSinkNode) sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode()) {
+        for (LeftTupleSinkNode sink = sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode()) {
             if (sink instanceof LeftTupleSource) {
                 invalidateSegmentPrototype((LeftTupleSource)sink);
             }

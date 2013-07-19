@@ -23,6 +23,7 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.util.ClassUtils;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
@@ -41,6 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -109,6 +111,8 @@ public class Package
     private String                         errorSummary;
 
     private transient TypeResolver         typeResolver;
+
+    private transient AtomicBoolean        inUse            = new AtomicBoolean(false);
 
     // ------------------------------------------------------------
     // Constructors
@@ -307,7 +311,7 @@ public class Package
 
     public void addStaticImport( final String functionImport ) {
         if (this.staticImports == Collections.EMPTY_SET) {
-            this.staticImports = new HashSet( 2 );
+            this.staticImports = new HashSet<String>( 2 );
         }
         this.staticImports.add( functionImport );
     }
@@ -599,22 +603,9 @@ public class Package
     }
 
     public boolean removeObjectsGeneratedFromResource(Resource resource) {
-        List<Rule> rulesToBeRemoved = new ArrayList<Rule>();
-        for (Rule rule : rules.values()) {
-            if (resource.equals(rule.getResource())) {
-                rulesToBeRemoved.add(rule);
-            }
-        }
-        for (Rule rule : rulesToBeRemoved) {
-            removeRule(rule);
-        }
+        List<Rule> rulesToBeRemoved = removeRulesGeneratedFromResource(resource);
 
-        List<TypeDeclaration> typesToBeRemoved = new ArrayList<TypeDeclaration>();
-        for (TypeDeclaration type : typeDeclarations.values()) {
-            if (resource.equals(type.getResource())) {
-                typesToBeRemoved.add(type);
-            }
-        }
+        List<TypeDeclaration> typesToBeRemoved = getTypesGeneratedFromResource(resource);
         if (!typesToBeRemoved.isEmpty()) {
             JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) getDialectRuntimeRegistry().getDialectData( "java" );
             for (TypeDeclaration type : typesToBeRemoved) {
@@ -625,16 +616,61 @@ public class Package
             dialect.reload();
         }
 
+        List<Function> functionsToBeRemoved = removeFunctionsGeneratedFromResource(resource);
+
+        return !rulesToBeRemoved.isEmpty() || !typesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty();
+    }
+
+    public List<Rule> removeRulesGeneratedFromResource(Resource resource) {
+        List<Rule> rulesToBeRemoved = getRulesGeneratedFromResource(resource);
+        for (Rule rule : rulesToBeRemoved) {
+            removeRule(rule);
+        }
+        return rulesToBeRemoved;
+    }
+
+    public List<Rule> getRulesGeneratedFromResource(Resource resource) {
+        List<Rule> rulesToBeRemoved = new ArrayList<Rule>();
+        for (Rule rule : rules.values()) {
+            if (resource.equals(rule.getResource())) {
+                rulesToBeRemoved.add(rule);
+            }
+        }
+        return rulesToBeRemoved;
+    }
+
+    public List<TypeDeclaration> getTypesGeneratedFromResource(Resource resource) {
+        List<TypeDeclaration> typesToBeRemoved = new ArrayList<TypeDeclaration>();
+        for (TypeDeclaration type : typeDeclarations.values()) {
+            if (resource.equals(type.getResource())) {
+                typesToBeRemoved.add(type);
+            }
+        }
+        return typesToBeRemoved;
+    }
+
+    public List<Function> removeFunctionsGeneratedFromResource(Resource resource) {
+        List<Function> functionsToBeRemoved = getFunctionsGeneratedFromResource(resource);
+        for (Function function : functionsToBeRemoved) {
+            removeFunction(function.getName());
+        }
+        return functionsToBeRemoved;
+    }
+
+    public List<Function> getFunctionsGeneratedFromResource(Resource resource) {
         List<Function> functionsToBeRemoved = new ArrayList<Function>();
         for (Function function : functions.values()) {
             if (resource.equals(function.getResource())) {
                 functionsToBeRemoved.add(function);
             }
         }
-        for (Function function : functionsToBeRemoved) {
-            removeFunction(function.getName());
-        }
+        return functionsToBeRemoved;
+    }
 
-        return !rulesToBeRemoved.isEmpty() || !typesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty();
+    public Package deepCloneIfAlreadyInUse(ClassLoader classLoader) {
+        if (inUse.compareAndSet(false, true)) {
+            return this;
+        }
+        return ClassUtils.deepClone(this, classLoader);
     }
 }
